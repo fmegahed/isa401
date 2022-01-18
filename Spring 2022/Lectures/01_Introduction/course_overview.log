@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999993 (MiKTeX 21.12.10) (preloaded format=xelatex 2022.1.16)  17 JAN 2022 19:24
+This is XeTeX, Version 3.141592653-2.6-0.999993 (MiKTeX 21.12.10) (preloaded format=xelatex 2022.1.16)  18 JAN 2022 06:35
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1290,7 +1290,7 @@ Package rerunfilecheck Info: File `course_overview.out' has not changed.
 Here is how much of TeX's memory you used:
  47542 strings out of 411044
  1136485 string characters out of 2829677
- 1597898 words of memory out of 3000000
+ 1597897 words of memory out of 3000000
  67536 multiletter control sequences out of 15000+600000
  408524 words of font info for 49 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191

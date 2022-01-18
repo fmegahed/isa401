@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999993 (MiKTeX 21.12.10) (preloaded format=xelatex 2022.1.16)  17 JAN 2022 19:23
+This is XeTeX, Version 3.141592653-2.6-0.999993 (MiKTeX 21.12.10) (preloaded format=xelatex 2022.1.16)  18 JAN 2022 06:34
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1276,7 +1276,7 @@ Package rerunfilecheck Info: File `ba_flow_chart.out' has not changed.
 Here is how much of TeX's memory you used:
  49305 strings out of 411044
  1166491 string characters out of 2829677
- 1604888 words of memory out of 3000000
+ 1604887 words of memory out of 3000000
  69325 multiletter control sequences out of 15000+600000
  404119 words of font info for 31 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191

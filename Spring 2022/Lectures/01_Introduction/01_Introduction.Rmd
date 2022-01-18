@@ -59,7 +59,7 @@ library(xaringanthemer)
 style_mono_accent(base_color = "#84d6d3",
                   base_font_size = "20px")
 
-xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "tachyons", "panelset", "broadcast", "share_again", "scribble", "search", "fit_screen"))
+xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "tachyons", "panelset", "broadcast", "share_again", "scribble", "search", "fit_screen", "editable"))
 
 ```
 
@@ -137,7 +137,7 @@ class: inverse, center, middle
 
 .panel[.panel-name[Your Solution] 
 
-- .can-edit.key-activity1[Insert your solution here] 
+- .can-edit.key-activity1[Insert your solution here (Use Chrome as your browser to edit this part of the page)] 
 
 ]
 
@@ -448,7 +448,7 @@ knitr::include_graphics("figures/mehdizadeh_2021.png")
 
 .panel[.panel-name[Your Solution] 
 
-- Insert your solution here, **which you can do by capitalizing on the pencil icon on the top right of the screen**. This will likely only work if you are viewing this file outside of Canvas. 
+- .can-edit.key-activity3[Insert your solution here (Use Chrome as your browser to edit this part of the page)] 
 
 ]
 
@@ -563,6 +563,8 @@ To demonstrate the practicality of this course, let us consider [this job ad](ht
 ]
 
 .panel[.panel-name[Documentation Space]
+
+- .can-edit.key-activity4[Insert your solution here (Use Chrome as your browser to edit this part of the page)] 
 
 ]
 ]
@@ -847,14 +849,15 @@ knitr::include_graphics("figures/wpost.jpg")
 
 .panel[.panel-name[Your Solution]
 
+- .can-edit.key-activity5[Insert your solution here (Use Chrome as your browser to edit this part of the page)] 
+
 ]
 ]
 
 
 ---
 
-# Interact
-
+# Interact: GapMinder/ Hans Rosling Example
 <html>
 <center>
 <div style="max-width:854px"><div style="position:relative;height:0;padding-bottom:56.25%"><iframe src="https://embed.ted.com/talks/lang/en/hans_rosling_the_best_stats_you_ve_ever_seen" width="854" height="480" style="position:absolute;left:0;top:0;width:100%;height:100%" frameborder="0" scrolling="no" allowfullscreen></iframe></div></div>
@@ -909,134 +912,6 @@ knitr::include_graphics("figures/bi_process.jpg")
 ---
 class: inverse, center, middle
 
-# `r fontawesome::fa("r-project")`
-
-
----
-
-# Pedagogy Behind Using `r fontawesome::fa("r-project")` in this Course [1]
-
-```{r prog_lang, eval=FALSE}
-crashes = 
-  # reading the data directly from the source
-  read_csv("https://data.cincinnati-oh.gov/api/views/rvmt-pkmq/rows.csv?accessType=DOWNLOAD") %>% 
-  # changing all variable names to snake_case
-  clean_names() %>% 
-  # selecting variables of interest
-  select(address_x, latitude_x, longitude_x, cpd_neighborhood, datecrashreported, instanceid, 
-         typeofperson, weather) %>%
-  # engineering some features from the data
-  mutate(
-    datetime = parse_date_time(datecrashreported, 
-                               orders = "'%m/%d/%Y %I:%M:%S %p", tz =  'America/New_York'),
-    hour = hour(datetime),
-    date = as_date(datetime)
-  )
-```
-
-### The Beauty of Programming Languages 
-
-- Programming languages are **languages**.  
-
-- Per [Hadley Wickham](https://speakerdeck.com/hadley/you-cant-do-data-science-in-a-gui?slide=14), **it's just text** -- which gives you access to **two extremely powerful techniques**!!!  
-
-
----
-
-# Pedagogy Behind Using `r fontawesome::fa("r-project")` in this Course [2]
-
-
-### The Beauty of Programming Languages (Continued)
-
-- .large[`Ctrl` + `C` `r fontawesome::fa("copy", fill = miamired)`] 
-
-- .large[`Ctrl` + `V`] `r fontawesome::fa("paste", fill = miamired)`
-
-- In addition, programming languages are generally  
-
-  + Readable (IMO way easier than trying to figure what someone did in an `r fontawesome::fa("file-excel", fill = 'green')`)  
-  
-  + Open (so you can `r fontawesome::fa("google", fill = miamired)` it)  
-  
-  + Reusable and reproducible (so you can reuse your code for similar problems and other people can get the same results as you easily)  
-  
-  + Diffable (version control is extremely powerful)
-
-
----
-
-# Pedagogy Behind Using `r fontawesome::fa("r-project")` in this Course [3]
-
-### Why `r fontawesome::fa("r-project")` Specifically?
-
-- It is a general-purpose programming language, which originated for statistical analysis.  
-
-- As of `r Sys.Date() %>% format(format = '%B %d, %Y')`, there are currently `r available.packages() %>% nrow() %>% comma()` packages on [The Comprehensive R Archive Network (CRAN)](https://cran.r-project.org/). Note that this does not capture the large number of packages that are found on GitHub (either because they are still in development or that their owners do not want to place them on CRAN).   
-
-- The `tidyverse` group of packages have simplified the workflow for data analytics/science.  
-
-
----
-
-# How to Learn R (Any Programming Language)
-
-<html>
-<center>
-<iframe src="https://giphy.com/embed/xonOzxf2M8hNu" width="240" height="135" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
-</center>
-</html>
-
-* `r emo::ji("speaking_head")` **Get hands dirty**`r emo::ji("bangbang")`  
-
-* `r emo::ji("open_book")` Documentation! Documentation! Documentation!  
-
-* `r emo::ji("search")` (Not surprisingly) Learn to Google: what that error message means (I Google a lot `r emo::ji("laugh")`)
-
-.footnote[
-<html>
-
-<hr>
-
-</html>
-
-**Source:** Slide is based on [Kia Ora's How I Learn a Technology](https://stats220.earo.me/01-intro.html#7).
-]
-
-
----
-class: inverse, center, middle
-
-# `r fontawesome::fa("r-project")` 101
-
-
----
-
-# Assignment
-
-The first set of operators that you should know about in R is for assignment. `r fontawesome::fa("r-project")` has three assignment operators: <-, =, and ->,  which can be used as follows.  
-
-```{r assignment_operators}
-x1 <- 5
-
-x2 = 5
-
-5 -> x3
-
-print(paste0("The values of x1, x2, and x3 are ", x1, ", ", x2, ", and ", x3,
-             " respectively"))
-```
-
-The operator <- can be written using the shortcut `Alt` + `-` on a Windows machine. If we focus on the first two operators, you would notice that the assignment consists of three parts:  
-
-  - The left-hand side: **variable names** (`x1` or `x2`), 
-  - The assignment operator: `<-` (or alternatively `=`), and 
-  - The right-hand side: **values** (``r x1``)
-
-
-
----
-class: inverse, center, middle
-
 # Recap
 
 ---
@@ -1044,4 +919,32 @@ class: inverse, center, middle
 # Summary of Main Points
 
 By now, you should be able to do the following:  
+
+- Describe **course objectives** and **structure**.  
+
+- Define **data visualization** and describe its **main goals**.    
+
+- Describe the **BI methodology** and its **major concepts**.
+
+
+---
+
+# Things to Do to Prepare for Our Next Class
+
+- Go over your notes and complete [Assignment 01](https://miamioh.instructure.com/courses/167290/quizzes/448578) on Canvas.  
+
+- You are highly encouraged to read through the following references in preparation of our next class. 
+
+.pull-left[
+.center[[<img src="https://d33wubrfki0l68.cloudfront.net/b88ef926a004b0fce72b2526b0b5c4413666a4cb/24a30/cover.png" height="275px">](https://r4ds.had.co.nz)]
+* [Workflow: basics](https://r4ds.had.co.nz/workflow-basics.html)
+* [Workflow: scripts](https://r4ds.had.co.nz/workflow-scripts.html)
+* [Workflow: project](https://r4ds.had.co.nz/workflow-projects.html)
+]
+.pull-right[
+.center[[<img src="https://d33wubrfki0l68.cloudfront.net/565916198b0be51bf88b36f94b80c7ea67cafe7c/7f70b/cover.png" height="275px">](https://adv-r.hadley.nz)]
+* [Names and values](https://adv-r.hadley.nz/names-values.html)
+* [Vectors](https://adv-r.hadley.nz/vectors-chap.html)
+* [Subsetting](https://adv-r.hadley.nz/subsetting.html)
+]
 
