@@ -4,9 +4,8 @@ subtitle: "01: Introduction to BI and Data Viz"
 author: "<br>Fadel M. Megahed, PhD <br><br> Associate Professor <br> Department of Information Systems and Analytics <br> Farmer School of Business<br> Miami University<br><br>Twitter: [FadelMegahed](www.twitter.com/FadelMegahed/)<br> GitHub: [fmegahed](https://github.com/fmegahed)<br> Email: [fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> Office Hours: [Automated Scheduler for Virtual Office Hours](https://calendly.com/fmegahed)<br><br>"
 date: "Spring 2022"
 output:
-  xaringan::moon_reader:  
-    self_contained: true
-    css: ["default", "css/my-theme.css"]
+  xaringan::moon_reader:
+    css: ["xaringan-themer.css", "css/my-fonts.css", "css/my-theme.css"]
     lib_dir: libs
     nature:
       highlightStyle: github
@@ -56,11 +55,11 @@ bib = ReadBib("refs.bib")
 ```{r xaringan-themer, include=FALSE, warning=FALSE}
 if(require(xaringanthemer) == FALSE) install.packages("xaringanthemer")
 library(xaringanthemer)
-style_mono_accent(base_color = "#84d6d3")
+
+style_mono_accent(base_color = "#84d6d3",
+                  base_font_size = "20px")
+
 xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "tachyons", "panelset", "broadcast", "share_again", "scribble", "search", "fit_screen"))
-
-mono <- style_mono_accent(base_color = "#84d6d3")
-
 
 ```
 
@@ -138,7 +137,7 @@ class: inverse, center, middle
 
 .panel[.panel-name[Your Solution] 
 
-- Insert your solution here, **which you can do by capitalizing on the pencil icon on the top right of the screen**. This will likely only work if you are viewing this file outside of Canvas. 
+- .can-edit.key-activity1[Insert your solution here] 
 
 ]
 
@@ -234,7 +233,7 @@ day_of_week_tbl %>%
   ) %>% 
   ggplot(aes(x= n, y = dayofweek)) +
   geom_col(fill = miamired) +
-  theme_bw(base_size = 24) + 
+  theme_bw(base_size = 12) + 
   labs(x = 'Count/Freq', y = 'Day of the Week',
        title = 'Crashes by Day in Cincinnati in 2021',
        caption = 'Created by: Fadel Megahed | Data source: City of Cincy Open Data Portal (rvmt-pkmq)') 
@@ -259,21 +258,21 @@ cal = calendR(title = NULL,
               year = 2021,
               special.days = daily_crashes_2021$n,
               orientation = "landscape",
-              day.size = 4,
-              months.size = 20,
-              weeknames.size = 6,
+              day.size = 2,
+              months.size = 8,
+              weeknames.size = 3,
               margin = 0,
-              text.size = 14,
-              title.size = 28,
+              text.size = 8,
+              title.size = 14,
               gradient = TRUE,
               low.col = "#FFFFED",
               special.col = miamired,
               legend.pos = 'right',
               legend.title = '# Crashes') + 
   theme(plot.title = element_text(face = 'bold', color =  miamired),
-        legend.title = element_text(face = 'bold', size = 14), 
-        legend.text = element_text(size = 14),
-        plot.caption = element_text(size = 14)) +
+        legend.title = element_text(face = 'bold', size = 9), 
+        legend.text = element_text(size = 7),
+        plot.caption = element_text(size = 7)) +
   labs(caption = 'Created by: Fadel Megahed | Data source: City of Cincy Open Data Portal (rvmt-pkmq)')
 
 cal
@@ -288,7 +287,7 @@ cal
 - **Descriptive Analytics:** where one attempts to **understand** the data through **descriptive statistics** and **visualizations**.
 
 
-```{r viz2b, echo=FALSE, results=FALSE, cache=TRUE}
+```{r viz2b, echo=FALSE, eval=FALSE}
 cty_sf = get_urbn_map(map = "counties", sf = TRUE) %>% 
   filter(state_name %in% c('Ohio', 'Kentucky', 'Indiana') )
 
@@ -651,7 +650,7 @@ CS = conceptualStructure(M,
 ```
 
 
-```{r research_megahed3, echo=FALSE, out.width='100%', fig.alt="My work can be grouped into four different clusters", fig.align='center', fig.cap='My work can be grouped into four different clusters.', dpi=600}
+```{r research_megahed3, echo=FALSE, out.width='100%', fig.alt="My work can be grouped into four different clusters", fig.align='center', fig.cap='My work can be grouped into four different clusters.', dpi=300}
 CS$graph_terms 
 ```
 
@@ -857,7 +856,9 @@ knitr::include_graphics("figures/wpost.jpg")
 # Interact
 
 <html>
+<center>
 <div style="max-width:854px"><div style="position:relative;height:0;padding-bottom:56.25%"><iframe src="https://embed.ted.com/talks/lang/en/hans_rosling_the_best_stats_you_ve_ever_seen" width="854" height="480" style="position:absolute;left:0;top:0;width:100%;height:100%" frameborder="0" scrolling="no" allowfullscreen></iframe></div></div>
+</center>
 </html>
 
 
@@ -903,6 +904,133 @@ knitr::include_graphics("figures/bi_process.jpg")
 
 - **Image Credit:** Sharda, R., Delen, D., & Turban, E. (2013). Business Intelligence: A managerial perspective on analytics. Prentice Hall Press.    
 ]
+
+
+---
+class: inverse, center, middle
+
+# `r fontawesome::fa("r-project")`
+
+
+---
+
+# Pedagogy Behind Using `r fontawesome::fa("r-project")` in this Course [1]
+
+```{r prog_lang, eval=FALSE}
+crashes = 
+  # reading the data directly from the source
+  read_csv("https://data.cincinnati-oh.gov/api/views/rvmt-pkmq/rows.csv?accessType=DOWNLOAD") %>% 
+  # changing all variable names to snake_case
+  clean_names() %>% 
+  # selecting variables of interest
+  select(address_x, latitude_x, longitude_x, cpd_neighborhood, datecrashreported, instanceid, 
+         typeofperson, weather) %>%
+  # engineering some features from the data
+  mutate(
+    datetime = parse_date_time(datecrashreported, 
+                               orders = "'%m/%d/%Y %I:%M:%S %p", tz =  'America/New_York'),
+    hour = hour(datetime),
+    date = as_date(datetime)
+  )
+```
+
+### The Beauty of Programming Languages 
+
+- Programming languages are **languages**.  
+
+- Per [Hadley Wickham](https://speakerdeck.com/hadley/you-cant-do-data-science-in-a-gui?slide=14), **it's just text** -- which gives you access to **two extremely powerful techniques**!!!  
+
+
+---
+
+# Pedagogy Behind Using `r fontawesome::fa("r-project")` in this Course [2]
+
+
+### The Beauty of Programming Languages (Continued)
+
+- .large[`Ctrl` + `C` `r fontawesome::fa("copy", fill = miamired)`] 
+
+- .large[`Ctrl` + `V`] `r fontawesome::fa("paste", fill = miamired)`
+
+- In addition, programming languages are generally  
+
+  + Readable (IMO way easier than trying to figure what someone did in an `r fontawesome::fa("file-excel", fill = 'green')`)  
+  
+  + Open (so you can `r fontawesome::fa("google", fill = miamired)` it)  
+  
+  + Reusable and reproducible (so you can reuse your code for similar problems and other people can get the same results as you easily)  
+  
+  + Diffable (version control is extremely powerful)
+
+
+---
+
+# Pedagogy Behind Using `r fontawesome::fa("r-project")` in this Course [3]
+
+### Why `r fontawesome::fa("r-project")` Specifically?
+
+- It is a general-purpose programming language, which originated for statistical analysis.  
+
+- As of `r Sys.Date() %>% format(format = '%B %d, %Y')`, there are currently `r available.packages() %>% nrow() %>% comma()` packages on [The Comprehensive R Archive Network (CRAN)](https://cran.r-project.org/). Note that this does not capture the large number of packages that are found on GitHub (either because they are still in development or that their owners do not want to place them on CRAN).   
+
+- The `tidyverse` group of packages have simplified the workflow for data analytics/science.  
+
+
+---
+
+# How to Learn R (Any Programming Language)
+
+<html>
+<center>
+<iframe src="https://giphy.com/embed/xonOzxf2M8hNu" width="240" height="135" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
+</center>
+</html>
+
+* `r emo::ji("speaking_head")` **Get hands dirty**`r emo::ji("bangbang")`  
+
+* `r emo::ji("open_book")` Documentation! Documentation! Documentation!  
+
+* `r emo::ji("search")` (Not surprisingly) Learn to Google: what that error message means (I Google a lot `r emo::ji("laugh")`)
+
+.footnote[
+<html>
+
+<hr>
+
+</html>
+
+**Source:** Slide is based on [Kia Ora's How I Learn a Technology](https://stats220.earo.me/01-intro.html#7).
+]
+
+
+---
+class: inverse, center, middle
+
+# `r fontawesome::fa("r-project")` 101
+
+
+---
+
+# Assignment
+
+The first set of operators that you should know about in R is for assignment. `r fontawesome::fa("r-project")` has three assignment operators: <-, =, and ->,  which can be used as follows.  
+
+```{r assignment_operators}
+x1 <- 5
+
+x2 = 5
+
+5 -> x3
+
+print(paste0("The values of x1, x2, and x3 are ", x1, ", ", x2, ", and ", x3,
+             " respectively"))
+```
+
+The operator <- can be written using the shortcut `Alt` + `-` on a Windows machine. If we focus on the first two operators, you would notice that the assignment consists of three parts:  
+
+  - The left-hand side: **variable names** (`x1` or `x2`), 
+  - The assignment operator: `<-` (or alternatively `=`), and 
+  - The right-hand side: **values** (``r x1``)
 
 
 
