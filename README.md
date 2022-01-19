@@ -14,4 +14,3 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 ## Notes
  * I did my best to add references whenver possible. If I missed a reference, please let me know (via a pull request, PR).
  * If you have identified mistakes/typos, please let me know. Teaching a course in the midst of a pandemic, with your university's decision to increase the number of course preps, is interesting (to say the least).  
-
