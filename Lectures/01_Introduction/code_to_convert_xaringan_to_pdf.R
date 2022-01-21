@@ -3,5 +3,5 @@
 
 source("https://git.io/xaringan2pdf")
 
-xaringan_to_pdf(input = 'https://fmegahed.github.io/isa401/01_Introduction/01_Introduction.html',
+xaringan_to_pdf(input = 'https://fmegahed.github.io/isa401/class01/01_Introduction.html',
                 output_file = 'Lectures/01_Introduction/01_Introduction.pdf')
