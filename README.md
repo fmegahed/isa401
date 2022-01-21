@@ -1,7 +1,7 @@
 # ISA 401: An Undergrad Course on Business Intelligence & Data Visualization
 This repo contains my lecture notes (created in R Markdown) for an undergraduate business intelligence and data visualization course. The course is divided into three main phases:  
-  - **Phase 1: Extracting, Transforming and Loading Data** -- I chose to utilzie the R programming language as the software tool of choice for this phase. Other instructors at Miami use Power BI (a Microsoft software tool for this purpose).  
-  - **Phase 2: Data Visualization**, which covers both basic principles behind data visualization and how to make charts. Many of our students are expected to learn Tableau for their jobs and hence, I mix Tableau and Power BI (to mantain consistency with other sections taught at my school) and introduce some neat charts from R along the way due to my belief that scripted languages provide a good understanding of the grammer of making good graphics.  
+  - **Phase 1: Extracting, Transforming and Loading Data** -- I chose to utilize the R programming language as the software tool of choice for this phase. Other instructors at Miami use Power BI (a Microsoft software tool for this purpose).  
+  - **Phase 2: Data Visualization**, which covers both basic principles behind data visualization and how to make charts. Many of our students are expected to learn Tableau for their jobs and hence, I mix Tableau and Power BI (to mantain consistency with other sections taught at my school) and introduce some neat charts from R along the way due to my belief that scripted languages provide a good understanding of the grammar of making good graphics.  
   - **Phase 3: A Very Short Introduction to Exploratory/Visual Data Mining Tools**.
 
 ## Schedule
