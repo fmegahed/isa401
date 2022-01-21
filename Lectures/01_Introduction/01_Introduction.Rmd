@@ -935,7 +935,7 @@ By now, you should be able to do the following:
 
 - Go over your notes and complete [Assignment 01](https://miamioh.instructure.com/courses/167290/quizzes/448578) on Canvas.  
 
-- Rread through the following references in preparation of our next class. 
+- Read through the following references in preparation of our next class. 
 
 .pull-left[
 .center[[<img src="https://d33wubrfki0l68.cloudfront.net/b88ef926a004b0fce72b2526b0b5c4413666a4cb/24a30/cover.png" height="250px">](https://r4ds.had.co.nz)]
