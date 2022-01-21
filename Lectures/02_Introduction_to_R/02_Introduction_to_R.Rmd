@@ -1,7 +1,7 @@
 ---
 title: "ISA 401: Business Intelligence & Data Visualization"
 subtitle: "02: Introduction to R"
-author: "<br>Fadel M. Megahed, PhD <br><br> Associate Professor <br> Department of Information Systems and Analytics <br> Farmer School of Business<br> Miami University<br><br>Twitter: [FadelMegahed](www.twitter.com/FadelMegahed/)<br> GitHub: [fmegahed](https://github.com/fmegahed)<br> Email: [fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> Office Hours: [Automated Scheduler for Virtual Office Hours](https://calendly.com/fmegahed)<br><br>"
+author: "<br>Fadel M. Megahed, PhD <br><br> Associate Professor <br> Department of Information Systems and Analytics <br> Farmer School of Business<br> Miami University<br><br>Twitter: [FadelMegahed](www.twitter.com/FadelMegahed/)<br> <i class='fa-brands fa-github'></i> [fmegahed](https://github.com/fmegahed)<br> Email: [fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> Office Hours: [Automated Scheduler for Virtual Office Hours](https://calendly.com/fmegahed)<br><br>"
 date: "Spring 2022"
 output:
   xaringan::moon_reader:

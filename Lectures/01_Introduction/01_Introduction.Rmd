@@ -443,8 +443,6 @@ knitr::include_graphics("figures/mehdizadeh_2021.png")
 
 `r countdown(minutes = 3, seconds = 0, top = 0, font_size = "2em")`
 
-> _Take 3 minutes to formulate the two best questions with your partner_
-
 .panelset[
 
 .panel[.panel-name[Activity]
@@ -461,7 +459,7 @@ knitr::include_graphics("figures/mehdizadeh_2021.png")
 
 .panel[.panel-name[Our Work in this Area] 
 
-```{r qiong_ksp, echo=FALSE, out.width='450px', fig.alt="k-SP solution to feasible routes between Gary, IN and Nashville, TN", fig.align='center'}
+```{r qiong_ksp, echo=FALSE, out.width='400px', fig.alt="k-SP solution to feasible routes between Gary, IN and Nashville, TN", fig.align='center'}
 knitr::include_graphics("figures/gary_nashville_ranking.PNG")
 ```
 
@@ -909,7 +907,7 @@ knitr::include_graphics("figures/bi_process.jpg")
 <hr>
 </html>
 
-- **Image Credit:** Sharda, R., Delen, D., & Turban, E. (2013). Business Intelligence: A managerial perspective on analytics. Prentice Hall Press.    
+**Image Credit:** Sharda, R., Delen, D., & Turban, E. (2013). Business Intelligence: A managerial perspective on analytics. Prentice Hall Press.    
 ]
 
 
