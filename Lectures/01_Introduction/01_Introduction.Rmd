@@ -5,7 +5,7 @@ author: "<br>Fadel M. Megahed, PhD <br><br> Associate Professor <br> Department 
 date: "Spring 2022"
 output:
   xaringan::moon_reader:
-    css: ["xaringan-themer.css", "css/my-fonts.css", "css/my-theme.css"]
+    css: [default, "css/fonts.css", "css/my-theme.css"]
     lib_dir: libs
     nature:
       highlightStyle: github
@@ -59,7 +59,7 @@ library(xaringanthemer)
 style_mono_accent(base_color = "#84d6d3",
                   base_font_size = "20px")
 
-xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "tachyons", "panelset", "broadcast", "share_again", "scribble", "search", "fit_screen", "editable"))
+xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "tachyons", "panelset", "broadcast", "share_again", "search", "fit_screen", "editable", "clipboard"))
 
 ```
 
@@ -94,7 +94,7 @@ class: inverse, center, middle
 .pull-right[
 ## .center[.large[.large[.large[`r emo::ji("tomato")`]]]]
 * Fresh, interesting, challenging 
-* Impactful and sometimes locally collected
+* Impactful
 * Examples: [Cincinnati Open Data Portal](https://data.cincinnati-oh.gov/), 
 [Ohio Data Portal](https://data.ohio.gov/wps/portal/gov/data/), [US Government's Open Data](https://www.data.gov/).
 ]
@@ -105,10 +105,9 @@ class: inverse, center, middle
 <hr>
 </html>
 
-**Footnotes:**  
--  While the highly processed data can be useful in learning basic concepts, **real-world (often messy)** data real are much interesting to work with -- **e.g.,  we can make useful & meaningful decision from the data.** In this class, we will learn how to scrape, extract and clean messy data in addition to visualizing clean[ed] data.   
+While the highly processed data can be useful in learning basic concepts, **real-world (often messy)** data real are much interesting to work with -- **e.g.,  we can make useful & meaningful decision from the data.** In this class, we will learn how to scrape, extract and clean messy data in addition to visualizing clean[ed] data.   
 
-- Source: Slide inspired by [Kia Ora's What I mean by "data"](https://stats220.earo.me/01-intro.html#6). 
+Source: Slide inspired by [Kia Ora's What I mean by "data"](https://stats220.earo.me/01-intro.html#6). 
 ]
 
 
@@ -167,7 +166,7 @@ dim(crashes)
 
 # The Analytics Journey: Descriptive [1]
 
-- **Descriptive Analytics:** where one attempts to **understand** the data through **descriptive statistics** and **visualizations**.
+**Descriptive Analytics:** where one attempts to **understand** the data through **descriptive statistics** and **visualizations**.
 
 ### Descriptive Statistics for 2 Categorical Variables
 ```{r extract_crashes, cache=TRUE, echo=FALSE}
@@ -180,6 +179,7 @@ crashes = readr::read_csv("https://data.cincinnati-oh.gov/api/views/rvmt-pkmq/ro
          typeofperson, weather)
 ```
 
+.small[
 
 ```{r desc_stats, echo=FALSE}
 crashes %<>% 
@@ -211,15 +211,18 @@ unique_crashes_2021 %>% select(dayofweek, weather) %>%
   
 ```
 
+]
+
+
 ---
 
 # The Analytics Journey: Descriptive [2]
 
-- **Descriptive Analytics:** where one attempts to **understand** the data through **descriptive statistics** and **visualizations**.
+**Descriptive Analytics:** where one attempts to **understand** the data through **descriptive statistics** and **visualizations**.
 
 ### A Simple Visualization - A Bar Chart of Crashes Per Day
 
-```{r viz, echo=FALSE, fig.height=2.5}
+```{r viz, echo=FALSE, fig.height=2.25}
 unique_crashes_2021 %>% 
   select(dayofweek) %>% 
   group_by(dayofweek) %>% 
@@ -243,9 +246,9 @@ day_of_week_tbl %>%
 
 # The Analytics Journey: Descriptive [3]
 
-- **Descriptive Analytics:** where one attempts to **understand** the data through **descriptive statistics** and **visualizations**.
+**Descriptive Analytics:** where one attempts to **understand** the data through **descriptive statistics** and **visualizations**.
 
-```{r viz2a, echo=FALSE, cache=TRUE, fig.height=3.15}
+```{r viz2a, echo=FALSE, cache=TRUE, fig.height=2.85}
 weather_levels = levels(unique_crashes_2021$weather)
 
 daily_crashes_2021 = unique_crashes_2021 %>% 
@@ -284,7 +287,7 @@ cal
 
 # The Analytics Journey: Descriptive [4]
 
-- **Descriptive Analytics:** where one attempts to **understand** the data through **descriptive statistics** and **visualizations**.
+**Descriptive Analytics:** where one attempts to **understand** the data through **descriptive statistics** and **visualizations**.
 
 
 ```{r viz2b, echo=FALSE, eval=FALSE}
@@ -327,8 +330,10 @@ tmap_animation(tm_base, filename = 'figures/crash_anim.gif', fps = 4,
                width = 800, height = 400)
 ```
 
+```{r viz2bprint, fig.height=2.85, echo=FALSE}
+knitr::include_graphics('figures/crash_anim.gif')
+```
 
-![](figures/crash_anim.gif)
 
 
 
@@ -368,9 +373,7 @@ tmap_animation(tm_base, filename = 'figures/crash_anim.gif', fps = 4,
 ]
 
 
-
 ---
-
 
 
 
@@ -378,20 +381,27 @@ tmap_animation(tm_base, filename = 'figures/crash_anim.gif', fps = 4,
 
 # The Analytics Journey: Predictive [1]
 
-- **Predictive Analytics:** where **statistical** and **machine learning** models are used to help us utilize indepedent variable[s] to predict an outcome variable of choice (which can be binary/dichotomous, multinomial/multi-class, or continous).  
-
-  * From my teaching/research/consulting experience, **many** consider this component to be the `r emo::ji("cake")` aspect of the analytics journey.  
+**Predictive Analytics:** where **statistical** and **machine learning** models are used to help us utilize independent variable[s] to predict an outcome variable of choice.   
+  * **Many** consider this component to be the `r emo::ji("cake")` aspect of the analytics journey.  
   
-  * That being said, your success in this stage is **hinged on having**:  
+  * IMO, this is not always true, but your success in this stage is **hinged on**:  
       + **Correct** `r emo::ji("check")` data, i.e.,   
-          - *Do you actually capture the important predictors as potential independent variables?*  
+          - *Do you actually capture the important predictors?*  
           - *Is your data aggregated to the right level?*  
       + **Cleaned** `r emo::ji("bath")` data, i.e.,   
           - *Is your data tidy?*   
           - *Is your data technically correct?* 
-          - *Is your data consistent?* 
+          - *Is your data consistent?*   
           
-  * With the above constraints/setup, now you can explore how to model the data using statistical and machine learning models? **Some recommendations:**  
+---
+
+# The Analytics Journey: Predictive [2]
+
+**Predictive Analytics:** where **statistical** and **machine learning** models are used to help us utilize independent variable[s] to predict an outcome variable of choice.   
+          
+  * With the aforementioned constraints/setup, now you can explore how to model the data using statistical and machine learning models? 
+  
+  * **Some recommendations:**  
       + Start with the simplest (which is also often the most easy-to-explain) model first.  
       + If you are happy with the predictive performance (i.e., no gains would be of practical benefit), you are done `r emo::ji("clap")`.  
       + If not, `r emo::ji("return")` and try other models. 
@@ -399,11 +409,11 @@ tmap_animation(tm_base, filename = 'figures/crash_anim.gif', fps = 4,
 
 ---
 
-# The Analytics Journey: Predictive [2]
+# The Analytics Journey: Predictive [3]
 
-- **Predictive Analytics:** where **statistical** and **machine learning** models are used to help us utilize indepedent variable[s] to predict an outcome variable of choice (which can be binary/dichotomous, multinomial/multi-class, or continous).  **For two transportation safety examples, see:** 
+**Predictive Analytics:** where **statistical** and **machine learning** models are used to help us utilize indepedent variable[s] to predict an outcome variable.
 
-```{r two_papers, echo=FALSE, out.width='50%', fig.show="hold", fig.align='default'}
+```{r two_papers, echo=FALSE, out.width='50%', fig.show="hold", fig.align='default', out.height='50%'}
 knitr::include_graphics("figures/cai_2021.png")
 knitr::include_graphics("figures/mehdizadeh_2021.png")
 ```
@@ -413,16 +423,13 @@ knitr::include_graphics("figures/mehdizadeh_2021.png")
 
 # The Analytics Journey: Prescriptive [1]
 
-- **Prescriptive Analytics:** where **mathematical models** are used to make recommendations for business actions.  
+ **Prescriptive Analytics:** where **mathematical models** are used to make recommendations for business actions.  
 
-- Recall that our **overarching goal** behind data/business analytics, is to **make informed decisions based on what we have learned from the data**. Hence, this stage is where we build on what we learned during the *descriptive* and *predictive* stages to make more informed decisions.  
+- Our **overarching goal** behind data/business analytics, is to **make informed decisions based on what we have learned from the data**. Hence, this stage is where we build on what we learned during the *descriptive* and *predictive* stages to make more informed decisions.  
 
-- Now imagine that you are a large trucking company (e.g., Amazon, Fedex, JB Hunt, etc), and you have models that show **both**:   
-    * The factors that your on-board sensors capture driving safety critical events that are associated with crashes.  
-    * You have a reasonable model that helps you predict the occurrence of safety critical events as a function of:  
-        + Driver characteristics  
-        + Weather conditions 
-        + Traffic conditions  
+- Imagine that you are a large trucking company (e.g., Amazon, Fedex, JB Hunt), and you have models that show **both**:   
+    * Safety critical events that are associated with crashes.  
+    * The occurrence of safety critical events can be reasonably predicted as a function of:  (a) driver characteristics, (b) weather conditions, and (c) Traffic conditions.  
 
 - **As a business analyst, what two reasonable questions would you attempt to approach/optimize for?**  
 
@@ -430,7 +437,7 @@ knitr::include_graphics("figures/mehdizadeh_2021.png")
 
 # The Analytics Journey: Prescriptive [2]
 
-- **Prescriptive Analytics:** where **mathematical models** are used to make recommendations for business actions.  
+**Prescriptive Analytics:** where **mathematical models** are used to make recommendations for business actions.  
 
 ### Non-Graded Class Activity # 3
 
@@ -544,14 +551,11 @@ When I have designed this course, I have incorporated a lot of feedback from **i
 
 `r countdown(minutes = 4, seconds = 0, top = 0, font_size = "2em")`
 
-> _Take 4 minutes to pinpoint the **skills and qualifications that you have prior to taking this class**, and **document what you will learn in this course to make you more competitive**._  
-
-
-
 .panelset[
 
 .panel[.panel-name[Activity]
 
+.small[
 To demonstrate the practicality of this course, let us consider [this job ad](https://www.indeed.com/viewjob?jk=77f4cf1687882e41&tk=1eff1eg1op7cg800&from=serp&vjs=3).  
 - Please open the Data Scientist (6257U) - CED Data Scientist position at UC - Berkeley by clicking [here](https://www.indeed.com/viewjob?jk=77f4cf1687882e41&tk=1eff1eg1op7cg800&from=serp&vjs=3).  
 
@@ -560,6 +564,7 @@ To demonstrate the practicality of this course, let us consider [this job ad](ht
 - Read through the required qualifications. 
 
 - **Document what you will learn in this course to make you more competitive.**
+]
 ]
 
 .panel[.panel-name[Documentation Space]
@@ -630,7 +635,7 @@ class: inverse, center, middle
 
 - **Interests:** Applications in logistics, manufacturing, occupational safety & portfolios.  
 
-- **Collaborations with:** Aflac, GE Research, IBM Research, JB Hunt, & Tennibot
+- **Collaborations with:** Aflac, GE Research, Gore, IBM Research, & Tennibot
 
 ```{r my_map, echo=FALSE, out.width='100%', fig.alt="My journey with data driven decisions.", fig.align='center', fig.cap='My journey with data-driven decision making.'}
 knitr::include_graphics("figures/map.JPG") 
@@ -783,7 +788,7 @@ unique_crashes_2021 %>%
 
 # Reveal Patterns: The 1854 Cholera Outbreak
 
-```{r cholera_outbreak, echo=FALSE, fig.cap='The physician John Snow, dealing with a Cholera outbreak plotted the cases on a map of the city (see schematic above).', out.width='35%'}
+```{r cholera_outbreak, echo=FALSE, fig.cap='The physician John Snow, dealing with a Cholera outbreak plotted the cases on a map of the city (see schematic above).', out.width='50%'}
 knitr::include_graphics('figures/cholera.jpg')
 ```
 
@@ -792,9 +797,8 @@ knitr::include_graphics('figures/cholera.jpg')
 <html>
 <hr>
 </html>
-
-**Credits:**  
-- Source: Leskovec, J., Rajaraman, A., & Ullman, J. D. (2020). Mining of Massive Data Sets (Third Edition). Cambridge University Press.  Image is from Chapter 1, which can be accessed [here](http://infolab.stanford.edu/~ullman/mmds/ch1n.pdf).
+  
+Source: Leskovec, J., Rajaraman, A., & Ullman, J. D. (2020). Mining of Massive Data Sets (Third Edition). Cambridge University Press.  Image is from Chapter 1, which can be accessed [here](http://infolab.stanford.edu/~ullman/mmds/ch1n.pdf).
 ]
 
 ---
@@ -827,8 +831,7 @@ knitr::include_graphics("figures/minard.png")
 .pull-left[
 ### Non-Graded Class Activity #5
 
-> _Take 5 minutes to discuss this visualization from the WA Post with a colleague_
-
+.small[
 - Who is the target audience?  
 
 - What is the data represented in this visualization? Be Specific.  
@@ -838,6 +841,7 @@ knitr::include_graphics("figures/minard.png")
 - Do you like/dislike this visualization? Why?  
 
 - Would you do visualization like this for a similar dataset? Why? Why not?
+]
 ]
 
 .pull-right[
@@ -886,9 +890,9 @@ knitr::include_graphics("figures/stock_market.JPG")
 <hr>
 </html>
 
-- **Quote** from Sharda, R., Delen, D., & Turban, E. (2013). Business Intelligence: A managerial perspective on analytics. Prentice Hall Press.    
+**Quote** from Sharda, R., Delen, D., & Turban, E. (2013). Business Intelligence: A managerial perspective on analytics. Prentice Hall Press.    
 
-- **Image Credit:** Joint work with Bin Weng.   
+**Image Credit:** Joint work with Bin Weng.   
 ]
 
 ---
@@ -933,18 +937,22 @@ By now, you should be able to do the following:
 
 - Go over your notes and complete [Assignment 01](https://miamioh.instructure.com/courses/167290/quizzes/448578) on Canvas.  
 
-- You are highly encouraged to read through the following references in preparation of our next class. 
+- Rread through the following references in preparation of our next class. 
 
 .pull-left[
-.center[[<img src="https://d33wubrfki0l68.cloudfront.net/b88ef926a004b0fce72b2526b0b5c4413666a4cb/24a30/cover.png" height="275px">](https://r4ds.had.co.nz)]
+.center[[<img src="https://d33wubrfki0l68.cloudfront.net/b88ef926a004b0fce72b2526b0b5c4413666a4cb/24a30/cover.png" height="250px">](https://r4ds.had.co.nz)]
+.small[
 * [Workflow: basics](https://r4ds.had.co.nz/workflow-basics.html)
 * [Workflow: scripts](https://r4ds.had.co.nz/workflow-scripts.html)
 * [Workflow: project](https://r4ds.had.co.nz/workflow-projects.html)
 ]
+]
 .pull-right[
-.center[[<img src="https://d33wubrfki0l68.cloudfront.net/565916198b0be51bf88b36f94b80c7ea67cafe7c/7f70b/cover.png" height="275px">](https://adv-r.hadley.nz)]
+.center[[<img src="https://d33wubrfki0l68.cloudfront.net/565916198b0be51bf88b36f94b80c7ea67cafe7c/7f70b/cover.png" height="250px">](https://adv-r.hadley.nz)]
+.small[
 * [Names and values](https://adv-r.hadley.nz/names-values.html)
 * [Vectors](https://adv-r.hadley.nz/vectors-chap.html)
 * [Subsetting](https://adv-r.hadley.nz/subsetting.html)
+]
 ]
 

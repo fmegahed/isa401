@@ -5,6 +5,7 @@
     <meta charset="utf-8" />
     <meta name="author" content=" Fadel M. Megahed, PhD    Associate Professor   Department of Information Systems and Analytics   Farmer School of Business  Miami University  Twitter: FadelMegahed  GitHub: fmegahed  Email: fmegahed@miamioh.edu  Office Hours: Automated Scheduler for Virtual Office Hours  " />
     <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
     <link href="libs/tile-view/tile-view.css" rel="stylesheet" />
     <script src="libs/tile-view/tile-view.js"></script>
     <link href="libs/animate.css/animate.xaringan.css" rel="stylesheet" />
@@ -12,12 +13,15 @@
     <script src="libs/xaringanExtra_fit-screen/fit-screen.js"></script>
     <link href="libs/panelset/panelset.css" rel="stylesheet" />
     <script src="libs/panelset/panelset.js"></script>
-    <script type="application/json" id="xaringanExtra-editable-docid">{"id":"ed8d62bcc8cb4def9f549119d54d9511","expires":14}</script>
+    <script type="application/json" id="xaringanExtra-editable-docid">{"id":"x16af91af36841aea4e8b850e8a61fc8","expires":14}</script>
     <script src="libs/himalaya/himalaya.js"></script>
     <script src="libs/js-cookie/js.cookie.js"></script>
     <link href="libs/editable/editable.css" rel="stylesheet" />
     <script src="libs/editable/editable.js"></script>
     <script src="libs/clipboard/clipboard.min.js"></script>
+    <link href="libs/xaringanExtra-clipboard/xaringanExtra-clipboard.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-clipboard/xaringanExtra-clipboard.js"></script>
+    <script>window.xaringanExtraClipboard(null, {"button":"Copy Code","success":"Copied!","error":"Press Ctrl+C to Copy"})</script>
     <link href="libs/shareon/shareon.min.css" rel="stylesheet" />
     <script src="libs/shareon/shareon.min.js"></script>
     <link href="libs/xaringanExtra-shareagain/shareagain.css" rel="stylesheet" />
@@ -30,14 +34,9 @@
     <link href="libs/xaringanExtra-search/search.css" rel="stylesheet" />
     <script src="libs/xaringanExtra-search/search.js"></script>
     <script>window.addEventListener('load', function() { window.xeSearch = new RemarkSearch({"position":"bottom-left","caseSensitive":false,"showIcon":false,"autoSearch":true}) })</script>
-    <script src="libs/fabric/fabric.min.js"></script>
-    <link href="libs/xaringanExtra-scribble/scribble.css" rel="stylesheet" />
-    <script src="libs/xaringanExtra-scribble/scribble.js"></script>
-    <script>document.addEventListener('DOMContentLoaded', function() { window.xeScribble = new Scribble({"pen_color":["#FF0000"],"pen_size":3,"eraser_size":30,"palette":[]}) })</script>
     <link href="libs/countdown/countdown.css" rel="stylesheet" />
     <script src="libs/countdown/countdown.js"></script>
-    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
-    <link rel="stylesheet" href="css/my-fonts.css" type="text/css" />
+    <link rel="stylesheet" href="css/fonts.css" type="text/css" />
     <link rel="stylesheet" href="css/my-theme.css" type="text/css" />
   </head>
   <body>
@@ -88,7 +87,7 @@ class: inverse, center, middle
 .pull-right[
 ## .center[.large[.large[.large[🍅]]]]
 * Fresh, interesting, challenging 
-* Impactful and sometimes locally collected
+* Impactful
 * Examples: [Cincinnati Open Data Portal](https://data.cincinnati-oh.gov/), 
 [Ohio Data Portal](https://data.ohio.gov/wps/portal/gov/data/), [US Government's Open Data](https://www.data.gov/).
 ]
@@ -99,10 +98,9 @@ class: inverse, center, middle
 &lt;hr&gt;
 &lt;/html&gt;
 
-**Footnotes:**  
--  While the highly processed data can be useful in learning basic concepts, **real-world (often messy)** data real are much interesting to work with -- **e.g.,  we can make useful &amp; meaningful decision from the data.** In this class, we will learn how to scrape, extract and clean messy data in addition to visualizing clean[ed] data.   
+While the highly processed data can be useful in learning basic concepts, **real-world (often messy)** data real are much interesting to work with -- **e.g.,  we can make useful &amp; meaningful decision from the data.** In this class, we will learn how to scrape, extract and clean messy data in addition to visualizing clean[ed] data.   
 
-- Source: Slide inspired by [Kia Ora's What I mean by "data"](https://stats220.earo.me/01-intro.html#6). 
+Source: Slide inspired by [Kia Ora's What I mean by "data"](https://stats220.earo.me/01-intro.html#6). 
 ]
 
 
@@ -112,7 +110,7 @@ class: inverse, center, middle
 
 ### Non-Graded Class Activity # 1
 
-<div class="countdown" id="timer_61eab659" style="top:0;right:0;font-size:2em;" data-warnwhen="0">
+<div class="countdown" id="timer_61ead9d0" style="top:0;right:0;font-size:2em;" data-warnwhen="0">
 <code class="countdown-time"><span class="countdown-digits minutes">05</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
 </div>
 
@@ -164,11 +162,12 @@ dim(crashes)
 
 # The Analytics Journey: Descriptive [1]
 
-- **Descriptive Analytics:** where one attempts to **understand** the data through **descriptive statistics** and **visualizations**.
+**Descriptive Analytics:** where one attempts to **understand** the data through **descriptive statistics** and **visualizations**.
 
 ### Descriptive Statistics for 2 Categorical Variables
 
 
+.small[
 
 
 ```
@@ -191,11 +190,14 @@ dim(crashes)
 ##                                    41                                     2
 ```
 
+]
+
+
 ---
 
 # The Analytics Journey: Descriptive [2]
 
-- **Descriptive Analytics:** where one attempts to **understand** the data through **descriptive statistics** and **visualizations**.
+**Descriptive Analytics:** where one attempts to **understand** the data through **descriptive statistics** and **visualizations**.
 
 ### A Simple Visualization - A Bar Chart of Crashes Per Day
 
@@ -205,7 +207,7 @@ dim(crashes)
 
 # The Analytics Journey: Descriptive [3]
 
-- **Descriptive Analytics:** where one attempts to **understand** the data through **descriptive statistics** and **visualizations**.
+**Descriptive Analytics:** where one attempts to **understand** the data through **descriptive statistics** and **visualizations**.
 
 &lt;img src="01_Introduction_files/figure-html/viz2a-1.png" style="display: block; margin: auto;" /&gt;
 
@@ -214,13 +216,13 @@ dim(crashes)
 
 # The Analytics Journey: Descriptive [4]
 
-- **Descriptive Analytics:** where one attempts to **understand** the data through **descriptive statistics** and **visualizations**.
+**Descriptive Analytics:** where one attempts to **understand** the data through **descriptive statistics** and **visualizations**.
 
 
 
 
+&lt;img src="figures/crash_anim.gif" style="display: block; margin: auto;" /&gt;
 
-![](figures/crash_anim.gif)
 
 
 
@@ -228,7 +230,7 @@ dim(crashes)
 
 # The Analytics Journey: Descriptive [5]
 
-<div class="countdown" id="timer_61eab708" style="top:0;right:0;font-size:2em;" data-warnwhen="0">
+<div class="countdown" id="timer_61ead8bc" style="top:0;right:0;font-size:2em;" data-warnwhen="0">
 <code class="countdown-time"><span class="countdown-digits minutes">03</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
 </div>
 
@@ -262,9 +264,7 @@ dim(crashes)
 ]
 
 
-
 ---
-
 
 
 
@@ -272,20 +272,27 @@ dim(crashes)
 
 # The Analytics Journey: Predictive [1]
 
-- **Predictive Analytics:** where **statistical** and **machine learning** models are used to help us utilize indepedent variable[s] to predict an outcome variable of choice (which can be binary/dichotomous, multinomial/multi-class, or continous).  
-
-  * From my teaching/research/consulting experience, **many** consider this component to be the 🍰 aspect of the analytics journey.  
+**Predictive Analytics:** where **statistical** and **machine learning** models are used to help us utilize independent variable[s] to predict an outcome variable of choice.   
+  * **Many** consider this component to be the 🍰 aspect of the analytics journey.  
   
-  * That being said, your success in this stage is **hinged on having**:  
+  * IMO, this is not always true, but your success in this stage is **hinged on**:  
       + **Correct** ✅ data, i.e.,   
-          - *Do you actually capture the important predictors as potential independent variables?*  
+          - *Do you actually capture the important predictors?*  
           - *Is your data aggregated to the right level?*  
       + **Cleaned** 🛀 data, i.e.,   
           - *Is your data tidy?*   
           - *Is your data technically correct?* 
-          - *Is your data consistent?* 
+          - *Is your data consistent?*   
           
-  * With the above constraints/setup, now you can explore how to model the data using statistical and machine learning models? **Some recommendations:**  
+---
+
+# The Analytics Journey: Predictive [2]
+
+**Predictive Analytics:** where **statistical** and **machine learning** models are used to help us utilize independent variable[s] to predict an outcome variable of choice.   
+          
+  * With the aforementioned constraints/setup, now you can explore how to model the data using statistical and machine learning models? 
+  
+  * **Some recommendations:**  
       + Start with the simplest (which is also often the most easy-to-explain) model first.  
       + If you are happy with the predictive performance (i.e., no gains would be of practical benefit), you are done 👏.  
       + If not, ↩️ and try other models. 
@@ -293,27 +300,24 @@ dim(crashes)
 
 ---
 
-# The Analytics Journey: Predictive [2]
+# The Analytics Journey: Predictive [3]
 
-- **Predictive Analytics:** where **statistical** and **machine learning** models are used to help us utilize indepedent variable[s] to predict an outcome variable of choice (which can be binary/dichotomous, multinomial/multi-class, or continous).  **For two transportation safety examples, see:** 
+**Predictive Analytics:** where **statistical** and **machine learning** models are used to help us utilize indepedent variable[s] to predict an outcome variable.
 
-&lt;img src="figures/cai_2021.png" width="50%" /&gt;&lt;img src="figures/mehdizadeh_2021.png" width="50%" /&gt;
+&lt;img src="figures/cai_2021.png" width="50%" height="50%" /&gt;&lt;img src="figures/mehdizadeh_2021.png" width="50%" height="50%" /&gt;
 
 
 ---
 
 # The Analytics Journey: Prescriptive [1]
 
-- **Prescriptive Analytics:** where **mathematical models** are used to make recommendations for business actions.  
+ **Prescriptive Analytics:** where **mathematical models** are used to make recommendations for business actions.  
 
-- Recall that our **overarching goal** behind data/business analytics, is to **make informed decisions based on what we have learned from the data**. Hence, this stage is where we build on what we learned during the *descriptive* and *predictive* stages to make more informed decisions.  
+- Our **overarching goal** behind data/business analytics, is to **make informed decisions based on what we have learned from the data**. Hence, this stage is where we build on what we learned during the *descriptive* and *predictive* stages to make more informed decisions.  
 
-- Now imagine that you are a large trucking company (e.g., Amazon, Fedex, JB Hunt, etc), and you have models that show **both**:   
-    * The factors that your on-board sensors capture driving safety critical events that are associated with crashes.  
-    * You have a reasonable model that helps you predict the occurrence of safety critical events as a function of:  
-        + Driver characteristics  
-        + Weather conditions 
-        + Traffic conditions  
+- Imagine that you are a large trucking company (e.g., Amazon, Fedex, JB Hunt), and you have models that show **both**:   
+    * Safety critical events that are associated with crashes.  
+    * The occurrence of safety critical events can be reasonably predicted as a function of:  (a) driver characteristics, (b) weather conditions, and (c) Traffic conditions.  
 
 - **As a business analyst, what two reasonable questions would you attempt to approach/optimize for?**  
 
@@ -321,11 +325,11 @@ dim(crashes)
 
 # The Analytics Journey: Prescriptive [2]
 
-- **Prescriptive Analytics:** where **mathematical models** are used to make recommendations for business actions.  
+**Prescriptive Analytics:** where **mathematical models** are used to make recommendations for business actions.  
 
 ### Non-Graded Class Activity # 3
 
-<div class="countdown" id="timer_61eab6bf" style="top:0;right:0;font-size:2em;" data-warnwhen="0">
+<div class="countdown" id="timer_61ead7d0" style="top:0;right:0;font-size:2em;" data-warnwhen="0">
 <code class="countdown-time"><span class="countdown-digits minutes">03</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
 </div>
 
@@ -425,18 +429,15 @@ When I have designed this course, I have incorporated a lot of feedback from **i
 
 ### Non-Graded Class Activity # 4
 
-<div class="countdown" id="timer_61eaba53" style="top:0;right:0;font-size:2em;" data-warnwhen="0">
+<div class="countdown" id="timer_61ead83f" style="top:0;right:0;font-size:2em;" data-warnwhen="0">
 <code class="countdown-time"><span class="countdown-digits minutes">04</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
 </div>
-
-&gt; _Take 4 minutes to pinpoint the **skills and qualifications that you have prior to taking this class**, and **document what you will learn in this course to make you more competitive**._  
-
-
 
 .panelset[
 
 .panel[.panel-name[Activity]
 
+.small[
 To demonstrate the practicality of this course, let us consider [this job ad](https://www.indeed.com/viewjob?jk=77f4cf1687882e41&amp;tk=1eff1eg1op7cg800&amp;from=serp&amp;vjs=3).  
 - Please open the Data Scientist (6257U) - CED Data Scientist position at UC - Berkeley by clicking [here](https://www.indeed.com/viewjob?jk=77f4cf1687882e41&amp;tk=1eff1eg1op7cg800&amp;from=serp&amp;vjs=3).  
 
@@ -445,6 +446,7 @@ To demonstrate the practicality of this course, let us consider [this job ad](ht
 - Read through the required qualifications. 
 
 - **Document what you will learn in this course to make you more competitive.**
+]
 ]
 
 .panel[.panel-name[Documentation Space]
@@ -499,7 +501,7 @@ class: inverse, center, middle
 
 - **Interests:** Applications in logistics, manufacturing, occupational safety &amp; portfolios.  
 
-- **Collaborations with:** Aflac, GE Research, IBM Research, JB Hunt, &amp; Tennibot
+- **Collaborations with:** Aflac, GE Research, Gore, IBM Research, &amp; Tennibot
 
 &lt;div class="figure" style="text-align: center"&gt;
 &lt;img src="figures/map.JPG" alt="My journey with data driven decisions." width="100%" /&gt;
@@ -603,7 +605,7 @@ Data visualization involves **presenting data in a graphical format**. It is rea
 # Reveal Patterns: The 1854 Cholera Outbreak
 
 &lt;div class="figure" style="text-align: center"&gt;
-&lt;img src="figures/cholera.jpg" alt="The physician John Snow, dealing with a Cholera outbreak plotted the cases on a map of the city (see schematic above)." width="35%" /&gt;
+&lt;img src="figures/cholera.jpg" alt="The physician John Snow, dealing with a Cholera outbreak plotted the cases on a map of the city (see schematic above)." width="50%" /&gt;
 &lt;p class="caption"&gt;The physician John Snow, dealing with a Cholera outbreak plotted the cases on a map of the city (see schematic above).&lt;/p&gt;
 &lt;/div&gt;
 
@@ -612,9 +614,8 @@ Data visualization involves **presenting data in a graphical format**. It is rea
 &lt;html&gt;
 &lt;hr&gt;
 &lt;/html&gt;
-
-**Credits:**  
-- Source: Leskovec, J., Rajaraman, A., &amp; Ullman, J. D. (2020). Mining of Massive Data Sets (Third Edition). Cambridge University Press.  Image is from Chapter 1, which can be accessed [here](http://infolab.stanford.edu/~ullman/mmds/ch1n.pdf).
+  
+Source: Leskovec, J., Rajaraman, A., &amp; Ullman, J. D. (2020). Mining of Massive Data Sets (Third Edition). Cambridge University Press.  Image is from Chapter 1, which can be accessed [here](http://infolab.stanford.edu/~ullman/mmds/ch1n.pdf).
 ]
 
 ---
@@ -634,7 +635,7 @@ Data visualization involves **presenting data in a graphical format**. It is rea
 
 # Communicate Ideas
 
-<div class="countdown" id="timer_61eabad0" style="top:0;right:0;font-size:2em;" data-warnwhen="0">
+<div class="countdown" id="timer_61ead62b" style="top:0;right:0;font-size:2em;" data-warnwhen="0">
 <code class="countdown-time"><span class="countdown-digits minutes">05</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
 </div>
 
@@ -645,8 +646,7 @@ Data visualization involves **presenting data in a graphical format**. It is rea
 .pull-left[
 ### Non-Graded Class Activity #5
 
-&gt; _Take 5 minutes to discuss this visualization from the WA Post with a colleague_
-
+.small[
 - Who is the target audience?  
 
 - What is the data represented in this visualization? Be Specific.  
@@ -656,6 +656,7 @@ Data visualization involves **presenting data in a graphical format**. It is rea
 - Do you like/dislike this visualization? Why?  
 
 - Would you do visualization like this for a similar dataset? Why? Why not?
+]
 ]
 
 .pull-right[
@@ -700,9 +701,9 @@ By analyzing ... data, situations, and performances, decision makers get valuabl
 &lt;hr&gt;
 &lt;/html&gt;
 
-- **Quote** from Sharda, R., Delen, D., &amp; Turban, E. (2013). Business Intelligence: A managerial perspective on analytics. Prentice Hall Press.    
+**Quote** from Sharda, R., Delen, D., &amp; Turban, E. (2013). Business Intelligence: A managerial perspective on analytics. Prentice Hall Press.    
 
-- **Image Credit:** Joint work with Bin Weng.   
+**Image Credit:** Joint work with Bin Weng.   
 ]
 
 ---
@@ -745,19 +746,23 @@ By now, you should be able to do the following:
 
 - Go over your notes and complete [Assignment 01](https://miamioh.instructure.com/courses/167290/quizzes/448578) on Canvas.  
 
-- You are highly encouraged to read through the following references in preparation of our next class. 
+- Rread through the following references in preparation of our next class. 
 
 .pull-left[
-.center[[&lt;img src="https://d33wubrfki0l68.cloudfront.net/b88ef926a004b0fce72b2526b0b5c4413666a4cb/24a30/cover.png" height="275px"&gt;](https://r4ds.had.co.nz)]
+.center[[&lt;img src="https://d33wubrfki0l68.cloudfront.net/b88ef926a004b0fce72b2526b0b5c4413666a4cb/24a30/cover.png" height="250px"&gt;](https://r4ds.had.co.nz)]
+.small[
 * [Workflow: basics](https://r4ds.had.co.nz/workflow-basics.html)
 * [Workflow: scripts](https://r4ds.had.co.nz/workflow-scripts.html)
 * [Workflow: project](https://r4ds.had.co.nz/workflow-projects.html)
 ]
+]
 .pull-right[
-.center[[&lt;img src="https://d33wubrfki0l68.cloudfront.net/565916198b0be51bf88b36f94b80c7ea67cafe7c/7f70b/cover.png" height="275px"&gt;](https://adv-r.hadley.nz)]
+.center[[&lt;img src="https://d33wubrfki0l68.cloudfront.net/565916198b0be51bf88b36f94b80c7ea67cafe7c/7f70b/cover.png" height="250px"&gt;](https://adv-r.hadley.nz)]
+.small[
 * [Names and values](https://adv-r.hadley.nz/names-values.html)
 * [Vectors](https://adv-r.hadley.nz/vectors-chap.html)
 * [Subsetting](https://adv-r.hadley.nz/subsetting.html)
+]
 ]
 
     </textarea>

@@ -5,7 +5,7 @@ author: "<br>Fadel M. Megahed, PhD <br><br> Associate Professor <br> Department 
 date: "Spring 2022"
 output:
   xaringan::moon_reader:
-    css: ["xaringan-themer.css", "css/my-fonts.css", "css/my-theme.css"]
+    css: [default, "css/fonts.css", "css/my-theme.css"]
     lib_dir: libs
     nature:
       highlightStyle: github
@@ -41,10 +41,8 @@ if(require(urbnmapr)==FALSE) devtools::install_github('UrbanInstitute/urbnmapr')
 
 pacman::p_load(tidyverse, magrittr, lubridate, janitor, # data analysis pkgs
                DataExplorer, scales, plotly, calendR, pdftools, # plots
-               tmap, sf, urbnmapr, tigris, # maps
-               bibliometrix, # for bibliometric analysis of my papers
                gifski, av, # for animations
-               emojifont, RefManageR, xaringanExtra, countdown) # for slides
+               fontawesome, RefManageR, xaringanExtra, countdown) # for slides
 
 BibOptions(check.entries = FALSE, bib.style = "authoryear", 
            style = "markdown", dashed = TRUE)
@@ -59,9 +57,22 @@ library(xaringanthemer)
 style_mono_accent(base_color = "#84d6d3",
                   base_font_size = "20px")
 
-xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "tachyons", "panelset", "broadcast", "share_again", "scribble", "search", "fit_screen"))
+xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "tachyons", "panelset", "broadcast", "share_again", "search", "fit_screen", "editable"))
 
 ```
+
+
+# Quick Refresher from Last Class
+
+`r emo::ji("check")` Describe course objectives & structure  
+
+`r emo::ji("check")` Define data visualization & describe its main goals  
+
+`r emo::ji("check")` Describe the BI methodology and major concepts  
+
+
+
+---
 
 
 # Learning Objectives for Today's Class
