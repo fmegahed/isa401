@@ -40,7 +40,7 @@ h1, h2, h3 {
 /* change the line spread for readability
    and so that inline code highlighting 
    doesn't cover text on the line above */
-.remark-slide-content { font-size:24px; }
+.remark-slide-content { font-size:24px}
 .remark-slide-content p, 
 .remark-slide-content li {
   line-height: 1.4;
@@ -131,3 +131,18 @@ h1, h2, h3 {
 
 .bold { font-weight: bold; }
 .bolder { font-weight: bolder; }
+
+* Container holding the image and the text */
+.container {
+  position: relative;
+  text-align: center;
+  color: white;
+}
+
+/* Bottom left text */
+.bottom-left {
+  position: absolute;
+  bottom: 8px;
+  left: 16px;
+}
+

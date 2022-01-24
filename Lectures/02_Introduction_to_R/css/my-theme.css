@@ -58,7 +58,7 @@ a:active {
 }
 
 .remark-code-line-highlighted { 
-  background-color: #84d6d3; 
+  background-color: #ffdf65; 
 }
 
 .inverse {
@@ -104,12 +104,23 @@ a:active {
   clear: both;
 }
 
+.pull-left-2 {
+  float: left;
+  width: 60%;
+}
+.pull-right-2 {
+  float: right;
+  width: 36%;
+}
+
+
 img, video, iframe {
   max-width: 100%;
 }
 blockquote {
-  border-left: solid 5px lightgray;
+  border-left: solid 5px #C3142D;
   padding-left: 1em;
+  background: #f9f9f9;
 }
 table {
   margin: auto;
@@ -179,3 +190,15 @@ li::marker {
 b, strong {
    color: #c3142d;
    }
+   
+
+.center-left {
+  position:          relative;
+  top:               50%;
+  transform:         translateY(50%);
+}
+.center-right {
+  position:          relative;
+  top:               50%;
+  transform:         translateY(50%);
+}

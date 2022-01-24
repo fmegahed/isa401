@@ -108,8 +108,9 @@ img, video, iframe {
   max-width: 100%;
 }
 blockquote {
-  border-left: solid 5px lightgray;
+  border-left: solid 5px #C3142D;
   padding-left: 1em;
+  background: #f9f9f9;
 }
 table {
   margin: auto;
