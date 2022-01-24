@@ -4,7 +4,8 @@ subtitle: "02: Introduction to R"
 author: "<br>Fadel M. Megahed, PhD <br><br> Associate Professor <br> Department of Information Systems and Analytics <br> Farmer School of Business<br> Miami University<br><br>Twitter: [FadelMegahed](www.twitter.com/FadelMegahed/)<br> <i class='fa-brands fa-github'></i> [fmegahed](https://github.com/fmegahed)<br> Email: [fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> Office Hours: [Automated Scheduler for Virtual Office Hours](https://calendly.com/fmegahed)<br><br>"
 date: "Spring 2022"
 output:
-  xaringan::moon_reader:
+  xaringan::moon_reader:  
+    self_contained: true
     css: [default, "css/fonts.css", "css/my-theme.css", "css/my-theme.css","https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"]
     lib_dir: libs
     nature:
@@ -126,7 +127,7 @@ knitr::include_graphics('figures/cases.PNG')
 
 .pull-left-2[
 ```{r cases_viz2, echo=FALSE, fig.height=2}
-knitr::include_graphics('figures/cases.png')
+knitr::include_graphics('figures/cases.PNG')
 ```
 ]
 
