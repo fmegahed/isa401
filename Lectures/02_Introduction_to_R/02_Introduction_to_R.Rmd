@@ -1,11 +1,10 @@
 ---
 title: "ISA 401: Business Intelligence & Data Visualization"
 subtitle: "02: Introduction to R"
-author: "<br>Fadel M. Megahed, PhD <br><br> Associate Professor <br> Department of Information Systems and Analytics <br> Farmer School of Business<br> Miami University<br><br>Twitter: [FadelMegahed](www.twitter.com/FadelMegahed/)<br> <i class='fa-brands fa-github'></i> [fmegahed](https://github.com/fmegahed)<br> Email: [fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> Office Hours: [Automated Scheduler for Virtual Office Hours](https://calendly.com/fmegahed)<br><br>"
+author: "<br>Fadel M. Megahed, PhD <br><br> Associate Professor <br> Department of Information Systems and Analytics <br> Farmer School of Business<br> Miami University<br><br>Twitter: [FadelMegahed](www.twitter.com/FadelMegahed/)<br> GitHub: [fmegahed](https://github.com/fmegahed)<br> Email: [fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> Office Hours: [Automated Scheduler for Virtual Office Hours](https://calendly.com/fmegahed)<br><br>"
 date: "Spring 2022"
 output:
   xaringan::moon_reader:  
-    self_contained: true
     css: [default, "css/fonts.css", "css/my-theme.css", "css/my-theme.css","https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"]
     lib_dir: libs
     nature:
@@ -260,12 +259,17 @@ crashes =
 ]
 .right-column[
 ### `r emo::ji("package")` {memer} for generating memes in `r fontawesome::fa("r-project")`
-```{r memer, out.width='50%'}
+```{r memer1, eval=FALSE}
 meme_get("SuccessKid") %>% 
   meme_text_top("I WAS WORRIED \n ABOUT ISA 401") %>% 
   meme_text_bottom("But IT WILL BE A \n GREAT LEARNING EXPERIENCE")
 ```
 ]
+
+```{r memer2, echo=FALSE, out.width='37%'}
+knitr::include_graphics("figures/401_meme.png")
+```
+
 
 ---
 
@@ -350,15 +354,12 @@ meme_get("SuccessKid") %>%
 * [flexdashboard](https://pkgs.rstudio.com/flexdashboard/) is an `r fontawesome::fa("r-project")` package that makes it easy to build interactive web apps straight from R Markdown.
 
 .center[
-```{r flexdashboard, echo=FALSE}
-knitr::include_url("http://rstudio.fsb.miamioh.edu:3838/megahefm/isa444/class28/")
+```{r flexdashboard, echo=FALSE, out.width=800, out.height=350}
+knitr::include_url("https://beta.rstudioconnect.com/jjallaire/htmlwidgets-showcase-storyboard/htmlwidgets-showcase-storyboard.html")
 ```
 ]
 ]
 
-???
-
-* A shiny dashboard dev by ministry of business, innovation & employment
 
 
 ---
@@ -1190,6 +1191,7 @@ last(temp_high_forecast)
 ```
 ]
 .pull-right[
+<br>
 <br>
 <br>
 <br>
