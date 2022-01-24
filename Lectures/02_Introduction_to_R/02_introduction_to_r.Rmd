@@ -354,9 +354,7 @@ knitr::include_graphics("figures/401_meme.png")
 * [flexdashboard](https://pkgs.rstudio.com/flexdashboard/) is an `r fontawesome::fa("r-project")` package that makes it easy to build interactive web apps straight from R Markdown.
 
 .center[
-```{r flexdashboard, echo=FALSE, out.width=800, out.height=350}
-knitr::include_url("https://beta.rstudioconnect.com/jjallaire/htmlwidgets-showcase-storyboard/htmlwidgets-showcase-storyboard.html")
-```
+[![](figures/flexdashboard.PNG)](https://beta.rstudioconnect.com/jjallaire/htmlwidgets-showcase-storyboard/htmlwidgets-showcase-storyboard.html)
 ]
 ]
 
