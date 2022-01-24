@@ -103,7 +103,7 @@ Based on the visualization below,  the map from the New York Times ([Coronavirus
 
 .pull-left-2[
 ```{r cases_viz1, echo=FALSE, fig.height=2.5}
-knitr::include_graphics('figures/cases.png')
+knitr::include_graphics('figures/cases.PNG')
 ```
 ]
 
@@ -424,7 +424,7 @@ live
 
 .pull-left[
 Go to **Tools** > **Global Options**:
-.center[<img src="figures/rstudio-setup.png" width="100%">]
+.center[<img src="figures/rstudio-setup.PNG" width="100%">]
 ]
 .pull-right[
 <br>
@@ -440,7 +440,7 @@ Uncheck `Workspace` and `History`, which helps to keep `r fontawesome::fa("r-pro
 
 > Over the next 2 minutes, change the RStudio appearance up to your taste
 
-.center[<img src="figures/rstudio-appearance.png" width = "42%">]
+.center[<img src="figures/rstudio-appearance.PNG" width = "42%">]
 
 `r countdown(minutes = 2, seconds = 0, top = 0, font_size = "2em")`
 
@@ -505,8 +505,8 @@ rm(list = ls())
 ]
 .pull-right-2[
 .center[<img src="figures/rstudio-proj1.png" width = "60%">]
-.center[<img src="figures/rstudio-proj2.png" width = "60%">]
-.center[<img src="figures/rstudio-proj3.png" width = "60%">]
+.center[<img src="figures/rstudio-proj2.PNG" width = "60%">]
+.center[<img src="figures/rstudio-proj3.PNG" width = "60%">]
 ]
 
 
@@ -695,7 +695,7 @@ If we focus on the obtained outputs, we can see that **both** are vectors:
 .center[<img src="https://d33wubrfki0l68.cloudfront.net/2ff3a6cebf1bb80abb2a814ae1cfc67b12817713/ae848/diagrams/vectors/summary-tree.png" width="100%">]
 
 ```{r attributes}
-class(x)
+class(x_vec)
 ```
 ]
 
@@ -717,7 +717,7 @@ class(x)
 
 .pull-right[
 ```{r dim_x}
-dim(x) 
+dim(x_vec) 
 ```
 
 **Atomic vectors have a dim of NULL, which distinguishes it from 1D arrays `r emo::ji('shocked')`!!!**
@@ -740,7 +740,7 @@ dim(x)
 - To check the **type of** an object in `r fontawesome::fa("r-project")`, you can use the function `typeof`:
 
 ```{r type_of}
-typeof(x)
+typeof(x_vec)
 ```
 
 .footnote[
