@@ -1194,7 +1194,7 @@ last(temp_high_forecast)
 <br>
 <br>
 .center[
-<img src="figures/install-library.JPG" height="250px">
+<img src="https://raw.githubusercontent.com/STATS-UOA/stats220/master/lectures/img/install-library.JPG" height="240px">
 ]
 ]
 
