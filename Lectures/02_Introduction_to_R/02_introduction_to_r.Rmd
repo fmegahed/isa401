@@ -71,86 +71,8 @@ xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "tachyons", "pan
 
 `r emo::ji("check")` Define data visualization & describe its main goals  
 
-`r emo::ji("check")` Describe the BI methodology and major concepts  
+`r emo::ji("x")` Describe the BI methodology and major concepts  
 
-
----
-
-# Going Over Assignment 01 Solutions
-
-.panelset[
-
-.panel[.panel-name[Q1]
-
-.small[The purpose(s) of data visualization is(are) to:  
-
-`r emo::ji("check")` Record information  
-
-`r emo::ji("check")` Analyze data to support reasoning  
-
-`r emo::ji("check")` Communicate ideas to others  
-
-`r emo::ji("check")` Interact with the data
-
-]
-]
-
-
-.panel[.panel-name[Q2]
-
-.small[
-Based on the visualization below,  the map from the New York Times ([Coronavirus U.S. Cases Per Capita](https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html?amp;amp;pgtype=Homepage)) contains which of the following variables (select all that apply):  
-
-.pull-left-2[
-```{r cases_viz1, echo=FALSE, fig.height=2.5}
-knitr::include_graphics('figures/cases.PNG')
-```
-]
-
-.pull-right-2[
-`r emo::ji("x")` color
-
-`r emo::ji("check")` coronavirus cases per county   
-
-`r emo::ji("check")` U.S. counties 
-]
-
-]
-]
-
-
-.panel[.panel-name[Q3]
-
-.small[
-**TRUE/FALSE:** Based on the visualization below,  the map from the New York Times ([Coronavirus U.S. Cases Per Capita](https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html?amp;amp;pgtype=Homepage)), the map is encoding the counties using color.  
-
-.pull-left-2[
-```{r cases_viz2, echo=FALSE, fig.height=2}
-knitr::include_graphics('figures/cases.PNG')
-```
-]
-
-.pull-right-2[
-This is `r emo::ji("x")`. **Let us discuss why**. 
-]
-
-]
-]
-
-
-.panel[.panel-name[Q4]
-
-.small[
-**TRUE/FALSE:** Actionable intelligence is the primary goal of modern-day Business Intelligence (BI) systems vs. historical reporting that characterized Management Information Systems (MIS).   
-
-This is `r emo::ji("check")`. 
-]
-]
-
-
-
-
-]
 
 
 
@@ -1033,7 +955,7 @@ x_char[1:2, 2:3] # subsetting #<<
 
 .center[<img src="https://d33wubrfki0l68.cloudfront.net/9ec5e1f8982238a413847eb5c9bbc5dcf44c9893/bc590/diagrams/vectors/summary-tree-s3-2.png" width="22%">]
 
-> .font150[If you do data analysis in R, you’re going to be using data frames. A data frame is a named list of vectors with attributes for (column) `names`, `row.names`, and its class, “data.frame”.  -- [Hadley Wickham](https://adv-r.hadley.nz/vectors-chap.html#list-array)]
+> .font150[If you do data analysis in R, you’re going to be using data frames. A data frame is a named list of vectors with attributes for `(column)` `names`, `row.names`, and its class, “data.frame”.  -- [Hadley Wickham](https://adv-r.hadley.nz/vectors-chap.html#list-array)]
 
 .footnote[
 <html>
