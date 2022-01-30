@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>ISA 401: Business Intelligence &amp; Data Visualization</title>
+    <meta charset="utf-8" />
+    <meta name="author" content=" Fadel M. Megahed, PhD    Associate Professor   Department of Information Systems and Analytics   Farmer School of Business  Miami University  Twitter: FadelMegahed  GitHub: fmegahed  Email: fmegahed@miamioh.edu  Office Hours: Automated Scheduler for Virtual Office Hours  " />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/tile-view/tile-view.css" rel="stylesheet" />
+    <script src="libs/tile-view/tile-view.js"></script>
+    <link href="libs/animate.css/animate.xaringan.css" rel="stylesheet" />
+    <link href="libs/tachyons/tachyons.min.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra_fit-screen/fit-screen.js"></script>
+    <link href="libs/panelset/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset/panelset.js"></script>
+    <script type="application/json" id="xaringanExtra-editable-docid">{"id":"d4dd70a4490641e193220731088643aa","expires":14}</script>
+    <script src="libs/himalaya/himalaya.js"></script>
+    <script src="libs/js-cookie/js.cookie.js"></script>
+    <link href="libs/editable/editable.css" rel="stylesheet" />
+    <script src="libs/editable/editable.js"></script>
+    <script src="libs/clipboard/clipboard.min.js"></script>
+    <link href="libs/shareon/shareon.min.css" rel="stylesheet" />
+    <script src="libs/shareon/shareon.min.js"></script>
+    <link href="libs/xaringanExtra-shareagain/shareagain.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-shareagain/shareagain.js"></script>
+    <script src="libs/peerjs/peerjs.min.js"></script>
+    <script src="libs/tiny.toast/toast.min.js"></script>
+    <link href="libs/xaringanExtra-broadcast/broadcast.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-broadcast/broadcast.js"></script>
+    <script src="libs/mark.js/mark.min.js"></script>
+    <link href="libs/xaringanExtra-search/search.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-search/search.js"></script>
+    <script>window.addEventListener('load', function() { window.xeSearch = new RemarkSearch({"position":"bottom-left","caseSensitive":false,"showIcon":false,"autoSearch":true}) })</script>
+    <link href="libs/countdown/countdown.css" rel="stylesheet" />
+    <script src="libs/countdown/countdown.js"></script>
+    <link rel="stylesheet" href="css/fonts.css" type="text/css" />
+    <link rel="stylesheet" href="css/my-theme.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# ISA 401: Business Intelligence &amp; Data Visualization
+## 03: Importing and Exporting Data in R
+### <br>Fadel M. Megahed, PhD <br><br> Associate Professor <br> Department of Information Systems and Analytics <br> Farmer School of Business<br> Miami University<br><br>Twitter: <a href="www.twitter.com/FadelMegahed/">FadelMegahed</a><br> GitHub: <a href="https://github.com/fmegahed">fmegahed</a><br> Email: <a href="mailto:fmegahed@miamioh.edu">fmegahed@miamioh.edu</a><br> Office Hours: <a href="https://calendly.com/fmegahed">Automated Scheduler for Virtual Office Hours</a><br><br>
+### Spring 2022
+
+---
+
+
+
+
+
+
+
+
+# Quick Refresher from Last Class
+
+✅ Describe how and why we are using R in this course?  
+
+✅ Understand the syntax, data structures and functions  
+
+✅ Utilize the project workflow in R  
+
+---
+
+# Kahoot Competition
+
+To assess your understanding and retention of the topics covered last week, you will **compete in a Kahoot competition (consisting of 8 questions)**:  
+
+- Go to &lt;https://kahoot.it/&gt;  
+
+- Enter the game pin, which will be shown during class
+
+- Provide your first (preferred) and last name
+
+- Answer each question within the allocated 20-second window (**fast and correct answers provide more points**)
+
+&lt;br&gt;
+
+**Winning the competition involves having as many correct answers as possible AND taking the shortest duration to answer these questions.** The winner <svg aria-hidden="true" role="img" viewBox="0 0 576 512" style="height:1em;width:1.12em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:gold;overflow:visible;position:relative;"><path d="M552 64H448V24c0-13.3-10.7-24-24-24H152c-13.3 0-24 10.7-24 24v40H24C10.7 64 0 74.7 0 88v56c0 35.7 22.5 72.4 61.9 100.7 31.5 22.7 69.8 37.1 110 41.7C203.3 338.5 240 360 240 360v72h-48c-35.3 0-64 20.7-64 56v12c0 6.6 5.4 12 12 12h296c6.6 0 12-5.4 12-12v-12c0-35.3-28.7-56-64-56h-48v-72s36.7-21.5 68.1-73.6c40.3-4.6 78.6-19 110-41.7 39.3-28.3 61.9-65 61.9-100.7V88c0-13.3-10.7-24-24-24zM99.3 192.8C74.9 175.2 64 155.6 64 144v-16h64.2c1 32.6 5.8 61.2 12.8 86.2-15.1-5.2-29.2-12.4-41.7-21.4zM512 144c0 16.1-17.7 36.1-35.3 48.8-12.5 9-26.7 16.2-41.8 21.4 7-25 11.8-53.6 12.8-86.2H512v16z"/></svg> of the competition from each section will receive:  $15 <svg aria-hidden="true" role="img" viewBox="0 0 640 512" style="height:1em;width:1.25em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:green;overflow:visible;position:relative;"><path d="M192 384h192c53 0 96-43 96-96h32c70.6 0 128-57.4 128-128S582.6 32 512 32H120c-13.3 0-24 10.7-24 24v232c0 53 43 96 96 96zM512 96c35.3 0 64 28.7 64 64s-28.7 64-64 64h-32V96h32zm47.7 384H48.3c-47.6 0-61-64-36-64h583.3c25 0 11.8 64-35.9 64z"/></svg> gift card. Good luck!!!
+
+.footnote[
+&lt;html&gt;
+&lt;hr&gt;
+&lt;/html&gt;
+
+**P.S:** The Kahoot competition will have **no impact on your grade**. It is a **fun** way of assessing your knowledge, motivating you to ask questions about topics covered that you do not have a full understanding of it, and providing me with some data that I can use to pace today's class. 
+]
+
+---
+
+# Going Over Assignment 01 Solutions
+
+.panelset[
+
+.panel[.panel-name[Q1]
+
+.small[The purpose(s) of data visualization is(are) to:  
+
+✅ Record information  
+
+✅ Analyze data to support reasoning  
+
+✅ Communicate ideas to others  
+
+✅ Interact with the data
+
+]
+]
+
+
+.panel[.panel-name[Q2]
+
+.small[
+Based on the visualization below,  the map from the New York Times ([Coronavirus U.S. Cases Per Capita](https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html?amp;amp;pgtype=Homepage)) contains which of the following variables (select all that apply):  
+
+.pull-left-2[
+&lt;img src="figures/cases.PNG" width="417" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right-2[
+❌ color
+
+✅ coronavirus cases per county   
+
+✅ U.S. counties 
+]
+
+]
+]
+
+
+.panel[.panel-name[Q3]
+
+.small[
+**TRUE/FALSE:** Based on the visualization below,  the map from the New York Times ([Coronavirus U.S. Cases Per Capita](https://www.nytimes.com/interactive/2020/us/coronavirus-us-cases.html?amp;amp;pgtype=Homepage)), the map is encoding the counties using color.  
+
+.pull-left-2[
+&lt;img src="figures/cases.PNG" width="417" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right-2[
+This is ❌. **Let us discuss why**. 
+]
+
+]
+]
+
+
+.panel[.panel-name[Q4]
+
+.small[
+**TRUE/FALSE:** Actionable intelligence is the primary goal of modern-day Business Intelligence (BI) systems vs. historical reporting that characterized Management Information Systems (MIS).   
+
+This is ✅. 
+]
+]
+]
+
+
+
+---
+
+# Learning Objectives for Today's Class
+
+- Subset data in <svg aria-hidden="true" role="img" viewBox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#C3142D;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/></svg>.  
+
+- Read text-files, binary files (e.g., Excel, SAS, SPSS, Stata, etc), json files, etc.  
+
+- Export data from <svg aria-hidden="true" role="img" viewBox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#C3142D;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/></svg>.
+
+
+---
+class: inverse, center, middle
+
+# Subsetting Data
+
+
+---
+
+# Recall: Atomic Vectors (1D)
+
+.center[**Atomic vectors** are 1D data structures in R, where all elements **must have the same type.**]
+
+.pull-left[Since they are **1D data structures**, they are subsetted using `[element_no(s)]`.   
+
+
+```r
+x_vec = rnorm(3)
+x_vec
+```
+
+```
+## [1]  0.1084983 -0.1747757  1.2328518
+```
+
+```r
+x_vec[2]
+```
+
+```
+## [1] -0.1747757
+```
+
+```r
+x_vec[c(1,3)]
+```
+
+```
+## [1] 0.1084983 1.2328518
+```
+
+]
+
+
+.pull-right[&lt;img src="https://d33wubrfki0l68.cloudfront.net/eb6730b841e32292d9ff36b33a590e24b6221f43/57192/diagrams/vectors/summary-tree-atomic.png" width="60%"&gt; &lt;br&gt;&lt;br&gt; &lt;img src="https://d33wubrfki0l68.cloudfront.net/8a3d360c80da1186b1373a0ff0ddf7803b96e20d/254c6/diagrams/vectors/atomic.png" width="80%"&gt;]  
+
+.footnote[
+&lt;html&gt;
+&lt;hr&gt;
+&lt;/html&gt;
+**Sources:** Images are from [Hadley Wickham's Advanced R Book, Chapter 3 on Vectors](https://adv-r.hadley.nz/vectors-chap.html).
+]
+
+
+---
+
+# Recall: Lists 
+
+
+```r
+lst &lt;- list( 1:5, "a", c(TRUE, FALSE, TRUE), c(2.3, 5.9) )
+```
+
+.pull-left[
+Subset by `[]`
+
+```r
+lst[4]
+```
+
+```
+## [[1]]
+## [1] 2.3 5.9
+```
+]
+.pull-right[
+Subset by `[[]]`
+
+```r
+lst[[4]]
+```
+
+```
+## [1] 2.3 5.9
+```
+]
+
+.center[&lt;img src="figures/pepper.png" width="45%"&gt;]
+
+.footnote[
+&lt;html&gt;
+&lt;hr&gt;
+&lt;/html&gt;
+**Sources:** Image is from [Hadley Wickham's Tweet on Indexing lists in R](https://twitter.com/hadleywickham/status/643381054758363136?lang=en).
+]
+
+
+---
+
+# Recall: Matrices (2D)
+
+A matrix is a **2D data structure** made of **one/homogeneous data type.**
+
+
+.pull-left[
+### A 2 `\(\times\)` 2 numeric matrix
+
+```r
+x_mat = matrix( sample(1:10, size = 4), nrow = 2, ncol = 2 ) 
+str(x_mat) # its structure?
+```
+
+```
+##  int [1:2, 1:2] 5 10 6 1
+```
+
+
+```r
+x_mat # printing it nicely
+print('-----------------')
+*x_mat[1, 2] # subsetting
+```
+
+```
+##      [,1] [,2]
+## [1,]    5    6
+## [2,]   10    1
+## [1] "-----------------"
+## [1] 6
+```
+
+
+]
+
+
+.pull-right[
+### A 3 `\(\times\)` 4 character matrix
+
+```r
+x_char = matrix(
+  sample(letters, size = 12), nrow = 3, ncol =4)
+x_char
+```
+
+```
+##      [,1] [,2] [,3] [,4]
+## [1,] "f"  "t"  "s"  "l" 
+## [2,] "n"  "a"  "m"  "u" 
+## [3,] "c"  "k"  "p"  "r"
+```
+
+
+
+
+```r
+*x_char[1:2, 2:3] # subsetting
+```
+
+```
+##      [,1] [,2]
+## [1,] "t"  "s" 
+## [2,] "a"  "m"
+```
+]
+
+
+---
+
+# Tibbles 
+
+.pull-left[
+
+```r
+library(tibble)
+
+dept = c('ACC', 'ECO', 'FIN', 'ISA', 'MGMT')
+nfaculty = c(18L, 19L, 14L, 25L, 22L)
+
+fsb_tbl &lt;- tibble(
+  department = dept, 
+  count = nfaculty, 
+  percentage = count / sum(count))
+fsb_tbl
+```
+
+```
+## # A tibble: 5 x 3
+##   department count percentage
+##   &lt;chr&gt;      &lt;int&gt;      &lt;dbl&gt;
+## 1 ACC           18      0.184
+## 2 ECO           19      0.194
+## 3 FIN           14      0.143
+## 4 ISA           25      0.255
+## 5 MGMT          22      0.224
+```
+]
+
+.pull-right[
+.center[&lt;img src="figures/legos-jbryan-structures.png" width="92%"&gt;]
+]
+
+.left[
+.footnote[
+&lt;html&gt;
+&lt;hr&gt;
+&lt;/html&gt;
+**Source:** The image is from the excellent [lego-rstats GitHub Repository by Jenny Bryan](https://github.com/jennybc/lego-rstats#readme)
+]
+]
+
+
+---
+
+# Subsetting Tibbles
+
+.left-column[
+## **to &lt;br&gt; 1d**
+]
+.right-column[
+* with `[[]]` or `$`
+
+```r
+fsb_tbl[["count"]] # column name
+```
+
+```
+## [1] 18 19 14 25 22
+```
+
+```r
+fsb_tbl[[2]] # column position
+```
+
+```
+## [1] 18 19 14 25 22
+```
+
+```r
+fsb_tbl$count # column name
+```
+
+```
+## [1] 18 19 14 25 22
+```
+]
+
+.footnote[
+&lt;html&gt;
+&lt;hr&gt;
+&lt;/html&gt; 
+
+**Source:** Slide is based on [Earo Wang's STAT 220 Slides](https://stats220.earo.me/02-import-export.html#19).
+]
+
+
+---
+
+# Subsetting Tibbles
+
+.left-column[
+## **by &lt;br&gt; columns**
+]
+.right-column[
+* with `[]` or `[, col]`
+
+.pull-left[
+
+```r
+fsb_tbl["count"]
+```
+
+```
+## # A tibble: 5 x 1
+##   count
+##   &lt;int&gt;
+## 1    18
+## 2    19
+## 3    14
+## 4    25
+## 5    22
+```
+]
+.pull-right[
+
+```r
+fsb_tbl[2] # for data.frames -&gt; fsb_tbl[, 2]
+```
+
+```
+## # A tibble: 5 x 1
+##   count
+##   &lt;int&gt;
+## 1    18
+## 2    19
+## 3    14
+## 4    25
+## 5    22
+```
+]
+]
+
+.footnote[
+&lt;html&gt;
+&lt;hr&gt;
+&lt;/html&gt; 
+
+**Source:** Slide is based on [Earo Wang's STAT 220 Slides](https://stats220.earo.me/02-import-export.html#20).
+]
+
+
+---
+
+# Subsetting Tibbles
+
+.left-column[
+## **by rows**
+]
+.right-column[
+* with `[row, ]`
+
+.pull-left[
+
+```r
+fsb_tbl[c(1, 3), ]
+```
+
+```
+## # A tibble: 2 x 3
+##   department count percentage
+##   &lt;chr&gt;      &lt;int&gt;      &lt;dbl&gt;
+## 1 ACC           18      0.184
+## 2 FIN           14      0.143
+```
+]
+.pull-right[
+
+```r
+fsb_tbl[-c(2, 4), ]
+```
+
+```
+## # A tibble: 3 x 3
+##   department count percentage
+##   &lt;chr&gt;      &lt;int&gt;      &lt;dbl&gt;
+## 1 ACC           18      0.184
+## 2 FIN           14      0.143
+## 3 MGMT          22      0.224
+```
+]
+]
+
+.footnote[
+&lt;html&gt;
+&lt;hr&gt;
+&lt;/html&gt; 
+
+**Source:** Slide is based on [Earo Wang's STAT 220 Slides](https://stats220.earo.me/02-import-export.html#21).
+]
+
+
+---
+
+# Subsetting Tibbles
+
+.left-column[
+
+## **by &lt;br&gt; rows &lt;br&gt; and &lt;br&gt; columns**
+]
+.right-column[
+* with `[row, col]`
+
+
+```r
+fsb_tbl[1:3, 2:3]
+## ## fsb_tbl[-4, 2:3] # same as above
+## ## fsb_tbl[1:3, c("count". "percentage")] # same result
+## ## fsb_tbl[c(rep(TRUE, 3), FALSE), 2:3] # same as above
+```
+
+```
+## # A tibble: 3 x 2
+##   count percentage
+##   &lt;int&gt;      &lt;dbl&gt;
+## 1    18      0.184
+## 2    19      0.194
+## 3    14      0.143
+```
+]
+
+.footnote[
+&lt;html&gt;
+&lt;hr&gt;
+&lt;/html&gt; 
+
+**Source:** Slide is based on [Earo Wang's STAT 220 Slides](https://stats220.earo.me/02-import-export.html#22).
+]
+
+
+---
+
+# Subsetting Tibbles
+
+* Use `[[` to extract 1d vectors from 2d tibbles
+* Use `[` to subset tibbles to a new tibble
+  + numbers (positive/negative) as indices
+  + characters (column names) as indices
+  + logicals as indices
+
+
+```r
+fsb_tbl[["count"]] # will produce 1-D vector
+fsb_tbl$count # will produce 1D vector
+
+# Resulting in tibbles
+fsb_tbl[, 2]
+fsb_tbl[1:3, 2:3]
+```
+
+.footnote[
+&lt;html&gt;
+&lt;hr&gt;
+&lt;/html&gt; 
+
+**Source:** Slide is based on [Earo Wang's STAT 220 Slides](https://stats220.earo.me/02-import-export.html#23).
+]
+
+
+---
+
+class: inverse middle
+
+# Data import ⬇️
+
+---
+
+.left-column[
+.center[&lt;img src="https://raw.githubusercontent.com/rstudio/hex-stickers/master/PNG/readr.png" width="60%"&gt;]
+]
+.right-column[
+# Reading Plain-Text Rectangular <svg aria-hidden="true" role="img" viewBox="0 0 384 512" style="height:1em;width:0.75em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:currentColor;overflow:visible;position:relative;"><path d="M224 136V0H24C10.7 0 0 10.7 0 24v464c0 13.3 10.7 24 24 24h336c13.3 0 24-10.7 24-24V160H248c-13.2 0-24-10.8-24-24zm160-14.1v6.1H256V0h6.1c6.4 0 12.5 2.5 17 7l97.9 98c4.5 4.5 7 10.6 7 16.9z"/></svg>
+## .small[(a.k.a. flat or spreadsheet-like files)]
+* delimited text files with `read_delim()`
+  + `.csv`: comma separated values with `read_csv()`
+  + `.tsv`: tab separated values `read_tsv()`
+* `.fwf`: fixed width files with `read_fwf()`
+
+&lt;hr&gt;
+]
+
+
+
+
+
+---
+
+# Some Details on Reading CSV Data Files
+
+## `read_csv()` arguments with [`?read_csv()`](https://readr.tidyverse.org/reference/read_delim.html)
+
+.left-column[
+.center[&lt;img src="https://raw.githubusercontent.com/rstudio/hex-stickers/master/PNG/readr.png" width="60%"&gt;]
+]
+.right-column[
+
+```r
+read_csv(
+  file,
+  col_names = TRUE,
+  col_types = NULL,
+  locale = default_locale(),
+  na = c("", "NA"),
+  quoted_na = TRUE,
+  quote = "\"",
+  comment = "",
+  trim_ws = TRUE,
+  skip = 0,
+  n_max = Inf,
+  guess_max = min(1000, n_max),
+  progress = show_progress(),
+  skip_empty_rows = TRUE
+)
+```
+]
+
+???
+
+* w/o using arguments, readr makes smart guesses, which means take a little longer
+* more specific, speed up the reading
+
+
+
+---
+
+
+# Demo: Reading CSV Data <svg aria-hidden="true" role="img" viewBox="0 0 384 512" style="height:1em;width:0.75em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:currentColor;overflow:visible;position:relative;"><path d="M224 136V0H24C10.7 0 0 10.7 0 24v464c0 13.3 10.7 24 24 24h336c13.3 0 24-10.7 24-24V160H248c-13.2 0-24-10.8-24-24zm160-14.1v6.1H256V0h6.1c6.4 0 12.5 2.5 17 7l97.9 98c4.5 4.5 7 10.6 7 16.9z"/></svg>
+
+In this hands-on demo, you will learn how to:
+
+- Import CSV files into your <svg aria-hidden="true" role="img" viewBox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:currentColor;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/></svg> environment based on:
+
+  * files that are located on your <svg aria-hidden="true" role="img" viewBox="0 0 576 512" style="height:1em;width:1.12em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:currentColor;overflow:visible;position:relative;"><path d="M528 0H48C21.5 0 0 21.5 0 48v320c0 26.5 21.5 48 48 48h192l-16 48h-72c-13.3 0-24 10.7-24 24s10.7 24 24 24h272c13.3 0 24-10.7 24-24s-10.7-24-24-24h-72l-16-48h192c26.5 0 48-21.5 48-48V48c0-26.5-21.5-48-48-48zm-16 352H64V64h448v288z"/></svg>, see **Canvas** for downloading an example CSV 
+  
+  * files that are hosted on the web.  
+      + **Data in Webpages <svg aria-hidden="true" role="img" viewBox="0 0 640 512" style="height:1em;width:1.25em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:currentColor;overflow:visible;position:relative;"><path d="M128 352H32c-17.67 0-32 14.33-32 32v96c0 17.67 14.33 32 32 32h96c17.67 0 32-14.33 32-32v-96c0-17.67-14.33-32-32-32zm-24-80h192v48h48v-48h192v48h48v-57.59c0-21.17-17.23-38.41-38.41-38.41H344v-64h40c17.67 0 32-14.33 32-32V32c0-17.67-14.33-32-32-32H256c-17.67 0-32 14.33-32 32v96c0 17.67 14.33 32 32 32h40v64H94.41C73.23 224 56 241.23 56 262.41V320h48v-48zm264 80h-96c-17.67 0-32 14.33-32 32v96c0 17.67 14.33 32 32 32h96c17.67 0 32-14.33 32-32v-96c0-17.67-14.33-32-32-32zm240 0h-96c-17.67 0-32 14.33-32 32v96c0 17.67 14.33 32 32 32h96c17.67 0 32-14.33 32-32v-96c0-17.67-14.33-32-32-32z"/></svg>:** we will cover the following examples in class:   
+          - **FRED Data:** e.g., [Unempolyment Rate (UNRATE)](https://fred.stlouisfed.org/series/UNRATE)  
+          - **Apple Mobility Reports:** which can be obtained from clicking on [All Data CSV](https://covid19.apple.com/mobility)
+      + **GitHub** <svg aria-hidden="true" role="img" viewBox="0 0 496 512" style="height:1em;width:0.97em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:currentColor;overflow:visible;position:relative;"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg> Repositories, e.g.,
+          - [NYT COVID-19 Repo](https://github.com/nytimes/covid-19-data/blob/master/us-states.csv) - by state COVID-19 data 
+          - [Women's Rights Around the World](https://github.com/glosophy/women-data) - focusing on  `WomenTotal.csv` 
+
+
+---
+
+# Advanced: Reading CSVs with the vroom <svg aria-hidden="true" role="img" viewBox="0 0 512 512" style="height:1em;width:1em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:gold;overflow:visible;position:relative;"><path d="M509.5 184.6L458.9 32.8C452.4 13.2 434.1 0 413.4 0H272v192h238.7c-.4-2.5-.4-5-1.2-7.4zM240 0H98.6c-20.7 0-39 13.2-45.5 32.8L2.5 184.6c-.8 2.4-.8 4.9-1.2 7.4H240V0zM0 224v240c0 26.5 21.5 48 48 48h416c26.5 0 48-21.5 48-48V224H0z"/></svg>
+
+.left-column[
+.center[&lt;img src="https://github.com/r-lib/vroom/raw/main/man/figures/logo.png" width="75%"&gt;]
+
+.center[![](https://raw.githubusercontent.com/r-lib/vroom/main/img/taylor.gif)]
+]
+.right-column[
+### Faster delimited reader at **1.4GB/sec**
+
+- [vroom](https://www.tidyverse.org/blog/2019/05/vroom-1-0-0/) is a relatively new `tidyverse` package that can **read** and **write** delimited files very efficiently. 
+
+- It is recommended for large CSV files, see [tidyverse blog](https://www.tidyverse.org/blog/2019/05/vroom-1-0-0/) for a detailed introduction on the package. 
+
+
+```r
+if(require(vroom)==FALSE) install.packages('vroom')
+fast_df &lt;- vroom::vroom("your_file.csv")
+```
+]
+
+
+---
+
+
+.left-column[
+.center[&lt;img src="https://raw.githubusercontent.com/rstudio/hex-stickers/master/PNG/readxl.png" width="60%"&gt;]
+]
+.right-column[
+# Reading Proprietary Binary Files
+
+**Microsoft Excel <svg aria-hidden="true" role="img" viewBox="0 0 384 512" style="height:1em;width:0.75em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:green;overflow:visible;position:relative;"><path d="M224 136V0H24C10.7 0 0 10.7 0 24v464c0 13.3 10.7 24 24 24h336c13.3 0 24-10.7 24-24V160H248c-13.2 0-24-10.8-24-24zm60.1 106.5L224 336l60.1 93.5c5.1 8-.6 18.5-10.1 18.5h-34.9c-4.4 0-8.5-2.4-10.6-6.3C208.9 405.5 192 373 192 373c-6.4 14.8-10 20-36.6 68.8-2.1 3.9-6.1 6.3-10.5 6.3H110c-9.5 0-15.2-10.5-10.1-18.5l60.3-93.5-60.3-93.5c-5.2-8 .6-18.5 10.1-18.5h34.8c4.4 0 8.5 2.4 10.6 6.3 26.1 48.8 20 33.6 36.6 68.5 0 0 6.1-11.7 36.6-68.5 2.1-3.9 6.2-6.3 10.6-6.3H274c9.5-.1 15.2 10.4 10.1 18.4zM384 121.9v6.1H256V0h6.1c6.4 0 12.5 2.5 17 7l97.9 98c4.5 4.5 7 10.6 7 16.9z"/></svg>** (with extensions `.xls`for MSFT Excel 2003 and earlier **OR**  `.xlsx` for MSFT Excel 2007 and later)
+
+
+### Non-Graded Class Activity
+
+<div class="countdown" id="timer_61f69948" style="top:0;right:0;font-size:2em;" data-warnwhen="0">
+<code class="countdown-time"><span class="countdown-digits minutes">03</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
+</div>
+
+.panelset[
+
+.panel[.panel-name[Activity]
+
+.small[
+- Go to [this WHO page on Maternal Mortality Data](https://portal.who.int/triplebillions/PowerBIDashboards/Indicators?indicatorBookMark=Bookmarka9dfeb5fbad037831254)  
+
+- Download the data for all years and countries  
+
+- Store the data in an appropriate location on your computer (e.g., within the data folder for ISA 401)
+
+- Use an appropriate function from the `readxl` package to read the data (either `read_xlsx()` or `read_xls()`).
+
+- Report the number of observations, variables and the class of each variable from the data.
+]
+]
+
+
+.panel[.panel-name[Your Solution]
+
+.small[
+
+&gt; _Over the next 3 minutes, use an R script file to answer the questions from the activity and record your answers below_
+
+.can-edit.key-activity1[
+Number of observations and variables: ...... and ......  
+
+The class of each variable ......
+
+] 
+]
+]
+
+.panel[.panel-name[My Solution]
+
+**Please refer to our discussion in class**
+
+]
+
+
+]
+
+]
+
+
+
+???
+
+* contrasting to plain-text, binary files have to be opened by a certain app
+
+---
+
+.left-column[
+.center[&lt;img src="https://raw.githubusercontent.com/rstudio/hex-stickers/master/PNG/haven.png" width="60%"&gt;]
+]
+.right-column[
+# Reading Proprietary Binary Files
+
+Several functions from the [haven](https://haven.tidyverse.org/) <svg aria-hidden="true" role="img" viewBox="0 0 512 512" style="height:1em;width:1em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:gold;overflow:visible;position:relative;"><path d="M509.5 184.6L458.9 32.8C452.4 13.2 434.1 0 413.4 0H272v192h238.7c-.4-2.5-.4-5-1.2-7.4zM240 0H98.6c-20.7 0-39 13.2-45.5 32.8L2.5 184.6c-.8 2.4-.8 4.9-1.2 7.4H240V0zM0 224v240c0 26.5 21.5 48 48 48h416c26.5 0 48-21.5 48-48V224H0z"/></svg> can be used to read and write formats used by other statistical packages. Example functions include:
+
+- SAS
+  + `.sas7bdat` with `read_sas()`
+  
+- Stata
+  + `.dta` with `read_dta()`
+  
+- SPSS
+  + `.sav` with `read_sav()`
+  
+
+**Please refer to the help files for each of those packages for more details.**
+
+]
+
+
+---
+
+# JSON Files
+
+&gt; _JSON (JavaScript Object Notation) is an open standard file format and data interchange format that uses **human-readable** text to store and transmit data **objects** consisting of **attribute–value pairs** and **arrays**... It is a common data format with diverse uses ... including that of web applications with servers._ --- [Wikipedia's Definition of JSON](https://en.wikipedia.org/wiki/JSON)
+
+* **object:** `{}`
+* **array:** `[]`
+* **value:** string/character, number, object, array, logical, `null`
+
+
+---
+
+# JSON Files
+
+.pull-left[
+### JSON
+```json
+{
+  "firstName": "Mickey",
+  "lastName": "Mouse",
+  "address": {
+    "city": "Mousetown",
+    "postalCode": 10000
+  }
+  "logical": [true, false]
+}
+```
+]
+.pull-right[
+### R list
+```r
+list(
+  firstName = "Mickey",
+  lastName = "Mouse",
+  address = list(
+    city = "Mousetown",
+    postalCode = 10000
+  ),
+  logical = c(TRUE, FALSE)
+)
+```
+]
+
+
+---
+
+# Demo
+
+We will use the [jsonlite](https://cran.r-project.org/web/packages/jsonlite/index.html) <svg aria-hidden="true" role="img" viewBox="0 0 512 512" style="height:1em;width:1em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:gold;overflow:visible;position:relative;"><path d="M509.5 184.6L458.9 32.8C452.4 13.2 434.1 0 413.4 0H272v192h238.7c-.4-2.5-.4-5-1.2-7.4zM240 0H98.6c-20.7 0-39 13.2-45.5 32.8L2.5 184.6c-.8 2.4-.8 4.9-1.2 7.4H240V0zM0 224v240c0 26.5 21.5 48 48 48h416c26.5 0 48-21.5 48-48V224H0z"/></svg> to read an example from one of the [awesome-json-datasets](https://github.com/jdorfman/awesome-json-datasets).
+
+Please note the following from the demo:  
+
+- **Setting up the package**, which should be a one-time event if you are using the same computer.  
+
+- **Which function** are we using from the package to read the json data? 
+
+- What is the **type of object returned** by the function?
+
+- How are we **converting the object to a tibble?**
+
+
+
+---
+class: inverse, center, middle
+
+# Data export ⬆️
+
+---
+
+# From Read to Write
+
+`read_*()` to `write_*()`
+
+
+Here are some ideas: **do they come from the same package?**
+
+
+```r
+write_csv(example_tbl, file = "example.csv")
+write_sas(example_tbl, path = "example.sas7bdat")
+write_json(example_tbl, path = "example.json")
+```
+
+
+
+---
+class: inverse, center, middle
+
+# Recap
+
+---
+
+# Summary of Main Points
+
+By now, you should be able to do the following:  
+
+- Subset data in <svg aria-hidden="true" role="img" viewBox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#C3142D;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/></svg>.  
+
+- Read text-files, binary files (e.g., Excel, SAS, SPSS, Stata, etc), json files, etc.  
+
+- Export data from <svg aria-hidden="true" role="img" viewBox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#C3142D;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/></svg>.
+
+
+---
+
+# Supplementary Reading
+
+.pull-left[
+.center[[&lt;img src="https://d33wubrfki0l68.cloudfront.net/b88ef926a004b0fce72b2526b0b5c4413666a4cb/24a30/cover.png" height="320px"&gt;](https://r4ds.had.co.nz)]
+* [Tibbles](https://r4ds.had.co.nz/tibbles.html)
+* [Data import](https://r4ds.had.co.nz/data-import.html)
+]
+.pull-right[
+.center[[&lt;img src="https://d33wubrfki0l68.cloudfront.net/565916198b0be51bf88b36f94b80c7ea67cafe7c/7f70b/cover.png" height="320px"&gt;](https://adv-r.hadley.nz)]
+* [Subsetting](https://adv-r.hadley.nz/subsetting.html#subset-single)
+]
+
+---
+
+# Things to Do to Prepare for Our Next Class
+
+- Go over your notes and complete [Assignment 02](https://miamioh.instructure.com/courses/167290/quizzes/457099) on Canvas.  
+
+- **Before attempting the assignment, you are encouraged to:**  
+  * Go over this slide deck as well as the [slide deck from last class](https://fmegahed.github.io/isa401/class02/02_introduction_to_r.html)  
+  * Read the supplementary reading for today's class (see previous slide)
+  
+- **While attempting the assignment, you are encouraged to:**  
+  * Google (<svg aria-hidden="true" role="img" viewBox="0 0 488 512" style="height:1em;width:0.95em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#C3142D;overflow:visible;position:relative;"><path d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"/></svg>) any <svg aria-hidden="true" role="img" viewBox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#C3142D;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/></svg> that you need.  
+  * Examine any R functions by utilizing on its help document using the `?function_name`
+  
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

@@ -3,5 +3,5 @@
 
 source("https://git.io/xaringan2pdf")
 
-xaringan_to_pdf(input = 'https://fmegahed.github.io/isa401/class02/02_introduction_to_r.html',
-                output_file = '02_Introduction_to_R.pdf')
+xaringan_to_pdf(input = 'https://fmegahed.github.io/isa401/class03/03_data_import_export.html',
+                output_file = '03_data_import_export.pdf')

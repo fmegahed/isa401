@@ -11,7 +11,8 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 | Week          | Date        | Topic                                  | Slides (Hosted Page) | Slides (PDF) |
 | :---:        |    :----:   |          :---                           | :---                 | :---         |
 | 01           |    01/24     | Introduction to Data Viz and BI        | [01_Introduction.html](https://fmegahed.github.io/isa401/class01/01_Introduction.html) | [01_Introduction.pdf](https://github.com/fmegahed/isa401/blob/main/PDFs/01_Introduction.pdf) | 
-|              | 01/26 | Introduction to R| [02_Introduction_to_R.html](https://fmegahed.github.io/isa401/class02/02_introduction_to_r.html) | [01_Introduction.pdf](https://github.com/fmegahed/isa401/blob/main/PDFs/02_Introduction_to_R.pdf) |
+|              | 01/26 | Introduction to R| [02_Introduction_to_R.html](https://fmegahed.github.io/isa401/class02/02_introduction_to_r.html) | [02_Introduction_to_R.pdf](https://github.com/fmegahed/isa401/blob/main/PDFs/02_Introduction_to_R.pdf) |
+|              | 01/31 | Introduction to R| [03_data_import_export.html](https://fmegahed.github.io/isa401/class03/03_data_import_export.html) | [02_Introduction_to_R.pdf](https://github.com/fmegahed/isa401/blob/main/PDFs/03_data_import_export.pdf) |
 
 
 
