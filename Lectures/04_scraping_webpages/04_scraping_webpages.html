@@ -1,0 +1,1993 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>ISA 401: Business Intelligence &amp; Data Visualization</title>
+    <meta charset="utf-8" />
+    <meta name="author" content=" Fadel M. Megahed, PhD    Associate Professor   Department of Information Systems and Analytics   Farmer School of Business  Miami University  Twitter: FadelMegahed  GitHub: fmegahed  Email: fmegahed@miamioh.edu  Office Hours: Automated Scheduler for Virtual Office Hours  " />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/tile-view/tile-view.css" rel="stylesheet" />
+    <script src="libs/tile-view/tile-view.js"></script>
+    <link href="libs/animate.css/animate.xaringan.css" rel="stylesheet" />
+    <link href="libs/tachyons/tachyons.min.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra_fit-screen/fit-screen.js"></script>
+    <link href="libs/panelset/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset/panelset.js"></script>
+    <script type="application/json" id="xaringanExtra-editable-docid">{"id":"x37f65bd51a54f3a97a3014c55911c59","expires":14}</script>
+    <script src="libs/himalaya/himalaya.js"></script>
+    <script src="libs/js-cookie/js.cookie.js"></script>
+    <link href="libs/editable/editable.css" rel="stylesheet" />
+    <script src="libs/editable/editable.js"></script>
+    <script src="libs/clipboard/clipboard.min.js"></script>
+    <link href="libs/shareon/shareon.min.css" rel="stylesheet" />
+    <script src="libs/shareon/shareon.min.js"></script>
+    <link href="libs/xaringanExtra-shareagain/shareagain.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-shareagain/shareagain.js"></script>
+    <script src="libs/peerjs/peerjs.min.js"></script>
+    <script src="libs/tiny.toast/toast.min.js"></script>
+    <link href="libs/xaringanExtra-broadcast/broadcast.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-broadcast/broadcast.js"></script>
+    <script src="libs/mark.js/mark.min.js"></script>
+    <link href="libs/xaringanExtra-search/search.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-search/search.js"></script>
+    <script>window.addEventListener('load', function() { window.xeSearch = new RemarkSearch({"position":"bottom-left","caseSensitive":false,"showIcon":false,"autoSearch":true}) })</script>
+    <link href="libs/countdown/countdown.css" rel="stylesheet" />
+    <script src="libs/countdown/countdown.js"></script>
+    <link rel="stylesheet" href="css/fonts.css" type="text/css" />
+    <link rel="stylesheet" href="css/my-theme.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# ISA 401: Business Intelligence &amp; Data Visualization
+## 04: Scraping Webpages in R
+### <br>Fadel M. Megahed, PhD <br><br> Associate Professor <br> Department of Information Systems and Analytics <br> Farmer School of Business<br> Miami University<br><br>Twitter: <a href="www.twitter.com/FadelMegahed/">FadelMegahed</a><br> GitHub: <a href="https://github.com/fmegahed">fmegahed</a><br> Email: <a href="mailto:fmegahed@miamioh.edu">fmegahed@miamioh.edu</a><br> Office Hours: <a href="https://calendly.com/fmegahed">Automated Scheduler for Virtual Office Hours</a><br><br>
+### Spring 2022
+
+---
+
+
+
+
+
+
+
+
+# Quick Refresher from Last Class
+
+✅ Subset data in <svg aria-hidden="true" role="img" viewBox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#C3142D;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/></svg>.   
+
+✅ Read text-files, binary files (e.g., Excel, SAS, SPSS, Stata, etc), json files, etc. 
+
+✅ Export data from <svg aria-hidden="true" role="img" viewBox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#C3142D;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/></svg>. 
+
+---
+
+# Going Over Assignment 02 Solutions
+
+.panelset[
+
+.panel[.panel-name[Q1]
+
+.small[Based on the readr package, the following function is appropriate for the purpose of reading the file [patterson_cafe_yelp_reviews.rds](https://github.com/fmegahed/isa401/blob/main/Data/patterson_cafe_yelp_reviews.rds?raw=true)  
+
+❌ `read_csv()`
+
+❌ `read_fwf()`
+
+✅ `read_rds()`  
+
+❌ `readRDS()`
+
+]
+]
+
+
+.panel[.panel-name[Q2]
+
+.small[
+Read the file `patterson_cafe_yelp_reviews.rds` in RStudio. Based on the file, the data contains .... columns/variables.] 
+
+
+```r
+if(require(tidyverse)==FALSE) install.packages("tidyverse")
+cafe_yelp_reviews = readr::read_rds(file = "../../Data/patterson_cafe_yelp_reviews.rds")
+ncol(cafe_yelp_reviews)
+```
+
+```
+## [1] 4
+```
+
+]
+
+.panel[.panel-name[Q3]
+
+.small[
+When you read the `patterson_cafe_yelp_reviews.rds` in R/RStudio, the column titled `review_date` is being recognized by R as] 
+
+.left-column[
+✅ `character`
+
+❌ `date`
+
+❌ `datetime`  
+
+❌ `double`
+]
+
+.right-column[
+
+```r
+if(require(tidyverse)==FALSE) install.packages("tidyverse")
+cafe_yelp_reviews = readr::read_rds(file = "../../Data/patterson_cafe_yelp_reviews.rds")
+class(cafe_yelp_reviews$review_date)
+```
+
+```
+## [1] "character"
+```
+
+```r
+cafe_yelp_reviews_base = readRDS(file = "../../Data/patterson_cafe_yelp_reviews.rds")
+class(cafe_yelp_reviews_base$review_date)
+```
+
+```
+## [1] "character"
+```
+]
+]
+
+.panel[.panel-name[Q4]
+.small[
+What is the number of reviews with a reviewer score &gt;= 4?]
+
+
+```r
+pos_review_count_approach1 = cafe_yelp_reviews$score &gt;= 4
+sum(pos_review_count_approach1)
+```
+
+```
+## [1] 76
+```
+
+```r
+pos_review_count_approach2 = cafe_yelp_reviews %&gt;% filter(score &gt;= 4)
+nrow(pos_review_count_approach2)
+```
+
+```
+## [1] 76
+```
+
+```r
+pos_review_count_approach3 = which(cafe_yelp_reviews$score &gt;= 4)
+length(pos_review_count_approach3)
+```
+
+```
+## [1] 76
+```
+
+]
+
+]
+
+
+---
+
+# Learning Objectives for Today's Class
+
+- Understand when can we scrape data (i.e., `robots.txt`)  
+
+- Scrape a webpage Using <svg aria-hidden="true" role="img" viewBox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#C3142D;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/></svg>  
+
+- Utilize loops or `purr::map` to download data from multiple webpages.  
+
+---
+
+class: middle, inverse, center
+
+
+# Web Technology <svg aria-hidden="true" role="img" viewBox="0 0 384 512" style="height:1em;width:0.75em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:orange;overflow:visible;position:relative;"><path d="M0 32l34.9 395.8L191.5 480l157.6-52.2L384 32H0zm308.2 127.9H124.4l4.1 49.4h175.6l-13.6 148.4-97.9 27v.3h-1.1l-98.7-27.3-6-75.8h47.7L138 320l53.5 14.5 53.7-14.5 6-62.2H84.3L71.5 112.2h241.1l-4.4 47.7z"/></svg> <svg aria-hidden="true" role="img" viewBox="0 0 384 512" style="height:1em;width:0.75em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:blue;overflow:visible;position:relative;"><path d="M0 32l34.9 395.8L192 480l157.1-52.2L384 32H0zm313.1 80l-4.8 47.3L193 208.6l-.3.1h111.5l-12.8 146.6-98.2 28.7-98.8-29.2-6.4-73.9h48.9l3.2 38.3 52.6 13.3 54.7-15.4 3.7-61.6-166.3-.5v-.1l-.2.1-3.6-46.3L193.1 162l6.5-2.7H76.7L70.9 112h242.2z"/></svg> <svg aria-hidden="true" role="img" viewBox="0 0 448 512" style="height:1em;width:0.88em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:gold;overflow:visible;position:relative;"><path d="M400 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48zM243.8 381.4c0 43.6-25.6 63.5-62.9 63.5-33.7 0-53.2-17.4-63.2-38.5l34.3-20.7c6.6 11.7 12.6 21.6 27.1 21.6 13.8 0 22.6-5.4 22.6-26.5V237.7h42.1v143.7zm99.6 63.5c-39.1 0-64.4-18.6-76.7-43l34.3-19.8c9 14.7 20.8 25.6 41.5 25.6 17.4 0 28.6-8.7 28.6-20.8 0-14.4-11.4-19.5-30.7-28l-10.5-4.5c-30.4-12.9-50.5-29.2-50.5-63.5 0-31.6 24.1-55.6 61.6-55.6 26.8 0 46 9.3 59.8 33.7L368 290c-7.2-12.9-15-18-27.1-18-12.3 0-20.1 7.8-20.1 18 0 12.6 7.8 17.7 25.9 25.6l10.5 4.5c35.8 15.3 55.9 31 55.9 66.2 0 37.8-29.8 58.6-69.7 58.6z"/></svg>
+
+
+.footnote[
+&lt;html&gt;
+&lt;hr&gt;
+&lt;html&gt;
+.left[
+.large[Source:
+Slides 5-15 are from [Dr Earo Wang's STAT 220 Web Scraping Slides](https://stats220.earo.me/09-web-scrape.html#2), which were adapted from [Dr Emi Tanaka's](https://emitanaka.org/about.html) "Communicating with Data" course.
+]
+]
+]
+
+---
+
+# World Wide Web (WWW) 
+
+WWW (or the **Web**) is the information system where documents (web pages) are identified by Uniform Resource Locators (**URL**s)
+
+A web page consists of:
+* <svg aria-hidden="true" role="img" viewBox="0 0 384 512" style="height:1em;width:0.75em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:orange;overflow:visible;position:relative;"><path d="M0 32l34.9 395.8L191.5 480l157.6-52.2L384 32H0zm308.2 127.9H124.4l4.1 49.4h175.6l-13.6 148.4-97.9 27v.3h-1.1l-98.7-27.3-6-75.8h47.7L138 320l53.5 14.5 53.7-14.5 6-62.2H84.3L71.5 112.2h241.1l-4.4 47.7z"/></svg> **HTML** provides the basic structure of the web page
+* <svg aria-hidden="true" role="img" viewBox="0 0 384 512" style="height:1em;width:0.75em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:blue;overflow:visible;position:relative;"><path d="M0 32l34.9 395.8L192 480l157.1-52.2L384 32H0zm313.1 80l-4.8 47.3L193 208.6l-.3.1h111.5l-12.8 146.6-98.2 28.7-98.8-29.2-6.4-73.9h48.9l3.2 38.3 52.6 13.3 54.7-15.4 3.7-61.6-166.3-.5v-.1l-.2.1-3.6-46.3L193.1 162l6.5-2.7H76.7L70.9 112h242.2z"/></svg> **CSS** controls the look of the web page (optional)
+* <svg aria-hidden="true" role="img" viewBox="0 0 448 512" style="height:1em;width:0.88em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:gold;overflow:visible;position:relative;"><path d="M400 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48zM243.8 381.4c0 43.6-25.6 63.5-62.9 63.5-33.7 0-53.2-17.4-63.2-38.5l34.3-20.7c6.6 11.7 12.6 21.6 27.1 21.6 13.8 0 22.6-5.4 22.6-26.5V237.7h42.1v143.7zm99.6 63.5c-39.1 0-64.4-18.6-76.7-43l34.3-19.8c9 14.7 20.8 25.6 41.5 25.6 17.4 0 28.6-8.7 28.6-20.8 0-14.4-11.4-19.5-30.7-28l-10.5-4.5c-30.4-12.9-50.5-29.2-50.5-63.5 0-31.6 24.1-55.6 61.6-55.6 26.8 0 46 9.3 59.8 33.7L368 290c-7.2-12.9-15-18-27.1-18-12.3 0-20.1 7.8-20.1 18 0 12.6 7.8 17.7 25.9 25.6l10.5 4.5c35.8 15.3 55.9 31 55.9 66.2 0 37.8-29.8 58.6-69.7 58.6z"/></svg>&lt;/span&gt; **JS** is a programming language that can modify the behavior of elements of the web page (optional) 
+
+---
+
+# <svg aria-hidden="true" role="img" viewBox="0 0 384 512" style="height:1em;width:0.75em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:orange;overflow:visible;position:relative;"><path d="M0 32l34.9 395.8L191.5 480l157.6-52.2L384 32H0zm308.2 127.9H124.4l4.1 49.4h175.6l-13.6 148.4-97.9 27v.3h-1.1l-98.7-27.3-6-75.8h47.7L138 320l53.5 14.5 53.7-14.5 6-62.2H84.3L71.5 112.2h241.1l-4.4 47.7z"/></svg>&lt;/span&gt; Hypertext Markup Language (HTML)
+
+* with the extension `.html`.
+* rendered using a web browser via an URL.
+* text files that follows a special syntax that alerts web browsers how to render it.
+.pull-left[
+.center[**via a web browser**
+&lt;img src="figures/browser_plane_crashes.PNG" width="100%" style="display: block; margin: auto;" /&gt;
+]
+]
+.pull-right[
+.center[**via a text editor**
+&lt;img src="figures/text_plane_crashes.PNG" width="347" style="display: block; margin: auto;" /&gt;
+]
+]
+
+---
+
+# <svg aria-hidden="true" role="img" viewBox="0 0 384 512" style="height:1em;width:0.75em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:orange;overflow:visible;position:relative;"><path d="M0 32l34.9 395.8L191.5 480l157.6-52.2L384 32H0zm308.2 127.9H124.4l4.1 49.4h175.6l-13.6 148.4-97.9 27v.3h-1.1l-98.7-27.3-6-75.8h47.7L138 320l53.5 14.5 53.7-14.5 6-62.2H84.3L71.5 112.2h241.1l-4.4 47.7z"/></svg> HTML Structure
+
+```html
+&lt;!DOCTYPE html&gt;
+
+&lt;html&gt;
+  &lt;!--This is a comment and ignored by web client.--&gt;
+  &lt;head&gt;
+    &lt;!--This section contains web page metadata.--&gt;
+    &lt;title&gt;ISA 401: Business Intelligence and Data Viz&lt;/title&gt;
+    &lt;meta name="author" content="Fadel Megahed"&gt;
+    &lt;link rel="stylesheet" href="css/styles.css"&gt;
+  &lt;/head&gt;
+
+  &lt;body&gt;
+    &lt;!--This section contains what you want to display on your web page.--&gt;
+    &lt;h1&gt;I'm a first level header&lt;/h1&gt;
+    &lt;p&gt;This is a &lt;b&gt;paragraph&lt;/b&gt;.&lt;/p&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+```
+
+???
+
+* servr::httd() to serve
+* HTML: hier str: elements (`&lt;tags&gt;`) and optional attributes, and contents
+* &gt; 100 elements: each html page must have `&lt;head&gt;` and `&lt;body&gt;`. (rich format -&gt; md)
+* block tags: h1, p
+* inline tags: bold a
+
+---
+
+# <svg aria-hidden="true" role="img" viewBox="0 0 384 512" style="height:1em;width:0.75em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:orange;overflow:visible;position:relative;"><path d="M0 32l34.9 395.8L191.5 480l157.6-52.2L384 32H0zm308.2 127.9H124.4l4.1 49.4h175.6l-13.6 148.4-97.9 27v.3h-1.1l-98.7-27.3-6-75.8h47.7L138 320l53.5 14.5 53.7-14.5 6-62.2H84.3L71.5 112.2h241.1l-4.4 47.7z"/></svg> HTML Syntax
+
+.center[`&lt;span style="color:blue;"&gt;Author content&lt;/span&gt;` &lt;i class="fas fa-arrow-right"&gt;&lt;/i&gt; &lt;span style="color:blue;"&gt;Author content&lt;/span&gt;]
+
+&lt;table style="width:100%"&gt;
+&lt;tr&gt;
+&lt;td style="text-align:right;padding-right:30px;"&gt;start tag:&lt;/td&gt;&lt;td&gt;&lt;span class="remark-code" style="font-size:16pt"&gt;&lt;span class="red"&gt;&amp;lt;span style="color:blue;"&amp;gt;&lt;/span&gt;&lt;span class="grey"&gt;Author content&amp;lt;/span&amp;gt;&lt;/span&gt;&lt;/span&gt; &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align:right;padding-right:30px;"&gt;end tag: &lt;/td&gt;&lt;td&gt; &lt;span class="remark-code" style="font-size:16pt"&gt;&lt;span class="grey"&gt;&amp;lt;span style="color:blue;"&amp;gt;Author content&lt;span class="red"&gt;&amp;lt;/span&amp;gt;&lt;/span&gt;&lt;/span&gt; &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align:right;padding-right:30px;"&gt;content: &lt;/td&gt;&lt;td&gt; &lt;span class="remark-code" style="font-size:16pt"&gt;&lt;span class="grey"&gt;&amp;lt;span style="color:blue;"&amp;gt;&lt;/span&gt;&lt;span class="red"&gt;Author content&lt;/span&gt;&lt;span class="grey"&gt;&amp;lt;/span&amp;gt;&lt;/span&gt;&lt;/span&gt; &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align:right;padding-right:30px;"&gt;element name: &lt;/td&gt;&lt;td&gt; &lt;span class="remark-code" style="font-size:16pt"&gt;&lt;span class="grey"&gt;&amp;lt;&lt;/span&gt;&lt;span class="red"&gt;span&lt;/span&gt;&lt;span class="grey"&gt; style="color:blue;"&amp;gt;Author content&amp;lt;/span&amp;gt;&lt;/span&gt;&lt;/span&gt; &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align:right;padding-right:30px;"&gt;attribute: &lt;/td&gt;&lt;td&gt; &lt;span class="remark-code" style="font-size:16pt"&gt;&lt;span class="grey"&gt;&amp;lt;span &lt;span class="red"&gt;style="color:blue;"&lt;/span&gt;&lt;span class="grey"&gt;&amp;gt;Author content&amp;lt;/span&amp;gt;&lt;/span&gt; &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align:right;padding-right:30px;"&gt;attribute name: &lt;/td&gt;&lt;td&gt; &lt;span class="remark-code" style="font-size:16pt"&gt;&lt;span class="grey"&gt;&amp;lt;span &lt;span class="red"&gt;style&lt;/span&gt;&lt;span class="grey"&gt;="color:blue;"&amp;gt;Author content&amp;lt;/span&amp;gt;&lt;/span&gt; &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align:right;padding-right:30px;"&gt;attribute value: &lt;/td&gt;&lt;td&gt; &lt;span class="remark-code" style="font-size:16pt"&gt;&lt;span class="grey"&gt;&amp;lt;span style=&lt;/span&gt;&lt;span class="red"&gt;"color:blue;"&lt;/span&gt;&lt;span class="grey"&gt;&amp;gt;Author content&amp;lt;/span&amp;gt;&lt;/span&gt; &lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+
+&lt;hr&gt;
+
+.center[**Not all HTML tags have an end tag**, for example:]
+
+.center[
+&lt;span style="font-size:18pt;"&gt;`&lt;img height="40px" src="https://tinyurl.com/rlogo-svg"&gt;`&lt;/span&gt; <svg aria-hidden="true" role="img" viewBox="0 0 448 512" style="height:1em;width:0.88em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:currentColor;overflow:visible;position:relative;"><path d="M190.5 66.9l22.2-22.2c9.4-9.4 24.6-9.4 33.9 0L441 239c9.4 9.4 9.4 24.6 0 33.9L246.6 467.3c-9.4 9.4-24.6 9.4-33.9 0l-22.2-22.2c-9.5-9.5-9.3-25 .4-34.3L311.4 296H24c-13.3 0-24-10.7-24-24v-32c0-13.3 10.7-24 24-24h287.4L190.9 101.2c-9.8-9.3-10-24.8-.4-34.3z"/></svg> &lt;img height="40px" src="https://tinyurl.com/rlogo-svg"&gt;
+]
+
+---
+
+# <svg aria-hidden="true" role="img" viewBox="0 0 384 512" style="height:1em;width:0.75em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:orange;overflow:visible;position:relative;"><path d="M0 32l34.9 395.8L191.5 480l157.6-52.2L384 32H0zm308.2 127.9H124.4l4.1 49.4h175.6l-13.6 148.4-97.9 27v.3h-1.1l-98.7-27.3-6-75.8h47.7L138 320l53.5 14.5 53.7-14.5 6-62.2H84.3L71.5 112.2h241.1l-4.4 47.7z"/></svg> HTML Elements
+
+&lt;table style="width:100%"&gt;
+&lt;tr&gt;
+&lt;td style="text-align:right;padding-right:30px;"&gt;block element:&lt;/td&gt;&lt;td&gt;&lt;span class="remark-code red" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;span class="grey"&gt;content&lt;/span&gt;&amp;lt;/div&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align:right;padding-right:30px;"&gt;inline element:&lt;/td&gt;&lt;td&gt;&lt;span class="remark-code red" style="font-size:16pt"&gt;&amp;lt;span&gt;&lt;span class="grey"&gt;content&lt;/span&gt;&amp;lt;/span&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align:right;padding-right:30px;"&gt;paragraph:&lt;/td&gt;&lt;td&gt;&lt;span class="remark-code red" style="font-size:16pt"&gt;&amp;lt;p&gt;&lt;span class="grey"&gt;content&lt;/span&gt;&amp;lt;/p&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align:right;padding-right:30px;"&gt;header level 1:&lt;/td&gt;&lt;td&gt;&lt;span class="remark-code red" style="font-size:16pt"&gt;&amp;lt;h1&gt;&lt;span class="grey"&gt;content&lt;/span&gt;&amp;lt;/h1&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align:right;padding-right:30px;"&gt;header level 2:&lt;/td&gt;&lt;td&gt;&lt;span class="remark-code red" style="font-size:16pt"&gt;&amp;lt;h2&gt;&lt;span class="grey"&gt;content&lt;/span&gt;&amp;lt;/h2&gt;&lt;/span&gt;&lt;/td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align:right;padding-right:30px;"&gt;italic:&lt;/td&gt;&lt;td&gt;&lt;span class="remark-code red" style="font-size:16pt"&gt;&amp;lt;i&gt;&lt;span class="grey"&gt;content&lt;/span&gt;&amp;lt;/i&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align:right;padding-right:30px;"&gt;emphasised text:&lt;/td&gt;&lt;td&gt;&lt;span class="remark-code red" style="font-size:16pt"&gt;&amp;lt;em&gt;&lt;span class="grey"&gt;content&lt;/span&gt;&amp;lt;/em&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align:right;padding-right:30px;"&gt;strong importance:&lt;/td&gt;&lt;td&gt;&lt;span class="remark-code red" style="font-size:16pt"&gt;&amp;lt;strong&gt;&lt;span class="grey"&gt;content&lt;/span&gt;&amp;lt;/strong&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align:right;padding-right:30px;"&gt;link:&lt;/td&gt;&lt;td&gt;&lt;span class="remark-code red" style="font-size:16pt"&gt;&amp;lt;a href="https://github.com/fmegahed/isa401"&gt;&lt;span class="grey"&gt;content&lt;/span&gt;&amp;lt;/a&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" style="text-align:right;padding-right:30px;"&gt;unordered list:&lt;/td&gt;&lt;td&gt;&lt;span class="remark-code red" style="font-size:16pt"&gt;&amp;lt;ul&gt;&lt;br&gt;&amp;lt;li&gt;&lt;span class="grey"&gt;item 1&lt;/span&gt;&amp;lt;/li&gt;&lt;Br&gt;&amp;lt;li&gt;&lt;span class="grey"&gt;item 2&lt;/span&gt;&amp;lt;/li&gt;&lt;Br&gt;&amp;lt;/ul&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+
+???
+
+How these are rendered to the browser depends on the browser default style values, style attribute or CSS...
+
+---
+
+# <svg aria-hidden="true" role="img" viewBox="0 0 384 512" style="height:1em;width:0.75em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:blue;overflow:visible;position:relative;"><path d="M0 32l34.9 395.8L192 480l157.1-52.2L384 32H0zm313.1 80l-4.8 47.3L193 208.6l-.3.1h111.5l-12.8 146.6-98.2 28.7-98.8-29.2-6.4-73.9h48.9l3.2 38.3 52.6 13.3 54.7-15.4 3.7-61.6-166.3-.5v-.1l-.2.1-3.6-46.3L193.1 162l6.5-2.7H76.7L70.9 112h242.2z"/></svg> Cascading Style Sheet (CSS)
+
+* with the extension `.css`
+* 3 ways to style elements in HTML:
+  * **inline** by using the `style` attribute inside HTML start tag:
+  &lt;center&gt;
+  &lt;span class="remark-code grey" style="font-size:14pt;"&gt;&amp;lt;h1 &lt;span class="red"&gt;style="color:blue;"&lt;/span&gt;&gt;Blue Header&amp;lt;/h1&gt;&lt;/span&gt;
+  &lt;/center&gt;
+  + **externally** by using the `&lt;link&gt;` element:
+  &lt;center&gt;
+  &lt;span class="remark-code red" style="font-size:14pt;"&gt;&amp;lt;link rel="stylesheet" href="styles.css"&gt;&lt;/span&gt;
+  &lt;/center&gt;
+  + **internally** by defining within `&lt;style&gt;` element:
+
+&lt;div style="margin-left:35%; width:350px;"&gt;
+```html
+&lt;style type="text/css"&gt;
+h1 { color: blue; }
+&lt;/style&gt;
+```
+&lt;/div&gt;
+By convention, the `&lt;style&gt;` and `&lt;link&gt;` elements tend to go into the `&lt;head&gt;` section of the HTML document.
+
+---
+
+# <svg aria-hidden="true" role="img" viewBox="0 0 384 512" style="height:1em;width:0.75em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:blue;overflow:visible;position:relative;"><path d="M0 32l34.9 395.8L192 480l157.1-52.2L384 32H0zm313.1 80l-4.8 47.3L193 208.6l-.3.1h111.5l-12.8 146.6-98.2 28.7-98.8-29.2-6.4-73.9h48.9l3.2 38.3 52.6 13.3 54.7-15.4 3.7-61.6-166.3-.5v-.1l-.2.1-3.6-46.3L193.1 162l6.5-2.7H76.7L70.9 112h242.2z"/></svg> CSS Syntax
+
+.pull-left[
+```html
+&lt;style type="text/css"&gt;
+h1 { color: blue; }
+&lt;/style&gt;
+&lt;h1&gt;This is a header&lt;/h1&gt;
+```
+]
+
+&lt;div style="margin-left:55%; width:350px;"&gt;
+&lt;br&gt;
+&lt;h2 style="color:blue"&gt;This is a header&lt;/h2&gt;
+&lt;/div&gt;
+
+&lt;table style="width:100%"&gt;
+&lt;tr&gt;
+&lt;td style="text-align:right;padding-right:30px;"&gt;selector:&lt;/td&gt;&lt;td&gt;&lt;span class="remark-code" style="font-size:16pt"&gt;&lt;span class="red"&gt;h1&lt;/span&gt;&lt;span class="grey"&gt; { color: blue; }&lt;/span&gt;&lt;/span&gt; &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align:right;padding-right:30px;"&gt;property:&lt;/td&gt;&lt;td&gt;&lt;span class="remark-code" style="font-size:16pt; color:gray"&gt;h1 { &lt;span class="red"&gt;color: blue;&lt;/span&gt; }&lt;/span&gt; &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align:right;padding-right:30px;"&gt;property name:&lt;/td&gt;&lt;td&gt;&lt;span class="remark-code" style="font-size:16pt; color:gray"&gt;h1 { &lt;span class="red"&gt;color&lt;/span&gt;: blue; } &lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align:right;padding-right:30px;"&gt;property value:&lt;/td&gt;&lt;td&gt;&lt;span class="remark-code grey" style="font-size:16pt; color:gray"&gt;h1 { color: &lt;span class="red"&gt;blue&lt;/span&gt;; } &lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+
+.pull-left[
+You may have multiple properties for a single selector.➡️
+]
+.pull-right[
+```css
+h1 {
+  color: blue;
+  font-size: 16pt;
+}
+```
+]
+
+---
+
+# <svg aria-hidden="true" role="img" viewBox="0 0 384 512" style="height:1em;width:0.75em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:blue;overflow:visible;position:relative;"><path d="M0 32l34.9 395.8L192 480l157.1-52.2L384 32H0zm313.1 80l-4.8 47.3L193 208.6l-.3.1h111.5l-12.8 146.6-98.2 28.7-98.8-29.2-6.4-73.9h48.9l3.2 38.3 52.6 13.3 54.7-15.4 3.7-61.6-166.3-.5v-.1l-.2.1-3.6-46.3L193.1 162l6.5-2.7H76.7L70.9 112h242.2z"/></svg> CSS Properties
+
+.center[
+```html
+&lt;div&gt;Sample text&lt;/div&gt;
+```
+]
+
+&lt;table style="width:100%"&gt;
+&lt;tr&gt;
+&lt;td style="text-align:right;padding-right:30px;"&gt;background color:&lt;/td&gt;
+&lt;td&gt;&lt;span class="remark-code grey" style="font-size:16pt; color:gray"&gt;div { &lt;span class="red"&gt;background-color: yellow;&lt;/span&gt; }&lt;/span&gt; &lt;/td&gt;
+&lt;td&gt;
+&lt;div style="background-color: yellow;"&gt;Sample text&lt;/div&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align:right;padding-right:30px;"&gt;text color:&lt;/td&gt;
+&lt;td&gt;&lt;span class="remark-code grey" style="font-size:16pt; color:gray"&gt;div { &lt;span class="red"&gt;color: purple;&lt;/span&gt; }&lt;/span&gt; &lt;/td&gt;
+&lt;td&gt;
+&lt;div style="color: purple;"&gt;Sample text&lt;/div&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align:right;padding-right:30px;"&gt;border:&lt;/td&gt;
+&lt;td&gt;&lt;span class="remark-code grey" style="font-size:16pt; color:gray"&gt;div { &lt;span class="red"&gt;border: 1px dashed brown;&lt;/span&gt; }&lt;/span&gt; &lt;/td&gt;
+&lt;td&gt;
+&lt;div style="border: 1px dashed brown;"&gt;Sample text&lt;/div&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align:right;padding-right:30px;"&gt;left border only:&lt;/td&gt;
+&lt;td&gt;&lt;span class="remark-code grey" style="font-size:16pt; color:gray"&gt;div { &lt;span class="red"&gt;border-left: 10px solid pink;&lt;/span&gt; }&lt;/span&gt; &lt;/td&gt;
+&lt;td&gt;
+&lt;div style="border-left: 10px solid pink;"&gt;Sample text&lt;/div&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style="text-align:right;padding-right:30px;"&gt;text size:&lt;/td&gt;
+&lt;td&gt;&lt;span class="remark-code grey" style="font-size:16pt; color:gray"&gt;div { &lt;span class="red"&gt;font-size: 10pt;&lt;/span&gt; }&lt;/span&gt; &lt;/td&gt;
+&lt;td&gt;
+&lt;div style="font-size:10pt;"&gt;Sample text&lt;/div&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" style="text-align:right;padding-right:30px;"&gt;padding:&lt;/td&gt;
+&lt;td  valign="top"&gt;&lt;span class="remark-code grey" style="font-size:16pt; color:gray"&gt;div { background-color: yellow; &lt;br&gt;
+&amp;emsp;&amp;emsp;&amp;emsp;&amp;nbsp;&lt;span class="red"&gt;padding: 10px;&lt;/span&gt; }&lt;/span&gt; &lt;/td&gt;
+&lt;td&gt;
+&lt;div style="background-color: yellow;padding:10px;"&gt;Sample text&lt;/div&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" style="text-align:right;padding-right:30px;"&gt;margin:&lt;/td&gt;
+&lt;td  valign="top"&gt;&lt;span class="remark-code grey" style="font-size:16pt; color:gray"&gt;div { background-color: yellow; &lt;br&gt;
+&amp;emsp;&amp;emsp;&amp;emsp;&amp;nbsp;&lt;span class="red"&gt;margin: 10px;&lt;/span&gt; }&lt;/span&gt; &lt;/td&gt;
+&lt;td&gt;
+&lt;div style="background-color: yellow;margin:10px;"&gt;Sample text&lt;/div&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+
+---
+
+# <svg aria-hidden="true" role="img" viewBox="0 0 384 512" style="height:1em;width:0.75em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:blue;overflow:visible;position:relative;"><path d="M0 32l34.9 395.8L192 480l157.1-52.2L384 32H0zm313.1 80l-4.8 47.3L193 208.6l-.3.1h111.5l-12.8 146.6-98.2 28.7-98.8-29.2-6.4-73.9h48.9l3.2 38.3 52.6 13.3 54.7-15.4 3.7-61.6-166.3-.5v-.1l-.2.1-3.6-46.3L193.1 162l6.5-2.7H76.7L70.9 112h242.2z"/></svg> CSS Properties
+
+.center[
+```html
+&lt;div&gt;Sample text&lt;/div&gt;
+```
+]
+
+&lt;table style="width:100%"&gt;
+&lt;tr&gt;
+&lt;td valign="top" style="text-align:right;padding-right:30px;"&gt;center align text:&lt;/td&gt;
+&lt;td  valign="top"&gt;&lt;span class="remark-code grey" style="font-size:16pt; color:gray"&gt;div { background-color: yellow; &lt;br&gt;
+&amp;emsp;&amp;emsp;&amp;emsp;&amp;nbsp;padding-top: 20px;&lt;br&gt;
+&amp;emsp;&amp;emsp;&amp;emsp;&amp;nbsp;&lt;span class="red"&gt;text-align: center;&lt;/span&gt; }&lt;/span&gt; &lt;/td&gt;
+&lt;td&gt;
+&lt;div style="background-color: yellow;text-align: center;padding-top: 20px;"&gt;Sample text&lt;/div&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" style="text-align:right;padding-right:30px;"&gt;font family:&lt;/td&gt;
+&lt;td  valign="top"&gt;&lt;span class="remark-code grey" style="font-size:16pt; color:gray"&gt;div { &lt;span class="red"&gt;font-family: Marker Felt, times;&lt;/span&gt; }&lt;/span&gt; &lt;/td&gt;
+&lt;td&gt;
+&lt;div style="font-family: Marker Felt, times;"&gt;Sample text&lt;/div&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" style="text-align:right;padding-right:30px;"&gt;strike:&lt;/td&gt;
+&lt;td  valign="top"&gt;&lt;span class="remark-code grey" style="font-size:16pt; color:gray"&gt;div { &lt;span class="red"&gt;text-decoration: line-through;&lt;/span&gt; }&lt;/span&gt; &lt;/td&gt;
+&lt;td&gt;
+&lt;div style="text-decoration: line-through;"&gt;Sample text&lt;/div&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" style="text-align:right;padding-right:30px;"&gt;underline:&lt;/td&gt;
+&lt;td  valign="top"&gt;&lt;span class="remark-code grey" style="font-size:16pt; color:gray"&gt;div { &lt;span class="red"&gt;text-decoration: underline;&lt;/span&gt; }&lt;/span&gt; &lt;/td&gt;
+&lt;td&gt;
+&lt;div style="text-decoration: underline;"&gt;Sample text&lt;/div&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td valign="top" style="text-align:right;padding-right:30px;"&gt;opacity:&lt;/td&gt;
+&lt;td  valign="top"&gt;&lt;span class="remark-code grey" style="font-size:16pt; color:gray"&gt;div { &lt;span class="red"&gt;opacity: 0.3&lt;/span&gt; }&lt;/span&gt; &lt;/td&gt;
+&lt;td&gt;
+&lt;div style="opacity: 0.3;"&gt;Sample text&lt;/div&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+
+---
+
+count: false
+
+.pull-left[
+# <svg aria-hidden="true" role="img" viewBox="0 0 384 512" style="height:1em;width:0.75em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:blue;overflow:visible;position:relative;"><path d="M0 32l34.9 395.8L192 480l157.1-52.2L384 32H0zm313.1 80l-4.8 47.3L193 208.6l-.3.1h111.5l-12.8 146.6-98.2 28.7-98.8-29.2-6.4-73.9h48.9l3.2 38.3 52.6 13.3 54.7-15.4 3.7-61.6-166.3-.5v-.1l-.2.1-3.6-46.3L193.1 162l6.5-2.7H76.7L70.9 112h242.2z"/></svg> CSS Selector
+
+&lt;table class="grey" style="width:98%;margin-left:10px;margin-right:10px;"&gt;
+&lt;tr class="red"&gt;
+&lt;td class="remark-code"&gt;* &lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all elements&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code"&gt;div&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt; elements&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code"&gt;div, p&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt; and &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;p&gt;&lt;/span&gt; elements&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code"&gt;div p&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;p&gt;&lt;/span&gt; within &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code"&gt;div &gt; p&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;p&gt;&lt;/span&gt; one level deep in &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td class="remark-code"&gt;div + p&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;p&gt;&lt;/span&gt; immediately after a &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code"&gt;div ~ p&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;p&gt;&lt;/span&gt; preceded by a &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+]
+.pull-right[
+&lt;pre style="font-size: 13pt;" class="red"&gt;
+&amp;lt;h1&gt;This is a sample html&amp;lt;/h1&gt;
+
+&amp;lt;blockquote&gt;
+&amp;lt;p&gt;Maybe stories are just data with a soul.&amp;lt;/p&gt;
+&amp;lt;footer&gt;—Brene Brown&amp;lt;/footer&gt;
+&amp;lt;/blockquote&gt;
+
+&amp;lt;div id="p1" class="parent"&gt;
+Hmm
+&amp;lt;p&gt;Hi!&amp;lt;/p&gt;
+How are you? 
+&amp;lt;div class="child nice"&gt;
+  &amp;lt;p&gt;Hello!&amp;lt;/p&gt;
+&amp;lt;/div&gt;
+&amp;lt;/div&gt;
+
+&amp;lt;p&gt;Household 1&amp;lt;/p&gt;
+
+&amp;lt;div class="parent"&gt;
+&amp;lt;p&gt;Hi!&amp;lt;/p&gt;
+&amp;lt;blockquote class="child rebel"&gt;
+  &amp;lt;p&gt;Don't talk to me!&amp;lt;/p&gt;
+&amp;lt;/blockquote&gt;
+&amp;lt;/div&gt;
+
+&amp;lt;span class="child"&gt;
+&amp;lt;span class="parent child rebel"&gt;
+  &amp;lt;p&gt;Clean your room!&amp;lt;/p&gt;
+&amp;lt;/span&gt;
+&amp;lt;/span&gt;
+
+&amp;lt;p&gt;End of households&amp;lt;/p&gt;
+
+&lt;/pre&gt;
+]
+
+---
+
+count: false
+
+.pull-left[
+# <svg aria-hidden="true" role="img" viewBox="0 0 384 512" style="height:1em;width:0.75em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:blue;overflow:visible;position:relative;"><path d="M0 32l34.9 395.8L192 480l157.1-52.2L384 32H0zm313.1 80l-4.8 47.3L193 208.6l-.3.1h111.5l-12.8 146.6-98.2 28.7-98.8-29.2-6.4-73.9h48.9l3.2 38.3 52.6 13.3 54.7-15.4 3.7-61.6-166.3-.5v-.1l-.2.1-3.6-46.3L193.1 162l6.5-2.7H76.7L70.9 112h242.2z"/></svg> CSS Selector
+
+&lt;table class="grey" style="width:98%;margin-left:10px;margin-right:10px;"&gt;
+&lt;tr &gt;
+&lt;td class="remark-code"&gt;* &lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all elements&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class="red"&gt;
+&lt;td class="remark-code"&gt;div&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt; elements&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code"&gt;div, p&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt; and &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;p&gt;&lt;/span&gt; elements&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code"&gt;div p&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;p&gt;&lt;/span&gt; within &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code"&gt;div &gt; p&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;p&gt;&lt;/span&gt; one level deep in &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td class="remark-code"&gt;div + p&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;p&gt;&lt;/span&gt; immediately after a &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code"&gt;div ~ p&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;p&gt;&lt;/span&gt; preceded by a &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+]
+.pull-right[
+&lt;pre style="font-size: 13pt"&gt;
+&amp;lt;h1&gt;This is a sample html&amp;lt;/h1&gt;
+
+&amp;lt;blockquote&gt;
+&amp;lt;p&gt;Maybe stories are just data with a soul.&amp;lt;/p&gt;
+&amp;lt;footer&gt;—Brene Brown&amp;lt;/footer&gt;
+&amp;lt;/blockquote&gt;
+
+&lt;span class="red"&gt;&amp;lt;div id="p1" class="parent"&gt;
+Hmm
+&amp;lt;p&gt;Hi!&amp;lt;/p&gt;
+How are you? 
+&amp;lt;div class="child nice"&gt;
+  &amp;lt;p&gt;Hello!&amp;lt;/p&gt;
+&amp;lt;/div&gt;
+&amp;lt;/div&gt;&lt;/span&gt;
+
+&amp;lt;p&gt;Household 1&amp;lt;/p&gt;
+
+&lt;span class="red"&gt;&amp;lt;div class="parent"&gt;
+&amp;lt;p&gt;Hi!&amp;lt;/p&gt;
+&amp;lt;blockquote class="child rebel"&gt;
+  &amp;lt;p&gt;Don't talk to me!&amp;lt;/p&gt;
+&amp;lt;/blockquote&gt;
+&amp;lt;/div&gt;&lt;/span&gt;
+
+&amp;lt;span class="child"&gt;
+&amp;lt;span class="parent child rebel"&gt;
+  &amp;lt;p&gt;Clean your room!&amp;lt;/p&gt;
+&amp;lt;/span&gt;
+&amp;lt;/span&gt;
+
+&amp;lt;p&gt;End of households&amp;lt;/p&gt;
+
+&lt;/pre&gt;
+]
+
+---
+
+count: false
+
+.pull-left[
+# <svg aria-hidden="true" role="img" viewBox="0 0 384 512" style="height:1em;width:0.75em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:blue;overflow:visible;position:relative;"><path d="M0 32l34.9 395.8L192 480l157.1-52.2L384 32H0zm313.1 80l-4.8 47.3L193 208.6l-.3.1h111.5l-12.8 146.6-98.2 28.7-98.8-29.2-6.4-73.9h48.9l3.2 38.3 52.6 13.3 54.7-15.4 3.7-61.6-166.3-.5v-.1l-.2.1-3.6-46.3L193.1 162l6.5-2.7H76.7L70.9 112h242.2z"/></svg> CSS Selector
+
+&lt;table class="grey" style="width:98%;margin-left:10px;margin-right:10px;"&gt;
+&lt;tr &gt;
+&lt;td class="remark-code"&gt;* &lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all elements&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class="red"&gt;
+&lt;td class="remark-code"&gt;blockquote&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;blockquote&gt;&lt;/span&gt; elements&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code"&gt;div, p&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt; and &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;p&gt;&lt;/span&gt; elements&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code"&gt;div p&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;p&gt;&lt;/span&gt; within &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code"&gt;div &gt; p&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;p&gt;&lt;/span&gt; one level deep in &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td class="remark-code"&gt;div + p&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;p&gt;&lt;/span&gt; immediately after a &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code"&gt;div ~ p&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;p&gt;&lt;/span&gt; preceded by a &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+]
+.pull-right[
+&lt;pre style="font-size: 13pt"&gt;
+&amp;lt;h1&gt;This is a sample html&amp;lt;/h1&gt;
+
+&lt;span class="red"&gt;&amp;lt;blockquote&gt;
+&amp;lt;p&gt;Maybe stories are just data with a soul.&amp;lt;/p&gt;
+&amp;lt;footer&gt;—Brene Brown&amp;lt;/footer&gt;
+&amp;lt;/blockquote&gt;&lt;/span&gt;
+
+&amp;lt;div id="p1" class="parent"&gt;
+Hmm
+&amp;lt;p&gt;Hi!&amp;lt;/p&gt;
+How are you? 
+&amp;lt;div class="child nice"&gt;
+  &amp;lt;p&gt;Hello!&amp;lt;/p&gt;
+&amp;lt;/div&gt;
+&amp;lt;/div&gt;
+
+&amp;lt;p&gt;Household 1&amp;lt;/p&gt;
+
+&amp;lt;div class="parent"&gt;
+&amp;lt;p&gt;Hi!&amp;lt;/p&gt;
+&amp;lt;blockquote class="child rebel"&gt;
+  &amp;lt;p&gt;Don't talk to me!&amp;lt;/p&gt;
+&amp;lt;/blockquote&gt;
+&amp;lt;/div&gt;
+
+&amp;lt;span class="child"&gt;
+&amp;lt;span class="parent child rebel"&gt;
+  &amp;lt;p&gt;Clean your room!&amp;lt;/p&gt;
+&amp;lt;/span&gt;
+&amp;lt;/span&gt;
+
+&amp;lt;p&gt;End of households&amp;lt;/p&gt;
+
+&lt;/pre&gt;
+]
+
+---
+
+count: false
+
+.pull-left[
+# <svg aria-hidden="true" role="img" viewBox="0 0 384 512" style="height:1em;width:0.75em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:blue;overflow:visible;position:relative;"><path d="M0 32l34.9 395.8L192 480l157.1-52.2L384 32H0zm313.1 80l-4.8 47.3L193 208.6l-.3.1h111.5l-12.8 146.6-98.2 28.7-98.8-29.2-6.4-73.9h48.9l3.2 38.3 52.6 13.3 54.7-15.4 3.7-61.6-166.3-.5v-.1l-.2.1-3.6-46.3L193.1 162l6.5-2.7H76.7L70.9 112h242.2z"/></svg> CSS Selector
+
+&lt;table class="grey" style="width:98%;margin-left:10px;margin-right:10px;"&gt;
+&lt;tr &gt;
+&lt;td class="remark-code"&gt;* &lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all elements&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code"&gt;div&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt; elements&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class="red"&gt;
+&lt;td class="remark-code"&gt;div, p&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt; and &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;p&gt;&lt;/span&gt; elements&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code"&gt;div p&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;p&gt;&lt;/span&gt; within &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code"&gt;div &gt; p&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;p&gt;&lt;/span&gt; one level deep in &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td class="remark-code"&gt;div + p&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;p&gt;&lt;/span&gt; immediately after a &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code"&gt;div ~ p&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;p&gt;&lt;/span&gt; preceded by a &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;/table&gt;
+]
+.pull-right[
+&lt;pre style="font-size: 13pt"&gt;
+&amp;lt;h1&gt;This is a sample html&amp;lt;/h1&gt;
+
+&amp;lt;blockquote&gt;
+&lt;span class="red"&gt;&amp;lt;p&gt;Maybe stories are just data with a soul.&amp;lt;/p&gt;&lt;/span&gt;
+&amp;lt;footer&gt;—Brene Brown&amp;lt;/footer&gt;
+&amp;lt;/blockquote&gt;
+
+&lt;span class="red"&gt;&amp;lt;div id="p1" class="parent"&gt;
+Hmm
+&amp;lt;p&gt;Hi!&amp;lt;/p&gt;
+How are you? 
+&amp;lt;div class="child nice"&gt;
+  &amp;lt;p&gt;Hello!&amp;lt;/p&gt;
+&amp;lt;/div&gt;
+&amp;lt;/div&gt;&lt;/span&gt;
+
+&lt;span class="red"&gt;&amp;lt;p&gt;Household 1&amp;lt;/p&gt;&lt;/span&gt;
+
+&lt;span class="red"&gt;&amp;lt;div class="parent"&gt;
+&amp;lt;p&gt;Hi!&amp;lt;/p&gt;
+&amp;lt;blockquote class="child rebel"&gt;
+  &amp;lt;p&gt;Don't talk to me!&amp;lt;/p&gt;
+&amp;lt;/span&gt;
+&amp;lt;/div&gt;&lt;/span&gt;
+
+&amp;lt;span class="child"&gt;
+&amp;lt;span class="parent child rebel"&gt;
+  &lt;span class="red"&gt;&amp;lt;p&gt;Clean your room!&amp;lt;/p&gt;&lt;/span&gt;
+&amp;lt;/span&gt;
+&amp;lt;/span&gt;
+
+&lt;span class="red"&gt;&amp;lt;p&gt;End of households&amp;lt;/p&gt;&lt;/span&gt;
+
+&lt;/pre&gt;
+]
+
+---
+
+count: false
+
+.pull-left[
+# <svg aria-hidden="true" role="img" viewBox="0 0 384 512" style="height:1em;width:0.75em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:blue;overflow:visible;position:relative;"><path d="M0 32l34.9 395.8L192 480l157.1-52.2L384 32H0zm313.1 80l-4.8 47.3L193 208.6l-.3.1h111.5l-12.8 146.6-98.2 28.7-98.8-29.2-6.4-73.9h48.9l3.2 38.3 52.6 13.3 54.7-15.4 3.7-61.6-166.3-.5v-.1l-.2.1-3.6-46.3L193.1 162l6.5-2.7H76.7L70.9 112h242.2z"/></svg> CSS Selector
+
+&lt;table class="grey" style="width:98%;margin-left:10px;margin-right:10px;"&gt;
+&lt;tr &gt;
+&lt;td class="remark-code"&gt;* &lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all elements&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code"&gt;div&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt; elements&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code"&gt;div, p&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt; and &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;p&gt;&lt;/span&gt; elements&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class="red"&gt;
+&lt;td class="remark-code"&gt;div p&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;p&gt;&lt;/span&gt; within &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code"&gt;div &gt; p&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;p&gt;&lt;/span&gt; one level deep in &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td class="remark-code"&gt;div + p&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;p&gt;&lt;/span&gt; immediately after a &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code"&gt;div ~ p&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;p&gt;&lt;/span&gt; preceded by a &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;/table&gt;
+]
+.pull-right[
+&lt;pre style="font-size: 13pt"&gt;
+&amp;lt;h1&gt;This is a sample html&amp;lt;/h1&gt;
+
+&amp;lt;blockquote&gt;
+&amp;lt;p&gt;Maybe stories are just data with a soul.&amp;lt;/p&gt;
+&amp;lt;footer&gt;—Brene Brown&amp;lt;/footer&gt;
+&amp;lt;/blockquote&gt;
+
+&amp;lt;div id="p1" class="parent"&gt;
+Hmm
+&lt;span class="red"&gt;&amp;lt;p&gt;Hi!&amp;lt;/p&gt;&lt;/span&gt;
+How are you? 
+&amp;lt;div class="child nice"&gt;
+  &lt;span class="red"&gt;&amp;lt;p&gt;Hello!&amp;lt;/p&gt;&lt;/span&gt;
+&amp;lt;/div&gt;
+&amp;lt;/div&gt;
+
+&amp;lt;p&gt;Household 1&amp;lt;/p&gt;
+
+&amp;lt;div class="parent"&gt;
+&lt;span class="red"&gt;&amp;lt;p&gt;Hi!&amp;lt;/p&gt;&lt;/span&gt;
+&amp;lt;blockquote class="child rebel"&gt;
+  &lt;span class="red"&gt;&amp;lt;p&gt;Don't talk to me!&amp;lt;/p&gt;&lt;/span&gt;
+&amp;lt;/blockquote&gt;
+&amp;lt;/div&gt;
+
+&amp;lt;span class="child"&gt;
+&amp;lt;span class="parent child rebel"&gt;
+  &amp;lt;p&gt;Clean your room!&amp;lt;/p&gt;
+&amp;lt;/span&gt;
+&amp;lt;/span&gt;
+
+&amp;lt;p&gt;End of households&amp;lt;/p&gt;
+
+&lt;/pre&gt;
+]
+
+---
+
+count: false
+
+.pull-left[
+# <svg aria-hidden="true" role="img" viewBox="0 0 384 512" style="height:1em;width:0.75em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:blue;overflow:visible;position:relative;"><path d="M0 32l34.9 395.8L192 480l157.1-52.2L384 32H0zm313.1 80l-4.8 47.3L193 208.6l-.3.1h111.5l-12.8 146.6-98.2 28.7-98.8-29.2-6.4-73.9h48.9l3.2 38.3 52.6 13.3 54.7-15.4 3.7-61.6-166.3-.5v-.1l-.2.1-3.6-46.3L193.1 162l6.5-2.7H76.7L70.9 112h242.2z"/></svg> CSS Selector
+
+&lt;table class="grey" style="width:98%;margin-left:10px;margin-right:10px;"&gt;
+&lt;tr &gt;
+&lt;td class="remark-code"&gt;* &lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all elements&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code"&gt;div&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt; elements&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code"&gt;div, p&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt; and &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;p&gt;&lt;/span&gt; elements&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class="red"&gt;
+&lt;td class="remark-code"&gt;p div&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt; within &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;p&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code"&gt;div &gt; p&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;p&gt;&lt;/span&gt; one level deep in &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td class="remark-code"&gt;div + p&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;p&gt;&lt;/span&gt; immediately after a &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code"&gt;div ~ p&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;p&gt;&lt;/span&gt; preceded by a &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;/table&gt;
+]
+.pull-right[
+&lt;pre style="font-size: 13pt"&gt;
+&amp;lt;h1&gt;This is a sample html&amp;lt;/h1&gt;
+
+&amp;lt;blockquote&gt;
+&amp;lt;p&gt;Maybe stories are just data with a soul.&amp;lt;/p&gt;
+&amp;lt;footer&gt;—Brene Brown&amp;lt;/footer&gt;
+&amp;lt;/blockquote&gt;
+
+&amp;lt;div id="p1" class="parent"&gt;
+Hmm
+&amp;lt;p&gt;Hi!&amp;lt;/p&gt;
+How are you? 
+&amp;lt;div class="child nice"&gt;
+  &amp;lt;p&gt;Hello!&amp;lt;/p&gt;
+&amp;lt;/div&gt;
+&amp;lt;/div&gt;
+
+&amp;lt;p&gt;Household 1&amp;lt;/p&gt;
+
+&amp;lt;div class="parent"&gt;
+&amp;lt;p&gt;Hi!&amp;lt;/p&gt;
+&amp;lt;blockquote class="child rebel"&gt;
+  &amp;lt;p&gt;Don't talk to me!&amp;lt;/p&gt;
+&amp;lt;/blockquote&gt;
+&amp;lt;/div&gt;
+
+&amp;lt;span class="child"&gt;
+&amp;lt;span class="parent child rebel"&gt;
+  &amp;lt;p&gt;Clean your room!&amp;lt;/p&gt;
+&amp;lt;/span&gt;
+&amp;lt;/span&gt;
+
+&amp;lt;p&gt;End of households&amp;lt;/p&gt;
+
+&lt;/pre&gt;
+]
+
+---
+
+count: false
+
+.pull-left[
+# <svg aria-hidden="true" role="img" viewBox="0 0 384 512" style="height:1em;width:0.75em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:blue;overflow:visible;position:relative;"><path d="M0 32l34.9 395.8L192 480l157.1-52.2L384 32H0zm313.1 80l-4.8 47.3L193 208.6l-.3.1h111.5l-12.8 146.6-98.2 28.7-98.8-29.2-6.4-73.9h48.9l3.2 38.3 52.6 13.3 54.7-15.4 3.7-61.6-166.3-.5v-.1l-.2.1-3.6-46.3L193.1 162l6.5-2.7H76.7L70.9 112h242.2z"/></svg> CSS Selector
+
+&lt;table class="grey" style="width:98%;margin-left:10px;margin-right:10px;"&gt;
+&lt;tr &gt;
+&lt;td class="remark-code"&gt;* &lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all elements&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code"&gt;div&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt; elements&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code"&gt;div, p&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt; and &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;p&gt;&lt;/span&gt; elements&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr &gt;
+&lt;td class="remark-code"&gt;div p&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;p&gt;&lt;/span&gt; within &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class="red"&gt;
+&lt;td class="remark-code"&gt;div &gt; p&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;p&gt;&lt;/span&gt; one level deep in &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr valign="top"&gt;
+&lt;td class="remark-code"&gt;div + p&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;p&gt;&lt;/span&gt; immediately after a &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code"&gt;div ~ p&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;p&gt;&lt;/span&gt; preceded by a &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;/table&gt;
+]
+.pull-right[
+&lt;pre style="font-size: 13pt"&gt;
+&amp;lt;h1&gt;This is a sample html&amp;lt;/h1&gt;
+
+&amp;lt;blockquote&gt;
+&amp;lt;p&gt;Maybe stories are just data with a soul.&amp;lt;/p&gt;
+&amp;lt;footer&gt;—Brene Brown&amp;lt;/footer&gt;
+&amp;lt;/blockquote&gt;
+
+&amp;lt;div id="p1" class="parent"&gt;
+Hmm
+&lt;span class="red"&gt;&amp;lt;p&gt;Hi!&amp;lt;/p&gt;&lt;/span&gt;
+How are you? 
+&amp;lt;div class="child nice"&gt;
+  &lt;span class="red"&gt;&amp;lt;p&gt;Hello!&amp;lt;/p&gt;&lt;/span&gt;
+&amp;lt;/div&gt;
+&amp;lt;/div&gt;
+
+&amp;lt;p&gt;Household 1&amp;lt;/p&gt;
+
+&amp;lt;div class="parent"&gt;
+&lt;span class="red"&gt;&amp;lt;p&gt;Hi!&amp;lt;/p&gt;&lt;/span&gt;
+&amp;lt;blockquote class="child rebel"&gt;
+  &amp;lt;p&gt;Don't talk to me!&amp;lt;/p&gt;
+&amp;lt;/blockquote&gt;
+&amp;lt;/div&gt;
+
+&amp;lt;span class="child"&gt;
+&amp;lt;span class="parent child rebel"&gt;
+  &amp;lt;p&gt;Clean your room!&amp;lt;/p&gt;
+&amp;lt;/span&gt;
+&amp;lt;/span&gt;
+
+&amp;lt;p&gt;End of households&amp;lt;/p&gt;
+
+&lt;/pre&gt;
+]
+
+&lt;div style="position:absolute;top:10px;left:900px;width:300px;background-color:white;border:1px solid black;font-size:16pt;padding:2px;"&gt;
+&lt;i class="fas fa-exclamation-triangle"&gt;&lt;/i&gt; Ignores inline elements like &lt;code&gt;span&lt;/code&gt;, &lt;code&gt;i&lt;/code&gt;, &lt;code&gt;b&lt;/code&gt;,...
+&lt;/div&gt;
+
+
+---
+
+count: false
+
+.pull-left[
+# <svg aria-hidden="true" role="img" viewBox="0 0 384 512" style="height:1em;width:0.75em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:blue;overflow:visible;position:relative;"><path d="M0 32l34.9 395.8L192 480l157.1-52.2L384 32H0zm313.1 80l-4.8 47.3L193 208.6l-.3.1h111.5l-12.8 146.6-98.2 28.7-98.8-29.2-6.4-73.9h48.9l3.2 38.3 52.6 13.3 54.7-15.4 3.7-61.6-166.3-.5v-.1l-.2.1-3.6-46.3L193.1 162l6.5-2.7H76.7L70.9 112h242.2z"/></svg> CSS Selector
+
+&lt;table class="grey" style="width:98%;margin-left:10px;margin-right:10px;"&gt;
+&lt;tr &gt;
+&lt;td class="remark-code"&gt;* &lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all elements&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code"&gt;div&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt; elements&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code"&gt;div, p&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt; and &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;p&gt;&lt;/span&gt; elements&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr &gt;
+&lt;td class="remark-code"&gt;div p&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;p&gt;&lt;/span&gt; within &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code"&gt;div &gt; p&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;p&gt;&lt;/span&gt; one level deep in &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr  valign="top" class="red"&gt;
+&lt;td class="remark-code"&gt;div + p&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;p&gt;&lt;/span&gt; immediately after a &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code"&gt;div ~ p&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;p&gt;&lt;/span&gt; preceded by a &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;/table&gt;
+]
+.pull-right[
+&lt;pre style="font-size: 13pt"&gt;
+&amp;lt;h1&gt;This is a sample html&amp;lt;/h1&gt;
+
+&amp;lt;blockquote&gt;
+&amp;lt;p&gt;Maybe stories are just data with a soul.&amp;lt;/p&gt;
+&amp;lt;footer&gt;—Brene Brown&amp;lt;/footer&gt;
+&amp;lt;/blockquote&gt;
+
+&amp;lt;div id="p1" class="parent"&gt;
+Hmm
+&amp;lt;p&gt;Hi!&amp;lt;/p&gt;
+How are you? 
+&amp;lt;div class="child nice"&gt;
+  &amp;lt;p&gt;Hello!&amp;lt;/p&gt;
+&amp;lt;/div&gt;
+&amp;lt;/div&gt;
+
+&lt;span class="red"&gt;&amp;lt;p&gt;Household 1&amp;lt;/p&gt;&lt;/span&gt;
+
+&amp;lt;div class="parent"&gt;
+&amp;lt;p&gt;Hi!&amp;lt;/p&gt;
+&amp;lt;blockquote class="child rebel"&gt;
+  &amp;lt;p&gt;Don't talk to me!&amp;lt;/p&gt;
+&amp;lt;/blockquote&gt;
+&amp;lt;/div&gt;
+
+&amp;lt;span class="child"&gt;
+&amp;lt;span class="parent child rebel"&gt;
+  &lt;span class="red"&gt;&amp;lt;p&gt;Clean your room!&amp;lt;/p&gt;&lt;/span&gt;
+&amp;lt;/span&gt;
+&amp;lt;/span&gt;
+
+&amp;lt;p&gt;End of households&amp;lt;/p&gt;
+
+&lt;/pre&gt;
+]
+
+&lt;div style="position:absolute;top:10px;left:900px;width:300px;background-color:white;border:1px solid black;font-size:16pt;padding:2px;"&gt;
+&lt;i class="fas fa-exclamation-triangle"&gt;&lt;/i&gt; Ignores inline elements like &lt;code&gt;span&lt;/code&gt;, &lt;code&gt;i&lt;/code&gt;, &lt;code&gt;b&lt;/code&gt;,...
+&lt;/div&gt;
+
+---
+
+count: false
+
+.pull-left[
+# <svg aria-hidden="true" role="img" viewBox="0 0 384 512" style="height:1em;width:0.75em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:blue;overflow:visible;position:relative;"><path d="M0 32l34.9 395.8L192 480l157.1-52.2L384 32H0zm313.1 80l-4.8 47.3L193 208.6l-.3.1h111.5l-12.8 146.6-98.2 28.7-98.8-29.2-6.4-73.9h48.9l3.2 38.3 52.6 13.3 54.7-15.4 3.7-61.6-166.3-.5v-.1l-.2.1-3.6-46.3L193.1 162l6.5-2.7H76.7L70.9 112h242.2z"/></svg> CSS Selector
+
+&lt;table class="grey" style="width:98%;margin-left:10px;margin-right:10px;"&gt;
+&lt;tr &gt;
+&lt;td class="remark-code"&gt;* &lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all elements&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code"&gt;div&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt; elements&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code"&gt;div, p&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt; and &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;p&gt;&lt;/span&gt; elements&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr &gt;
+&lt;td class="remark-code"&gt;div p&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;p&gt;&lt;/span&gt; within &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code"&gt;div &gt; p&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;p&gt;&lt;/span&gt; one level deep in &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code"&gt;div + p&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;p&gt;&lt;/span&gt; immediately after a &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class="red"&gt;
+&lt;td class="remark-code"&gt;div ~ p&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;p&gt;&lt;/span&gt; preceded by a &lt;span class="remark-code" style="font-size:16pt"&gt;&amp;lt;div&gt;&lt;/span&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+]
+.pull-right[
+&lt;pre style="font-size: 13pt"&gt;
+&amp;lt;h1&gt;This is a sample html&amp;lt;/h1&gt;
+
+&amp;lt;blockquote&gt;
+&amp;lt;p&gt;Maybe stories are just data with a soul.&amp;lt;/p&gt;
+&amp;lt;footer&gt;—Brene Brown&amp;lt;/footer&gt;
+&amp;lt;/blockquote&gt;
+
+&amp;lt;div id="p1" class="parent"&gt;
+Hmm
+&amp;lt;p&gt;Hi!&amp;lt;/p&gt;
+How are you? 
+&amp;lt;div class="child nice"&gt;
+  &amp;lt;p&gt;Hello!&amp;lt;/p&gt;
+&amp;lt;/div&gt;
+&amp;lt;/div&gt;
+
+&lt;span class="red"&gt;&amp;lt;p&gt;Household 1&amp;lt;/p&gt;&lt;/span&gt;
+
+&amp;lt;div class="parent"&gt;
+&amp;lt;p&gt;Hi!&amp;lt;/p&gt;
+&amp;lt;blockquote class="child rebel"&gt;
+  &amp;lt;p&gt;Don't talk to me!&amp;lt;/p&gt;
+&amp;lt;/blockquote&gt;
+&amp;lt;/div&gt;
+
+&amp;lt;span class="child"&gt;
+&amp;lt;span class="parent child rebel"&gt;
+  &lt;span class="red"&gt;&amp;lt;p&gt;Clean your room!&amp;lt;/p&gt;&lt;/span&gt;
+&amp;lt;/span&gt;
+&amp;lt;/span&gt;
+
+&lt;span class="red"&gt;&amp;lt;p&gt;End of households&amp;lt;/p&gt;&lt;/span&gt;
+
+&lt;/pre&gt;
+]
+
+---
+
+count: false
+
+.pull-left[
+# <svg aria-hidden="true" role="img" viewBox="0 0 384 512" style="height:1em;width:0.75em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:blue;overflow:visible;position:relative;"><path d="M0 32l34.9 395.8L192 480l157.1-52.2L384 32H0zm313.1 80l-4.8 47.3L193 208.6l-.3.1h111.5l-12.8 146.6-98.2 28.7-98.8-29.2-6.4-73.9h48.9l3.2 38.3 52.6 13.3 54.7-15.4 3.7-61.6-166.3-.5v-.1l-.2.1-3.6-46.3L193.1 162l6.5-2.7H76.7L70.9 112h242.2z"/></svg> CSS Selector
+
+&lt;table class="grey" style="width:98%;margin-left:10px;margin-right:10px;"&gt;
+&lt;tr&gt;
+&lt;td class="remark-code" valign="top"&gt;.classname&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all elements with the attribute &lt;span class="remark-code" style="font-size:16pt"&gt;class="classname"&lt;/span&gt;. &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code" valign="top"&gt;.c1.c2&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all elements with &lt;em&gt;both&lt;/em&gt; &lt;span class="remark-code" style="font-size:16pt"&gt;c1&lt;/span&gt; and &lt;span class="remark-code" style="font-size:16pt"&gt;c2&lt;/span&gt; within its class attribute. &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code" valign="top"&gt;.c1 .c2&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all elements with  class &lt;span class="remark-code" style="font-size:16pt"&gt;c2&lt;/span&gt; that is a descendant of an element with class &lt;span class="remark-code" style="font-size:16pt"&gt;c1&lt;/span&gt;. &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code" valign="top"&gt;#idname&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all elements with the attribute &lt;span class="remark-code" style="font-size:16pt"&gt;id="idname"&lt;/span&gt;. &lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+]
+.pull-right[
+&lt;pre style="font-size: 13pt"&gt;
+&amp;lt;h1&gt;This is a sample html&amp;lt;/h1&gt;
+
+&amp;lt;blockquote&gt;
+&amp;lt;p&gt;Maybe stories are just data with a soul.&amp;lt;/p&gt;
+&amp;lt;footer&gt;—Brene Brown&amp;lt;/footer&gt;
+&amp;lt;/blockquote&gt;
+
+&amp;lt;div id="p1" class="parent"&gt;
+Hmm
+&amp;lt;p&gt;Hi!&amp;lt;/p&gt;
+How are you? 
+&amp;lt;div class="child nice"&gt;
+  &amp;lt;p&gt;Hello!&amp;lt;/p&gt;
+&amp;lt;/div&gt;
+&amp;lt;/div&gt;
+
+&amp;lt;p&gt;Household 1&amp;lt;/p&gt;
+
+&amp;lt;div class="parent"&gt;
+&amp;lt;p&gt;Hi!&amp;lt;/p&gt;
+&amp;lt;blockquote class="child rebel"&gt;
+  &amp;lt;p&gt;Don't talk to me!&amp;lt;/p&gt;
+&amp;lt;/blockquote&gt;
+&amp;lt;/div&gt;
+
+&amp;lt;span class="child"&gt;
+&amp;lt;span class="parent child rebel"&gt;&lt;/span&gt;
+  &amp;lt;p&gt;Clean your room!&amp;lt;/p&gt;
+&amp;lt;/span&gt;&lt;/span&gt;
+&amp;lt;/span&gt;
+
+&amp;lt;p&gt;End of households&amp;lt;/p&gt;
+
+&lt;/pre&gt;
+]
+
+---
+
+count: false
+
+.pull-left[
+# <svg aria-hidden="true" role="img" viewBox="0 0 384 512" style="height:1em;width:0.75em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:blue;overflow:visible;position:relative;"><path d="M0 32l34.9 395.8L192 480l157.1-52.2L384 32H0zm313.1 80l-4.8 47.3L193 208.6l-.3.1h111.5l-12.8 146.6-98.2 28.7-98.8-29.2-6.4-73.9h48.9l3.2 38.3 52.6 13.3 54.7-15.4 3.7-61.6-166.3-.5v-.1l-.2.1-3.6-46.3L193.1 162l6.5-2.7H76.7L70.9 112h242.2z"/></svg> CSS Selector
+
+&lt;table class="grey" style="width:98%;margin-left:10px;margin-right:10px;"&gt;
+&lt;tr class="red"&gt;
+&lt;td class="remark-code" valign="top"&gt;.parent&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all elements with the attribute &lt;span class="remark-code" style="font-size:16pt"&gt;class="parent"&lt;/span&gt;. &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code" valign="top"&gt;.c1.c2&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all elements with &lt;em&gt;both&lt;/em&gt; &lt;span class="remark-code" style="font-size:16pt"&gt;c1&lt;/span&gt; and &lt;span class="remark-code" style="font-size:16pt"&gt;c2&lt;/span&gt; within its class attribute. &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code" valign="top"&gt;.c1 .c2&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all elements with  class &lt;span class="remark-code" style="font-size:16pt"&gt;c2&lt;/span&gt; that is a descendant of an element with class &lt;span class="remark-code" style="font-size:16pt"&gt;c1&lt;/span&gt;. &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code" valign="top"&gt;#idname&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all elements with the attribute &lt;span class="remark-code" style="font-size:16pt"&gt;id="idname"&lt;/span&gt;. &lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+
+&lt;div style="position:absolute;top:10px;left:900px;width:300px;background-color:white;border:1px solid black;font-size:16pt;padding:2px;"&gt;
+&lt;i class="fas fa-exclamation-triangle"&gt;&lt;/i&gt; Note some offspring do not inherit class from their parents.
+&lt;/div&gt;
+]
+.pull-right[
+&lt;pre style="font-size: 13pt"&gt;
+&amp;lt;h1&gt;This is a sample html&amp;lt;/h1&gt;
+
+&amp;lt;blockquote&gt;
+&amp;lt;p&gt;Maybe stories are just data with a soul.&amp;lt;/p&gt;
+&amp;lt;footer&gt;—Brene Brown&amp;lt;/footer&gt;
+&amp;lt;/blockquote&gt;
+
+&lt;span class="red"&gt;&amp;lt;div id="p1" class="parent"&gt;
+Hmm
+&amp;lt;p&gt;Hi!&amp;lt;/p&gt;
+How are you? 
+&amp;lt;div class="child nice"&gt;
+  &amp;lt;p&gt;Hello!&amp;lt;/p&gt;
+&amp;lt;/div&gt;
+&amp;lt;/div&gt;&lt;/span&gt;
+
+&amp;lt;p&gt;Household 1&amp;lt;/p&gt;
+
+&lt;span class="red"&gt;&amp;lt;div class="parent"&gt;
+&amp;lt;p&gt;Hi!&amp;lt;/p&gt;
+&amp;lt;blockquote class="child rebel"&gt;
+  &amp;lt;p&gt;Don't talk to me!&amp;lt;/p&gt;
+&amp;lt;/blockquote&gt;
+&amp;lt;/div&gt;&lt;/span&gt;
+
+&amp;lt;span class="child"&gt;
+&lt;span class="red"&gt;&amp;lt;span class="parent child rebel"&gt;&lt;/span&gt;
+  &amp;lt;p&gt;Clean your room!&amp;lt;/p&gt;
+&lt;span class="red"&gt;&amp;lt;/span&gt;&lt;/span&gt;
+&amp;lt;/span&gt;
+
+&amp;lt;p&gt;End of households&amp;lt;/p&gt;
+
+&lt;/pre&gt;
+]
+
+---
+
+count: false
+
+.pull-left[
+# <svg aria-hidden="true" role="img" viewBox="0 0 384 512" style="height:1em;width:0.75em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:blue;overflow:visible;position:relative;"><path d="M0 32l34.9 395.8L192 480l157.1-52.2L384 32H0zm313.1 80l-4.8 47.3L193 208.6l-.3.1h111.5l-12.8 146.6-98.2 28.7-98.8-29.2-6.4-73.9h48.9l3.2 38.3 52.6 13.3 54.7-15.4 3.7-61.6-166.3-.5v-.1l-.2.1-3.6-46.3L193.1 162l6.5-2.7H76.7L70.9 112h242.2z"/></svg> CSS Selector
+
+&lt;table class="grey" style="width:98%;margin-left:10px;margin-right:10px;"&gt;
+&lt;td class="remark-code" valign="top"&gt;.classname&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all elements with the attribute &lt;span class="remark-code" style="font-size:16pt"&gt;class="classname"&lt;/span&gt;. &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class="red"&gt;
+&lt;td class="remark-code" valign="top"&gt;.child.rebel&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all elements with &lt;em&gt;both&lt;/em&gt; &lt;span class="remark-code" style="font-size:16pt"&gt;child&lt;/span&gt; and &lt;span class="remark-code" style="font-size:16pt"&gt;rebel&lt;/span&gt; within its class attribute. &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code" valign="top"&gt;.c1 .c2&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all elements with  class &lt;span class="remark-code" style="font-size:16pt"&gt;c2&lt;/span&gt; that is a descendant of an element with class &lt;span class="remark-code" style="font-size:16pt"&gt;c1&lt;/span&gt;. &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code" valign="top"&gt;#idname&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all elements with the attribute &lt;span class="remark-code" style="font-size:16pt"&gt;id="idname"&lt;/span&gt;. &lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+]
+.pull-right[
+&lt;pre style="font-size: 13pt"&gt;
+&amp;lt;h1&gt;This is a sample html&amp;lt;/h1&gt;
+
+&amp;lt;blockquote&gt;
+&amp;lt;p&gt;Maybe stories are just data with a soul.&amp;lt;/p&gt;
+&amp;lt;footer&gt;—Brene Brown&amp;lt;/footer&gt;
+&amp;lt;/blockquote&gt;
+
+&amp;lt;div id="p1" class="parent"&gt;
+Hmm
+&amp;lt;p&gt;Hi!&amp;lt;/p&gt;
+How are you?
+&amp;lt;div class="child nice"&gt;
+  &amp;lt;p&gt;Hello!&amp;lt;/p&gt;
+&amp;lt;/div&gt;
+&amp;lt;/div&gt;
+
+&amp;lt;p&gt;Household 1&amp;lt;/p&gt;
+
+&amp;lt;div class="parent"&gt;
+&amp;lt;p&gt;Hi!&amp;lt;/p&gt;
+&lt;span class="red"&gt;&amp;lt;blockquote class="child rebel"&gt;
+  &amp;lt;p&gt;Don't talk to me!&amp;lt;/p&gt;
+&amp;lt;/blockquote&gt;&lt;/span&gt;
+&amp;lt;/div&gt;
+
+&amp;lt;span class="child"&gt;
+&lt;span class="red"&gt;&amp;lt;span class="parent child rebel"&gt;&lt;/span&gt;
+  &amp;lt;p&gt;Clean your room!&amp;lt;/p&gt;
+&lt;span class="red"&gt;&amp;lt;/span&gt;&lt;/span&gt;
+&amp;lt;/span&gt;
+
+&amp;lt;p&gt;End of households&amp;lt;/p&gt;
+
+&lt;/pre&gt;
+]
+
+---
+
+count: false
+
+.pull-left[
+# <svg aria-hidden="true" role="img" viewBox="0 0 384 512" style="height:1em;width:0.75em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:blue;overflow:visible;position:relative;"><path d="M0 32l34.9 395.8L192 480l157.1-52.2L384 32H0zm313.1 80l-4.8 47.3L193 208.6l-.3.1h111.5l-12.8 146.6-98.2 28.7-98.8-29.2-6.4-73.9h48.9l3.2 38.3 52.6 13.3 54.7-15.4 3.7-61.6-166.3-.5v-.1l-.2.1-3.6-46.3L193.1 162l6.5-2.7H76.7L70.9 112h242.2z"/></svg> CSS Selector
+
+&lt;table class="grey" style="width:98%;margin-left:10px;margin-right:10px;"&gt;
+&lt;tr&gt;
+&lt;td class="remark-code" valign="top"&gt;.classname&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all elements with the attribute &lt;span class="remark-code" style="font-size:16pt"&gt;class="classname"&lt;/span&gt;. &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code" valign="top"&gt;.c1.c2&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all elements with &lt;em&gt;both&lt;/em&gt; &lt;span class="remark-code" style="font-size:16pt"&gt;c1&lt;/span&gt; and &lt;span class="remark-code" style="font-size:16pt"&gt;c2&lt;/span&gt; within its class attribute. &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class="red"&gt;
+&lt;td class="remark-code" valign="top"&gt;.parent .rebel&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all elements with  class &lt;span class="remark-code" style="font-size:16pt"&gt;rebel&lt;/span&gt; that is a descendant of an element with class &lt;span class="remark-code" style="font-size:16pt"&gt;parent&lt;/span&gt;. &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code" valign="top"&gt;#idname&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all elements with the attribute &lt;span class="remark-code" style="font-size:16pt"&gt;id="idname"&lt;/span&gt;. &lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+]
+.pull-right[
+&lt;pre style="font-size: 13pt"&gt;
+&amp;lt;h1&gt;This is a sample html&amp;lt;/h1&gt;
+
+&amp;lt;blockquote&gt;
+&amp;lt;p&gt;Maybe stories are just data with a soul.&amp;lt;/p&gt;
+&amp;lt;footer&gt;—Brene Brown&amp;lt;/footer&gt;
+&amp;lt;/blockquote&gt;
+
+&amp;lt;div id="p1" class="parent"&gt;
+Hmm
+&amp;lt;p&gt;Hi!&amp;lt;/p&gt;
+How are you?
+&amp;lt;div class="child nice"&gt;
+  &amp;lt;p&gt;Hello!&amp;lt;/p&gt;
+&amp;lt;/div&gt;
+&amp;lt;/div&gt;
+
+&amp;lt;p&gt;Household 1&amp;lt;/p&gt;
+
+&amp;lt;div class="parent"&gt;
+&amp;lt;p&gt;Hi!&amp;lt;/p&gt;
+&lt;span class="red"&gt;&amp;lt;blockquote class="child rebel"&gt;
+  &amp;lt;p&gt;Don't talk to me!&amp;lt;/p&gt;
+&amp;lt;/blockquote&gt;&lt;/span&gt;
+&amp;lt;/div&gt;
+
+&amp;lt;span class="child"&gt;
+&amp;lt;span class="parent child rebel"&gt;
+  &amp;lt;p&gt;Clean your room!&amp;lt;/p&gt;
+&amp;lt;/span&gt;
+&amp;lt;/span&gt;
+
+&amp;lt;p&gt;End of households&amp;lt;/p&gt;
+
+&lt;/pre&gt;
+]
+
+---
+
+count: false
+
+.pull-left[
+# <svg aria-hidden="true" role="img" viewBox="0 0 384 512" style="height:1em;width:0.75em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:blue;overflow:visible;position:relative;"><path d="M0 32l34.9 395.8L192 480l157.1-52.2L384 32H0zm313.1 80l-4.8 47.3L193 208.6l-.3.1h111.5l-12.8 146.6-98.2 28.7-98.8-29.2-6.4-73.9h48.9l3.2 38.3 52.6 13.3 54.7-15.4 3.7-61.6-166.3-.5v-.1l-.2.1-3.6-46.3L193.1 162l6.5-2.7H76.7L70.9 112h242.2z"/></svg> CSS Selector
+
+&lt;table class="grey" style="width:98%;margin-left:10px;margin-right:10px;"&gt;
+&lt;td class="remark-code" valign="top"&gt;.classname&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all elements with the attribute &lt;span class="remark-code" style="font-size:16pt"&gt;class="classname"&lt;/span&gt;. &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code" valign="top"&gt;.c1.c2&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all elements with &lt;em&gt;both&lt;/em&gt; &lt;span class="remark-code" style="font-size:16pt"&gt;c1&lt;/span&gt; and &lt;span class="remark-code" style="font-size:16pt"&gt;c2&lt;/span&gt; within its class attribute. &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="remark-code" valign="top"&gt;.c1 .c2&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all elements with  class &lt;span class="remark-code" style="font-size:16pt"&gt;c2&lt;/span&gt; that is a descendant of an element with class &lt;span class="remark-code" style="font-size:16pt"&gt;c1&lt;/span&gt;. &lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class="red"&gt;
+&lt;td class="remark-code" valign="top"&gt;#p1&lt;/td&gt;&lt;td&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;&lt;td&gt;selects all elements with the attribute &lt;span class="remark-code" style="font-size:16pt"&gt;id="p1"&lt;/span&gt;. &lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+]
+.pull-right[
+&lt;pre style="font-size: 13pt"&gt;
+&amp;lt;h1&gt;This is a sample html&amp;lt;/h1&gt;
+
+&amp;lt;blockquote&gt;
+&amp;lt;p&gt;Maybe stories are just data with a soul.&amp;lt;/p&gt;
+&amp;lt;footer&gt;—Brene Brown&amp;lt;/footer&gt;
+&amp;lt;/blockquote&gt;
+
+&lt;span class="red"&gt;&amp;lt;div id="p1" class="parent"&gt;
+Hmm
+&amp;lt;p&gt;Hi!&amp;lt;/p&gt;
+How are you?
+&amp;lt;div class="child nice"&gt;
+  &amp;lt;p&gt;Hello!&amp;lt;/p&gt;
+&amp;lt;/div&gt;
+&amp;lt;/div&gt;&lt;/span&gt;
+
+&amp;lt;p&gt;Household 1&amp;lt;/p&gt;
+
+&amp;lt;div class="parent"&gt;
+&amp;lt;p&gt;Hi!&amp;lt;/p&gt;
+&amp;lt;blockquote class="child rebel"&gt;
+  &amp;lt;p&gt;Don't talk to me!&amp;lt;/p&gt;
+&amp;lt;/blockquote&gt;
+&amp;lt;/div&gt;
+
+&amp;lt;span class="child"&gt;
+&amp;lt;span class="parent child rebel"&gt;
+  &amp;lt;p&gt;Clean your room!&amp;lt;/p&gt;
+&amp;lt;/span&gt;
+&amp;lt;/span&gt;
+
+&amp;lt;p&gt;End of households&amp;lt;/p&gt;
+
+&lt;/pre&gt;
+]
+
+&lt;div style="position:absolute;top:10px;left:900px;width:300px;background-color:white;border:1px solid black;font-size:16pt;padding:2px;"&gt;
+&lt;i class="fas fa-exclamation-triangle"&gt;&lt;/i&gt; Unlike &lt;code style="font-size:16pt"&gt;class&lt;/code&gt;, you can only have one &lt;code style="font-size:16pt"&gt;id&lt;/code&gt; value and must be unique in the whole HTML document.
+&lt;/div&gt;
+
+---
+
+# <svg aria-hidden="true" role="img" viewBox="0 0 448 512" style="height:1em;width:0.88em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:gold;overflow:visible;position:relative;"><path d="M400 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48zM243.8 381.4c0 43.6-25.6 63.5-62.9 63.5-33.7 0-53.2-17.4-63.2-38.5l34.3-20.7c6.6 11.7 12.6 21.6 27.1 21.6 13.8 0 22.6-5.4 22.6-26.5V237.7h42.1v143.7zm99.6 63.5c-39.1 0-64.4-18.6-76.7-43l34.3-19.8c9 14.7 20.8 25.6 41.5 25.6 17.4 0 28.6-8.7 28.6-20.8 0-14.4-11.4-19.5-30.7-28l-10.5-4.5c-30.4-12.9-50.5-29.2-50.5-63.5 0-31.6 24.1-55.6 61.6-55.6 26.8 0 46 9.3 59.8 33.7L368 290c-7.2-12.9-15-18-27.1-18-12.3 0-20.1 7.8-20.1 18 0 12.6 7.8 17.7 25.9 25.6l10.5 4.5c35.8 15.3 55.9 31 55.9 66.2 0 37.8-29.8 58.6-69.7 58.6z"/></svg> JavaScript (JS)*
+
+* JS is a programming language and enable interactive components in HTML documents.
+* 2 ways to insert JS into a HTML document:
+  + **internally** by defining within `&lt;script&gt;` element:
+```html
+  &lt;script&gt;
+  document.getElementById("p1").innerHTML = "content";
+  &lt;/script&gt;
+```
+  + **externally** by using the `src` attribute to refer to the external file:
+```html
+  &lt;script src="js/myjs.js"&gt;&lt;/script&gt;
+```
+
+---
+
+class: inverse, center, middle
+
+# Web Scraping 🕸
+
+---
+
+
+
+
+# rvest: Step 1 - Reading Static HTML Pages in R
+
+.pull-left[
+.center[
+&lt;img src="figures/browser_isa_courses.PNG" width="100%" style="display: block; margin: auto;" /&gt;
+]
+]
+.pull-right[
+Use {rvest} `&gt;= v1.0.2` (if not, update)
+
+&lt;img src="figures/rvest.PNG" width="100%" style="display: block; margin: auto;" /&gt;
+
+&lt;br&gt; 
+
+
+```r
+if(require(pacman)==FALSE) install.packages("pacman")
+pacman::p_load(rvest)
+isa_courses = read_html("http://bulletin.miamioh.edu/courses-instruction/isa/")
+isa_courses
+```
+
+```
+## {html_document}
+## &lt;html xml:lang="en" lang="en" dir="ltr"&gt;
+## [1] &lt;head&gt;\n&lt;title&gt;Information System ...
+## [2] &lt;body&gt;\n\n\n\n\n\n&lt;!-- Google Tag ...
+```
+]
+
+
+---
+
+# rvest: Step 2 - Selecting HTML Elements
+
+.pull-left[
+
+## <svg aria-hidden="true" role="img" viewBox="0 0 512 512" style="height:1em;width:1em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:currentColor;overflow:visible;position:relative;"><path d="M304 192v32c0 6.6-5.4 12-12 12h-56v56c0 6.6-5.4 12-12 12h-32c-6.6 0-12-5.4-12-12v-56h-56c-6.6 0-12-5.4-12-12v-32c0-6.6 5.4-12 12-12h56v-56c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v56h56c6.6 0 12 5.4 12 12zm201 284.7L476.7 505c-9.4 9.4-24.6 9.4-33.9 0L343 405.3c-4.5-4.5-7-10.6-7-17V372c-35.3 27.6-79.7 44-128 44C93.1 416 0 322.9 0 208S93.1 0 208 0s208 93.1 208 208c0 48.3-16.4 92.7-44 128h16.3c6.4 0 12.5 2.5 17 7l99.7 99.7c9.3 9.4 9.3 24.6 0 34zM344 208c0-75.2-60.8-136-136-136S72 132.8 72 208s60.8 136 136 136 136-60.8 136-136z"/></svg> Inspector
+&lt;br&gt;
+.center[
+&lt;img src="figures/browser_isa_courses_titles_inspector.png" width="564" style="display: block; margin: auto;" /&gt;
+]
+]
+.pull-right[
+## <svg aria-hidden="true" role="img" viewBox="0 0 576 512" style="height:1em;width:1.12em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:currentColor;overflow:visible;position:relative;"><path d="M519.442 288.651c-41.519 0-59.5 31.593-82.058 31.593C377.409 320.244 432 144 432 144s-196.288 80-196.288-3.297c0-35.827 36.288-46.25 36.288-85.985C272 19.216 243.885 0 210.539 0c-34.654 0-66.366 18.891-66.366 56.346 0 41.364 31.711 59.277 31.711 81.75C175.885 207.719 0 166.758 0 166.758v333.237s178.635 41.047 178.635-28.662c0-22.473-40-40.107-40-81.471 0-37.456 29.25-56.346 63.577-56.346 33.673 0 61.788 19.216 61.788 54.717 0 39.735-36.288 50.158-36.288 85.985 0 60.803 129.675 25.73 181.23 25.73 0 0-34.725-120.101 25.827-120.101 35.962 0 46.423 36.152 86.308 36.152C556.712 416 576 387.99 576 354.443c0-34.199-18.962-65.792-56.558-65.792z"/></svg> [Selector Gadget](https://selectorgadget.com/)
+&lt;br&gt;
+.center[
+&lt;img src="figures/browser_isa_courses_titles.PNG" width="567" style="display: block; margin: auto;" /&gt;
+]
+]
+
+
+---
+
+class: middle
+
+# rvest: Step 2 -  Selecting HTML Elements
+
+.pull-left[
+.center[
+&lt;img src="figures/browser_isa_courses_titles.PNG" width="567" style="display: block; margin: auto;" /&gt;
+]
+]
+
+.pull-right[
+
+```r
+isa_course_titles = isa_courses %&gt;% 
+  html_elements(css = "p.courseblocktitle")
+
+isa_course_titles
+```
+
+```
+## {xml_nodeset (55)}
+##  [1] &lt;p class="courseblocktitle"&gt;&lt;str ...
+##  [2] &lt;p class="courseblocktitle"&gt;&lt;str ...
+##  [3] &lt;p class="courseblocktitle"&gt;&lt;str ...
+##  [4] &lt;p class="courseblocktitle"&gt;&lt;str ...
+##  [5] &lt;p class="courseblocktitle"&gt;&lt;str ...
+##  [6] &lt;p class="courseblocktitle"&gt;&lt;str ...
+##  [7] &lt;p class="courseblocktitle"&gt;&lt;str ...
+##  [8] &lt;p class="courseblocktitle"&gt;&lt;str ...
+##  [9] &lt;p class="courseblocktitle"&gt;&lt;str ...
+## [10] &lt;p class="courseblocktitle"&gt;&lt;str ...
+## [11] &lt;p class="courseblocktitle"&gt;&lt;str ...
+## [12] &lt;p class="courseblocktitle"&gt;&lt;str ...
+## [13] &lt;p class="courseblocktitle"&gt;&lt;str ...
+## [14] &lt;p class="courseblocktitle"&gt;&lt;str ...
+## [15] &lt;p class="courseblocktitle"&gt;&lt;str ...
+## [16] &lt;p class="courseblocktitle"&gt;&lt;str ...
+## [17] &lt;p class="courseblocktitle"&gt;&lt;str ...
+## [18] &lt;p class="courseblocktitle"&gt;&lt;str ...
+## [19] &lt;p class="courseblocktitle"&gt;&lt;str ...
+## [20] &lt;p class="courseblocktitle"&gt;&lt;str ...
+## ...
+```
+]
+
+
+---
+
+# rvest: Step 3 -  Getting HTML Text
+
+.pull-left[
+.center[
+&lt;img src="figures/browser_isa_courses_titles.PNG" width="567" style="display: block; margin: auto;" /&gt;
+]
+]
+
+.pull-right[
+
+```r
+isa_course_titles_en =  isa_course_titles %&gt;% 
+  html_text2()
+
+isa_course_titles_en
+```
+
+```
+##  [1] "ISA 125. Introduction to Business Statistics. (3)"                                   
+##  [2] "ISA 177. Independent Studies. (0-6)"                                                 
+##  [3] "ISA 203. Supplementary Business Statistics. (1)"                                     
+##  [4] "ISA 211. Information Technology and Data Driven Decision Making in Business. (3)"    
+##  [5] "ISA 225. Principles of Business Analytics. (3)"                                      
+##  [6] "ISA 235. Information Technology and the Intelligent Enterprise. (3) (MPT)"           
+##  [7] "ISA 241. Database for Analytics. (1.5)"                                              
+##  [8] "ISA 242. Programming for Analytics. (1.5)"                                           
+##  [9] "ISA 243. Database and Programming for Analytics. (3)"                                
+## [10] "ISA 245. Database Systems and Data Warehousing. (3) (MPT)"                           
+## [11] "ISA 250. Basic Math for Analytics. (3)"                                              
+## [12] "ISA 277. Independent Studies. (0-6)"                                                 
+## [13] "ISA 281. Concepts in Business Programming. (3)"                                      
+## [14] "ISA 291. Applied Regression Analysis in Business. (3) (MPT)"                         
+## [15] "ISA 301. Business Data Communications and Security. (3)"                             
+## [16] "ISA 303. Enterprise Systems. (3) (MPT)"                                              
+## [17] "ISA 305. Information Technology Governance, Risk Management, Security and Audit. (3)"
+## [18] "ISA 321. Quantitative Analysis of Business Problems. (3) (MPT)"                      
+## [19] "ISA 333. Nonparametric Statistics. (3) (MPT)"                                        
+## [20] "ISA 335. Blockchain and Business Applications. (3)"                                  
+## [21] "ISA 340. Internship. (0-20)"                                                         
+## [22] "ISA 365. Statistical Monitoring and Design of Experiments. (3)"                      
+## [23] "ISA 377. Independent Studies. (0-6)"                                                 
+## [24] "ISA 387. Designing Business Systems. (3)"                                            
+## [25] "ISA 401/ISA 501. Business Intelligence and Data Visualization. (3)"                  
+## [26] "ISA 403. Building Web and Mobile Business Applications. (3)"                         
+## [27] "ISA 405. Information Security. (3)"                                                  
+## [28] "ISA 406. IT Project Management. (3)"                                                 
+## [29] "ISA 412/ISA 512. Data Warehousing and Business Intelligence. (3)"                    
+## [30] "ISA 414/ISA 514. Managing Big Data. (3)"                                             
+## [31] "ISA 419. Data Driven Security. (3)"                                                  
+## [32] "ISA 424. Data Infrastructure for the Enterprise. (3)"                                
+## [33] "ISA 432. Survey Sampling in Business. (3) (MPT)"                                     
+## [34] "ISA 444. Business Forecasting. (3) (MPT)"                                            
+## [35] "ISA 477. Independent Studies. (0-6)"                                                 
+## [36] "ISA 480. Topics in Business Analytics. (1-3; maximum 3)"                             
+## [37] "ISA 481. Topics in Information Systems. (3-4; maximum 3)"                            
+## [38] "ISA 491/ISA 591. Introduction to Data Mining in Business. (3) (MPT)"                 
+## [39] "ISA 495. Managing the Intelligent Enterprise. (3) (MPC)"                             
+## [40] "ISA 496. Business Analytics Practicum. (3)"                                          
+## [41] "ISA 616. Communicating with Data. (3)"                                               
+## [42] "ISA 621. Enabling Technology Topics I. (3)"                                          
+## [43] "ISA 625. Management of Information Technology. (3)"                                  
+## [44] "ISA 628. Information Technology and Analytic's Role in the Enterprise. (1.5)"        
+## [45] "ISA 629. Leveraging IT and Data Across the Business. (1.5)"                          
+## [46] "ISA 630. Machine Learning Applications in Business. (3)"                             
+## [47] "ISA 632. Big Data Analytics and Modern AI. (3)"                                      
+## [48] "ISA 633. Prescriptive Analytics in Business. (3)"                                    
+## [49] "ISA 634. Analytics Solution Deployment and Lifecycle Management. (3)"                
+## [50] "ISA 636. Managing Data for Business Analytics. (3)"                                  
+## [51] "ISA 638. Predictive Analytics and Data Mining. (3)"                                  
+## [52] "ISA 641. Data Discovery Through Business Analytics for Managers. (2)"                
+## [53] "ISA 650. Business Analytics Practicum. (3; maximum 6)"                               
+## [54] "ISA 680. Special Studies in Decision Sciences. (1-3)"                                
+## [55] "ISA 681. Studies-Management Information Systems. (1-3)"
+```
+]
+
+
+---
+
+# Demo 1:  Scraping the Course Descriptions
+
+- We will build on the previous example and we will scrape the **course descriptions** associated with these courses. 
+
+- Then, we will create a **tibble** containing **both** the **course titles** and **descriptions** 
+
+- Then, we will **export the results to a CSV** so that we can analyze that in a separate program if we wanted to.
+
+
+---
+
+# Non-Graded Class Activity
+
+<div class="countdown" id="timer_61fa6648" style="top:0;right:0;font-size:2em;" data-warnwhen="0">
+<code class="countdown-time"><span class="countdown-digits minutes">04</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
+</div>
+
+.panelset[
+
+.panel[.panel-name[Activity]
+
+.small[
+- Go to [this database on plane crashes](http://www.planecrashinfo.com/2021/2021.htm)  
+
+- Scrape the HTML table. **Note the difference from text elements:**  
+  + The CSS selector for `html_elements()` will be different.  
+  + You will extract a table (in its **entirety**) and hence:  
+    * we will use `html_table()` instead of `html_text2()`
+
+- Store the scraped data in an appropriate location on your computer (e.g., within the data folder for ISA 401)
+]
+]
+
+
+.panel[.panel-name[Your Solution]
+
+.small[
+
+&gt; _Over the next 4 minutes, use an R script file to perform the tasks outline in the activity panel._
+
+]
+]
+
+.panel[.panel-name[My Solution]
+
+**Please refer to our discussion in class**
+
+]
+
+
+]
+
+
+---
+
+# Demo 2:  Scraping all Plane Crashes 2012-2021
+
+- We will build on the previous example and we will scrape all the plane crashes that were recorded in the [plane crash database](http://www.planecrashinfo.com/) between 2012-2021. 
+
+- Then, we will create a single **tibble** for all crashes. It will contain the fields in the individual tables as well as the year of crash.
+
+- Then, we will **export the results to a CSV** so that we can analyze that in a separate program if we wanted to.
+
+
+---
+
+# Demo 3: Downloading the Lecture PDFs (if time allows)
+
+If time allows, we will download the [PDFs of the ISA 401 lectures from GitHub](https://github.com/fmegahed/isa401/tree/main/PDFs).
+
+
+---
+class: inverse, center, middle
+
+# Legal and Ethical Issues with Web Scraping
+
+---
+
+# `Robots.txt`
+
+When scraping/crawling the web you need to be aware of `robots.txt`. 
+
+&gt; _The robots exclusion standard, also known as the robots exclusion protocol or simply robots.txt, is a standard used by websites to communicate with web crawlers and other web robots. The standard specifies how to inform the web robot about which areas of the website should not be processed or scanned_. --- [Wikipedia](https://en.wikipedia.org/wiki/Robots_exclusion_standard)
+
+
+Using the excellent [robotstxt](https://cran.r-project.org/package=robotstxt/vignettes/using_robotstxt.html) <svg aria-hidden="true" role="img" viewBox="0 0 512 512" style="height:1em;width:1em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:gold;overflow:visible;position:relative;"><path d="M509.5 184.6L458.9 32.8C452.4 13.2 434.1 0 413.4 0H272v192h238.7c-.4-2.5-.4-5-1.2-7.4zM240 0H98.6c-20.7 0-39 13.2-45.5 32.8L2.5 184.6c-.8 2.4-.8 4.9-1.2 7.4H240V0zM0 224v240c0 26.5 21.5 48 48 48h416c26.5 0 48-21.5 48-48V224H0z"/></svg> to check if scraping/crawling a specific directory is allowed.
+
+
+```r
+if(require(robotstxt)==FALSE) install.packages("robotstxt")
+
+robotstxt::paths_allowed(paths  = "2021/", domain = "planecrashinfo.com", bot    = "*")
+```
+
+```
+## [1] TRUE
+```
+
+
+---
+
+# Terms of Service
+
+Most large companies have **terms of service** that supplement what is permitted and/or disallowed on their `robots.txt` file. Examples include:  
+
+  - [Yelp's US Terms of Service](https://terms.yelp.com/tos/en_us/20200101_en_us/)
+  
+  - [LinkedIn Terms of Service](https://www.linkedin.com/legal/l/service-terms)
+  
+---
+
+counter: false
+
+# Ethical/Legal Considerations
+
+- **Use of publicly available reviews as a part of your service:** Would you classify the [Yelp vs Google Feud as such an example](https://www.nytimes.com/2017/07/01/technology/yelp-google-european-union-antitrust.html)?
+
+&lt;center&gt;
+&lt;blockquote class="twitter-tweet"&gt;&lt;p lang="en" dir="ltr"&gt;Wow Google, congrats on a new low. Consumer searches for Yelp gets &amp;quot;reviews&amp;quot; which are Google Ads. &lt;a href="https://t.co/gKSeOOhzWG"&gt;pic.twitter.com/gKSeOOhzWG&lt;/a&gt;&lt;/p&gt;&amp;mdash; Jeremy Stoppelman (@jeremys) &lt;a href="https://twitter.com/jeremys/status/876978936177082368?ref_src=twsrc%5Etfw"&gt;June 20, 2017&lt;/a&gt;&lt;/blockquote&gt; &lt;script async src="https://platform.twitter.com/widgets.js" charset="utf-8"&gt;&lt;/script&gt;
+&lt;/center&gt;
+
+
+---
+
+counter: false
+
+# Ethical/Legal Considerations
+
+- **Use of publicly available profiles as a part of your service:** 
+
+  + [LinkedIn vs Hiq Labs: Ninth Circuit Decision in 2019](https://cdn.ca9.uscourts.gov/datastore/opinions/2019/09/09/17-16783.pdf)
+  
+  + [Revival of Case in 2021 by Supreme Court](https://techcrunch.com/2021/06/14/supreme-court-revives-linkedin-bid-to-protect-user-data-from-web-scrapers/)
+
+
+---
+
+counter: false
+
+# Ethical/Legal Considerations
+
+- **What about scraping entire websites/webpages for the purpose of archiving the internet?** 
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="figures/wayback_google.PNG" alt="The evolution of the home page for Google per the Wayback Machine" width="80%" /&gt;
+&lt;p class="caption"&gt;The evolution of the home page for Google per the Wayback Machine&lt;/p&gt;
+&lt;/div&gt;
+
+
+---
+
+class: inverse, center, middle
+
+# Recap
+
+---
+
+# Summary of Main Points
+
+By now, you should be able to do the following:
+
+- Understand when can we scrape data (i.e., `robots.txt`) 
+
+- Scrape a webpage Using <svg aria-hidden="true" role="img" viewBox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#C3142D;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/></svg>  
+
+- Utilize loops or `purr::map` to download data from multiple webpages. 
+
+
+---
+
+# Supplementary Reading
+
+.pull-left[
+.center[
+&lt;img src="figures/web_scrape_in_data_science.PNG" height="320px" style="display: block; margin: auto;" /&gt;
+]
+* [PDF of Published Paper](https://www.tandfonline.com/doi/pdf/10.1080/10691898.2020.1787116)
+* [ePub of Published Paper](https://www.tandfonline.com/doi/epub/10.1080/10691898.2020.1787116?needAccess=true)
+]
+.pull-right[
+.center[&lt;img src="https://github.com/rstudio/hex-stickers/raw/master/PNG/rvest.png" height="320px"&gt;]
+* [Selector Gadget](https://rvest.tidyverse.org/articles/articles/selectorgadget.html)  
+* [Getting Started with rvest](https://rvest.tidyverse.org/articles/articles/selectorgadget.html)  
+
+* [Practical Web Scraping in R](https://www.r-bloggers.com/2019/04/practical-introduction-to-web-scraping-in-r/)
+]
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

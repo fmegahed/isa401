@@ -3,5 +3,5 @@
 
 source("https://git.io/xaringan2pdf")
 
-xaringan_to_pdf(input = 'https://fmegahed.github.io/isa401/class03/03_data_import_export.html',
-                output_file = '03_data_import_export.pdf')
+xaringan_to_pdf(input = 'https://fmegahed.github.io/isa401/class04/04_scraping_webpages.html',
+                output_file = 'PDFs/04_scraping_webpages.pdf')
