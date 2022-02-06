@@ -3,5 +3,7 @@
 
 source("https://git.io/xaringan2pdf")
 
-xaringan_to_pdf(input = 'https://fmegahed.github.io/isa401/class04/04_scraping_webpages.html',
-                output_file = 'PDFs/04_scraping_webpages.pdf')
+xaringan_to_pdf(
+  input = 'https://fmegahed.github.io/isa401/class05/05_lab_scraping_and_markdown.html',
+  output_file = 'PDFs/05_lab_scraping_and_markdown.pdf'
+  )

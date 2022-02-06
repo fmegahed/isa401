@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>ISA 401: Business Intelligence &amp; Data Visualization</title>
+    <meta charset="utf-8" />
+    <meta name="author" content=" Fadel M. Megahed, PhD    Associate Professor   Department of Information Systems and Analytics   Farmer School of Business  Miami University  Twitter: FadelMegahed  GitHub: fmegahed  Email: fmegahed@miamioh.edu  Office Hours: Automated Scheduler for Virtual Office Hours  " />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/tile-view/tile-view.css" rel="stylesheet" />
+    <script src="libs/tile-view/tile-view.js"></script>
+    <link href="libs/animate.css/animate.xaringan.css" rel="stylesheet" />
+    <link href="libs/tachyons/tachyons.min.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra_fit-screen/fit-screen.js"></script>
+    <link href="libs/panelset/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset/panelset.js"></script>
+    <script type="application/json" id="xaringanExtra-editable-docid">{"id":"xf6dccff15c2485983e1097a6088647d","expires":14}</script>
+    <script src="libs/himalaya/himalaya.js"></script>
+    <script src="libs/js-cookie/js.cookie.js"></script>
+    <link href="libs/editable/editable.css" rel="stylesheet" />
+    <script src="libs/editable/editable.js"></script>
+    <script src="libs/clipboard/clipboard.min.js"></script>
+    <link href="libs/shareon/shareon.min.css" rel="stylesheet" />
+    <script src="libs/shareon/shareon.min.js"></script>
+    <link href="libs/xaringanExtra-shareagain/shareagain.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-shareagain/shareagain.js"></script>
+    <script src="libs/peerjs/peerjs.min.js"></script>
+    <script src="libs/tiny.toast/toast.min.js"></script>
+    <link href="libs/xaringanExtra-broadcast/broadcast.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-broadcast/broadcast.js"></script>
+    <script src="libs/mark.js/mark.min.js"></script>
+    <link href="libs/xaringanExtra-search/search.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-search/search.js"></script>
+    <script>window.addEventListener('load', function() { window.xeSearch = new RemarkSearch({"position":"bottom-left","caseSensitive":false,"showIcon":false,"autoSearch":true}) })</script>
+    <link rel="stylesheet" href="css/fonts.css" type="text/css" />
+    <link rel="stylesheet" href="css/my-theme.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# ISA 401: Business Intelligence &amp; Data Visualization
+## 05: Lab - R Markdown and Web Scraping
+### <br>Fadel M. Megahed, PhD <br><br> Associate Professor <br> Department of Information Systems and Analytics <br> Farmer School of Business<br> Miami University<br><br>Twitter: <a href="www.twitter.com/FadelMegahed/">FadelMegahed</a><br> GitHub: <a href="https://github.com/fmegahed">fmegahed</a><br> Email: <a href="mailto:fmegahed@miamioh.edu">fmegahed@miamioh.edu</a><br> Office Hours: <a href="https://calendly.com/fmegahed">Automated Scheduler for Virtual Office Hours</a><br><br>
+### Spring 2022
+
+---
+
+
+
+
+
+
+
+
+# Quick Refresher from Last Week
+
+✅ Subset data in <svg aria-hidden="true" role="img" viewBox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#C3142D;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/></svg>.   
+
+✅ Read text-files, binary files (e.g., Excel, SAS, SPSS, Stata, etc), json files, etc. 
+
+✅ Export data from <svg aria-hidden="true" role="img" viewBox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#C3142D;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/></svg>. 
+
+✅ Understand when can we scrape data (i.e., `robots.txt`)  
+
+✅ Scrape a webpage Using <svg aria-hidden="true" role="img" viewBox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#C3142D;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/></svg>  
+
+✅ Utilize loops or `purr::map` to download data from multiple webpages.  
+
+
+---
+
+# Learning Objectives for Today's Lab
+
+- Perform an extensive web scrape  
+
+- Create reproducible reports/analyses using R Markdown
+
+
+---
+class: inverse, center, middle
+
+# .large[.large[.large[<svg aria-hidden="true" role="img" viewBox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:currentColor;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/></svg>]]] + .large[.large[.large[<svg aria-hidden="true" role="img" viewBox="0 0 640 512" style="height:1em;width:1.25em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:currentColor;overflow:visible;position:relative;"><path d="M593.8 59.1H46.2C20.7 59.1 0 79.8 0 105.2v301.5c0 25.5 20.7 46.2 46.2 46.2h547.7c25.5 0 46.2-20.7 46.1-46.1V105.2c0-25.4-20.7-46.1-46.2-46.1zM338.5 360.6H277v-120l-61.5 76.9-61.5-76.9v120H92.3V151.4h61.5l61.5 76.9 61.5-76.9h61.5v209.2zm135.3 3.1L381.5 256H443V151.4h61.5V256H566z"/></svg>]]]
+
+
+---
+
+# Markdown <svg aria-hidden="true" role="img" viewBox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:currentColor;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/></svg> `.md`
+
+* A **markup language** to add formatting elements to plain-text documents, contrasting to **WYSIWYG**
+
+.pull-left[.center[
+&lt;img src="figures/markdown_raw.PNG" width="100%"&gt;
+]]
+
+.pull-right[
+.center[
+&lt;img src="figures/markdown_final.PNG" width="100%"&gt;
+]
+]
+
+
+---
+
+#<svg aria-hidden="true" role="img" viewBox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:currentColor;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/></svg> `.md` Basic Syntax
+
+.center[
+&lt;img src="figures/markdown_syntax.PNG" width="57%"&gt;
+]
+
+
+.footnote[
+&lt;html&gt;
+&lt;hr&gt;
+&lt;/html&gt;
+
+**Note:** The table is captured from [markdown cheatsheet](https://www.markdownguide.org/cheat-sheet/). More details can be found at [markdown syntax](https://www.markdownguide.org/basic-syntax/).
+]
+
+---
+
+class: inverse
+
+background-image: url(https://raw.githubusercontent.com/allisonhorst/stats-illustrations/master/rstats-blanks/rmarkdown_wizards_blank.png)
+background-size: 100% 100%
+
+
+---
+# Create R Markdown `.Rmd`
+
+.pull-left[
+.center[
+&lt;img src="figures/create_rmarkdown.png" width="55%"&gt;
+&lt;br&gt;&lt;br&gt;
+&lt;img src="figures/new-rmd.PNG" width="65%"&gt;]
+]
+.pull-right[
+````markdown
+---
+title: "ISA 401: R Markdown Demo"
+author: "Fadel Megahed"
+date: "February 06, 2022"
+output: html_document
+---
+
+```{r setup, include = FALSE}
+library(knitr)
+opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+You can embed an R code chunk like this:
+
+```{r yelp_reviews, message = FALSE}
+library(tidyverse)
+patterson_reviews &lt;- read_rds("https://tinyurl.com/5d66ah47")
+patterson_reviews
+```
+
+See &lt;http://rmarkdown.rstudio.com&gt;.
+````
+]
+
+
+---
+
+# R Markdown Cheatsheet [1]
+
+.center[
+&lt;img src="figures/rmarkdown-cheatsheet1.PNG" width="67%"&gt;
+]
+
+---
+
+# R Markdown Cheatsheet [2]
+
+.center[
+&lt;img src="figures/rmarkdown-cheatsheet2.PNG" width="67%"&gt;
+]
+
+
+---
+
+# Demo
+
+In class, we will do a live demo of some of the basic functionalities and settings of R Markdown.
+
+
+---
+class: inverse, center, middle
+
+# 👩‍💻 Lab 01
+
+---
+
+# Lab 01 (Group Assignment 03 Questions)
+
+&gt; **In your pre-assigned group**, please submit the **HTML knitted** from the [Markdown template titled 05_web_scraping_lab_template.Rmd on Canvas](https://miamioh.instructure.com/courses/167290/assignments/2030670#:~:text=Your%20submission%20should%20be%20the%20HTML%20knitted%20from%20the%20following%20Markdown%20template%3A%2005_web_scraping_lab_template.Rmd)
+
+&gt; **This submission is due Friday February 11, 2022 at 11:59 PM.** 
+
+.panelset[
+
+.panel[.panel-name[Q1]
+
+.small[
+- Click on [Found and Impounded Property Listing](https://docs.google.com/spreadsheets/d/e/2PACX-1vQ3uk9AJOMODxS9fUgX_4vnEMj-Di7ulkTXWzPUmaHvHbaII63xmKmRu3VaBvOXrwQhtkOUlL9fxLMB/pubhtml?gid=1104208671&amp;single=true) on the [Property - Lost, Found, Impounded Page](https://www.miamioh.edu/police/services/propertylostfoundimpounded/index.html)
+
+- Go to the Google Doc containing a table of lost and found items. 
+
+- **Please scrape the table and print it out.**
+
+]
+]
+
+
+.panel[.panel-name[Q2]
+
+.small[
+- Currently, the Farmer School of Business has seven academic departments (i.e., [Accountancy](https://www.miamioh.edu/fsb/academics/accountancy/about/faculty-staff/index.html), [Economics](https://www.miamioh.edu/fsb/academics/economics/about/faculty-staff/index.html), [Entrepreneurship](https://www.miamioh.edu/fsb/academics/entrepreneurship/about/faculty-staff/index.html), [Finance](https://www.miamioh.edu/fsb/academics/finance/about/faculty-staff/index.html), [Information Systems &amp; Analytics](https://www.miamioh.edu/fsb/academics/isa/about/faculty-staff/index.html), [Marketing](https://www.miamioh.edu/fsb/academics/marketing/about/faculty-staff/index.html), and [Management](https://www.miamioh.edu/fsb/academics/management/about/faculty-staff/index.html).  
+
+- Using the code chunk below, please write code that will produce and print a **single tibble containing information on ALL departments and the following variables:** (a) department name, (b) faculty/staff's name, (c) faculty/staff's position, and (d) faculty/staff's website.
+]
+
+]
+
+
+
+.panel[.panel-name[Q3]
+
+.small[
+- The most popular listings on Netflix are rated and reviews on [ImDb](https://www.imdb.com/search/title/?companies=co0144901). Based on this webpage and its following pages, please create a **tibble** that contains the following: *title*, *years*, *age classification*, *duration*, *genres*, *IMDb Rating*, *1-2 sentence summary*, *stars*, and *votes*. 
+
+- **Your tibble should contain a variable for the 9 items above for each of the 50 titles found on the page.** 
+]
+]
+
+
+.panel[.panel-name[Q4]
+
+.small[
+- Expand on the previous example to capture the top **300** titles on Netflix (i.e., the information across six pages).
+]
+]
+
+.panel[.panel-name[Q5]
+
+.small[
+- In assignment 02, I shared with you an RDS file containing four variables and all the reviews that were performed on [Patterson Cafe on Yelp](https://www.yelp.com/biz/pattersons-cafe-oxford). Use what you have learned in class to potentially recreate the same results.
+]
+]
+
+
+]
+
+
+
+---
+class: inverse, center, middle
+
+# Recap
+
+
+---
+
+# Summary of Main Points
+
+By now, you should be able to do the following:
+
+- Perform an extensive web scrape  
+
+- Create reproducible reports/analyses using R Markdown
+
+
+---
+
+# Supplementary Reading on R Markdown
+
+.pull-left[
+.center[[&lt;img src="https://d33wubrfki0l68.cloudfront.net/b88ef926a004b0fce72b2526b0b5c4413666a4cb/24a30/cover.png" height="520px"&gt;](https://r4ds.had.co.nz)]
+]
+.pull-right[
+* [R Markdown](https://r4ds.had.co.nz/r-markdown.html)
+* [R Markdown formats](https://r4ds.had.co.nz/r-markdown-formats.html)
+* [R Markdown cheat sheet](https://www.rstudio.com/wp-content/uploads/2016/03/rmarkdown-cheatsheet-2.0.pdf?_ga=2.253787336.159731575.1620189500-118347454.1620189500)
+* [R Markdown reference guide](https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf?_ga=2.253787336.159731575.1620189500-118347454.1620189500)
+]
+
+
+---
+
+# Supplementary Reading on Web Scraping
+
+.pull-left[
+.center[
+&lt;img src="figures/web_scrape_in_data_science.PNG" height="320px" style="display: block; margin: auto;" /&gt;
+]
+* [PDF of Published Paper](https://www.tandfonline.com/doi/pdf/10.1080/10691898.2020.1787116)
+* [ePub of Published Paper](https://www.tandfonline.com/doi/epub/10.1080/10691898.2020.1787116?needAccess=true)
+]
+.pull-right[
+.center[&lt;img src="https://github.com/rstudio/hex-stickers/raw/master/PNG/rvest.png" height="320px"&gt;]
+* [Selector Gadget](https://rvest.tidyverse.org/articles/articles/selectorgadget.html)  
+* [Getting Started with rvest](https://rvest.tidyverse.org/articles/articles/selectorgadget.html)  
+
+* [Practical Web Scraping in R](https://www.r-bloggers.com/2019/04/practical-introduction-to-web-scraping-in-r/)
+]
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
