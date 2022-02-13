@@ -15,7 +15,9 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 |02            | 01/31 | Importing & Exporting Data| [03_data_import_export.html](https://fmegahed.github.io/isa401/class03/03_data_import_export.html) | [03_data_import_export.pdf](https://github.com/fmegahed/isa401/blob/main/PDFs/03_data_import_export.pdf) |
 |            | 02/02 | Web Scraping| [04_scraping_webpages.html](https://fmegahed.github.io/isa401/class04/04_scraping_webpages.html) | [04_scraping_webpages.pdf](https://github.com/fmegahed/isa401/blob/main/PDFs/04_scraping_webpages.pdf) |
 |03            | 02/07 | Lab on Web Scraping and R Markdown| [05_lab_scraping_and_markdown.html](https://fmegahed.github.io/isa401/class05/05_lab_scraping_and_markdown.html) | [05_scraping_webpages.pdf](https://github.com/fmegahed/isa401/blob/main/PDFs/05_lab_scraping_and_markdown.pdf) |
-|            | 02/09 | Catch-Up: Review of Concepts Learned so Far | None | [06_handwritten_review_in_class.pdf](https://github.com/fmegahed/isa401/blob/main/PDFs/06_web_scraping_review_class_notes.pdf) 
+|            | 02/09 | Catch-Up: Review of Concepts Learned so Far | None | [06_handwritten_review_in_class.pdf](https://github.com/fmegahed/isa401/blob/main/PDFs/06_web_scraping_review_class_notes.pdf) |
+|04            | 02/14 | Requesting Data from Web APIs in R| [07_intro_to_apis.html](https://fmegahed.github.io/isa401/class07/07_intro_to_apis.html) | [07_intro_to_apis.pdf](https://github.com/fmegahed/isa401/blob/main/PDFs/07_intro_to_apis.pdf) |
+
 
 
 
