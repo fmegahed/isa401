@@ -141,11 +141,11 @@ Before you dive into the API documentation, you **should first check if there is
   B. What are the API's **base URL** and **query parameters**?  
   C. How does the request URL look like?  
   
-2.Craft your **request**. My recommendations are to:  
+2. Craft your **request**. My recommendations are to:  
   A. First, start with a simple request.  
   B. Test that request in your browser and see what results you get.   
-  
-3. Construct that request in `r fontawesome::fa("r-project", fill = miamired)` by **either**:
+
+3. Construct that request in `r fontawesome::fa("r-project", fill = miamired)` by **either**:   
   A. If the generated content seems to be a `JSON` file/webpage, you can capitalize on the 
     reading the content from `jsonlite::fromJSON()`; **OR**  
   B. By passing the `base url` inside the `httr::GET()` and parsing the results with `httr::content()`. 
