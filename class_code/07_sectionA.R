@@ -50,11 +50,12 @@ butler_warren_from_api = as_tibble(row_to_names(dat = butler_warren_from_api, ro
 # * Accuweather -----------------------------------------------------------
 
 # location: 340019
-accu_key = '' # put your code her
+accu_key = '' # put your code here
 
 accu_query_link = paste0('http://dataservice.accuweather.com/forecasts/v1/daily/5day/340019?apikey=',
                          accu_key )
 
 accu_weather = fromJSON(txt = accu_query_link)
 
-accu_weather$DailyForecasts
+weather_forecast = accu_weather$DailyForecasts
+accu_weather$DailyForecasts -> weather2

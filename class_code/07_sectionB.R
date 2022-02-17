@@ -96,4 +96,9 @@ accu_search = paste0("http://dataservice.accuweather.com/forecasts/v1/daily/5day
 accu_results = fromJSON(txt = accu_search)
 glimpse(accu_results) # list of 2
 
-accu_results$DailyForecasts
+# three options to pull this information [[]] to convert from list to data.frame (or whatever that second item type is)
+weather1 = accu_results$DailyForecasts # extracting the sublist by its name
+weather2 = accu_results[['DailyForecasts']] # also extracting it bty name
+weather3 = accu_results[[2]] # second sublist since the first one was called headline
+
+weather1$Link[5]
