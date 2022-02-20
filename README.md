@@ -17,6 +17,8 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 |03            | 02/07 | Lab on Web Scraping and R Markdown| [05_lab_scraping_and_markdown.html](https://fmegahed.github.io/isa401/class05/05_lab_scraping_and_markdown.html) | [05_scraping_webpages.pdf](https://github.com/fmegahed/isa401/blob/main/PDFs/05_lab_scraping_and_markdown.pdf) |
 |            | 02/09 | Catch-Up: Review of Concepts Learned so Far | None | [06_handwritten_review_in_class.pdf](https://github.com/fmegahed/isa401/blob/main/PDFs/06_web_scraping_review_class_notes.pdf) |
 |04            | 02/14 | Requesting Data from Web APIs in R| [07_intro_to_apis.html](https://fmegahed.github.io/isa401/class07/07_intro_to_apis.html) | [07_intro_to_apis.pdf](https://github.com/fmegahed/isa401/blob/main/PDFs/07_intro_to_apis.pdf) |
+|           | 02/16 | Lab: Extracting Data based on the CryptoCompare API| -- | -- |
+|05            | 02/21 | Tidy Data| [09_tidy_data.html](https://fmegahed.github.io/isa401/class09/09_tidy_data.html) | [09_tidy_data.pdf](https://github.com/fmegahed/isa401/blob/main/PDFs/09_tidy_data.pdf) |
 
 
 
