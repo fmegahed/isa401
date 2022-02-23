@@ -4,6 +4,6 @@
 source("https://git.io/xaringan2pdf")
 
 xaringan_to_pdf(
-  input = 'https://fmegahed.github.io/isa401/class09/09_tidy_data.html',
-  output_file = 'PDFs/09_tidy_data.pdf'
+  input = 'https://fmegahed.github.io/isa401/class10/10_technically_correct_and_consistent_data.html',
+  output_file = 'PDFs/10_technically_correct_and_consistent_data.pdf'
   )

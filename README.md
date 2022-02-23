@@ -19,6 +19,7 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 |04            | 02/14 | Requesting Data from Web APIs in R| [07_intro_to_apis.html](https://fmegahed.github.io/isa401/class07/07_intro_to_apis.html) | [07_intro_to_apis.pdf](https://github.com/fmegahed/isa401/blob/main/PDFs/07_intro_to_apis.pdf) |
 |           | 02/16 | Lab: Extracting Data from the CryptoCompare API| -- | -- |
 |05            | 02/21 | Tidy Data| [09_tidy_data.html](https://fmegahed.github.io/isa401/class09/09_tidy_data.html) | [09_tidy_data.pdf](https://github.com/fmegahed/isa401/blob/main/PDFs/09_tidy_data.pdf) |
+|         | 02/23 | Technically Correct and Consistent Data| [10_technically_correct_and_consistent_data.html](https://fmegahed.github.io/isa401/class10/10_technically_correct_and_consistent_data.html) | [10_technically_correct_and_consistent_data.pdf](https://github.com/fmegahed/isa401/blob/main/PDFs/10_technically_correct_and_consistent_data.pdf) |
 
 
 
