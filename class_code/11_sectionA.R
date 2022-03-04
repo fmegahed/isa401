@@ -66,7 +66,7 @@ agent = create_agent(tbl = bike_tbl, actions = act) %>%
   col_vals_between(columns = vars(temp, atemp), left = -20, right = 45) %>% 
   col_vals_gte(columns = vars(humidity), value = 0) %>% 
   col_vals_expr(expr = expr(count == registered + casual) ) %>% 
-  # fictious check that all sources should have contained google
+  # fictitious check that all sources should have contained google
   col_vals_expr(expr = ~ str_detect(sources, pattern = 'google'),
                 label = 'non_google_sources')
 
