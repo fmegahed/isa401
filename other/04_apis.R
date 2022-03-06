@@ -68,4 +68,4 @@ weather_tbl = weather$properties$periods
 # * City of Cincy Crash Reports -------------------------------------------
 
 
-https://dev.socrata.com/foundry/data.cincinnati-oh.gov/rvmt-pkmq
+driver_crashes = jsonlite::fromJSON("https://data.cincinnati-oh.gov/resource/rvmt-pkmq.json?typeofperson=D%20-%20DRIVER")
