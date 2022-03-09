@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>ISA 401: Business Intelligence &amp; Data Visualization</title>
+    <meta charset="utf-8" />
+    <meta name="author" content=" Fadel M. Megahed, PhD    Associate Professor   Department of Information Systems and Analytics   Farmer School of Business  Miami University  Twitter: FadelMegahed  GitHub: fmegahed  Email: fmegahed@miamioh.edu  Office Hours: Automated Scheduler for Virtual Office Hours  " />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/tile-view/tile-view.css" rel="stylesheet" />
+    <script src="libs/tile-view/tile-view.js"></script>
+    <link href="libs/animate.css/animate.xaringan.css" rel="stylesheet" />
+    <link href="libs/tachyons/tachyons.min.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra_fit-screen/fit-screen.js"></script>
+    <link href="libs/panelset/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset/panelset.js"></script>
+    <script type="application/json" id="xaringanExtra-editable-docid">{"id":"d3346b8f6f3e41ecbf9e28475b9f49f1","expires":14}</script>
+    <script src="libs/himalaya/himalaya.js"></script>
+    <script src="libs/js-cookie/js.cookie.js"></script>
+    <link href="libs/editable/editable.css" rel="stylesheet" />
+    <script src="libs/editable/editable.js"></script>
+    <script src="libs/clipboard/clipboard.min.js"></script>
+    <link href="libs/shareon/shareon.min.css" rel="stylesheet" />
+    <script src="libs/shareon/shareon.min.js"></script>
+    <link href="libs/xaringanExtra-shareagain/shareagain.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-shareagain/shareagain.js"></script>
+    <script src="libs/peerjs/peerjs.min.js"></script>
+    <script src="libs/tiny.toast/toast.min.js"></script>
+    <link href="libs/xaringanExtra-broadcast/broadcast.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-broadcast/broadcast.js"></script>
+    <script src="libs/mark.js/mark.min.js"></script>
+    <link href="libs/xaringanExtra-search/search.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-search/search.js"></script>
+    <script>window.addEventListener('load', function() { window.xeSearch = new RemarkSearch({"position":"bottom-left","caseSensitive":false,"showIcon":false,"autoSearch":true}) })</script>
+    <link href="libs/countdown/countdown.css" rel="stylesheet" />
+    <script src="libs/countdown/countdown.js"></script>
+    <script src="libs/htmlwidgets/htmlwidgets.js"></script>
+    <link href="libs/datatables-css/datatables-crosstalk.css" rel="stylesheet" />
+    <script src="libs/datatables-binding/datatables.js"></script>
+    <script src="libs/jquery/jquery-3.6.0.min.js"></script>
+    <link href="libs/dt-core/css/jquery.dataTables.min.css" rel="stylesheet" />
+    <link href="libs/dt-core/css/jquery.dataTables.extra.css" rel="stylesheet" />
+    <script src="libs/dt-core/js/jquery.dataTables.min.js"></script>
+    <link href="libs/crosstalk/css/crosstalk.min.css" rel="stylesheet" />
+    <script src="libs/crosstalk/js/crosstalk.min.js"></script>
+    <script src="libs/plotly-binding/plotly.js"></script>
+    <script src="libs/typedarray/typedarray.min.js"></script>
+    <link href="libs/plotly-htmlwidgets-css/plotly-htmlwidgets.css" rel="stylesheet" />
+    <script src="libs/plotly-main/plotly-latest.min.js"></script>
+    <link rel="stylesheet" href="css/fonts.css" type="text/css" />
+    <link rel="stylesheet" href="css/my-theme.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# ISA 401: Business Intelligence &amp; Data Visualization
+## 14: Fundamentals of Data Visualization
+### <br>Fadel M. Megahed, PhD <br><br> Associate Professor <br> Department of Information Systems and Analytics <br> Farmer School of Business<br> Miami University<br><br>Twitter: <a href="www.twitter.com/FadelMegahed/">FadelMegahed</a><br> GitHub: <a href="https://github.com/fmegahed">fmegahed</a><br> Email: <a href="mailto:fmegahed@miamioh.edu">fmegahed@miamioh.edu</a><br> Office Hours: <a href="https://calendly.com/fmegahed">Automated Scheduler for Virtual Office Hours</a><br><br>
+### Spring 2022
+
+---
+
+
+
+
+
+
+
+
+# Refresher: Organization of this Course
+
+
+
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="figures/course_overview.png" alt="How the ISA 401/501 course is organized." width="100%" /&gt;
+&lt;p class="caption"&gt;How the ISA 401/501 course is organized.&lt;/p&gt;
+&lt;/div&gt;
+
+
+---
+
+# Learning Objectives for Today's Class
+
+- Explain the concept of "graphical excellence"  
+
+- Explain the theory of data graphics  
+
+- Optimize visual encoding based on data types  
+
+- Understand why color should be used sparingly and how to select appropriate colors (when color is a must)
+
+
+---
+class: center, inverse, middle
+
+# Graphical Excellence
+
+
+---
+
+# Non-graded activity: Terrible Charts
+
+<div class="countdown" id="timer_622837f0" style="top:0;right:0;font-size:2em;" data-warnwhen="0">
+<code class="countdown-time"><span class="countdown-digits minutes">05</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
+</div>
+
+
+.panelset[
+
+.panel[.panel-name[Activity]
+
+&gt; Over the next 5 minutes, please identify the **1-2 main problems** in the charts in the following tabs.
+
+  - Write down your answers in the editable area of each chart.  
+  
+  - Discuss your answers with your neighboring classmates.  
+  
+  - Be prepared to share these answers with class.
+
+]
+
+.panel[.panel-name[Russia's Defense Budget]
+
+.tiny[**Source:** The chart was embedded in [this tweet](https://twitter.com/CedScherer/status/1498593405408059394?s=20&amp;t=b0aOBtP77mq0WZinrfaH5g) by Cedric Scherer; however, it is unclear which news outlet have created the original chart.]
+
+.pull-left-2[
+&lt;img src="https://pbs.twimg.com/media/FMwSwFOWQAM9eek?format=jpg&amp;name=large" title="Defence budgets for Russia vs Ukraine (2020)" alt="Defence budgets for Russia vs Ukraine (2020)" height="350px" style="display: block; margin: auto;" /&gt;
+]
+
+
+.pull-right-2[
+.can-edit.key-activity1_russia[
+
+**Main Issue(s):** .font70[(Insert below)]
+
+]
+]
+]
+
+
+.panel[.panel-name[White House Economy Growth]
+
+.tiny[**Source:** The chart was created by the White House and shared via [this tweet from the verified White House account](https://twitter.com/WhiteHouse/status/1486709480351952901?s=20&amp;t=b0aOBtP77mq0WZinrfaH5g). Note that the chart was latter correct.]
+
+.pull-left-2[
+&lt;img src="https://pbs.twimg.com/media/FKHaZFyWYAAP962?format=jpg&amp;name=large" title="A bar chart, created by The White House, capturing America's Growth Economy in the 21st century" alt="A bar chart, created by The White House, capturing America's Growth Economy in the 21st century" height="350px" style="display: block; margin: auto;" /&gt;
+]
+
+
+.pull-right-2[
+.can-edit.key-activity1_whitehouse[
+
+**Main Issue(s):** .font70[(Insert below)]
+
+]
+]
+]
+
+
+.panel[.panel-name[Tucker Carlson]
+
+.tiny[**Source:** The chart was created by Fox and was highlighted in [this Fox News Clip](https://video.foxnews.com/v/6274513508001#sp=show-clips).]
+
+.pull-left-2[
+&lt;img src="https://www.ft.com/__origami/service/image/v2/images/raw/https%3A%2F%2Fd1e00ek4ebabms.cloudfront.net%2Fproduction%2F8597019d-978b-40cf-a2a8-fa47610e62cc.png?fit=scale-down&amp;source=next&amp;width=700" title="A bar chart, created by Fox News, capturing the decline in the number of Americans who self-identify as Christians." alt="A bar chart, created by Fox News, capturing the decline in the number of Americans who self-identify as Christians." height="350px" style="display: block; margin: auto;" /&gt;
+]
+
+
+.pull-right-2[
+.can-edit.key-activity1_tucker[
+
+**Main Issue(s):** .font70[(Insert below)]
+
+]
+]
+]
+
+
+
+]
+
+
+---
+
+# Graphical Excellence: What should Graphs Do?
+
+ - **Show the data**  
+ 
+ - Lead to thinking about the **substance**  rather than something else  
+ 
+ - Avoid **distorting** what the data have to say  
+ 
+ - Present **many numbers in a small space**  
+ 
+ - Make **large datasets coherent**  
+ 
+ - Encourage the eye to **compare different pieces of the data**  
+ 
+ - **Reveal the data at several levels of detail**, from a broad overview to the
+fine structure  
+
+ - Serve **a purpose:** description, exploration, tabulation, decoration  
+ 
+ - Be **closely integrated with the statistical &amp; verbal descriptions of the data** 
+ 
+.footnote[
+&lt;html&gt;
+&lt;hr&gt;
+&lt;/html&gt;
+
+**Source:** Tufte, E. R. (2001). The visual display of quantitative information. Cheshire, Conn: Graphics Press, P. 13.
+]
+
+
+---
+
+# Show/Reveal the Data: Anscombe's Dataset
+
+**In a seminal paper, Anscombe stated:** 
+
+&gt; **Few of us escape being indoctrinated with these notions:** 
+&gt;  - numerical **calculations are exact, but graphs are rough**; 
+&gt;  - for any particular kind of **statistical data there is just one set of calculations constituting a correct statistical analysis**;  
+&gt;  - performing **intricate calculations is virtuous**, whereas **actually looking at the data is cheating**.
+
+He proceeded by stating that 
+&gt; a computer should **make both calculations and graphs**. Both sorts of output should be studied; each will contribute to understanding.
+
+Now, let us consider his four datasets, each consisting of eleven (x,y) pairs.
+
+.footnote[
+&lt;html&gt;
+&lt;hr&gt;
+&lt;/html&gt;
+**Source:** Anscombe, Francis J. 1973. "Graphs in Statistical Analysis." *The American Statistician* 27 (1): 17–21. ([PDF Link](https://www.sjsu.edu/faculty/gerstman/StatPrimer/anscombe1973.pdf)). 
+
+---
+count: false
+# Show/Reveal the Data: Anscombe's Dataset
+
+.font80[
+<div id="htmlwidget-145f8106d1b59621e605" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-145f8106d1b59621e605">{"x":{"filter":"none","vertical":false,"data":[[10,8,13,9,11,14,6,4,12,7,5],[10,8,13,9,11,14,6,4,12,7,5],[10,8,13,9,11,14,6,4,12,7,5],[8,8,8,8,8,8,8,19,8,8,8],[8.04,6.95,7.58,8.81,8.33,9.96,7.24,4.26,10.84,4.82,5.68],[9.14,8.14,8.74,8.77,9.26,8.1,6.13,3.1,9.13,7.26,4.74],[7.46,6.77,12.74,7.11,7.81,8.84,6.08,5.39,8.15,6.42,5.73],[6.58,5.76,7.71,8.84,8.47,7.04,5.25,12.5,5.56,7.91,6.89]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>x1<\/th>\n      <th>x2<\/th>\n      <th>x3<\/th>\n      <th>x4<\/th>\n      <th>y1<\/th>\n      <th>y2<\/th>\n      <th>y3<\/th>\n      <th>y4<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":11,"dom":"tip","columnDefs":[{"className":"dt-right","targets":[0,1,2,3,4,5,6,7]}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[10,11,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+]
+
+
+---
+count: false
+# Show/Reveal the Data: Anscombe's Dataset
+
+.font80[
+<div id="htmlwidget-ee15fa407bcb201b89bd" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-ee15fa407bcb201b89bd">{"x":{"filter":"none","vertical":false,"data":[["I","II","III","IV"],[9,9,9,9],[3.32,3.32,3.32,3.32],[7.5,7.5,7.5,7.5],[2.03,2.03,2.03,2.03],[0.82,0.82,0.82,0.82]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>set<\/th>\n      <th>x.mean<\/th>\n      <th>x.sd<\/th>\n      <th>y.mean<\/th>\n      <th>y.sd<\/th>\n      <th>corr<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":5,"dom":"tip","columnDefs":[{"className":"dt-right","targets":[1,2,3,4,5]}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[5,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+]
+
+
+---
+count: false
+# Show/Reveal the Data: Anscombe's Dataset
+
+&lt;img src="14_fundamentals_data_viz_files/figure-html/anscombe4-1.png" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+# Substance
+
+<div class="countdown" id="timer_622839a4" style="top:0;right:0;font-size:2em;" data-warnwhen="0">
+<code class="countdown-time"><span class="countdown-digits minutes">05</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
+</div>
+
+.panelset[
+
+.panel[.panel-name[Activity]
+
+&gt; In 5 minutes, please **sketch** a better (non-bubble) chart than the one use by William Playfair for plotting the populations of 22 European cities at the end of the 1700s.
+
+
+&lt;img src="14_fundamentals_data_viz_files/figure-html/playfair_data-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+.panel[.panel-name[Your Solution]
+
+**Ideally, on a piece of paper sketch out your solution.** Otherwise, please feel free to download the plot's data (using the code below) and use a software of your choice for plotting a better chart for the data.
+
+
+```r
+pacman::p_load(tidyverse)
+
+playfair = read.table("http://www.stat.uiowa.edu/~luke/data/Playfair") %&gt;% 
+  rownames_to_column(var = 'city') %&gt;% # converting row names to city var
+  as_tibble() %&gt;%  # converting it to a tibble
+  arrange( desc(population) ) # arranging the rows in a descending order by population
+
+write_csv(x = playfair, file = 'playfair_data.csv')
+```
+
+**Be prepared to share your solution with the entire class.**
+
+]
+
+.panel[.panel-name[My Solution]
+
+&lt;details&gt;
+&lt;summary&gt;In my opinion, a &lt;strong&gt;dot chart is more effective&lt;/strong&gt; than the bubble chart. The &lt;strong&gt;population would be mainly encoded using the position&lt;/strong&gt;; you can still use area as a secondary encoding mechanism.&lt;/summary&gt;
+<div id="htmlwidget-77da76da3bb7206ce492" style="width:800px;height:375px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-77da76da3bb7206ce492">{"x":{"data":[{"x":[1100,900,690,380,255,250,220,210,200,180,160,145,140,130,120,90,80,80,80,75,63,60],"y":[22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,4,5,6,3,2,1],"text":["population: 1100<br />reorder(city, population): London<br />area: 1233.12332","population:  900<br />reorder(city, population): Constantinople<br />area:  964.97372","population:  690<br />reorder(city, population): Paris<br />area:  779.11342","population:  380<br />reorder(city, population): Naples<br />area:  447.72673","population:  255<br />reorder(city, population): Vienna<br />area:  292.67424","population:  250<br />reorder(city, population): Moscow<br />area:  277.47302","population:  220<br />reorder(city, population): Amsterdam<br />area:  234.30154","population:  210<br />reorder(city, population): Dublin<br />area:  207.54738","population:  200<br />reorder(city, population): Venice<br />area:  207.54738","population:  180<br />reorder(city, population): Petersburgh<br />area:  194.77835","population:  160<br />reorder(city, population): Rome<br />area:  182.41469","population:  145<br />reorder(city, population): Berlin<br />area:  170.45640","population:  140<br />reorder(city, population): Madrid<br />area:  170.45640","population:  130<br />reorder(city, population): Palermo<br />area:  164.62926","population:  120<br />reorder(city, population): Lisbon<br />area:  158.90347","population:   90<br />reorder(city, population): Copenhagen<br />area:  116.74540","population:   80<br />reorder(city, population): Genoa<br />area:   89.38320","population:   80<br />reorder(city, population): Turin<br />area:   81.07320","population:   80<br />reorder(city, population): Warsaw<br />area:  102.60826","population:   75<br />reorder(city, population): Florence<br />area:   81.07320","population:   63<br />reorder(city, population): Stockholm<br />area:   73.16856","population:   60<br />reorder(city, population): Edinburgh<br />area:   65.66929"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(0,0,0,1)","opacity":1,"size":[22.6771653543307,20.0605693519079,18.0254391278013,13.66444579043,11.0478497880073,10.7571168988492,9.88491823137492,9.30345245305875,9.30345245305875,9.01271956390067,8.72198667474258,8.4312537855845,8.4312537855845,8.28588734100545,8.14052089642641,6.97758933979406,6.10539067231981,5.81465778316172,6.54149000605694,5.81465778316172,5.52392489400363,5.23319200484555],"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(0,0,0,1)"}},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[60],"y":[1],"text":"population:   60<br />reorder(city, population): Edinburgh<br />area:   65.66929","type":"scatter","mode":"lines","line":{"width":5.23319200484555,"color":"rgba(0,0,0,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[63],"y":[2],"text":"population:   63<br />reorder(city, population): Stockholm<br />area:   73.16856","type":"scatter","mode":"lines","line":{"width":5.52392489400363,"color":"rgba(0,0,0,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[75,null,80],"y":[3,null,5],"text":["population:   75<br />reorder(city, population): Florence<br />area:   81.07320",null,"population:   80<br />reorder(city, population): Turin<br />area:   81.07320"],"type":"scatter","mode":"lines","line":{"width":5.81465778316172,"color":"rgba(0,0,0,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[80],"y":[4],"text":"population:   80<br />reorder(city, population): Genoa<br />area:   89.38320","type":"scatter","mode":"lines","line":{"width":6.10539067231981,"color":"rgba(0,0,0,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[80],"y":[6],"text":"population:   80<br />reorder(city, population): Warsaw<br />area:  102.60826","type":"scatter","mode":"lines","line":{"width":6.54149000605694,"color":"rgba(0,0,0,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[90],"y":[7],"text":"population:   90<br />reorder(city, population): Copenhagen<br />area:  116.74540","type":"scatter","mode":"lines","line":{"width":6.97758933979406,"color":"rgba(0,0,0,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[120],"y":[8],"text":"population:  120<br />reorder(city, population): Lisbon<br />area:  158.90347","type":"scatter","mode":"lines","line":{"width":8.14052089642641,"color":"rgba(0,0,0,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[130],"y":[9],"text":"population:  130<br />reorder(city, population): Palermo<br />area:  164.62926","type":"scatter","mode":"lines","line":{"width":8.28588734100545,"color":"rgba(0,0,0,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[140,null,145],"y":[10,null,11],"text":["population:  140<br />reorder(city, population): Madrid<br />area:  170.45640",null,"population:  145<br />reorder(city, population): Berlin<br />area:  170.45640"],"type":"scatter","mode":"lines","line":{"width":8.4312537855845,"color":"rgba(0,0,0,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[160],"y":[12],"text":"population:  160<br />reorder(city, population): Rome<br />area:  182.41469","type":"scatter","mode":"lines","line":{"width":8.72198667474258,"color":"rgba(0,0,0,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[180],"y":[13],"text":"population:  180<br />reorder(city, population): Petersburgh<br />area:  194.77835","type":"scatter","mode":"lines","line":{"width":9.01271956390067,"color":"rgba(0,0,0,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[200,null,210],"y":[14,null,15],"text":["population:  200<br />reorder(city, population): Venice<br />area:  207.54738",null,"population:  210<br />reorder(city, population): Dublin<br />area:  207.54738"],"type":"scatter","mode":"lines","line":{"width":9.30345245305875,"color":"rgba(0,0,0,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[220],"y":[16],"text":"population:  220<br />reorder(city, population): Amsterdam<br />area:  234.30154","type":"scatter","mode":"lines","line":{"width":9.88491823137492,"color":"rgba(0,0,0,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[250],"y":[17],"text":"population:  250<br />reorder(city, population): Moscow<br />area:  277.47302","type":"scatter","mode":"lines","line":{"width":10.7571168988492,"color":"rgba(0,0,0,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[255],"y":[18],"text":"population:  255<br />reorder(city, population): Vienna<br />area:  292.67424","type":"scatter","mode":"lines","line":{"width":11.0478497880073,"color":"rgba(0,0,0,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[380],"y":[19],"text":"population:  380<br />reorder(city, population): Naples<br />area:  447.72673","type":"scatter","mode":"lines","line":{"width":13.66444579043,"color":"rgba(0,0,0,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[690],"y":[20],"text":"population:  690<br />reorder(city, population): Paris<br />area:  779.11342","type":"scatter","mode":"lines","line":{"width":18.0254391278013,"color":"rgba(0,0,0,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[900],"y":[21],"text":"population:  900<br />reorder(city, population): Constantinople<br />area:  964.97372","type":"scatter","mode":"lines","line":{"width":20.0605693519079,"color":"rgba(0,0,0,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1100],"y":[22],"text":"population: 1100<br />reorder(city, population): London<br />area: 1233.12332","type":"scatter","mode":"lines","line":{"width":22.6771653543307,"color":"rgba(0,0,0,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":32.7372353673723,"r":5.97758405977584,"b":41.2453300124533,"l":87.8704856787049},"plot_bgcolor":"rgba(255,255,255,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":11.9551681195517},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[8,1152],"tickmode":"array","ticktext":["300","600","900"],"tickvals":[300,600,900],"categoryorder":"array","categoryarray":["300","600","900"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":2.98879202988792,"tickwidth":0.543416732706895,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":9.56413449564135},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.543416732706895,"zeroline":false,"anchor":"y","title":{"text":"Population","font":{"color":"rgba(0,0,0,1)","family":"","size":11.9551681195517}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.4,22.6],"tickmode":"array","ticktext":["Edinburgh","Stockholm","Florence","Genoa","Turin","Warsaw","Copenhagen","Lisbon","Palermo","Madrid","Berlin","Rome","Petersburgh","Venice","Dublin","Amsterdam","Moscow","Vienna","Naples","Paris","Constantinople","London"],"tickvals":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22],"categoryorder":"array","categoryarray":["Edinburgh","Stockholm","Florence","Genoa","Turin","Warsaw","Copenhagen","Lisbon","Palermo","Madrid","Berlin","Rome","Petersburgh","Venice","Dublin","Amsterdam","Moscow","Vienna","Naples","Paris","Constantinople","London"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":2.98879202988792,"tickwidth":0.543416732706895,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":9.56413449564135},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.543416732706895,"zeroline":false,"anchor":"x","title":{"text":"City","font":{"color":"rgba(0,0,0,1)","family":"","size":11.9551681195517}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":"transparent","line":{"color":"rgba(51,51,51,1)","width":0.543416732706895,"linetype":"solid"},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":false,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.546170365068,"font":{"color":"rgba(0,0,0,1)","family":"","size":9.56413449564135},"title":{"text":"area","font":{"color":"rgba(0,0,0,1)","family":"","size":11.9551681195517}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"11e432e87f8a":{"x":{},"y":{},"size":{},"type":"scatter"},"11e4711e35b0":{"x":{},"y":{},"size":{}}},"cur_data":"11e432e87f8a","visdat":{"11e432e87f8a":["function (y) ","x"],"11e4711e35b0":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+&lt;/details&gt;
+
+]
+
+]
+
+
+---
+
+# Avoid Distortion of Data
+
+&lt;img src="figures/integrity.jpg" title="A distorted bar chart (with non-zero starting values for the y-axis and images that reduces our focus on the data values)" alt="A distorted bar chart (with non-zero starting values for the y-axis and images that reduces our focus on the data values)" width="80%" style="display: block; margin: auto;" /&gt;
+
+.footnote[
+&lt;html&gt;
+&lt;hr&gt;
+&lt;/html&gt;
+**Source:** Graph from Tufte, E. R. (2001). The visual display of quantitative information. Cheshire, Conn: Graphics Press, P. 54.
+]
+
+---
+count: false
+# Avoid Distortion of Data
+
+&lt;img src="figures/integrity2.jpg" title="A distorted bar chart (with non-zero starting values for the y-axis)" alt="A distorted bar chart (with non-zero starting values for the y-axis)" width="90%" style="display: block; margin: auto;" /&gt;
+
+.footnote[
+&lt;html&gt;
+&lt;hr&gt;
+&lt;/html&gt;
+**Source:** Nathan Yau (2012). [Fox News continues charting excellence](https://flowingdata.com/2012/08/06/fox-news-continues-charting-excellence/).
+]
+
+---
+
+# Avoid Distortion of Data: The Lie Factor
+
+&lt;img src="figures/liefactor.jpg" title="The Lie Factor" alt="The Lie Factor" width="75%" style="display: block; margin: auto;" /&gt;
+
+.footnote[
+&lt;html&gt;
+&lt;hr&gt;
+&lt;/html&gt;
+**Source:** Graph from Tufte, E. R. (2001). The visual display of quantitative information. Cheshire, Conn: Graphics Press, P. 57.
+]
+
+
+---
+
+# Graphical Integrity Principles: A Summary
+
+ - Clear, detailed, and thorough labeling and appropriate scales
+
+ - Size of the graphic effect should be directly proportional to the numerical quantities (“lie factor”)  
+ 
+ - Show data variation, not design variation
+ 
+---
+class: center, inverse, middle
+
+# Theory of Data Graphics
+
+---
+
+# Definition of Data Ink
+
+- **Data-ink refers to the non-erasable ink used for presenting the data**.  
+  
+  * If data-ink would be removed from the image, the graphic would lose the content.
+  
+
+$$
+`\begin{split}
+\text{Data-ink ratio} &amp;= \frac{\text{Data-ink}}{\text{Total ink used to print the graphic}} \\
+\\
+&amp;= \text{proportion of a graphic's ink devoted to the} \\
+&amp; \quad \text{ non-redudant display of data-information} \\
+\\
+&amp;= 1.0 - \text{proportion of a graphic that can be erased}
+\end{split}`
+$$
+
+---
+count: false
+# Definition of Data Ink
+
+- **Data-ink refers to the non-erasable ink used for presenting the data**.  
+  
+  * If data-ink would be removed from the image, the graphic would lose the content.
+  
+&lt;img src="figures/dataink2.jpg" title="Data ink" alt="Data ink" width="65%" style="display: block; margin: auto;" /&gt;
+
+.footnote[
+&lt;html&gt;
+&lt;hr&gt;
+&lt;/html&gt;
+**Source:** Slide Adapted from Hanspeter Pfister. Lecture Notes for CS 171. Harvard University. &lt;http://cs171.org/&gt;
+]
+
+---
+count: false
+# Definition of Data Ink
+
+- **Data-ink refers to the non-erasable ink used for presenting the data**.  
+  
+  * If data-ink would be removed from the image, the graphic would lose the content.
+  
+&lt;img src="figures/dataink3.jpg" title="Data ink" alt="Data ink" width="65%" style="display: block; margin: auto;" /&gt;
+
+.footnote[
+&lt;html&gt;
+&lt;hr&gt;
+&lt;/html&gt;
+**Source:** Slide Adapted from Hanspeter Pfister. Lecture Notes for CS 171. Harvard University. &lt;http://cs171.org/&gt;
+]
+
+
+---
+
+# Focus on Data: Avoid Chartjunk
+
+**Chartjunk is the extraneous visual elements that distract from the message!!**
+
+&lt;img src="http://www.tbray.org/ongoing/data-ink/di1.png" title="Data ink" alt="Data ink" width="58%" style="display: block; margin: auto;" /&gt;
+
+.footnote[
+&lt;html&gt;
+&lt;hr&gt;
+&lt;/html&gt;
+**Source:** The image is from [The Data-Ink Ratio Example](http://www.tbray.org/ongoing/data-ink/di1)
+]
+
+---
+count: false
+
+# Focus on Data: Avoid Chartjunk
+
+**Chartjunk is the extraneous visual elements that distract from the message!!**
+
+&lt;img src="http://www.tbray.org/ongoing/data-ink/di2.png" title="Data ink" alt="Data ink" width="58%" style="display: block; margin: auto;" /&gt;
+
+.footnote[
+&lt;html&gt;
+&lt;hr&gt;
+&lt;/html&gt;
+**Source:** The image is from [The Data-Ink Ratio Example](http://www.tbray.org/ongoing/data-ink/di2)
+]
+
+---
+count: false
+
+# Focus on Data: Avoid Chartjunk
+
+**Chartjunk is the extraneous visual elements that distract from the message!!**
+
+&lt;img src="http://www.tbray.org/ongoing/data-ink/di3.png" title="Data ink" alt="Data ink" width="58%" style="display: block; margin: auto;" /&gt;
+
+.footnote[
+&lt;html&gt;
+&lt;hr&gt;
+&lt;/html&gt;
+**Source:** The image is from [The Data-Ink Ratio Example](http://www.tbray.org/ongoing/data-ink/di3)
+]
+
+---
+count: false
+
+# Focus on Data: Avoid Chartjunk
+
+**Chartjunk is the extraneous visual elements that distract from the message!!**
+
+&lt;img src="http://www.tbray.org/ongoing/data-ink/di4.png" title="Data ink" alt="Data ink" width="58%" style="display: block; margin: auto;" /&gt;
+
+.footnote[
+&lt;html&gt;
+&lt;hr&gt;
+&lt;/html&gt;
+**Source:** The image is from [The Data-Ink Ratio Example](http://www.tbray.org/ongoing/data-ink/di4)
+]
+
+---
+count: false
+
+# Focus on Data: Avoid Chartjunk
+
+**Chartjunk is the extraneous visual elements that distract from the message!!**
+
+&lt;img src="http://www.tbray.org/ongoing/data-ink/di5.png" title="Data ink" alt="Data ink" width="58%" style="display: block; margin: auto;" /&gt;
+
+.footnote[
+&lt;html&gt;
+&lt;hr&gt;
+&lt;/html&gt;
+**Source:** The image is from [The Data-Ink Ratio Example](http://www.tbray.org/ongoing/data-ink/di5)
+]
+
+---
+count: false
+
+# Focus on Data: Avoid Chartjunk
+
+**Chartjunk is the extraneous visual elements that distract from the message!!**
+
+&lt;img src="http://www.tbray.org/ongoing/data-ink/di6.png" title="Data ink" alt="Data ink" width="58%" style="display: block; margin: auto;" /&gt;
+
+.footnote[
+&lt;html&gt;
+&lt;hr&gt;
+&lt;/html&gt;
+**Source:** The image is from [The Data-Ink Ratio Example](http://www.tbray.org/ongoing/data-ink/di6)
+]
+
+---
+
+# Other Subjective Design Principles
+
+- **Aesthetics:** Attractive things are perceived as more useful than unattractive ones  
+
+- **Style:** Communicates brand, process, who the designer is  
+
+- **Playfulness:** Encourages experimentation and exploration  
+
+- **Vividness:** Can make a visualization more memorable
+
+.footnote[
+&lt;html&gt;
+&lt;hr&gt;
+&lt;/html&gt;
+**Source:** Slide Adapted from Hanspeter Pfister. Lecture Notes for CS 171. Harvard University. &lt;http://cs171.org/&gt;. Information is based on comments by Pat Hanrahan in November 2007. Those can be found at &lt;http://www.perceptualedge.com/blog/?p=199&gt;
+]
+
+
+---
+class: center, inverse, middle
+
+# Data Models
+
+---
+
+&lt;img src="figures/stevens_science_paper.png" width="55%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Data Types (from S. Stevens, Theory of Scales)
+
+&lt;img src="figures/datatypes.png" width="85%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Data Types: Explained
+
+.pull-left-2[
+
+.font130[**Nominal:**]  
+  - Are `\(=\)` or `\(\neq\)` to other values  
+  - Apples, bananas, oranges, etc.
+  
+.font130[**Ordinal:**]
+  - Obey a `\(&lt;\)` relationship  
+  - Small, medium and large
+  
+.font130[**Quantitative:**]
+
+  - Can do math on them  
+  - 50 inches, 53 inches, etc.  
+]
+
+.pull-right-2[
+&lt;img src="figures/datatypes1.png" width="85%" style="display: block; margin: auto;" /&gt;
+]
+
+
+---
+
+# Quantitative Data Types (from S. Stevens)
+
+**Quantitative data can be further divided into:**
+
+.font130[**Intervals (Location of Zero Arbitrary):**]
+  - Dates: Jan 19; Location: (Lat, Long)  
+  - Only differences (i.e., intervals) can be compared.
+  
+.font130[**Ratio (Zero Fixed):**]
+
+  - Measurements: Length, Weight, Temperature, ...  
+  - Origin is meaningful, we can compute ratios, proportions, differences, etc. 
+  
+---
+
+# Non-Graded Activity: Data Terminology
+
+<div class="countdown" id="timer_6228381f" style="top:0;right:0;font-size:2em;" data-warnwhen="0">
+<code class="countdown-time"><span class="countdown-digits minutes">02</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
+</div>
+
+.panelset[
+
+.panel[.panel-name[Activity]
+
+&gt; In 2 minutes, please identify an appropriate data type for each column below.
+
+.font70[
+<div id="htmlwidget-2493ba27c6e1958b3209" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-2493ba27c6e1958b3209">{"x":{"filter":"none","vertical":false,"data":[[1,2,3,3,3,3,4,5,5,5,6],["1/1/2022","1/4/2022","1/15/2022","1/15/2022","1/15/2022","1/15/2022","1/18/2022","1/20/2022","1/20/2022","1/20/2022","1/21/2022"],["5 - low","4 - not specified","2- high","2- high","2- high","2- high","1- urgent","3- medium","3- medium","3- medium","1- urgent"],["Large box","Small Box","Small Box","Small Box","Jumbo Box","Wrap Bag","Small Box","Medium Box","Small Box","Large box","Wrap Bag"],[25,36,38,41,44,33,33,40,16,38,7],["1/5/2022","1/7/2022","1/17/2022","1/17/2022","1/17/2022","1/17/2022","1/19/2022","1/23/2022","1/23/2022","1/23/2022","1/22/2022"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>Order ID<\/th>\n      <th>Order Date<\/th>\n      <th>Order Priority<\/th>\n      <th>Product Container<\/th>\n      <th>Product Cost<\/th>\n      <th>Ship Date<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":7,"dom":"tip","columnDefs":[{"className":"dt-right","targets":[0,4]}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[7,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+]
+
+]
+
+.panel[.panel-name[Your Solution]
+
+.can-edit.key-activity3[
+
+**Data Types:** .font70[(Edit below)]
+
+- Order ID: ________________
+
+- Order/Ship Date: ________________
+
+- Order Priority: ________________
+
+- Product Container: ________________
+
+- Product Cost: ________________
+
+]
+]
+]
+
+---
+
+# Data vs. Conceptual Models
+
+.font130[**From data model**]   
+  - 32.5, 54.0, -17.3, ...  
+
+.font130[**Using a conceptual model:**]   
+  - Temperature
+  
+.font130[**To data type:**]  
+  - Continuous to x significant digits i.e. quantitative
+  - Hot, warm, cold i.e. ordinal   
+  - Burned vs. not burned i.e. nominal  
+
+
+---
+
+# Image Model: Visual (Encoding) Variables
+
+&lt;img src="figures/visualvariables.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+.footnote[
+&lt;html&gt;
+&lt;hr&gt;
+&lt;/html&gt;
+**Source:** Bertin (1967), Seminology of Graphics.
+]
+
+---
+
+# Mapping to Data Types
+
+&lt;img src="figures/mappingdatatypes.png" width="65%" style="display: block; margin: auto;" /&gt;
+
+.footnote[
+&lt;html&gt;
+&lt;hr&gt;
+&lt;/html&gt;
+**Source:** Slide Adapted from Hanspeter Pfister. Lecture Notes for CS 171. Harvard University. &lt;http://cs171.org/&gt;
+]
+
+---
+
+# Visual Channels and their Precision
+&lt;img src="figures/franconeri2021.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+.footnote[
+&lt;html&gt;
+&lt;hr&gt;
+&lt;/html&gt;
+**Source:** Franconeri, et al. (2021). [The Science of Visual Data Communication: What Works](https://doi.org/10.1177/15291006211051956). To view the full size image, click [here](https://t.co/Rfr8qSj5HB).
+]
+
+
+---
+class: center, inverse, middle
+
+# Color Should Be Used Sparingly
+
+---
+
+# Color
+
+<div class="countdown" id="timer_6228388b" style="top:0;right:0;font-size:2em;" data-warnwhen="0">
+<code class="countdown-time"><span class="countdown-digits minutes">01</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
+</div>
+
+.panelset[
+
+.panel[.panel-name[Activity]
+
+.pull-left[
+- The following map of Nevada has been colored to indicate various geological features in each county. 
+
+- Estimate the larger land area-more red, more green, or the same-and mark your answer on the mentimeter poll in the next panel. 
+
+- **Please work fairly quickly, as if you were trying to gain an overall impression from a map**.
+]
+
+.pull-right[
+&lt;img src="figures/cleveland1983.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+]
+
+.panel[.panel-name[Your Solution]
+&lt;html&gt;
+&lt;div style='position: relative; padding-bottom: 56.25%; padding-top: 0px; height: 0; overflow: hidden;'&gt;&lt;iframe sandbox='allow-scripts allow-same-origin allow-presentation' allowfullscreen='true' allowtransparency='true' frameborder='0' height='300' src='https://www.mentimeter.com/embed/fc5ffe4fa8894c11b2b73a67b70478b3/96b5a0976aac' style='position: absolute; top: 0; left: 0; width: 100%; height: 100%;' width='420'&gt;&lt;/iframe&gt;&lt;/div&gt;
+&lt;/html&gt;
+]
+
+.panel[.panel-name[Results from 1983 Experiment]
+&lt;details&gt;
+&lt;summary&gt;The results from the original experiment were as follows&lt;/summary&gt;
+&lt;br&gt;
+On the average, **49 percent of the judgments were that red was bigger**, 22 percent of the judgments were that green was bigger, and 31 percent of the judgments were that they looked the same size.
+&lt;/details&gt;
+]
+
+]
+
+---
+
+# Simultaneous Contrast Affects Perception
+
+&lt;img src="figures/sc2.png" width="85%" style="display: block; margin: auto;" /&gt;
+
+.footnote[
+&lt;html&gt;
+&lt;hr&gt;
+&lt;/html&gt;
+**Source:** Slide Adapted from Hanspeter Pfister. Lecture Notes for CS 171. Harvard University. &lt;http://cs171.org/&gt;
+]
+
+---
+
+# Color Blindness
+
+&gt; "About 1 in 12 men are color blind" -- [NIH's At a glance: Color Blindness](At a glance: Color Blindness)
+
+### Color Blindness Can Distort a Person's Reading/Interpretation of a Chart
+
+- **Personal Check:** [To have a feel for color blindness (if you are not color blind), you can take this color blind test](https://enchroma.com/pages/test)  
+
+- Given the high prevalence of color blind individuals, your charts **should** accommodate for color-blindness. **How?**  
+
+  * Use color sparingly
+  * Use color friendly palettes, e.g., see &lt;https://colorbrewer2.org/&gt;
+  
+---
+
+# Color Brewer: Color Scales and their Selection
+
+&lt;img src="figures/brewer1.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+.footnote[
+&lt;html&gt;
+&lt;hr&gt;
+&lt;/html&gt;
+**Source:** Brewer, Cynthia A. “Color use guidelines for data representation.”Proceedings of the Section on Statistical Graphics, American Statistical Association. 1999.
+]
+
+---
+class: inverse, center, middle
+
+# Recap
+
+---
+
+# Summary of Main Points
+
+By now, you should be able to do the following:  
+
+- Explain the concept of "graphical excellence"  
+
+- Explain the theory of data graphics  
+
+- Optimize visual encoding based on data types  
+
+- Understand why color should be used sparingly and how to select appropriate colors (when color is a must)
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
