@@ -24,6 +24,8 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 |         | 03/02 | Technically Correct and Consistent Data| [12_data_correction_and_imputation.html](https://fmegahed.github.io/isa401/class12/12_data_correction_and_imputation.html) | [12_data_correction_and_imputation.pdf](https://github.com/fmegahed/isa401/blob/main/PDFs/12_data_correction_and_imputation.pdf) |
 |07            | 03/07| Exam 01: Extracting Data (from File, Webpage and API) and Data Cleaning| -- | -- |
 |         | 03/10 | Fundamentals of Data Viz| [14_fundamentals_data_viz.html](https://fmegahed.github.io/isa401/class14/14_fundamentals_data_viz.html) | [14_fundamentals_data_viz.pdf](https://github.com/fmegahed/isa401/blob/main/PDFs/14_fundamentals_data_viz.pdf) |
+|08            | 03/14| Review of Exam 01 Solutions| -- | -- |
+|         | 03/16 | A Guided Tour of Tableau and PowerBI| No HTML Slides | [16_software_intro.pdf](https://github.com/fmegahed/isa401/blob/main/Lectures/16_viz_software_intro/16_software_intro.pdf) |
 
 
 ## Acknowledgments
