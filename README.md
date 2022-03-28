@@ -26,6 +26,7 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 |         | 03/10 | Fundamentals of Data Viz| [14_fundamentals_data_viz.html](https://fmegahed.github.io/isa401/class14/14_fundamentals_data_viz.html) | [14_fundamentals_data_viz.pdf](https://github.com/fmegahed/isa401/blob/main/PDFs/14_fundamentals_data_viz.pdf) |
 |08            | 03/14| Review of Exam 01 Solutions| -- | -- |
 |         | 03/16 | A Guided Tour of Tableau and PowerBI| No HTML Slides | [16_software_intro.pdf](https://github.com/fmegahed/isa401/blob/main/Lectures/16_viz_software_intro/16_software_intro.pdf) |
+|09            | 03/28| Commonly Used Statistical Charts|[17_fundamentals_data_viz.html](https://fmegahed.github.io/isa401/class17/17_commonly_used_charts.html) | [17_commonly_used_charts.pdf](https://github.com/fmegahed/isa401/blob/main/PDFs/17_commonly_used_charts.pdf) |
 
 
 ## Acknowledgments
