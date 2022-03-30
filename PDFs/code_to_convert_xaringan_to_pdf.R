@@ -4,6 +4,6 @@
 source("https://git.io/xaringan2pdf")
 
 xaringan_to_pdf(
-  input = 'https://fmegahed.github.io/isa401/class17/17_commonly_used_charts.html',
-  output_file = 'PDFs/17_commonly_used_charts.pdf'
+  input = 'https://fmegahed.github.io/isa401/class18/18_temporal_spatial_and_spatiotemporal_charts.html',
+  output_file = 'PDFs/18_temporal_spatial_and_spatiotemporal_charts.pdf'
   )

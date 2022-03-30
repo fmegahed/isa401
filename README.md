@@ -24,9 +24,10 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 |         | 03/02 | Technically Correct and Consistent Data| [12_data_correction_and_imputation.html](https://fmegahed.github.io/isa401/class12/12_data_correction_and_imputation.html) | [12_data_correction_and_imputation.pdf](https://github.com/fmegahed/isa401/blob/main/PDFs/12_data_correction_and_imputation.pdf) |
 |07            | 03/07| Exam 01: Extracting Data (from File, Webpage and API) and Data Cleaning| -- | -- |
 |         | 03/10 | Fundamentals of Data Viz| [14_fundamentals_data_viz.html](https://fmegahed.github.io/isa401/class14/14_fundamentals_data_viz.html) | [14_fundamentals_data_viz.pdf](https://github.com/fmegahed/isa401/blob/main/PDFs/14_fundamentals_data_viz.pdf) |
-|08            | 03/14| Review of Exam 01 Solutions| -- | -- |
-|         | 03/16 | A Guided Tour of Tableau and PowerBI| No HTML Slides | [16_software_intro.pdf](https://github.com/fmegahed/isa401/blob/main/Lectures/16_viz_software_intro/16_software_intro.pdf) |
-|09            | 03/28| Commonly Used Statistical Charts|[17_commonly_used_charts.html](https://fmegahed.github.io/isa401/class17/17_commonly_used_charts.html) | [17_commonly_used_charts.pdf](https://github.com/fmegahed/isa401/blob/main/PDFs/17_commonly_used_charts.pdf) |
+|08            | 03/14| Review of Exam 01 and Discussing Solutions/Rubric| -- | -- |
+|         | 03/16 | A Guided Tour of Tableau & PowerBI| No HTML Slides | [16_fundamentals_data_viz.pdf](https://github.com/fmegahed/isa401/Lectures/16_viz_software_intro/16_software_intro.pdf) |
+|09            | 03/28| Commonly Used Statistical Charts| [17_commonly_used_charts.html](https://fmegahed.github.io/isa401/class17/17_commonly_used_charts.html) | [17_commonly_used_charts.pdf](https://github.com/fmegahed/isa401/blob/main/PDFs/17_commonly_used_charts.pdf) |
+|         | 03/30 | A Guided Tour of Tableau & PowerBI| [18_temporal_spatial_and_spatiotemporal_charts.html](https://fmegahed.github.io/isa401/class18/18_temporal_spatial_and_spatiotemporal_charts.html) | [18_temporal_spatial_and_spatiotemporal_charts.pdf](https://github.com/fmegahed/isa401/blob/main/PDFs/18_temporal_spatial_and_spatiotemporal_charts.pdf) |
 
 
 ## Acknowledgments
