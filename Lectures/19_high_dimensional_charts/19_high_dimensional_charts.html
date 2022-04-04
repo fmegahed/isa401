@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>ISA 401: Business Intelligence &amp; Data Visualization</title>
+    <meta charset="utf-8" />
+    <meta name="author" content=" Fadel M. Megahed, PhD    Associate Professor   Department of Information Systems and Analytics   Farmer School of Business  Miami University  Twitter: FadelMegahed  GitHub: fmegahed  Email: fmegahed@miamioh.edu  Office Hours: Automated Scheduler for Virtual Office Hours  " />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/tile-view/tile-view.css" rel="stylesheet" />
+    <script src="libs/tile-view/tile-view.js"></script>
+    <link href="libs/animate.css/animate.xaringan.css" rel="stylesheet" />
+    <link href="libs/tachyons/tachyons.min.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra_fit-screen/fit-screen.js"></script>
+    <link href="libs/panelset/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset/panelset.js"></script>
+    <script type="application/json" id="xaringanExtra-editable-docid">{"id":"a3a91ef1f85e498eb758d33cc880a4ae","expires":14}</script>
+    <script src="libs/himalaya/himalaya.js"></script>
+    <script src="libs/js-cookie/js.cookie.js"></script>
+    <link href="libs/editable/editable.css" rel="stylesheet" />
+    <script src="libs/editable/editable.js"></script>
+    <script src="libs/clipboard/clipboard.min.js"></script>
+    <link href="libs/shareon/shareon.min.css" rel="stylesheet" />
+    <script src="libs/shareon/shareon.min.js"></script>
+    <link href="libs/xaringanExtra-shareagain/shareagain.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-shareagain/shareagain.js"></script>
+    <script src="libs/peerjs/peerjs.min.js"></script>
+    <script src="libs/tiny.toast/toast.min.js"></script>
+    <link href="libs/xaringanExtra-broadcast/broadcast.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-broadcast/broadcast.js"></script>
+    <script src="libs/mark.js/mark.min.js"></script>
+    <link href="libs/xaringanExtra-search/search.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-search/search.js"></script>
+    <script>window.addEventListener('load', function() { window.xeSearch = new RemarkSearch({"position":"bottom-left","caseSensitive":false,"showIcon":false,"autoSearch":true}) })</script>
+    <link href="libs/countdown/countdown.css" rel="stylesheet" />
+    <script src="libs/countdown/countdown.js"></script>
+    <script src="libs/htmlwidgets/htmlwidgets.js"></script>
+    <link href="libs/datatables-css/datatables-crosstalk.css" rel="stylesheet" />
+    <script src="libs/datatables-binding/datatables.js"></script>
+    <script src="libs/jquery/jquery-3.6.0.min.js"></script>
+    <link href="libs/dt-core/css/jquery.dataTables.min.css" rel="stylesheet" />
+    <link href="libs/dt-core/css/jquery.dataTables.extra.css" rel="stylesheet" />
+    <script src="libs/dt-core/js/jquery.dataTables.min.js"></script>
+    <link href="libs/crosstalk/css/crosstalk.min.css" rel="stylesheet" />
+    <script src="libs/crosstalk/js/crosstalk.min.js"></script>
+    <link rel="stylesheet" href="css/fonts.css" type="text/css" />
+    <link rel="stylesheet" href="css/my-theme.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# ISA 401: Business Intelligence &amp; Data Visualization
+## 19: Charts for High Dimensional Data
+### <br>Fadel M. Megahed, PhD <br><br> Associate Professor <br> Department of Information Systems and Analytics <br> Farmer School of Business<br> Miami University<br><br>Twitter: <a href="www.twitter.com/FadelMegahed/">FadelMegahed</a><br> GitHub: <a href="https://github.com/fmegahed">fmegahed</a><br> Email: <a href="mailto:fmegahed@miamioh.edu">fmegahed@miamioh.edu</a><br> Office Hours: <a href="https://calendly.com/fmegahed">Automated Scheduler for Virtual Office Hours</a><br><br>
+### Spring 2022
+
+---
+
+
+
+
+
+
+
+# Warm-up/Non-graded Activity: A Calendar Plot
+
+Let us use <svg aria-hidden="true" role="img" viewBox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:currentColor;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/></svg> inside Power BI to create this based on [cincy_daily_crashes.csv](https://raw.githubusercontent.com/fmegahed/isa401/main/Data/cincy_daily_crashes_2021.csv).
+
+&lt;img src="19_high_dimensional_charts_files/figure-html/calendR-1.png" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+
+# Learning Objectives for Today's Class
+
+- Describe what is high dimensional data.  
+
+- Provide some examples for graphs used for high dimensional datasets.  
+
+- Construct these graphs using software
+
+---
+class: inverse, center, middle
+
+# High Dimensional Data
+
+---
+
+# What Do we Mean by High Dimensional Data?
+
+<div class="countdown" id="timer_624a9a1c" style="top:0;right:0;font-size:2em;" data-warnwhen="0">
+<code class="countdown-time"><span class="countdown-digits minutes">03</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
+</div>
+
+.panelset[
+
+.panel[.panel-name[Activity]
+
+&gt; In 3 minutes, define the terms in next tab in the context of this table.
+
+.font70[
+<div id="htmlwidget-48d33b723de1e958d4f3" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-48d33b723de1e958d4f3">{"x":{"filter":"none","vertical":false,"data":[[1,2,3,3,3,3,4,5,5,5,6],["1/1/2022","1/4/2022","1/15/2022","1/15/2022","1/15/2022","1/15/2022","1/18/2022","1/20/2022","1/20/2022","1/20/2022","1/21/2022"],["5 - low","4 - not specified","2- high","2- high","2- high","2- high","1- urgent","3- medium","3- medium","3- medium","1- urgent"],["Large box","Small Box","Small Box","Small Box","Jumbo Box","Wrap Bag","Small Box","Medium Box","Small Box","Large box","Wrap Bag"],[25,36,38,41,44,33,33,40,16,38,7],["1/5/2022","1/7/2022","1/17/2022","1/17/2022","1/17/2022","1/17/2022","1/19/2022","1/23/2022","1/23/2022","1/23/2022","1/22/2022"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>Order ID<\/th>\n      <th>Order Date<\/th>\n      <th>Order Priority<\/th>\n      <th>Product Container<\/th>\n      <th>Product Cost<\/th>\n      <th>Ship Date<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":7,"dom":"tip","columnDefs":[{"className":"dt-right","targets":[0,4]}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[7,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+]
+
+]
+
+.panel[.panel-name[Your Solution]
+
+.can-edit.key-activity3[
+
+**Data Types:** .font70[(Edit below)]
+
+- Multivariate data: ________________
+
+- Big Data: ________________
+
+- Tall Data: ________________
+
+- Wide Data:  ________________
+
+- High Dimensional Data: ________________
+
+]
+]
+]
+
+
+---
+# Taxonomy
+
+**Based on the number of attributes:**
+
+- 1: Univariate  
+- 2: Bivariate  
+- 3: Trivariate  
+- 4+: Multivariate 
+
+
+**Things to Think about:**
+
+- .can-edit.key-activity4a[What is the problem with visualizing multivariate (especially when `\(p &gt; 6 − 7\)`
+dimensions) data? ______________] 
+
+
+- .can-edit.key-activity4b[Any ideas about what to do? ______________]
+
+---
+class: inverse, center, middle
+
+# Examples of High Dimensional Charts
+
+---
+
+# Hans Rosling: The Best Stats You Have Seen
+
+.panelset[
+
+.panel[.panel-name[Activity]
+
+&gt; While watching this video, please answer the questions in the next tab!!
+
+&lt;center&gt;
+&lt;div style="max-width:600px"&gt;&lt;div style="position:relative;height:0;padding-bottom:56.25%"&gt;&lt;iframe src="https://embed.ted.com/talks/lang/en/hans_rosling_the_best_stats_you_ve_ever_seen" width="600" height="350" style="position:absolute;left:0;top:0;width:100%;height:100%" frameborder="0" scrolling="no" allowfullscreen&gt;&lt;/iframe&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;/center&gt;
+]
+
+.panel[.panel-name[Your Solution]
+
+
+
+- .can-edit.key-activity5a[What data is represented in this visualization? Be specific. ____]
+
+- .can-edit.key-activity5b[How is each data type visually encoded? ___________]
+
+- .can-edit.key-activity5c[Do you think the encodings are appropriate? _________]
+
+
+]
+]
+]
+
+---
+
+# So What is the Motion Bubble Chart?
+
+&gt; Motion charts are essentially **animated bubble charts**. A bubble chart shows data using the .bold[x-axis], .bold[y-axis], and the .bold[size] and .bold[color] of the bubble. A motion chart displays .red[.bold[changes over time by showing movement within the two-dimensional space and changes in the size and color of the bubbles]]. -- [Juice Analytics](https://www.juiceanalytics.com/writing/better-know-visualization-motion-charts)
+
+**Encoding mechanisms:** 
+
+- .bold[x-axis] is typically used to encode a **numeric variable**  
+- .bold[y-axis] is also used to encode a **numeric variable** 
+- .bold[area] is used to encode a **numeric/ordinal variable** 
+- .bold[color] is typically used to encode a **nominal variable**
+- .bold[motion/animation] is typically used to encode **time**
+
+
+---
+
+# Live Demo: Creating Bubble Charts in Power BI
+
+Let us use Power BI to create a similar chart to the one created by Hans Rosling. We will be using the [gapminder.csv](https://raw.githubusercontent.com/fmegahed/isa401/main/Data/gapminder.csv).
+
+&lt;iframe src="//www.gapminder.org/tools/?embedded=true#$chart-type=bubbles&amp;url=v1" style="width: 100%; height: 400px; margin: 0 0 0 0; border: 1px solid grey;" allowfullscreen&gt;&lt;/iframe&gt;
+
+
+---
+
+# Small Multiples
+
+&gt; Illustrations of postage-stamp size are indexed by category or a label, sequenced over time like the frames of a movie, or ordered by a quantitative variable not used in the single image itself -- [Tufte, E.R.: Envisioning Information, Graphics Press, 1990](https://www.amazon.com/exec/obidos/tg/detail/-/0961392118/)
+
+.center[![NYT's analysis of Amazon Rain Forests](https://images.squarespace-cdn.com/content/v1/52f42657e4b0b3416ff6b831/1614444947046-W4UOZ7ISU9IV4CG8URSU/FIres-detected-in-Amazon.png?format=1000w)]
+
+
+---
+
+# Small Multiples in Power BI
+
+Let us use Power BI to create a similar chart to the one below. We will be using the [mpg_2022_large_sample.csv](https://raw.githubusercontent.com/fmegahed/isa401/main/Data/mpg_2022_large_sample.csv).
+
+&lt;img src="19_high_dimensional_charts_files/figure-html/small_multiples-1.png" style="display: block; margin: auto;" /&gt;
+
+**Note this is easier to make in Tableau and/or <svg aria-hidden="true" role="img" viewBox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:currentColor;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/></svg>. Let us give it a shot in Tableau as well.**
+
+
+---
+
+# Parallel Coordinates
+
+&gt; Parallel coordinates is a visualization technique used to plot individual data elements across many performance measures. Each of the measures corresponds to a vertical axis and each data element is displayed as a series of connected points along the measure/axes -- [Juice Analytics' Defintion](https://www.juiceanalytics.com/writing/writing/parallel-coordinates)
+
+&lt;img src="https://images.squarespace-cdn.com/content/v1/52f42657e4b0b3416ff6b831/1614951876498-9TIQE0EHNCGUFQSNEP6J/Parallel_Coordinates_Plot_-_Learn_about_this_chart_and_tools.jpg?format=1000w" height="300" style="display: block; margin: auto;" /&gt;
+
+
+
+---
+
+# Parallel Coordinates in Power BI
+
+Let us add the [Custom Parallel Coordinates Charting App](https://appsource.microsoft.com/en-us/product/power-bi-visuals/wa200000850?tab=overview&amp;signInModalType=2&amp;ctaType=1) to our Power BI and use it to visualize the [mpg_2022_sample.csv](https://raw.githubusercontent.com/fmegahed/isa401/main/Data/mpg_2022_sample.csv).
+
+&lt;img src="19_high_dimensional_charts_files/figure-html/ggparcoord-1.png" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+# Radar Charts
+
+&gt; Charts show how individual things perform across multiple measures
+
+&lt;img src="https://images.squarespace-cdn.com/content/v1/52f42657e4b0b3416ff6b831/1633047594333-7OEOYF4YZU4TMI2VMJSR/A_Night_Under_The_Stars___Jordan_Vincent.png?format=1000w" height="420" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+# Radar Charts in Power BI
+
+Let us add the [Radar Chart App](hhttps://appsource.microsoft.com/en-us/marketplace/apps?product=power-bi-visuals&amp;page=1&amp;src=office&amp;search=radar) to our Power BI and use it to visualize the [mpg_2022_sample.csv](https://raw.githubusercontent.com/fmegahed/isa401/main/Data/mpg_2022_sample.csv).
+
+&lt;img src="19_high_dimensional_charts_files/figure-html/ggradar-1.png" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+# Other Charts: HeatMap
+
+.left-column[
+- each column is a variable
+
+- each obs is a row
+
+- each square is a value; closer to yellow the higher
+]
+
+.right-column[
+&lt;img src="19_high_dimensional_charts_files/figure-html/heatmap-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+# Other Charts: TreeMaps
+
+&gt; Treemaps simultaneously show the big picture, comparisons of related items, and allow easy navigation to the details. [Juice Analytics](https://www.juiceanalytics.com/writing/10-lessons-treemap-design)
+
+**Encoding mechanisms:** 
+
+Each box in a treemap can show two measures:  
+- .bold[area of the boxes] should be a **quantity measure**. The measures should sum up along the hierarchical structure of the data. The sum of all the elements in one branch need to sum to the value of the branch as a whole.  
+- .bold[Color of the boxes] is best suited to a **measure of performance or change** such as growth over time, average conversion rate, or customer satisfaction.
+
+---
+count: false
+
+# Other Charts: TreeMaps
+
+&gt; Treemaps simultaneously show the big picture, comparisons of related items, and allow easy navigation to the details. [Juice Analytics](https://www.juiceanalytics.com/writing/10-lessons-treemap-design)
+
+.center[![](figures/yahoo_finance_treemap.png)]
+
+
+---
+
+# Other Charts: Chernoff Faces
+
+.center[![](figures/chernoff.jpg)]
+
+
+---
+class: inverse, center, middle
+
+# Recap
+
+---
+
+# Summary of Main Points
+
+- Describe what is high dimensional data.  
+
+- Provide some examples for graphs used for high dimensional datasets.  
+
+- Construct these graphs using software
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

@@ -1,11 +1,11 @@
-This is XeTeX, Version 3.141592653-2.6-0.999993 (MiKTeX 22.1) (preloaded format=xelatex 2022.3.1)  29 MAR 2022 23:14
+This is XeTeX, Version 3.141592653-2.6-0.999994 (MiKTeX 22.3) (preloaded format=xelatex 2022.3.30)  30 MAR 2022 10:21
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **./figures/ts_plots_flow_chart.tex
 (figures/ts_plots_flow_chart.tex
 LaTeX2e <2021-11-15> patch level 1
-L3 programming layer <2022-02-05> (C:\Program Files\MiKTeX\tex/latex/standalone
+L3 programming layer <2022-02-24> (C:\Program Files\MiKTeX\tex/latex/standalone
 \standalone.cls
 Document Class: standalone 2018/03/26 v1.3a Class to compile TeX sub-files stan
 dalone
@@ -178,8 +178,8 @@ LaTeX Info: Redefining \[ on input line 2938.
 LaTeX Info: Redefining \] on input line 2939.
 ) (C:\Program Files\MiKTeX\tex/latex/amsfonts\amssymb.sty
 Package: amssymb 2013/01/14 v3.01 AMS font symbols
-) (C:\Program Files\MiKTeX\tex/latex/animate\animate.sty
-Package: animate 2021/11/09 PDF & SVG animations from files and inline graphics
+) (C:\Users\megahefm\AppData\Roaming\MiKTeX\tex/latex/animate\animate.sty
+Package: animate 2022/02/21 PDF & SVG animations from files and inline graphics
 
 (C:\Program Files\MiKTeX\tex/latex/base\ifthen.sty
 Package: ifthen 2020/11/24 v1.1c Standard LaTeX ifthen package (DPC)
@@ -197,9 +197,9 @@ LaTeX Info: Redefining \setlength on input line 80.
 LaTeX Info: Redefining \addtolength on input line 81.
 \calc@Ccount=\count274
 \calc@Cskip=\skip54
-) (C:\Program Files\MiKTeX\tex/latex/zref\zref-abspage.sty
+) (C:\Users\megahefm\AppData\Roaming\MiKTeX\tex/latex/zref\zref-abspage.sty
 Package: zref-abspage 2020-07-03 v2.32 Module abspage for zref (HO)
-(C:\Program Files\MiKTeX\tex/latex/zref\zref-base.sty
+(C:\Users\megahefm\AppData\Roaming\MiKTeX\tex/latex/zref\zref-base.sty
 Package: zref-base 2020-07-03 v2.32 Module base for zref (HO)
 (C:\Users\megahefm\AppData\Roaming\MiKTeX\tex/generic/ltxcmds\ltxcmds.sty
 Package: ltxcmds 2020-05-10 v1.25 LaTeX kernel commands for general use (HO)
@@ -231,10 +231,10 @@ package with kernel methods
 )
 \c@abspage=\count275
 Package zref Info: New property: abspage on input line 66.
-) (C:\Program Files\MiKTeX\tex/latex/media9\pdfbase.sty (C:\Program Files\MiKTe
-X\tex/latex/l3packages/l3keys2e\l3keys2e.sty (C:\Program Files\MiKTeX\tex/latex
-/l3kernel\expl3.sty
-Package: expl3 2022-02-05 L3 programming layer (loader) 
+) (C:\Users\megahefm\AppData\Roaming\MiKTeX\tex/latex/media9\pdfbase.sty (C:\Pr
+ogram Files\MiKTeX\tex/latex/l3packages/l3keys2e\l3keys2e.sty (C:\Program Files
+\MiKTeX\tex/latex/l3kernel\expl3.sty
+Package: expl3 2022-02-24 L3 programming layer (loader) 
 (C:\Program Files\MiKTeX\tex/latex/l3backend\l3backend-xetex.def
 File: l3backend-xetex.def 2022-02-07 L3 backend support: XeTeX
 ()
@@ -254,7 +254,7 @@ atures
 \g_pbs_page_int=\count283
 \g_pbs_obj_int=\count284
 \g_pbs_oc_int=\count285
-) (C:\Program Files\MiKTeX\tex/latex/ocgx2\ocgbase.sty
+) (C:\Users\megahefm\AppData\Roaming\MiKTeX\tex/latex/ocgx2\ocgbase.sty
 Package: ocgbase 2021/06/11 v0.20 support package for ocgx2.sty
 \g_ocgbase_nd_int=\count286
 )
@@ -284,9 +284,9 @@ Package: array 2021/10/04 v2.5f Tabular extension package (FMi)
 \extratabsurround=\skip55
 \backup@length=\skip56
 \ar@cellbox=\box59
-) (C:\Program Files\MiKTeX\tex/latex/caption\caption.sty
+) (C:\Users\megahefm\AppData\Roaming\MiKTeX\tex/latex/caption\caption.sty
 Package: caption 2020/10/26 v3.5g Customizing captions (AR)
-(C:\Program Files\MiKTeX\tex/latex/caption\caption3.sty
+(C:\Users\megahefm\AppData\Roaming\MiKTeX\tex/latex/caption\caption3.sty
 Package: caption3 2020/10/21 v2.2e caption3 kernel (AR)
 \captionmargin=\dimen170
 \captionmargin@=\dimen171
@@ -299,14 +299,14 @@ Package caption Info: Standard document class detected.
 )
 \c@caption@flags=\count299
 \c@continuedfloat=\count300
-) (C:\Program Files\MiKTeX\tex/latex/colortbl\colortbl.sty
+) (C:\Users\megahefm\AppData\Roaming\MiKTeX\tex/latex/colortbl\colortbl.sty
 Package: colortbl 2020/01/04 v1.0e Color table columns (DPC)
 \everycr=\toks25
 \minrowclearance=\skip57
 ) (C:\Program Files\MiKTeX\tex/latex/etoolbox\etoolbox.sty
 Package: etoolbox 2020/10/05 v2.5k e-TeX tools for LaTeX (JAW)
 \etb@tempcnta=\count301
-) (C:\Program Files\MiKTeX\tex/latex/fancybox\fancybox.sty
+) (C:\Users\megahefm\AppData\Roaming\MiKTeX\tex/latex/fancybox\fancybox.sty
 Package: fancybox 2010/05/15 1.4
 Style option: `fancybox' v1.4 <2010/05/15> (tvz)
 \@fancybox=\box60
@@ -318,7 +318,7 @@ Style option: `fancybox' v1.4 <2010/05/15> (tvz)
 \EndVerbatimTokens=\toks29
 \Verbatim@Outfile=\write3
 \Verbatim@Infile=\read3
-) (C:\Program Files\MiKTeX\tex/latex/forest\forest.sty
+) (C:\Users\megahefm\AppData\Roaming\MiKTeX\tex/latex/forest\forest.sty
 Package: forest 2017/07/14 v2.1.5 Drawing (linguistic) trees
 (C:\Program Files\MiKTeX\tex/latex/pgf/frontendlayer\tikz.sty (C:\Program Files
 \MiKTeX\tex/latex/pgf/basiclayer\pgf.sty (C:\Program Files\MiKTeX\tex/latex/pgf
@@ -624,11 +624,11 @@ File: tikzlibrarycalc.code.tex 2021/05/15 v3.1.9a (3.1.9a)
 (C:\Program Files\MiKTeX\tex/generic/pgf/libraries\pgflibraryintersections.code
 .tex (C:\Program Files\MiKTeX\tex/generic/pgf/libraries\pgflibraryfpu.code.tex)
 \pgf@intersect@solutions=\count324
-) (C:\Program Files\MiKTeX\tex/latex/pgfopts\pgfopts.sty
+) (C:\Users\megahefm\AppData\Roaming\MiKTeX\tex/latex/pgfopts\pgfopts.sty
 Package: pgfopts 2014/07/10 v2.1a LaTeX package options with pgfkeys
 \pgfopts@list@add@a@toks=\toks42
 \pgfopts@list@add@b@toks=\toks43
-) (C:\Program Files\MiKTeX\tex/latex/elocalloc\elocalloc.sty
+) (C:\Users\megahefm\AppData\Roaming\MiKTeX\tex/latex/elocalloc\elocalloc.sty
 Package: elocalloc 2016/12/15 v0.03 local allocation for LaTeX 2015+ (DPC)
 ) (C:\Program Files\MiKTeX\tex/latex/environ\environ.sty
 Package: environ 2014/05/04 v0.3 A new way to define environments
@@ -636,7 +636,7 @@ Package: environ 2014/05/04 v0.3 A new way to define environments
 Package: trimspaces 2009/09/17 v1.1 Trim spaces around a token list
 )) (C:\Program Files\MiKTeX\tex/latex/l3packages/xparse\xparse.sty
 Package: xparse 2022-01-12 L3 Experimental document command parser
-) (C:\Program Files\MiKTeX\tex/latex/inlinedef\inlinedef.sty
+) (C:\Users\megahefm\AppData\Roaming\MiKTeX\tex/latex/inlinedef\inlinedef.sty
 Package: inlinedef 2008/07/10 v1.0 Inlined expansions within definitions
 \ID@toks=\toks44
 \ID@count=\count325
@@ -687,7 +687,7 @@ Package: inlinedef 2008/07/10 v1.0 Inlined expansions within definitions
 \forest@copy@out=\write5
 \forest@externalize@max@outer@n=\count350
 \forest@externalize@inner@n=\count351
-) (C:\Program Files\MiKTeX\tex/latex/framed\framed.sty
+) (C:\Users\megahefm\AppData\Roaming\MiKTeX\tex/latex/framed\framed.sty
 Package: framed 2011/10/22 v 0.96: framed or shaded text with page breaks
 \OuterFrameSep=\skip58
 \fb@frw=\dimen290
@@ -695,7 +695,7 @@ Package: framed 2011/10/22 v 0.96: framed or shaded text with page breaks
 \FrameRule=\dimen292
 \FrameSep=\dimen293
 ) (C:\Program Files\MiKTeX\tex/latex/hyperref\hyperref.sty
-Package: hyperref 2021-06-07 v7.00m Hypertext links for LaTeX
+Package: hyperref 2022-02-21 v7.00n Hypertext links for LaTeX
 (C:\Users\megahefm\AppData\Roaming\MiKTeX\tex/generic/pdfescape\pdfescape.sty
 Package: pdfescape 2019/12/09 v1.15 Implements pdfTeX's escape features (HO)
 ) (C:\Users\megahefm\AppData\Roaming\MiKTeX\tex/latex/hycolor\hycolor.sty
@@ -710,30 +710,27 @@ Package: kvoptions 2020-10-07 v3.14 Key value format for package options (HO)
 \Hy@linkcounter=\count352
 \Hy@pagecounter=\count353
 (C:\Program Files\MiKTeX\tex/latex/hyperref\pd1enc.def
-File: pd1enc.def 2021-06-07 v7.00m Hyperref: PDFDocEncoding definition (HO)
-) (C:\Program Files\MiKTeX\tex/latex/hyperref\hyperref-langpatches.def
-File: hyperref-langpatches.def 2021-06-07 v7.00m Hyperref: patches for babel la
-nguages
+File: pd1enc.def 2022-02-21 v7.00n Hyperref: PDFDocEncoding definition (HO)
 ) (C:\Users\megahefm\AppData\Roaming\MiKTeX\tex/generic/intcalc\intcalc.sty
 Package: intcalc 2019/12/15 v1.3 Expandable calculations with integers (HO)
 )
 \Hy@SavedSpaceFactor=\count354
 (C:\Program Files\MiKTeX\tex/latex/hyperref\puenc.def
-File: puenc.def 2021-06-07 v7.00m Hyperref: PDF Unicode definition (HO)
+File: puenc.def 2022-02-21 v7.00n Hyperref: PDF Unicode definition (HO)
 )
-Package hyperref Info: Hyper figures OFF on input line 4192.
-Package hyperref Info: Link nesting OFF on input line 4197.
-Package hyperref Info: Hyper index ON on input line 4200.
-Package hyperref Info: Plain pages OFF on input line 4207.
-Package hyperref Info: Backreferencing OFF on input line 4212.
+Package hyperref Info: Hyper figures OFF on input line 4137.
+Package hyperref Info: Link nesting OFF on input line 4142.
+Package hyperref Info: Hyper index ON on input line 4145.
+Package hyperref Info: Plain pages OFF on input line 4152.
+Package hyperref Info: Backreferencing OFF on input line 4157.
 Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
-Package hyperref Info: Bookmarks ON on input line 4445.
+Package hyperref Info: Bookmarks ON on input line 4390.
 \c@Hy@tempcnt=\count355
 (C:\Program Files\MiKTeX\tex/latex/url\url.sty
 \Urlmuskip=\muskip17
 Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 )
-LaTeX Info: Redefining \url on input line 4804.
+LaTeX Info: Redefining \url on input line 4749.
 \XeTeXLinkMargin=\dimen295
 (C:\Users\megahefm\AppData\Roaming\MiKTeX\tex/generic/bitset\bitset.sty
 Package: bitset 2019/12/09 v1.3 Handle bit-vector datatype (HO)
@@ -745,23 +742,23 @@ Package: bigintcalc 2019/12/15 v1.5 Expandable calculations on big integers (HO
 \Fld@menulength=\count356
 \Field@Width=\dimen296
 \Fld@charsize=\dimen297
-Package hyperref Info: Hyper figures OFF on input line 6076.
-Package hyperref Info: Link nesting OFF on input line 6081.
-Package hyperref Info: Hyper index ON on input line 6084.
-Package hyperref Info: backreferencing OFF on input line 6091.
-Package hyperref Info: Link coloring OFF on input line 6096.
-Package hyperref Info: Link coloring with OCG OFF on input line 6101.
-Package hyperref Info: PDF/A mode OFF on input line 6106.
-LaTeX Info: Redefining \ref on input line 6146.
-LaTeX Info: Redefining \pageref on input line 6150.
+Package hyperref Info: Hyper figures OFF on input line 6027.
+Package hyperref Info: Link nesting OFF on input line 6032.
+Package hyperref Info: Hyper index ON on input line 6035.
+Package hyperref Info: backreferencing OFF on input line 6042.
+Package hyperref Info: Link coloring OFF on input line 6047.
+Package hyperref Info: Link coloring with OCG OFF on input line 6052.
+Package hyperref Info: PDF/A mode OFF on input line 6057.
+LaTeX Info: Redefining \ref on input line 6097.
+LaTeX Info: Redefining \pageref on input line 6101.
 \Hy@abspage=\count357
 \c@Item=\count358
 \c@Hfootnote=\count359
 )
 Package hyperref Info: Driver (autodetected): hxetex.
 (C:\Program Files\MiKTeX\tex/latex/hyperref\hxetex.def
-File: hxetex.def 2021-06-07 v7.00m Hyperref driver for XeTeX
-(C:\Program Files\MiKTeX\tex/generic/stringenc\stringenc.sty
+File: hxetex.def 2022-02-21 v7.00n Hyperref driver for XeTeX
+(C:\Users\megahefm\AppData\Roaming\MiKTeX\tex/generic/stringenc\stringenc.sty
 Package: stringenc 2019/11/29 v1.12 Convert strings between diff. encodings (HO
 )
 )
@@ -794,20 +791,16 @@ Package: inputenc 2021/02/14 v1.3d Input encoding file
 
 Package inputenc Warning: inputenc package ignored with utf8 based engines.
 
-) (C:\Program Files\MiKTeX\tex/latex/makecell\makecell.sty
+) (C:\Users\megahefm\AppData\Roaming\MiKTeX\tex/latex/makecell\makecell.sty
 Package: makecell 2009/08/03 V0.1e Managing of Tab Column Heads and Cells
 \rotheadsize=\dimen298
 \c@nlinenum=\count364
 \TeXr@lab=\toks58
-) (C:\Program Files\MiKTeX\tex/latex/mathtools\mathtools.sty
-Package: mathtools 2021/04/12 v1.27 mathematical typesetting tools
-(C:\Program Files\MiKTeX\tex/latex/mathtools\mhsetup.sty
+) (C:\Users\megahefm\AppData\Roaming\MiKTeX\tex/latex/mathtools\mathtools.sty
+Package: mathtools 2022/02/07 v1.28a mathematical typesetting tools
+(C:\Users\megahefm\AppData\Roaming\MiKTeX\tex/latex/mathtools\mhsetup.sty
 Package: mhsetup 2021/03/18 v1.4 programming setup (MH)
 )
-LaTeX Info: Thecontrolsequence`\('isalreadyrobust on input line 130.
-LaTeX Info: Thecontrolsequence`\)'isalreadyrobust on input line 130.
-LaTeX Info: Thecontrolsequence`\['isalreadyrobust on input line 130.
-LaTeX Info: Thecontrolsequence`\]'isalreadyrobust on input line 130.
 \g_MT_multlinerow_int=\count365
 \l_MT_multwidth_dim=\dimen299
 \origjot=\skip60
@@ -819,11 +812,11 @@ LaTeX Info: Thecontrolsequence`\]'isalreadyrobust on input line 130.
 \l_MT_below_shortintertext_sep=\dimen305
 \xmathstrut@box=\box95
 \xmathstrut@dim=\dimen306
-) (C:\Program Files\MiKTeX\tex/latex/marvosym\marvosym.sty
+) (C:\Users\megahefm\AppData\Roaming\MiKTeX\tex/latex/marvosym\marvosym.sty
 Package: marvosym 2011/07/20 v2.2 Martin Vogel's Symbols font definitions
-) (C:\Program Files\MiKTeX\tex/latex/mdframed\mdframed.sty
+) (C:\Users\megahefm\AppData\Roaming\MiKTeX\tex/latex/mdframed\mdframed.sty
 Package: mdframed 2013/07/01 1.9b: mdframed
-(C:\Program Files\MiKTeX\tex/latex/needspace\needspace.sty
+(C:\Users\megahefm\AppData\Roaming\MiKTeX\tex/latex/needspace\needspace.sty
 Package: needspace 2010/09/12 v1.3d reserve vertical space
 )
 \mdf@templength=\skip61
@@ -867,7 +860,7 @@ Package: needspace 2010/09/12 v1.3d reserve vertical space
 \mdf@subsubtitlebelowskip@length=\skip98
 \mdf@subsubtitleinneraboveskip@length=\skip99
 \mdf@subsubtitleinnerbelowskip@length=\skip100
-(C:\Program Files\MiKTeX\tex/latex/mdframed\md-frame-0.mdf
+(C:\Users\megahefm\AppData\Roaming\MiKTeX\tex/latex/mdframed\md-frame-0.mdf
 File: md-frame-0.mdf 2013/07/01\ 1.9b: md-frame-0
 )
 \mdf@frametitlebox=\box96
@@ -1083,7 +1076,7 @@ File: tikzlibraryplotmarks.code.tex 2021/05/15 v3.1.9a (3.1.9a)
 
 (C:\Program Files\MiKTeX\tex/generic/pgf/libraries\pgflibraryplotmarks.code.tex
 File: pgflibraryplotmarks.code.tex 2021/05/15 v3.1.9a (3.1.9a)
-))) (C:\Program Files\MiKTeX\tex/latex/sidecap\sidecap.sty
+))) (C:\Users\megahefm\AppData\Roaming\MiKTeX\tex/latex/sidecap\sidecap.sty
 Package: sidecap 2003/06/06 v1.6f SideCap Package (RN/HjG)
 \SC@BOXWD=\dimen331
 \SC@CAPWD=\dimen332
@@ -1091,11 +1084,13 @@ Package: sidecap 2003/06/06 v1.6f SideCap Package (RN/HjG)
 \SC@tempdimb=\dimen334
 \c@SC@C=\count391
 \SC@BOX=\box147
-) (C:\Program Files\MiKTeX\tex/latex/smartdiagram\smartdiagram.sty
+)
+(C:\Users\megahefm\AppData\Roaming\MiKTeX\tex/latex/smartdiagram\smartdiagram.s
+ty
 Package: smartdiagram 2016/12/23 v0.3b Automatic creation of smart diagrams fro
 m lists of items.
-(C:\Program Files\MiKTeX\tex/latex/xstring\xstring.sty (C:\Program Files\MiKTeX
-\tex/generic/xstring\xstring.tex
+(C:\Users\megahefm\AppData\Roaming\MiKTeX\tex/latex/xstring\xstring.sty (C:\Use
+rs\megahefm\AppData\Roaming\MiKTeX\tex/generic/xstring\xstring.tex
 \integerpart=\count392
 \decimalpart=\count393
 )
@@ -1120,13 +1115,13 @@ File: tikzlibraryshadows.code.tex 2021/05/15 v3.1.9a (3.1.9a)
 \pgf@layerbox@smart diagram arrow back=\box150
 \pgf@layerboxsaved@smart diagram arrow back=\box151
 
-(C:\Program Files\MiKTeX\tex/latex/smartdiagram\smartdiagramlibrarycore.definit
-ions.code.tex)
-(C:\Program Files\MiKTeX\tex/latex/smartdiagram\smartdiagramlibrarycore.styles.
-code.tex)
-(C:\Program Files\MiKTeX\tex/latex/smartdiagram\smartdiagramlibrarycore.command
-s.code.tex)) (C:\Users\megahefm\AppData\Roaming\MiKTeX\tex/generic/soul\soul.st
-y
+(C:\Users\megahefm\AppData\Roaming\MiKTeX\tex/latex/smartdiagram\smartdiagramli
+brarycore.definitions.code.tex)
+(C:\Users\megahefm\AppData\Roaming\MiKTeX\tex/latex/smartdiagram\smartdiagramli
+brarycore.styles.code.tex)
+(C:\Users\megahefm\AppData\Roaming\MiKTeX\tex/latex/smartdiagram\smartdiagramli
+brarycore.commands.code.tex)) (C:\Users\megahefm\AppData\Roaming\MiKTeX\tex/gen
+eric/soul\soul.sty
 Package: soul 2003/11/17 v2.4 letterspacing/underlining (mf)
 \SOUL@word=\toks63
 \SOUL@lasttoken=\toks64
@@ -1137,7 +1132,7 @@ Package: soul 2003/11/17 v2.4 letterspacing/underlining (mf)
 \SOUL@ttwidth=\dimen335
 \SOUL@uldp=\dimen336
 \SOUL@ulht=\dimen337
-) (C:\Program Files\MiKTeX\tex/latex/subfigure\subfigure.sty
+) (C:\Users\megahefm\AppData\Roaming\MiKTeX\tex/latex/subfigure\subfigure.sty
 Package: subfigure 2002/07/30 v2.1.4 subfigure package
 \subfigtopskip=\skip133
 \subfigcapskip=\skip134
@@ -1152,7 +1147,7 @@ Package: subfigure 2002/07/30 v2.1.4 subfigure package
 ****************************************
 * Local config file subfigure.cfg used *
 ****************************************
-(C:\Program Files\MiKTeX\tex/latex/subfigure\subfigure.cfg)
+(C:\Users\megahefm\AppData\Roaming\MiKTeX\tex/latex/subfigure\subfigure.cfg)
 \subfig@top=\skip137
 \subfig@bottom=\skip138
 )
@@ -1162,14 +1157,14 @@ File: tikzlibraryarrows.code.tex 2021/05/15 v3.1.9a (3.1.9a)
 (C:\Program Files\MiKTeX\tex/generic/pgf/libraries\pgflibraryarrows.code.tex
 File: pgflibraryarrows.code.tex 2021/05/15 v3.1.9a (3.1.9a)
 \arrowsize=\dimen340
-)) (C:\Program Files\MiKTeX\tex/latex/psnfss\times.sty
+)) (C:\Users\megahefm\AppData\Roaming\MiKTeX\tex/latex/psnfss\times.sty
 Package: times 2020/03/25 PSNFSS-v9.3 (SPQR) 
-) (C:\Program Files\MiKTeX\tex/latex/wasysym\wasysym.sty
+) (C:\Users\megahefm\AppData\Roaming\MiKTeX\tex/latex/wasysym\wasysym.sty
 Package: wasysym 2020/01/19 v2.4 Wasy-2 symbol support package
 \symwasy=\mathgroup6
 LaTeX Font Info:    Overwriting symbol font `wasy' in version `bold'
 (Font)                  U/wasy/m/n --> U/wasy/b/n on input line 93.
-) (C:\Program Files\MiKTeX\tex/latex/wrapfig\wrapfig.sty
+) (C:\Users\megahefm\AppData\Roaming\MiKTeX\tex/latex/wrapfig\wrapfig.sty
 \wrapoverhang=\dimen341
 \WF@size=\dimen342
 \c@WF@wrappedlines=\count398
@@ -1278,15 +1273,17 @@ Package rerunfilecheck Info: File `ts_plots_flow_chart.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 50705 strings out of 410969
- 1189672 string characters out of 2828074
- 1604173 words of memory out of 3000000
- 70802 multiletter control sequences out of 15000+600000
+ 50661 strings out of 410967
+ 1189715 string characters out of 2828016
+ 1604578 words of memory out of 3000000
+ 70763 multiletter control sequences out of 15000+600000
  469956 words of font info for 33 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
- 141i,8n,131p,1624b,2703s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 141i,8n,131p,1624b,2703s stack positions out of 10000i,1000n,20000p,200000b,80000s
 
 Output written on ts_plots_flow_chart.pdf (1 page).
 
 ! xelatex: security risk: running with elevated privileges
 ! miktex-dvipdfmx: security risk: running with elevated privileges
+! miktex-dvipdfmx: major issue: So far, you have not checked for updates as a MiKTeX user.
+! xelatex: major issue: So far, you have not checked for updates as a MiKTeX user.
