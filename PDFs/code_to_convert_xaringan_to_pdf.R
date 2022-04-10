@@ -4,6 +4,6 @@
 source("https://git.io/xaringan2pdf")
 
 xaringan_to_pdf(
-  input = 'https://fmegahed.github.io/isa401/class19/19_high_dimensional_charts.html',
-  output_file = 'PDFs/19_high_dimensional_charts.pdf'
+  input = 'https://fmegahed.github.io/isa401/class21/21_business_reporting.html',
+  output_file = 'PDFs/21_business_reporting.pdf'
   )

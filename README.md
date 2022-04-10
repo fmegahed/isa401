@@ -29,7 +29,8 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 |09            | 03/28| Commonly Used Statistical Charts| [17_commonly_used_charts.html](https://fmegahed.github.io/isa401/class17/17_commonly_used_charts.html) | [17_commonly_used_charts.pdf](https://github.com/fmegahed/isa401/blob/main/PDFs/17_commonly_used_charts.pdf) |
 |         | 03/30 | A Guided Tour of Tableau & PowerBI| [18_temporal_spatial_and_spatiotemporal_charts.html](https://fmegahed.github.io/isa401/class18/18_temporal_spatial_and_spatiotemporal_charts.html) | [18_temporal_spatial_and_spatiotemporal_charts.pdf](https://github.com/fmegahed/isa401/blob/main/PDFs/18_temporal_spatial_and_spatiotemporal_charts.pdf) |
 |10            | 04/04| Charts for High Dimensional Data| [19_high_dimensional_charts.html](https://fmegahed.github.io/isa401/class19/19_high_dimensional_charts.html) | [19_high_dimensional_charts.pdf](https://github.com/fmegahed/isa401/blob/main/PDFs/19_high_dimensional_charts.pdf) |
-|10            | 04/06| Exam 02: Principles of Data Visualization| -- | -- |
+|            | 04/06| Exam 02: Principles of Data Visualization| -- | -- |
+|11            | 04/11| Business Reporting| [21_business_reporting.html](https://fmegahed.github.io/isa401/class21/21_business_reporting.html) | [21_business_reporting.pdf](https://github.com/fmegahed/isa401/blob/main/PDFs/21_business_reporting.pdf) |
 
 
 ## Acknowledgments
