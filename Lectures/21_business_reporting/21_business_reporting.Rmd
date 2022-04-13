@@ -295,7 +295,7 @@ can consistently hit the target on the whiteboard (from a distance of 6ft)**.
 .pull-right[
 .center[.font120[**Client/Product Performance Indicators**] .font80[(List 5-7)]]  
 
-.can-edit.key-activity2a[ - Accuracy]   
+- .can-edit.key-activity2a[Accuracy]   
 ]
 
 
