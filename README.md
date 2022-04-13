@@ -31,6 +31,7 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 |10            | 04/04| Charts for High Dimensional Data| [19_high_dimensional_charts.html](https://fmegahed.github.io/isa401/class19/19_high_dimensional_charts.html) | [19_high_dimensional_charts.pdf](https://github.com/fmegahed/isa401/blob/main/PDFs/19_high_dimensional_charts.pdf) |
 |            | 04/06| Exam 02: Principles of Data Visualization| -- | -- |
 |11            | 04/11| Business Reporting| [21_business_reporting.html](https://fmegahed.github.io/isa401/class21/21_business_reporting.html) | [21_business_reporting.pdf](https://github.com/fmegahed/isa401/blob/main/PDFs/21_business_reporting.pdf) |
+|            | 04/13 | Business Reporting| continuation with previous slide deck | continuation with previous slide deck |
 
 
 ## Acknowledgments
