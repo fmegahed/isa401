@@ -338,9 +338,12 @@ class: inverse, center, middle
 
 ---
 
-# The Blind Use of Algorithms in the News
+# In the News: AI Implementation Scandals
 
-<iframe src="https://www.politico.eu/article/dutch-scandal-serves-as-a-warning-for-europe-over-risks-of-using-algorithms/" width="1000" height="500"></iframe>
+```{r politico, echo=FALSE, out.width='65%'}
+knitr::include_graphics('figures/politico.jpg')
+```
+
 
 
 ---
