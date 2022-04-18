@@ -248,7 +248,7 @@ Data mining is hard since it has the following issues:
 
 # Clustering of Traffic Volume on I-85
 
-<div class="countdown" id="timer_625c739a" style="top:0;right:0;font-size:2em;" data-warnwhen="0">
+<div class="countdown" id="timer_625d8011" style="top:0;right:0;font-size:2em;" data-warnwhen="0">
 <code class="countdown-time"><span class="countdown-digits minutes">04</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
 </div>
 
@@ -459,7 +459,7 @@ class: inverse, center, middle
 &lt;tbody&gt;
   &lt;tr&gt;
     &lt;td class="tg-7btt"&gt;1&lt;/td&gt;
-    &lt;td class="tg-fymr"&gt;&lt;span style="color:#BEAED4"&gt;Bread&lt;/span&gt;&lt;span style="color:#333"&gt;, &lt;/span&gt;&lt;span style="color:#FE0000"&gt;Coke&lt;/span&gt;&lt;span style="color:#333"&gt;, &lt;/span&gt;&lt;span style="color:#386CB0"&gt;Milk&lt;/span&gt;&lt;/td&gt;
+    &lt;td class="tg-fymr"&gt;&lt;span style="color:#BEAED4"&gt;Bread&lt;/span&gt;&lt;span style="color:#333"&gt;, &lt;/span&gt;&lt;span style="color:#F0027F"&gt;Coke&lt;/span&gt;&lt;span style="color:#333"&gt;, &lt;/span&gt;&lt;span style="color:#386CB0"&gt;Milk&lt;/span&gt;&lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
     &lt;td class="tg-7btt"&gt;2&lt;/td&gt;
@@ -542,7 +542,7 @@ class: inverse, center, middle
 &lt;tbody&gt;
   &lt;tr&gt;
     &lt;td class="tg-7btt"&gt;1&lt;/td&gt;
-    &lt;td class="tg-fymr"&gt;&lt;span style="color:#BEAED4"&gt;Bread&lt;/span&gt;&lt;span style="color:#333"&gt;, &lt;/span&gt;&lt;span style="color:#FE0000"&gt;Coke&lt;/span&gt;&lt;span style="color:#333"&gt;, &lt;/span&gt;&lt;span style="color:#386CB0"&gt;Milk&lt;/span&gt;&lt;/td&gt;
+    &lt;td class="tg-fymr"&gt;&lt;span style="color:#BEAED4"&gt;Bread&lt;/span&gt;&lt;span style="color:#333"&gt;, &lt;/span&gt;&lt;span style="color:#F0027F"&gt;Coke&lt;/span&gt;&lt;span style="color:#333"&gt;, &lt;/span&gt;&lt;span style="color:#386CB0"&gt;Milk&lt;/span&gt;&lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
     &lt;td class="tg-7btt"&gt;2&lt;/td&gt;
@@ -585,7 +585,7 @@ class: inverse, center, middle
 
 # Non-graded Activity: Frequent Itemsets
 
-<div class="countdown" id="timer_625c7557" style="top:0;right:0;font-size:2em;" data-warnwhen="0">
+<div class="countdown" id="timer_625d7d90" style="top:0;right:0;font-size:2em;" data-warnwhen="0">
 <code class="countdown-time"><span class="countdown-digits minutes">04</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
 </div>
 
@@ -630,10 +630,10 @@ class: inverse, center, middle
 
 - **In practice there are many rules, want to find significant/interesting ones!**  
 
-- **Confidence** of this association rule is the probability of `\(j\)` given `\(I =\)` {$i_1,…,i_k$}
+- **Confidence** of this association rule is the probability of `\(j\)` given `\(I =\)` {i&lt;sub&gt;1&lt;/sub&gt;,…,i&lt;sub&gt;k&lt;/sub&gt;}
 
 .center[
-`\(conf(I \rightarrow j) = P (j \ | \ I) = \frac{support(I \ \cup \ j)}{support(I)}\)`
+`\(conf(I \rightarrow j) = P (j \ | \ I) = \frac{support(I \ \cap \ j)}{support(I)}\)`
 ]
 
 - **Not all high-confidence rules are interesting**   
@@ -653,7 +653,7 @@ class: inverse, center, middle
 
 # Non-Graded Activity: Confidence and Lift
 
-<div class="countdown" id="timer_625c7659" style="top:0;right:0;font-size:2em;" data-warnwhen="0">
+<div class="countdown" id="timer_625d7db5" style="top:0;right:0;font-size:2em;" data-warnwhen="0">
 <code class="countdown-time"><span class="countdown-digits minutes">04</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
 </div>
 
@@ -710,7 +710,7 @@ class: inverse, center, middle
 - **Read file once, counting in main memorythe occurrences of each pair:**  
   + From each basket of `\(n\)` items, generate its `\(\frac{n(n-1)}{2}\)` pairs by two nested loops  
   
-- Fails if (#items)^2 exceeds main memory  
+- Fails if (#items)&lt;sup&gt;2&lt;/sup&gt; exceeds main memory  
   + Remember: #items can be 100K (Wal-Mart) or 10B (Web pages)  
     * Suppose `\(10^5\)` items, counts are 4-byte integers  
     * Number of pairs of items: `\(\frac{10^5(10^5-1)}{2} = 5*10^9\)` 

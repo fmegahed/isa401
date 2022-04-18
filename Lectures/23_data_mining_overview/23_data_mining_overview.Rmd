@@ -451,7 +451,7 @@ class: inverse, center, middle
 <tbody>
   <tr>
     <td class="tg-7btt">1</td>
-    <td class="tg-fymr"><span style="color:#BEAED4">Bread</span><span style="color:#333">, </span><span style="color:#FE0000">Coke</span><span style="color:#333">, </span><span style="color:#386CB0">Milk</span></td>
+    <td class="tg-fymr"><span style="color:#BEAED4">Bread</span><span style="color:#333">, </span><span style="color:#F0027F">Coke</span><span style="color:#333">, </span><span style="color:#386CB0">Milk</span></td>
   </tr>
   <tr>
     <td class="tg-7btt">2</td>
@@ -534,7 +534,7 @@ class: inverse, center, middle
 <tbody>
   <tr>
     <td class="tg-7btt">1</td>
-    <td class="tg-fymr"><span style="color:#BEAED4">Bread</span><span style="color:#333">, </span><span style="color:#FE0000">Coke</span><span style="color:#333">, </span><span style="color:#386CB0">Milk</span></td>
+    <td class="tg-fymr"><span style="color:#BEAED4">Bread</span><span style="color:#333">, </span><span style="color:#F0027F">Coke</span><span style="color:#333">, </span><span style="color:#386CB0">Milk</span></td>
   </tr>
   <tr>
     <td class="tg-7btt">2</td>
@@ -620,10 +620,10 @@ class: inverse, center, middle
 
 - **In practice there are many rules, want to find significant/interesting ones!**  
 
-- **Confidence** of this association rule is the probability of $j$ given $I =$ {$i_1,…,i_k$}
+- **Confidence** of this association rule is the probability of $j$ given $I =$ {i<sub>1</sub>,…,i<sub>k</sub>}
 
 .center[
-$conf(I \rightarrow j) = P (j \ | \ I) = \frac{support(I \ \cup \ j)}{support(I)}$
+$conf(I \rightarrow j) = P (j \ | \ I) = \frac{support(I \ \cap \ j)}{support(I)}$
 ]
 
 - **Not all high-confidence rules are interesting**   
@@ -698,7 +698,7 @@ $conf(I \rightarrow j) = P (j \ | \ I) = \frac{support(I \ \cup \ j)}{support(I)
 - **Read file once, counting in main memorythe occurrences of each pair:**  
   + From each basket of $n$ items, generate its $\frac{n(n-1)}{2}$ pairs by two nested loops  
   
-- Fails if (#items)^2 exceeds main memory  
+- Fails if (#items)<sup>2</sup> exceeds main memory  
   + Remember: #items can be 100K (Wal-Mart) or 10B (Web pages)  
     * Suppose $10^5$ items, counts are 4-byte integers  
     * Number of pairs of items: $\frac{10^5(10^5-1)}{2} = 5*10^9$ 
