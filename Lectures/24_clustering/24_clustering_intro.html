@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>ISA 401: Business Intelligence &amp; Data Visualization</title>
+    <meta charset="utf-8" />
+    <meta name="author" content=" Fadel M. Megahed, PhD    Associate Professor   Department of Information Systems and Analytics   Farmer School of Business  Miami University  Twitter: FadelMegahed  GitHub: fmegahed  Email: fmegahed@miamioh.edu  Office Hours: Automated Scheduler for Virtual Office Hours  " />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/tile-view/tile-view.css" rel="stylesheet" />
+    <script src="libs/tile-view/tile-view.js"></script>
+    <link href="libs/animate.css/animate.xaringan.css" rel="stylesheet" />
+    <link href="libs/tachyons/tachyons.min.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra_fit-screen/fit-screen.js"></script>
+    <link href="libs/panelset/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset/panelset.js"></script>
+    <script type="application/json" id="xaringanExtra-editable-docid">{"id":"fd2e12d1caab4114a829f7570771154e","expires":14}</script>
+    <script src="libs/himalaya/himalaya.js"></script>
+    <script src="libs/js-cookie/js.cookie.js"></script>
+    <link href="libs/editable/editable.css" rel="stylesheet" />
+    <script src="libs/editable/editable.js"></script>
+    <script src="libs/clipboard/clipboard.min.js"></script>
+    <link href="libs/shareon/shareon.min.css" rel="stylesheet" />
+    <script src="libs/shareon/shareon.min.js"></script>
+    <link href="libs/xaringanExtra-shareagain/shareagain.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-shareagain/shareagain.js"></script>
+    <script src="libs/peerjs/peerjs.min.js"></script>
+    <script src="libs/tiny.toast/toast.min.js"></script>
+    <link href="libs/xaringanExtra-broadcast/broadcast.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-broadcast/broadcast.js"></script>
+    <script src="libs/mark.js/mark.min.js"></script>
+    <link href="libs/xaringanExtra-search/search.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-search/search.js"></script>
+    <script>window.addEventListener('load', function() { window.xeSearch = new RemarkSearch({"position":"bottom-left","caseSensitive":false,"showIcon":false,"autoSearch":true}) })</script>
+    <link rel="stylesheet" href="css/fonts.css" type="text/css" />
+    <link rel="stylesheet" href="css/my-theme.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# ISA 401: Business Intelligence &amp; Data Visualization
+## 24: A Short Introduction to Clustering
+### <br>Fadel M. Megahed, PhD <br><br> Associate Professor <br> Department of Information Systems and Analytics <br> Farmer School of Business<br> Miami University<br><br>Twitter: <a href="www.twitter.com/FadelMegahed/">FadelMegahed</a><br> GitHub: <a href="https://github.com/fmegahed">fmegahed</a><br> Email: <a href="mailto:fmegahed@miamioh.edu">fmegahed@miamioh.edu</a><br> Office Hours: <a href="https://calendly.com/fmegahed">Automated Scheduler for Virtual Office Hours</a><br><br>
+### Spring 2022
+
+---
+
+
+
+
+
+
+
+# A Recap of What we Learned Last Class
+
+- Describe the goals &amp; functions of data mining  
+
+- Understand the statistical limits on data mining  
+
+- Describe the data mining process  
+
+- What is “frequent itemsets” &amp; the application of this concept  
+
+- Explain how and why “association rules” are constructed  
+
+- Use <svg aria-hidden="true" role="img" viewBox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#C3142D;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/></svg> to populate both concepts
+
+
+---
+
+# Learning Objectives for Today's Class
+
+- Describe the different steps of the k-means algorithm  
+
+- Cluster using k-means (by hand)  
+
+- Cluster using k-means (software)  
+
+  + <svg aria-hidden="true" role="img" viewBox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#C3142D;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/></svg>  
+  + Tableau
+
+
+---
+class: inverse, center, middle
+
+# An Overview of Clustering Techniques
+
+---
+
+# The Problem of Clustering
+
+- Given a **set of (high-dimensional) observations**, with a notion of **distance** between observations, **group the observations** into **some number of clusters**, so that:   
+  +  Members of a cluster are close/similar to each other  
+  +  Members of different clusters are dissimilar  
+
+- **Usually:**  
+  + The observations are in a high-dimensional space  
+  + Similarity is defined using a distance measure, e.g., 
+      * Euclidean, Cosine, Jaccard, edit distance, etc.
+
+
+---
+
+# Clustering in 2D Space
+
+.pull-left[
+.center[
+
+**Meet the Palmer penguins**
+
+[![](https://allisonhorst.github.io/palmerpenguins/reference/figures/lter_penguins.png)](https://allisonhorst.github.io/palmerpenguins/)
+]
+]
+
+.pull-right[
+.center[
+
+**Anatomical description of the dataset:**
+
+[![](https://allisonhorst.github.io/palmerpenguins/reference/figures/culmen_depth.png)](https://allisonhorst.github.io/palmerpenguins/)
+]
+]
+
+.footnote[
+&lt;html&gt;
+&lt;hr&gt;
+&lt;/html&gt;
+
+**Source:** The data are available by [CC-0 license](https://creativecommons.org/share-your-work/public-domain/cc0/) in accordance with the [Palmer Station LTER Data Policy and the LTER Data Access Policy for Type I data](http://pal.lternet.edu/data/policies). The artwork is by Allison Horst and available at &lt;https://allisonhorst.github.io/palmerpenguins/&gt;, and the data is downloaded using the [palmerpenguins](https://allisonhorst.github.io/palmerpenguins/) <svg aria-hidden="true" role="img" viewBox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#C3142D;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/></svg> package.
+]
+
+
+---
+count: false
+
+# Clustering in 2D Space: Formulation
+
+- Given a **set of observations (each containing bill length and depth)**, with a notion of **Euclidean distance** between observations, **group the observations** into **3 clusters**, so that:  
+
+  +  Members of a cluster are close/similar to each other  
+  +  Members of different clusters are dissimilar  
+  
+- Note we are assuming that we did not have a "label/type" for each penguin.
+
+.footnote[
+&lt;html&gt;
+&lt;hr&gt;
+&lt;/html&gt;
+
+**Source:** The data are available by [CC-0 license](https://creativecommons.org/share-your-work/public-domain/cc0/) in accordance with the [Palmer Station LTER Data Policy and the LTER Data Access Policy for Type I data](http://pal.lternet.edu/data/policies). The artwork is by Allison Horst and available at &lt;https://allisonhorst.github.io/palmerpenguins/&gt;, and the data is downloaded using the [palmerpenguins](https://allisonhorst.github.io/palmerpenguins/) <svg aria-hidden="true" role="img" viewBox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#C3142D;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/></svg> package.
+]
+
+
+---
+count: false
+
+# Clustering in 2D Space: Raw Data
+
+&lt;img src="24_clustering_intro_files/figure-html/bill_length_depth1-1.png" style="display: block; margin: auto;" /&gt;
+
+.footnote[
+&lt;html&gt;
+&lt;hr&gt;
+&lt;/html&gt;
+
+**Source:** The data are available by [CC-0 license](https://creativecommons.org/share-your-work/public-domain/cc0/) in accordance with the [Palmer Station LTER Data Policy and the LTER Data Access Policy for Type I data](http://pal.lternet.edu/data/policies). The artwork is by Allison Horst and available at &lt;https://allisonhorst.github.io/palmerpenguins/&gt;, and the data is downloaded using the [palmerpenguins](https://allisonhorst.github.io/palmerpenguins/) <svg aria-hidden="true" role="img" viewBox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#C3142D;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/></svg> package.
+]
+
+---
+count: false
+
+# Clustering in 2D Space: Labeled Raw Data
+
+&lt;img src="24_clustering_intro_files/figure-html/bill_length_depth2-1.png" style="display: block; margin: auto;" /&gt;
+
+.footnote[
+&lt;html&gt;
+&lt;hr&gt;
+&lt;/html&gt;
+
+**Source:** The data are available by [CC-0 license](https://creativecommons.org/share-your-work/public-domain/cc0/) in accordance with the [Palmer Station LTER Data Policy and the LTER Data Access Policy for Type I data](http://pal.lternet.edu/data/policies). The artwork is by Allison Horst and available at &lt;https://allisonhorst.github.io/palmerpenguins/&gt;, and the data is downloaded using the [palmerpenguins](https://allisonhorst.github.io/palmerpenguins/) <svg aria-hidden="true" role="img" viewBox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#C3142D;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/></svg> package.
+]
+
+---
+count: false
+
+# Clustering in 2D Space: Clustering Results
+
+&lt;img src="24_clustering_intro_files/figure-html/bill_length_depth3-1.png" style="display: block; margin: auto;" /&gt;
+
+.footnote[
+&lt;html&gt;
+&lt;hr&gt;
+&lt;/html&gt;
+
+**Source:** The data are available by [CC-0 license](https://creativecommons.org/share-your-work/public-domain/cc0/) in accordance with the [Palmer Station LTER Data Policy and the LTER Data Access Policy for Type I data](http://pal.lternet.edu/data/policies). The artwork is by Allison Horst and available at &lt;https://allisonhorst.github.io/palmerpenguins/&gt;, and the data is downloaded using the [palmerpenguins](https://allisonhorst.github.io/palmerpenguins/) <svg aria-hidden="true" role="img" viewBox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#C3142D;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/></svg> package.
+]
+
+
+---
+
+# Comments on the 2D Clustering Problem
+
+Even though the 2D Space clustering problem is the easiest problem to "solve" since we can benefit by plotting the data, **clustering is hard**. 
+
+**Some important questions:**
+
+  1. With all the variables being numerical, we often assume **Euclidean distance**. This can be problematic when:  
+    - variables have significantly different scales  
+    - we are including information that is not pertinent to grouping
+  
+  2. How do you determine the number of clusters ($k$)?  
+  
+  3. How to represent a cluster of many points?  
+  
+  4. How do we determine the "nearness" of clusters?
+  
+
+---
+
+# An Overview of Clustering Methods
+
+[![](https://csdl-images.ieeecomputer.org/trans/ec/2014/03/figures/fahad.t1-2330519.gif)](https://www.computer.org/csdl/journal/ec/2014/03/06832486/13rRUEgs2xB)
+
+.footnote[
+&lt;html&gt;
+&lt;hr&gt;
+&lt;/html&gt;
+
+**Source:** A. Fahad, et al.,"A Survey of Clustering Algorithms for Big Data: Taxonomy and Empirical Analysis" in IEEE Transactions on Emerging Topics in Computing, vol. 2, no. 03, pp. 267-279, 2014. &lt;https://doi.org/10.1109/TETC.2014.2330519&gt;
+]
+
+
+---
+class: inverse, center, middle
+
+# k-means Algorithm
+
+
+---
+
+# General Idea
+
+The K-Means algorithm clusters data by trying to separate samples in `\(n\)` groups of equal variance, minimizing a criterion known as the **inertia** or **within-cluster sum-of-squares** (see below). This algorithm requires the **number of clusters to be specified**. 
+
+.center[
+`\(\sum_{i=0}^{n}\min_{\mu_j \in C}(||x_i - \mu_j||^2)\)`
+]
+
+
+**Inertia is a measure of how internally coherent clusters are; however, it suffers from various drawbacks:**
+
+- Inertia makes the assumption that clusters are convex and isotropic, which is not always the case. It responds poorly to elongated clusters, or manifolds with irregular shapes.   
+
+- Inertia is not a normalized metric: we just know that lower values are better and zero is optimal. But in very high-dimensional spaces, Euclidean distances tend to become inflated.
+
+
+---
+
+# The Steps of the K-Means Algorithm
+
+ In basic terms, the algorithm has three steps. 
+ 
+ 0. Step 0 chooses the initial centroids, with the most basic method being to choose `\(k\)`samples from the dataset `\(X\)` . After initialization, K-means consists of looping between the remaining two steps.  
+ 
+ 1. Step 1 assigns each sample to its nearest centroid. 
+ 
+ 2. The second step creates new centroids by taking the mean value of all of the samples assigned to each previous centroid. The difference between the old and the new centroids are computed.
+ 
+ The algorithm repeats these last two steps the centroids do not move significantly.
+
+
+.footnote[
+&lt;html&gt;
+&lt;hr&gt;
+&lt;/html&gt;
+
+**Source:** Clustering &amp;mdash; scikit-learn 1.0.2 documentation &lt;https://scikit-learn.org/stable/modules/clustering.html#k-means&gt;
+]
+
+
+---
+
+# Class Activity
+
+Use the k-means algorithm to cluster the following observations. Use `\(k=2\)` and Euclidean distance. **We will use the class handout to walk you through the process.**
+
+&lt;style type="text/css"&gt;
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-baqh{text-align:center;vertical-align:top}
+.tg .tg-amwm{font-weight:bold;text-align:center;vertical-align:top}
+.tg .tg-0lax{text-align:left;vertical-align:top}
+&lt;/style&gt;
+&lt;table class="tg"&gt;
+&lt;thead&gt;
+  &lt;tr&gt;
+    &lt;th class="tg-amwm"&gt;Observation&lt;/th&gt;
+    &lt;th class="tg-amwm"&gt;X1&lt;/th&gt;
+    &lt;th class="tg-amwm"&gt;X2&lt;/th&gt;
+  &lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+    &lt;td class="tg-baqh"&gt;1&lt;/td&gt;
+    &lt;td class="tg-0lax"&gt;1.0&lt;/td&gt;
+    &lt;td class="tg-0lax"&gt;1.0&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td class="tg-baqh"&gt;2&lt;/td&gt;
+    &lt;td class="tg-0lax"&gt;1.5&lt;/td&gt;
+    &lt;td class="tg-0lax"&gt;2.0&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td class="tg-baqh"&gt;3&lt;/td&gt;
+    &lt;td class="tg-0lax"&gt;3.0&lt;/td&gt;
+    &lt;td class="tg-0lax"&gt;4.0&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td class="tg-baqh"&gt;4&lt;/td&gt;
+    &lt;td class="tg-0lax"&gt;5.0&lt;/td&gt;
+    &lt;td class="tg-0lax"&gt;7.0&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td class="tg-baqh"&gt;5&lt;/td&gt;
+    &lt;td class="tg-0lax"&gt;3.5&lt;/td&gt;
+    &lt;td class="tg-0lax"&gt;5.0&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td class="tg-baqh"&gt;6&lt;/td&gt;
+    &lt;td class="tg-0lax"&gt;4.5&lt;/td&gt;
+    &lt;td class="tg-0lax"&gt;5.0&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td class="tg-baqh"&gt;7&lt;/td&gt;
+    &lt;td class="tg-0lax"&gt;3.5&lt;/td&gt;
+    &lt;td class="tg-0lax"&gt;4.5&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Practical Issues with K-Means Clustering
+
+.panelset[
+.panel[.panel-name[Data]
+
+.font80[
+
+```r
+pacman::p_load(tidyverse, palmerpenguins, magrittr)
+
+penguins_tbl = penguins # our data for today
+
+penguins_tbl # printing it out
+```
+
+```
+## # A tibble: 344 x 8
+##    species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g
+##    &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;int&gt;
+##  1 Adelie  Torgersen           39.1          18.7               181        3750
+##  2 Adelie  Torgersen           39.5          17.4               186        3800
+##  3 Adelie  Torgersen           40.3          18                 195        3250
+##  4 Adelie  Torgersen           NA            NA                  NA          NA
+##  5 Adelie  Torgersen           36.7          19.3               193        3450
+##  6 Adelie  Torgersen           39.3          20.6               190        3650
+##  7 Adelie  Torgersen           38.9          17.8               181        3625
+##  8 Adelie  Torgersen           39.2          19.6               195        4675
+##  9 Adelie  Torgersen           34.1          18.1               193        3475
+## 10 Adelie  Torgersen           42            20.2               190        4250
+## # ... with 334 more rows, and 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;
+```
+]
+
+]
+
+.panel[.panel-name[Prep]
+
+.font80[
+
+```r
+penguins_tbl %&lt;&gt;%  
+  # selecting relevant cols
+  select(species, bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g) %&gt;% 
+  na.omit() %&gt;% # removing NAs
+  mutate_at(vars(-species), scale) # scaling numeric variables
+
+penguins_tbl # printing it out
+```
+
+```
+## # A tibble: 342 x 5
+##    species bill_length_mm[,1] bill_depth_mm[,1] flipper_length_~ body_mass_g[,1]
+##    &lt;fct&gt;                &lt;dbl&gt;             &lt;dbl&gt;            &lt;dbl&gt;           &lt;dbl&gt;
+##  1 Adelie              -0.883            0.784            -1.42          -0.563 
+##  2 Adelie              -0.810            0.126            -1.06          -0.501 
+##  3 Adelie              -0.663            0.430            -0.421         -1.19  
+##  4 Adelie              -1.32             1.09             -0.563         -0.937 
+##  5 Adelie              -0.847            1.75             -0.776         -0.688 
+##  6 Adelie              -0.920            0.329            -1.42          -0.719 
+##  7 Adelie              -0.865            1.24             -0.421          0.590 
+##  8 Adelie              -1.80             0.480            -0.563         -0.906 
+##  9 Adelie              -0.352            1.54             -0.776          0.0602
+## 10 Adelie              -1.12            -0.0259           -1.06          -1.12  
+## # ... with 332 more rows
+```
+]
+
+]
+
+.panel[.panel-name[K-means (k=3)]
+
+
+```r
+km_res = kmeans(x = penguins_tbl %&gt;% select(-species), # input data with no label
+                centers = 3) # k =3
+
+# tabulating the results with rows corresponding to true labels and the columns corresponding to cluster
+table(penguins_tbl$species, km_res$cluster)
+```
+
+```
+##            
+##               1   2   3
+##   Adelie      0   0 151
+##   Chinstrap   0   1  67
+##   Gentoo     66  57   0
+```
+
+]
+
+.panel[.panel-name[Optimal k]
+
+.pull-left[
+.font70[
+
+```r
+pacman::p_load(NbClust)
+
+km_res_nbclust = NbClust(
+  data = penguins_tbl %&gt;% select(-species),
+  distance = "euclidean",
+  min.nc = 2, max.nc = 10, 
+  method = "kmeans", index ="all") 
+
+table(penguins_tbl$species, km_res_nbclust$Best.partition)
+```
+]
+]
+
+.pull-right[
+.font60[
+
+```
+## *** : The Hubert index is a graphical method of determining the number of clusters.
+##                 In the plot of Hubert index, we seek a significant knee that corresponds to a 
+##                 significant increase of the value of the measure i.e the significant peak in Hubert
+##                 index second differences plot. 
+## 
+```
+
+```
+## *** : The D index is a graphical method of determining the number of clusters. 
+##                 In the plot of D index, we seek a significant knee (the significant peak in Dindex
+##                 second differences plot) that corresponds to a significant increase of the value of
+##                 the measure. 
+##  
+## ******************************************************************* 
+## * Among all indices:                                                
+## * 8 proposed 2 as the best number of clusters 
+## * 11 proposed 3 as the best number of clusters 
+## * 1 proposed 4 as the best number of clusters 
+## * 3 proposed 5 as the best number of clusters 
+## * 1 proposed 10 as the best number of clusters 
+## 
+##                    ***** Conclusion *****                            
+##  
+## * According to the majority rule, the best number of clusters is  3 
+##  
+##  
+## *******************************************************************
+```
+
+```
+##            
+##               1   2   3
+##   Adelie      8   0 143
+##   Chinstrap  63   0   5
+##   Gentoo      0 123   0
+```
+]
+]
+
+]
+
+
+
+
+.panel[.panel-name[Clusters By Metrics]
+
+.pull-left[
+.font70[
+
+```r
+pacman::p_load(factoextra)
+
+fviz_nbclust(km_res_nbclust, ggtheme = theme_minimal())
+```
+]
+]
+
+.pull-right[
+.font70[
+
+```
+## Among all indices: 
+## ===================
+## * 2 proposed  0 as the best number of clusters
+## * 8 proposed  2 as the best number of clusters
+## * 11 proposed  3 as the best number of clusters
+## * 1 proposed  4 as the best number of clusters
+## * 3 proposed  5 as the best number of clusters
+## * 1 proposed  10 as the best number of clusters
+## 
+## Conclusion
+## =========================
+## * According to the majority rule, the best number of clusters is  3 .
+```
+
+&lt;img src="24_clustering_intro_files/figure-html/penguins5_out-1.png" style="display: block; margin: auto;" /&gt;
+]
+]
+
+]
+
+.panel[.panel-name[Viz Clusters]
+
+.pull-left[
+.font70[
+
+```r
+pacman::p_load(factoextra)
+
+fviz_cluster(object = 
+               list(
+                 cluster = km_res_nbclust$Best.partition, 
+                 data = penguins_tbl %&gt;% select(-species) 
+               ),
+             ellipse.type = "convex",
+             palette = "jco",
+             ggtheme = theme_minimal()
+)
+```
+]
+]
+
+.pull-right[
+.font70[
+&lt;img src="24_clustering_intro_files/figure-html/penguins6_out-1.png" style="display: block; margin: auto;" /&gt;
+]
+]
+
+
+]
+]
+
+
+---
+
+# Summary of Practical Issues
+
+- Rescale numeric data prior to k-means implementation. The scaling can be:  
+  + a z-transformation similar to what we did in the example  
+  + a 0-1 scaling 
+  + converting count data into percentage or counts per a certain number of the population  
+  + etc.
+
+- Use more than one metric to determine `\(k\)` when using k-means clustering  
+
+- Your cluster solution is not the end result, you will need to:  
+  + visualize it in appropriate way (simple representation as in the previous slide, [spatially](https://fmegahed.github.io/covid_analysis_final.html#33_Visualizing_the_Clustering_Results), [time-based](https://fmegahed.github.io/isa401/class23/23_data_mining_overview.html?panelset1=calendar-plot-of-clustered-data&amp;panelset4=data3&amp;panelset5=data4&amp;panelset6=activity3&amp;panelset7=activity4#10), etc.)  
+  + Attempt to explain the cluster membership using an appropriate binomial/multinomial model (e.g., see [this analysis](https://fmegahed.github.io/covid_analysis_final.html#4_Explanatory_Modeling_of_Cluster_Assignments))
+
+
+---
+
+# k-means in Tableau 
+
+Let us use Tableau to implement the k-means clustering implementation on the 60 sample observations from the penguins dataset as shown in Slide 6 of this presentation.
+
+
+
+
+---
+class: inverse, center, middle
+
+# Recap
+
+---
+
+# Summary of Main Points
+
+- Describe the different steps of the k-means algorithm  
+
+- Cluster using k-means (by hand)  
+
+- Cluster using k-means (software)  
+
+  + <svg aria-hidden="true" role="img" viewBox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#C3142D;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/></svg>  
+  + Tableau
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
