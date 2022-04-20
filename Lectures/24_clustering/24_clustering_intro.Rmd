@@ -104,6 +104,14 @@ class: inverse, center, middle
   + The observations are in a high-dimensional space  
   + Similarity is defined using a distance measure, e.g., 
       * Euclidean, Cosine, Jaccard, edit distance, etc.
+      
+.footnote[
+<html>
+<hr>
+</html>
+**Source:** J. Leskovec, A. Rajaraman, J. Ullman: Mining of Massive Datasets, <http://www.mmds.org>
+]
+
 
 
 ---
@@ -333,6 +341,15 @@ $\sum_{i=0}^{n}\min_{\mu_j \in C}(||x_i - \mu_j||^2)$
 - Inertia is not a normalized metric: we just know that lower values are better and zero is optimal. But in very high-dimensional spaces, Euclidean distances tend to become inflated.
 
 
+.footnote[
+<html>
+<hr>
+</html>
+
+**Source:** Clustering &mdash; scikit-learn 1.0.2 documentation <https://scikit-learn.org/stable/modules/clustering.html#k-means>
+]
+
+
 ---
 
 # The Steps of the K-Means Algorithm
@@ -343,9 +360,9 @@ $\sum_{i=0}^{n}\min_{\mu_j \in C}(||x_i - \mu_j||^2)$
  
  1. Step 1 assigns each sample to its nearest centroid. 
  
- 2. The second step creates new centroids by taking the mean value of all of the samples assigned to each previous centroid. The difference between the old and the new centroids are computed.
+ 2. Step 2 creates new centroids by taking the mean value of all of the samples assigned to each previous centroid. The difference between the old and the new centroids are computed.
  
- The algorithm repeats these last two steps the centroids do not move significantly.
+ **The algorithm repeats these last two steps the centroids do not move significantly.**
 
 
 .footnote[
