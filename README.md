@@ -34,6 +34,9 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 |            | 04/13 | Business Reporting| continuation with previous slide deck | continuation with previous slide deck |
 |12            | 04/18| An Overview of Data Mining and Association Rules| [23_data_mining_overview.html](https://fmegahed.github.io/isa401/class23/23_data_mining_overview.html) | [23_data_mining_overview.pdf](https://github.com/fmegahed/isa401/blob/main/PDFs/23_data_mining_overview.pdf) |
 |            | 04/20| An Overview of k-means Clustering| [24_clustering_intro.html](https://fmegahed.github.io/isa401/class24/24_clustering_intro.html) | [24_clustering_intro.pdf](https://github.com/fmegahed/isa401/blob/main/PDFs/24_clustering_intro.pdf) |
+|13            | 04/25| Exam 03: Business Reporting and Expolartory Data Mining Intro| -- | -- |
+|            | 04/27| Advanced Topics: An Intro to Automated Visualizations in Python| [No HTML slides, but you can access the exported notebook at [26_intro_viz_python.html](https://github.com/fmegahed/isa401/blob/main/class_code/26_intro_viz_python.html) | -- |
+
 
 
 ## Acknowledgments
