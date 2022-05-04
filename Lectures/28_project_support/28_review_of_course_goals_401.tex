@@ -1,0 +1,94 @@
+\documentclass[letterpaper,12pt]{article}
+
+
+% Title Page
+\title{}
+\author{}
+\date{}
+
+% ________________________Required Packages for File to Work________________________________________
+\usepackage{amsmath}
+\usepackage{url}
+\usepackage{amssymb}
+\usepackage{lineno}
+\usepackage{soul}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{enumitem}
+\usepackage{csvsimple}
+\usepackage{booktabs}
+\usepackage{tabulary}
+\usepackage{multirow}
+\usepackage[table,xcdraw]{xcolor}
+\usepackage{hyperref}
+\usepackage{adjustbox}
+\usepackage{rotating}
+\usepackage{booktabs}
+\usepackage{arydshln}
+\usepackage{mwe}
+\usepackage{framed}
+\usepackage{verbatim}
+\usepackage[letterpaper,margin=1in,footskip=0.5in]{geometry}
+\usepackage{termcal}
+\usepackage{wasysym}
+
+
+\begin{document}
+\section*{Organization of our Course: A Big-Picture Perspective}
+\begin{enumerate}[label=(\Alph*)]
+	\item Be capable of extracting, transforming and loading (ETL) data using multiple platforms (e.g. R \& Power BI). \underline{\textbf{\textbf{How did we achieve this?}}}
+	\begin{itemize}[nosep]
+		\item \textbf{The Bike Sharing Problem:} 
+		\begin{itemize}[nosep]
+			\item We used R to \ul{extract} datasets both from flat files located on your computer and the web. Additionally, we have talked about how to scrape data and use APIs to download data of interest.
+			\item We used R to \ul{transform} the dataset. Through the \textit{dplyr} package, we covered the following cleaning steps: (i) filtering data rows; (ii) selecting columns and/or subsets; (iii) adding a calculated column from an existing dataset; and (iv) aggregating data into groups.
+			\item We then used R to highlight to \ul{load} the data into a CSV framework so it can be opened using any BI platform.
+		\end{itemize}
+		\item \textbf{The Airline Data Problem:} We used Power BI to extract, transform and load the data. In that example, we: (i) merged five different data tables; (ii) transformed some of the data columns to a different encoding; and (iii) filtered the data for the purpose of visualizing only the interesting columns. These processes were all performed in Power BI. \textbf{In this class, everyone left with their example working \smiley{}}.
+		\item \textbf{\ul{How did Fadel evaluate our understanding?}}
+		\begin{itemize}[nosep]
+			\item Group assignments 01 and 02.
+			\item \textbf{Exam I:} Questions 6-15.
+			\item \textbf{Project:} You needed to do this step in your projects. Obviously, different projects had different needs for the ETL process.
+		\end{itemize}
+	\end{itemize}
+	\item Write basic R scripts to preprocess and clean the data. \textbf{While this is part of the ETL, I highlighted this in the syllabus not because \textbf{\textbf{R}} (or any other scripted Language) forces you to think about the logic and process.} \textbf{\ul{See examples above for how we did this and how I evaluated your understanding of it.}}
+	\item Explore the data using visualization approaches that are based on sound human factors (i.e. account for human cognition and perception of data). \textbf{\ul{How did we achieve this?}}
+	\begin{itemize}[nosep]
+		\item We learned about Tufte's Graphical Design Excellence, Graphical Integrity and Chartjunk principles.
+		\item We discussed data types and encoding. 
+		\item We examined a taxonomy of graphs and learned about the appropriate graph types for different data types. Through that process we examined over 150 examples of ``good" and ``bad" graphs.
+		\item We emphasized the role of color in understanding your visualized data. 
+		\item We spent a \textbf{significant portion of classes 16--19 and 22 to talk about how Tableau, Power BI and R can be used to visualize data according to the aforementioned principles}. Additionally, in class 26, I introduced you to the use of Python for data visualization (particularly in preparation for predictive modeling and to explain the outcomes from predictive models).
+		\item \textbf{\ul{How did Fadel evaluate our understanding?}}
+		\begin{itemize}
+			\item \textbf{Graph and Dashboard Critiques} through: several in-class activities and  \textbf{Exam II:} Questions 1-15.
+			\item \textbf{The effectiveness of utilizing these concepts in your Project and in Exam II: Question 16.}
+		\end{itemize}
+	\end{itemize}
+	\item Understand how data mining and other analytical tools can capitalize on the insights generated from the data visualization process. \textbf{\ul{How did we achieve this?}}
+	\begin{itemize}[nosep]
+		\item An overview and motivation for data mining that included several different practical examples from Fadel's funded research projects. In this class, I have also introduced you to the CRISP-DM framework. (see class 22)
+		\item A detailed examination of frequent itemsets \& association rules. This included both hand calculations and an example of how to do this in R. (see class 23).
+		\item A detailed discussion of clustering. We did this by hand, using R and using Tableau. Note clustering is extremely useful in visual analytics applications since it is a data-driven way of grouping data. (see class 24).
+		\item \textbf{\ul{How did Fadel evaluate our understanding?}}
+		\begin{itemize}[nosep]
+			\item \textbf{Exam III} - Questions 1, 2, 3, 5, 6 and 7.
+		\end{itemize}
+	\end{itemize}
+	\item Create interactive dashboards that can be used for business decision making, reporting and/or performance management.  \textbf{\ul{How did we achieve this?}}
+	\begin{itemize}[nosep]
+		\item We built interactive dashboard using Tableau and PowerBI. 
+		\item More importantly, we talked about the importance of reporting on the right metrics. \textbf{Recall the paper plane experiment that we have talked about in class}. We also used this experiment to highlight that the right metrics are different to our internal customers (e.g. management vs. engineering).
+		\item \textbf{\ul{How did Fadel evaluate our understanding?}}
+		\begin{itemize}[nosep]
+			\item The project.
+			\item Class discussion for the Paper Plane Experiment and the associated question in Exam III.
+		\end{itemize}
+	\end{itemize}
+	\item Be able to apply the skills from this class in your future career. This is why you got to choose your own project \smiley{}.
+	
+\end{enumerate}
+
+\end{document}          
