@@ -1,19 +1,20 @@
 ---
-title: "ISA 401: Business Intelligence & Data Visualization"
+title: "ISA 401/501: Business Intelligence & Data Visualization"
 subtitle: "01: Introduction to BI and Data Viz"
-author: "<br>Fadel M. Megahed, PhD <br><br> Associate Professor <br> Department of Information Systems and Analytics <br> Farmer School of Business<br> Miami University<br><br>Twitter: [FadelMegahed](www.twitter.com/FadelMegahed/)<br> GitHub: [fmegahed](https://github.com/fmegahed)<br> Email: [fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> Office Hours: [Automated Scheduler for Virtual Office Hours](https://calendly.com/fmegahed)<br><br>"
-date: "Spring 2022"
+author: '<br>Fadel M. Megahed, PhD <br><br> Enders Associate Professor <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("twitter"), fill = "white")` @FadelMegahed](https://twitter.com/FadelMegahed) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
+date: "Fall 2022"
 output:
   xaringan::moon_reader:
-    css: [default, "css/fonts.css", "css/my-theme.css"]
+    css: [default, "../../style_files/fonts.css", "../../style_files/my-theme.css"]
     lib_dir: libs
     nature:
-      highlightStyle: github
+      highlightStyle: magula
       highlightLines: true
+      highlightLanguage: ["r"]
       countIncrementalSlides: false
       ratio: "16:9"
 header-includes:  
-  - "header.html"
+  - "../../style_files/header.html"
 ---
 
 
@@ -25,11 +26,12 @@ knitr::opts_chunk$set(cache = TRUE,
                       progress = FALSE, 
                       verbose = FALSE,
                       dev = 'png',
-                      fig.height = 2.5,
+                      fig.height = 3,
                       dpi = 300,
                       fig.align = 'center')
 
 options(htmltools.dir.version = FALSE)
+
 
 miamired = '#C3142D'
 
@@ -38,18 +40,14 @@ if(require(devtools)==FALSE) install.packages("devtools")
 if(require(countdown)==FALSE) devtools::install_github("gadenbuie/countdown")
 if(require(xaringanExtra)==FALSE) devtools::install_github("gadenbuie/xaringanExtra")
 if(require(urbnmapr)==FALSE) devtools::install_github('UrbanInstitute/urbnmapr')
+if(require(emo)==FALSE) devtools::install_github("hadley/emo")
 
 pacman::p_load(tidyverse, magrittr, lubridate, janitor, # data analysis pkgs
                DataExplorer, scales, plotly, calendR, pdftools, # plots
                tmap, sf, urbnmapr, tigris, # maps
                bibliometrix, # for bibliometric analysis of my papers
                gifski, av, # for animations
-               emojifont, RefManageR, xaringanExtra, countdown) # for slides
-
-BibOptions(check.entries = FALSE, bib.style = "authoryear", 
-           style = "markdown", dashed = TRUE)
-
-bib = ReadBib("refs.bib") 
+               emojifont, emo, RefManageR, xaringanExtra, countdown) # for slides
 ```
 
 ```{r xaringan-themer, include=FALSE, warning=FALSE}
@@ -115,7 +113,7 @@ Source: Slide inspired by [Kia Ora's What I mean by "data"](https://stats220.ear
 
 # The Analytics Journey: Pre-Analytics [2]
 
-### Non-Graded Class Activity # 1
+### Non-Graded Class Activity #1
 
 `r countdown(minutes = 5, seconds = 0, top = 0, font_size = "2em")`
 
@@ -325,59 +323,20 @@ tm_base = tm_shape(crashes_sf_2021) +
   tm_credits("Created by: Fadel Megahed | Data source: City of Cincy Open Data Portal (rvmt-pkmq) \t")
   
 
-tmap_animation(tm_base, filename = 'figures/crash_anim.gif', fps = 4,
+tmap_animation(tm_base, filename = '../../figures/crash_anim.gif', fps = 4,
                outer.margins = 0,
                width = 800, height = 400)
 ```
 
 ```{r viz2bprint, fig.height=2.85, echo=FALSE}
-knitr::include_graphics('figures/crash_anim.gif')
+knitr::include_graphics('../../figures/crash_anim.gif')
 ```
 
 
-
-
----
-
-# The Analytics Journey: Descriptive [5]
-
-`r countdown(minutes = 3, seconds = 0, top = 0, font_size = "2em")`
-
-.panelset[
-
-.panel[.panel-name[Activity]
-
-- How do the previous two graphs complement each other?
-
-- If you were to pick one of the two charts, which one is more informative?
-
-- You will be asked to write down your answers on <www.menti.com> in the next two panels. 
-]
-
-.panel[.panel-name[Q1 Solution] 
-
-<html>
-<div style='position: relative; padding-bottom: 56.25%; padding-top: 6px; height: 0; overflow: hidden;'><iframe sandbox='allow-scripts allow-same-origin allow-presentation' allowfullscreen='true' allowtransparency='true' frameborder='0' height='315' src='https://www.mentimeter.com/embed/f00b3517a24d41dfb925639f375501d0/7187998e2fd8' style='position: absolute; top: 0; left: 0; width: 100%; height: 100%;' width='420'></iframe></div>
-</html>
-
-]
-
-.panel[.panel-name[Q2 Solution] 
-
-<html>
-<div style='position: relative; padding-bottom: 56.25%; padding-top: 6px; height: 0; overflow: hidden;'><iframe sandbox='allow-scripts allow-same-origin allow-presentation' allowfullscreen='true' allowtransparency='true' frameborder='0' height='315' src='https://www.mentimeter.com/embed/9ad9847d9714ef4c50e9e5cd1ab83ad2/b258ac9f6e85' style='position: absolute; top: 0; left: 0; width: 100%; height: 100%;' width='420'></iframe></div>
-</html>
-
-]
-
-]
-
-
----
-
-
-
 --- 
+
+
+---
 
 # The Analytics Journey: Predictive [1]
 
@@ -405,23 +364,11 @@ knitr::include_graphics('figures/crash_anim.gif')
       + Start with the simplest (which is also often the most easy-to-explain) model first.  
       + If you are happy with the predictive performance (i.e., no gains would be of practical benefit), you are done `r emo::ji("clap")`.  
       + If not, `r emo::ji("return")` and try other models. 
-      
-
----
-
-# The Analytics Journey: Predictive [3]
-
-**Predictive Analytics:** where **statistical** and **machine learning** models are used to help us utilize indepedent variable[s] to predict an outcome variable.
-
-```{r two_papers, echo=FALSE, out.width='50%', fig.show="hold", fig.align='default', out.height='50%'}
-knitr::include_graphics("figures/cai_2021.png")
-knitr::include_graphics("figures/mehdizadeh_2021.png")
-```
 
 
 ---
 
-# The Analytics Journey: Prescriptive [1]
+# The Analytics Journey: Prescriptive
 
  **Prescriptive Analytics:** where **mathematical models** are used to make recommendations for business actions.  
 
@@ -429,60 +376,25 @@ knitr::include_graphics("figures/mehdizadeh_2021.png")
 
 - Imagine that you are a large trucking company (e.g., Amazon, Fedex, JB Hunt), and you have models that show **both**:   
     * Safety critical events that are associated with crashes.  
-    * The occurrence of safety critical events can be reasonably predicted as a function of:  (a) driver characteristics, (b) weather conditions, and (c) Traffic conditions.  
+    * The occurrence of safety critical events can be reasonably predicted as a function of:  (a) driver characteristics, (b) weather conditions, and (c) traffic conditions.  
 
 - **As a business analyst, what two reasonable questions would you attempt to approach/optimize for?**  
-
----
-
-# The Analytics Journey: Prescriptive [2]
-
-**Prescriptive Analytics:** where **mathematical models** are used to make recommendations for business actions.  
-
-### Non-Graded Class Activity # 3
-
-`r countdown(minutes = 3, seconds = 0, top = 0, font_size = "2em")`
-
-.panelset[
-
-.panel[.panel-name[Activity]
-
-**As a business analyst, what two reasonable questions would you attempt to approach/optimize for?**
-
-]
-
-.panel[.panel-name[Your Solution] 
-
-- .can-edit.key-activity3[Insert your solution here (Use Chrome as your browser to edit this part of the page)] 
-
-]
-
-.panel[.panel-name[Our Work in this Area] 
-
-```{r qiong_ksp, echo=FALSE, out.width='400px', fig.alt="k-SP solution to feasible routes between Gary, IN and Nashville, TN", fig.align='center'}
-knitr::include_graphics("figures/gary_nashville_ranking.PNG")
-```
-
-]
-
-]
-
 
 ---
 
 # How does our Curriculum at Miami University Prepare you for this Journey?
 
 ```{r run_latex_file, echo=FALSE, cache=TRUE, results='hide'}
-tinytex::xelatex('figures/ba_flow_chart.tex')
+tinytex::xelatex('../../figures/ba_flow_chart.tex')
 Sys.sleep(30)
-pdftools::pdf_convert('figures/ba_flow_chart.pdf', dpi = 600,
-                      filenames = 'figures/ba_flow_chart.png')
+pdftools::pdf_convert('../../figures/ba_flow_chart.pdf', dpi = 600,
+                      filenames = '../../figures/ba_flow_chart.png')
 Sys.sleep(30)
 ```
 
 
 ```{r read_ba_chart, echo=FALSE, out.width='100%', fig.alt="Fadel's take on our ISA curriculum", fig.align='center', fig.cap='My take on the courses within the business analytics major/minor at Miami University'}
-knitr::include_graphics("figures/ba_flow_chart.png")
+knitr::include_graphics("../../figures/ba_flow_chart.png")
 ```
 
 ---
@@ -490,16 +402,16 @@ knitr::include_graphics("figures/ba_flow_chart.png")
 # ISA 401/501 Course: An Overview
 
 ```{r run_latex_file_2, echo=FALSE, cache=TRUE, results='hide'}
-tinytex::xelatex('figures/course_overview.tex')
+tinytex::xelatex('../../figures/course_overview.tex')
 Sys.sleep(20)
-pdftools::pdf_convert('figures/course_overview.pdf', dpi = 600,
-                      filenames = 'figures/course_overview.png')
+pdftools::pdf_convert('../../figures/course_overview.pdf', dpi = 600,
+                      filenames = '../../figures/course_overview.png')
 Sys.sleep(20)
 ```
 
 
 ```{r read_course__overview_chart, echo=FALSE, out.width='100%', fig.alt="How the ISA 401/501 course is organized.", fig.align='center', fig.cap='How the ISA 401/501 course is organized.'}
-knitr::include_graphics("figures/course_overview.png") 
+knitr::include_graphics("../../figures/course_overview.png") 
 ```
 
 ---
@@ -509,9 +421,9 @@ knitr::include_graphics("figures/course_overview.png")
 Even though software will be extensively used, this is not a software class. **Instead, the focus is on understanding the underlying methods and mindset of how data should be approached.**  
 
   - Be capable of extracting, transforming and loading (ETL) data using multiple platforms
-(e.g. R, Power BI and/or Tableau).  
+(e.g. `r icons::icon_style(icons::fontawesome('r-project'), fill = miamired)`, Power BI and/or Tableau).  
 
-- Write basic R scripts to preprocess and clean the data.  
+- Write basic `r icons::icon_style(icons::fontawesome('r-project'), fill = miamired)` scripts to preprocess and clean the data.  
 
 - Explore the data using visualization approaches that are based on sound human factors.  
 
@@ -521,31 +433,13 @@ Even though software will be extensively used, this is not a software class. **I
 
 - Be able to apply the skills from this class in your future career.
 
-
----
-
-# Should you Care? Indeed [1]
-
-```{r indeed1, echo=FALSE, out.width='50%', fig.cap= 'Entry-Level Data Wrangling Jobs on Indeed.com'}
-knitr::include_graphics("figures/dataClean.jpg")
-```
-
----
-
-# Should you Care? Indeed [2]
-
-```{r indeed2, echo=FALSE, out.width='50%', fig.cap= 'Entry-Level Data Visualization Jobs on Indeed.com'}
-knitr::include_graphics("figures/dataViz.jpg")
-```
-
-
 ---
 
 # Should you Care? Read this Job Ad
 
 When I have designed this course, I have incorporated a lot of feedback from **industry collaborators, peer/leading academic programs, and state-of-the-art-research advancements.** Thus, this is meant to be a hands-on, practically-relevant course.  
 
-### Non-Graded Class Activity # 4
+### Non-Graded Class Activity #2
 
 `r countdown(minutes = 4, seconds = 0, top = 0, font_size = "2em")`
 
@@ -578,11 +472,11 @@ To demonstrate the practicality of this course, let us consider [this job ad](ht
 # Should you Care? Recent Alumni Testimonials
 
 ```{r testimonials, echo=FALSE, out.width='100%', fig.fullwidth=TRUE, results='asis'}
-knitr::include_graphics('figures/email1.jpg')
+knitr::include_graphics('../../figures/email1.jpg')
 
 cat('<br> <br>')
 
-knitr::include_graphics('figures/email2.jpg')
+knitr::include_graphics('../../figures/email2.jpg')
 ```
 
 
@@ -591,16 +485,16 @@ knitr::include_graphics('figures/email2.jpg')
 # Instructional Approach
 
 ```{r run_latex_file_3, echo=FALSE, cache=TRUE, results='hide'}
-tinytex::xelatex('figures/instructional_approach.tex')
+tinytex::xelatex('../../figures/instructional_approach.tex')
 Sys.sleep(20)
-pdftools::pdf_convert('figures/instructional_approach.pdf', dpi = 600,
-                      filenames = 'figures/instructional_approach.png')
+pdftools::pdf_convert('../../figures/instructional_approach.pdf', dpi = 600,
+                      filenames = '../../figures/instructional_approach.png')
 Sys.sleep(20)
 ```
 
 
 ```{r read_course_approach, echo=FALSE, out.width='100%', fig.alt="An overview of the instructional approach for ISA 401/501.", fig.align='center', fig.cap='An overview of the instructional approach for ISA 401/501.'}
-knitr::include_graphics("figures/instructional_approach.png") 
+knitr::include_graphics("../../figures/instructional_approach.png") 
 ```
 
 ---
@@ -608,16 +502,16 @@ knitr::include_graphics("figures/instructional_approach.png")
 # How will I Evaluate your Learning?
 
 ```{r run_latex_file_4, echo=FALSE, cache=TRUE, results='hide'}
-tinytex::xelatex('figures/evaluation.tex')
+tinytex::xelatex('../../figures/evaluation.tex')
 Sys.sleep(20)
-pdftools::pdf_convert('figures/evaluation.pdf', dpi = 600,
-                      filenames = 'figures/evaluation.png')
+pdftools::pdf_convert('../../figures/evaluation.pdf', dpi = 600,
+                      filenames = '../../figures/evaluation.png')
 Sys.sleep(20)
 ```
 
 
 ```{r read_evaluation, echo=FALSE, out.width='100%', fig.alt="An overview of the evaluation components for ISA 401/501.", fig.align='center', fig.cap='An overview of the evaluation components for ISA 401/501.'}
-knitr::include_graphics("figures/evaluation.png") 
+knitr::include_graphics("../../figures/evaluation.png") 
 ```
 
 ---
@@ -636,37 +530,8 @@ class: inverse, center, middle
 - **Collaborations with:** Aflac, GE Research, Gore, IBM Research, & Tennibot
 
 ```{r my_map, echo=FALSE, out.width='100%', fig.alt="My journey with data driven decisions.", fig.align='center', fig.cap='My journey with data-driven decision making.'}
-knitr::include_graphics("figures/map.JPG") 
+knitr::include_graphics("../../figures/map.JPG") 
 ```
-
----
-
-# An Overview of My Research Portfolio
-
-```{r research_megahed1, echo=FALSE, cache=TRUE, include=FALSE}
-M = convert2df(file = "megahedWoS-1-16-2022.txt")
-
-results = biblioAnalysis(M, sep = ";")
-
-CS = conceptualStructure(M,
-                         field="DE_TM",
-                         method="MCA", minDegree=2, 
-                         clust=4, labelsize=8, documents=45)
-```
-
-
-```{r research_megahed3, echo=FALSE, out.width='100%', fig.alt="My work can be grouped into four different clusters", fig.align='center', fig.cap='My work can be grouped into four different clusters.', dpi=300}
-CS$graph_terms 
-```
-
-
----
-
-# Your Academic/Professional Experience
-
-<html>
-<div style='position: relative; padding-bottom: 56.25%; padding-top: 6px; height: 0; overflow: hidden;'><iframe sandbox='allow-scripts allow-same-origin allow-presentation' allowfullscreen='true' allowtransparency='true' frameborder='0' height='315' src='https://www.mentimeter.com/embed/f7eacf99768cd22270c18982864157f2/ea0cb318b3e0' style='position: absolute; top: 0; left: 0; width: 100%; height: 100%;' width='420'></iframe></div>
-</html>
 
 ---
 
@@ -719,15 +584,7 @@ knitr::include_graphics('https://d33wubrfki0l68.cloudfront.net/1e7033393a2c70dc1
 
 ---
 
-# Record: My Great Grandparents
-
-```{r egyptian_civ, echo = FALSE, out.width='90%'}
-knitr::include_graphics('figures/egypt.jpg')
-```
-
----
-
-# Record: A More Modern Example
+# Record Information
 
 
 <html>
@@ -787,7 +644,7 @@ unique_crashes_2021 %>%
 # Reveal Patterns: The 1854 Cholera Outbreak
 
 ```{r cholera_outbreak, echo=FALSE, fig.cap='The physician John Snow, dealing with a Cholera outbreak plotted the cases on a map of the city (see schematic above).', out.width='50%'}
-knitr::include_graphics('figures/cholera.jpg')
+knitr::include_graphics('../../figures/cholera.jpg')
 ```
 
 
@@ -804,7 +661,7 @@ Source: Leskovec, J., Rajaraman, A., & Ullman, J. D. (2020). Mining of Massive D
 # Reveal Patterns: COVID-19 Vaccination Rates
 
 ```{r vaccine_rates, echo=FALSE, out.width='70%'}
-knitr::include_graphics("figures/animatedVaccineMap.gif")
+knitr::include_graphics("../../figures/animatedVaccineMap.gif")
 ```
 
 ---
@@ -812,7 +669,7 @@ knitr::include_graphics("figures/animatedVaccineMap.gif")
 # Communicate Ideas: C.J Minard 1869
 
 ```{r minard, echo=FALSE, out.width='100%'}
-knitr::include_graphics("figures/minard.png")
+knitr::include_graphics("../../figures/minard.png")
 ```
 
 
@@ -827,7 +684,7 @@ knitr::include_graphics("figures/minard.png")
 .panel[.panel-name[Activity]
 
 .pull-left[
-### Non-Graded Class Activity #5
+### Non-Graded Class Activity #3
 
 .small[
 - Who is the target audience?  
@@ -844,7 +701,7 @@ knitr::include_graphics("figures/minard.png")
 
 .pull-right[
 ```{r wpost, echo=FALSE, out.width='77%'}
-knitr::include_graphics("figures/wpost.jpg")
+knitr::include_graphics("../../figures/wpost.jpg")
 ```
 ]
 ]
@@ -880,7 +737,7 @@ class: inverse, center, middle
 By analyzing ... data, situations, and performances, decision makers get valuable insights that enable them to **make more informed and better decisions** ... BI is based on the **transformation of data to information, then to decisions, and finally to actions.**" 
 
 ```{r bin_paper, echo=FALSE, fig.alt="A schematic of an interactive BI tool for stock market prediction", out.width="55%"}
-knitr::include_graphics("figures/stock_market.JPG")
+knitr::include_graphics("../../figures/stock_market.JPG")
 ```
 
 .footnote[
@@ -898,7 +755,7 @@ knitr::include_graphics("figures/stock_market.JPG")
 # The BI Process
 
 ```{r bi_process, echo=FALSE, fig.alt="A schematic of the different components of the business intelligence (BI) process", out.width="73%"}
-knitr::include_graphics("figures/bi_process.jpg")
+knitr::include_graphics("../../figures/bi_process.jpg")
 ```
 
 
@@ -933,7 +790,7 @@ By now, you should be able to do the following:
 
 # Things to Do to Prepare for Our Next Class
 
-- Go over your notes and complete [Assignment 01](https://miamioh.instructure.com/courses/167290/quizzes/448578) on Canvas.  
+- Go over your notes and complete [Assignment 01](https://miamioh.instructure.com/courses/179812/quizzes/489447) on Canvas.  
 
 - Read through the following references in preparation of our next class. 
 
@@ -953,4 +810,3 @@ By now, you should be able to do the following:
 * [Subsetting](https://adv-r.hadley.nz/subsetting.html)
 ]
 ]
-

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="" xml:lang="">
   <head>
-    <title>ISA 401: Business Intelligence &amp; Data Visualization</title>
+    <title>ISA 401/501: Business Intelligence &amp; Data Visualization</title>
     <meta charset="utf-8" />
-    <meta name="author" content=" Fadel M. Megahed, PhD    Associate Professor   Department of Information Systems and Analytics   Farmer School of Business  Miami University  Twitter: FadelMegahed  GitHub: fmegahed  Email: fmegahed@miamioh.edu  Office Hours: Automated Scheduler for Virtual Office Hours  " />
+    <meta name="author" content=" Fadel M. Megahed, PhD    Enders Associate Professor   Farmer School of Business  Miami University     @FadelMegahed     fmegahed     fmegahed@miamioh.edu    Automated Scheduler for Office Hours  " />
     <script src="libs/header-attrs/header-attrs.js"></script>
     <link href="libs/remark-css/default.css" rel="stylesheet" />
     <link href="libs/tile-view/tile-view.css" rel="stylesheet" />
@@ -13,7 +13,7 @@
     <script src="libs/xaringanExtra_fit-screen/fit-screen.js"></script>
     <link href="libs/panelset/panelset.css" rel="stylesheet" />
     <script src="libs/panelset/panelset.js"></script>
-    <script type="application/json" id="xaringanExtra-editable-docid">{"id":"x16af91af36841aea4e8b850e8a61fc8","expires":14}</script>
+    <script type="application/json" id="xaringanExtra-editable-docid">{"id":"c9701689fda947bea76bf50e20935cc4","expires":14}</script>
     <script src="libs/himalaya/himalaya.js"></script>
     <script src="libs/js-cookie/js.cookie.js"></script>
     <link href="libs/editable/editable.css" rel="stylesheet" />
@@ -36,17 +36,25 @@
     <script>window.addEventListener('load', function() { window.xeSearch = new RemarkSearch({"position":"bottom-left","caseSensitive":false,"showIcon":false,"autoSearch":true}) })</script>
     <link href="libs/countdown/countdown.css" rel="stylesheet" />
     <script src="libs/countdown/countdown.js"></script>
-    <link rel="stylesheet" href="css/fonts.css" type="text/css" />
-    <link rel="stylesheet" href="css/my-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../style_files/fonts.css" type="text/css" />
+    <link rel="stylesheet" href="../../style_files/my-theme.css" type="text/css" />
   </head>
   <body>
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
-# ISA 401: Business Intelligence &amp; Data Visualization
+.title[
+# ISA 401/501: Business Intelligence &amp; Data Visualization
+]
+.subtitle[
 ## 01: Introduction to BI and Data Viz
-### <br>Fadel M. Megahed, PhD <br><br> Associate Professor <br> Department of Information Systems and Analytics <br> Farmer School of Business<br> Miami University<br><br>Twitter: <a href="www.twitter.com/FadelMegahed/">FadelMegahed</a><br> GitHub: <a href="https://github.com/fmegahed">fmegahed</a><br> Email: <a href="mailto:fmegahed@miamioh.edu">fmegahed@miamioh.edu</a><br> Office Hours: <a href="https://calendly.com/fmegahed">Automated Scheduler for Virtual Office Hours</a><br><br>
-### Spring 2022
+]
+.author[
+### <br>Fadel M. Megahed, PhD <br><br> Enders Associate Professor <br> Farmer School of Business<br> Miami University<br><br> <a href="https://twitter.com/FadelMegahed"><svg viewBox="0 0 512 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:white;" xmlns="http://www.w3.org/2000/svg"> <path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"></path></svg> <span class="citation">@FadelMegahed</span></a> <br> <a href="https://github.com/fmegahed/"><svg viewBox="0 0 496 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:white;" xmlns="http://www.w3.org/2000/svg"> <path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg> fmegahed</a> <br> <a href="mailto:fmegahed@miamioh.edu"><svg viewBox="0 0 512 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:white;" xmlns="http://www.w3.org/2000/svg"> <path d="M476 3.2L12.5 270.6c-18.1 10.4-15.8 35.6 2.2 43.2L121 358.4l287.3-253.2c5.5-4.9 13.3 2.6 8.6 8.3L176 407v80.5c0 23.6 28.5 32.9 42.5 15.8L282 426l124.6 52.2c14.2 6 30.4-2.9 33-18.2l72-432C515 7.8 493.3-6.8 476 3.2z"></path></svg> fmegahed@miamioh.edu</a><br> <a href="https://calendly.com/fmegahed"><svg viewBox="0 0 384 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:white;" xmlns="http://www.w3.org/2000/svg"> <path d="M202.021 0C122.202 0 70.503 32.703 29.914 91.026c-7.363 10.58-5.093 25.086 5.178 32.874l43.138 32.709c10.373 7.865 25.132 6.026 33.253-4.148 25.049-31.381 43.63-49.449 82.757-49.449 30.764 0 68.816 19.799 68.816 49.631 0 22.552-18.617 34.134-48.993 51.164-35.423 19.86-82.299 44.576-82.299 106.405V320c0 13.255 10.745 24 24 24h72.471c13.255 0 24-10.745 24-24v-5.773c0-42.86 125.268-44.645 125.268-160.627C377.504 66.256 286.902 0 202.021 0zM192 373.459c-38.196 0-69.271 31.075-69.271 69.271 0 38.195 31.075 69.27 69.271 69.27s69.271-31.075 69.271-69.271-31.075-69.27-69.271-69.27z"></path></svg> Automated Scheduler for Office Hours</a><br><br>
+]
+.date[
+### Fall 2022
+]
 
 ---
 
@@ -108,9 +116,9 @@ Source: Slide inspired by [Kia Ora's What I mean by "data"](https://stats220.ear
 
 # The Analytics Journey: Pre-Analytics [2]
 
-### Non-Graded Class Activity # 1
+### Non-Graded Class Activity #1
 
-<div class="countdown" id="timer_61eb7905" style="top:0;right:0;font-size:2em;" data-warnwhen="0">
+<div class="countdown" id="timer_62f3cf7f" style="top:0;right:0;font-size:2em;" data-warnwhen="0">
 <code class="countdown-time"><span class="countdown-digits minutes">05</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
 </div>
 
@@ -174,14 +182,14 @@ dim(crashes)
 ## $dayofweek
 ## 
 ##  FRI  SAT  TUE  MON  WED  SUN  THU 
-## 5037 3735 4198 4093 4264 3291 4594 
+## 5038 3735 4198 4093 4267 3301 4593 
 ## 
 ## $weather
 ## 
 ##                             1 - CLEAR                              4 - RAIN 
-##                                 19904                                  3771 
+##                                 19910                                  3771 
 ##                            2 - CLOUDY                    99 - OTHER/UNKNOWN 
-##                                  4550                                   267 
+##                                  4555                                   268 
 ##                              6 - SNOW                  3 - FOG, SMOG, SMOKE 
 ##                                   638                                    18 
 ##    8 - BLOWING SAND, SOIL, DIRT, SNOW 9 - FREEZING RAIN OR FREEZING DRIZZLE 
@@ -221,54 +229,13 @@ dim(crashes)
 
 
 
-&lt;img src="figures/crash_anim.gif" style="display: block; margin: auto;" /&gt;
-
-
-
-
----
-
-# The Analytics Journey: Descriptive [5]
-
-<div class="countdown" id="timer_61eb78a5" style="top:0;right:0;font-size:2em;" data-warnwhen="0">
-<code class="countdown-time"><span class="countdown-digits minutes">03</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
-</div>
-
-.panelset[
-
-.panel[.panel-name[Activity]
-
-- How do the previous two graphs complement each other?
-
-- If you were to pick one of the two charts, which one is more informative?
-
-- You will be asked to write down your answers on &lt;www.menti.com&gt; in the next two panels. 
-]
-
-.panel[.panel-name[Q1 Solution] 
-
-&lt;html&gt;
-&lt;div style='position: relative; padding-bottom: 56.25%; padding-top: 6px; height: 0; overflow: hidden;'&gt;&lt;iframe sandbox='allow-scripts allow-same-origin allow-presentation' allowfullscreen='true' allowtransparency='true' frameborder='0' height='315' src='https://www.mentimeter.com/embed/f00b3517a24d41dfb925639f375501d0/7187998e2fd8' style='position: absolute; top: 0; left: 0; width: 100%; height: 100%;' width='420'&gt;&lt;/iframe&gt;&lt;/div&gt;
-&lt;/html&gt;
-
-]
-
-.panel[.panel-name[Q2 Solution] 
-
-&lt;html&gt;
-&lt;div style='position: relative; padding-bottom: 56.25%; padding-top: 6px; height: 0; overflow: hidden;'&gt;&lt;iframe sandbox='allow-scripts allow-same-origin allow-presentation' allowfullscreen='true' allowtransparency='true' frameborder='0' height='315' src='https://www.mentimeter.com/embed/9ad9847d9714ef4c50e9e5cd1ab83ad2/b258ac9f6e85' style='position: absolute; top: 0; left: 0; width: 100%; height: 100%;' width='420'&gt;&lt;/iframe&gt;&lt;/div&gt;
-&lt;/html&gt;
-
-]
-
-]
-
-
----
-
+&lt;img src="../../figures/crash_anim.gif" style="display: block; margin: auto;" /&gt;
 
 
 --- 
+
+
+---
 
 # The Analytics Journey: Predictive [1]
 
@@ -296,20 +263,11 @@ dim(crashes)
       + Start with the simplest (which is also often the most easy-to-explain) model first.  
       + If you are happy with the predictive performance (i.e., no gains would be of practical benefit), you are done 👏.  
       + If not, ↩️ and try other models. 
-      
-
----
-
-# The Analytics Journey: Predictive [3]
-
-**Predictive Analytics:** where **statistical** and **machine learning** models are used to help us utilize indepedent variable[s] to predict an outcome variable.
-
-&lt;img src="figures/cai_2021.png" width="50%" height="50%" /&gt;&lt;img src="figures/mehdizadeh_2021.png" width="50%" height="50%" /&gt;
 
 
 ---
 
-# The Analytics Journey: Prescriptive [1]
+# The Analytics Journey: Prescriptive
 
  **Prescriptive Analytics:** where **mathematical models** are used to make recommendations for business actions.  
 
@@ -317,44 +275,9 @@ dim(crashes)
 
 - Imagine that you are a large trucking company (e.g., Amazon, Fedex, JB Hunt), and you have models that show **both**:   
     * Safety critical events that are associated with crashes.  
-    * The occurrence of safety critical events can be reasonably predicted as a function of:  (a) driver characteristics, (b) weather conditions, and (c) Traffic conditions.  
+    * The occurrence of safety critical events can be reasonably predicted as a function of:  (a) driver characteristics, (b) weather conditions, and (c) traffic conditions.  
 
 - **As a business analyst, what two reasonable questions would you attempt to approach/optimize for?**  
-
----
-
-# The Analytics Journey: Prescriptive [2]
-
-**Prescriptive Analytics:** where **mathematical models** are used to make recommendations for business actions.  
-
-### Non-Graded Class Activity # 3
-
-<div class="countdown" id="timer_61eb772a" style="top:0;right:0;font-size:2em;" data-warnwhen="0">
-<code class="countdown-time"><span class="countdown-digits minutes">03</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
-</div>
-
-.panelset[
-
-.panel[.panel-name[Activity]
-
-**As a business analyst, what two reasonable questions would you attempt to approach/optimize for?**
-
-]
-
-.panel[.panel-name[Your Solution] 
-
-- .can-edit.key-activity3[Insert your solution here (Use Chrome as your browser to edit this part of the page)] 
-
-]
-
-.panel[.panel-name[Our Work in this Area] 
-
-&lt;img src="figures/gary_nashville_ranking.PNG" title="k-SP solution to feasible routes between Gary, IN and Nashville, TN" alt="k-SP solution to feasible routes between Gary, IN and Nashville, TN" width="400px" style="display: block; margin: auto;" /&gt;
-
-]
-
-]
-
 
 ---
 
@@ -364,7 +287,7 @@ dim(crashes)
 
 
 &lt;div class="figure" style="text-align: center"&gt;
-&lt;img src="figures/ba_flow_chart.png" alt="Fadel's take on our ISA curriculum" width="100%" /&gt;
+&lt;img src="../../figures/ba_flow_chart.png" alt="Fadel's take on our ISA curriculum" width="100%" /&gt;
 &lt;p class="caption"&gt;My take on the courses within the business analytics major/minor at Miami University&lt;/p&gt;
 &lt;/div&gt;
 
@@ -376,7 +299,7 @@ dim(crashes)
 
 
 &lt;div class="figure" style="text-align: center"&gt;
-&lt;img src="figures/course_overview.png" alt="How the ISA 401/501 course is organized." width="100%" /&gt;
+&lt;img src="../../figures/course_overview.png" alt="How the ISA 401/501 course is organized." width="100%" /&gt;
 &lt;p class="caption"&gt;How the ISA 401/501 course is organized.&lt;/p&gt;
 &lt;/div&gt;
 
@@ -387,9 +310,9 @@ dim(crashes)
 Even though software will be extensively used, this is not a software class. **Instead, the focus is on understanding the underlying methods and mindset of how data should be approached.**  
 
   - Be capable of extracting, transforming and loading (ETL) data using multiple platforms
-(e.g. R, Power BI and/or Tableau).  
+(e.g. &lt;svg viewBox="0 0 581 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:#C3142D;" xmlns="http://www.w3.org/2000/svg"&gt;  &lt;path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"&gt;&lt;/path&gt;&lt;/svg&gt;, Power BI and/or Tableau).  
 
-- Write basic R scripts to preprocess and clean the data.  
+- Write basic &lt;svg viewBox="0 0 581 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:#C3142D;" xmlns="http://www.w3.org/2000/svg"&gt;  &lt;path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"&gt;&lt;/path&gt;&lt;/svg&gt; scripts to preprocess and clean the data.  
 
 - Explore the data using visualization approaches that are based on sound human factors.  
 
@@ -399,35 +322,15 @@ Even though software will be extensively used, this is not a software class. **I
 
 - Be able to apply the skills from this class in your future career.
 
-
----
-
-# Should you Care? Indeed [1]
-
-&lt;div class="figure" style="text-align: center"&gt;
-&lt;img src="figures/dataClean.jpg" alt="Entry-Level Data Wrangling Jobs on Indeed.com" width="50%" /&gt;
-&lt;p class="caption"&gt;Entry-Level Data Wrangling Jobs on Indeed.com&lt;/p&gt;
-&lt;/div&gt;
-
----
-
-# Should you Care? Indeed [2]
-
-&lt;div class="figure" style="text-align: center"&gt;
-&lt;img src="figures/dataViz.jpg" alt="Entry-Level Data Visualization Jobs on Indeed.com" width="50%" /&gt;
-&lt;p class="caption"&gt;Entry-Level Data Visualization Jobs on Indeed.com&lt;/p&gt;
-&lt;/div&gt;
-
-
 ---
 
 # Should you Care? Read this Job Ad
 
 When I have designed this course, I have incorporated a lot of feedback from **industry collaborators, peer/leading academic programs, and state-of-the-art-research advancements.** Thus, this is meant to be a hands-on, practically-relevant course.  
 
-### Non-Graded Class Activity # 4
+### Non-Graded Class Activity #2
 
-<div class="countdown" id="timer_61eb7889" style="top:0;right:0;font-size:2em;" data-warnwhen="0">
+<div class="countdown" id="timer_62f3cd79" style="top:0;right:0;font-size:2em;" data-warnwhen="0">
 <code class="countdown-time"><span class="countdown-digits minutes">04</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
 </div>
 
@@ -459,7 +362,7 @@ To demonstrate the practicality of this course, let us consider [this job ad](ht
 
 # Should you Care? Recent Alumni Testimonials
 
-&lt;img src="figures/email1.jpg" width="100%" style="display: block; margin: auto;" /&gt;&lt;br&gt; &lt;br&gt;&lt;img src="figures/email2.jpg" width="100%" style="display: block; margin: auto;" /&gt;
+&lt;img src="../../figures/email1.jpg" width="100%" style="display: block; margin: auto;" /&gt;&lt;br&gt; &lt;br&gt;&lt;img src="../../figures/email2.jpg" width="100%" style="display: block; margin: auto;" /&gt;
 
 
 ---
@@ -470,7 +373,7 @@ To demonstrate the practicality of this course, let us consider [this job ad](ht
 
 
 &lt;div class="figure" style="text-align: center"&gt;
-&lt;img src="figures/instructional_approach.png" alt="An overview of the instructional approach for ISA 401/501." width="100%" /&gt;
+&lt;img src="../../figures/instructional_approach.png" alt="An overview of the instructional approach for ISA 401/501." width="100%" /&gt;
 &lt;p class="caption"&gt;An overview of the instructional approach for ISA 401/501.&lt;/p&gt;
 &lt;/div&gt;
 
@@ -482,7 +385,7 @@ To demonstrate the practicality of this course, let us consider [this job ad](ht
 
 
 &lt;div class="figure" style="text-align: center"&gt;
-&lt;img src="figures/evaluation.png" alt="An overview of the evaluation components for ISA 401/501." width="100%" /&gt;
+&lt;img src="../../figures/evaluation.png" alt="An overview of the evaluation components for ISA 401/501." width="100%" /&gt;
 &lt;p class="caption"&gt;An overview of the evaluation components for ISA 401/501.&lt;/p&gt;
 &lt;/div&gt;
 
@@ -502,30 +405,9 @@ class: inverse, center, middle
 - **Collaborations with:** Aflac, GE Research, Gore, IBM Research, &amp; Tennibot
 
 &lt;div class="figure" style="text-align: center"&gt;
-&lt;img src="figures/map.JPG" alt="My journey with data driven decisions." width="100%" /&gt;
+&lt;img src="../../figures/map.JPG" alt="My journey with data driven decisions." width="100%" /&gt;
 &lt;p class="caption"&gt;My journey with data-driven decision making.&lt;/p&gt;
 &lt;/div&gt;
-
----
-
-# An Overview of My Research Portfolio
-
-
-
-
-&lt;div class="figure" style="text-align: center"&gt;
-&lt;img src="01_Introduction_files/figure-html/research_megahed3-1.png" alt="My work can be grouped into four different clusters" width="100%" /&gt;
-&lt;p class="caption"&gt;My work can be grouped into four different clusters.&lt;/p&gt;
-&lt;/div&gt;
-
-
----
-
-# Your Academic/Professional Experience
-
-&lt;html&gt;
-&lt;div style='position: relative; padding-bottom: 56.25%; padding-top: 6px; height: 0; overflow: hidden;'&gt;&lt;iframe sandbox='allow-scripts allow-same-origin allow-presentation' allowfullscreen='true' allowtransparency='true' frameborder='0' height='315' src='https://www.mentimeter.com/embed/f7eacf99768cd22270c18982864157f2/ea0cb318b3e0' style='position: absolute; top: 0; left: 0; width: 100%; height: 100%;' width='420'&gt;&lt;/iframe&gt;&lt;/div&gt;
-&lt;/html&gt;
 
 ---
 
@@ -576,13 +458,7 @@ Data visualization involves **presenting data in a graphical format**. It is rea
 
 ---
 
-# Record: My Great Grandparents
-
-&lt;img src="figures/egypt.jpg" width="90%" style="display: block; margin: auto;" /&gt;
-
----
-
-# Record: A More Modern Example
+# Record Information
 
 
 &lt;html&gt;
@@ -603,7 +479,7 @@ Data visualization involves **presenting data in a graphical format**. It is rea
 # Reveal Patterns: The 1854 Cholera Outbreak
 
 &lt;div class="figure" style="text-align: center"&gt;
-&lt;img src="figures/cholera.jpg" alt="The physician John Snow, dealing with a Cholera outbreak plotted the cases on a map of the city (see schematic above)." width="50%" /&gt;
+&lt;img src="../../figures/cholera.jpg" alt="The physician John Snow, dealing with a Cholera outbreak plotted the cases on a map of the city (see schematic above)." width="50%" /&gt;
 &lt;p class="caption"&gt;The physician John Snow, dealing with a Cholera outbreak plotted the cases on a map of the city (see schematic above).&lt;/p&gt;
 &lt;/div&gt;
 
@@ -620,20 +496,20 @@ Source: Leskovec, J., Rajaraman, A., &amp; Ullman, J. D. (2020). Mining of Massi
 
 # Reveal Patterns: COVID-19 Vaccination Rates
 
-&lt;img src="figures/animatedVaccineMap.gif" width="70%" style="display: block; margin: auto;" /&gt;
+&lt;img src="../../figures/animatedVaccineMap.gif" width="70%" style="display: block; margin: auto;" /&gt;
 
 ---
 
 # Communicate Ideas: C.J Minard 1869
 
-&lt;img src="figures/minard.png" width="100%" style="display: block; margin: auto;" /&gt;
+&lt;img src="../../figures/minard.png" width="100%" style="display: block; margin: auto;" /&gt;
 
 
 ---
 
 # Communicate Ideas
 
-<div class="countdown" id="timer_61eb78a1" style="top:0;right:0;font-size:2em;" data-warnwhen="0">
+<div class="countdown" id="timer_62f3d076" style="top:0;right:0;font-size:2em;" data-warnwhen="0">
 <code class="countdown-time"><span class="countdown-digits minutes">05</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">00</span></code>
 </div>
 
@@ -642,7 +518,7 @@ Source: Leskovec, J., Rajaraman, A., &amp; Ullman, J. D. (2020). Mining of Massi
 .panel[.panel-name[Activity]
 
 .pull-left[
-### Non-Graded Class Activity #5
+### Non-Graded Class Activity #3
 
 .small[
 - Who is the target audience?  
@@ -658,7 +534,7 @@ Source: Leskovec, J., Rajaraman, A., &amp; Ullman, J. D. (2020). Mining of Massi
 ]
 
 .pull-right[
-&lt;img src="figures/wpost.jpg" width="77%" style="display: block; margin: auto;" /&gt;
+&lt;img src="../../figures/wpost.jpg" width="77%" style="display: block; margin: auto;" /&gt;
 ]
 ]
 
@@ -692,7 +568,7 @@ class: inverse, center, middle
 &gt; "... to enable **interactive access (sometimes in real time)** to data, to enable manipulation of data, and to give business managers and analysts the ability to conduct appropriate analysis.
 By analyzing ... data, situations, and performances, decision makers get valuable insights that enable them to **make more informed and better decisions** ... BI is based on the **transformation of data to information, then to decisions, and finally to actions.**" 
 
-&lt;img src="figures/stock_market.JPG" title="A schematic of an interactive BI tool for stock market prediction" alt="A schematic of an interactive BI tool for stock market prediction" width="55%" style="display: block; margin: auto;" /&gt;
+&lt;img src="../../figures/stock_market.JPG" title="A schematic of an interactive BI tool for stock market prediction" alt="A schematic of an interactive BI tool for stock market prediction" width="55%" style="display: block; margin: auto;" /&gt;
 
 .footnote[
 &lt;html&gt;
@@ -708,7 +584,7 @@ By analyzing ... data, situations, and performances, decision makers get valuabl
 
 # The BI Process
 
-&lt;img src="figures/bi_process.jpg" title="A schematic of the different components of the business intelligence (BI) process" alt="A schematic of the different components of the business intelligence (BI) process" width="73%" style="display: block; margin: auto;" /&gt;
+&lt;img src="../../figures/bi_process.jpg" title="A schematic of the different components of the business intelligence (BI) process" alt="A schematic of the different components of the business intelligence (BI) process" width="73%" style="display: block; margin: auto;" /&gt;
 
 
 .footnote[
@@ -742,7 +618,7 @@ By now, you should be able to do the following:
 
 # Things to Do to Prepare for Our Next Class
 
-- Go over your notes and complete [Assignment 01](https://miamioh.instructure.com/courses/167290/quizzes/448578) on Canvas.  
+- Go over your notes and complete [Assignment 01](https://miamioh.instructure.com/courses/179812/quizzes/489447) on Canvas.  
 
 - Read through the following references in preparation of our next class. 
 
@@ -762,13 +638,13 @@ By now, you should be able to do the following:
 * [Subsetting](https://adv-r.hadley.nz/subsetting.html)
 ]
 ]
-
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({
-"highlightStyle": "github",
+"highlightStyle": "magula",
 "highlightLines": true,
+"highlightLanguage": "r",
 "countIncrementalSlides": false,
 "ratio": "16:9"
 });
@@ -811,6 +687,19 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     deleted = true;
   });
 })();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
 (function() {
   "use strict"
   // Replace <script> tags in slides area to make them executable
