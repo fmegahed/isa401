@@ -5,6 +5,7 @@ author: '<br>Fadel M. Megahed, PhD <br><br> Enders Associate Professor <br> Farm
 date: "Fall 2022"
 output:
   xaringan::moon_reader:
+    self_contained: true
     css: [default, "../../style_files/fonts.css", "../../style_files/my-theme.css"]
     lib_dir: libs
     nature:

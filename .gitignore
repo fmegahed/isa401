@@ -1,6 +1,6 @@
-Fall 2020/
-Fall 2021/
-Old/
+old/
+other/
+references/
 
 # History files
 .Rhistory
@@ -16,6 +16,7 @@ Old/
 
 # Example code in package build process
 *-Ex.R
+
 
 # Output files from R CMD build
 /*.tar.gz
@@ -56,3 +57,6 @@ rsconnect/
 # Google Sheets and Form
 *.gsheet
 *.gform
+
+# Security Data
+*.httr-oauth
