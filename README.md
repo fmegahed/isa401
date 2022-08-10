@@ -9,9 +9,8 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 *The raw .Rmds for all presentations can be found under the folder titled lectures. The schedule below has links to the associated GitHub Pages where the generated HTML slides are hosted.*
 
 | Week          | Date        | Topic                                  | Slides (Hosted Page) | Slides (PDF) | Slides (PPTX)
-| :---:        |    :----:   |          :---                           | :---                 | :---         | :-- 
-
-| 01           |    08/22     | Introduction to Data Viz and BI        | [01_Introduction.html](https://fmegahed.github.io/isa401/class01/01_Introduction.html) | [01_Introduction.pdf](https://github.com/fmegahed/isa401/blob/main/pdfs/01_Introduction.pdf) | [01_Introduction.pptx](https://github.com/fmegahed/isa401/blob/main/ppts/01_Introduction.pptx) 
+| :---:        |    :----:   |          :---                           | :---                 | :---         | :--  |
+| 01           |    08/22     | Introduction to Data Viz and BI        | [01_Introduction.html](https://fmegahed.github.io/isa401/fall2022/class01/01_Introduction.html) | [01_Introduction.pdf](https://github.com/fmegahed/isa401/raw/main/PDFs/01_Introduction.pdf) | [01_Introduction.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/01_introduction.pptx) |
 
 
 
