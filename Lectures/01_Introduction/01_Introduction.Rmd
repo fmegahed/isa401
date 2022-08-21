@@ -47,7 +47,7 @@ pacman::p_load(tidyverse, magrittr, lubridate, janitor, # data analysis pkgs
                DataExplorer, scales, plotly, calendR, pdftools, # plots
                tmap, sf, urbnmapr, tigris, # maps
                bibliometrix, # for bibliometric analysis of my papers
-               gifski, av, # for animations
+               gifski, av, gganimate, ggtext, glue, extrafont, # for animations
                emojifont, emo, RefManageR, xaringanExtra, countdown) # for slides
 ```
 
@@ -531,7 +531,149 @@ class: inverse, center, middle
 - **Collaborations with:** Aflac, GE Research, Gore, IBM Research, & Tennibot
 
 ```{r my_map, echo=FALSE, out.width='100%', fig.alt="My journey with data driven decisions.", fig.align='center', fig.cap='My journey with data-driven decision making.'}
-knitr::include_graphics("../../figures/map.JPG") 
+# animated map based on the excellent blog by: Shannon Pileggi
+# https://www.pipinghotdata.com/posts/2021-02-15-gganimating-a-geographic-introduction/
+
+residence = tribble(
+  ~city,           ~state,  ~lat,   ~long, ~years, ~description,
+  "Cairo",         "Egypt", 30.0444,  31.2357,  20,    "Childhood and <br> Undergrad at the <br> American University in Cairo (AUC)",
+  "Aachen",      "Germany", 50.7753,  6.083611,   0.33,    "Undergraduate Research Assistant <br> at RWTH Aachen",
+  "Cairo",         "Egypt", 30.0444,  31.2357,  1,    "Finishing up my Undergrad <br> at AUC",
+  "Blacksburg", "Virginia", 37.2296, -80.4139,   4,    "MS and PhD in <br> Industrial & Systems Engineering (ISE) <br> Graduate Research Assistant and <br> Instructor",
+  "Auburn",    "Alabama", 32.6099,  -85.4808, 4,    "Assistant Professor of <br> Industrial and Systems Engineering <br> Auburn University",
+  "Oxford",      "Ohio", 39.5070,  -84.7452,   6,    "Assistant-Associate Professor of <br> Business Analytics <br> Farmer School of Business <br> Miami University"
+) 
+
+
+residence_connections_prelim <- residence %>% 
+  mutate(
+    # need this to create transition state ----
+    city_order = row_number() + 1,
+    # where I moved to next, for curved arrows ----
+    lat_next = lead(lat),
+    long_next = lead(long),
+    # label to show in plot, styled using ggtext ---
+    label = glue::glue("**{city}, {state}** ({years} yrs)<br>*{description}*"),
+    # label of next location ----
+    label_next = lead(label)
+  ) 
+
+
+residence_connections <- residence_connections_prelim %>%
+  # get first row of residence ----
+slice(1) %>% 
+  # manually modify for plotting ----
+mutate(
+  city_order = 1,
+  label_next = label,
+  lat_next = lat,
+  long_next = long,
+) %>% 
+  # combine with all other residences ----
+bind_rows(residence_connections_prelim) %>% 
+  # last (7th) row irrelevant ----
+slice(1:6) %>% 
+  # keep what we neeed ----
+dplyr::select(city_order, lat, long, lat_next, long_next, label_next)
+
+
+world_map =  ggplot2::map_data("world") %>% 
+  filter(region != 'Antarctica' &
+           lat >0 & lat <70 &
+           long <50 & long > -130)
+
+base_map <- ggplot() +
+  # plot states ----
+geom_polygon(
+  data = world_map,
+  aes(
+    x     = long, 
+    y     = lat, 
+    group = group
+  ),
+  fill  = "#F2F2F2",
+  color = "white"
+) +
+  # lines for pins ----
+geom_segment(
+  data = residence,
+  aes(
+    x    = long,
+    xend = long,
+    y    = lat,
+    yend = lat + 2
+  ),
+  color = "#181818",
+  size = 1
+) +
+  # pin heads, a bit above actual location, color with R ladies lighter purple ----
+geom_point(
+  data = residence,
+  aes(
+    x = long, 
+    y = lat + 0.5
+  ),
+  size = 1,
+  color = "#88398A"
+) +
+  theme_void()
+
+
+anim <- base_map +
+  # show arrows connecting residences ----
+geom_curve(
+  # do not include 1st residence in arrows as no arrow is intended ----
+  # and inclusion messes up transition ---
+  data = residence_connections %>% slice(-1),
+  # add slight adjustment to arrow positioning ----
+  aes(
+    y     = lat - 0.1,
+    x     = long,
+    yend  = lat_next - 0.2,
+    xend  = long_next,
+    # group is used to create the transition ----
+    group = seq_along(city_order)
+  ),
+  color = "#181818",
+  curvature = -0.5,
+  arrow = arrow(length = unit(0.02, "npc")),
+  size  = 0.2
+) +
+  # add in labels for pins, with inward positioning ----
+# show labels either top left or top right of pin ----
+geom_richtext(
+  data = residence_connections,
+  aes(
+    x     = ifelse(long_next < 0, long_next + 1, long_next - 1),
+    y     = lat_next + 5,
+    label = label_next,
+    vjust = "top",
+    hjust = ifelse(long_next < -80, 0, 1),
+    # group is used to create the transition ----
+    group = seq_along(city_order)
+  ),
+  size = 2,
+  label.colour = "white",
+  color = "#C3142D"
+) +
+  # title determined by group value in transition ----
+ggtitle("Home {closest_state} of 6") +
+  # create animation ----
+transition_states(
+  city_order,
+  transition_length = 2,
+  state_length = 5
+) +
+  # style title ----
+theme(
+  plot.title = element_text(
+    color = "#C3142D",
+    family = "Permanent Marker",
+    size = 12
+  )
+)
+
+anim
 ```
 
 ---
@@ -662,7 +804,7 @@ Source: Leskovec, J., Rajaraman, A., & Ullman, J. D. (2020). Mining of Massive D
 # Reveal Patterns: COVID-19 Vaccination Rates
 
 ```{r vaccine_rates, echo=FALSE, out.width='70%'}
-knitr::include_graphics("../../figures/animatedVaccineMap.gif")
+knitr::include_graphics("../../figures/animated_vaccine_map.gif")
 ```
 
 ---
