@@ -60,3 +60,7 @@ rsconnect/
 
 # Security Data
 *.httr-oauth
+
+# Cache and other files
+*_files/
+*_cache/
