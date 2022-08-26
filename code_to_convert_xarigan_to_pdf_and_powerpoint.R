@@ -1,14 +1,15 @@
 if(require(renderthis)==FALSE) remotes::install_github("jhelvy/renderthis", dependencies = TRUE)
+if(require(officer) == FALSE) install.packages('officer')
 
-renderthis::to_pdf(from = 'lectures/02_Introduction_to_R/02_introduction_to_r.html',
-                   to = 'pdfs/02_introduction_to_r.pdf',
+renderthis::to_pdf(from = 'lectures/03_data_import_export/03_data_import_export.html',
+                   to = 'pdfs/03_data_import_export.pdf',
                    complex_slides = TRUE,
                    partial_slides = TRUE,
-                   delay = 3)
+                   delay = 2)
 
 # I am using my adobe to create the ppt since the text is editable (which is more preferable to students)
-# renderthis::to_pptx(from = 'lectures/01_Introduction/01_Introduction.html',
-#                     to = 'ppts/01_introduction.pptx',
-#                     complex_slides = TRUE,
-#                     partial_slides = TRUE,
-#                     delay = 2)
+renderthis::to_pptx(from = 'lectures/03_data_import_export/03_data_import_export.html',
+                    to = 'ppts/03_data_import_export.pptx',
+                    complex_slides = TRUE,
+                    partial_slides = TRUE,
+                    delay = 2)
