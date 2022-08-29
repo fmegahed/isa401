@@ -92,7 +92,7 @@ To assess your understanding and retention of the topics covered last week, you 
 
 <br>
 
-**Winning the competition involves having as many correct answers as possible AND taking the shortest duration to answer these questions.** The winner `r fontawesome::fa(name = 'trophy', fill = 'gold')` of the competition from each section will receive:  $15 Starbucks gift card. Good luck!!!
+**Winning the competition involves having as many correct answers as possible AND taking the shortest duration to answer these questions.** The winner `r fontawesome::fa(name = 'trophy', fill = 'gold')` of the competition from each section will receive:  $10 Starbucks gift card. Good luck!!!
 
 .footnote[
 <html>
