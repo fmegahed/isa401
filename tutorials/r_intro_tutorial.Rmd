@@ -1,0 +1,207 @@
+---
+title: "ISA 401/501"
+subtitle: "R Syntax, Data Structures and Functions"
+author: Fadel M. Megahed
+date: 'Fall 2022'
+theme: readable
+output:
+  learnr::tutorial:
+    progressive: true
+    allow_skip: true
+runtime: shiny_prerendered
+always_allow_html: yes
+link-citations: yes
+description: >
+  Demonstrate your knowledge of the materials covered in class so far. This tutorial is meant to supplement the in-class lectures, graded/non-graded assignments, and everything we have done in class so far. It should also serve as an interactive study guide that can help you evaluate your understanding/knowledge of the material covered so far in class. 
+---
+
+```{r setup, include=FALSE}
+if(require(icons)==FALSE) remotes::install_github("mitchelloharawild/icons")
+if(require(learnr)==FALSE) install.packages('learnr')
+library(tidyverse)
+library(magrittr)
+library(icons)
+learnr::tutorial_options(exercise.timelimit = 180)
+```
+
+## Welcome 
+
+In this self-paced guide, you will review: (a) the different data types in `r fontawesome("r-project")`, (b) the different data structures, and (c) accessing data within the different data structures. This review is optional, but if you plan on completing it, you are advised to do the following prior to attempting the tutorial.
+
+1. Have attended the lectures for week 01 and thoroughly read the [ 02_introduction_to_r.html](https://miamioh.instructure.com/courses/179812/modules) slide deck.    
+2. Be able to dedicate about 20-30 minutes to go through this entire tutorial.
+
+**Please close this tab after completing the tutorial to reduce the useage on our FSB server.**
+
+
+## Data Types
+
+Data types are very important to understand because these are the objects you will manipulate on a day-to-day basis in `r fontawesome("r-project")`. `r fontawesome("r-project")` has **6 basic data types**, including:  
+
+- `character`, which is used to store `text` or `string` (as called in other languages) data.  
+- `numeric`, which can be any real or decimal number.    
+- `integer`, where we store integer numbers.  
+- `logical`, which we use to store `TRUE` or `FALSE` values.   
+
+In addition, `r fontawesome("r-project")` has `complex` and `raw` data types which we will not encounter in our ISA 401/501 class. The following functions are useful in understanding the data types in `r fontawesome("r-project")`: 
+
+`class()` - what kind of object is it (high-level)?
+`typeof()` - what is the object’s data type (low-level)?
+`length()` - how long is it? What about two dimensional objects?
+
+Let us examine how they can be used within the R environment:
+
+```{r datatypes_intro}
+x = 'ISA 401 will be a great class'
+
+class(x) # returns the high level information pertaining to x
+typeof(x) # determines the (R internal) type or storage mode of any object
+
+y = 9.45
+
+class(y)
+typeof(y)
+
+```
+
+
+```{r datatypes_q1, echo=FALSE}
+question("If you were to assign 401 to course (i.e., `course = 401`), `class(course)` would return:",
+  answer("character",  message = 'characters can only be defined using quotes'),
+  answer("integer",  message = 'No, to force R to understand that 401 is an integer, you would need to define it as `course = 401L`'),
+  answer("double", message = "No, the return from class is never a double."),
+  answer("numeric", correct = TRUE),
+  allow_retry = TRUE
+)
+```
+
+
+```{r datatypes_q2, echo=FALSE}
+question("If you were to assign 401 to course (i.e., `course = 401L`), `typeof(course)` would return:",
+  answer("character",  message = 'characters can only be defined using quotes'),
+  answer("integer",  correct = TRUE),
+  answer("double", message = "No, since you explicitly added `L`, R will interpret this as an integer."),
+  answer("numeric", message = "No, since you explicitly added `L`, R will interpret this as an integer."),
+  allow_retry = TRUE
+)
+```
+
+```{r datatypes_q3, echo=FALSE}
+question("If you were to assign 401 to course (i.e., `course = '401L'`), `typeof(course)` would return:",
+  answer("character",  correct = TRUE),
+  answer("integer",  message = "No, since you explicitly added the quotes R will interpret this as a character"),
+  answer("double", message = "No, since you explicitly added the quotes R will interpret this as a character"),
+  answer("numeric", message = "No, since you explicitly added the quotes R will interpret this as a character"),
+  allow_retry = TRUE
+)
+```
+
+## Data Structures
+
+### Atomic Vectors
+
+Elements of these data types may be combined to form data structures, such as atomic vectors. When we call a vector `atomic`, we mean that the vector only holds data of a single data type. Below are examples of atomic character vectors, numeric vectors, integer vectors, etc.
+
+- character: `"miami"`, `"university"`  
+- numeric:   `401`, `419`   
+- integer: `2L`, `4L` (the L tells R to store this as an integer)  
+- logical: `TRUE`, `FALSE`  
+
+Note that to combine multiple elements into a vector, we typically use the function `c()` as shown below:  
+
+```{r atomic_vectors1}
+chr_vector = c("miami", "university")
+class(chr_vector)
+typeof(chr_vector)
+
+courses_taught_by_fadel = c(203, 321, 401, 419, 444)
+class(courses_taught_by_fadel)
+typeof(courses_taught_by_fadel)
+```
+
+
+In addition to `class()` and `typeof()`, the `length()` is often used to determine the length (i.e., number of elements in a vector). 
+
+```{r atomic_vectors2}
+courses_taught_by_fadel = c(203, 321, 401, 419, 444)
+length(courses_taught_by_fadel)
+```
+
+
+### Lists
+
+Lists allow for storing elements of **different** data types.
+
+```{r lists}
+lst <- list( # list constructor/creator
+  1:3, # atomic double/numeric vector  of length = 3
+  "a", # atomic character vector of length = 1 (aka scalar)
+  c(TRUE, FALSE, TRUE), # atomic logical vector of length = 3
+  c(2.3, 5.9) # atomic double/numeric vector of length =3
+)
+lst # printing the list
+```
+
+```{r listsq4, echo=FALSE}
+question("The length of the above list, i.e., `length(lst)` is",
+  answer("4",  correct = TRUE),
+  answer("9",  message = "No, length will only count the number of sublists and not their contents"),
+  allow_retry = TRUE
+)
+```
+
+
+
+In the R chunk below, please write code to extract the c(2.3, 5.9) and store it into a vector. 
+```{r question5, exercise=TRUE, excercise.eval= TRUE}
+
+```
+
+```{r question5-solution}
+extracted_vec = lst[[4]]
+class(extracted_vec)
+
+# Note that lst[4] would result in an incorrect answer since
+class(lst[4])
+```
+
+Note that the function `str()` can provide you with an overview of the internal structure of any object. It is typically applied to >1D objects in R, but you could have also applied it to vectors and singular elements (which are also stored as vectors in R). 
+
+```{r}
+str(lst)
+```
+
+
+### Data Frames
+
+A data frame is a named list of vectors with attributes for (column) names, row.names, and its class, “data.frame”. It allows for the vectors to be of different types (e.g., a numeric vector for salary and a character vector for names). 
+ 
+```{r df1}
+df1 <- data.frame(x = 1:3, y = letters[1:3])
+df1
+```
+ 
+In the R chunk below, please write code to extract all the data within the second row of the `df1` data.frame.
+```{r question6, exercise=TRUE, excercise.eval= TRUE}
+
+```
+
+```{r question6-solution}
+df1[2,]
+``` 
+
+In the R chunk below, please write code to extract all the data within the second column of the `df1` data.frame.
+```{r question7, exercise=TRUE, excercise.eval= TRUE}
+
+```
+
+```{r question7-solution}
+# solution 1
+df1[,2]
+
+# solution 2
+df1[, 'y']
+
+# solution 3
+df1$y
+``` 
