@@ -78,3 +78,12 @@ step1_plane = read_html(step0_plane)
 step2_plane = html_elements(step1_plane, "table")
 
 step3_plane = html_table(step2_plane)[[1]]
+
+write_csv(step3_plane, 'data/plane_crashes22.csv')
+
+
+# * You should not always scrape a webpage --------------------------------
+if(require(robotstxt)==FALSE) install.packages("robotstxt")
+
+robotstxt::paths_allowed(paths  = "courses-instruction/isa/", 
+                         domain = "miamioh.edu", bot    = "*")
