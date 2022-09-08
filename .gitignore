@@ -64,3 +64,6 @@ rsconnect/
 # Cache and other files
 *_files/
 *_cache/
+
+# student submissions
+student_submissions/
