@@ -16,6 +16,7 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 |           |    08/31     | Web Scraping I      | [04_scraping_webpages.html](https://fmegahed.github.io/isa401/fall2022/class04/04_scraping_webpages.html) | [04_scraping_webpages.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/04_scraping_webpages.pdf) | [04_scraping_webpages.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/04_scraping_webpages.pptx) |
 |   03        |    09/05     | No Class: Labor Data      | -- | -- | -- |
 |           |    09/07     | Web Scraping II      | [05_scraping_multiple_webpages.html](https://fmegahed.github.io/isa401/fall2022/class05/05_scraping_multiple_webpages.html) | [05_scraping_multiple_webpages.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/05_scraping_multiple_webpages.pdf) | [05_scraping_multiple_webpages.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/05_scraping_multiple_webpages.pptx) |
+|   04        |    09/12     | Introduction to APIs     | [06_intro_to_apis.html](https://fmegahed.github.io/isa401/fall2022/class06/06_intro_to_apis.html) | [06_intro_to_apis.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/06_intro_to_apis.pdf) | [06_intro_to_apis.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/06_intro_to_apis.pptx) |
 
 
 ## Acknowledgments
