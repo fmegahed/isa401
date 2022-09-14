@@ -67,3 +67,7 @@ rsconnect/
 
 # student submissions
 student_submissions/
+data/accuweather_key.R
+data/cryptocompare_key.R
+class_code/07_sectionA.R
+class_code/07_sectionB.R
