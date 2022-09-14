@@ -98,7 +98,7 @@ The most popular listings on Netflix are are available at <https://www.imdb.com/
 ---
 class: inverse, center, middle
 
-# What is an API? <br> (A Web Server Bases Perspective)
+# What is an API? <br> (A Web Server Based Perspective)
 
 ---
 
