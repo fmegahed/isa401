@@ -1,77 +1,46 @@
+# The solution for assignment 07, which is our second API assignment
+
+
+# * Question 1 (CIN BP 2021) ----------------------------------------------
+
+pacman::p_load(tidyverse, nflfastR)
+
+pbp <- nflfastR::load_pbp(2021)
+
+cin_2021 = filter(.data = pbp,
+                  home_team == 'CIN' | away_team == 'CIN')
+table(cin_2021$away_team)
 
 
 
-# * Packages  -------------------------------------------------------------
 
-pacman::p_load(tidyverse, rvest)
+# * Question 2 (Weather.gov API) ------------------------------------------
+
+pacman::p_load(jsonlite)
+
+# https://api.weather.gov/points/39.5070,-84.7452
+weather_data = fromJSON('https://api.weather.gov/gridpoints/LWX/25,55/forecast')
+
+oxford_forecast = weather_data$properties$periods
 
 
 
-# * Question 1: Approach 1 ------------------------------------------------
+# * Question 3 (FRED Data) ------------------------------------------------
 
-fsb_urls = c('https://www.miamioh.edu/fsb/academics/accountancy/about/faculty-staff/index.html',
-             "https://www.miamioh.edu/fsb/academics/economics/about/faculty-staff/index.html",
-             "https://www.miamioh.edu/fsb/academics/entrepreneurship/about/faculty-staff/index.html",
-             "https://www.miamioh.edu/fsb/academics/finance/about/faculty-staff/index.html",
-             "https://www.miamioh.edu/fsb/academics/isa/about/faculty-staff/index.html",
-             "https://www.miamioh.edu/fsb/academics/marketing/about/faculty-staff/index.html",
-             "https://www.miamioh.edu/fsb/academics/management/about/faculty-staff/index.html")
+state_vec = state.abb
 
-fsb_faculty = tibble()
-for (counter in 1:length(fsb_urls)) {
-  step0 = fsb_urls[counter]  
-  step1 = read_html(step0)
+start_link = 'https://fred.stlouisfed.org/graph/fredgraph.csv?bgcolor=%23e1e9f0&chart_type=line&drp=0&fo=open%20sans&graph_bgcolor=%23ffffff&height=450&mode=fred&recession_bars=on&txtcolor=%23444444&ts=12&tts=12&width=1168&nt=0&thu=0&trc=0&show_legend=yes&show_axis_titles=yes&show_tooltip=yes&id='
+
+end_link = 'UR&scale=left&cosd=1976-01-01&coed=2022-08-01&line_color=%234572a7&link_values=false&line_style=solid&mark_type=none&mw=3&lw=2&ost=-99999&oet=99999&mma=0&fml=a&fq=Monthly&fam=avg&fgst=lin&fgsnd=2020-02-01&line_index=1&transformation=lin&vintage_date=2022-09-20&revision_date=2022-09-20&nd=1976-01-01'
+
+unemployment = tibble()
+for (counter in 1:length(state_vec)) {
+  fred_link = paste0(start_link, state_vec[counter], end_link)
   
-  step2_table = html_elements(step1, css = 'body > div > main > section > div.bodyCopy.translationCopyEnglish > table')
-  step3_table = html_table(step2_table)[[1]]
+  temp_df = read_csv(fred_link)
+  temp_df$symbol = paste0(state_vec[counter], 'UR')
+  colnames(temp_df)[2] = 'unemployment'
   
-  step2_urls = html_elements(
-    step1, 
-    "tr > td > strong > a")
-  step3_urls = html_attr(step2_urls, name = 'href')
-  
-  step3_table$URL = step3_urls
-  
-  fsb_faculty = rbind(fsb_faculty, step3_table)
+  unemployment = rbind(unemployment, temp_df)
 }
 
-
-
-# * Question 1: Approach 2 ------------------------------------------------
-
-
-fsb_faculty2 = tibble()
-for (counter in 1:length(fsb_urls)) {
-  step0 = fsb_urls[counter]  
-  step1 = read_html(step0)
-  
-  step2_dept = html_elements(step1, 'tr > td:nth-child(1)')
-  step3_dept = html_text2(step2_dept)
-  
-  step2_pic = html_elements(step1, 'tr > td:nth-child(2)')
-  step3_pic = html_text2(step2_pic)
-  
-  step2_fac_name = html_elements(step1, 'tr > td:nth-child(3) > strong')
-  step3_fac_name = html_text2(step2_fac_name)
-  
-  step2_positions = html_elements(step1, 'tr > td:nth-child(3) > i')
-  step3_positions = html_text2(step2_positions)
-  
-  step2_urls = html_elements(
-    step1, 
-    "tr > td > strong > a")
-  step3_urls = html_attr(step2_urls, name = 'href')
-  
-  temp_df = tibble(dept = step3_dept, pic = step3_pic, faculty_name = step3_fac_name,
-                   faculty_position = step3_positions, faculty_webpage = step3_urls)
-  
-  fsb_faculty2 = rbind(fsb_faculty2, temp_df)
-}
-
-
-
-# * Question 2 ------------------------------------------------------------
-
-pacman::p_load(robotstxt)
-
-zip_robots = paths_allowed("https://www.ziprecruiter.com/jobs-search?search=Junior%20Analyst")
