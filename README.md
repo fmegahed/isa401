@@ -24,6 +24,7 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 |           |    09/28     | Data Correction and Imputation     | [11_data_correction_and_imputation.html](https://fmegahed.github.io/isa401/fall2022/class11/11_data_correction_and_imputation.html) | [11_data_correction_and_imputation.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/11_data_correction_and_imputation.pdf) | [11_data_correction_and_imputation.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/11_data_correction_and_imputation.pptx) |
 |    07       |    10/03     | **Exam 01: ETL**     | -- | -- | -- |
 |           |    10/05     | Fundamentals of Data Visualization    | [13_fundamentals_data_viz.html](https://fmegahed.github.io/isa401/fall2022/class13/13_fundamentals_data_viz.html) | [13_fundamentals_data_viz.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/13_fundamentals_data_viz.pdf) | [13_fundamentals_data_viz.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/13_fundamentals_data_viz.pptx) |
+|    08       |    10/10     | **Lab: Introduction to PowerBI**   | -- | -- | -- |
 
 ## Acknowledgments
  * Phase I has benefited heavily from the following references:   
