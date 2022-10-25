@@ -65,57 +65,6 @@ xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "tachyons", "pan
 ```
 
 
-# Refresher: Important Data Viz Concepts 
-
-.panelset[
-
-.panel[.panel-name[Activity]
-
-> _Over the next several minutes, you will assess/demonstrate your knowledge of the covered material pertaining to the fundamentals of data visualization through 7-questions on Kahoot. To answer the questions, please do the following:_
-
-
-  - Go to [www.kahoot.it](www.kahoot.it)  
-  
-  - Insert the game pin shared on the screen
-  
-  - Add your first and last name when asked for a name
-  
-  - To get the most points per question, answer each question **correctly** and **quickly**
-  
-  - Winner is the person with the most points after seven questions
-
-]
-
-.panel[.panel-name[Solution Notes]
-
-As we go over each question, I will highlight the correct answer and the logic associated with why such an answer was chosen. Please feel free to use the area below to take notes. 
-
-.can-edit.key-activity1[
-
-- Q1: ________________
-
-- Q2: ________________
-
-- Q3: ________________
-
-- Q4: ________________
-
-- Q5: ________________
-
-- Q6: ________________
-
-- Q7: ________________
-
-]
-
-
-]
-
-]
-
-
----
-
 # Learning Objectives for Today's Class
 
 - Identify strengths & weaknesses of basic charts  
@@ -382,7 +331,7 @@ Insert your advantages and disadvantages below
 # 3D Bar Charts are Awful
 
 <center>
-<blockquote class="twitter-tweet" data-height='450' ><p lang="en" dir="ltr">When our status is secure, we don&#39;t emphasize it. When it&#39;s ambiguous, we do.<br><br>Penn students are more likely than Harvard students to mention that they go to an Ivy League school...<a href="https://t.co/0ipuArIRUn">https://t.co/0ipuArIRUn</a> <a href="https://t.co/BDusRYJm34">pic.twitter.com/BDusRYJm34</a></p>&mdash; Adam Grant (@AdamMGrant) <a href="https://twitter.com/AdamMGrant/status/1339925914327638017?ref_src=twsrc%5Etfw">December 18, 2020</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<blockquote class="twitter-tweet" data-height='400' ><p lang="en" dir="ltr">When our status is secure, we don&#39;t emphasize it. When it&#39;s ambiguous, we do.<br><br>Penn students are more likely than Harvard students to mention that they go to an Ivy League school...<a href="https://t.co/0ipuArIRUn">https://t.co/0ipuArIRUn</a> <a href="https://t.co/BDusRYJm34">pic.twitter.com/BDusRYJm34</a></p>&mdash; Adam Grant (@AdamMGrant) <a href="https://twitter.com/AdamMGrant/status/1339925914327638017?ref_src=twsrc%5Etfw">December 18, 2020</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 </center>
 
 

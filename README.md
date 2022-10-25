@@ -28,6 +28,8 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 |          |    10/12     | No class   | -- | -- | -- |
 |    09       |    10/17     | **Lab: Introduction to Tableau, Python and R for Data Viz**   | -- | -- | -- |
 |           |    10/19     | Commonly Used Charts  | [17_commonly_used_charts.html](https://fmegahed.github.io/isa401/fall2022/class17/17_commonly_used_charts.html) | [17_commonly_used_charts.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/17_commonly_used_charts.pdf) | [17_commonly_used_charts.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/17_commonly_used_charts.pptx) |
+|    10       |    10/24     | Commonly Used Charts (Cont.)   | [17_commonly_used_charts.html](https://fmegahed.github.io/isa401/fall2022/class17/17_commonly_used_charts.html) | [17_commonly_used_charts.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/17_commonly_used_charts.pdf) | [17_commonly_used_charts.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/17_commonly_used_charts.pptx) |
+|           |    10/26     | Temporal, Spatial and Spatiotemporal Charts  | [19_temporal_spatial_and_spatiotemporal_charts.html](https://fmegahed.github.io/isa401/fall2022/class19/19_temporal_spatial_and_spatiotemporal_charts.html) | [19_temporal_spatial_and_spatiotemporal_charts.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/19_temporal_spatial_and_spatiotemporal_charts.pdf) | [19_temporal_spatial_and_spatiotemporal_charts.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/19_temporal_spatial_and_spatiotemporal_charts.pptx) |
 
 ## Acknowledgments
  * Phase I has benefited heavily from the following references:   
