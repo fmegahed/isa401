@@ -1,0 +1,61 @@
+Manufacturer,Make,Model,Displ,Cyl,Trans,Drive,Fuel,Cert Region,Stnd,Stnd Description,Underhood ID,Veh Class,Air Pollution Score,City MPG,Hwy MPG,Cmb MPG,Greenhouse Gas Score,SmartWay,Comb CO2
+JEEP,Grand Cherokee,JEEP Grand Cherokee,5.7,8,Auto-8,4WD,Gasoline,FA,T3B70,Federal Tier 3 Bin 70,NCRXT05.75P0,standard SUV,5,14,22,17,3,No,533
+CHEVROLET,Trailblazer,CHEVROLET Trailblazer,1.2,3,CVT,2WD,Gasoline,FA,T3B30,Federal Tier 3 Bin 30,NGMXV01.3545,small SUV,7,29,31,30,6,No,296
+CHEVROLET,Camaro,CHEVROLET Camaro,6.2,8,SemiAuto-10,2WD,Gasoline,CA,L3LEV160,California LEV-III LEV160,NGMXV06.2090,small car,1,16,26,20,4,No,452
+CHEVROLET,Blazer,CHEVROLET Blazer,3.6,6,Auto-9,4WD,Gasoline,CA,L3ULEV50,California LEV-III ULEV50,NGMXT03.6151,small SUV,6,19,26,21,4,No,417
+TOYOTA,RAV4,TOYOTA RAV4,2.5,4,SemiAuto-8,2WD,Gasoline,CA,L3SULEV30,California LEV-III SULEV30,NTYXT02.5P3H,small SUV,7,27,35,30,6,No,296
+LEXUS,IS 300,LEXUS IS 300,3.5,6,SemiAuto-6,4WD,Gasoline,FA,T3B70,Federal Tier 3 Bin 70,NTYXV03.5M5A,small car,5,19,26,22,5,No,407
+TOYOTA,Camry XLE/XSE,TOYOTA Camry XLE/XSE,2.5,4,SemiAuto-8,4WD,Gasoline,FA,T3B50,Federal Tier 3 Bin 50,NTYXJ02.5N4L,midsize car,6,25,34,28,6,No,315
+CHEVROLET,Silverado 4WD Mud Terrain Tire,CHEVROLET Silverado 4WD Mud Terrain Tire,5.3,8,Auto-10,4WD,Gasoline,FA,T3B50,Federal Tier 3 Bin 50,NGMXT05.3386,pickup,6,14,17,15,2,No,581
+JEEP,Wrangler,JEEP Wrangler,3.6,6,Auto-8,4WD,Gasoline,FA,T3B30,Federal Tier 3 Bin 30,NCRXT03.65P9,small SUV,7,19,24,21,4,No,421
+CHEVROLET,Colorado,CHEVROLET Colorado,2.8,4,Auto-6,2WD,Diesel,FA,T3B125,Federal Tier 3 Bin 125,NGMXT02.8358,pickup,3,20,30,23,4,No,435
+CHEVROLET,Silverado,CHEVROLET Silverado,5.3,8,Auto-8,4WD,Gasoline,CA,L3ULEV50,California LEV-III ULEV50,NGMXT05.3386,pickup,6,15,20,17,3,No,521
+CHEVROLET,Equinox,CHEVROLET Equinox,1.5,4,Auto-6,2WD,Gasoline,CA,L3SULEV30,California LEV-III SULEV30,NGMXT01.5090,small SUV,7,26,31,28,6,No,318
+CHEVROLET,Suburban,CHEVROLET Suburban,6.2,8,Auto-10,4WD,Gasoline,CA,L3ULEV50,California LEV-III ULEV50,NGMXT06.2375,standard SUV,6,14,19,16,3,No,568
+CHEVROLET,Colorado,CHEVROLET Colorado,3.6,6,Auto-8,4WD,Gasoline,CA,L3ULEV50,California LEV-III ULEV50,NGMXT03.6162,pickup,6,17,24,19,4,No,465
+LEXUS,UX 250h,LEXUS UX 250h,2,4,SCV-6,2WD,Gasoline,CA,L3SULEV30,California LEV-III SULEV30,NTYXV02.0P3B,small car,7,43,41,42,8,Yes,209
+LEXUS,ES 250,LEXUS ES 250,2.5,4,SemiAuto-8,4WD,Gasoline,FA,T3B50,Federal Tier 3 Bin 50,NTYXJ02.5N4L,midsize car,6,25,34,28,6,No,315
+CHEVROLET,Spark,CHEVROLET Spark,1.4,4,CVT,2WD,Gasoline,CA,L3ULEV70,California LEV-III ULEV70,NGMXV01.4050,small car,5,30,38,33,7,No,266
+CHEVROLET,Suburban,CHEVROLET Suburban,6.2,8,Auto-10,2WD,Gasoline,FA,T3B50,Federal Tier 3 Bin 50,NGMXT06.2375,standard SUV,6,14,20,16,3,No,542
+CHEVROLET,Suburban,CHEVROLET Suburban,3,6,Auto-10,2WD,Diesel,FA,T3B125,Federal Tier 3 Bin 125,NGMXT03.0353,standard SUV,3,21,27,23,4,No,442
+JEEP,Gladiator Rubic EcoDiesel 4x4,JEEP Gladiator Rubic EcoDiesel 4x4,3,6,Auto-8,4WD,Diesel,CA,L3LEV160,California LEV-III LEV160,NCRXT03.05PW,pickup,1,21,27,24,4,No,436
+CHEVROLET,Silverado 4WD Mud Terrain Tire,CHEVROLET Silverado 4WD Mud Terrain Tire,3,6,Auto-10,4WD,Diesel,CA,L3ULEV125,California LEV-III ULEV125,NGMXT03.0351,pickup,3,20,23,21,4,No,479
+CHEVROLET,Silverado 4WD Mud Terrain Tire,CHEVROLET Silverado 4WD Mud Terrain Tire,5.3,8,Auto-10,4WD,Gasoline,CA,L3ULEV50,California LEV-III ULEV50,NGMXT05.3386,pickup,6,14,17,15,2,No,585
+CHEVROLET,Suburban,CHEVROLET Suburban,5.3,8,Auto-10,4WD,Gasoline,FA,T3B50,Federal Tier 3 Bin 50,NGMXT05.3386,standard SUV,6,15,19,16,3,No,554
+CHEVROLET,Tahoe,CHEVROLET Tahoe,6.2,8,Auto-10,2WD,Gasoline,CA,L3ULEV50,California LEV-III ULEV50,NGMXT06.2375,standard SUV,6,14,20,16,3,No,547
+LEXUS,LC 500,LEXUS LC 500,5,8,SemiAuto-10,2WD,Gasoline,FA,T3B70,Federal Tier 3 Bin 70,NTYXV05.0M5A,small car,5,16,25,19,4,No,473
+TOYOTA,Tundra,TOYOTA Tundra,3.4,6,SemiAuto-10,4WD,Gasoline,CA,L3ULEV70,California LEV-III ULEV70,NTYXT03.4M5W,pickup,5,17,22,19,4,No,460
+CHEVROLET,Equinox,CHEVROLET Equinox,1.5,4,Auto-6,4WD,Gasoline,CA,L3SULEV30,California LEV-III SULEV30,NGMXT01.5090,small SUV,7,25,30,27,6,No,327
+JEEP,Wrangler,JEEP Wrangler,2,4,Auto-8,4WD,Gasoline,FA,T3B70,Federal Tier 3 Bin 70,NCRXT02.05P2,small SUV,5,22,24,23,5,No,388
+CHEVROLET,Tahoe,CHEVROLET Tahoe,5.3,8,Auto-10,4WD,Gasoline,CA,L3ULEV50,California LEV-III ULEV50,NGMXT05.3386,standard SUV,6,14,19,16,3,No,556
+LEXUS,LS 500,LEXUS LS 500,3.4,6,SemiAuto-10,4WD,Gasoline,FA,T3B70,Federal Tier 3 Bin 70,NTYXV03.5M5C,midsize car,5,17,27,21,4,No,432
+CHEVROLET,Silverado 4WD Mud Terrain Tire,CHEVROLET Silverado 4WD Mud Terrain Tire,5.3,8,Auto-8,4WD,Gasoline,CA,L3ULEV50,California LEV-III ULEV50,NGMXT05.3386,pickup,6,14,18,15,2,No,577
+JEEP,Grand Cherokee L,JEEP Grand Cherokee L,3.6,6,Auto-8,4WD,Gasoline,FA,T3B30,Federal Tier 3 Bin 30,NCRXT03.65P5,standard SUV,7,18,25,21,4,No,430
+ALFA,ROMEO Giulia,ALFA ROMEO Giulia,2.9,6,Auto-8,2WD,Gasoline,FA,T3B125,Federal Tier 3 Bin 125,NCRXJ02.95P0,midsize car,3,17,25,20,4,No,436
+TOYOTA,4Runner,TOYOTA 4Runner,4,6,SemiAuto-5,2WD,Gasoline,CA,L3ULEV70,California LEV-III ULEV70,NTYXT04.0M5S,standard SUV,5,16,19,17,3,No,503
+CHEVROLET,Silverado,CHEVROLET Silverado,5.3,8,Auto-10,4WD,Gasoline,FA,T3B50,Federal Tier 3 Bin 50,NGMXT05.3386,pickup,6,15,19,17,3,No,526
+TOYOTA,Camry XSE,TOYOTA Camry XSE,3.5,6,SemiAuto-8,2WD,Gasoline,FA,T3B70,Federal Tier 3 Bin 70,NTYXV03.5M5B,midsize car,5,22,32,26,5,No,345
+JEEP,Wrangler,JEEP Wrangler,2,4,Auto-8,4WD,Gasoline,FA,T3B70,Federal Tier 3 Bin 70,NCRXT02.05P2,small SUV,5,21,24,22,5,No,404
+CHEVROLET,Suburban,CHEVROLET Suburban,6.2,8,Auto-10,4WD,Gasoline,CA,L3ULEV50,California LEV-III ULEV50,NGMXT06.2375,standard SUV,6,14,19,16,3,No,555
+CHEVROLET,Silverado,CHEVROLET Silverado,5.3,8,Auto-8,2WD,Gasoline,CA,L3ULEV50,California LEV-III ULEV50,NGMXT05.3386,pickup,6,16,21,18,3,No,502
+JEEP,Grand Cherokee L,JEEP Grand Cherokee L,3.6,6,Auto-8,2WD,Gasoline,FA,T3B30,Federal Tier 3 Bin 30,NCRXT03.65P5,standard SUV,7,19,26,21,4,No,416
+CHEVROLET,Silverado,CHEVROLET Silverado,3,6,Auto-10,2WD,Diesel,CA,L3ULEV125,California LEV-III ULEV125,NGMXT03.0352,pickup,3,23,31,26,5,No,387
+CHEVROLET,Colorado,CHEVROLET Colorado,2.5,4,Auto-6,2WD,Gasoline,CA,L3ULEV50,California LEV-III ULEV50,NGMXT02.5200,pickup,6,19,25,22,5,No,413
+JEEP,Renegade Trailhawk,JEEP Renegade Trailhawk,1.3,4,Auto-9,4WD,Gasoline,FA,T3B50,Federal Tier 3 Bin 50,NCRXT01.35P0,small SUV,6,22,27,24,5,No,372
+TOYOTA,Supra 3.0,TOYOTA Supra 3.0,3,6,SemiAuto-8,2WD,Gasoline,FA,T3B70,Federal Tier 3 Bin 70,NBMXV03.0B5X,small car,5,22,30,25,5,No,351
+CHEVROLET,Malibu,CHEVROLET Malibu,1.5,4,CVT,2WD,Gasoline,FA,T3B30,Federal Tier 3 Bin 30,NGMXV01.5010,midsize car,7,29,36,32,7,Yes,275
+CHEVROLET,Spark,CHEVROLET Spark,1.4,4,CVT,2WD,Gasoline,FA,T3B70,Federal Tier 3 Bin 70,NGMXV01.4050,small car,5,30,38,33,7,No,266
+CHEVROLET,Malibu,CHEVROLET Malibu,1.5,4,CVT,2WD,Gasoline,CA,L3SULEV30,California LEV-III SULEV30,NGMXV01.5010,midsize car,7,29,36,32,7,Yes,275
+CHEVROLET,Colorado,CHEVROLET Colorado,3.6,6,Auto-8,4WD,Gasoline,FA,T3B50,Federal Tier 3 Bin 50,NGMXT03.6162,pickup,6,17,24,19,4,No,465
+TOYOTA,Sequoia,TOYOTA Sequoia,5.7,8,SemiAuto-6,2WD,Gasoline,FA,T3B70,Federal Tier 3 Bin 70,NTYXT05.7M5W,standard SUV,5,13,17,15,2,No,604
+LEXUS,LC 500h,LEXUS LC 500h,3.5,6,SCV-10,2WD,Gasoline,CA,L3SULEV30,California LEV-III SULEV30,NTYXV03.5P35,small car,7,26,34,29,6,No,303
+CHEVROLET,Tahoe,CHEVROLET Tahoe,3,6,Auto-10,2WD,Diesel,FA,T3B125,Federal Tier 3 Bin 125,NGMXT03.0353,standard SUV,3,21,28,24,4,No,425
+CHEVROLET,Colorado,CHEVROLET Colorado,2.8,4,Auto-6,4WD,Diesel,FA,T3B125,Federal Tier 3 Bin 125,NGMXT02.8358,pickup,3,19,28,22,4,No,455
+LEXUS,LS 500,LEXUS LS 500,3.4,6,SemiAuto-10,2WD,Gasoline,FA,T3B70,Federal Tier 3 Bin 70,NTYXV03.5M5C,midsize car,5,18,29,22,5,No,404
+ALFA,ROMEO Stelvio AWD,ALFA ROMEO Stelvio AWD,2,4,Auto-8,4WD,Gasoline,FA,T3B70,Federal Tier 3 Bin 70,NCRXJ02.05P2,small SUV,5,22,28,24,5,No,364
+JEEP,Gladiator EcoDiesel 4X4,JEEP Gladiator EcoDiesel 4X4,3,6,Auto-8,4WD,Diesel,FA,T3B160,Federal Tier 3 Bin 160,NCRXT03.05PW,pickup,1,22,28,24,4,No,423
+CHEVROLET,Silverado 4WD Mud Terrain Tire,CHEVROLET Silverado 4WD Mud Terrain Tire,2.7,4,Auto-8,4WD,Gasoline,CA,L3ULEV50,California LEV-III ULEV50,NGMXT02.7100,pickup,6,16,18,17,3,No,522
+LEXUS,UX 250h,LEXUS UX 250h,2,4,SCV-6,4WD,Gasoline,FA,T3B30,Federal Tier 3 Bin 30,NTYXV02.0P3B,small car,7,41,38,39,8,Yes,225
+TOYOTA,Corolla,TOYOTA Corolla,1.8,4,Man-6,2WD,Gasoline,CA,L3ULEV70,California LEV-III ULEV70,NTYXV01.8M5B,small car,5,29,39,33,7,No,271
+CHEVROLET,Traverse,CHEVROLET Traverse,3.6,6,Auto-9,4WD,Gasoline,CA,L3ULEV50,California LEV-III ULEV50,NGMXT03.6151,standard SUV,6,17,25,20,4,No,448
+TOYOTA,Camry Hybrid SE/XLE/XSE,TOYOTA Camry Hybrid SE/XLE/XSE,2.5,4,SCV-6,2WD,Gasoline,CA,L3SULEV30,California LEV-III SULEV30,NTYXV02.5P33,midsize car,7,44,47,46,9,Yes,195
