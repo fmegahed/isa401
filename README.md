@@ -34,6 +34,7 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 |           |    11/02     | Business Reporting | [21_business_reports.html](https://fmegahed.github.io/isa401/fall2022/class21/21_business_reports.html) | [21_business_reports.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/21_business_reports.pdf) | [21_business_reports.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/21_business_reports.pptx) |
 |    12       |    11/07     | **Exam 02: Data Visualization** | -- | -- | -- |
 |           |    11/09     | Exam 02 Review and Project Introduction | -- | -- | -- |
+|   13        |    11/14     | An Overview of Data and Association Rule Mining | [24_data_mining_overview.html](https://fmegahed.github.io/isa401/fall2022/class24/24_data_mining_overview.html) | [24_data_mining_overview.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/24_data_mining_overview.pdf) |
 
 ## Acknowledgments
  * Phase I has benefited heavily from the following references:   
