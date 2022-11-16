@@ -1,0 +1,609 @@
+---
+title: "ISA 401/501: Business Intelligence & Data Visualization"
+subtitle: "25: A Short Introduction to Clustering"
+author: '<br>Fadel M. Megahed, PhD <br><br> Enders Associate Professor <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("twitter"), fill = "white")` @FadelMegahed](https://twitter.com/FadelMegahed) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
+date: "Fall 2022"
+output:
+  xaringan::moon_reader:
+    self_contained: true
+    css: [default, "../../style_files/fonts.css", "../../style_files/my-theme.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: magula
+      highlightLines: true
+      highlightLanguage: ["r"]
+      countIncrementalSlides: false
+      ratio: "16:9"
+header-includes:  
+  - "../../style_files/header.html"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache = TRUE,
+                      echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE,
+                      progress = FALSE, 
+                      verbose = FALSE,
+                      dev = 'png',
+                      fig.height = 3,
+                      dpi = 300,
+                      fig.align = 'center')
+
+options(htmltools.dir.version = FALSE)
+
+miamired = '#C3142D'
+
+if(require(pacman)==FALSE) install.packages("pacman")
+if(require(devtools)==FALSE) install.packages("devtools")
+
+if(require(countdown)==FALSE) devtools::install_github("gadenbuie/countdown")
+if(require(xaringanExtra)==FALSE) devtools::install_github("gadenbuie/xaringanExtra")
+
+
+pacman::p_load(tidyverse, magrittr, lubridate, janitor, # data analysis pkgs
+               DT, # for nicely printed output
+               palmerpenguins,
+               NbClust, factoextra,
+               fontawesome, RefManageR, xaringanExtra, countdown) # for slides
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+if(require(xaringanthemer) == FALSE) install.packages("xaringanthemer")
+library(xaringanthemer)
+
+style_mono_accent(base_color = "#84d6d3",
+                  base_font_size = "20px")
+
+xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "tachyons", "panelset", "broadcast", "share_again", "search", "fit_screen", "editable", 
+                                    "clipable"))
+```
+
+# A Recap of What we Learned Last Class
+
+- Describe the goals & functions of data mining  
+
+- Understand the statistical limits on data mining  
+
+- Describe the data mining process  
+
+- What is “frequent itemsets” & the application of this concept  
+
+- Explain how and why “association rules” are constructed  
+
+- Use `r fontawesome::fa('r-project', miamired)` to populate both concepts
+
+
+---
+
+# Kahoot: A Recap of Phase 3 of Class So Far
+
+Let us go to Kahoot and compete for a $10 `r fontawesome::fa('coffee', fill = 'darkgreen')` Starbucks gift card. To evaluate your understanding of the material, please answer the questions correctly and as quickly as possible to get the most points.
+
+---
+
+# Learning Objectives for Today's Class
+
+- Describe the different steps of the k-means algorithm  
+
+- Cluster using k-means (by hand)  
+
+- Cluster using k-means (software)  
+
+  + `r fontawesome::fa('r-project', miamired)`  
+  + Tableau
+
+
+---
+class: inverse, center, middle
+
+# An Overview of Clustering Techniques
+
+---
+
+# The Problem of Clustering
+
+- Given a **set of (high-dimensional) observations**, with a notion of **distance** between observations, **group the observations** into **some number of clusters**, so that:   
+  +  Members of a cluster are close/similar to each other  
+  +  Members of different clusters are dissimilar  
+
+- **Usually:**  
+  + The observations are in a high-dimensional space  
+  + Similarity is defined using a distance measure, e.g., 
+      * Euclidean, Cosine, Jaccard, edit distance, etc.
+      
+.footnote[
+<html>
+<hr>
+</html>
+**Source:** J. Leskovec, A. Rajaraman, J. Ullman: Mining of Massive Datasets, <http://www.mmds.org>
+]
+
+
+
+---
+
+# Clustering in 2D Space
+
+.pull-left[
+.center[
+
+**Meet the Palmer penguins**
+
+[![](https://allisonhorst.github.io/palmerpenguins/reference/figures/lter_penguins.png)](https://allisonhorst.github.io/palmerpenguins/)
+]
+]
+
+.pull-right[
+.center[
+
+**Anatomical description of the dataset:**
+
+[![](https://allisonhorst.github.io/palmerpenguins/reference/figures/culmen_depth.png)](https://allisonhorst.github.io/palmerpenguins/)
+]
+]
+
+.footnote[
+<html>
+<hr>
+</html>
+
+**Source:** The data are available by [CC-0 license](https://creativecommons.org/share-your-work/public-domain/cc0/) in accordance with the [Palmer Station LTER Data Policy and the LTER Data Access Policy for Type I data](http://pal.lternet.edu/data/policies). The artwork is by Allison Horst and available at <https://allisonhorst.github.io/palmerpenguins/>, and the data is downloaded using the [palmerpenguins](https://allisonhorst.github.io/palmerpenguins/) `r fontawesome::fa('r-project', miamired)` package.
+]
+
+
+---
+count: false
+
+# Clustering in 2D Space: Formulation
+
+- Given a **set of observations (each containing bill length and depth)**, with a notion of **Euclidean distance** between observations, **group the observations** into **3 clusters**, so that:  
+
+  +  Members of a cluster are close/similar to each other  
+  +  Members of different clusters are dissimilar  
+  
+- Note we are assuming that we did not have a "label/type" for each penguin.
+
+.footnote[
+<html>
+<hr>
+</html>
+
+**Source:** The data are available by [CC-0 license](https://creativecommons.org/share-your-work/public-domain/cc0/) in accordance with the [Palmer Station LTER Data Policy and the LTER Data Access Policy for Type I data](http://pal.lternet.edu/data/policies). The artwork is by Allison Horst and available at <https://allisonhorst.github.io/palmerpenguins/>, and the data is downloaded using the [palmerpenguins](https://allisonhorst.github.io/palmerpenguins/) `r fontawesome::fa('r-project', miamired)` package.
+]
+
+
+---
+count: false
+
+# Clustering in 2D Space: Raw Data
+
+```{r bill_length_depth1, echo=FALSE}
+ggplot(data = penguins,
+       aes(x = bill_length_mm,
+           y = bill_depth_mm,
+           group = species)) +
+  geom_point(size = 3,
+             alpha = 0.8) +
+  theme_minimal() +
+  labs(title = "Penguin bill dimensions",
+       subtitle = "Bill length and depth for Adelie, Chinstrap and Gentoo Penguins at Palmer Station LTER",
+       x = "Bill length (mm)",
+       y = "Bill depth (mm)",
+       color = "Penguin species",
+       shape = "Penguin species") +
+  theme(legend.position = c(0.85, 0.15),
+        legend.background = element_rect(fill = "white", color = NA),
+        plot.title.position = "plot",
+        plot.caption = element_text(hjust = 0, face= "italic"),
+        plot.caption.position = "plot")
+```
+
+.footnote[
+<html>
+<hr>
+</html>
+
+**Source:** The data are available by [CC-0 license](https://creativecommons.org/share-your-work/public-domain/cc0/) in accordance with the [Palmer Station LTER Data Policy and the LTER Data Access Policy for Type I data](http://pal.lternet.edu/data/policies). The artwork is by Allison Horst and available at <https://allisonhorst.github.io/palmerpenguins/>, and the data is downloaded using the [palmerpenguins](https://allisonhorst.github.io/palmerpenguins/) `r fontawesome::fa('r-project', miamired)` package.
+]
+
+---
+count: false
+
+# Clustering in 2D Space: Labeled Raw Data
+
+```{r bill_length_depth2, echo=FALSE}
+ggplot(data = penguins,
+       aes(x = bill_length_mm,
+           y = bill_depth_mm,
+           group = species)) +
+  geom_point(aes(color = species,
+                 shape = species),
+             size = 3,
+             alpha = 0.8) +
+  theme_minimal() +
+  scale_color_manual(values = c("darkorange","purple","cyan4")) +
+  labs(title = "Penguin bill dimensions",
+       subtitle = "Bill length and depth for Adelie, Chinstrap and Gentoo Penguins at Palmer Station LTER",
+       x = "Bill length (mm)",
+       y = "Bill depth (mm)",
+       color = "Penguin species",
+       shape = "Penguin species") +
+  theme(legend.position = c(0.85, 0.15),
+        legend.background = element_rect(fill = "white", color = NA),
+        plot.title.position = "plot",
+        plot.caption = element_text(hjust = 0, face= "italic"),
+        plot.caption.position = "plot")
+```
+
+.footnote[
+<html>
+<hr>
+</html>
+
+**Source:** The data are available by [CC-0 license](https://creativecommons.org/share-your-work/public-domain/cc0/) in accordance with the [Palmer Station LTER Data Policy and the LTER Data Access Policy for Type I data](http://pal.lternet.edu/data/policies). The artwork is by Allison Horst and available at <https://allisonhorst.github.io/palmerpenguins/>, and the data is downloaded using the [palmerpenguins](https://allisonhorst.github.io/palmerpenguins/) `r fontawesome::fa('r-project', miamired)` package.
+]
+
+---
+count: false
+
+# Clustering in 2D Space: Clustering Results
+
+```{r bill_length_depth3, echo=FALSE}
+set.seed(2022)
+penguins_subset = penguins %>% 
+  select(species, bill_length_mm, bill_depth_mm) %>% 
+  group_by(species) %>% 
+  na.omit() %>% 
+  slice_sample(n = 20) %>% 
+  ungroup() %>% 
+  data.frame()
+
+row.names(penguins_subset) = paste0( str_sub(penguins_subset$species, 1, 1),
+                                     1:nrow(penguins_subset) )
+
+penguins_subset = na.omit(penguins_subset) %>% select(-species)
+
+km_results = kmeans(penguins_subset,
+                    centers = 3)
+
+fviz_cluster(km_results, data = penguins_subset,
+             ellipse.type = "convex",
+             palette = "jco",
+             ggtheme = theme_minimal()) +
+  labs(title = "Clustering of a sample of 60 penguins into three groups",
+       subtitle = "Using only bill length and depth",
+       x = "Bill length (mm)",
+       y = "Bill depth (mm)") +
+  theme(legend.position = 'none',
+        plot.title.position = "plot",
+        plot.caption = element_text(hjust = 0, face= "italic"),
+        plot.caption.position = "plot")
+```
+
+.footnote[
+<html>
+<hr>
+</html>
+
+**Source:** The data are available by [CC-0 license](https://creativecommons.org/share-your-work/public-domain/cc0/) in accordance with the [Palmer Station LTER Data Policy and the LTER Data Access Policy for Type I data](http://pal.lternet.edu/data/policies). The artwork is by Allison Horst and available at <https://allisonhorst.github.io/palmerpenguins/>, and the data is downloaded using the [palmerpenguins](https://allisonhorst.github.io/palmerpenguins/) `r fontawesome::fa('r-project', miamired)` package.
+]
+
+
+---
+
+# Comments on the 2D Clustering Problem
+
+Even though the 2D Space clustering problem is the easiest problem to "solve" since we can benefit by plotting the data, **clustering is hard**. 
+
+**Some important questions:**
+
+  1. With all the variables being numerical, we often assume **Euclidean distance**. This can be problematic when:  
+    - variables have significantly different scales  
+    - we are including information that is not pertinent to grouping
+  
+  2. How do you determine the number of clusters (*k*)?  
+  
+  3. How to represent a cluster of many points?  
+  
+  4. How do we determine the "nearness" of clusters?
+  
+
+---
+
+# An Overview of Clustering Methods
+
+[![](https://csdl-images.ieeecomputer.org/trans/ec/2014/03/figures/fahad.t1-2330519.gif)](https://www.computer.org/csdl/journal/ec/2014/03/06832486/13rRUEgs2xB)
+
+.footnote[
+<html>
+<hr>
+</html>
+
+**Source:** A. Fahad, et al.,"A Survey of Clustering Algorithms for Big Data: Taxonomy and Empirical Analysis" in IEEE Transactions on Emerging Topics in Computing, vol. 2, no. 03, pp. 267-279, 2014. <https://doi.org/10.1109/TETC.2014.2330519>
+]
+
+
+---
+class: inverse, center, middle
+
+# k-means Algorithm
+
+
+---
+
+# General Idea
+
+The K-Means algorithm clusters data by trying to separate samples in $n$ groups of equal variance, minimizing a criterion known as the **inertia** or **within-cluster sum-of-squares** (see below). This algorithm requires the **number of clusters to be specified**. 
+
+.center[
+$\sum_{i=0}^{n}\min_{\mu_j \in C}(||x_i - \mu_j||^2)$
+]
+
+
+**Inertia is a measure of how internally coherent clusters are; however, it suffers from various drawbacks:**
+
+- Inertia makes the assumption that clusters are convex and isotropic, which is not always the case. It responds poorly to elongated clusters, or manifolds with irregular shapes.   
+
+- Inertia is not a normalized metric: we just know that lower values are better and zero is optimal. But in very high-dimensional spaces, Euclidean distances tend to become inflated.
+
+
+.footnote[
+<html>
+<hr>
+</html>
+
+**Source:** Clustering &mdash; scikit-learn 1.0.2 documentation <https://scikit-learn.org/stable/modules/clustering.html#k-means>
+]
+
+
+---
+
+# The Steps of the K-Means Algorithm
+
+ In basic terms, the algorithm has three steps. 
+ 
+ 0. Step 0 chooses the initial centroids, with the most basic method being to choose $k$samples from the dataset $X$ . After initialization, K-means consists of looping between the remaining two steps.  
+ 
+ 1. Step 1 assigns each sample to its nearest centroid. 
+ 
+ 2. Step 2 creates new centroids by taking the mean value of all of the samples assigned to each previous centroid. The difference between the old and the new centroids are computed.
+ 
+ **The algorithm repeats these last two steps the centroids do not move significantly.**
+
+
+.footnote[
+<html>
+<hr>
+</html>
+
+**Source:** Clustering &mdash; scikit-learn 1.0.2 documentation <https://scikit-learn.org/stable/modules/clustering.html#k-means>
+]
+
+
+---
+
+# Out-of-Class Activity
+
+Use the k-means algorithm to cluster the following observations. Use $k=2$ and Euclidean distance. **Use [this handout](https://miamioh.instructure.com/courses/179812/files/26097060?module_item_id=4084620) to go through the k-means algorithm implementation (by hand).**
+
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-baqh{text-align:center;vertical-align:top}
+.tg .tg-amwm{font-weight:bold;text-align:center;vertical-align:top}
+.tg .tg-0lax{text-align:left;vertical-align:top}
+</style>
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-amwm">Observation</th>
+    <th class="tg-amwm">X1</th>
+    <th class="tg-amwm">X2</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-baqh">1</td>
+    <td class="tg-0lax">1.0</td>
+    <td class="tg-0lax">1.0</td>
+  </tr>
+  <tr>
+    <td class="tg-baqh">2</td>
+    <td class="tg-0lax">1.5</td>
+    <td class="tg-0lax">2.0</td>
+  </tr>
+  <tr>
+    <td class="tg-baqh">3</td>
+    <td class="tg-0lax">3.0</td>
+    <td class="tg-0lax">4.0</td>
+  </tr>
+  <tr>
+    <td class="tg-baqh">4</td>
+    <td class="tg-0lax">5.0</td>
+    <td class="tg-0lax">7.0</td>
+  </tr>
+  <tr>
+    <td class="tg-baqh">5</td>
+    <td class="tg-0lax">3.5</td>
+    <td class="tg-0lax">5.0</td>
+  </tr>
+  <tr>
+    <td class="tg-baqh">6</td>
+    <td class="tg-0lax">4.5</td>
+    <td class="tg-0lax">5.0</td>
+  </tr>
+  <tr>
+    <td class="tg-baqh">7</td>
+    <td class="tg-0lax">3.5</td>
+    <td class="tg-0lax">4.5</td>
+  </tr>
+</tbody>
+</table>
+
+.footnote[
+<html>
+<hr>
+</html>
+**Solution:** Once you complete the handout, you can check your solution by downloading [this file](https://miamioh.instructure.com/files/26097061/download?download_frd=1). 
+]
+
+---
+
+# Practical Issues with K-Means Clustering
+
+.panelset[
+.panel[.panel-name[Data]
+
+.font80[
+```{r penguins1}
+pacman::p_load(tidyverse, palmerpenguins, magrittr)
+
+penguins_tbl = penguins # our data for today
+
+penguins_tbl # printing it out
+```
+]
+
+]
+
+.panel[.panel-name[Prep]
+
+.font80[
+```{r penguins2}
+penguins_tbl %<>%  
+  # selecting relevant cols
+  select(species, bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g) %>% 
+  na.omit() %>% # removing NAs
+  mutate_at(vars(-species), scale) # scaling numeric variables
+
+penguins_tbl # printing it out
+```
+]
+
+]
+
+.panel[.panel-name[K-means (k=3)]
+
+```{r penguins3}
+km_res = kmeans(x = penguins_tbl %>% select(-species), # input data with no label
+                centers = 3) # k =3
+
+# tabulating the results with rows corresponding to true labels and the columns corresponding to cluster
+table(penguins_tbl$species, km_res$cluster)
+```
+
+]
+
+.panel[.panel-name[Optimal k]
+
+.pull-left[
+.font70[
+```{r, penguins4, fig.show='hide', eval=FALSE}
+pacman::p_load(NbClust)
+
+km_res_nbclust = NbClust(
+  data = penguins_tbl %>% select(-species),
+  distance = "euclidean",
+  min.nc = 2, max.nc = 10, 
+  method = "kmeans", index ="all") 
+
+table(penguins_tbl$species, km_res_nbclust$Best.partition)
+```
+]
+]
+
+.pull-right[
+.font60[
+```{r penguins4_plot, ref.label='penguins4', echo=FALSE, fig.show='hide'}
+
+```
+]
+]
+
+]
+
+.panel[.panel-name[Viz Clusters]
+
+.pull-left[
+.font70[
+```{r penguins6, eval=FALSE}
+pacman::p_load(factoextra)
+
+fviz_cluster(object = 
+               list(
+                 cluster = km_res_nbclust$Best.partition, 
+                 data = penguins_tbl %>% select(-species) 
+               ),
+             ellipse.type = "convex",
+             palette = "jco",
+             ggtheme = theme_minimal()
+)
+```
+]
+]
+
+.pull-right[
+.font70[
+```{r penguins6_out, ref.label='penguins6', echo=FALSE}
+
+```
+]
+]
+
+
+]
+]
+
+
+---
+
+# Summary of Practical Issues
+
+- Rescale numeric data prior to k-means implementation. The scaling can be:  
+  + a z-transformation similar to what we did in the example  
+  + a 0-1 scaling 
+  + converting count data into percentage or counts per a certain number of the population  
+  + etc.
+
+- Use more than one metric to determine $k$ when using k-means clustering  
+
+- Your cluster solution is not the end result, you will need to:  
+  + visualize it in appropriate way (simple representation as in the previous slide, [spatially](https://fmegahed.github.io/covid_analysis_final.html#33_Visualizing_the_Clustering_Results), [time-based](https://fmegahed.github.io/isa401/class23/23_data_mining_overview.html?panelset1=calendar-plot-of-clustered-data&panelset4=data3&panelset5=data4&panelset6=activity3&panelset7=activity4#10), etc.)  
+  + Attempt to explain the cluster membership using an appropriate binomial/multinomial model (e.g., see [this analysis](https://fmegahed.github.io/covid_analysis_final.html#4_Explanatory_Modeling_of_Cluster_Assignments))
+
+
+---
+
+# k-means in Tableau 
+
+Let us use Tableau to implement the k-means clustering implementation on the 60 sample observations from the penguins dataset as shown in Slide 7 of this presentation.
+
+```{r write_penguins, echo = F}
+write_csv(x = penguins_subset, file = '../../data/penguins_subset.csv')
+```
+
+
+---
+class: inverse, center, middle
+
+# Recap
+
+---
+
+# Summary of Main Points
+
+- Describe the different steps of the k-means algorithm  
+
+- Cluster using k-means (by hand)  
+
+- Cluster using k-means (software)  
+
+  + `r fontawesome::fa('r-project', miamired)`  
+  + Tableau
+
+
