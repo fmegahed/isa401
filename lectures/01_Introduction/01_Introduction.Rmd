@@ -1,8 +1,8 @@
 ---
-title: "ISA 401/501: Business Intelligence & Data Visualization"
+title: "ISA 401: Business Intelligence & Data Visualization"
 subtitle: "01: Introduction to BI and Data Viz"
-author: '<br>Fadel M. Megahed, PhD <br><br> Enders Associate Professor <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("twitter"), fill = "white")` @FadelMegahed](https://twitter.com/FadelMegahed) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
-date: "Fall 2022"
+author: '<br>Fadel M. Megahed, PhD <br><br> Endres Associate Professor <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("twitter"), fill = "white")` @FadelMegahed](https://twitter.com/FadelMegahed) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
+date: "Fall 2023"
 output:
   xaringan::moon_reader:
     self_contained: true
@@ -139,7 +139,7 @@ Source: Slide inspired by [Kia Ora's What I mean by "data"](https://stats220.ear
 
 ]
 
-.panel[.panel-name[Fadel's Approach (No Solution Shown)]
+.panel[.panel-name[Fadel in R (No Solution Shown)]
 
 ```{r activity1-solution, eval=FALSE}
 if(require(tidyverse) == FALSE) install.packages("tidyverse")
@@ -158,6 +158,25 @@ dim(crashes)
 ```
 
 ]
+
+.panel[.panel-name[Fadel in Python (No Solution Shown)]
+
+```{python activity1-solution-py, eval=FALSE}
+resp = requests.get("https://data.cincinnati-oh.gov/api/views/rvmt-pkmq/rows.csv?accessType=DOWNLOAD")
+
+with open('crashes.csv', 'w') as f:
+    f.write(resp.content.decode('utf-8'))
+
+# Read the data
+crashes = pd.read_csv("crashes.csv").clean_names()
+
+# Dimensions
+num_rows = len(crashes)
+num_cols = len(crashes.columns)
+```
+
+]
+
 ]
 
 ---
@@ -169,8 +188,8 @@ dim(crashes)
 
 ### Descriptive Statistics for 2 Categorical Variables
 ```{r extract_crashes, cache=TRUE, echo=FALSE}
-crashes = readr::read_csv("https://data.cincinnati-oh.gov/api/views/rvmt-pkmq/rows.csv?accessType=DOWNLOAD") %>% 
-  janitor::clean_names() %>% 
+crashes = readr::read_csv("https://data.cincinnati-oh.gov/api/views/rvmt-pkmq/rows.csv?accessType=DOWNLOAD") |> 
+  janitor::clean_names() |> 
   select(address_x, latitude_x, longitude_x, age, 
          cpd_neighborhood, crashseverity, 
          datecrashreported, dayofweek, gender, injuries, 
@@ -190,22 +209,22 @@ crashes %<>%
          date = as_date(datetime)
          )
 
-unique_crashes_2021 = 
-  crashes %>%
-  filter(date >= "2021-01-01" & date <= "2021-12-31") %>% 
-  group_by(instanceid) %>% 
-  select(-datecrashreported) %>% 
-  filter(typeofperson == 'D - DRIVER') %>% 
+unique_crashes = 
+  crashes  |> 
+  filter(date >= "2022-01-01" & date <= "2022-12-31") |> 
+  group_by(instanceid) |> 
+  select(-datecrashreported) |> 
+  filter(typeofperson == 'D - DRIVER') |> 
   select(instanceid, date, dayofweek, hour, weather, 
-         address_x, latitude_x, longitude_x) %>%
-  unique() %>% 
+         address_x, latitude_x, longitude_x) |>
+  unique() |> 
   mutate(dayofweek = as_factor(dayofweek),
          hour = as_factor(hour),
          weather = as_factor(weather)
-         ) %>% 
+         ) |> 
   ungroup()
 
-unique_crashes_2021 %>% select(dayofweek, weather) %>% 
+unique_crashes |> select(dayofweek, weather) |> 
   map(.f = table)
   
 ```
@@ -222,22 +241,22 @@ unique_crashes_2021 %>% select(dayofweek, weather) %>%
 ### A Simple Visualization - A Bar Chart of Crashes Per Day
 
 ```{r viz, echo=FALSE, fig.height=2.25}
-unique_crashes_2021 %>% 
-  select(dayofweek) %>% 
-  group_by(dayofweek) %>% 
+unique_crashes |> 
+  select(dayofweek) |> 
+  group_by(dayofweek) |> 
   count() -> day_of_week_tbl
 
-day_of_week_tbl %>% 
+day_of_week_tbl |> 
   mutate(
     dayofweek = ordered(dayofweek, 
       levels=c("SUN", "SAT", "FRI", "THU", "WED", "TUES", "MON")
     )
-  ) %>% 
+  ) |> 
   ggplot(aes(x= n, y = dayofweek)) +
   geom_col(fill = miamired) +
   theme_bw(base_size = 12) + 
   labs(x = 'Count/Freq', y = 'Day of the Week',
-       title = 'Crashes by Day in Cincinnati in 2021',
+       title = 'Crashes by Day in Cincinnati in 2022',
        caption = 'Created by: Fadel Megahed | Data source: City of Cincy Open Data Portal (rvmt-pkmq)') 
 ```
 
@@ -248,17 +267,17 @@ day_of_week_tbl %>%
 **Descriptive Analytics:** where one attempts to **understand** the data through **descriptive statistics** and **visualizations**.
 
 ```{r viz2a, echo=FALSE, cache=TRUE, fig.height=2.85}
-weather_levels = levels(unique_crashes_2021$weather)
+weather_levels = levels(unique_crashes$weather)
 
-daily_crashes_2021 = unique_crashes_2021 %>% 
-  mutate(weather = factor(weather, levels = sort(weather_levels))) %>% 
-  select(instanceid, date, weather) %>% 
-  group_by(date) %>% 
+daily_crashes_2022= unique_crashes |> 
+  mutate(weather = factor(weather, levels = sort(weather_levels))) |> 
+  select(instanceid, date, weather) |> 
+  group_by(date) |> 
   count()
   
 cal = calendR(title = NULL,
-              year = 2021,
-              special.days = daily_crashes_2021$n,
+              year = 2022,
+              special.days = daily_crashes_2022$n,
               orientation = "landscape",
               day.size = 2,
               months.size = 8,
@@ -290,19 +309,19 @@ cal
 
 
 ```{r viz2b, echo=FALSE, eval=FALSE}
-cty_sf = get_urbn_map(map = "counties", sf = TRUE) %>% 
+cty_sf = get_urbn_map(map = "counties", sf = TRUE) |> 
   filter(state_name %in% c('Ohio', 'Kentucky', 'Indiana') )
 
 # Getting the states map from the urbnmapr package and excluding non-continental US
-states_sf = get_urbn_map(map = "states", sf = TRUE) %>% 
+states_sf = get_urbn_map(map = "states", sf = TRUE) |> 
   filter(state_name %in% c('Ohio', 'Kentucky', 'Indiana') )
 
-crashes_sf_2021 = unique_crashes_2021 %>% 
+crashes_sf= unique_crashes |> 
   mutate(weather = factor(weather,
-                          levels = sort(weather_levels))) %>% 
-  drop_na(longitude_x, latitude_x) %>% 
-  filter(latitude_x > 38.5) %>% 
-  st_as_sf(coords = c("longitude_x", "latitude_x"), crs = 4326) %>% 
+                          levels = sort(weather_levels))) |> 
+  drop_na(longitude_x, latitude_x) |> 
+  filter(latitude_x > 38.5) |> 
+  st_as_sf(coords = c("longitude_x", "latitude_x"), crs = 4326) |> 
   st_jitter(factor = 0.001)
 
 bbox_new = st_bbox(cty_sf)
@@ -314,7 +333,7 @@ bbox_new[3] = bbox_new[3] + (0.05 * xrange) # xmax - right
 bbox_new[2] = bbox_new[2] - (0.05 * yrange) # ymin - bottom
 
 
-tm_base = tm_shape(crashes_sf_2021) + 
+tm_base = tm_shape(crashes_sf) + 
   tm_bubbles(size = 0.5, col = 'weather') +
   tm_facets(along='date', free.coords = F) +
   tm_shape(cty_sf, bbox = bbox_new) +
@@ -387,10 +406,10 @@ knitr::include_graphics('../../figures/crash_anim.gif')
 
 ```{r run_latex_file, echo=FALSE, cache=TRUE, results='hide'}
 tinytex::xelatex('../../figures/ba_flow_chart.tex')
-Sys.sleep(30)
+Sys.sleep(2)
 pdftools::pdf_convert('../../figures/ba_flow_chart.pdf', dpi = 600,
                       filenames = '../../figures/ba_flow_chart.png')
-Sys.sleep(30)
+Sys.sleep(2)
 ```
 
 
@@ -400,31 +419,31 @@ knitr::include_graphics("../../figures/ba_flow_chart.png")
 
 ---
 
-# ISA 401/501 Course: An Overview
+# ISA 401 Course: An Overview
 
 ```{r run_latex_file_2, echo=FALSE, cache=TRUE, results='hide'}
 tinytex::xelatex('../../figures/course_overview.tex')
-Sys.sleep(20)
+Sys.sleep(2)
 pdftools::pdf_convert('../../figures/course_overview.pdf', dpi = 600,
                       filenames = '../../figures/course_overview.png')
-Sys.sleep(20)
+Sys.sleep(2)
 ```
 
 
-```{r read_course__overview_chart, echo=FALSE, out.width='100%', fig.alt="How the ISA 401/501 course is organized.", fig.align='center', fig.cap='How the ISA 401/501 course is organized.'}
+```{r read_course__overview_chart, echo=FALSE, out.width='100%', fig.alt="How the ISA 401 course is organized.", fig.align='center', fig.cap='How the ISA 401 course is organized.'}
 knitr::include_graphics("../../figures/course_overview.png") 
 ```
 
 ---
 
-# ISA 401/501 Course Objectives
+# ISA 401 Course Objectives
 
 Even though software will be extensively used, this is not a software class. **Instead, the focus is on understanding the underlying methods and mindset of how data should be approached.**  
 
   - Be capable of extracting, transforming and loading (ETL) data using multiple platforms
 (e.g. `r icons::icon_style(icons::fontawesome('r-project'), fill = miamired)`, Power BI and/or Tableau).  
 
-- Write basic `r icons::icon_style(icons::fontawesome('r-project'), fill = miamired)` scripts to preprocess and clean the data.  
+- Write basic scripts to preprocess and clean the data.  
 
 - Explore the data using visualization approaches that are based on sound human factors.  
 
@@ -494,7 +513,7 @@ Sys.sleep(20)
 ```
 
 
-```{r read_course_approach, echo=FALSE, out.width='100%', fig.alt="An overview of the instructional approach for ISA 401/501.", fig.align='center', fig.cap='An overview of the instructional approach for ISA 401/501.'}
+```{r read_course_approach, echo=FALSE, out.width='100%', fig.alt="An overview of the instructional approach for ISA 401.", fig.align='center', fig.cap='An overview of the instructional approach for ISA 401.'}
 knitr::include_graphics("../../figures/instructional_approach.png") 
 ```
 
@@ -504,14 +523,14 @@ knitr::include_graphics("../../figures/instructional_approach.png")
 
 ```{r run_latex_file_4, echo=FALSE, cache=TRUE, results='hide'}
 tinytex::xelatex('../../figures/evaluation.tex')
-Sys.sleep(20)
+Sys.sleep(2)
 pdftools::pdf_convert('../../figures/evaluation.pdf', dpi = 600,
                       filenames = '../../figures/evaluation.png')
-Sys.sleep(20)
+Sys.sleep(2)
 ```
 
 
-```{r read_evaluation, echo=FALSE, out.width='100%', fig.alt="An overview of the evaluation components for ISA 401/501.", fig.align='center', fig.cap='An overview of the evaluation components for ISA 401/501.'}
+```{r read_evaluation, echo=FALSE, out.width='100%', fig.alt="An overview of the evaluation components for ISA 401.", fig.align='center', fig.cap='An overview of the evaluation components for ISA 401.'}
 knitr::include_graphics("../../figures/evaluation.png") 
 ```
 
@@ -541,11 +560,11 @@ residence = tribble(
   "Cairo",         "Egypt", 30.0444,  31.2357,  1,    "Finishing up my Undergrad <br> at AUC",
   "Blacksburg", "Virginia", 37.2296, -80.4139,   4,    "MS and PhD in <br> Industrial & Systems Engineering (ISE) <br> Graduate Research Assistant and <br> Instructor",
   "Auburn",    "Alabama", 32.6099,  -85.4808, 4,    "Assistant Professor of <br> Industrial and Systems Engineering <br> Auburn University",
-  "Oxford",      "Ohio", 39.5070,  -84.7452,   6,    "Assistant-Associate Professor of <br> Business Analytics <br> Farmer School of Business <br> Miami University"
+  "Oxford",      "Ohio", 39.5070,  -84.7452,   7,    "Assistant-Associate Professor of <br> Business Analytics <br> Farmer School of Business <br> Miami University"
 ) 
 
 
-residence_connections_prelim <- residence %>% 
+residence_connections_prelim <- residence |> 
   mutate(
     # need this to create transition state ----
     city_order = row_number() + 1,
@@ -559,25 +578,25 @@ residence_connections_prelim <- residence %>%
   ) 
 
 
-residence_connections <- residence_connections_prelim %>%
+residence_connections <- residence_connections_prelim |>
   # get first row of residence ----
-slice(1) %>% 
+slice(1) |> 
   # manually modify for plotting ----
 mutate(
   city_order = 1,
   label_next = label,
   lat_next = lat,
   long_next = long,
-) %>% 
+) |> 
   # combine with all other residences ----
-bind_rows(residence_connections_prelim) %>% 
+bind_rows(residence_connections_prelim) |> 
   # last (7th) row irrelevant ----
-slice(1:6) %>% 
+slice(1:6) |> 
   # keep what we neeed ----
 dplyr::select(city_order, lat, long, lat_next, long_next, label_next)
 
 
-world_map =  ggplot2::map_data("world") %>% 
+world_map =  ggplot2::map_data("world") |> 
   filter(region != 'Antarctica' &
            lat >0 & lat <70 &
            long <50 & long > -130)
@@ -624,7 +643,7 @@ anim <- base_map +
 geom_curve(
   # do not include 1st residence in arrows as no arrow is intended ----
   # and inclusion messes up transition ---
-  data = residence_connections %>% slice(-1),
+  data = residence_connections |> slice(-1),
   # add slight adjustment to arrow positioning ----
   aes(
     y     = lat - 0.1,
@@ -742,43 +761,43 @@ knitr::include_graphics('https://d33wubrfki0l68.cloudfront.net/1e7033393a2c70dc1
 # Analyze Data
 
 ```{r cincy_crashes, echo=FALSE, message=FALSE, fig.height=3.25}
-unique_crashes_2021 = 
-  crashes %>%
+unique_crashes = 
+  crashes |>
   mutate(datetime = parse_date_time(datecrashreported, 
                                     orders = "'%m/%d/%Y %I:%M:%S %p",
                                     tz = 'America/New_York',
                                     locale = "English"),
          hour = hour(datetime),
          date = as_date(datetime)
-  ) %>% 
-  filter(date >= "2021-01-01" & date <= "2021-12-31") %>% 
-  group_by(instanceid) %>% 
-  select(-datecrashreported) %>% 
-  filter(typeofperson == 'D - DRIVER') %>% 
+  ) |> 
+  filter(date >= "2021-01-01" & date <= "2021-12-31") |> 
+  group_by(instanceid) |> 
+  select(-datecrashreported) |> 
+  filter(typeofperson == 'D - DRIVER') |> 
   select(instanceid, date, dayofweek, hour, weather, 
-         address_x, latitude_x, longitude_x, cpd_neighborhood) %>%
-  unique() %>% 
-  mutate(month = month(date, label = TRUE)) %>% 
+         address_x, latitude_x, longitude_x, cpd_neighborhood) |>
+  unique() |> 
+  mutate(month = month(date, label = TRUE)) |> 
   ungroup()
 
-unique_crashes_2021 %<>% 
+unique_crashes |>  
   filter(cpd_neighborhood %in% c('C. B. D. / RIVERFRONT',
                                  'WEST PRICE HILL')
-         ) %>% 
-  select(month, cpd_neighborhood, instanceid) %>% 
-  group_by(month, cpd_neighborhood) %>% 
-  count()
+         ) |> 
+  select(month, cpd_neighborhood, instanceid) |> 
+  group_by(month, cpd_neighborhood) |> 
+  count() -> unique_crashes
 
-unique_crashes_2021 %>% 
-  ungroup() %>% 
+unique_crashes |> 
+  ungroup() |> 
   ggplot(aes(x = month, y = n, group = cpd_neighborhood)) +
-  geom_line(color = miamired, size = 1.25) +
+  geom_line(color = miamired, linewidth = 1.25) +
   geom_point(color = miamired, size = 2.5) +
   facet_wrap(~ cpd_neighborhood, nrow = 1, ncol = 2) +
   theme_bw(base_size = 12) +
   scale_y_continuous(breaks = pretty_breaks(n = 10), limits = c(0, 200)) +
   labs(x = 'Month', y = 'Crashes per Month', 
-       title = 'Crashes Recorded in Two Cincinnati Neighborhoods in 2021',
+       title = 'Crashes Recorded in Two Cincinnati Neighborhoods in 2022',
        caption = 'Created by: Fadel Megahed | Data source: City of Cincy Open Data Portal (rvmt-pkmq)')
 ```
 
@@ -931,25 +950,36 @@ By now, you should be able to do the following:
 
 ---
 
-# Things to Do to Prepare for Our Next Class
+# 📝 Review and Clarification 📝
 
-- Go over your notes and complete [Assignment 01](https://miamioh.instructure.com/courses/179812/quizzes/489447) on Canvas.  
+1. **Class Notes**: Take some time to revisit your class notes for key insights and concepts.
+2. **Zoom Recording**: The recording of today's class will be made available on Canvas approximately 3-4 hours after the session ends.
+3. **Questions**: Please don't hesitate to ask for clarification on any topics discussed in class. It's crucial not to let questions accumulate. 
 
-- Read through the following references in preparation of our next class. 
 
-.pull-left[
-.center[[<img src="https://d33wubrfki0l68.cloudfront.net/b88ef926a004b0fce72b2526b0b5c4413666a4cb/24a30/cover.png" height="250px">](https://r4ds.had.co.nz)]
-.small[
-* [Workflow: basics](https://r4ds.had.co.nz/workflow-basics.html)
-* [Workflow: scripts](https://r4ds.had.co.nz/workflow-scripts.html)
-* [Workflow: project](https://r4ds.had.co.nz/workflow-projects.html)
+---
+
+# 📖 Required Readings 📖
+
+.font90[
+#### 📈 R Prep
+- [Workflow: Basics](https://r4ds.had.co.nz/workflow-basics.html)
+- [Names and Values](https://adv-r.hadley.nz/names-values.html)
+- [Vectors](https://adv-r.hadley.nz/vectors-chap.html)
+- [Subsetting](https://adv-r.hadley.nz/subsetting.html)
+
+#### 🐍 Python Prep
+
+- [Getting Started with Conda](https://conda.io/projects/conda/en/latest/user-guide/getting-started.html)
+- [Data Structures](https://docs.python.org/3/tutorial/datastructures.html)
+
+#### 🤖 LLM: Prep
+
+- [A Very Gentle Introduction to Large Language Models without the Hype](https://mark-riedl.medium.com/a-very-gentle-introduction-to-large-language-models-without-the-hype-5f67941fa59e)
 ]
-]
-.pull-right[
-.center[[<img src="https://d33wubrfki0l68.cloudfront.net/565916198b0be51bf88b36f94b80c7ea67cafe7c/7f70b/cover.png" height="250px">](https://adv-r.hadley.nz)]
-.small[
-* [Names and values](https://adv-r.hadley.nz/names-values.html)
-* [Vectors](https://adv-r.hadley.nz/vectors-chap.html)
-* [Subsetting](https://adv-r.hadley.nz/subsetting.html)
-]
-]
+
+---
+
+# 🎯 Assignment 🎯
+
+- Complete [Assignment 01](https://miamioh.instructure.com/courses/202961/quizzes/573222) on Canvas to reinforce your understanding and application of the topics covered today as well as the assigned readings.
