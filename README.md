@@ -11,6 +11,7 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 | Week          | Date        | Topic                                  | Slides (Hosted Page) | Slides (PDF) | Slides (PPTX)
 | :---:        |    :----:   |          :---                           | :---                 | :---         | :--  |
 | 01           |    08/29     | Introduction to Data Viz and BI        | [01_Introduction.html](https://fmegahed.github.io/isa401/fall2023/class01/01_Introduction.html) | [01_Introduction.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/01_introduction.pdf) | [01_Introduction.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/01_introduction.pptx) |
+|            |    08/31     | Introduction to R, Python, and LLMs      | [01_Introduction.html](https://fmegahed.github.io/isa401/fall2023/class02/02_llms_r_python.html) | [02_llms_r_python.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/02_llms_r_python.pdf) | [02_llms_r_python.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/02_llms_r_python.pptx) |
 
 
 ## Acknowledgments

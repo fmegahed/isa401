@@ -113,6 +113,14 @@ a:active {
   width: 36%;
 }
 
+.pull-left-3 {
+  float: left;
+  width: 25%;
+}
+.pull-right-3 {
+  float: right;
+  width: 66%;
+}
 
 img, video, iframe {
   max-width: 100%;
