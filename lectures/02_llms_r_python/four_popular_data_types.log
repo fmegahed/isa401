@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999994 (MiKTeX 22.10) (preloaded format=xelatex 2022.10.25)  30 AUG 2023 23:49
+This is XeTeX, Version 3.141592653-2.6-0.999994 (MiKTeX 22.10) (preloaded format=xelatex 2022.10.25)  31 AUG 2023 00:20
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1506,7 +1506,7 @@ Package rerunfilecheck Info: File `four_popular_data_types.out' has not changed
 Here is how much of TeX's memory you used:
  49658 strings out of 410532
  1181061 string characters out of 2812689
- 1644945 words of memory out of 3000000
+ 1644943 words of memory out of 3000000
  70180 multiletter control sequences out of 15000+600000
  472297 words of font info for 42 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191

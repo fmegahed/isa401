@@ -1278,14 +1278,16 @@ class: inverse, center, middle
 # Background: Artificial Intelligence
 
 .pull-left[
-center[.bold[A [working definition](https://www.brookings.edu/articles/what-is-artificial-intelligence/) for AI]]
+[A working definition](https://www.brookings.edu/articles/what-is-artificial-intelligence/) for AI
 
 .content-box-gray[
 .bold[.red[Artificial Intelligence (AI):]] .bold[A system that acts in a way, where people might denote as "intelligent" if another human were to do something similar.]
 ]
+]
+
 
 .pull-right[
-```{r ai_applications, echo=FALSE, out.width='95%'}
+```{r ai_applications, echo=FALSE, out.width='100%'}
 knitr::include_graphics('../../figures/ai_applications.png')
 ```
 ]
@@ -1305,7 +1307,7 @@ knitr::include_graphics('../../figures/ai_applications.png')
 
 <br>
 
-```{r generative_ai_chart_out, out.width='100%', dpi = 600, fig.alt='From big data to big models, a flow chart documenting how we got to large language models'}
+```{r generative_ai_chart_out, out.width='100%', dpi = 600, fig.alt='From big data to big models, a flow chart documenting how we got to large language models', echo=FALSE}
 knitr::include_graphics('../../figures/generative_ai_chart.png')
 ```
 
@@ -1455,7 +1457,6 @@ By now, you should be able to do the following:
 - Understand the potential impact of LLMs on businesses and explore how they can be leveraged in the context of this class.   
 
 
----
 ---
 
 # 📝 Review and Clarification 📝
