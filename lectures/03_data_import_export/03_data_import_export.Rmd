@@ -1,8 +1,8 @@
 ---
 title: "ISA 401: Business Intelligence & Data Visualization"
-subtitle: "03: Importing and Exporting Data in R"
-author: '<br>Fadel M. Megahed, PhD <br><br> Enders Associate Professor <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("twitter"), fill = "white")` @FadelMegahed](https://twitter.com/FadelMegahed) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
-date: "Fall 2022"
+subtitle: "03: Importing and Exporting Data"
+author: '<br>Fadel M. Megahed, PhD <br><br> Endres Associate Professor <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("twitter"), fill = "white")` @FadelMegahed](https://twitter.com/FadelMegahed) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
+date: "Fall 2023"
 output:
   xaringan::moon_reader:
     self_contained: true
@@ -70,55 +70,24 @@ xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "tachyons", "pan
 
 # Quick Refresher from Last Class
 
-`r emo::ji("check")` Describe why we are using `r fa(name = "r-project")` in this course?  
+`r emo::ji("check")`  Describe how and why we use scripted languages in this course.  
 
-`r emo::ji("check")` Understand the syntax, data structures and functions  
+`r emo::ji("check")`  Utilize the project workflow in RStudio (we will try to use that as an IDE for `r fa(name = "r-project", fill = miamired)` and `r fa(name = "python", fill = miamired)`).  
 
-`r emo::ji("check")` Utilize the project workflow in `r fa(name = "r-project")` and create your second `r fa(name = "r-project")` script. 
+`r emo::ji("check")` Understand the syntax, data structures and functions in both `r fa(name = "r-project", fill = miamired)` and `r fa(name = "python", fill = miamired)`. 
 
----
-
-# Kahoot Competition
-
-To assess your understanding and retention of the topics covered last week, you will **compete in a Kahoot competition (consisting of 8 questions)**:  
-
-- Go to <https://kahoot.it/>  
-
-- Enter the game pin, which will be shown during class
-
-- Provide your first (preferred) and last name
-
-- Answer each question within the allocated 20-second window (**fast and correct answers provide more points**)
-
-<br>
-
-**Winning the competition involves having as many correct answers as possible AND taking the shortest duration to answer these questions.** The winner `r fontawesome::fa(name = 'trophy', fill = 'gold')` of the competition from each section will receive:  $10 Starbucks gift card. Good luck!!!
-
-.footnote[
-<html>
-<hr>
-</html>
-
-**P.S:** The Kahoot competition will have **no impact on your grade**. It is a **fun** way of assessing your knowledge, motivating you to ask questions about topics covered that you do not have a full understanding of it, and providing me with some data that I can use to pace today's class. 
-]
-
----
-
-# Going Over Assignment 02 Solutions
-
-Let us go over the solutions for assignment 02 together.
-
+`r emo::ji("check")`  Understand the potential impact of LLMs on businesses and explore how they can be leveraged in the context of this class.   
 
 
 ---
 
 # Learning Objectives for Today's Class
 
-- Subset data in `r fontawesome::fa(name = 'r-project', fill = miamired)`.  
+- Subset data in `r fontawesome::fa(name = 'r-project', fill = miamired)` and `r fontawesome::fa(name = 'python', fill = miamired)`.  
 
 - Read text-files, binary files (e.g., Excel, SAS, SPSS, Stata, etc), json files, etc.  
 
-- Export data from `r fontawesome::fa(name = 'r-project', fill = miamired)`.
+- Export data from `r fontawesome::fa(name = 'r-project', fill = miamired)` and `r fontawesome::fa(name = 'python', fill = miamired)`.
 
 
 ---
@@ -407,6 +376,72 @@ fsb_tbl[1:3, 2:3]
 
 ---
 
+# Translating `r fontawesome::fa("r-project", fill = miamired)` Data Structures to `r fontawesome::fa("python", fill = miamired)`
+
+.font90[
+<html>
+<center>
+<table border="1" style="font-size: 0.8em;">
+  <tr>
+    <th>R Data Structure</th>
+    <th>Description</th>
+    <th>R Subsetting<br>(Multiple Methods)</th>
+    <th>Python Equivalent</th>
+    <th>Python Subsetting<br>(Multiple Methods)</th>
+  </tr>
+  <tr>
+    <td>Vector</td>
+    <td>1D array, single type</td>
+    <td>vector[index]<br>vector[c(1,2)]<br>vector[-1]</td>
+    <td>List (with single type)<br>or NumPy array</td>
+    <td>list[-1]<br>list[1:3]<br>array[1:3]</td>
+  </tr>
+  <tr>
+    <td>Matrix</td>
+    <td>2D array, single type</td>
+    <td>matrix[row, col]<br>matrix[1,]<br>matrix[,1]</td>
+    <td>2D List (with single type)<br>or 2D NumPy array</td>
+    <td>list[row][col]<br>array[row, col]<br>array[row,:]<br>array[:,col]</td>
+  </tr>
+  <tr>
+    <td>Data Frame</td>
+    <td>2D table,<br>multiple types</td>
+    <td>df[row, col]<br>df[1,]<br>df[, "col"]<br>df$col</td>
+    <td>Pandas DataFrame</td>
+    <td>df.loc[row, col]<br>df.iloc[row, col]</td>
+  </tr>
+  <tr>
+    <td>List</td>
+    <td>Ordered collection,<br>multiple types</td>
+    <td>list[[index]]<br>list$element_name<br>list[[1]][1]</td>
+    <td>List</td>
+    <td>list[index]<br>list[index][subindex]</td>
+  </tr>
+  <tr>
+    <td>Dictionary</td>
+    <td>Key-value pairs</td>
+    <td>list$element_name</td>
+    <td>Dictionary</td>
+    <td>dict[key]<br>dict.get(key)</td>
+  </tr>
+</table>
+
+</center>
+</html>
+]
+
+.footnote[
+<html>
+<hr>
+</html>
+
+**Note:** Indexing starts at **0** in `r fontawesome::fa("python", fill = miamired)` and at **1** in `r fontawesome::fa("r-project", fill = miamired)`.
+]
+
+
+
+---
+
 class: inverse middle
 
 # Data import `r emo::ji('arrow_down')`
@@ -421,8 +456,8 @@ class: inverse middle
 ## .small[(a.k.a. flat or spreadsheet-like files)]
 * delimited text files with `read_delim()`
   + `.csv`: comma separated values with `read_csv()`
-  + `.tsv`: tab separated values `read_tsv()`
-* `.fwf`: fixed width files with `read_fwf()`
+  + `.tsv`: tab separated values `read_tsv()`   
+    - In `r fontawesome::fa("python", fill = miamired)`, you can either use `pandas.read_table(filepath)` or `pd.read_csv(fpath, sep='\t')`.
 
 <hr>
 ]
@@ -471,44 +506,79 @@ read_csv(
 ---
 
 
-# Demo: Reading CSV Data `r fa('file')`
+# Demo: Reading CSV Data `r fa('file')` in `r fa('r-project')` and `r fa('python')`
 
 In this hands-on demo, you will learn how to:
 
-- Import CSV files into your `r fa('r-project')` environment based on:
+- Import CSV files into your environment based on:
 
   * files that are located on your `r fa('desktop')`, see **Canvas** for downloading an example CSV 
   
   * files that are hosted on the web.  
       + **Data in Webpages `r fa('sitemap')`:** we will cover the following examples in class:   
+          - **WH Visitors Log**: <https://www.whitehouse.gov/disclosures/visitor-logs/>    
           - **FRED Data:** e.g., [Unempolyment Rate (UNRATE)](https://fred.stlouisfed.org/series/UNRATE)  
-          - **Apple Mobility Reports:** which can be obtained from clicking on [All Data CSV](https://covid19.apple.com/mobility)
       + **GitHub** `r fa('github')` Repositories, e.g.,
           - [NYT COVID-19 Repo](https://github.com/nytimes/covid-19-data/blob/master/us-states.csv) - by state COVID-19 data 
           - [Women's Rights Around the World](https://github.com/glosophy/women-data) - focusing on  `WomenTotal.csv` 
 
 
----
 
-# Advanced: Reading CSVs with the vroom `r fa('box', fill = 'gold')`
+```{r demo_r, include=FALSE, eval=FALSE}
+library(tidyverse)
+library(readxl)
 
-.left-column[
-.center[<img src="https://github.com/r-lib/vroom/raw/main/man/figures/logo.png" width="75%">]
+# reading csv (locally)
+# --------------------
+# Talk about the project, placing the file in a specific location and reading the data
 
-.center[![](https://raw.githubusercontent.com/r-lib/vroom/main/img/taylor.gif)]
-]
-.right-column[
-### Faster delimited reader at **1.4GB/sec**
+burrow_df_r = readr::read_csv(file = 'data/burrow_career_stats.csv', skip = 1)
+dplyr::glimpse( burrow_df_r )
 
-- [vroom](https://www.tidyverse.org/blog/2019/05/vroom-1-0-0/) is a relatively new `tidyverse` package that can **read** and **write** delimited files very efficiently. 
 
-- It is recommended for large CSV files, see [tidyverse blog](https://www.tidyverse.org/blog/2019/05/vroom-1-0-0/) for a detailed introduction on the package. 
+# reading csvs that are located on the web
+# ----------------------------------------
+wh_df = readr::read_csv('https://www.whitehouse.gov/wp-content/uploads/2022/04/2021_WAVES-ACCESS-RECORDS.csv')
 
-```{r vroom, eval = FALSE}
-if(require(vroom)==FALSE) install.packages('vroom')
-fast_df <- vroom::vroom("your_file.csv")
+fred_df = readr::read_csv('https://fred.stlouisfed.org/graph/fredgraph.csv?bgcolor=%23e1e9f0&chart_type=line&drp=0&fo=open%20sans&graph_bgcolor=%23ffffff&height=450&mode=fred&recession_bars=on&txtcolor=%23444444&ts=12&tts=12&width=1318&nt=0&thu=0&trc=0&show_legend=yes&show_axis_titles=yes&show_tooltip=yes&id=UNRATE&scale=left&cosd=1948-01-01&coed=2023-08-01&line_color=%234572a7&link_values=false&line_style=solid&mark_type=none&mw=3&lw=2&ost=-99999&oet=99999&mma=0&fml=a&fq=Monthly&fam=avg&fgst=lin&fgsnd=2020-02-01&line_index=1&transformation=lin&vintage_date=2023-09-04&revision_date=2023-09-04&nd=1948-01-01')
+
+covid_df_r = readr::read_csv('https://github.com/nytimes/covid-19-data/raw/master/us-states.csv')
+
+
+ai_df = readxl::read_excel('data/AIAAIC Repository.xlsx', sheet= 'Repository', skip=1)
+df = janitor::remove_empty(df, which = 'cols')
+df = df[2:1087,  1:35] 
 ```
-]
+
+
+```{python demo_py, include=FALSE, eval=FALSE}
+import pandas as pd
+from os import getcwd
+
+getcwd()
+
+# reading csv (locally)
+# --------------------
+# Talk about the project, placing the file in a specific location and reading the data
+
+burrow_df_py = pd.read_csv('./data/burrow_career_stats.csv', header =1)
+burrow_df_py.describe()
+
+
+# reading csvs that are located on the web
+# ----------------------------------------
+wh_df_py = pd.read_csv('https://www.whitehouse.gov/wp-content/uploads/2022/04/2021_WAVES-ACCESS-RECORDS.csv')
+
+fred_df_py = pd.read_csv('https://fred.stlouisfed.org/graph/fredgraph.csv?bgcolor=%23e1e9f0&chart_type=line&drp=0&fo=open%20sans&graph_bgcolor=%23ffffff&height=450&mode=fred&recession_bars=on&txtcolor=%23444444&ts=12&tts=12&width=1318&nt=0&thu=0&trc=0&show_legend=yes&show_axis_titles=yes&show_tooltip=yes&id=UNRATE&scale=left&cosd=1948-01-01&coed=2023-08-01&line_color=%234572a7&link_values=false&line_style=solid&mark_type=none&mw=3&lw=2&ost=-99999&oet=99999&mma=0&fml=a&fq=Monthly&fam=avg&fgst=lin&fgsnd=2020-02-01&line_index=1&transformation=lin&vintage_date=2023-09-04&revision_date=2023-09-04&nd=1948-01-01')
+
+covid_df_py = pd.read_csv('https://github.com/nytimes/covid-19-data/raw/master/us-states.csv')
+
+
+ai_df_py = pd.read_excel('data/AIAAIC Repository.xlsx', sheet_name= 1, header =1, skiprows=[2])
+ai_df_py = ai_df_py.dropna(axis = 1, how = 'all')
+ai_df_py.head()
+
+```
 
 
 ---
@@ -525,22 +595,20 @@ fast_df <- vroom::vroom("your_file.csv")
 
 ### Non-Graded Class Activity
 
-`r countdown(minutes = 3, seconds = 0, top = 0, font_size = "2em")`
+`r countdown(minutes = 5, seconds = 0, top = 0, font_size = "2em")`
 
 .panelset[
 
 .panel[.panel-name[Activity]
 
 .small[
-- Go to [this WHO page on Maternal Mortality Data](https://portal.who.int/triplebillions/PowerBIDashboards/Indicators?indicatorBookMark=Bookmarka9dfeb5fbad037831254)  
-
-- Download the data for all years and countries  
+- Download [AIAAIC Repository.xlsx](https://miamioh.instructure.com/courses/202961/files/29007028?module_item_id=4707257)  
 
 - Store the data in an appropriate location on your computer (e.g., within the data folder for ISA 401)
 
-- Use an appropriate function from the `readxl` package to read the data (either `read_xlsx()` or `read_xls()`).
+- Use the `read_excel()` from the `readxl` package in `r fa('r-project')` and from `pandas` in `r fa('python')` to read the data.
 
-- Report the number of observations, variables and the class of each variable from the data.
+- Report the number of observations, variables and the class of each variable from the data.  
 ]
 ]
 
@@ -549,7 +617,7 @@ fast_df <- vroom::vroom("your_file.csv")
 
 .small[
 
-> _Over the next 3 minutes, use an R script file to answer the questions from the activity and record your answers below_
+> _Over the next 5 minutes, use an R/Python script file to answer the questions from the activity and record your answers below_
 
 .can-edit.key-activity1[
 Number of observations and variables: ...... and ......  
@@ -585,16 +653,16 @@ The class of each variable ......
 .right-column[
 # Reading Proprietary Binary Files
 
-Several functions from the [haven](https://haven.tidyverse.org/) `r fa("box", fill = "gold")` can be used to read and write formats used by other statistical packages. Example functions include:
+Several functions from the `r fa('r-project', fill = miamired)` [haven](https://haven.tidyverse.org/) `r fa("box", fill = "gold")` can be used to read and write formats used by other statistical packages. Example functions include:
 
 - SAS
-  + `.sas7bdat` with `read_sas()`
+  + `.sas7bdat` with `read_sas()` | In `r fa('python', fill = miamired)`, [`pd.read_sas()`](https://pandas.pydata.org/docs/reference/api/pandas.read_sas.html)
   
 - Stata
-  + `.dta` with `read_dta()`
+  + `.dta` with `read_dta()` | In `r fa('python', fill = miamired)`, [`pd.read_stata()`](https://pandas.pydata.org/docs/reference/api/pandas.read_stata.html)
   
 - SPSS
-  + `.sav` with `read_sav()`
+  + `.sav` with `read_sav()`  In `r fa('python', fill = miamired)`, [`pd.read_spsss()`](https://pandas.pydata.org/docs/reference/api/pandas.read_spss.html)
   
 
 **Please refer to the help files for each of those packages for more details.**
@@ -651,9 +719,9 @@ list(
 
 # Demo
 
-We will use the [jsonlite](https://cran.r-project.org/web/packages/jsonlite/index.html) `r fa('box', fill = 'gold')` to read an example from one of the [awesome-json-datasets](https://github.com/jdorfman/awesome-json-datasets).
+We will use the `r fa('r-project', fill = miamired)` [jsonlite](https://cran.r-project.org/web/packages/jsonlite/index.html) `r fa('box', fill = 'gold')` to read an example from one of the [awesome-json-datasets](https://github.com/jdorfman/awesome-json-datasets). In `r fa('python', fill = miamired)`, we will use [`pandas.read_json()`](https://pandas.pydata.org/docs/reference/api/pandas.read_json.html)
 
-Please note the following from the demo:  
+Please note the following from the `r fa('r-project', fill = miamired)` demo:  
 
 - **Setting up the package**, which should be a one-time event if you are using the same computer.  
 
@@ -661,7 +729,10 @@ Please note the following from the demo:
 
 - What is the **type of object returned** by the function?
 
-- How are we **converting the object to a tibble?**
+- How are we **converting the object to a tibble?**  
+
+Please note the following from the `r fa('python', fill = miamired)` demo:    
+- How the `pd.read_()` has a consistent approach to data importing?
 
 
 
@@ -674,10 +745,10 @@ class: inverse, center, middle
 
 # From Read to Write
 
-`read_*()` to `write_*()`
+`r fa('r-project', fill = miamired)` `read_*()` to `write_*()`
 
+**Do these `r fa('r-project', fill = miamired)` functions come from the same package?**
 
-Here are some ideas: **do they come from the same package?**
 
 ```{r write-stuff, eval = FALSE}
 write_csv(example_tbl, file = "example.csv")
@@ -685,6 +756,18 @@ write_sas(example_tbl, path = "example.sas7bdat")
 write_json(example_tbl, path = "example.json")
 ```
 
+`r fa('python', fill = miamired)` `read_*()` to `DataFrame.to_*()`
+
+**Do these `r fa('python', fill = miamired)` functions come from the same package?**
+
+
+```{python to-stuff, eval = FALSE}
+import pandas as pd
+
+covid_df_py = pd.read_csv('https://github.com/nytimes/covid-19-data/raw/master/us-states.csv')
+
+covid_df_py.to_excel('./data/covid_example.xlsx')
+```
 
 
 ---
@@ -698,39 +781,26 @@ class: inverse, center, middle
 
 By now, you should be able to do the following:  
 
-- Subset data in `r fontawesome::fa(name = 'r-project', fill = miamired)`.  
+- Subset data in `r fontawesome::fa(name = 'r-project', fill = miamired)` and `r fontawesome::fa(name = 'python', fill = miamired)`.  
 
 - Read text-files, binary files (e.g., Excel, SAS, SPSS, Stata, etc), json files, etc.  
 
-- Export data from `r fontawesome::fa(name = 'r-project', fill = miamired)`.
+- Export data from `r fontawesome::fa(name = 'r-project', fill = miamired)` and `r fontawesome::fa(name = 'python', fill = miamired)`.
 
 
----
-
-# Supplementary Reading
-
-.pull-left[
-.center[[<img src="https://d33wubrfki0l68.cloudfront.net/b88ef926a004b0fce72b2526b0b5c4413666a4cb/24a30/cover.png" height="320px">](https://r4ds.had.co.nz)]
-* [Tibbles](https://r4ds.had.co.nz/tibbles.html)
-* [Data import](https://r4ds.had.co.nz/data-import.html)
-]
-.pull-right[
-.center[[<img src="https://d33wubrfki0l68.cloudfront.net/565916198b0be51bf88b36f94b80c7ea67cafe7c/7f70b/cover.png" height="320px">](https://adv-r.hadley.nz)]
-* [Subsetting](https://adv-r.hadley.nz/subsetting.html#subset-single)
-]
 
 ---
 
 # Things to Do to Prepare for Our Next Class
 
-- Go over your notes and complete [Assignment 03](https://miamioh.instructure.com/courses/179812/quizzes/489445) on Canvas.  
+- Go over your notes and complete [Assignment 03](https://miamioh.instructure.com/courses/202961/quizzes/582510) on Canvas.  
 
 - **Before attempting the assignment, you are encouraged to:**  
-  * Go over this slide deck as well as the [slide deck from last class](https://fmegahed.github.io/isa401/fall2022/class02/02_introduction_to_r.html)  
-  * Read the supplementary reading for today's class (see previous slide)
+  * Go over this slide deck as well as the [slide deck from last class](https://fmegahed.github.io/isa401/fall2023/class02/02_llms_r_python.html)  
+  * Read the supplementary reading highlighted in [Class 01 Slide 39](https://fmegahed.github.io/isa401/fall2023/class01/01_Introduction.html?panelset3=activity4&panelset4=activity5&panelset5=activity6#39)
   
 - **While attempting the assignment, you are encouraged to:**  
-  * Google (`r fontawesome::fa(name = 'google', fill = miamired)`) any `r fontawesome::fa(name = 'r-project', fill = miamired)` that you need.  
-  * Examine any `r fontawesome::fa(name = 'r-project', fill = miamired)` functions by utilizing on its help document using the `?function_name`
+  * Google (`r fontawesome::fa(name = 'google', fill = miamired)`) any `r fontawesome::fa(name = 'r-project', fill = miamired)` or `r fontawesome::fa(name = 'python', fill = miamired)` that you need.  
+  * Consult the [readr cheatsheet](https://raw.githubusercontent.com/rstudio/cheatsheets/main/data-import.pdf) and the [pandas cheatsheet](https://pandas.pydata.org/Pandas_Cheat_Sheet.pdf) to quickly reference common use cases.  
   
 
