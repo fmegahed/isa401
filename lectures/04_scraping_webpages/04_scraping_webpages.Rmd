@@ -1,8 +1,8 @@
 ---
 title: "ISA 401: Business Intelligence & Data Visualization"
-subtitle: '04: Scraping Webpages in `r icons::icon_style(icons::fontawesome("r-project"), fill = "white")`'
-author: '<br>Fadel M. Megahed, PhD <br><br> Enders Associate Professor <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("twitter"), fill = "white")` @FadelMegahed](https://twitter.com/FadelMegahed) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
-date: "Fall 2022"
+subtitle: '04: Scraping Webpages in `r icons::icon_style(icons::fontawesome("r-project"), fill = "white")` and `r icons::icon_style(icons::fontawesome("python"), fill = "white")`'
+author: '<br>Fadel M. Megahed, PhD <br><br> Endres Associate Professor <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("twitter"), fill = "white")` @FadelMegahed](https://twitter.com/FadelMegahed) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
+date: "Fall 2023"
 output:
   xaringan::moon_reader:
     self_contained: true
@@ -47,11 +47,6 @@ pacman::p_load(tidyverse, magrittr, lubridate, janitor, # data analysis pkgs
                scales, # for the comma function
                gifski, av, # for animations
                fontawesome, RefManageR, xaringanExtra, countdown) # for slides
-
-BibOptions(check.entries = FALSE, bib.style = "authoryear", 
-           style = "markdown", dashed = TRUE)
-
-bib = ReadBib("refs.bib") 
 ```
 
 ```{r xaringan-themer, include=FALSE, warning=FALSE}
@@ -69,93 +64,11 @@ xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "tachyons", "pan
 
 # Quick Refresher from Last Class
 
-`r emo::ji("check")` Subset data in `r fontawesome::fa(name = 'r-project', fill = miamired)`.   
+`r emo::ji("check")` Subset data in `r fontawesome::fa(name = 'r-project', fill = miamired)` and `r fontawesome::fa(name = 'python', fill = miamired)`.   
 
 `r emo::ji("check")` Read text-files, binary files (e.g., Excel, SAS, SPSS, Stata, etc), json files, etc. 
 
-`r emo::ji("check")` Export data from `r fontawesome::fa(name = 'r-project', fill = miamired)`. 
-
----
-
-# Going Over Assignment 03 Solutions
-
-.panelset[
-
-.panel[.panel-name[Q1]
-
-.small[Based on the readr package, the following function is appropriate for the purpose of reading the file [patterson_cafe_yelp_reviews.rds](https://github.com/fmegahed/isa401/blob/main/data/patterson_cafe_yelp_reviews.rds?raw=true)  
-
-`r emo::ji("x")` `read_csv()`
-
-`r emo::ji("x")` `read_fwf()`
-
-`r emo::ji("check")` `read_rds()`  
-
-`r emo::ji("x")` `readRDS()`
-
-]
-]
-
-
-.panel[.panel-name[Q2]
-
-.small[
-Read the file `patterson_cafe_yelp_reviews.rds` in RStudio. Based on the file, the data contains .... columns/variables.] 
-
-```{r patterson_cafe_2}
-if(require(tidyverse)==FALSE) install.packages("tidyverse")
-cafe_yelp_reviews = readr::read_rds(file = "../../data/patterson_cafe_yelp_reviews.rds")
-ncol(cafe_yelp_reviews)
-```
-
-]
-
-.panel[.panel-name[Q3]
-
-.small[
-When you read the `patterson_cafe_yelp_reviews.rds` in R/RStudio, the column titled `review_date` is being recognized by `r fa('r-project')` as] 
-
-.left-column[
-`r emo::ji("check")` `character`
-
-`r emo::ji("x")` `date`
-
-`r emo::ji("x")` `datetime`  
-
-`r emo::ji("x")` `double`
-]
-
-.right-column[
-```{r patterson_cafe_3}
-if(require(tidyverse)==FALSE) install.packages("tidyverse")
-cafe_yelp_reviews = readr::read_rds(file = "../../data/patterson_cafe_yelp_reviews.rds")
-class(cafe_yelp_reviews$review_date)
-
-cafe_yelp_reviews_base = readRDS(file = "../../data/patterson_cafe_yelp_reviews.rds")
-class(cafe_yelp_reviews_base$review_date)
-```
-]
-]
-
-.panel[.panel-name[Q4]
-.small[
-What is the number of reviews with a reviewer score >= 4?]
-
-```{r patterson_cafe_4}
-pos_review_count_approach1 = cafe_yelp_reviews$score >= 4
-sum(pos_review_count_approach1)
-
-pos_review_count_approach2 = cafe_yelp_reviews %>% filter(score >= 4)
-nrow(pos_review_count_approach2)
-
-pos_review_count_approach3 = which(cafe_yelp_reviews$score >= 4)
-length(pos_review_count_approach3)
-```
-
-]
-
-]
-
+`r emo::ji("check")` Export data from `r fontawesome::fa(name = 'r-project', fill = miamired)` and `r fontawesome::fa(name = 'python', fill = miamired)`. 
 
 ---
 
@@ -163,7 +76,7 @@ length(pos_review_count_approach3)
 
 - Understand when can we scrape data (i.e., `robots.txt`)  
 
-- Scrape a webpage using `r fontawesome::fa("r-project", fill = miamired)` 
+- Scrape a webpage using `r fontawesome::fa("r-project", fill = miamired)` and `r fontawesome::fa("python", fill = miamired)`
 
 ---
 
@@ -1551,7 +1464,7 @@ knitr::include_graphics("../../figures/browser_isa_courses_titles.PNG")
 
 .pull-right[
 ```{r select_elements}
-isa_course_titles = isa_courses %>% 
+isa_course_titles = isa_courses |> 
   html_elements(css = "p.courseblocktitle")
 
 isa_course_titles
@@ -1573,7 +1486,7 @@ knitr::include_graphics("../../figures/browser_isa_courses_titles.PNG")
 
 .pull-right[
 ```{r select_text}
-isa_course_titles_en =  isa_course_titles %>% 
+isa_course_titles_en =  isa_course_titles |> 
   html_text2()
 
 isa_course_titles_en
@@ -1583,13 +1496,61 @@ isa_course_titles_en
 
 ---
 
-# Demo 1:  Scraping the Course Descriptions
+# Demo:  Scraping the Course Descriptions
 
 - We will build on the previous example and we will scrape the **course descriptions** associated with these courses. 
 
-- Then, we will create a **tibble** containing **both** the **course titles** and **descriptions** 
+- Then, we will create a **data frame** containing **both** the **course titles** and **descriptions** 
+
+
+```{python demo_py, include = FALSE}
+from requests import get
+from bs4 import BeautifulSoup
+import pandas as pd
+
+# Step 0: URL
+file_path = 'https://bulletin.miamioh.edu/courses-instruction/isa/'
+
+# Step 1: Read the file
+html_content = get(file_path)
+soup = BeautifulSoup(html_content.content, 'html.parser')
+
+# Step 2: Use the CSS selector "p.courseblocktitle > strong" to extract course names
+course_names = soup.select("p.courseblocktitle > strong")
+
+# Step 3: Remove the HTML Tags (Extractthe text content of each course name)
+# talk first about course_names[0] and course_names[0].text
+extracted_course_names = [course_name.text for course_name in course_names]
+
+# Step 4: Cleaning Replace all occurrences of '\xa0' with a regular space ' '
+cleaned_course_names = [course_name.replace('\xa0', ' ') for course_name in extracted_course_names]
+
+
+# For course descriptions
+# -----------------------
+
+# Step 2:
+course_desc = soup.select("p.courseblockdesc")
+
+
+# Step 3:
+course_descriptions = [course_d.text for course_d in course_desc]
+
+# Step 4:
+cleaned_course_descriptions = [course_d.replace('\xa0', ' ').replace('\n', ' ') for course_d in course_descriptions]
+
+
+df = pd.DataFrame(
+  list( zip(cleaned_course_names, cleaned_course_descriptions) ),
+  columns = ['title', 'description']
+)
+
+```
 
 - Then, we will **export the results to a CSV** so that we can analyze that in a separate program if we wanted to.
+
+
+
 
 
 ---
@@ -1619,7 +1580,7 @@ isa_course_titles_en
 
 .small[
 
-> _Over the next 4 minutes, use an `r fa('r-project')` script file to perform the tasks outline in the activity panel._
+> _Over the next 4 minutes, use an `r fa('r-project')` or a `r fa('python')` script file to perform the tasks outlined in the activity panel._
 
 ]
 ]
@@ -1634,15 +1595,6 @@ isa_course_titles_en
 ]
 
 
----
-
-# Demo 2:  Scraping all Plane Crashes 2013-2022
-
-- We will build on the previous example and we will scrape all the plane crashes that were recorded in the [plane crash database](http://www.planecrashinfo.com/) between 2013-2022. 
-
-- Then, we will create a single **tibble** for all crashes. It will contain the fields in the individual tables as well as the year of crash.
-
-- Then, we will **export the results to a CSV** so that we can analyze that in a separate program if we wanted to.
 
 ---
 class: inverse, center, middle
@@ -1731,14 +1683,14 @@ By now, you should be able to do the following:
 
 - Understand when can we scrape data (i.e., `robots.txt`) 
 
-- Scrape a webpage using `r fontawesome::fa("r-project", fill = miamired)`
+- Scrape a webpage using `r fontawesome::fa("r-project", fill = miamired)` and `r fontawesome::fa("python", fill = miamired)`
 
 
 ---
 
 # Things to Do to Prepare for Next Class
 
-- Go over your notes, read through the supplementary material (below) and complete [Assignment 04](https://miamioh.instructure.com/courses/179812/assignments/2214280) on Canvas. 
+- Go over your notes, read through the supplementary material (below) and complete [Assignment 04](https://miamioh.instructure.com/courses/202961/assignments/2556568) on Canvas. 
 
 .pull-left[
 .center[
@@ -1750,7 +1702,7 @@ knitr::include_graphics("../../figures/web_scrape_in_data_science.PNG", dpi = NA
 * [ePub of Published Paper](https://www.tandfonline.com/doi/epub/10.1080/10691898.2020.1787116?needAccess=true)
 ]
 .pull-right[
-.center[<img src="https://github.com/rstudio/hex-stickers/raw/master/PNG/rvest.png" height="300px">]
+.center[<img src="https://raw.githubusercontent.com/rstudio/hex-stickers/main/PNG/rvest.png" height="300px">]
 * [Selector Gadget](https://rvest.tidyverse.org/articles/articles/selectorgadget.html)  
 * [Getting Started with rvest](https://rvest.tidyverse.org/articles/articles/selectorgadget.html)  
 

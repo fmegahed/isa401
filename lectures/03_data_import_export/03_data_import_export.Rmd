@@ -546,8 +546,8 @@ covid_df_r = readr::read_csv('https://github.com/nytimes/covid-19-data/raw/maste
 
 
 ai_df = readxl::read_excel('data/AIAAIC Repository.xlsx', sheet= 'Repository', skip=1)
-df = janitor::remove_empty(df, which = 'cols')
-df = df[2:1087,  1:35] 
+ai_df = janitor::remove_empty(ai_df, which = 'cols')
+ai_df = ai_df[2:1087,  1:35] 
 ```
 
 
