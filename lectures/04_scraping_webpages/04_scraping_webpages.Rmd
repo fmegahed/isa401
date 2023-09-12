@@ -1515,10 +1515,10 @@ file_path = 'https://bulletin.miamioh.edu/courses-instruction/isa/'
 html_content = get(file_path)
 soup = BeautifulSoup(html_content.content, 'html.parser')
 
-# Step 2: Use the CSS selector "p.courseblocktitle > strong" to extract course names
+# Step 2: "p.courseblocktitle > strong" for course names
 course_names = soup.select("p.courseblocktitle > strong")
 
-# Step 3: Remove the HTML Tags (Extractthe text content of each course name)
+# Step 3: Remove the HTML Tags (Extract the text content of each course name)
 # talk first about course_names[0] and course_names[0].text
 extracted_course_names = [course_name.text for course_name in course_names]
 
@@ -1532,19 +1532,15 @@ cleaned_course_names = [course_name.replace('\xa0', ' ') for course_name in extr
 # Step 2:
 course_desc = soup.select("p.courseblockdesc")
 
-
 # Step 3:
 course_descriptions = [course_d.text for course_d in course_desc]
 
 # Step 4:
 cleaned_course_descriptions = [course_d.replace('\xa0', ' ').replace('\n', ' ') for course_d in course_descriptions]
 
-
 df = pd.DataFrame(
-  list( zip(cleaned_course_names, cleaned_course_descriptions) ),
-  columns = ['title', 'description']
+  {'title': cleaned_course_names, 'description': cleaned_course_descriptions}
 )
-
 ```
 
 - Then, we will **export the results to a CSV** so that we can analyze that in a separate program if we wanted to.
@@ -1564,7 +1560,7 @@ df = pd.DataFrame(
 .panel[.panel-name[Activity]
 
 .small[
-- Go to [this database on plane crashes](http://www.planecrashinfo.com/2022/2022.htm)  
+- Go to [this database on plane crashes](http://www.planecrashinfo.com/2021/2021.htm)  
 
 - Scrape the HTML table. **Note the difference from text elements:**  
   + The CSS selector for `html_elements()` will be different.  
@@ -1615,7 +1611,7 @@ Using the excellent [robotstxt](https://cran.r-project.org/package=robotstxt/vig
 ```{r robots}
 if(require(robotstxt)==FALSE) install.packages("robotstxt")
 
-robotstxt::paths_allowed(paths  = "2022/", domain = "planecrashinfo.com", bot    = "*")
+robotstxt::paths_allowed(paths  = "2021/", domain = "planecrashinfo.com", bot    = "*")
 ```
 
 

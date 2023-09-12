@@ -578,6 +578,22 @@ ai_df_py = pd.read_excel('data/AIAAIC Repository.xlsx', sheet_name= 1, header =1
 ai_df_py = ai_df_py.dropna(axis = 1, how = 'all')
 ai_df_py.head()
 
+
+# Some students may get SSL-related issues: (Fix below)
+# -----------------------------------------------------
+
+# workarounds for SSL issues with pandas
+
+import pandas as pd
+import requests as req
+
+
+# CSVs
+# ---------
+
+wh =req.get('https://www.whitehouse.gov/wp-content/uploads/2022/05/2022.01_WAVES-ACCESS-RECORDS.csv')
+wh1 = pd.read_csv(io.StringIO(wh.text))
+wh2 = pd.read_csv(io.BytesIO(wh.content))
 ```
 
 
@@ -733,6 +749,19 @@ Please note the following from the `r fa('r-project', fill = miamired)` demo:
 
 Please note the following from the `r fa('python', fill = miamired)` demo:    
 - How the `pd.read_()` has a consistent approach to data importing?
+
+
+```{python json_demo, include = F}
+# JSONs:
+# ----------
+# read_json often does not work from a web URL (so download it or follow approach below)
+rep_get = req.get('https://www.govtrack.us/api/v2/role?current=true&role_type=representative&limit=438').json()
+
+rep_get.keys()
+
+rep = pd.DataFrame.from_dict(rep_get['objects'])
+rep
+```
 
 
 
