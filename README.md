@@ -15,6 +15,7 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 |     02       |    09/05     | Data Import and Export     | [03_data_import_export.html](https://fmegahed.github.io/isa401/fall2023/class03/03_data_import_export.html) | [03_data_import_export.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/03_data_import_export.pdf) | [03_data_import_export.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/03_data_import_export.pptx) |
 |            |    09/07     | Data Import and Export (Cont.)     | -- | -- | -- |
 |     03       |    09/12     | Scraping Webpages     | [05_scraping_webpages.html](https://fmegahed.github.io/isa401/fall2023/class04/04_scraping_webpages.html) | [05_scraping_webpages.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/04_scraping_webpages.pdf) | [05_scraping_webpages.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/04_scraping_webpages.pptx) |
+|         |    09/14     | Scraping Webpages     | [06_scraping_multiple_webpages.html](https://fmegahed.github.io/isa401/fall2023/class06/06_scraping_multiple_webpages.html) | [06_scraping_multiple_webpages.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/06_scraping_multiple_webpages.pdf) | [06_scraping_multiple_webpages.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/06_scraping_multiple_webpages.pptx) |
 
 
 ## Acknowledgments
