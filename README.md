@@ -16,6 +16,9 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 |            |    09/07     | Data Import and Export (Cont.)     | -- | -- | -- |
 |     03       |    09/12     | Scraping Webpages     | [05_scraping_webpages.html](https://fmegahed.github.io/isa401/fall2023/class04/04_scraping_webpages.html) | [05_scraping_webpages.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/04_scraping_webpages.pdf) | [05_scraping_webpages.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/04_scraping_webpages.pptx) |
 |         |    09/14     | Scraping Webpages     | [06_scraping_multiple_webpages.html](https://fmegahed.github.io/isa401/fall2023/class06/06_scraping_multiple_webpages.html) | [06_scraping_multiple_webpages.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/06_scraping_multiple_webpages.pdf) | [06_scraping_multiple_webpages.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/06_scraping_multiple_webpages.pptx) |
+|     04       |    09/19     | Lab: Scraping Multiple Webpages     | -- | -- | --|
+|         |    09/21     | No class     | -- | -- | --|
+|     05       |    09/26     | Introduction to APIs    | [09_intro_to_apis.html](https://fmegahed.github.io/isa401/fall2023/class09/09_intro_to_apis.html) | [09_intro_to_apis.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/09_intro_to_apis.pdf) | [09_intro_to_apis.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/09_intro_to_apis.pptx) |
 
 
 ## Acknowledgments
