@@ -1,0 +1,101 @@
+---
+title: "Connecting to APIs"
+author: "Fadel Megahed"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
+    code_folding: show
+    code_download: TRUE
+    number_sections: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Wikipedia MU Football
+
+```{r mu_football}
+rvest::read_html("https://en.wikipedia.org/wiki/Miami_RedHawks_football") |>
+  # we got the CSS selector by inspecting table 1 and copying the table with its class
+  rvest::html_element("table.wikitable") |> 
+  # lets clean out the HTML and make it human readable
+  rvest::html_table() -> output_from_element
+
+# two observations from output_from_element
+# 1: the output is a singular table (corresponds to the first table of that class in the wiki page)
+# 2: the output after html_table is a data.frame (tibble)
+
+rvest::read_html("https://en.wikipedia.org/wiki/Miami_RedHawks_football") |>
+  # we got the CSS selector by inspecting table 1 and copying the table with its class
+  rvest::html_elements("table.wikitable") |> 
+  # lets clean out the HTML and make it human readable
+  rvest::html_table() -> results_elements
+
+# output
+# 1: it will pull all the tables that had that specific class
+# 2: IS ALWAYS A LIST
+
+# specific example: table 1
+# --------------------------
+rvest::read_html("https://en.wikipedia.org/wiki/Miami_RedHawks_football") |>
+  # we got the CSS selector by inspecting table 1 and copying the table with its class
+  rvest::html_elements("#mw-content-text > div.mw-parser-output > table:nth-child(48)") |> 
+  # lets clean out the HTML and make it human readable
+  rvest::html_table() -> table1_elements
+table1_elements = table1_elements[[1]] # to get the underlying str of the list of 1
+
+rvest::read_html("https://en.wikipedia.org/wiki/Miami_RedHawks_football") |>
+  # we got the CSS selector by inspecting table 1 and copying the table with its class
+  rvest::html_element("#mw-content-text > div.mw-parser-output > table:nth-child(48)") |> 
+  # lets clean out the HTML and make it human readable
+  rvest::html_table() -> element_table1
+
+# approach 3:
+table1 = results_elements[[1]]
+table7 = results_elements[[7]]
+```
+
+
+
+# CENSUS API (Not the best documented API)
+
+```{r census_api}
+base_url ='https://api.census.gov/data/2020/dec/pl?'
+query = 'get=P1_001N,P3_037N,NAME&for=state:*'
+query2 = 'get=NAME,P1_001N,P3_037N&for=state:*'
+
+requested_url = paste0(base_url, query2)
+requested_url
+
+response = jsonlite::fromJSON(txt = requested_url) 
+response = as.data.frame(response)
+
+colnames(response) = response[1, ]
+response = response[-1, ]
+```
+
+
+# Accu Weather
+
+```{r accu_weather}
+key = 'mDyIYQMWJGLgEiAmGkEIlkoS3I4JYAwo'
+
+base_url = "http://dataservice.accuweather.com/forecasts/v1/daily/5day/"
+location = 340019
+api_info = "?apikey=mDyIYQMWJGLgEiAmGkEIlkoS3I4JYAwo"
+
+accu_req_url = paste0(base_url, location, api_info)
+
+weather_results = jsonlite::fromJSON(accu_req_url)
+
+names(weather_results)
+
+forecast = weather_results$DailyForecasts
+```
+
+
+
+
