@@ -20,6 +20,8 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 |         |    09/21     | No class     | -- | -- | --|
 |     05       |    09/26     | Introduction to APIs    | [09_intro_to_apis.html](https://fmegahed.github.io/isa401/fall2023/class09/09_intro_to_apis.html) | [09_intro_to_apis.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/09_intro_to_apis.pdf) | [09_intro_to_apis.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/09_intro_to_apis.pptx) |
 |            |    09/28     | Tidy Data    | [10_tidy_data.html](https://fmegahed.github.io/isa401/fall2023/class10/10_tidy_data.html) | [10_tidy_data.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/10_tidy_data.pdf) | [10_tidy_data.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/10_tidy_data.pptx) |
+|     06       |    10/03     | Technically Correct and Consistent Data    | [11_technically_correct_and_consistent_data.html](https://fmegahed.github.io/isa401/fall2023/class11/11_technically_correct_and_consistent_data.html) | [11_technically_correct_and_consistent_data.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/11_technically_correct_and_consistent_data.pdf) | [11_technically_correct_and_consistent_data.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/11_technically_correct_and_consistent_data.pptx) |
+
 
 ## Acknowledgments
  * Phase I has benefited heavily from the following references:   
