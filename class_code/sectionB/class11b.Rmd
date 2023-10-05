@@ -1,0 +1,87 @@
+---
+title: "Technically Correct Data"
+author: "Fadel Megahed"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    code_folding: show
+    code_download: TRUE
+    toc: TRUE
+    toc_float: TRUE
+    number_sections: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Read the Data
+
+## The `readr::read_csv()` approach
+
+```{r readr}
+bike = readr::read_csv('bike_sharing_data.csv')
+
+# based on the warning message
+readr::problems(bike) # to investigate why we got this warning
+
+# the number of rows/cols, colnames, their types, and their first few values
+dplyr::glimpse(bike)
+```
+
+## The `base R` approach
+
+```{r readr_base}
+# the main difference read.csv vs readr::read_csv
+bike_base = read.csv('bike_sharing_data.csv')
+
+# the number of rows/cols, colnames, their types, and their first few values
+dplyr::glimpse(bike_base)
+```
+
+Based on the output, we can see that the base R approach resulted in humidity being a `chr`, which stems from the fact that we had one observation that a letter in it. We saw more information about that in the `problems()`. 
+
+
+# Towards Technically Correct Data
+
+## Inspect the Data via `dplyr::glimpse()`
+
+```{r glimpse}
+dplyr::glimpse(bike)
+```
+
+### Are the column names reasonable?
+
+Yes, the column names are reasonable since: `r colnames(bike)` are reasonable names for our columns.
+
+### Are the column types/classes correct?
+
+No, we will need to **fix** some columns. 
+
+```{r fix_cols}
+# first we learned about how datetime is structured by inspecting the rows until we say that the day is in the second input (e.g., 1/13/2011 22:00 so from the 13 this can only be a day since months go to 12)
+
+# converting the datetime col into a datetime type/class instead of chr
+bike$datetime = lubridate::mdy_hm(bike$datetime)
+
+# we will need to make the variables from season:weather to be categorical/factor
+# bec they are currently numeric and we do not want to do math on them (or interpolate them)
+bike = bike |> 
+  # converts the four columns into a chr vector
+  dplyr::mutate(dplyr::across(
+    # start_col:end_col (obviously only works if in seq)
+    .cols = season:weather, # since they are in a row, otherwise dplyr::vars()
+    .fns = as.character
+  )) |> 
+  # converts the four columns from chr to factor
+   dplyr::mutate(dplyr::across(
+    .cols = season:weather, # since they are in a row, otherwise dplyr::vars()
+    .fns = as.factor # or forcats::as_factor
+  )) 
+```
+
+
+## Use the `pointblank` package to identify issues
+
+
+

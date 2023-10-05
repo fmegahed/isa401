@@ -1,0 +1,116 @@
+---
+title: "Technically Correct and Consistent Data"
+author: "Fadel Megahed"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    code_download: TRUE
+    code_folding: show
+    toc: TRUE
+    toc_float: TRUE
+    number_sections: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Reading the Data
+
+## The `readr` approach
+
+```{r read_data}
+# readr produces a tibble
+# which then shows in the printout the number of rows, cols and types of the cols
+# we gained some valuable information when we did that
+bike = readr::read_csv('https://raw.githubusercontent.com/fmegahed/isa401/main/data/bike_sharing_data.csv')
+```
+
+## The `base R` approach
+```{r read_data_base}
+bike_base = read.csv('https://raw.githubusercontent.com/fmegahed/isa401/main/data/bike_sharing_data.csv')
+dplyr::glimpse(bike_base) # if you were to use the base r read.csv; you will also need to fix humidity
+```
+
+
+# Toward a Technically Correct Dataset
+
+## Approach 1
+
+### `dplyr::glimpse()` or `str()`
+
+```{r quick_checks}
+dplyr::glimpse(bike) # type of each variable, first few observations
+```
+
+### Are the column names reasonable?
+
+Yes, therefore we will not change the column names.
+
+### Are the types/classes for each column reasonable?
+
+The classes for **some** of the columns will need to change. So let us change them.
+
+```{r manual_fixing}
+# datetime: it is currently a chr vector and we will change it accordingly
+# this will convert the column into a datetime column and we knew the appropriate
+# function from lubridate by seeing the values in that column and going down the rows
+# until we saw that the second number had 13 and 14 in it which means that it cannot
+# be a month
+bike$datetime = lubridate::mdy_hm(bike$datetime)
+
+# we will now change the columns season to weather to factor
+# we could have done this in a way similar to line 53, but we will try to be
+# "lazy" and do it in one/two steps (instead of four)
+bike = bike |> 
+  # converted the columns season:weather into chr
+  dplyr::mutate(dplyr::across(.cols = season:weather, .fn = as.character) ) |>
+  # converted them into a factor (could have also used forcats::as_factor instead)
+  dplyr::mutate(dplyr::across(.cols = season:weather, .fn = as.factor) )
+
+dplyr::glimpse(bike)
+```
+
+Our dataset now has reasonable column names (we did not change that) and correct column types. Therefore, our data is **now technically correct**. 
+
+
+
+
+## Approach 2
+
+### The `pointblank` package
+
+```{r point_blank_checks}
+library(pointblank) # we will load it since we will be using a bunch of funtions from it
+# this will save some time pointblank::fun_name
+
+# rereading the data since we already fixed bike 
+bike_tbl = readr::read_csv('https://raw.githubusercontent.com/fmegahed/isa401/main/data/bike_sharing_data.csv')
+
+# decimal means that it is the pct of rows, while a number means number of rows
+act = action_levels(warn_at = 0.01, notify_at = 0.01, stop_at = 0.01)
+act # we do not need to set them all the same (it is done here for the example)
+
+agent = 
+  # create agent starts the table of checks
+  create_agent(tbl = bike_tbl, actions = act) |>
+  # we will populate the rows without doing the checks (checks are done in the interrogation step)
+  col_is_date(columns = datetime) |> 
+  # given that the columns were consecutive I can use col_start:col_end
+  # otherwise you need to use the function, see col_if_... for details
+  col_is_factor(columns = season:weather) |> 
+  # we do not really care if they are dbl vs int but I am showing you that
+  # if you did care, we can check for that
+  col_is_numeric(columns = temp:windspeed) |> 
+  col_is_integer(columns = casual:count) |> 
+  col_is_character(columns = vars(sources))
+
+res = interrogate(agent = agent, sample_limit = 5000)
+res
+```
+
+
+### Fix columns based on the warnings
+Similar to approach 1 in the `manual_fixing` code chunk, so we will not show it in class.
+
+
