@@ -1,0 +1,111 @@
+---
+title: "Data Correction and Imputation"
+author: "Fadel Megahed"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    code_download: TRUE
+    code_folding: show
+    number_sections: TRUE
+    toc: TRUE
+    toc_float: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Non-graded Question
+
+```{r}
+e = editrules::editmatrix("x + y == z")
+d <- data.frame(x = 173, y = 200, z = 379)
+
+c = deducorrect::correctTypos(e, d)
+c$corrected # the output indicates that no changes were made even though the rule is violated
+c$corrections
+c$status
+
+# Bonus: answering Cameron's question about how to make Correct with Rules Work
+complex_rule = deducorrect::correctionRules(
+  expression(
+    if(x + y != z){z = x + y}
+  )
+)
+
+c2 = deducorrect::correctWithRules(rules = complex_rule, dat = d)
+c2
+```
+
+
+# Demo
+
+## The original data
+
+```{r orginial_iris}
+iris_df = iris
+dplyr::glimpse(iris_df)
+
+# plots the missing pcts by column
+# from the output, the percent of missing data in each col is 0%
+DataExplorer::plot_missing(data = iris_df)
+
+# we can also compute that using the map_df() approach from the slides
+fct_missing = 
+  # returns a dataframe where each column contains FALSE and TRUE cells
+  # FALSE == no missing data
+  purrr::map_df(.x = iris_df, .f = is.na) |> 
+  # up to here, we get the number of rows missing
+  # below, we sum all the TRUE (coded in the backend as 1) to get the 
+  # the total number of rows that are missing in each column
+  colSums() |> 
+  # dividing by the number of rows in the original data so that we can get a
+  magrittr::divide_by(150)
+
+pct_missing = fct_missing*100
+```
+
+
+## Induce Missing Data
+
+Doing that only to talk about imputation approaches
+
+```{r missing_data}
+iris_missing = iris_df
+iris_missing[1:10, 1] = NA # set first 10 rows of col 1 to NA as a demo
+
+head(iris_missing, 20) # print the first 20 rows
+```
+
+
+## Mean/Median Imputation (Terrible)
+Do **not** use it in practice; I am showing it as it is a first step when you learn about data imputation.
+
+```{r terrible_imputation}
+mean_col1 = mean(iris_missing$Sepal.Length, na.rm = T)
+med_col1 = median(iris_missing$Sepal.Length, na.rm = T)
+
+iris_bad_imputation = tidyr::replace_na(
+  data = iris_missing, # data frame to be imputed
+  replace = list(Sepal.Length = mean_col1) # a list of colnmaes = value for replacement
+  )
+
+head(iris_bad_imputation, 15)
+```
+
+Disclaimer for strings/categorical variables, replacing the missing values with "unknown" is reasonable.
+
+
+**Why is this a terrible approach?** 
+
+1. By replacing everything with the mean/median, you are messing up with the distribution of that column (by reducing its variability and pushing the data towards the mean/median).  
+
+2. In practice, the issue is that you are not making use of the other data you have in that observation. 
+
+
+## The kNN Imputation
+
+```{r knn}
+iris_knn = VIM::kNN(data = iris_missing, k = 5)
+```
+
