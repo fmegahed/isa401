@@ -24,7 +24,10 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 |            |    10/05     | Data Correction and Imputation    | [12_data_correction_and_imputation.html](https://fmegahed.github.io/isa401/fall2023/class12/12_data_correction_and_imputation.html) | [12_data_correction_and_imputation.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/12_data_correction_and_imputation.pdf) | [12_data_correction_and_imputation.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/12_data_correction_and_imputation.pptx) |
 |     07       |    10/10     | **Exam 01: ETL**   | -- | -- | -- |
 |            |    10/12     | Fundamentals of Data Viz    | [14_fundamentals_data_viz.html](https://fmegahed.github.io/isa401/fall2023/class14/14_fundamentals_data_viz.html) | [14_fundamentals_data_viz.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/14_fundamentals_data_viz.pdf) | [14_fundamentals_data_viz.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/14_fundamentals_data_viz.pptx) |
-
+|     08       |    10/17     | Lab: Tableau Tutorial   | -- | -- | -- |
+|            |    10/19     | Lab: PowerBI Tutorial   | -- | -- | -- |
+|     09      |    10/24     | Lab: Viz in R and Python Tutorial   | -- | -- | -- |
+|           |    10/26     | Commonly Used Charts   | [18_commonly_used_charts.html](https://fmegahed.github.io/isa401/fall2023/class18/18_commonly_used_charts.html) | [18_commonly_used_charts.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/18_commonly_used_charts.pdf) | [18_commonly_used_charts.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/18_commonly_used_charts.pptx) |
 
 ## Acknowledgments
  * Phase I has benefited heavily from the following references:   
