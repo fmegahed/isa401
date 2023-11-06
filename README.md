@@ -29,6 +29,9 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 |     09      |    10/24     | Lab: Viz in R and Python Tutorial   | -- | -- | -- |
 |           |    10/26     | Commonly Used Charts   | [18_commonly_used_charts.html](https://fmegahed.github.io/isa401/fall2023/class18/18_commonly_used_charts.html) | [18_commonly_used_charts.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/18_commonly_used_charts.pdf) | [18_commonly_used_charts.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/18_commonly_used_charts.pptx) |
 |    10       |    10/31     | Temporal, Spatial and Spatiotemporal Charts  | [19_temporal_spatial_and_spatiotemporal_charts.html](https://fmegahed.github.io/isa401/fall2023/class19/19_temporal_spatial_and_spatiotemporal_charts.html) | [19_temporal_spatial_and_spatiotemporal_charts.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/19_temporal_spatial_and_spatiotemporal_charts.pdf) | [19_temporal_spatial_and_spatiotemporal_charts.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/19_temporal_spatial_and_spatiotemporal_charts.pptx) |
+|    10       |    11/02     | Lab: Project Work  | -- | --| -- |
+|    11      |    11/07     | High Dimensional Charts  | [21_high_dimensional_charts.html](https://fmegahed.github.io/isa401/fall2023/class21/21_high_dimensional_charts.html) | [21_high_dimensional_charts.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/21_high_dimensional_charts.pdf) | [21_high_dimensional_charts.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/21_high_dimensional_charts.pptx) |
+
 
 ## Acknowledgments
  * Phase I has benefited heavily from the following references:   
