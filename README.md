@@ -31,6 +31,7 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 |    10       |    10/31     | Temporal, Spatial and Spatiotemporal Charts  | [19_temporal_spatial_and_spatiotemporal_charts.html](https://fmegahed.github.io/isa401/fall2023/class19/19_temporal_spatial_and_spatiotemporal_charts.html) | [19_temporal_spatial_and_spatiotemporal_charts.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/19_temporal_spatial_and_spatiotemporal_charts.pdf) | [19_temporal_spatial_and_spatiotemporal_charts.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/19_temporal_spatial_and_spatiotemporal_charts.pptx) |
 |    10       |    11/02     | Lab: Project Work  | -- | --| -- |
 |    11      |    11/07     | High Dimensional Charts  | [21_high_dimensional_charts.html](https://fmegahed.github.io/isa401/fall2023/class21/21_high_dimensional_charts.html) | [21_high_dimensional_charts.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/21_high_dimensional_charts.pdf) | [21_high_dimensional_charts.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/21_high_dimensional_charts.pptx) |
+|          |    11/09     | Business Reports  | [22_business_reports.html](https://fmegahed.github.io/isa401/fall2023/class22/22_business_reports.html) | [22_business_reports.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/22_business_reports.pdf) | [22_business_reports.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/22_business_reports.pptx) |
 
 
 ## Acknowledgments

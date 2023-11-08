@@ -273,7 +273,7 @@ knitr::include_graphics('https://images.squarespace-cdn.com/content/v1/52f42657e
 
 # Parallel Coordinates in Power BI
 
-Let us add the [Custom Parallel Coordinates Charting App](https://appsource.microsoft.com/en-us/product/power-bi-visuals/wa200000850?tab=overview&signInModalType=2&ctaType=1) to our Power BI and use it to visualize the [mpg_2023_sample.csv](https://raw.githubusercontent.com/fmegahed/isa401/main/data/mpg_2023_sample.csv).
+Let us visualize the [mpg_2023_sample.csv](https://raw.githubusercontent.com/fmegahed/isa401/main/data/mpg_2023_sample.csv) using a parallel coordinates plot in Power BI.
 
 ```{r ggparcoord, echo = F}
 mpg_2023_sample = read_csv('../../data/mpg_2023_sample.csv')
@@ -306,7 +306,7 @@ knitr::include_graphics('https://images.squarespace-cdn.com/content/v1/52f42657e
 
 # Radar Charts in Power BI
 
-Let us add the [Radar Chart App](hhttps://appsource.microsoft.com/en-us/marketplace/apps?product=power-bi-visuals&page=1&src=office&search=radar) to our Power BI and use it to visualize the [mpg_2023_sample.csv](https://raw.githubusercontent.com/fmegahed/isa401/main/data/mpg_2023_sample.csv).
+Let us add the [Radar Chart App](https://appsource.microsoft.com/en-us/marketplace/apps?product=power-bi-visuals&page=1&src=office&search=radar) to our Power BI and use it to visualize the [mpg_2023_sample.csv](https://raw.githubusercontent.com/fmegahed/isa401/main/data/mpg_2023_sample.csv).
 
 ```{r ggradar, echo = F}
 mpg_2023_sample = read_csv('../../data/mpg_2023_sample.csv')
