@@ -32,6 +32,8 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 |    10       |    11/02     | Lab: Project Work  | -- | --| -- |
 |    11      |    11/07     | High Dimensional Charts  | [21_high_dimensional_charts.html](https://fmegahed.github.io/isa401/fall2023/class21/21_high_dimensional_charts.html) | [21_high_dimensional_charts.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/21_high_dimensional_charts.pdf) | [21_high_dimensional_charts.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/21_high_dimensional_charts.pptx) |
 |          |    11/09     | Business Reports  | [22_business_reports.html](https://fmegahed.github.io/isa401/fall2023/class22/22_business_reports.html) | [22_business_reports.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/22_business_reports.pdf) | [22_business_reports.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/22_business_reports.pptx) |
+|    12      |    11/14     | Exam 02  | -- | -- | -- |
+|          |    11/16     | Business Reports  | [24_data_mining_overview.html](https://fmegahed.github.io/isa401/fall2023/class24/24_data_mining_overview.html) | [24_data_mining_overview.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/24_data_mining_overview.pdf) | [24_data_mining_overview.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/24_data_mining_overview.pptx) |
 
 
 ## Acknowledgments
