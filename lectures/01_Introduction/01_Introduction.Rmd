@@ -2,7 +2,7 @@
 title: "ISA 401: Business Intelligence & Data Visualization"
 subtitle: "01: Introduction to BI and Data Viz"
 author: '<br>Fadel M. Megahed, PhD <br><br> Endres Associate Professor <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("twitter"), fill = "white")` @FadelMegahed](https://twitter.com/FadelMegahed) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
-date: "Fall 2023"
+date: "Spring 2024"
 output:
   xaringan::moon_reader:
     self_contained: true
@@ -20,7 +20,7 @@ header-includes:
 
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(cache = TRUE,
+knitr::opts_chunk$set(cache = FALSE,
                       echo = TRUE,
                       warning = FALSE,
                       message = FALSE,
@@ -139,7 +139,7 @@ Source: Slide inspired by [Kia Ora's What I mean by "data"](https://stats220.ear
 
 ]
 
-.panel[.panel-name[Fadel in R (No Solution Shown)]
+.panel[.panel-name[Fadel's Approach (No Solution Shown)]
 
 ```{r activity1-solution, eval=FALSE}
 if(require(tidyverse) == FALSE) install.packages("tidyverse")
@@ -159,23 +159,7 @@ dim(crashes)
 
 ]
 
-.panel[.panel-name[Fadel in Python (No Solution Shown)]
 
-```{python activity1-solution-py, eval=FALSE}
-resp = requests.get("https://data.cincinnati-oh.gov/api/views/rvmt-pkmq/rows.csv?accessType=DOWNLOAD")
-
-with open('crashes.csv', 'w') as f:
-    f.write(resp.content.decode('utf-8'))
-
-# Read the data
-crashes = pd.read_csv("crashes.csv").clean_names()
-
-# Dimensions
-num_rows = len(crashes)
-num_cols = len(crashes.columns)
-```
-
-]
 
 ]
 
@@ -211,7 +195,7 @@ crashes %<>%
 
 unique_crashes = 
   crashes  |> 
-  filter(date >= "2022-01-01" & date <= "2022-12-31") |> 
+  filter(date >= "2023-01-01" & date <= "2023-12-31") |> 
   group_by(instanceid) |> 
   select(-datecrashreported) |> 
   filter(typeofperson == 'D - DRIVER') |> 
@@ -256,7 +240,7 @@ day_of_week_tbl |>
   geom_col(fill = miamired) +
   theme_bw(base_size = 12) + 
   labs(x = 'Count/Freq', y = 'Day of the Week',
-       title = 'Crashes by Day in Cincinnati in 2022',
+       title = 'Crashes by Day in Cincinnati in 2023',
        caption = 'Created by: Fadel Megahed | Data source: City of Cincy Open Data Portal (rvmt-pkmq)') 
 ```
 
@@ -269,15 +253,15 @@ day_of_week_tbl |>
 ```{r viz2a, echo=FALSE, cache=TRUE, fig.height=2.85}
 weather_levels = levels(unique_crashes$weather)
 
-daily_crashes_2022= unique_crashes |> 
+daily_crashes_2023= unique_crashes |> 
   mutate(weather = factor(weather, levels = sort(weather_levels))) |> 
   select(instanceid, date, weather) |> 
   group_by(date) |> 
   count()
   
 cal = calendR(title = NULL,
-              year = 2022,
-              special.days = daily_crashes_2022$n,
+              year = 2023,
+              special.days = daily_crashes_2023$n,
               orientation = "landscape",
               day.size = 2,
               months.size = 8,
@@ -560,7 +544,7 @@ residence = tribble(
   "Cairo",         "Egypt", 30.0444,  31.2357,  1,    "Finishing up my Undergrad <br> at AUC",
   "Blacksburg", "Virginia", 37.2296, -80.4139,   4,    "MS and PhD in <br> Industrial & Systems Engineering (ISE) <br> Graduate Research Assistant and <br> Instructor",
   "Auburn",    "Alabama", 32.6099,  -85.4808, 4,    "Assistant Professor of <br> Industrial and Systems Engineering <br> Auburn University",
-  "Oxford",      "Ohio", 39.5070,  -84.7452,   7,    "Assistant-Associate Professor of <br> Business Analytics <br> Farmer School of Business <br> Miami University"
+  "Oxford",      "Ohio", 39.5070,  -84.7452,   8,    "Assistant-Associate Professor of <br> Business Analytics <br> Farmer School of Business <br> Miami University"
 ) 
 
 
@@ -770,7 +754,7 @@ unique_crashes =
          hour = hour(datetime),
          date = as_date(datetime)
   ) |> 
-  filter(date >= "2021-01-01" & date <= "2021-12-31") |> 
+  filter(date >= "2023-01-01" & date <= "2023-12-31") |> 
   group_by(instanceid) |> 
   select(-datecrashreported) |> 
   filter(typeofperson == 'D - DRIVER') |> 
@@ -797,7 +781,7 @@ unique_crashes |>
   theme_bw(base_size = 12) +
   scale_y_continuous(breaks = pretty_breaks(n = 10), limits = c(0, 200)) +
   labs(x = 'Month', y = 'Crashes per Month', 
-       title = 'Crashes Recorded in Two Cincinnati Neighborhoods in 2022',
+       title = 'Crashes Recorded in Two Cincinnati Neighborhoods in 2023',
        caption = 'Created by: Fadel Megahed | Data source: City of Cincy Open Data Portal (rvmt-pkmq)')
 ```
 
@@ -968,10 +952,6 @@ By now, you should be able to do the following:
 - [Vectors](https://adv-r.hadley.nz/vectors-chap.html)
 - [Subsetting](https://adv-r.hadley.nz/subsetting.html)
 
-#### 🐍 Python Prep
-
-- [Getting Started with Conda](https://conda.io/projects/conda/en/latest/user-guide/getting-started.html)
-- [Data Structures](https://docs.python.org/3/tutorial/datastructures.html)
 
 #### 🤖 LLM: Prep
 
@@ -982,4 +962,4 @@ By now, you should be able to do the following:
 
 # 🎯 Assignment 🎯
 
-- Complete [Assignment 01](https://miamioh.instructure.com/courses/202961/quizzes/573222) on Canvas to reinforce your understanding and application of the topics covered today as well as the assigned readings.
+- Complete [Assignment 01](https://miamioh.instructure.com/courses/213901/quizzes/611597) on Canvas to reinforce your understanding and application of the topics covered today as well as the assigned readings.
