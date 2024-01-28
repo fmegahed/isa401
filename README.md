@@ -6,7 +6,7 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 
 ## Schedule
 
-*The raw .Rmds for all presentations can be found under the folder titled lectures. The schedule below has links to the associated GitHub Pages where the generated HTML slides are hosted.* The schedule below is for the Fall 2023 semester. 
+*The raw .Rmds for all presentations can be found under the folder titled lectures. The schedule below has links to the associated GitHub Pages where the generated HTML slides are hosted.* The schedule below is for the Spring 2024 semester. 
 
 | Week          | Date        | Topic                                  | Slides (Hosted Page) | Slides (PDF) | Slides (PPTX)
 | :---:        |    :----:   |          :---                           | :---                 | :---         | :--  |
