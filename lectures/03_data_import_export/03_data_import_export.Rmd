@@ -173,7 +173,7 @@ lst[[4]]
 ```
 ]
 
-.center[<img src="../../figures/pepper.png" width="45%">]
+.center[<img src="../../figures/pepper.png" width="38%">]
 
 .footnote[
 <html>
@@ -191,7 +191,7 @@ A matrix is a **2D data structure** made of **one/homogeneous data type.**
 
 
 .pull-left[
-### A 2 $\times$ 2 numeric matrix
+**A 2 $\times$ 2 numeric matrix**
 ```{r num_matrix1}
 x_mat = matrix( sample(1:10, size = 4), nrow = 2, ncol = 2 ) 
 ```
@@ -207,7 +207,7 @@ x_mat[1, 2] # subsetting #<<
 
 
 .pull-right[
-### A 3 $\times$ 4 character matrix
+**A 3 $\times$ 4 character matrix**
 ```{r char_matrix1}
 x_char = matrix( sample(letters, size = 12), nrow = 3, ncol =4 )
 x_char
@@ -517,7 +517,7 @@ fast_df <- vroom::vroom("your_file.csv")
 **Microsoft Excel `r fa("file-excel", fill = "green")`** (with extensions `.xls`for MSFT Excel 2003 and earlier **OR**  `.xlsx` for MSFT Excel 2007 and later)
 
 
-### Non-Graded Class Activity
+**Non-Graded Class Activity**
 
 `r countdown(minutes = 3, seconds = 0, top = 0, font_size = "2em")`
 
