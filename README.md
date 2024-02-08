@@ -13,7 +13,7 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 | 01           |    01/30     | Introduction to Data Viz and BI        | [01_Introduction.html](https://fmegahed.github.io/isa401/spring2024/class01/01_Introduction.html) | [01_Introduction.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/01_introduction.pdf) | [01_Introduction.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/01_introduction.pptx) |
 |           |    02/01     | Introduction to R       | [02_introduction_to_r.html](https://fmegahed.github.io/isa401/spring2024/class02/02_introduction_to_r.html) | [02_introduction_to_r.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/02_introduction_to_r.pdf) | [02_introduction_to_r.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/02_introduction_to_r.pptx) |
 | 02           |    02/06    | Data Import and Export in R        | [03_data_import_export.html](https://fmegahed.github.io/isa401/spring2024/class03/03_data_import_export.html) | [03_data_import_export.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/03_data_import_export.pdf) | [03_data_import_export.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/03_data_import_export.pptx) |
-
+|            |    02/08    | Scraping Web Pages in R        | [04_scraping_webpages.html](https://fmegahed.github.io/isa401/spring2024/class04/04_scraping_webpages.html) | [04_scraping_webpages.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/04_scraping_webpages.pdf) | [04_scraping_webpages.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/04_scraping_webpages.pptx) |
 
 
 ## Acknowledgments

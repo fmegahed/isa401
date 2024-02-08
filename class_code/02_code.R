@@ -29,7 +29,7 @@ sol_w_2 = lst['true_false'] # this will also return a list that contains that ve
 sol_c = lst[[3]]
 sol_w_2 = lst[['true_false']]
 
-# let us say that I wanted to retun the FALSE value (knowing its in pos 2)
+# let us say that I wanted to return the FALSE value (knowing its in pos 2)
 fal1 = sol_c[2]
 
 fal2 = lst[['true_false']][2]
