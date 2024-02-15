@@ -117,7 +117,7 @@ cabinet_tbl = tibble::tibble(
 # Learning Objectives for Today's Class
 
 
-- Scrape multiple webpages using `r fontawesome::fa("r-project", fill = miamired)` and `r fontawesome::fa("python", fill = miamired)`.
+- Scrape multiple webpages using `r fontawesome::fa("r-project", fill = miamired)`.
 
 - Use loops and/or tidymodeling approaches to scrape data from multiple webpages.
 
