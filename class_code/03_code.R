@@ -79,6 +79,51 @@ class(unrate_df)
 # the readr::read_csv() TRIES to guess column types which is helpful with dates
 dplyr::glimpse(unrate_df)
 
+unrate_tbl[1,1]
+unrate_df[1,1]
 
 
 
+# * SuperBowl Ads ---------------------------------------------------------
+
+sb = readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/2e9bd5a67e09b14d01f616b00f7f7e0931515d24/data/2021/2021-03-02/youtube.csv")
+
+
+
+
+# * The Excel Example -----------------------------------------------------
+
+## First step is to always open the file whenever possible to:
+## [a] check for whether we have headers in our data;
+## [b] should we skip any rows at the beginning
+## [c] In the case of Excel, which sheet contains the data you want to read.
+
+ai_df = readxl::read_xlsx(
+  path = 'data/AIAAIC Repository.xlsx',
+  sheet = 2,
+  skip = 1 # this is only for this file given that our headers were in row # 2
+)
+
+# Things to potentially do to have a cleaner data frame include:
+# [1] Remove Row 1 from ai_df
+# [2] Keep columns until Summary/links -- we do not seem to have useful info
+# after that
+# [3] Fix any column classes that need fixing
+
+
+
+# * JSON Data -------------------------------------------------------------
+
+
+us_reps = jsonlite::fromJSON(
+  txt = 'https://www.govtrack.us/api/v2/role?current=true&role_type=representative&limit=438',
+  flatten = TRUE
+)
+
+dplyr::glimpse(us_reps)
+
+us_reps_df = us_reps$objects
+us_reps_df2 = us_reps[[2]]
+
+us_reps_tbl = tibble::tibble(us_reps_df)
+dplyr::glimpse(us_reps_tbl)

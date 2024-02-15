@@ -1,0 +1,241 @@
+---
+title: "ISA 401: Business Intelligence & Data Visualization"
+subtitle: '06: Scraping Multiple Webpages'
+author: '<br>Fadel M. Megahed, PhD <br><br> Endres Associate Professor <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("twitter"), fill = "white")` @FadelMegahed](https://twitter.com/FadelMegahed) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
+date: "Spring 2024"
+output:
+  xaringan::moon_reader:
+    self_contained: true
+    css: [default, "../../style_files/fonts.css", "../../style_files/my-theme.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: magula
+      highlightLines: true
+      highlightLanguage: ["r", "python"]
+      countIncrementalSlides: false
+      ratio: "16:9"
+header-includes:  
+  - "../../style_files/header.html"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache = FALSE,
+                      echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE,
+                      progress = FALSE, 
+                      verbose = FALSE,
+                      dev = 'png',
+                      fig.height = 2.5,
+                      dpi = 300,
+                      fig.align = 'center')
+
+options(htmltools.dir.version = FALSE)
+
+miamired = '#C3142D'
+
+if(require(pacman)==FALSE) install.packages("pacman")
+if(require(devtools)==FALSE) install.packages("devtools")
+
+if(require(countdown)==FALSE) devtools::install_github("gadenbuie/countdown")
+if(require(xaringanExtra)==FALSE) devtools::install_github("gadenbuie/xaringanExtra")
+
+
+pacman::p_load(tidyverse, magrittr, lubridate, janitor, # data analysis pkgs
+               rvest, # for scraping
+               scales, # for the comma function
+               gifski, av, # for animations
+               fontawesome, RefManageR, xaringanExtra, countdown) # for slides
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+if(require(xaringanthemer) == FALSE) install.packages("xaringanthemer")
+library(xaringanthemer)
+
+style_mono_accent(base_color = "#84d6d3",
+                  base_font_size = "20px")
+
+xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "tachyons", "panelset", "broadcast", "share_again", "search", "fit_screen", "editable", 
+                                    "clipable"))
+
+```
+
+
+# Quick Refresher from Last Class
+
+`r emo::ji("check")` Understand when can we scrape data (i.e., `robots.txt`)    
+
+`r emo::ji("check")` Scrape a webpage using `r fontawesome::fa("r-project", fill = miamired)`
+
+
+---
+
+# Non-Graded Assessment of Your Understanding
+
+`r countdown(minutes = 6, seconds = 0, top = 0, font_size = "2em")`
+
+Scrape the Names and Positions of the current cabinet members from <https://www.whitehouse.gov/administration/cabinet/> and save the results into a **data frame that contains two columns**: (a) name, and (b) position.
+
+```{python cabinet_py, include=F, eval=F}
+import requests
+import bs4
+import pandas as pd
+
+response = requests.get('https://www.whitehouse.gov/administration/cabinet/')
+
+parsed_content = bs4.BeautifulSoup(response.content)
+
+cabinet = parsed_content.select('.acctext--con')
+cabinet = [i.text for i in cabinet]
+cabinet = [i.replace('\t', '').replace('\n', '') for i in cabinet]
+
+cabinet_names = cabinet[0:53:2]
+cabinet_positions = cabinet[1:53:2]
+
+cabinet_df = pd.DataFrame({'name':cabinet_names, 'position':cabinet_positions})
+```
+
+
+```{r cabinet_r, include=F, eval=F}
+'https://www.whitehouse.gov/administration/cabinet/' |> 
+  rvest::read_html() |> 
+  rvest::html_elements('.acctext--con') |> 
+  rvest::html_text2() -> cabinet
+
+cabinet_names = cabinet[seq(1,52,2)]
+cabinet_positions = cabinet[seq(2,52,2)]
+
+cabinet_tbl = tibble::tibble(
+  name = cabinet_names, position = cabinet_positions
+)
+```
+
+
+---
+
+# Learning Objectives for Today's Class
+
+
+- Scrape multiple webpages using `r fontawesome::fa("r-project", fill = miamired)` and `r fontawesome::fa("python", fill = miamired)`.
+
+- Use loops and/or tidymodeling approaches to scrape data from multiple webpages.
+
+---
+
+class: middle, inverse, center
+
+
+# Web Scraping Demos (Cont.)
+
+
+---
+
+# Demo 1:  Scraping all Plane Crashes 2013-2020
+
+- We will build on the previous example and we will scrape all the plane crashes that were recorded in the [plane crash database](http://www.planecrashinfo.com/) between 2013-2020. 
+
+- Then, we will create a single **data frame** for all crashes. It will contain the fields in the individual tables as well as the year of crash.
+
+- Then, we will **export the results to a CSV** so that we can analyze that in a separate program if we wanted to.
+
+
+```{r plane_crashes_r, include=FALSE, eval=FALSE}
+scrape_crashes = function(x){
+  rvest::read_html(x) |> 
+    rvest::html_element('table') |> 
+    rvest::html_table(header = 1) -> crashes
+  
+  crashes$Date = lubridate::dmy(crashes$Date)
+  return(crashes)
+}
+
+base_url = 
+
+urls = paste0('https://www.planecrashinfo.com/', 2013:2020, '/', 2013:2020, '.htm')
+
+crash_df = purrr::map_df(urls, scrape_crashes)
+```
+
+
+```{python plane_crashes_py, include = FALSE, eval = F}
+import requests
+import bs4
+import pandas as pd
+import datetime as dt
+
+def scrape_crashes(url):
+    # Fetch HTML content
+    response = requests.get(url)
+    
+    # Parse HTML content
+    html_content = bs4.BeautifulSoup(response.text)
+    
+    # Find the table and read it into a DataFrame
+    table = html_content.find('table')
+    df = pd.read_html(str(table), header=0)[0]
+    df.Date = df.Date.astype('datetime64[ns]')
+    
+    return df
+
+# Base URLs
+years = range(2013, 2021)
+urls = [f"https://www.planecrashinfo.com/{year}/{year}.htm" for year in years]
+
+# Scrape data and concatenate into a single DataFrame
+crash_df = pd.concat([scrape_crashes(url) for url in urls], ignore_index=True)
+
+```
+
+
+
+---
+
+# Practice Outside of Class
+
+The most popular listings on Netflix are rated and reviews on ImDb are available at <https://www.imdb.com/search/title/?companies=co0144901>. Write an `r fontawesome::fa("r-project", fill = miamired)` script that will produce a tibble that contains the **following information for the first 300 entries**:
+
+- title, which you will save in a column titled `title`  
+- year/years of show, which you will save in a column titled `year`  
+- 1-2 sentence summary of show, which you save in a column titled `summary`  
+
+
+---
+
+class: inverse, center, middle
+
+# Recap
+
+---
+
+# Summary of Main Points
+
+By now, you should be able to do the following:
+
+
+- Scrape multiple webpages using `r fontawesome::fa("r-project", fill = miamired)`.
+
+- Use loops and/or tidy modeling approaches to scrape data from multiple webpages.
+
+
+---
+
+# Things to Do to Prepare for Next Class
+
+- Go over your notes, read through the supplementary material (below), and complete [Assignment 05](https://miamioh.instructure.com/courses/213901/assignments/2721966) on Canvas. 
+
+.pull-left[
+.center[
+```{r paper_1, echo=FALSE, out.height="300px"}
+knitr::include_graphics("../../figures/web_scrape_in_data_science.PNG", dpi = NA)
+```
+]
+* [PDF of Published Paper](https://www.tandfonline.com/doi/pdf/10.1080/10691898.2020.1787116)
+* [ePub of Published Paper](https://www.tandfonline.com/doi/epub/10.1080/10691898.2020.1787116?needAccess=true)
+]
+.pull-right[
+.center[<img src="https://raw.githubusercontent.com/rstudio/hex-stickers/main/PNG/rvest.png" height="300px">]
+
+* [Practical Web Scraping in R](https://www.r-bloggers.com/2019/04/practical-introduction-to-web-scraping-in-r/)  
+]
+
