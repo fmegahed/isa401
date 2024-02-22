@@ -1,6 +1,6 @@
 ---
 title: "ISA 401: Business Intelligence & Data Visualization"
-subtitle: '07: Connecting to APIs in `r icons::icon_style(icons::fontawesome("r-project"), fill = "white")`'
+subtitle: '08: Connecting to APIs in `r icons::icon_style(icons::fontawesome("r-project"), fill = "white")`'
 author: '<br>Fadel M. Megahed, PhD <br><br> Endres Associate Professor <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("twitter"), fill = "white")` @FadelMegahed](https://twitter.com/FadelMegahed) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
 date: "Spring 2024"
 output:
