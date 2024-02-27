@@ -18,6 +18,10 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 |            |    02/15    | Scraping Multiple Web Pages in R        | [06_scraping_multiple_webpages.html](https://fmegahed.github.io/isa401/spring2024/class06/06_scraping_multiple_webpages.html) | [06_scraping_multiple_webpages.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/06_scraping_multiple_webpages.pdf) | [06_scraping_multiple_webpages.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/06_scraping_multiple_webpages.pptx) |
 |    04        |    02/20    | Web Scraping Review      | -- | -- | -- |
 |            |    02/22    | Intro to Web APIs       | [08_intro_to_apis.html](https://fmegahed.github.io/isa401/spring2024/class08/08_intro_to_apis.html) | [08_intro_to_apis.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/08_intro_to_apis.pdf) | [08_intro_to_apis.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/08_intro_to_apis.pptx) |
+|    05        |    02/27    | Tidy Data in R      | [09_tidy_data.html](https://fmegahed.github.io/isa401/spring2024/class09/09_tidy_data.html) | [09_tidy_data.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/09_tidy_data.pdf) | [09_tidy_data.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/09_tidy_data.pptx) |
+
+
+
 
 ## Acknowledgments
  * Phase I has benefited heavily from the following references:   
