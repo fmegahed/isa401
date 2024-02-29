@@ -19,7 +19,7 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 |    04        |    02/20    | Web Scraping Review      | -- | -- | -- |
 |            |    02/22    | Intro to Web APIs       | [08_intro_to_apis.html](https://fmegahed.github.io/isa401/spring2024/class08/08_intro_to_apis.html) | [08_intro_to_apis.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/08_intro_to_apis.pdf) | [08_intro_to_apis.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/08_intro_to_apis.pptx) |
 |    05        |    02/27    | Tidy Data in R      | [09_tidy_data.html](https://fmegahed.github.io/isa401/spring2024/class09/09_tidy_data.html) | [09_tidy_data.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/09_tidy_data.pdf) | [09_tidy_data.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/09_tidy_data.pptx) |
-
+|            |    02/29    | Technically Correct & Consistent Data   | [10_technically_correct_and_consistent_data.html](https://fmegahed.github.io/isa401/spring2024/class10/10_technically_correct_and_consistent_data.html) | [10_technically_correct_and_consistent_data.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/10_technically_correct_and_consistent_data.pdf) | [10_technically_correct_and_consistent_data.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/10_technically_correct_and_consistent_data.pptx) |
 
 
 
