@@ -65,6 +65,8 @@ bike2 = read.csv(bike_link)
 dplyr::glimpse(bike1)
 dplyr::glimpse(bike2)
 
+bike1$datetime = lubridate::mdy_hm(bike1$datetime)
+dplyr::glimpse(bike1)
 
 # Let us talk about each col
 # -------------------------
@@ -87,8 +89,16 @@ bike1 = bike1 |>
     # inside mutate, which changes/overwrites the columns we have
     # I used the across function,
     # use the as.factor() and apply to all the columns from season to weather
-    dplyr::across(season:weather, .fns = as.factor)
+    dplyr::across(season:weather, .fns = as.character) 
+  ) |> 
+  dplyr::mutate(
+    # inside mutate, which changes/overwrites the columns we have
+    # I used the across function,
+    # use the as.factor() and apply to all the columns from season to weather
+    dplyr::across(season:weather, .fns = as.factor) 
   )
+
+dplyr::glimpse(bike1)
 
 # optional: change the names of the factors
 # ------------------------------------------
@@ -112,4 +122,100 @@ dplyr::glimpse(bike1)
 # the values and their counts
 table(bike2$humidity)
 table(is.na( bike1$humidity) ) # read_csv() guesses the column classes and # it converted this "outlier" to NA
+
+
+
+
+# * Moving from TC to Consistent Data -------------------------------------
+
+# As of now, in bike1, all the column types are correct based on
+dplyr::glimpse(bike1)
+
+# However, I do not have a consistent dataset
+# Primarily because we learned last class that we have 1 missing value in 
+# humidity (was x61 when we used the read.csv() )
+# So for the data frame from read.csv -- your data is not technically correct
+# at this stage given that humidity in this case was a chr variable
+
+# let us fix the issue associated with humidity
+# if you recall for the readr::read_csv() output this was converted to a NA
+is.na(bike1$humidity) |> table() # shows me that I have one missing data point
+
+# I can use this true and false output, to figure out the index (row number)
+# where we have a missing datapoint, which we can overwrite by = 61
+
+# which row number corresponds to the missing data
+missing_val = is.na(bike1$humidity) |> which() # row 14177 had the missing value
+
+# confirming that (two approaches below are identical)
+bike1$humidity[ missing_val ] # passing an index (applied which() on the T/F vec)
+bike1$humidity[ is.na(bike1$humidity) ] # I used the True values to subset my vector
+
+## What I will do next is, I will fix that value in one line of code
+## Then, optional: I will overwrite the categorical values into something that we 
+## can understand (not a requirement for consistent data but some ppl would 
+## prefer it as it makes the data easier to read)
+
+bike1_copy = bike1 # doing that to show you two different ways of making replacements
+# based on Miles comment about using the replace function
+
+bike1_copy$humidity[14177] = 61 # this will assign a value of 61 to that location
+# regardless of whether we had a missing data point there or not
+
+# make multiple changes to the values in bike1
+# leverage the mutate function to do that instead
+# includes the optional changes as well
+
+
+bike1 |> 
+  dplyr::mutate(
+    # overwriting season based on a nested if_else approach
+    # check for a specific condition, if true assign a value using ~
+    season = dplyr::case_when(
+      season == '1' ~ "winter",
+      season == '2' ~ 'spring',
+      season == '3' ~ 'summer',
+      season == '4' ~ 'fall'
+    ),
+    # you can use case_when for two conditions
+    holiday = dplyr::case_when(
+      holiday == '0' ~ 'no',
+      holiday == '1' ~ 'yes'
+    ),
+    # alternatively
+    workingday = dplyr::if_else(
+      workingday == 0, true = 'not a working day', false = 'working day'
+    ),
+    
+    # case_when for season
+    # for the sake of time, I will make up the definitions
+    # please use the data dictionary for all the previous columns
+    weather = dplyr::case_when(
+      weather == '1' ~ 'cloudy',
+      weather == '2' ~ 'sunny',
+      weather == '3' ~ 'rainy',
+      weather == '4' ~ 'snowy'
+    ),
+    
+    # using the approach that Miles implied
+    humidity = tidyr::replace_na(humidity, 61)
+  ) -> # save it back to bike 1
+  bike1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
