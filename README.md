@@ -22,6 +22,8 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 |            |    02/29    | Technically Correct & Consistent Data   | [10_technically_correct_and_consistent_data.html](https://fmegahed.github.io/isa401/spring2024/class10/10_technically_correct_and_consistent_data.html) | [10_technically_correct_and_consistent_data.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/10_technically_correct_and_consistent_data.pdf) | [10_technically_correct_and_consistent_data.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/10_technically_correct_and_consistent_data.pptx) |
 |     06       |    03/05    | Technically Correct & Consistent Data (Cont.)   | [10_technically_correct_and_consistent_data.html](https://fmegahed.github.io/isa401/spring2024/class10/10_technically_correct_and_consistent_data.html) | [10_technically_correct_and_consistent_data.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/10_technically_correct_and_consistent_data.pdf) | [10_technically_correct_and_consistent_data.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/10_technically_correct_and_consistent_data.pptx) |
 |           |    03/07    | Data Correction and Imputation   | [12_data_correction_and_imputation.html](https://fmegahed.github.io/isa401/spring2024/class12/12_data_correction_and_imputation.html) | [12_data_correction_and_imputation.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/12_data_correction_and_imputation.pdf) | [12_data_correction_and_imputation.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/12_data_correction_and_imputation.pptx) |
+|     07       |    03/12    | Exam 01: ETL   | -- | -- | -- |
+
 
 
 ## Acknowledgments
