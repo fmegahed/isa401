@@ -25,6 +25,8 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 |     07       |    03/12    | Exam 01: ETL   | -- | -- | -- |
 |           |    03/14    | Fundamentals of Data Visualization   | [14_fundamentals_data_viz.html](https://fmegahed.github.io/isa401/spring2024/class14/14_fundamentals_data_viz.html) | [14_fundamentals_data_viz.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/14_fundamentals_data_viz.pdf) |
 [14_fundamentals_data_viz.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/14_fundamentals_data_viz.pptx) |
+|     08      |    03/19    | Fundamentals of Data Visualization (Cont.)   | -- | -- |
+-- |
 
 
 
