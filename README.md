@@ -27,7 +27,8 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 [14_fundamentals_data_viz.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/14_fundamentals_data_viz.pptx) |
 |     08      |    03/19    | Fundamentals of Data Visualization (Cont.)   | -- | -- |
 -- |
-
+|          |    03/21    | Hands-On Lab: Tableau and PowerBI Intro   | -- | -- |
+-- |
 
 
 ## Acknowledgments
