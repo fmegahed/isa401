@@ -30,6 +30,7 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 |          |    03/21    | Hands-On Lab: Tableau and PowerBI Intro   | -- | -- |
 -- |
 |     09      |    04/02    | Commonly Used Charts   | [17_commonly_used_charts.html](https://fmegahed.github.io/isa401/spring2024/class17/17_commonly_used_charts.html) | [17_commonly_used_charts.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/17_commonly_used_charts.pdf) | [17_commonly_used_charts.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/17_commonly_used_charts.pptx) |
+|          |    04/04    | Time-Series Charts   | [18_ts_charts.html](https://fmegahed.github.io/isa401/spring2024/class18/18_ts_charts.html) | [18_ts_charts.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/18_ts_charts.pdf) | [18_ts_charts.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/18_ts_charts.pptx) |
 
 
 
