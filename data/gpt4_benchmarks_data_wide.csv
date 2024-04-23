@@ -1,0 +1,3 @@
+Model,Prompt,DROP(f1),GPQA%,MATH%,MGSM%,MMLU%,HumanEval%
+gpt-4-turbo-2024-04-09,assistant,86,49.3,73.4,89.6,86.7,88.2
+gpt-4-0125-preview,assistant,81.5,41.4,64.5,85.1,85.4,86.6

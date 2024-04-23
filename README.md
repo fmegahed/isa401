@@ -34,7 +34,8 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 |     10      |    04/09    | Commonly Used Charts   | [19_spatial_and_spatiotemporal_charts.html](https://fmegahed.github.io/isa401/spring2024/class19/19_spatial_and_spatiotemporal_charts.html) | [19_spatial_and_spatiotemporal_charts.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/19_spatial_and_spatiotemporal_charts.pdf) | [19_spatial_and_spatiotemporal_charts.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/19_spatial_and_spatiotemporal_charts.pptx) |
 |          |    04/11    | Charts for High Dimensional Data   | [20_high_dimensional_charts.html](https://fmegahed.github.io/isa401/spring2024/class20/20_high_dimensional_charts.html) | [20_high_dimensional_charts.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/20_high_dimensional_charts.pdf) | [20_high_dimensional_charts.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/20_high_dimensional_charts.pptx) |
 |     11      |    04/16    | Business Reports   | [21_business_reports.html](https://fmegahed.github.io/isa401/spring2024/class21/21_business_reports.html) | [21_business_reports.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/21_business_reports.pdf) | [21_business_reports.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/21_business_reports.pptx) |
-
+|           |    04/16    | Exam 02: Data Viz   | -- | -- | -- |
+|     12      |    04/23   | Data Mining Overview  | [23_data_mining_overview.html](https://fmegahed.github.io/isa401/spring2024/class23/23_data_mining_overview.html) | [23_data_mining_overview.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/23_data_mining_overview.pdf) | [23_data_mining_overview.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/23_data_mining_overview.pptx) |
 
 
 ## Acknowledgments
