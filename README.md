@@ -37,6 +37,9 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 |           |    04/16    | Exam 02: Data Viz   | -- | -- | -- |
 |     12      |    04/23   | Data Mining Overview  | [23_data_mining_overview.html](https://fmegahed.github.io/isa401/spring2024/class23/23_data_mining_overview.html) | [23_data_mining_overview.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/23_data_mining_overview.pdf) | [23_data_mining_overview.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/23_data_mining_overview.pptx) |
 |           |    04/25  | Data Mining Overview (Cont.)  | [23_data_mining_overview.html](https://fmegahed.github.io/isa401/spring2024/class23/23_data_mining_overview.html) | [23_data_mining_overview.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/23_data_mining_overview.pdf) | [23_data_mining_overview.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/23_data_mining_overview.pptx) |
+|     13      |    04/30   | A Brief Intro to Clustering  | [25_clustering_intro.html](https://fmegahed.github.io/isa401/spring2024/class25/25_clustering_intro.html) | [25_clustering_intro.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/25_clustering_intro.pdf) | [25_clustering_intro.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/25_clustering_intro.pptx) |
+
+
 
 ## Acknowledgments
  * Phase I has benefited heavily from the following references:   
