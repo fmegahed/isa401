@@ -97,11 +97,11 @@ knitr::include_graphics('../../figures/midjourney_taylor_swift.png')
 
 ## Learning Objectives for Today's Class
 
-- Describe why we are using `r fa(name = "r-project", fill = "miamired")` in this course?  
+- Describe why we are using `r fa(name = "r-project", fill = miamired)` in this course?  
 
 - Understand the syntax, data structures and functions. 
 
-- Utilize the project workflow in `r fa(name = "r-project", fill = "miamired")` and create your first `r fa(name = "r-project", fill = "miamired")` script. 
+- Utilize the project workflow in `r fa(name = "r-project", fill = miamired)` and create your first `r fa(name = "r-project", fill = miamired)` script. 
 
 
 
@@ -343,7 +343,7 @@ x2 # x2 is not in the global environment (see environment)
 
 ## Arthimetic Operators
 
-While we will not specifically talk about doing math in `r fa(name = "r-project", fill = "miamired")`, the operators below are good to know.
+While we will not specifically talk about doing math in `r fa(name = "r-project", fill = miamired)`, the operators below are good to know.
 
 ```{r a_operators, echo=FALSE}
 web <- "https://www.statmethods.net/management/operators.html"
@@ -991,7 +991,7 @@ class: inverse, center, middle
 
 ---
 
-# Your First `r fa(name = "r-project", fill = "miamired")` Script File
+# Your First `r fa(name = "r-project", fill = miamired)` Script File
 
 Refer to our in class code.
 
@@ -1007,11 +1007,11 @@ class: inverse, center, middle
 
 By now, you should be able to do the following:  
 
-- Describe why we are using `r fa(name = "r-project", fill = "miamired")` in this course?  
+- Describe why we are using `r fa(name = "r-project", fill = miamired)` in this course?  
 
 - Understand the syntax, data structures and functions. 
 
-- Utilize the project workflow in `r fa(name = "r-project", fill = "miamired")` and create your first `r fa(name = "r-project", fill = "miamired")` script. 
+- Utilize the project workflow in `r fa(name = "r-project", fill = miamired)` and create your first `r fa(name = "r-project", fill = miamired)` script. 
 
 
 ---
@@ -1020,7 +1020,7 @@ By now, you should be able to do the following:
 
 - Go over your notes, read the **references below**, and **complete** the [self-paced R tutorial](http://rstudio.fsb.miamioh.edu:3838/megahefm/isa401/datatypes/). 
 
-- Complete [Assignment 02](https://miamioh.instructure.com/courses/213901/quizzes/619334) on Canvas.  
+- Complete [Assignment 02](https://miamioh.instructure.com/courses/223961/quizzes/663249) on Canvas.  
 
 .pull-left[
 .center[[<img src="https://d33wubrfki0l68.cloudfront.net/b88ef926a004b0fce72b2526b0b5c4413666a4cb/24a30/cover.png" height="250px">](https://r4ds.had.co.nz)]
