@@ -500,7 +500,7 @@ fast_df <- vroom::vroom("your_file.csv")
 
 .small[
 
-- Download the [AIAAIC Repository.xlsx file from Canvas](https://miamioh.instructure.com/courses/213901/files?preview=30868916).
+- Download the [AIAAIC Repository.xlsx file from Canvas](https://miamioh.instructure.com/courses/223961/files/32784954?module_item_id=5444124).
 
 - Store the data in an appropriate location on your computer (e.g., within the data folder for ISA 401)
 
