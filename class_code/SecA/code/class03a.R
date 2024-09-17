@@ -61,3 +61,43 @@ str(unrate3) # this is a df with the date column being a chr vector since it had
 
 # if GitHub, make sure that you are reading the RAW dataset
 women_df = readr::read_csv("https://raw.githubusercontent.com/glosophy/women-data/master/WomenTotal.csv")
+
+
+
+# * Reading the Excel file ------------------------------------------------
+
+ai_df = readxl::read_excel(
+  path = "data/AIAAIC Repository.xlsx",
+  sheet = 2, # in class I mentioned read either sheet 2 or 3 bec they contain data
+  skip = 1, # we are skipping the first row bec it contains no relevant data
+)
+
+ai_df # from the printout, we have 1087 rows and 35 variables (tibble)
+
+# optional, row one contains no data so we will delete it
+ai_df = ai_df[-1, ] # delete row 1 and keep all cols (since nothing is provided after the comma)
+ai_df
+
+
+
+# * Reading JSON Data -----------------------------------------------------
+
+sen = jsonlite::fromJSON(
+  txt = "https://www.govtrack.us/api/v2/role?current=true&role_type=senator"
+)
+
+# all three options; subsetting the list based on the second sublist that is called objects
+sen_df1 = sen[[2]] 
+sen_df2 = sen$objects
+sen_df3 = sen[['objects']]
+
+dplyr::glimpse(sen_df1) # shows the internal structure of the data similar to the str()
+
+# this will expand the columns that you had and that is why sen_df has now 45 cols
+sen_df =  jsonlite::flatten(sen_df1)
+dplyr::glimpse(sen_df)
+
+sen_tbl = tibble::tibble(sen_df) # converts the df to a tibble
+
+# exports the data using the write.csv or readr::write_csv
+readr::write_csv(x = sen_tbl, file = "data/us_senators_secA.csv")
