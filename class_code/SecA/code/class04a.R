@@ -147,17 +147,18 @@ df_2023 = scrape_crash_data(
 # we will generate a chr vector of URLS
 
 urls_for_crashes = 
-  paste0("https://www.planecrashinfo.com/", 2023:2024, "/", 2023:2024, ".htm" )
+  paste0("https://www.planecrashinfo.com/", 2018:2024, "/", 2018:2024, ".htm" )
   
 # I can use my function to scrape the data from these 4 URLS
 
 # Approach 1: The Non R Way
-crash_df1 = tibble::tibble() # initialized the df
+crash_df1 = tibble::tibble() # initialized the crash_df1 (0 by 0 tibble)
 for (i in 1:length(urls_for_crashes)) {
   URL = urls_for_crashes[i]
+  URL
   df = scrape_crash_data(url = URL)
   
-  output = dplyr::bind_rows(crash_df1, df)
+  crash_df1 = rbind(crash_df1, df) # was not consistent in my saving (output)
 }
 
 # Approach 2: The R Way

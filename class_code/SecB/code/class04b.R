@@ -149,12 +149,13 @@ df2023 = scrape_crash(plane_crash_url = "https://www.planecrashinfo.com/2023/202
 # * Multiple Being 2 URLs -------------------------------------------------
 urls1 = c("https://www.planecrashinfo.com/2024/2024.htm", "https://www.planecrashinfo.com/2023/2023.htm")
 
-urls2 = paste0("https://www.planecrashinfo.com/", 2023:2024, "/", 2023:2024, ".htm")
+urls2 = paste0("https://www.planecrashinfo.com/", 2018:2024, "/", 2018:2024, ".htm")
 
 # THE R WAY
 # applying our custom function to every element of the urls2 chr vector
 crash_data = purrr::map_df(.x = urls2, .f = scrape_crash)
 
+crash_data2 = data.frame() # initializes it and creates a crash_data2 data.frame of 0 rows & 0 cols
 # For loops
 for (i in 1:length(urls2)) {
   URL = urls2[i]
@@ -163,6 +164,7 @@ for (i in 1:length(urls2)) {
   df = scrape_crash(URL)
   
   # how to not overwrite the 2023 data
+  crash_data2 = rbind(crash_data2, df)
 }
 
 
