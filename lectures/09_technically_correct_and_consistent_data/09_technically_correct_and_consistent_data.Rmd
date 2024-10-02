@@ -55,6 +55,7 @@ style_mono_accent(base_color = "#84d6d3",
                   base_font_size = "20px")
 
 xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "tachyons", "panelset", "search", "fit_screen", "editable", "clipable"))
+xaringanExtra::use_clipboard()
 ```
 
 
@@ -324,7 +325,38 @@ In this in-class, demo we will:
 
 # Data Validation Pipeline: `pointblank` `r fontawesome::fa('box', fill='gold')`
 
-```{r pointblank_tc, echo=FALSE, results='hide'}
+```{r pointblank_tc1, echo=TRUE, eval=FALSE}
+bike_tbl = 
+  readr::read_csv('../../data/bike_sharing_data.csv') |> janitor::clean_names()
+
+act = pointblank::action_levels(warn_at = 0.01, notify_at = 0.01, stop_at = NULL)
+
+agent =
+  pointblank::create_agent(bike_tbl, actions = act) |>
+  pointblank::col_is_date(columns = pointblank::vars(datetime)) |> 
+  pointblank::col_is_factor(
+    columns = pointblank::vars(season, holiday, workingday, weather)
+    ) |> 
+  pointblank::col_is_numeric(
+    columns = pointblank::vars(temp, atemp, humidity, windspeed)
+    ) |> 
+  pointblank::col_is_integer(
+    columns = pointblank::vars(casual, registered, count)
+    ) |> 
+  pointblank::col_is_character(columns = pointblank::vars(sources))
+
+
+res = pointblank::interrogate(agent, sample_limit = nrow(bike_tbl))
+res
+```
+
+
+
+---
+
+# Data Validation Pipeline: `pointblank` `r fontawesome::fa('box', fill='gold')`
+
+```{r pointblank_tc2, echo=FALSE, results='hide'}
 pacman::p_load(tidyverse, magrittr, lubridate, pointblank, hms, janitor)
 
 bike_tbl = read_csv('../../data/bike_sharing_data.csv') |> janitor::clean_names()
