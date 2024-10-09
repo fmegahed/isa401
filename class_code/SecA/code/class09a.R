@@ -74,7 +74,13 @@ bike_tbl = readr::read_csv(
   "https://raw.githubusercontent.com/fmegahed/isa401/main/data/bike_sharing_data.csv"
 )
 
-table(bike_tbl$holiday)
+table(bike_tbl$holiday) # counts of holidays
+# odd rows in the output are the values you have for that col
+# even rows are the corresponding counts
+# from an interpretation view, our belief in the meaning of that variable changed
+# because 0: corresponds to no holiday; 1 corresponds to a holiday (to make this make sense)
+
+table(bike_tbl$workingday) 
 
 bike_tbl = bike_tbl |> 
   dplyr::mutate(
@@ -91,5 +97,65 @@ skimr::skim(bike_tbl)
 # the results of the transformation in terms of count of holiday is consistent with line 77
 
 
-# NOW we have technically correct data but not consistent based on the output from skimr
-# we have one missing value in humidity (which we will dig for next class)
+# question for you is do we have consistent data?
+# [1] We have one missing value in humidity
+# How can we find that singular missing value in humidity?
+# is.na() -> this will return TRUE or FALSE 
+# I can technically use that to find the row of interest in one of two ways:
+# [a] through subsetting -- since row = TRUE, would help me identify datetime
+# [b] identify the row number through a base R function that is called which()
+
+na_humidity = is.na(bike_tbl$humidity)
+table(na_humidity) # expectation only one true which was correct
+
+bike_tbl[na_humidity, ] # print that specific row and all columns bec after , is empty
+
+which(na_humidity) # which is TRUE (and the answer is row 14177)
+
+# what should that NA value be?
+# Using logic
+# one option is to use the mean of that col (but that is not a great option)
+# because we have more context
+# if you want to use the mean, I would average the value before it and the one after it
+(45+61)/2 # averaging the values before it and after it
+mean(bike_tbl$humidity, na.rm = T) # the mean of the entire col
+
+bike_tbl[na_humidity, 'humidity'] = (45+61)/2  # overwrite the NA
+
+
+# let us look at the sources col
+# it had NAs, but it is a chr col so let us look at its values
+table(bike_tbl$sources, useNA = "ifany") # to show me the count of NAs
+
+# you should not like the output from table above (why?)
+# [1] AD campaign needs to be consolidated (we want to make our dataset more consistent)
+# Optional: Combine all the Googles 
+# Comment: Twitter has 1745 values
+
+# [i] convert the entire col to a consistent casing (whether upper/lower or some other case style)
+# this will by default merge the first 3 values
+# [ii] detect the second and third option and change them to the first option
+# [iii] convert this col to factor and collapse the factor levels to match what you want
+
+# let us convert ad campaign to lower case (do it in a mutate statement or directly to the col)
+bike_tbl$sources = tolower(bike_tbl$sources) #  3472+851+894 = 5217
+table(bike_tbl$sources, useNA = "ifany")
+
+# now to show you the logic for the second option [ii], let us consolidate google
+google_index = stringr::str_detect(
+  string = bike_tbl$sources, pattern = "google"
+) # if this works I expect 1553 + 527 + 828 = how many TRUEs I have
+table(google_index)
+bike_tbl$sources[google_index] = 'Google' # replace everything with Google
+table(bike_tbl$sources, useNA = "ifany")
+
+# technically, we do not have consistent data, but we can figure out how to replace 
+# the NAs for the rest of the col (imputation)
+# let us impute the NAs in bike_tbl using "unknown"
+
+# you can find the index for all the NAs and replace them similar to humidity
+# I will show you a different way so you can have something else in your code
+bike_tbl = tidyr::replace_na(
+  data = bike_tbl, replace = list(sources = 'unknown')
+  )
+table(bike_tbl$sources, useNA = 'always')
