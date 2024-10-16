@@ -1,0 +1,19 @@
+
+Q1: You get 0.5 extra for saying time, but full credit for saying text
+
+Question 8: 
+	- 2.25 for getting 17 out of the 18 results
+	- 2.85 for getting the 18 results in a vec of 3
+	- 2.75 for getting the 18 results in a vec of 1
+	- 1 for having a reasonable css selector
+
+Question 9:
+	- 2.5 for returning the results but not cleaning them
+	- 1 for returning the results and not using html_text2 on them
+
+Question 10: 
+	- 0.5 for putting a token in there
+	- 1.5 for making the correct URL
+	- 4.5 for the correct but not scalable solution
+
+Question 15: 0.5 for saying the properties but not the features of a data frame.

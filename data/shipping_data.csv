@@ -1,0 +1,12 @@
+Order ID,Order Date ,Order Priority ,Product Container,Product Cost, Ship Date
+1, 1/1/2022 , 5 - low , Large box ,25, 1/5/2022
+2, 1/4/2022 , 4 - not specified , Small Box ,36, 1/7/2022
+3, 1/15/2022 , 2- high , Small Box ,38, 1/17/2022
+3, 1/15/2022 , 2- high , Small Box ,41, 1/17/2022
+3, 1/15/2022 , 2- high , Jumbo Box ,44, 1/17/2022
+3, 1/15/2022 , 2- high , Wrap Bag ,33, 1/17/2022
+4, 1/18/2022 , 1- urgent , Small Box ,33, 1/19/2022
+5, 1/20/2022 , 3- medium , Medium Box ,40, 1/23/2022
+5, 1/20/2022 , 3- medium , Small Box ,16, 1/23/2022
+5, 1/20/2022 , 3- medium , Large box ,38, 1/23/2022
+6, 1/21/2022 , 1- urgent , Wrap Bag ,7, 1/22/2022
