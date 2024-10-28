@@ -25,6 +25,10 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 |           |    10/09    | Exam 01      | -- | -- | -- |
 |    08        |    10/14    | Exam 01 Recap      | -- | -- | -- |
 |           |    10/16    | Fundamentals of Data Visualization      | [14_fundamentals_data_viz.html](https://fmegahed.github.io/isa401/fall2024/class14/14_fundamentals_data_viz.html) | [14_fundamentals_data_viz.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/14_fundamentals_data_viz.pdf) | [14_fundamentals_data_viz.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/14_fundamentals_data_viz.pptx) |
+|    09        |    10/21    | Lab 01: Tableau Intro     | -- | -- | -- |
+|           |    10/23    | Lab 02: Power BI Intro     | -- | -- | -- |
+|    10       |    10/28    | Commonly Used Charts      | [17_commonly_used_charts.html](https://fmegahed.github.io/isa401/fall2024/class17/17_commonly_used_charts.html) | [17_commonly_used_charts.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/17_commonly_used_charts.pdf) | [17_commonly_used_charts.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/17_commonly_used_charts.pptx) |
+
 
 
 ## Acknowledgments

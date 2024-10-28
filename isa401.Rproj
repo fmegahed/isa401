@@ -11,3 +11,7 @@ Encoding: UTF-8
 
 RnwWeave: Sweave
 LaTeX: pdfLaTeX
+
+PythonType: conda
+PythonVersion: 3.12.5
+PythonPath: C:/Users/megahefm/AppData/Local/anaconda3/envs/aimsa/python.exe
