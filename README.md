@@ -28,7 +28,8 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 |    09        |    10/21    | Lab 01: Tableau Intro     | -- | -- | -- |
 |           |    10/23    | Lab 02: Power BI Intro     | -- | -- | -- |
 |    10       |    10/28    | Commonly Used Charts      | [17_commonly_used_charts.html](https://fmegahed.github.io/isa401/fall2024/class17/17_commonly_used_charts.html) | [17_commonly_used_charts.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/17_commonly_used_charts.pdf) | [17_commonly_used_charts.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/17_commonly_used_charts.pptx) |
-
+|          |    10/30    | Time Series Charts    | [18_ts_charts.html](https://fmegahed.github.io/isa401/fall2024/class18/18_ts_charts.html) | [18_ts_charts.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/18_ts_charts.pdf) | [18_ts_charts.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/18_ts_charts.pptx) |
+|    11       |    11/04    | Spatial and Spatiotemporal Charts      | [19_spatial_and_spatiotemporal_charts.html](https://fmegahed.github.io/isa401/fall2024/class19/19_spatial_and_spatiotemporal_charts.html) | [19_spatial_and_spatiotemporal_charts.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/19_spatial_and_spatiotemporal_charts.pdf) | [19_spatial_and_spatiotemporal_charts.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/19_spatial_and_spatiotemporal_charts.pptx) |
 
 
 ## Acknowledgments
