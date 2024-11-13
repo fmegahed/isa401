@@ -31,7 +31,8 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 |          |    10/30    | Time Series Charts    | [18_ts_charts.html](https://fmegahed.github.io/isa401/fall2024/class18/18_ts_charts.html) | [18_ts_charts.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/18_ts_charts.pdf) | [18_ts_charts.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/18_ts_charts.pptx) |
 |    11       |    11/04    | Spatial and Spatiotemporal Charts      | [19_spatial_and_spatiotemporal_charts.html](https://fmegahed.github.io/isa401/fall2024/class19/19_spatial_and_spatiotemporal_charts.html) | [19_spatial_and_spatiotemporal_charts.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/19_spatial_and_spatiotemporal_charts.pdf) | [19_spatial_and_spatiotemporal_charts.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/19_spatial_and_spatiotemporal_charts.pptx) |
 |          |    11/06    | High Dimensional Charts      | [20_high_dimensional_charts.html](https://fmegahed.github.io/isa401/fall2024/class20/20_high_dimensional_charts.html) | [20_high_dimensional_charts.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/20_high_dimensional_charts.pdf) | [20_high_dimensional_charts.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/20_high_dimensional_charts.pptx) |
-
+|     12     |    11/11    | Exam 02: Fundamentals of Data Viz     | -- | -- | -- |
+|          |    11/13    | Business Reporting      | [22_business_reports.html](https://fmegahed.github.io/isa401/fall2024/class22/22_business_reports.html) | [22_business_reports.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/22_business_reports.pdf) | [22_business_reports.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/22_business_reports.pptx) |
 
 
 ## Acknowledgments
