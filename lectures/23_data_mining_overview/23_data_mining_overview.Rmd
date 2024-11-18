@@ -296,9 +296,7 @@ class: inverse, center, middle
 
 
 .center[
-```{r xkcd, echo=FALSE, out.width='60%'}
-knitr::include_graphics('../../figures/extrapolating.png')
-```
+![](https://imgs.xkcd.com/comics/extrapolating.png)
 ]
 
 
@@ -328,19 +326,13 @@ knitr::include_graphics('../../figures/extrapolating.png')
 
 .pull-left[
 .center[
-```{r ethical, echo=FALSE, out.width='100%'}
-knitr::include_graphics('../../figures/51eUw-v0X+L._SX329_BO1,204,203,200_.jpg')
-```
+![](https://images-na.ssl-images-amazon.com/images/I/51eUw-v0X+L._SX329_BO1,204,203,200_.jpg)
 ]
 ]
 
 .pull-right[
 .center[
-
-```{r ethical2, echo=FALSE, out.width='100%'}
-knitr::include_graphics('../../figures/51obBtKNC5L._SX331_BO1,204,203,200_.jpg')
-```
-
+![](https://images-na.ssl-images-amazon.com/images/I/51obBtKNC5L._SX331_BO1,204,203,200_.jpg)
 ]
 ]
 
@@ -365,10 +357,9 @@ class: inverse, center, middle
 # Frameworks for Data Mining Projects
 
 .center[
-```{r datasciencepm, echo=FALSE, out.width='100%'}
-knitr::include_graphics('../../figures/process-google-search-volume-2019-2020.png')
-```
+[![](https://www.datascience-pm.com/wp-content/uploads/2020/10/process-google-search-volume-2019-2020.png)](https://www.datascience-pm.com/crisp-dm-still-most-popular/)
 ]
+
 
 
 ---
