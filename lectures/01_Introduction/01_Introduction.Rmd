@@ -1,8 +1,8 @@
 ---
 title: "ISA 401: Business Intelligence & Data Visualization"
 subtitle: "01: Introduction to BI and Data Viz"
-author: '<br>Fadel M. Megahed, PhD <br><br>Professor of Information Systems and Business Analytics <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("twitter"), fill = "white")` @FadelMegahed](https://twitter.com/FadelMegahed) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
-date: "Fall 2024"
+author: '<br>Fadel M. Megahed, PhD <br><br>Raymond E. Gloss Professor in Business <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("twitter"), fill = "white")` @FadelMegahed](https://twitter.com/FadelMegahed) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
+date: "Fall 2025"
 output:
   xaringan::moon_reader:
     self_contained: true
@@ -185,31 +185,35 @@ crashes = readr::read_csv("https://data.cincinnati-oh.gov/api/views/rvmt-pkmq/ro
 
 ```{r desc_stats, echo=FALSE}
 crashes %<>% 
-  mutate(datetime = parse_date_time(datecrashreported, 
-                                    orders = "'%m/%d/%Y %I:%M:%S %p",
-                                    tz = 'America/New_York',
-                                    locale = "English"),
-         hour = hour(datetime),
-         date = as_date(datetime)
-         )
+  dplyr::mutate(
+    datetime = lubridate::parse_date_time(
+      datecrashreported, 
+      orders = "'%m/%d/%Y %I:%M:%S %p",
+      tz = 'America/New_York',
+      locale = "English"
+    ),
+    hour = hour(datetime),
+    date = as_date(datetime)
+  )
 
 unique_crashes = 
   crashes  |> 
-  filter(date >= "2023-01-01" & date <= "2023-12-31") |> 
-  group_by(instanceid) |> 
-  select(-datecrashreported) |> 
-  filter(typeofperson == 'D - DRIVER') |> 
-  select(instanceid, date, dayofweek, hour, weather, 
-         address_x, latitude_x, longitude_x) |>
+  dplyr::filter(date >= "2024-01-01" & date <= "2024-12-31") |> 
+  dplyr::group_by(instanceid) |> 
+  dplyr::select(-datecrashreported) |> 
+  dplyr::filter(typeofperson == 'D - DRIVER') |> 
+  dplyr::select(instanceid, date, dayofweek, hour, weather, 
+                address_x, latitude_x, longitude_x) |>
   unique() |> 
-  mutate(dayofweek = as_factor(dayofweek),
-         hour = as_factor(hour),
-         weather = as_factor(weather)
-         ) |> 
-  ungroup()
+  dplyr::mutate(
+    dayofweek = forcats::as_factor(dayofweek),
+    hour = forcats::as_factor(hour),
+    weather = forcats::as_factor(weather)
+  ) |> 
+  dplyr::ungroup()
 
-unique_crashes |> select(dayofweek, weather) |> 
-  map(.f = table)
+unique_crashes |> dplyr::select(dayofweek, weather) |> 
+  purrr::map(.f = table)
   
 ```
 
@@ -226,21 +230,21 @@ unique_crashes |> select(dayofweek, weather) |>
 
 ```{r viz, echo=FALSE, fig.height=2.25}
 unique_crashes |> 
-  select(dayofweek) |> 
-  group_by(dayofweek) |> 
-  count() -> day_of_week_tbl
+  dplyr::select(dayofweek) |> 
+  dplyr::group_by(dayofweek) |> 
+  dplyr::count() -> day_of_week_tbl
 
 day_of_week_tbl |> 
-  mutate(
+  dplyr::mutate(
     dayofweek = ordered(dayofweek, 
       levels=c("SUN", "SAT", "FRI", "THU", "WED", "TUES", "MON")
     )
   ) |> 
-  ggplot(aes(x= n, y = dayofweek)) +
-  geom_col(fill = miamired) +
-  theme_bw(base_size = 12) + 
-  labs(x = 'Count/Freq', y = 'Day of the Week',
-       title = 'Crashes by Day in Cincinnati in 2023',
+  ggplot2::ggplot(ggplot2::aes(x= n, y = dayofweek)) +
+  ggplot2::geom_col(fill = miamired) +
+  ggplot2::theme_bw(base_size = 12) + 
+  ggplot2::labs(x = 'Count/Freq', y = 'Day of the Week',
+       title = 'Crashes by Day in Cincinnati in 2024',
        caption = 'Created by: Fadel Megahed | Data source: City of Cincy Open Data Portal (rvmt-pkmq)') 
 ```
 
@@ -253,32 +257,35 @@ day_of_week_tbl |>
 ```{r viz2a, echo=FALSE, cache=TRUE, fig.height=2.85}
 weather_levels = levels(unique_crashes$weather)
 
-daily_crashes_2023= unique_crashes |> 
-  mutate(weather = factor(weather, levels = sort(weather_levels))) |> 
-  select(instanceid, date, weather) |> 
-  group_by(date) |> 
-  count()
+daily_crashes_2024= unique_crashes |> 
+  dplyr::mutate(weather = factor(weather, levels = sort(weather_levels))) |> 
+  dplyr::select(instanceid, date, weather) |> 
+  dplyr::group_by(date) |> 
+  dplyr::count()
   
-cal = calendR(title = NULL,
-              year = 2023,
-              special.days = daily_crashes_2023$n,
-              orientation = "landscape",
-              day.size = 2,
-              months.size = 8,
-              weeknames.size = 3,
-              margin = 0,
-              text.size = 8,
-              title.size = 14,
-              gradient = TRUE,
-              low.col = "#FFFFED",
-              special.col = miamired,
-              legend.pos = 'right',
-              legend.title = '# Crashes') + 
-  theme(plot.title = element_text(face = 'bold', color =  miamired),
-        legend.title = element_text(face = 'bold', size = 9), 
-        legend.text = element_text(size = 7),
-        plot.caption = element_text(size = 7)) +
-  labs(caption = 'Created by: Fadel Megahed | Data source: City of Cincy Open Data Portal (rvmt-pkmq)')
+cal = calendR::calendR(
+  title = NULL,
+  year = 2024,
+  special.days = daily_crashes_2024$n,
+  orientation = "landscape",
+  day.size = 2,
+  months.size = 8,
+  weeknames.size = 3,
+  margin = 0,
+  text.size = 8,
+  title.size = 14,
+  gradient = TRUE,
+  low.col = "#FFFFED",
+  special.col = miamired,
+  legend.pos = 'right',
+  legend.title = '# Crashes') + 
+  ggplot2::theme(
+    plot.title = ggplot2::element_text(face = 'bold', color =  miamired),
+    legend.title = ggplot2::element_text(face = 'bold', size = 9), 
+    legend.text = ggplot2::element_text(size = 7),
+    plot.caption = ggplot2::element_text(size = 7)
+    ) +
+  ggplot2::labs(caption = 'Created by: Fadel Megahed | Data source: City of Cincy Open Data Portal (rvmt-pkmq)')
 
 cal
 
@@ -436,53 +443,6 @@ Even though software will be extensively used, this is not a software class. **I
 - Create interactive dashboards that can be used for business decision making, reporting and/or performance management.
 
 - Be able to apply the skills from this class in your future career.
-
----
-
-# Should you Care? Read this Job Ad
-
-When I have designed this course, I have incorporated a lot of feedback from **industry collaborators, peer/leading academic programs, and state-of-the-art-research advancements.** Thus, this is meant to be a hands-on, practically-relevant course.  
-
-### Non-Graded Class Activity #2
-
-`r countdown(minutes = 4, seconds = 0, top = 0, font_size = "2em")`
-
-.panelset[
-
-.panel[.panel-name[Activity]
-
-.small[
-To demonstrate the practicality of this course, let us consider [this job ad](https://www.indeed.com/viewjob?jk=77f4cf1687882e41&tk=1eff1eg1op7cg800&from=serp&vjs=3).  
-- Please open the Data Scientist (6257U) - CED Data Scientist position at UC - Berkeley by clicking [here](https://www.indeed.com/viewjob?jk=77f4cf1687882e41&tk=1eff1eg1op7cg800&from=serp&vjs=3).  
-
-- Compare the **responsibilities** and the **required qualifications** with the course objectives.  
-
-- Read through the required qualifications. 
-
-- **Document what you will learn in this course to make you more competitive.**
-]
-]
-
-.panel[.panel-name[Documentation Space]
-
-- .can-edit.key-activity4[Insert your solution here (Use Chrome as your browser to edit this part of the page)] 
-
-]
-]
-
-
----
-
-# Should you Care? Recent Alumni Testimonials
-
-```{r testimonials, echo=FALSE, out.width='100%', fig.fullwidth=TRUE, results='asis'}
-knitr::include_graphics('../../figures/email1.jpg')
-
-cat('<br> <br>')
-
-knitr::include_graphics('../../figures/email2.jpg')
-```
-
 
 ---
 
@@ -758,7 +718,7 @@ unique_crashes =
          hour = hour(datetime),
          date = as_date(datetime)
   ) |> 
-  filter(date >= "2023-01-01" & date <= "2023-12-31") |> 
+  filter(date >= "2024-01-01" & date <= "2024-12-31") |> 
   group_by(instanceid) |> 
   select(-datecrashreported) |> 
   filter(typeofperson == 'D - DRIVER') |> 
@@ -785,7 +745,7 @@ unique_crashes |>
   theme_bw(base_size = 12) +
   scale_y_continuous(breaks = pretty_breaks(n = 10), limits = c(0, 200)) +
   labs(x = 'Month', y = 'Crashes per Month', 
-       title = 'Crashes Recorded in Two Cincinnati Neighborhoods in 2023',
+       title = 'Crashes Recorded in Two Cincinnati Neighborhoods in 2024',
        caption = 'Created by: Fadel Megahed | Data source: City of Cincy Open Data Portal (rvmt-pkmq)')
 ```
 
@@ -834,7 +794,7 @@ knitr::include_graphics("../../figures/minard.png")
 .panel[.panel-name[Activity]
 
 .pull-left[
-### Non-Graded Class Activity #3
+### Non-Graded Class Activity #2
 
 .small[
 - Who is the target audience?  
@@ -966,4 +926,4 @@ By now, you should be able to do the following:
 
 # 🎯 Assignment 🎯
 
-- Complete [Assignment 01](https://miamioh.instructure.com/courses/223961/quizzes/653564) on Canvas to reinforce your understanding and application of the topics covered today as well as the assigned readings.
+- Complete [Assignment 01](https://miamioh.instructure.com/courses/240893/quizzes/745692?module_item_id=6164696) on Canvas to reinforce your understanding and application of the topics covered today as well as the assigned readings.
