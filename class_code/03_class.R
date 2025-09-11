@@ -63,4 +63,40 @@ colnames(ai_incidents)[c(14, 15, 16)] =
 
 # subsetting in place
 # negative is to drop
-ai_incidents = ai_incidents[-1, ] # remove all the data in row 1, all columns
+ai_incidents = ai_incidents[-1, 1:21 ] # remove all the data in row 1, all columns
+
+dplyr::glimpse(ai_incidents)
+
+unique(ai_incidents$Occurred) # to see the unique values in that column
+unique(ai_incidents[['Occurred']])
+
+
+
+# * Reading JSON Data -----------------------------------------------------
+
+senators = jsonlite::fromJSON(
+  txt = "https://www.govtrack.us/api/v2/role?current=true&role_type=senator"
+)
+
+names(senators)
+
+# Based on the information, the meta data information is expected/ not helpful
+
+# We will subset the list to only the objects data frame
+
+# From the pepper shaker analogy, we have two options to get the underlying df
+
+senators_df1 = senators[[2]]
+senators_df2 = senators[['objects']]
+senators_df3 = senators$objects
+
+# the argument flatten = T can sometimes 
+# fix the idea of a list/data frame within your data frame
+senators_flatten = jsonlite::fromJSON(
+  txt = "https://www.govtrack.us/api/v2/role?current=true&role_type=senator",
+  flatten = T
+)
+
+s_df = senators_flatten$objects
+
+dplyr::glimpse(s_df)

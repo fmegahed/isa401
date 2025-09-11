@@ -14,7 +14,8 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 |           |    08/28     | Introduction to R       | [02_introduction_to_r.html](https://fmegahed.github.io/isa401/fall2025/class02/02_introduction_to_r.html) | [02_introduction_to_r.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/02_introduction_to_r.pdf) | [02_introduction_to_r.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/02_introduction_to_r.pptx) |
 | 02           |    09/02    | Data Import and Export in R        | [03_data_import_export.html](https://fmegahed.github.io/isa401/fall2025/class03/03_data_import_export.html) | [03_data_import_export.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/03_data_import_export.pdf) | [03_data_import_export.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/03_data_import_export.pptx) |
 |            |    09/04    | Scraping a Single Web Page       | [04_scraping_webpages.html](https://fmegahed.github.io/isa401/fall2025/class04/04_scraping_webpages.html) | [04_scraping_webpages.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/04_scraping_webpages.pdf) | [04_scraping_webpages.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/04_scraping_webpages.pptx) |
-
+| 03           |    09/09    |  Scraping a Single Web Page (Cont.)      | -- | -- | -- |
+|            |    09/11    | Scraping Multiple Web Pages      | [006_scraping_multiple_webpages.html](https://fmegahed.github.io/isa401/fall2025/class06/006_scraping_multiple_webpages.html) | [006_scraping_multiple_webpages.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/006_scraping_multiple_webpages.pdf) | [006_scraping_multiple_webpages.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/006_scraping_multiple_webpages.pptx) |
 
 
 
