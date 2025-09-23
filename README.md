@@ -16,6 +16,9 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 |            |    09/04    | Scraping a Single Web Page       | [04_scraping_webpages.html](https://fmegahed.github.io/isa401/fall2025/class04/04_scraping_webpages.html) | [04_scraping_webpages.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/04_scraping_webpages.pdf) | [04_scraping_webpages.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/04_scraping_webpages.pptx) |
 | 03           |    09/09    |  Scraping a Single Web Page (Cont.)      | -- | -- | -- |
 |            |    09/11    | Scraping Multiple Web Pages      | [06_scraping_multiple_webpages.html](https://fmegahed.github.io/isa401/fall2025/class06/06_scraping_multiple_webpages.html) | [06_scraping_multiple_webpages.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/06_scraping_multiple_webpages.pdf) | [06_scraping_multiple_webpages.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/06_scraping_multiple_webpages.pptx) |
+| 04           |    09/16    |  Scraping Multiple Web Pages (Cont.)      | -- | -- | -- |
+|            |    09/18    | Intro to APIs      | [08_intro_to_apis.html](https://fmegahed.github.io/isa401/fall2025/class08/08_intro_to_apis.html) | [08_intro_to_apis.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/08_intro_to_apis.pdf) | [08_intro_to_apis.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/08_intro_to_apis.pptx) |
+| 05           |    09/23    |  Tidy Data      | [09_tidy_data.html](https://fmegahed.github.io/isa401/fall2025/class08/09_tidy_data.html) | [09_tidy_data.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/09_tidy_data.pdf) | [09_tidy_data.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/09_tidy_data.pptx) |
 
 
 

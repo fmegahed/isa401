@@ -1,0 +1,607 @@
+---
+title: "ISA 401: Business Intelligence & Data Visualization"
+subtitle: '09: Tidy Data in `r icons::icon_style(icons::fontawesome("r-project"), fill = "white")`'
+author: '<br>Fadel M. Megahed, PhD <br><br>Raymond E. Glos Professor in Business <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("twitter"), fill = "white")` @FadelMegahed](https://twitter.com/FadelMegahed) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
+date: "Fall 2025"
+output:
+  xaringan::moon_reader:
+    self_contained: true
+    css: [default, "../../style_files/fonts.css", "../../style_files/my-theme.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: magula
+      highlightLines: true
+      highlightLanguage: ["r"]
+      countIncrementalSlides: false
+      ratio: "16:9"
+header-includes:  
+  - "../../style_files/header.html"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE,
+                      progress = FALSE, 
+                      verbose = FALSE,
+                      dev = 'png',
+                      fig.height = 2.5,
+                      dpi = 300,
+                      fig.align = 'center')
+
+options(htmltools.dir.version = FALSE)
+
+miamired = '#C3142D'
+
+if(require(pacman)==FALSE) install.packages("pacman")
+if(require(devtools)==FALSE) install.packages("devtools")
+
+if(require(countdown)==FALSE) devtools::install_github("gadenbuie/countdown")
+if(require(xaringanExtra)==FALSE) devtools::install_github("gadenbuie/xaringanExtra")
+
+
+pacman::p_load(tidyverse, magrittr, lubridate, janitor, # data analysis pkgs
+               httr, jsonlite, tidycensus, # for APIs
+               fontawesome, RefManageR, xaringanExtra, countdown) # for slides
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+if(require(xaringanthemer) == FALSE) install.packages("xaringanthemer")
+library(xaringanthemer)
+
+style_mono_accent(base_color = "#84d6d3",
+                  base_font_size = "20px")
+
+xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "tachyons", "panelset", "broadcast", "share_again", "search", "fit_screen", "editable", "clipable"))
+```
+
+
+# Quick Refresher from Last Class
+
+
+`r emo::ji("check")` Describe what is an API   
+
+`r emo::ji("check")` Download data using APIs  
+
+---
+
+# Learning Objectives for Today's Class
+
+- Define tidy data
+
+- Perform pivot and rectangling operations in `r fontawesome::fa('r-project', fill = miamired)`
+
+---
+class: inverse, center, middle
+
+# Tidy Data `r emo::ji('broom')`
+
+---
+
+
+background-image: url("https://images.unsplash.com/photo-1587654780291-39c9404d746b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1950&q=80")
+background-size: 90% 90%
+
+--
+
+<img src = "https://images.unsplash.com/photo-1615465502839-71d5974f5087?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80", width = 45%, style = "position:absolute; top: 22.5%; left: 5.5%; box-shadow: 3px 5px 3px 1px #00000080;"></img>
+
+--
+
+<img src = "https://images.unsplash.com/photo-1615750198206-6e632e147ef9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1350&q=80", width = 45%, style = "position:absolute; top: 22.5%; left: 52.5%; box-shadow: 3px 5px 3px 1px #00000080;"></img>
+
+.footnote[
+<html>
+<hr>
+</html>
+**Sources:** All three images are obtained from Upsplash
+]
+
+???
+
+* each piece is a scalar, a vector, a tibble, a list
+* each piece is vector functions or table functions
+* bc they are standard and consistent blocks,
+* ensemble them to a simple mario, or complex nintendo
+* so far you worked with several datasets now,
+* hopefully you find a pattern is using these dplyr verbs in different ways to solve various problems.
+
+---
+
+
+# The R for Data Science Workflow
+
+```{r r4ds_img, echo=FALSE, out.width='100%'}
+knitr::include_graphics(path = 'https://d33wubrfki0l68.cloudfront.net/571b056757d68e6df81a3e3853f54d3c76ad6efc/32d37/diagrams/data-science.png')
+```
+
+.footnote[
+<html>
+<hr>
+</html>
+**Source:** Image is from Wickham, H. Grolemnund, G. (2017). "R for Data Science", O'Reily. <https://r4ds.had.co.nz/introduction.html>
+]
+
+---
+
+# The Rationale for Tidy Data
+
+- The **tidy framework** provides a **consistent way to organize your data** in `r fontawesome::fa('r-project', fill = miamired)`.
+
+- Getting your data into this format requires some **upfront work, but that work pays off in the long term.**
+
+- Once you have tidy data and the tidy tools provided by packages in the `tidyverse`, you will spend **much less time munging data from one representation to another, allowing you to spend more time on the analytic questions at hand.** 
+
+.footnote[
+<html>
+<hr>
+</html>
+**Source:** Slide is based on Wickham, H. Grolemnund, G. (2017). "R for Data Science", O'Reily. <https://r4ds.had.co.nz/tidy-data.html>.
+]
+
+---
+
+background-image: url(https://github.com/allisonhorst/stats-illustrations/raw/main/rstats-artwork/tidydata_1.jpg)
+background-size: 95% 95%
+
+.footnote[
+**Source:** Illustration is from the Openscapes blog [Tidy Data for reproducibility, efficiency, and collaboration](https://www.openscapes.org/blog/2020/10/12/tidy-data/) by Julia Lowndes and Allison Horst
+]
+
+???
+
+* In database, this is schema.
+* Tidy data principles are a rephrase of third norm in a database schema design.
+<https://en.wikipedia.org/wiki/Third_normal_form>, to data scientists.
+* tidy data is for human consumption.
+* Tabular data is column-oriented format
+
+---
+
+background-image: url(https://github.com/allisonhorst/stats-illustrations/raw/main/rstats-artwork/tidydata_2.jpg)
+background-size: contain
+
+
+.footnote[
+**Source:** Illustration is from the Openscapes blog [Tidy Data for reproducibility, efficiency, and collaboration](https://www.openscapes.org/blog/2020/10/12/tidy-data/) by Julia Lowndes and Allison Horst
+]
+
+---
+
+
+# tidy data `r fontawesome::fa("not-equal")` clean data
+
+.blue[.center[The `movies` data is tidy but not clean.]]
+
+
+```{r movies, highlight.output = 6:7}
+movies <- tibble::as_tibble(jsonlite::read_json(
+  "https://vega.github.io/vega-editor/app/data/movies.json",
+  simplifyVector = TRUE))
+
+movies |> 
+  dplyr::relocate(Release_Date, US_DVD_Sales) |> # move cols to front
+  dplyr::slice(37:39, 268:269) |> # filter specific row numbers
+  print(width = 80) # print nicely
+```
+
+
+---
+
+# Non-graded Activity: Tidy or Not?
+
+`r countdown(minutes = 5, seconds = 0, top = 0, font_size = "2em")`
+
+.panelset[
+
+.panel[.panel-name[Activity]
+
+.small[
+- In the next five panels, there five tables all displaying the number of TB cases documented by the World Health Organization in Afghanistan, Brazil, and China between 1999 and 2000. 
+
+- The data contains values associated with four variables (country, year, cases, and population), but each table organizes the values in a different layout.
+
+- **Based on the information in the previous slide, please document which of the table(s) is(are) tidy and if not, which rules are violated.**
+
+- **Discuss your answer with your neighboring colleague.**
+
+> _Note that you have a total of five minutes for this non-graded activity._
+
+]
+]
+
+
+.panel[.panel-name[`table1`]
+
+```{r table1, echo = F}
+cat('table1 from the tidyr package is printed below:')
+print(table1, width = 80)
+```
+
+.can-edit.key-activity1[
+tidy/not-tidy: .............................. 
+
+data observations? data variables? ...........
+
+rules broken (if any): ........................
+]
+
+]
+
+
+.panel[.panel-name[`table2`]
+
+```{r table2, echo = F}
+cat('table2 from the tidyr package is printed below:')
+print(table2, width = 80)
+```
+
+.can-edit.key-activity2[
+tidy/not-tidy: .............................. & rules broken (if any): ........................
+]
+]
+
+
+.panel[.panel-name[`table3`]
+
+```{r table3, echo = F}
+cat('table3 from the tidyr package is printed below:')
+print(table3, width = 80)
+```
+
+.can-edit.key-activity3[
+tidy/not-tidy: .............................. 
+
+data observations? data variables? ...................
+
+rules broken (if any): ........................
+]
+
+]
+
+
+.panel[.panel-name[`table4a`]
+
+```{r table4a, echo = F}
+cat('table4a from the tidyr package is printed below:')
+print(table4a, width = 80)
+```
+
+.can-edit.key-activity4a[
+tidy/not-tidy: .............................. 
+
+data observations? data variables? ..................
+
+rules broken (if any): ........................
+]
+
+]
+
+.panel[.panel-name[`table4b`]
+
+```{r table4b, echo = F}
+cat('table4b from the tidyr package is printed below:')
+print(table4b, width = 80)
+```
+
+.can-edit.key-activity4b[
+tidy/not-tidy: .............................. 
+
+data observations? data variables? .......................
+
+rules broken (if any): ........................
+]
+
+]
+
+
+]
+
+---
+class: center, inverse, middle
+
+# Getting Data into Tidy Format
+
+---
+
+# Key Functions from the `tidyr` `r fontawesome::fa('box', fill = 'gold')`
+
+.pull-right-2[
+.center[[<img src="https://raw.githubusercontent.com/rstudio/hex-stickers/master/PNG/tidyr.png" width="240px">](http://tidyr.tidyverse.org)]
+]
+
+.pull-left-2[
+```{r tidyr-gt, echo = FALSE}
+library(gt)
+tidyr <- tribble(
+  ~ type, ~ `fun1()`, ~ `fun2()`,
+  "**pivoting**", "pivot_longer()", "pivot_wider()",
+  "**splitting/combining**", "separate()", "unite()",
+  "**nesting/unnesting**", "nest()", "unnest()",
+  "**missing**", "complete()", "fill()"
+)
+
+tidyr |> 
+  gt() |> 
+  fmt_markdown(everything()) |> 
+  cols_label(
+    `fun1()` = md("`function()`"),
+    `fun2()` = md("`function()`")
+  ) |> 
+  as_raw_html()
+```
+]
+
+.footnote[
+<html>
+<hr>
+</html>
+**Source:** Slide is based on [Earo Wang's STAT 220 Slides](https://stats220.earo.me/06-tidy-data.html#15)
+]
+
+---
+
+# Wide Vs Long Data
+
+```{r wide_vs_tall, echo=FALSE, out.width='50%'}
+knitr::include_graphics(path = 'https://raw.githubusercontent.com/gadenbuie/tidyexplain/main/images/static/png/original-dfs-tidy.png')
+```
+
+.footnote[
+<html>
+<hr>
+</html>
+**Source:** Image is from Garrick Aden-Buie's excellent [tidyexplain GitHub Repository](https://github.com/gadenbuie/tidyexplain/blob/main/images/static/png/original-dfs-tidy.png)
+]
+
+
+---
+
+# `pviot_()` to Transform Wide from/to Long 
+
+```{r pivot, echo=FALSE, out.width='40%'}
+knitr::include_graphics(path = 'https://github.com/gadenbuie/tidyexplain/raw/main/images/tidyr-pivoting.gif')
+```
+
+.footnote[
+<html>
+<hr>
+</html>
+**Source:** Image is from Garrick Aden-Buie's excellent [tidyexplain GitHub Repository](https://github.com/gadenbuie/tidyexplain/blob/main/images/tidyr-pivoting.gif)
+]
+
+
+---
+
+# The `pivot_longer()` Function
+
+```{r pivot_longer_fn, echo = F, out.width='25%'}
+knitr::include_graphics('https://github.com/gadenbuie/tidyexplain/raw/main/images/static/png/tidyr-pivot_longer.png')
+```
+
+.footnote[
+<html>
+<hr>
+</html>
+**Source:** Image is from Garrick Aden-Buie's excellent [tidyexplain GitHub Repository](https://github.com/gadenbuie/tidyexplain/blob/main/images/static/png/tidyr-pivot_longer.png)
+]
+
+
+---
+
+# `pivot_longer()` for table4a [1]
+
+To tidy a dataset like this, we need to pivot the **offending columns into a new pair of variables**. To describe that operation we need **three parameters:**
+
+ - The set of columns whose names are values, not variables. In this example, those are the columns `1999` and `2000`.  
+
+- The name of the variable to move the column names to. Here it is `year`.  
+
+- The name of the variable to move the column values to. Here it’s `cases`.  
+
+---
+
+
+# `pivot_longer()` for table4a [2]
+
+
+```{r pivot_longer_table4a_viz, echo=FALSE, fig.cap='Pivoting table4a into a longer, tidy form', out.width='100%'}
+knitr::include_graphics(path = 'https://d33wubrfki0l68.cloudfront.net/3aea19108d39606bbe49981acda07696c0c7fcd8/2de65/images/tidy-9.png')
+```
+
+.footnote[
+<html>
+<hr>
+</html>
+**Source:** Slide is based on Wickham, H. Grolemnund, G. (2017). "R for Data Science", O'Reily. <https://r4ds.had.co.nz/tidy-data.html>.
+]
+
+---
+
+# `pivot_longer()` for table4a [3]
+
+
+```{r pivot_longer_table4a_table}
+tidyr::pivot_longer(table4a, c(`1999`, `2000`), names_to = "year", values_to = "cases")
+```
+
+
+---
+
+# The `pivot_wider()` Function
+
+```{r pivot_wider_fn, echo = F, out.width= '30%'}
+knitr::include_graphics('https://github.com/gadenbuie/tidyexplain/raw/main/images/static/png/tidyr-pivot_wider.png')
+```
+
+.footnote[
+<html>
+<hr>
+</html>
+**Source:** Image is from Garrick Aden-Buie's excellent [tidyexplain GitHub Repository](https://github.com/gadenbuie/tidyexplain/blob/main/images/static/png/tidyr-pivot_wider.png)
+]
+
+---
+
+# `pivot_wider()` for table2 [1]
+
+- `pivot_wider()` is the opposite of `pivot_longer()`. 
+
+- You use it when an observation is scattered across multiple rows.   
+
+- For example, take table2: an observation is a country in a year, but each observation is spread across two rows.
+
+```{r wider1, highlight.output=4:5}
+head(table2, n = 3)
+```
+
+---
+
+# `pivot_wider()` for table2 [2]
+
+
+```{r pivot_wider_table2_viz, echo=FALSE}
+knitr::include_graphics(path = 'https://d33wubrfki0l68.cloudfront.net/8350f0dda414629b9d6c354f87acf5c5f722be43/bcb84/images/tidy-8.png')
+```
+
+.footnote[
+<html>
+<hr>
+</html>
+**Source:** Slide is based on Wickham, H. Grolemnund, G. (2017). "R for Data Science", O'Reily. <https://r4ds.had.co.nz/tidy-data.html>.
+]
+
+---
+
+# `pivot_wider()` for table2 [3]
+
+
+```{r pivot_wider_table2_table, highlight.output=2:3}
+tidyr::pivot_wider(table2, names_from = type, values_from = count)
+```
+
+---
+
+# `separate()` for table3 [1]
+
+
+
+```{r separate1, echo=FALSE}
+table3
+```
+
+`table3` has a different problem:   
+
+  - we have one column (`rate`) that contains two variables (`cases` and `population`).   
+
+  - To fix this problem, we’ll need the `separate()` function.
+  
+
+---
+
+# `separate()` for table3 [2]
+
+```{r separate_table3_viz, echo=FALSE, out.width='100%'}
+knitr::include_graphics(path = 'https://d33wubrfki0l68.cloudfront.net/f6fca537e77896868fedcd85d9d01031930d76c9/637d9/images/tidy-17.png')
+```
+
+.footnote[
+<html>
+<hr>
+</html>
+**Source:** Slide is based on Wickham, H. Grolemnund, G. (2017). "R for Data Science", O'Reily. <https://r4ds.had.co.nz/tidy-data.html>.
+]
+
+---
+
+# `separate()` for table3 [3]
+
+```{r separate2, highlight.output=2:3}
+tidyr::separate(table3, rate, into = c("cases", "population"), convert = TRUE)
+```
+
+
+---
+
+# Non-graded Class Activity
+
+`r countdown(minutes = 5, seconds = 0, top = 0, font_size = "2em")`
+
+.panelset[
+
+.panel[.panel-name[Activity]
+
+.small[
+
+> _In this five minute non-graded activity, please do the following_
+
+- Go to <https://usafacts.org/visualizations/coronavirus-covid-19-spread-map/> 
+
+- Download the data for `Deaths` by clicking on the tab to the right of the page.
+
+- **Tidy this data based on the information you have learned in today's class.**
+
+]
+]
+
+
+.panel[.panel-name[`Your Solution`]
+In your RStudio Session, please read the data, load the required packages and write the code needed to transform the `deaths` data into a tidy format.
+]
+]
+
+---
+class: center, inverse, middle
+
+# Recap
+
+---
+
+# Summary of Main Points
+
+By now, you should be able to do the following:  
+
+- Define tidy data
+
+- Perform pivot and rectangling operations in `r fontawesome::fa('r-project', fill = miamired)`
+
+
+---
+
+
+background-image: url(https://github.com/allisonhorst/stats-illustrations/raw/main/rstats-artwork/tidydata_5.jpg)
+background-size: contain
+
+# Advantages of Tidy Data
+
+* one set of consistent tools for different datasets
+* easier for automation and iteration
+
+.footnote[
+**Source:** Illustration is from the Openscapes blog [Tidy Data for reproducibility, efficiency, and collaboration](https://www.openscapes.org/blog/2020/10/12/tidy-data/) by Julia Lowndes and Allison Horst
+]
+
+???
+
+* To work with messy data, every time you need to switch to different gears
+* learn new tools that just works for that specific dataset
+* It's much more pleasant to work with tidy data, help you to build a good taste of data analysis
+* spent less fighting with different tools, focus more on data analysis bc one set of consistent tools
+* the {tidyverse} philosophy to work with the tidy data structures
+* build automatic workflow for analysis, feed different data sets.
+
+---
+
+# Things to Do Prior to Next Class
+
+Please go through the following two supplementary readings and complete [assignment 06: tidy data](https://miamioh.instructure.com/courses/240893/quizzes/748609).
+
+.pull-left[
+.center[[<img src="https://d33wubrfki0l68.cloudfront.net/b88ef926a004b0fce72b2526b0b5c4413666a4cb/24a30/cover.png" height="400px">](https://r4ds.had.co.nz)]
+]
+.pull-right[
+* [Tidy data](https://r4ds.had.co.nz/tidy-data.html)
+* [{tidyr} cheatsheet](https://github.com/rstudio/cheatsheets/blob/master/data-import.pdf)
+]
+
