@@ -18,8 +18,8 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 |            |    09/11    | Scraping Multiple Web Pages      | [06_scraping_multiple_webpages.html](https://fmegahed.github.io/isa401/fall2025/class06/06_scraping_multiple_webpages.html) | [06_scraping_multiple_webpages.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/06_scraping_multiple_webpages.pdf) | [06_scraping_multiple_webpages.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/06_scraping_multiple_webpages.pptx) |
 | 04           |    09/16    |  Scraping Multiple Web Pages (Cont.)      | -- | -- | -- |
 |            |    09/18    | Intro to APIs      | [08_intro_to_apis.html](https://fmegahed.github.io/isa401/fall2025/class08/08_intro_to_apis.html) | [08_intro_to_apis.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/08_intro_to_apis.pdf) | [08_intro_to_apis.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/08_intro_to_apis.pptx) |
-| 05           |    09/23    |  Tidy Data      | [09_tidy_data.html](https://fmegahed.github.io/isa401/fall2025/class08/09_tidy_data.html) | [09_tidy_data.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/09_tidy_data.pdf) | [09_tidy_data.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/09_tidy_data.pptx) |
-
+| 05           |    09/23    |  Tidy Data      | [09_tidy_data.html](https://fmegahed.github.io/isa401/fall2025/class09/09_tidy_data.html) | [09_tidy_data.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/09_tidy_data.pdf) | [09_tidy_data.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/09_tidy_data.pptx) |
+|            |    09/25    |  Tidy Data      | [10_technically_correct_and_consistent_data.html](https://fmegahed.github.io/isa401/fall2025/class10/10_technically_correct_and_consistent_data.html) | [10_technically_correct_and_consistent_data.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/10_technically_correct_and_consistent_data.pdf) | [10_technically_correct_and_consistent_data.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/10_technically_correct_and_consistent_data.pptx) |
 
 
 

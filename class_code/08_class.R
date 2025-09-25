@@ -20,7 +20,7 @@ pl_to_df = pl[[1]]
 
 # * Crypto Compare API ----------------------------------------------------
 
-full_request_url = "https://data-api.coindesk.com/index/cc/v1/historical/days?market=cadli&instrument=BTC-USD&limit=101&api_key=ff593c160dddb412914538d8414afa53c93609d4343103a4a4617c316f887697"
+full_request_url = "https://data-api.coindesk.com/index/cc/v1/historical/days?market=cadli&instrument=BTC-USD&limit=101&api_key="
 
 
 # using the JSON output (default)
