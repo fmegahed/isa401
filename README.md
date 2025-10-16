@@ -25,6 +25,7 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 | 07           |    10/07   |  Exam 01      | -- | -- | -- |
 |            |    10/09    | Exam 01 Recap     | -- | -- | -- |
 | 08           |    10/14   |  Fundamentals of Data Viz      | [15_fundamentals_data_viz.html](https://fmegahed.github.io/isa401/fall2025/class15/15_fundamentals_data_viz.html) | [15_fundamentals_data_viz.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/15_fundamentals_data_viz.pdf) | [15_fundamentals_data_viz.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/15_fundamentals_data_viz.pptx) |
+|           |    10/16   |  Lab: Intro to Tableau and PowerBI      | -- | -- | -- |
 
 
 
