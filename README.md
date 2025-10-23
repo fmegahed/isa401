@@ -25,7 +25,9 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 | 07           |    10/07   |  Exam 01      | -- | -- | -- |
 |            |    10/09    | Exam 01 Recap     | -- | -- | -- |
 | 08           |    10/14   |  Fundamentals of Data Viz      | [15_fundamentals_data_viz.html](https://fmegahed.github.io/isa401/fall2025/class15/15_fundamentals_data_viz.html) | [15_fundamentals_data_viz.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/15_fundamentals_data_viz.pdf) | [15_fundamentals_data_viz.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/15_fundamentals_data_viz.pptx) |
-|           |    10/16   |  Lab: Intro to Tableau and PowerBI      | -- | -- | -- |
+|           |    10/16   |  Lab: Intro to PowerBI      | -- | -- | -- |
+|    09       |    10/21   |  Lab: Intro to Tableau and Flourish Studio    | -- | -- | -- |
+|            |    10/23   |  Commonly Used Charts    | [18_commonly_used_charts.html](https://fmegahed.github.io/isa401/fall2025/class18/18_commonly_used_charts.html) | [18_commonly_used_charts.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/18_commonly_used_charts.pdf) | [18_commonly_used_charts.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/18_commonly_used_charts.pptx) |
 
 
 
