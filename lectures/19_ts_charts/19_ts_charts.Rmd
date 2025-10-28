@@ -128,7 +128,7 @@ count:: false
 
 ```{r nba, eval = TRUE, include=FALSE}
 nbaPerGame = 
-  read_html("https://www.basketball-reference.com/leagues/NBA_2025_per_game.html") |> 
+  read_html("https://www.basketball-reference.com/leagues/NBA_2026_per_game.html") |> 
   html_node("#per_game_stats") |> html_table() |> filter(!PTS %in% "PTS")
 
 nbaPerGame$PTS = as.numeric(nbaPerGame$PTS)
@@ -136,7 +136,7 @@ nbaPerGame |> arrange(desc(PTS)) |>
   select(Player, Pos, Age, G, FG, `FG%`, `eFG%`, PTS)  -> nbaPerGame
 
 
-write_csv(x = nbaPerGame, file = '../../data/nba_per_game25.csv')
+write_csv(x = nbaPerGame, file = '../../data/nba_per_game26.csv')
 
 DT::datatable(nbaPerGame,
               extensions = "FixedColumns",
@@ -147,7 +147,7 @@ DT::datatable(nbaPerGame,
 ```
 
 ```{r nba2, echo = FALSE}
-nbaPerGame = read_csv('../../data/nba_per_game25.csv')
+nbaPerGame = read_csv('../../data/nba_per_game26.csv')
 
 DT::datatable(nbaPerGame,
               extensions = "FixedColumns",
@@ -162,7 +162,7 @@ DT::datatable(nbaPerGame,
 <hr>
 </html>
 
-**Source:** Data scraped from [Basketball-Reference ](https://www.basketball-reference.com/leagues/NBA_2025_per_game.html)on `r Sys.Date() |>  format('%B %d, %Y')` using the [rvest](https://cran.r-project.org/web/packages/rvest/rvest.pdf) `r fontawesome::fa('box', 'gold')`. The printing was limited to the selected variables.
+**Source:** Data scraped from [Basketball-Reference ](https://www.basketball-reference.com/leagues/NBA_2026_per_game.html)on `r Sys.Date() |>  format('%B %d, %Y')` using the [rvest](https://cran.r-project.org/web/packages/rvest/rvest.pdf) `r fontawesome::fa('box', 'gold')`. The printing was limited to the selected variables.
 ]
 
 ---
