@@ -29,6 +29,7 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 |    09       |    10/21   |  Lab: Intro to Tableau and Flourish Studio    | -- | -- | -- |
 |            |    10/23   |  Commonly Used Charts    | [18_commonly_used_charts.html](https://fmegahed.github.io/isa401/fall2025/class18/18_commonly_used_charts.html) | [18_commonly_used_charts.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/18_commonly_used_charts.pdf) | [18_commonly_used_charts.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/18_commonly_used_charts.pptx) |
 |     10       |    10/28   |  Charts for Time Series Data  | [19_ts_charts.html](https://fmegahed.github.io/isa401/fall2025/class19/19_ts_charts.html) | [19_ts_charts.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/19_ts_charts.pdf) | [19_ts_charts.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/19_ts_charts.pptx) |
+|            |    10/30   |  Charts for Spatial and Spatiotemporal Data | [20_spatial_and_spatiotemporal_charts.html](https://fmegahed.github.io/isa401/fall2025/class20/20_spatial_and_spatiotemporal_charts.html) | [20_spatial_and_spatiotemporal_charts.pdf](https://github.com/fmegahed/isa401/raw/main/pdfs/20_spatial_and_spatiotemporal_charts.pdf) | [20_spatial_and_spatiotemporal_charts.pptx](https://github.com/fmegahed/isa401/raw/main/ppts/20_spatial_and_spatiotemporal_charts.pptx) |
 
 
 
