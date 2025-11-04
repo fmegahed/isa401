@@ -213,8 +213,6 @@ Let us use Tableau to explore the [cincy_2024_crashes.csv](https://miamioh.instr
 
 - A table of number of unique crashes by week day
 
-- A table of number of unique crashes by week day
-
 - An animated symbols map
 
 
