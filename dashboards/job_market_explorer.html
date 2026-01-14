@@ -1,0 +1,1496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Federal Jobs Explorer - ISA 401 | Miami University</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://d3js.org/topojson.v3.min.js"></script>
+    <style>
+        :root {
+            --miami-red: #C41230;
+            --miami-red-dark: #9e0f27;
+            --miami-red-light: #f8e0e4;
+            --miami-black: #000000;
+            --miami-white: #FFFFFF;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-500: #6b7280;
+            --gray-700: #374151;
+            --gray-900: #111827;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--gray-100);
+            color: var(--gray-900);
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: var(--miami-black);
+            padding: 12px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left { display: flex; align-items: center; gap: 15px; }
+        .logo { height: 45px; width: auto; }
+        .header-title { color: var(--miami-white); }
+        .header-title h1 { font-size: 20px; font-weight: 700; }
+        .header-title .subtitle { font-size: 11px; color: var(--gray-300); }
+        .header-right { text-align: right; color: var(--gray-300); font-size: 11px; }
+        .header-right .course { color: var(--miami-red); font-weight: 600; font-size: 13px; }
+
+        /* Global Filter Bar */
+        .filter-bar {
+            background: var(--miami-white);
+            padding: 12px 30px;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: flex-end;
+        }
+
+        .filter-group { display: flex; flex-direction: column; gap: 4px; }
+        .filter-group label {
+            font-size: 10px;
+            color: var(--gray-500);
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .filter-group input, .filter-group select {
+            padding: 8px 10px;
+            border: 1px solid var(--gray-300);
+            border-radius: 4px;
+            font-size: 13px;
+            min-width: 140px;
+        }
+
+        .filter-group select[multiple] {
+            min-height: 80px;
+            min-width: 180px;
+        }
+
+        .filter-group input:focus, .filter-group select:focus {
+            outline: none;
+            border-color: var(--miami-red);
+        }
+
+        .reset-btn {
+            background: var(--gray-700);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .reset-btn:hover { background: var(--miami-black); }
+
+        /* Active Filters Display */
+        .active-filters {
+            background: var(--miami-red-light);
+            padding: 8px 30px;
+            display: none;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .active-filters.has-filters { display: flex; }
+
+        .active-filters-label {
+            font-size: 11px;
+            color: var(--miami-red-dark);
+            font-weight: 600;
+        }
+
+        .filter-tag {
+            background: var(--miami-red);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .filter-tag .remove {
+            cursor: pointer;
+            font-weight: bold;
+            opacity: 0.8;
+        }
+
+        .filter-tag .remove:hover { opacity: 1; }
+
+        .filtered-count {
+            margin-left: auto;
+            font-size: 12px;
+            color: var(--miami-red-dark);
+            font-weight: 600;
+        }
+
+        /* Tab Navigation */
+        .tab-nav {
+            background: var(--miami-white);
+            border-bottom: 3px solid var(--miami-red);
+            display: flex;
+            padding: 0 30px;
+        }
+
+        .tab-btn {
+            padding: 12px 25px;
+            background: none;
+            border: none;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--gray-500);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .tab-btn:hover { color: var(--miami-red); background: var(--gray-50); }
+        .tab-btn.active { color: var(--miami-red); font-weight: 600; }
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--miami-red);
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            padding: 20px 30px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .tab-content.active { display: block; }
+
+        /* Cards */
+        .card {
+            background: var(--miami-white);
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--miami-black);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-title .badge {
+            background: var(--miami-red);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .stat-card {
+            background: var(--miami-white);
+            border-radius: 6px;
+            padding: 16px;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-left: 3px solid var(--miami-red);
+        }
+
+        .stat-value { font-size: 26px; font-weight: 700; color: var(--miami-red); }
+        .stat-label { font-size: 11px; color: var(--gray-500); text-transform: uppercase; margin-top: 4px; }
+
+        /* Layout Grids */
+        .overview-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 16px;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .explorer-layout {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 16px;
+        }
+
+        @media (max-width: 1200px) {
+            .overview-grid, .skills-grid, .explorer-layout { grid-template-columns: 1fr; }
+        }
+
+        /* Map */
+        .map-container { height: 400px; background: var(--gray-50); border-radius: 4px; }
+        #map { width: 100%; height: 100%; }
+
+        .state {
+            fill: var(--gray-200);
+            stroke: var(--miami-white);
+            stroke-width: 1px;
+            cursor: pointer;
+            transition: fill 0.2s;
+        }
+
+        .state:hover { fill: var(--gray-300); }
+        .state.selected { fill: var(--miami-red-light); stroke: var(--miami-red); stroke-width: 2px; }
+
+        .job-dot {
+            fill: var(--miami-red);
+            stroke: var(--miami-white);
+            stroke-width: 1.5px;
+            cursor: pointer;
+            opacity: 0.8;
+        }
+
+        .job-dot:hover { opacity: 1; }
+
+        /* Charts */
+        .chart-container { height: 320px; }
+
+        .skill-bar, .category-bar {
+            fill: var(--miami-red);
+            cursor: pointer;
+            transition: fill 0.2s;
+        }
+
+        .skill-bar:hover, .category-bar:hover { fill: var(--miami-red-dark); }
+        .skill-bar.selected { fill: var(--miami-black); }
+
+        .chart-label { fill: var(--gray-700); font-size: 11px; }
+
+        /* Org List */
+        .org-list { list-style: none; }
+        .org-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .org-item:last-child { border-bottom: none; }
+        .org-name { font-size: 12px; color: var(--gray-700); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 8px; }
+        .org-count { background: var(--miami-red); color: white; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+
+        /* Insights Box */
+        .insights-box {
+            background: linear-gradient(135deg, var(--miami-red) 0%, var(--miami-red-dark) 100%);
+            color: white;
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 16px;
+        }
+
+        .insights-box h3 { font-size: 13px; margin-bottom: 12px; opacity: 0.9; }
+        .insight-item { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 10px; font-size: 12px; }
+        .insight-item:last-child { margin-bottom: 0; }
+        .insight-bullet { width: 5px; height: 5px; background: white; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+
+        /* Job List */
+        .job-list-container { max-height: 550px; overflow-y: auto; }
+
+        .job-item {
+            background: var(--gray-50);
+            border: 1px solid var(--gray-200);
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .job-item:hover { border-color: var(--miami-red); background: white; }
+        .job-item .title { font-weight: 600; color: var(--miami-black); margin-bottom: 4px; font-size: 13px; }
+        .job-item .org { color: var(--gray-500); font-size: 12px; margin-bottom: 8px; }
+        .job-item .meta { display: flex; gap: 12px; font-size: 11px; }
+        .job-item .salary { color: var(--miami-red); font-weight: 600; }
+        .job-item .location { color: var(--gray-500); }
+        .job-item .category-tag {
+            display: inline-block;
+            background: rgba(196, 18, 48, 0.1);
+            color: var(--miami-red);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            margin-top: 8px;
+        }
+
+        /* Job Detail */
+        .job-detail {
+            background: var(--miami-white);
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 20px;
+        }
+
+        .detail-header { padding: 16px; border-bottom: 1px solid var(--gray-200); }
+        .detail-header h2 { font-size: 16px; color: var(--miami-black); margin-bottom: 6px; }
+        .detail-header .org { color: var(--miami-red); font-weight: 500; font-size: 13px; margin-bottom: 3px; }
+        .detail-header .dept { color: var(--gray-500); font-size: 12px; }
+
+        .detail-body { padding: 16px; }
+        .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+        .detail-item { background: var(--gray-50); padding: 10px; border-radius: 4px; }
+        .detail-item .label { font-size: 10px; color: var(--gray-500); text-transform: uppercase; margin-bottom: 3px; }
+        .detail-item .value { font-size: 14px; font-weight: 600; color: var(--miami-black); }
+        .detail-item .value.salary { color: var(--miami-red); }
+
+        .skills-section h3 { font-size: 12px; color: var(--gray-500); margin-bottom: 8px; }
+        .skill-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+        .skill-tag {
+            background: rgba(196, 18, 48, 0.1);
+            color: var(--miami-red);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        .skill-tag:hover { background: rgba(196, 18, 48, 0.2); }
+
+        .apply-btn {
+            display: block;
+            width: 100%;
+            background: var(--miami-red);
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .apply-btn:hover { background: var(--miami-red-dark); }
+
+        /* Empty State */
+        .empty-state { text-align: center; padding: 30px; color: var(--gray-500); }
+        .empty-state h3 { color: var(--gray-700); margin-bottom: 8px; }
+
+        /* Multi-select styling */
+        select[multiple] option:checked { background: var(--miami-red-light); }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-left">
+            <img src="logo.jpg" alt="Miami University" class="logo">
+            <div class="header-title">
+                <h1>Federal Jobs Explorer</h1>
+                <div class="subtitle">Interactive Job Market Analysis Dashboard</div>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="course">ISA 401 - Spring 2026</div>
+            <div>Data: USAJobs.gov | Retrieved January 14, 2026</div>
+        </div>
+    </div>
+
+    <!-- Global Filter Bar -->
+    <div class="filter-bar">
+        <div class="filter-group">
+            <label>Search</label>
+            <input type="text" id="searchInput" placeholder="Job title, org...">
+        </div>
+        <div class="filter-group">
+            <label>Category</label>
+            <select id="categoryFilter">
+                <option value="">All Categories</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>States (Ctrl+click for multiple)</label>
+            <select id="stateFilter" multiple>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Skills (Ctrl+click for multiple)</label>
+            <select id="skillFilter" multiple>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Work Type</label>
+            <select id="remoteFilter">
+                <option value="">All Types</option>
+                <option value="Telework Eligible">Telework Eligible</option>
+                <option value="Onsite">Onsite</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Min Salary</label>
+            <select id="salaryFilter">
+                <option value="0">Any</option>
+                <option value="50000">$50K+</option>
+                <option value="75000">$75K+</option>
+                <option value="100000">$100K+</option>
+                <option value="125000">$125K+</option>
+            </select>
+        </div>
+        <button class="reset-btn" onclick="resetFilters()">Reset All</button>
+    </div>
+
+    <!-- Active Filters Display -->
+    <div class="active-filters" id="activeFilters">
+        <span class="active-filters-label">Active Filters:</span>
+        <div id="filterTags"></div>
+        <span class="filtered-count" id="filteredCount"></span>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="tab-nav">
+        <button class="tab-btn active" onclick="switchTab('overview')">Overview</button>
+        <button class="tab-btn" onclick="switchTab('skills')">Skills & Salary</button>
+        <button class="tab-btn" onclick="switchTab('explorer')">Job Explorer</button>
+    </div>
+
+    <!-- Tab 1: Overview -->
+    <div id="tab-overview" class="tab-content active">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="stat-total">0</div>
+                <div class="stat-label">Jobs Shown</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="stat-salary">$0</div>
+                <div class="stat-label">Median Salary</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="stat-states">0</div>
+                <div class="stat-label">States</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="stat-telework">0%</div>
+                <div class="stat-label">Telework</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="stat-orgs">0</div>
+                <div class="stat-label">Organizations</div>
+            </div>
+        </div>
+
+        <div class="overview-grid">
+            <div class="card">
+                <div class="card-title">Job Distribution (Click state to filter)</div>
+                <div class="map-container">
+                    <div id="map"></div>
+                </div>
+            </div>
+
+            <div>
+                <div class="card">
+                    <div class="card-title">Top Organizations <span class="badge" id="org-count">10</span></div>
+                    <ul class="org-list" id="org-list"></ul>
+                </div>
+
+                <div class="insights-box">
+                    <h3>Key Insights</h3>
+                    <div class="insight-item">
+                        <div class="insight-bullet"></div>
+                        <div id="insight-1">Loading...</div>
+                    </div>
+                    <div class="insight-item">
+                        <div class="insight-bullet"></div>
+                        <div id="insight-2"></div>
+                    </div>
+                    <div class="insight-item">
+                        <div class="insight-bullet"></div>
+                        <div id="insight-3"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab 2: Skills & Salary -->
+    <div id="tab-skills" class="tab-content">
+        <div class="skills-grid">
+            <div class="card">
+                <div class="card-title">Top Skills (Click to filter) <span class="badge" id="skill-count">0</span></div>
+                <div class="chart-container" id="skills-chart"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Salary by Category</div>
+                <div class="chart-container" id="salary-chart"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Category Distribution (Click to filter)</div>
+                <div class="chart-container" id="category-chart"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Work Type Analysis</div>
+                <div class="chart-container" id="remote-chart"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab 3: Job Explorer -->
+    <div id="tab-explorer" class="tab-content">
+        <div class="explorer-layout">
+            <div class="card">
+                <div class="card-title">Job Listings <span class="badge" id="list-count">0</span></div>
+                <div class="job-list-container" id="job-list">
+                    <div class="loading">Loading jobs...</div>
+                </div>
+            </div>
+
+            <div class="job-detail" id="job-detail">
+                <div class="detail-header">
+                    <h2 id="detail-title">Select a job to view details</h2>
+                    <div class="org" id="detail-org"></div>
+                    <div class="dept" id="detail-dept"></div>
+                </div>
+                <div class="detail-body">
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <div class="label">Salary Range</div>
+                            <div class="value salary" id="detail-salary">-</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="label">Location</div>
+                            <div class="value" id="detail-location">-</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="label">Work Type</div>
+                            <div class="value" id="detail-remote">-</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="label">Posted</div>
+                            <div class="value" id="detail-date">-</div>
+                        </div>
+                    </div>
+                    <div class="skills-section">
+                        <h3>Required Skills (click to add filter)</h3>
+                        <div class="skill-tags" id="detail-skills"></div>
+                    </div>
+                    <a href="#" class="apply-btn" id="detail-apply" target="_blank" style="display:none;">View on USAJobs.gov</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let allJobs = [];
+        let filteredJobs = [];
+        let selectedStates = new Set();
+        let selectedSkills = new Set();
+        let stateNameMap = {};
+        const usStatesUrl = 'https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json';
+
+        // Initialize
+        async function init() {
+            console.log('Initializing dashboard...');
+
+            // Load data
+            try {
+                const response = await fetch('jobs_data.json');
+                allJobs = await response.json();
+            } catch (e) {
+                try {
+                    const response = await fetch('../data/demo_dashboard/jobs_data.json');
+                    allJobs = await response.json();
+                } catch (e2) {
+                    if (typeof EMBEDDED_DATA !== 'undefined' && EMBEDDED_DATA.length > 0) {
+                        allJobs = EMBEDDED_DATA;
+                    }
+                }
+            }
+
+            if (allJobs.length === 0 && typeof EMBEDDED_DATA !== 'undefined') {
+                allJobs = EMBEDDED_DATA;
+            }
+
+            console.log(`Loaded ${allJobs.length} jobs`);
+            filteredJobs = [...allJobs];
+
+            populateFilters();
+            setupEventListeners();
+            applyFilters();
+            drawMap();
+        }
+
+        // Populate filter dropdowns
+        function populateFilters() {
+            // Categories
+            const categories = [...new Set(allJobs.map(j => j.category))].sort();
+            const catSelect = document.getElementById('categoryFilter');
+            categories.forEach(cat => {
+                const opt = document.createElement('option');
+                opt.value = cat;
+                opt.textContent = cat;
+                catSelect.appendChild(opt);
+            });
+
+            // States with job counts
+            const stateCounts = {};
+            allJobs.forEach(j => {
+                if (j.state) stateCounts[j.state] = (stateCounts[j.state] || 0) + 1;
+            });
+            const states = Object.entries(stateCounts).sort((a, b) => b[1] - a[1]);
+            const stateSelect = document.getElementById('stateFilter');
+            states.forEach(([state, count]) => {
+                const opt = document.createElement('option');
+                opt.value = state;
+                opt.textContent = `${state} (${count})`;
+                stateSelect.appendChild(opt);
+            });
+
+            // Skills with job counts
+            const skillCounts = {};
+            allJobs.forEach(j => {
+                (j.skills || []).forEach(s => {
+                    skillCounts[s] = (skillCounts[s] || 0) + 1;
+                });
+            });
+            const skills = Object.entries(skillCounts).sort((a, b) => b[1] - a[1]).slice(0, 40);
+            const skillSelect = document.getElementById('skillFilter');
+            skills.forEach(([skill, count]) => {
+                const opt = document.createElement('option');
+                opt.value = skill;
+                opt.textContent = `${skill} (${count})`;
+                skillSelect.appendChild(opt);
+            });
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            document.getElementById('searchInput').addEventListener('input', applyFilters);
+            document.getElementById('categoryFilter').addEventListener('change', applyFilters);
+            document.getElementById('stateFilter').addEventListener('change', function() {
+                selectedStates = new Set(Array.from(this.selectedOptions).map(o => o.value));
+                applyFilters();
+            });
+            document.getElementById('skillFilter').addEventListener('change', function() {
+                selectedSkills = new Set(Array.from(this.selectedOptions).map(o => o.value));
+                applyFilters();
+            });
+            document.getElementById('remoteFilter').addEventListener('change', applyFilters);
+            document.getElementById('salaryFilter').addEventListener('change', applyFilters);
+        }
+
+        // Apply filters - updates ALL views
+        function applyFilters() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const category = document.getElementById('categoryFilter').value;
+            const remote = document.getElementById('remoteFilter').value;
+            const minSalary = parseInt(document.getElementById('salaryFilter').value) || 0;
+
+            filteredJobs = allJobs.filter(job => {
+                // Search
+                if (search && !job.title.toLowerCase().includes(search) &&
+                    !job.organization.toLowerCase().includes(search)) {
+                    return false;
+                }
+                // Category
+                if (category && job.category !== category) return false;
+                // States (multi-select)
+                if (selectedStates.size > 0 && !selectedStates.has(job.state)) return false;
+                // Skills (multi-select - job must have ANY of the selected skills)
+                if (selectedSkills.size > 0) {
+                    const jobSkills = job.skills || [];
+                    if (!jobSkills.some(s => selectedSkills.has(s))) return false;
+                }
+                // Remote
+                if (remote && job.remote_type !== remote) return false;
+                // Salary
+                if (minSalary && (!job.salary_mid || job.salary_mid < minSalary)) return false;
+
+                return true;
+            });
+
+            // Update everything
+            updateActiveFiltersDisplay();
+            updateStats();
+            updateMap();
+            updateTopOrgs();
+            generateInsights();
+            drawSkillsChart();
+            drawSalaryChart();
+            drawCategoryChart();
+            drawRemoteChart();
+            renderJobList();
+        }
+
+        // Update active filters display
+        function updateActiveFiltersDisplay() {
+            const container = document.getElementById('activeFilters');
+            const tagsDiv = document.getElementById('filterTags');
+            const countSpan = document.getElementById('filteredCount');
+
+            const tags = [];
+
+            const search = document.getElementById('searchInput').value;
+            if (search) tags.push({ type: 'search', value: search, label: `Search: "${search}"` });
+
+            const category = document.getElementById('categoryFilter').value;
+            if (category) tags.push({ type: 'category', value: category, label: category });
+
+            selectedStates.forEach(state => {
+                tags.push({ type: 'state', value: state, label: state });
+            });
+
+            selectedSkills.forEach(skill => {
+                tags.push({ type: 'skill', value: skill, label: skill });
+            });
+
+            const remote = document.getElementById('remoteFilter').value;
+            if (remote) tags.push({ type: 'remote', value: remote, label: remote });
+
+            const salary = document.getElementById('salaryFilter').value;
+            if (salary !== '0') tags.push({ type: 'salary', value: salary, label: `$${parseInt(salary)/1000}K+` });
+
+            if (tags.length > 0) {
+                container.classList.add('has-filters');
+                tagsDiv.innerHTML = tags.map(t =>
+                    `<span class="filter-tag">${escapeHtml(t.label)} <span class="remove" onclick="removeFilter('${t.type}', '${escapeHtml(t.value)}')">&times;</span></span>`
+                ).join('');
+                countSpan.textContent = `Showing ${filteredJobs.length} of ${allJobs.length} jobs`;
+            } else {
+                container.classList.remove('has-filters');
+                tagsDiv.innerHTML = '';
+                countSpan.textContent = '';
+            }
+        }
+
+        // Remove individual filter
+        function removeFilter(type, value) {
+            switch (type) {
+                case 'search':
+                    document.getElementById('searchInput').value = '';
+                    break;
+                case 'category':
+                    document.getElementById('categoryFilter').value = '';
+                    break;
+                case 'state':
+                    selectedStates.delete(value);
+                    updateSelectFromSet('stateFilter', selectedStates);
+                    break;
+                case 'skill':
+                    selectedSkills.delete(value);
+                    updateSelectFromSet('skillFilter', selectedSkills);
+                    break;
+                case 'remote':
+                    document.getElementById('remoteFilter').value = '';
+                    break;
+                case 'salary':
+                    document.getElementById('salaryFilter').value = '0';
+                    break;
+            }
+            applyFilters();
+        }
+
+        function updateSelectFromSet(selectId, set) {
+            const select = document.getElementById(selectId);
+            Array.from(select.options).forEach(opt => {
+                opt.selected = set.has(opt.value);
+            });
+        }
+
+        // Reset all filters
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('categoryFilter').value = '';
+            document.getElementById('remoteFilter').value = '';
+            document.getElementById('salaryFilter').value = '0';
+            selectedStates.clear();
+            selectedSkills.clear();
+            updateSelectFromSet('stateFilter', selectedStates);
+            updateSelectFromSet('skillFilter', selectedSkills);
+            applyFilters();
+            // Reset map state selections
+            d3.selectAll('.state').classed('selected', false);
+        }
+
+        // Add state to filter (from map click)
+        function addStateFilter(stateName) {
+            if (selectedStates.has(stateName)) {
+                selectedStates.delete(stateName);
+            } else {
+                selectedStates.add(stateName);
+            }
+            updateSelectFromSet('stateFilter', selectedStates);
+            applyFilters();
+            // Update map visuals
+            d3.selectAll('.state').classed('selected', function(d) {
+                return selectedStates.has(d.properties.name);
+            });
+        }
+
+        // Add skill to filter
+        function addSkillFilter(skill) {
+            if (!selectedSkills.has(skill)) {
+                selectedSkills.add(skill);
+                updateSelectFromSet('skillFilter', selectedSkills);
+                applyFilters();
+            }
+        }
+
+        // Update stats (uses filtered data)
+        function updateStats() {
+            document.getElementById('stat-total').textContent = filteredJobs.length.toLocaleString();
+
+            const salaries = filteredJobs.map(j => j.salary_mid).filter(s => s);
+            if (salaries.length) {
+                const sorted = [...salaries].sort((a, b) => a - b);
+                const median = sorted[Math.floor(sorted.length / 2)];
+                document.getElementById('stat-salary').textContent = '$' + Math.round(median/1000) + 'K';
+            } else {
+                document.getElementById('stat-salary').textContent = '-';
+            }
+
+            const states = new Set(filteredJobs.map(j => j.state_abbr).filter(s => s));
+            document.getElementById('stat-states').textContent = states.size;
+
+            const telework = filteredJobs.filter(j => j.remote_type === 'Telework Eligible').length;
+            const pct = filteredJobs.length > 0 ? Math.round(100 * telework / filteredJobs.length) : 0;
+            document.getElementById('stat-telework').textContent = pct + '%';
+
+            const orgs = new Set(filteredJobs.map(j => j.organization));
+            document.getElementById('stat-orgs').textContent = orgs.size;
+        }
+
+        // Draw map
+        let mapSvg, projection, path;
+
+        async function drawMap() {
+            const container = document.getElementById('map');
+            const width = container.clientWidth || 800;
+            const height = container.clientHeight || 400;
+
+            container.innerHTML = '';
+
+            mapSvg = d3.select('#map')
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height);
+
+            projection = d3.geoAlbersUsa()
+                .scale(width * 1.2)
+                .translate([width / 2, height / 2]);
+
+            path = d3.geoPath().projection(projection);
+
+            try {
+                const us = await d3.json(usStatesUrl);
+                const states = topojson.feature(us, us.objects.states);
+
+                // Build state name map
+                states.features.forEach(f => {
+                    stateNameMap[f.id] = f.properties.name;
+                });
+
+                mapSvg.append('g')
+                    .selectAll('path')
+                    .data(states.features)
+                    .enter()
+                    .append('path')
+                    .attr('class', 'state')
+                    .attr('d', path)
+                    .classed('selected', d => selectedStates.has(d.properties.name))
+                    .on('click', function(event, d) {
+                        addStateFilter(d.properties.name);
+                    })
+                    .append('title')
+                    .text(d => {
+                        const count = filteredJobs.filter(j => j.state === d.properties.name).length;
+                        return `${d.properties.name}: ${count} jobs`;
+                    });
+            } catch (e) {
+                console.log('Could not load map:', e);
+            }
+
+            updateMap();
+        }
+
+        function updateMap() {
+            if (!mapSvg) return;
+
+            // Update state titles
+            mapSvg.selectAll('.state')
+                .select('title')
+                .text(function(d) {
+                    const count = filteredJobs.filter(j => j.state === d.properties.name).length;
+                    return `${d.properties.name}: ${count} jobs (click to filter)`;
+                });
+
+            // Update state selection styling
+            mapSvg.selectAll('.state')
+                .classed('selected', d => selectedStates.has(d.properties.name));
+
+            // Remove existing dots
+            mapSvg.selectAll('.job-dot').remove();
+
+            // Aggregate jobs by location
+            const locationJobs = {};
+            filteredJobs.forEach(job => {
+                if (job.lat && job.lon) {
+                    const key = `${job.lat.toFixed(2)},${job.lon.toFixed(2)}`;
+                    if (!locationJobs[key]) {
+                        locationJobs[key] = { lat: job.lat, lon: job.lon, jobs: [] };
+                    }
+                    locationJobs[key].jobs.push(job);
+                }
+            });
+
+            const maxJobs = Math.max(...Object.values(locationJobs).map(l => l.jobs.length), 1);
+            const sizeScale = d3.scaleSqrt().domain([1, maxJobs]).range([3, 16]);
+
+            mapSvg.selectAll('.job-dot')
+                .data(Object.values(locationJobs))
+                .enter()
+                .append('circle')
+                .attr('class', 'job-dot')
+                .attr('cx', d => {
+                    const coords = projection([d.lon, d.lat]);
+                    return coords ? coords[0] : -100;
+                })
+                .attr('cy', d => {
+                    const coords = projection([d.lon, d.lat]);
+                    return coords ? coords[1] : -100;
+                })
+                .attr('r', d => sizeScale(d.jobs.length))
+                .on('click', function(event, d) {
+                    addStateFilter(d.jobs[0].state);
+                })
+                .append('title')
+                .text(d => {
+                    const avgSalary = d.jobs.reduce((a, j) => a + (j.salary_mid || 0), 0) / d.jobs.length;
+                    return `${d.jobs[0].city}, ${d.jobs[0].state_abbr}\n${d.jobs.length} jobs\nAvg: $${Math.round(avgSalary).toLocaleString()}`;
+                });
+        }
+
+        // Update top orgs (uses filtered data)
+        function updateTopOrgs() {
+            const orgCounts = {};
+            filteredJobs.forEach(j => {
+                orgCounts[j.organization] = (orgCounts[j.organization] || 0) + 1;
+            });
+
+            const topOrgs = Object.entries(orgCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 10);
+
+            const list = document.getElementById('org-list');
+            if (topOrgs.length === 0) {
+                list.innerHTML = '<li class="org-item"><span class="org-name">No organizations match filters</span></li>';
+                return;
+            }
+
+            list.innerHTML = topOrgs.map(([org, count]) => `
+                <li class="org-item">
+                    <span class="org-name">${escapeHtml(org)}</span>
+                    <span class="org-count">${count}</span>
+                </li>
+            `).join('');
+        }
+
+        // Generate insights (uses filtered data)
+        function generateInsights() {
+            if (filteredJobs.length === 0) {
+                document.getElementById('insight-1').textContent = 'No jobs match current filters';
+                document.getElementById('insight-2').textContent = '';
+                document.getElementById('insight-3').textContent = '';
+                return;
+            }
+
+            const salaries = filteredJobs.map(j => j.salary_mid).filter(s => s).sort((a, b) => a - b);
+            const median = salaries.length ? salaries[Math.floor(salaries.length / 2)] : 0;
+            const max = salaries.length ? Math.max(...salaries) : 0;
+
+            const stateCounts = {};
+            filteredJobs.forEach(j => { stateCounts[j.state_abbr] = (stateCounts[j.state_abbr] || 0) + 1; });
+            const topState = Object.entries(stateCounts).sort((a, b) => b[1] - a[1])[0];
+
+            const telework = Math.round(100 * filteredJobs.filter(j => j.remote_type === 'Telework Eligible').length / filteredJobs.length);
+
+            document.getElementById('insight-1').textContent = topState
+                ? `${topState[0]} leads with ${topState[1]} jobs (${Math.round(100*topState[1]/filteredJobs.length)}%)`
+                : 'Various locations represented';
+            document.getElementById('insight-2').textContent = salaries.length
+                ? `Salaries range from $${Math.round(salaries[0]/1000)}K to $${Math.round(max/1000)}K`
+                : 'Salary data not available';
+            document.getElementById('insight-3').textContent = `${telework}% of positions offer telework flexibility`;
+        }
+
+        // Draw skills chart (uses filtered data)
+        function drawSkillsChart() {
+            const container = document.getElementById('skills-chart');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const skillCounts = {};
+            filteredJobs.forEach(job => {
+                (job.skills || []).forEach(skill => {
+                    skillCounts[skill] = (skillCounts[skill] || 0) + 1;
+                });
+            });
+
+            const topSkills = Object.entries(skillCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 15);
+
+            document.getElementById('skill-count').textContent = Object.keys(skillCounts).length;
+
+            if (topSkills.length === 0) {
+                container.innerHTML = '<div class="empty-state"><h3>No skills data</h3></div>';
+                return;
+            }
+
+            const width = container.clientWidth || 500;
+            const height = container.clientHeight || 320;
+            const margin = { top: 10, right: 40, bottom: 10, left: 130 };
+
+            const svg = d3.select('#skills-chart')
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height);
+
+            const xScale = d3.scaleLinear()
+                .domain([0, d3.max(topSkills, d => d[1])])
+                .range([margin.left, width - margin.right]);
+
+            const yScale = d3.scaleBand()
+                .domain(topSkills.map(d => d[0]))
+                .range([margin.top, height - margin.bottom])
+                .padding(0.2);
+
+            svg.selectAll('.skill-bar')
+                .data(topSkills)
+                .enter()
+                .append('rect')
+                .attr('class', d => 'skill-bar' + (selectedSkills.has(d[0]) ? ' selected' : ''))
+                .attr('x', margin.left)
+                .attr('y', d => yScale(d[0]))
+                .attr('width', d => Math.max(0, xScale(d[1]) - margin.left))
+                .attr('height', yScale.bandwidth())
+                .attr('rx', 2)
+                .on('click', function(event, d) {
+                    addSkillFilter(d[0]);
+                });
+
+            svg.selectAll('.skill-label')
+                .data(topSkills)
+                .enter()
+                .append('text')
+                .attr('class', 'chart-label')
+                .attr('x', margin.left - 5)
+                .attr('y', d => yScale(d[0]) + yScale.bandwidth() / 2)
+                .attr('dy', '0.35em')
+                .attr('text-anchor', 'end')
+                .text(d => d[0].length > 18 ? d[0].substring(0, 16) + '...' : d[0]);
+
+            svg.selectAll('.skill-value')
+                .data(topSkills)
+                .enter()
+                .append('text')
+                .attr('class', 'chart-label')
+                .attr('x', d => xScale(d[1]) + 5)
+                .attr('y', d => yScale(d[0]) + yScale.bandwidth() / 2)
+                .attr('dy', '0.35em')
+                .text(d => d[1]);
+        }
+
+        // Draw salary chart (uses filtered data)
+        function drawSalaryChart() {
+            const container = document.getElementById('salary-chart');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const catSalaries = {};
+            filteredJobs.forEach(job => {
+                if (job.salary_mid) {
+                    if (!catSalaries[job.category]) catSalaries[job.category] = [];
+                    catSalaries[job.category].push(job.salary_mid);
+                }
+            });
+
+            const data = Object.entries(catSalaries).map(([cat, salaries]) => ({
+                category: cat,
+                median: salaries.sort((a, b) => a - b)[Math.floor(salaries.length / 2)],
+                count: salaries.length
+            })).sort((a, b) => b.median - a.median);
+
+            if (data.length === 0) {
+                container.innerHTML = '<div class="empty-state"><h3>No salary data</h3></div>';
+                return;
+            }
+
+            const width = container.clientWidth || 500;
+            const height = container.clientHeight || 320;
+            const margin = { top: 20, right: 20, bottom: 80, left: 60 };
+
+            const svg = d3.select('#salary-chart')
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height);
+
+            const xScale = d3.scaleBand()
+                .domain(data.map(d => d.category))
+                .range([margin.left, width - margin.right])
+                .padding(0.3);
+
+            const yScale = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d.median) * 1.1])
+                .range([height - margin.bottom, margin.top]);
+
+            svg.selectAll('.cat-bar')
+                .data(data)
+                .enter()
+                .append('rect')
+                .attr('class', 'category-bar')
+                .attr('x', d => xScale(d.category))
+                .attr('y', d => yScale(d.median))
+                .attr('width', xScale.bandwidth())
+                .attr('height', d => height - margin.bottom - yScale(d.median))
+                .attr('rx', 2)
+                .on('click', function(event, d) {
+                    document.getElementById('categoryFilter').value = d.category;
+                    applyFilters();
+                });
+
+            svg.selectAll('.salary-label')
+                .data(data)
+                .enter()
+                .append('text')
+                .attr('class', 'chart-label')
+                .attr('x', d => xScale(d.category) + xScale.bandwidth() / 2)
+                .attr('y', d => yScale(d.median) - 5)
+                .attr('text-anchor', 'middle')
+                .attr('font-size', '10px')
+                .text(d => '$' + Math.round(d.median / 1000) + 'K');
+
+            // X axis labels
+            svg.selectAll('.x-label')
+                .data(data)
+                .enter()
+                .append('text')
+                .attr('class', 'chart-label')
+                .attr('x', d => xScale(d.category) + xScale.bandwidth() / 2)
+                .attr('y', height - margin.bottom + 12)
+                .attr('text-anchor', 'middle')
+                .attr('font-size', '9px')
+                .each(function(d) {
+                    const text = d3.select(this);
+                    const words = d.category.split(' ');
+                    text.text(words[0]);
+                    if (words.length > 1) {
+                        text.append('tspan')
+                            .attr('x', xScale(d.category) + xScale.bandwidth() / 2)
+                            .attr('dy', '11px')
+                            .text(words.slice(1).join(' ').substring(0, 12));
+                    }
+                });
+        }
+
+        // Draw category chart (uses filtered data)
+        function drawCategoryChart() {
+            const container = document.getElementById('category-chart');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const catCounts = {};
+            filteredJobs.forEach(job => {
+                catCounts[job.category] = (catCounts[job.category] || 0) + 1;
+            });
+
+            const data = Object.entries(catCounts)
+                .map(([cat, count]) => ({ category: cat, count }))
+                .sort((a, b) => b.count - a.count);
+
+            if (data.length === 0) {
+                container.innerHTML = '<div class="empty-state"><h3>No data</h3></div>';
+                return;
+            }
+
+            const width = container.clientWidth || 500;
+            const height = container.clientHeight || 320;
+            const margin = { top: 10, right: 50, bottom: 10, left: 140 };
+
+            const svg = d3.select('#category-chart')
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height);
+
+            const xScale = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d.count)])
+                .range([margin.left, width - margin.right]);
+
+            const yScale = d3.scaleBand()
+                .domain(data.map(d => d.category))
+                .range([margin.top, height - margin.bottom])
+                .padding(0.3);
+
+            const colors = ['#C41230', '#1a1a2e', '#374151', '#6b7280', '#9ca3af', '#d1d5db'];
+
+            svg.selectAll('.cat-bar')
+                .data(data)
+                .enter()
+                .append('rect')
+                .attr('class', 'category-bar')
+                .attr('x', margin.left)
+                .attr('y', d => yScale(d.category))
+                .attr('width', d => Math.max(0, xScale(d.count) - margin.left))
+                .attr('height', yScale.bandwidth())
+                .attr('fill', (d, i) => colors[i % colors.length])
+                .attr('rx', 2)
+                .on('click', function(event, d) {
+                    document.getElementById('categoryFilter').value = d.category;
+                    applyFilters();
+                });
+
+            svg.selectAll('.cat-label')
+                .data(data)
+                .enter()
+                .append('text')
+                .attr('class', 'chart-label')
+                .attr('x', margin.left - 5)
+                .attr('y', d => yScale(d.category) + yScale.bandwidth() / 2)
+                .attr('dy', '0.35em')
+                .attr('text-anchor', 'end')
+                .attr('font-size', '11px')
+                .text(d => d.category.length > 20 ? d.category.substring(0, 18) + '...' : d.category);
+
+            svg.selectAll('.count-label')
+                .data(data)
+                .enter()
+                .append('text')
+                .attr('class', 'chart-label')
+                .attr('x', d => xScale(d.count) + 5)
+                .attr('y', d => yScale(d.category) + yScale.bandwidth() / 2)
+                .attr('dy', '0.35em')
+                .attr('font-weight', '600')
+                .text(d => d.count);
+        }
+
+        // Draw remote chart (uses filtered data)
+        function drawRemoteChart() {
+            const container = document.getElementById('remote-chart');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const remoteCounts = {};
+            const remoteSalaries = {};
+            filteredJobs.forEach(job => {
+                remoteCounts[job.remote_type] = (remoteCounts[job.remote_type] || 0) + 1;
+                if (!remoteSalaries[job.remote_type]) remoteSalaries[job.remote_type] = [];
+                if (job.salary_mid) remoteSalaries[job.remote_type].push(job.salary_mid);
+            });
+
+            const data = Object.entries(remoteCounts).map(([type, count]) => {
+                const salaries = remoteSalaries[type].sort((a, b) => a - b);
+                return {
+                    type,
+                    count,
+                    median: salaries.length ? salaries[Math.floor(salaries.length / 2)] : 0
+                };
+            });
+
+            if (data.length === 0) {
+                container.innerHTML = '<div class="empty-state"><h3>No data</h3></div>';
+                return;
+            }
+
+            const width = container.clientWidth || 500;
+            const height = container.clientHeight || 320;
+            const margin = { top: 30, right: 20, bottom: 50, left: 50 };
+
+            const svg = d3.select('#remote-chart')
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height);
+
+            const xScale = d3.scaleBand()
+                .domain(data.map(d => d.type))
+                .range([margin.left, width - margin.right])
+                .padding(0.4);
+
+            const yScale = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d.count) * 1.15])
+                .range([height - margin.bottom, margin.top]);
+
+            svg.selectAll('.remote-bar')
+                .data(data)
+                .enter()
+                .append('rect')
+                .attr('x', d => xScale(d.type))
+                .attr('y', d => yScale(d.count))
+                .attr('width', xScale.bandwidth())
+                .attr('height', d => height - margin.bottom - yScale(d.count))
+                .attr('fill', d => d.type === 'Telework Eligible' ? '#C41230' : '#374151')
+                .attr('rx', 2)
+                .style('cursor', 'pointer')
+                .on('click', function(event, d) {
+                    document.getElementById('remoteFilter').value = d.type;
+                    applyFilters();
+                });
+
+            svg.selectAll('.count-label')
+                .data(data)
+                .enter()
+                .append('text')
+                .attr('class', 'chart-label')
+                .attr('x', d => xScale(d.type) + xScale.bandwidth() / 2)
+                .attr('y', d => yScale(d.count) - 5)
+                .attr('text-anchor', 'middle')
+                .attr('font-weight', '600')
+                .text(d => d.count + ' jobs');
+
+            svg.selectAll('.median-label')
+                .data(data)
+                .enter()
+                .append('text')
+                .attr('class', 'chart-label')
+                .attr('x', d => xScale(d.type) + xScale.bandwidth() / 2)
+                .attr('y', d => yScale(d.count) - 18)
+                .attr('text-anchor', 'middle')
+                .attr('font-size', '9px')
+                .attr('fill', '#6b7280')
+                .text(d => d.median ? 'Median: $' + Math.round(d.median / 1000) + 'K' : '');
+
+            svg.selectAll('.type-label')
+                .data(data)
+                .enter()
+                .append('text')
+                .attr('class', 'chart-label')
+                .attr('x', d => xScale(d.type) + xScale.bandwidth() / 2)
+                .attr('y', height - margin.bottom + 15)
+                .attr('text-anchor', 'middle')
+                .attr('font-size', '11px')
+                .text(d => d.type);
+        }
+
+        // Render job list (uses filtered data)
+        function renderJobList() {
+            const container = document.getElementById('job-list');
+            document.getElementById('list-count').textContent = filteredJobs.length;
+
+            if (filteredJobs.length === 0) {
+                container.innerHTML = '<div class="empty-state"><h3>No jobs match filters</h3><p>Try adjusting your filter criteria</p></div>';
+                return;
+            }
+
+            const sorted = [...filteredJobs].sort((a, b) => (b.salary_mid || 0) - (a.salary_mid || 0));
+
+            container.innerHTML = sorted.slice(0, 100).map((job, idx) => `
+                <div class="job-item" onclick="showJobDetail(${idx})">
+                    <div class="title">${escapeHtml(job.title)}</div>
+                    <div class="org">${escapeHtml(job.organization)}</div>
+                    <div class="meta">
+                        <span class="salary">${formatSalary(job.salary_min, job.salary_max)}</span>
+                        <span class="location">${escapeHtml(job.location)}</span>
+                    </div>
+                    <span class="category-tag">${escapeHtml(job.category)}</span>
+                </div>
+            `).join('');
+
+            if (filteredJobs.length > 100) {
+                container.innerHTML += `<div class="empty-state" style="padding:15px;"><p>Showing first 100 of ${filteredJobs.length} jobs</p></div>`;
+            }
+        }
+
+        // Show job detail
+        function showJobDetail(idx) {
+            const sorted = [...filteredJobs].sort((a, b) => (b.salary_mid || 0) - (a.salary_mid || 0));
+            const job = sorted[idx];
+            if (!job) return;
+
+            document.getElementById('detail-title').textContent = job.title;
+            document.getElementById('detail-org').textContent = job.organization;
+            document.getElementById('detail-dept').textContent = job.department;
+            document.getElementById('detail-salary').textContent = formatSalary(job.salary_min, job.salary_max);
+            document.getElementById('detail-location').textContent = `${job.city}, ${job.state}`;
+            document.getElementById('detail-remote').textContent = job.remote_type;
+            document.getElementById('detail-date').textContent = job.posted_date;
+
+            const skillsContainer = document.getElementById('detail-skills');
+            skillsContainer.innerHTML = (job.skills || []).map(s =>
+                `<span class="skill-tag" onclick="addSkillFilter('${escapeHtml(s)}')">${escapeHtml(s)}</span>`
+            ).join('');
+
+            const applyBtn = document.getElementById('detail-apply');
+            applyBtn.href = job.job_url;
+            applyBtn.style.display = 'block';
+        }
+
+        // Tab switching
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            document.querySelector(`[onclick="switchTab('${tabId}')"]`).classList.add('active');
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+
+            // Redraw charts when skills tab becomes visible
+            if (tabId === 'skills') {
+                setTimeout(() => {
+                    drawSkillsChart();
+                    drawSalaryChart();
+                    drawCategoryChart();
+                    drawRemoteChart();
+                }, 50);
+            }
+        }
+
+        // Utilities
+        function formatSalary(min, max) {
+            if (!min && !max) return 'Salary not listed';
+            if (min && max) return `$${Math.round(min/1000)}K - $${Math.round(max/1000)}K`;
+            return min ? `$${Math.round(min/1000)}K+` : `Up to $${Math.round(max/1000)}K`;
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Embedded data placeholder
+        const EMBEDDED_DATA = [];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

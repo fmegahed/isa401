@@ -86,3 +86,6 @@ class_code/sectionA/sectionA.Rproj
 class_code/sectionB/sectionB.Rproj
 data/covid_cases_county.csv
 *.lnk
+/.devcontainer
+tmpclaude-af2f-cwd
+/scripts
