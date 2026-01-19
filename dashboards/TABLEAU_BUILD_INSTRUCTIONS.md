@@ -3,15 +3,29 @@
 
 This guide walks you through building the Class 01 demo dashboard step-by-step.
 
-**Data Source:** Real federal job postings from USAJobs.gov (615 jobs)
-**Data File:** `data/demo_dashboard/jobs_master.csv`
+**Data Source:** Federal job postings from USAJobs.gov (1,276 jobs)
+**Data File:** `dashboards/jobs_data.json` or `data/demo_dashboard/jobs_master.csv`
+**Summary Stats:** `data/dashboard_summary.csv`
+
+---
+
+## Data Overview
+
+| Metric | Value |
+|:---|:---|
+| Total Jobs | 1,276 |
+| Salary Range | $43,610 - $387,500 |
+| Median Salary | $105,469 |
+| Average Salary | $112,928 |
+| Top Category | Security & Law Enforcement (273 jobs) |
+| Highest Paying Category | Data & Analytics ($139,342 avg) |
 
 ---
 
 ## Step 1: Connect to Data
 
 1. Open Tableau Desktop
-2. Click **Text file** under Connect
+2. Click **Text file** under Connect (or **JSON** for jobs_data.json)
 3. Navigate to `data/demo_dashboard/jobs_master.csv`
 4. Click **Open**
 5. Verify data types:
@@ -60,7 +74,7 @@ STR(YEAR([posted_date])) + " Q" + STR(DATEPART('quarter', [posted_date]))
   ```
 
 ### Expected Result:
-- Larger circles in tech hubs (SF, NYC, Seattle)
+- Larger circles in DC/Virginia/Maryland (federal hub)
 - Darker colors indicate higher salaries
 
 ---
@@ -92,8 +106,9 @@ STR(YEAR([posted_date])) + " Q" + STR(DATEPART('quarter', [posted_date]))
   ```
 
 ### Expected Result:
-- SQL, Python at top (most common)
-- Color shows which skills pay more (Machine Learning, Deep Learning = higher premium)
+- Communication, Organization, Report Writing at top (most common overall)
+- For Data & Analytics roles: SQL (86%), Python (62%) dominate
+- Color shows which skills pay more (SQL has $25K premium)
 
 ---
 
@@ -113,7 +128,7 @@ STR(YEAR([posted_date])) + " Q" + STR(DATEPART('quarter', [posted_date]))
 
 ### Expected Result:
 - Upward trend over time (more recent = more jobs)
-- Data & Analytics and Engineering should be most common
+- Security & Law Enforcement and Administrative most common overall
 
 ---
 
@@ -137,8 +152,8 @@ STR(YEAR([posted_date])) + " Q" + STR(DATEPART('quarter', [posted_date]))
 - **Labels:** Show salary values
 
 ### Expected Result:
-- Data & Analytics and Management = highest salaries
-- Remote jobs may have slightly lower salaries (less location premium)
+- Data & Analytics ($139K) and Legal ($135K) = highest salaries
+- Security & Law Enforcement = lowest ($94K)
 
 ---
 
@@ -223,22 +238,65 @@ STR(YEAR([posted_date])) + " Q" + STR(DATEPART('quarter', [posted_date]))
 When presenting to Class 01:
 
 1. **Start with the big picture:**
-   > "This dashboard shows 615 REAL federal job postings from USAJobs.gov. These are actual positions you could apply for today."
+   > "This dashboard shows 1,276 REAL federal job postings from USAJobs.gov. These are actual positions you could apply for today."
 
 2. **Show the map:**
-   > "Where are the federal tech jobs? Notice DC, Virginia, and Maryland dominate - that's the federal government hub. Click on a state to filter."
+   > "Where are the federal jobs? Notice DC, Virginia, and Maryland dominate - that's the federal government hub. Click on a state to filter."
 
 3. **Discuss skills:**
-   > "Python and SQL are most in-demand. Machine Learning jobs have a salary premium - see the color difference?"
+   > "Overall, communication and organizational skills dominate. But filter to Data & Analytics, and you'll see SQL appears in 86% of those roles, with Python at 62%."
 
 4. **Show salaries:**
-   > "Federal jobs range from $42K to $325K. The median is $111K - competitive with private sector!"
+   > "Federal jobs range from $44K to $388K. The median is $105K. Data & Analytics roles average $139K - the highest paying category!"
 
-5. **Highlight telework:**
-   > "Many federal positions now offer telework. Let's filter to see which categories offer more flexibility."
+5. **Highlight the D&A premium:**
+   > "Data & Analytics roles pay $33K more than the overall median - $139K vs $105K. And within D&A, SQL appears in 86% of roles, making it essentially required."
 
 6. **Ask students:**
    > "What questions does this answer? What questions does it NOT answer? How would private sector data differ?"
+
+---
+
+## Key Statistics (Verified)
+
+### Jobs by Category
+| Category | Count | Avg Salary |
+|:---|---:|---:|
+| Security & Law Enforcement | 273 | $93,979 |
+| Administrative | 239 | $107,569 |
+| Medical & Healthcare | 223 | $119,639 |
+| Other | 172 | $113,927 |
+| IT & Systems | 128 | $114,525 |
+| Engineering | 83 | $129,090 |
+| Legal | 82 | $135,161 |
+| Cybersecurity | 55 | $128,602 |
+| Data & Analytics | 21 | $139,342 |
+
+### Top Skills in Data & Analytics Roles
+| Skill | % of D&A Jobs |
+|:---|---:|
+| SQL | 85.7% |
+| Project Management | 71.4% |
+| Statistics | 71.4% |
+| Python | 61.9% |
+| Quality Assurance | 61.9% |
+| Data Modeling | 57.1% |
+
+### Salary Premium Calculation Method
+The category salary premium is calculated using **medians** (consistent with the dashboard):
+
+```
+Premium = Median(salary_mid for category) - Median(salary_mid for all jobs)
+```
+
+Example for Data & Analytics:
+- D&A jobs: n=21, median salary = $138,667
+- All jobs: n=1,276, median salary = $105,469
+- **D&A Premium = $138,667 - $105,469 = $33,198**
+
+**Why median?** Median is less affected by outliers (very high or low salaries), making it a more representative measure of typical salary.
+
+**Note on skill-based premiums:** Within D&A roles, SQL appears in 86% of jobs (18/21), leaving only 3 jobs without SQL—too small a sample for meaningful skill-premium comparisons. The appropriate insight is that SQL is *essential* for D&A roles, not that it commands a premium within D&A.
 
 ---
 
@@ -259,3 +317,4 @@ When presenting to Class 01:
 ---
 
 *Dashboard designed for ISA 401 Class 01 Demo - Spring 2026*
+*Data last verified: January 2026*

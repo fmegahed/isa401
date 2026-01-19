@@ -1,0 +1,119 @@
+category,metric,value
+Overall,Total Jobs,1276
+Overall,Median Salary,105469
+Overall,Avg Salary,112928.0
+Overall,Min Salary,43610
+Overall,Max Salary,387500
+Category Count,Security & Law Enforcement,273
+Category Count,Administrative,239
+Category Count,Medical & Healthcare,223
+Category Count,Other,172
+Category Count,IT & Systems,128
+Category Count,Engineering,83
+Category Count,Legal,82
+Category Count,Cybersecurity,55
+Category Count,Data & Analytics,21
+Category Median Salary,Data & Analytics,138667
+Category Avg Salary,Data & Analytics,139342.0
+Category Premium (Median),Data & Analytics,33198
+Category Median Salary,Engineering,129078
+Category Avg Salary,Engineering,129090.0
+Category Premium (Median),Engineering,23609
+Category Median Salary,Medical & Healthcare,100890
+Category Avg Salary,Medical & Healthcare,119639.0
+Category Premium (Median),Medical & Healthcare,-4579
+Category Median Salary,Other,105061
+Category Avg Salary,Other,113927.0
+Category Premium (Median),Other,-408
+Category Median Salary,IT & Systems,103432
+Category Avg Salary,IT & Systems,114525.0
+Category Premium (Median),IT & Systems,-2037
+Category Median Salary,Administrative,104401
+Category Avg Salary,Administrative,107569.0
+Category Premium (Median),Administrative,-1068
+Category Median Salary,Cybersecurity,118816
+Category Avg Salary,Cybersecurity,128602.0
+Category Premium (Median),Cybersecurity,13347
+Category Median Salary,Security & Law Enforcement,83615
+Category Avg Salary,Security & Law Enforcement,93979.0
+Category Premium (Median),Security & Law Enforcement,-21854
+Category Median Salary,Legal,137133
+Category Avg Salary,Legal,135161.0
+Category Premium (Median),Legal,31664
+Skill Count (All Jobs),Communication,408
+Skill Pct (All Jobs),Communication,32.0
+Skill Count (All Jobs),Organization,327
+Skill Pct (All Jobs),Organization,25.6
+Skill Count (All Jobs),Report Writing,321
+Skill Pct (All Jobs),Report Writing,25.2
+Skill Count (All Jobs),Problem Solving,256
+Skill Pct (All Jobs),Problem Solving,20.1
+Skill Count (All Jobs),Attention to Detail,245
+Skill Pct (All Jobs),Attention to Detail,19.2
+Skill Count (All Jobs),Customer Service,209
+Skill Pct (All Jobs),Customer Service,16.4
+Skill Count (All Jobs),Project Management,187
+Skill Pct (All Jobs),Project Management,14.7
+Skill Count (All Jobs),Teamwork,164
+Skill Pct (All Jobs),Teamwork,12.9
+Skill Count (All Jobs),Patient Care,157
+Skill Pct (All Jobs),Patient Care,12.3
+Skill Count (All Jobs),Microsoft Office,152
+Skill Pct (All Jobs),Microsoft Office,11.9
+Skill Count (All Jobs),Analysis,152
+Skill Pct (All Jobs),Analysis,11.9
+Skill Count (All Jobs),Technical Documentation,133
+Skill Pct (All Jobs),Technical Documentation,10.4
+Skill Count (All Jobs),Quality Assurance,128
+Skill Pct (All Jobs),Quality Assurance,10.0
+Skill Count (All Jobs),Troubleshooting,124
+Skill Pct (All Jobs),Troubleshooting,9.7
+Skill Count (All Jobs),Compliance,119
+Skill Pct (All Jobs),Compliance,9.3
+Skill Count (All Jobs),Case Management,101
+Skill Pct (All Jobs),Case Management,7.9
+Skill Count (All Jobs),Threat Detection,101
+Skill Pct (All Jobs),Threat Detection,7.9
+Skill Count (All Jobs),Physical Stamina,101
+Skill Pct (All Jobs),Physical Stamina,7.9
+Skill Count (All Jobs),Security Screening,101
+Skill Pct (All Jobs),Security Screening,7.9
+Skill Count (All Jobs),Security Protocols,95
+Skill Pct (All Jobs),Security Protocols,7.4
+Skill Count (Data & Analytics),SQL,18
+Skill Pct (Data & Analytics),SQL,85.7
+Skill Count (Data & Analytics),Project Management,15
+Skill Pct (Data & Analytics),Project Management,71.4
+Skill Count (Data & Analytics),Statistics,15
+Skill Pct (Data & Analytics),Statistics,71.4
+Skill Count (Data & Analytics),Python,13
+Skill Pct (Data & Analytics),Python,61.9
+Skill Count (Data & Analytics),Quality Assurance,13
+Skill Pct (Data & Analytics),Quality Assurance,61.9
+Skill Count (Data & Analytics),Data Modeling,12
+Skill Pct (Data & Analytics),Data Modeling,57.1
+Skill Count (Data & Analytics),Data Analysis,6
+Skill Pct (Data & Analytics),Data Analysis,28.6
+Skill Count (Data & Analytics),Visualization,4
+Skill Pct (Data & Analytics),Visualization,19.0
+Skill Count (Data & Analytics),Excel,3
+Skill Pct (Data & Analytics),Excel,14.3
+Skill Count (Data & Analytics),Reporting,3
+Skill Pct (Data & Analytics),Reporting,14.3
+Skill Count (Data & Analytics),R,3
+Skill Pct (Data & Analytics),R,14.3
+Skill Count (Data & Analytics),Research Methods,3
+Skill Pct (Data & Analytics),Research Methods,14.3
+Skill Count (Data & Analytics),SAS,3
+Skill Pct (Data & Analytics),SAS,14.3
+Skill Count (Data & Analytics),Policy Analysis,2
+Skill Pct (Data & Analytics),Policy Analysis,9.5
+Skill Count (Data & Analytics),Report Writing,2
+Skill Pct (Data & Analytics),Report Writing,9.5
+D&A Premium Calculation,D&A Jobs Count,21
+D&A Premium Calculation,D&A Median Salary,138667
+D&A Premium Calculation,All Jobs Count,1276
+D&A Premium Calculation,All Jobs Median Salary,105469
+D&A Premium Calculation,D&A Premium (Median),33198
+Remote Type,Onsite,827
+Remote Type,Telework Eligible,449

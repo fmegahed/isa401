@@ -1138,12 +1138,20 @@
             container.innerHTML = '';
 
             const catSalaries = {};
+            const allSalaries = [];
             filteredJobs.forEach(job => {
                 if (job.salary_mid) {
                     if (!catSalaries[job.category]) catSalaries[job.category] = [];
                     catSalaries[job.category].push(job.salary_mid);
+                    allSalaries.push(job.salary_mid);
                 }
             });
+
+            // Calculate overall median salary
+            allSalaries.sort((a, b) => a - b);
+            const overallMedian = allSalaries.length > 0
+                ? allSalaries[Math.floor(allSalaries.length / 2)]
+                : 0;
 
             const data = Object.entries(catSalaries).map(([cat, salaries]) => ({
                 category: cat,
@@ -1173,6 +1181,27 @@
             const yScale = d3.scaleLinear()
                 .domain([0, d3.max(data, d => d.median) * 1.1])
                 .range([height - margin.bottom, margin.top]);
+
+            // Add overall median reference line
+            if (overallMedian > 0) {
+                svg.append('line')
+                    .attr('x1', margin.left)
+                    .attr('x2', width - margin.right)
+                    .attr('y1', yScale(overallMedian))
+                    .attr('y2', yScale(overallMedian))
+                    .attr('stroke', '#C41230')
+                    .attr('stroke-width', 2)
+                    .attr('stroke-dasharray', '6,4');
+
+                svg.append('text')
+                    .attr('x', width - margin.right - 5)
+                    .attr('y', yScale(overallMedian) - 6)
+                    .attr('text-anchor', 'end')
+                    .attr('font-size', '11px')
+                    .attr('font-weight', '600')
+                    .attr('fill', '#C41230')
+                    .text('Overall Median: $' + Math.round(overallMedian / 1000) + 'K');
+            }
 
             svg.selectAll('.cat-bar')
                 .data(data)

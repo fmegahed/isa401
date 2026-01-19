@@ -113,13 +113,13 @@ a:active {
   width: 36%;
 }
 
-.pull-left-3 {
+.left-code {
+  width: 48%;
   float: left;
-  width: 25%;
 }
-.pull-right-3 {
+.right-plot {
+  width: 50%;
   float: right;
-  width: 66%;
 }
 
 img, video, iframe {
@@ -336,4 +336,11 @@ b, strong {
     -webkit-transform: rotate(2deg);
     -moz-transform: rotate(2deg);
     transform: rotate(2deg);     
+}
+
+.rt
+{
+  position:absolute;
+  right:5px;
+  bottom:25px;
 }

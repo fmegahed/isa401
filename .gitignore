@@ -89,3 +89,8 @@ data/covid_cases_county.csv
 /.devcontainer
 tmpclaude-af2f-cwd
 /scripts
+
+/.quarto/
+/.claude
+/dashboards
+/dashboards
