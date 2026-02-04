@@ -1,0 +1,66 @@
+---
+title: 'Class 02: R Basics'
+author: "Fadel Megahed"
+date: "2026-02-02"
+output: 
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
+    number_sections: TRUE
+    code_folding: show
+    code_download: TRUE
+    theme: simplex
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Assignment Operators
+
+In R, there are three assignment operators:   
+
+  - `->`,  
+  - `=`, and  
+  - `<-`.
+  
+For example:
+```{r assignment}
+x1 = 5
+
+5 -> x3
+```
+
+
+
+## Atomic Vectors
+
+You can think of an atomic vector as a col of data in Excel. However, it can only take a single data type, which means that if you combined multiple data types in it; it will return the most general class.
+
+```{r atomic_vectors}
+mixed_vec1 = c('ISA', 401L) # this will return a chr vector
+
+mixed_num = c(401L, 3.14) # typeof(mixed_num) returns a double (more general than an integar)
+
+```
+
+
+## Lists
+
+Lists are very flexible as they can have different datasets within it.
+
+
+```{r lists}
+lst <- list( # list constructor/creator
+  1:3, # atomic double/numeric vector  of length = 3
+  "a", # atomic character vector of length = 1 (aka scalar)
+  c(TRUE, FALSE, TRUE), # atomic logical vector of length = 3
+  c(2.3, 5.9) # atomic double/numeric vector of length =3
+)
+lst # printing the list
+
+sublist1 = lst[1]
+from_sublist_to_underlying_structure = lst[[1]]
+```
+
+

@@ -1,0 +1,63 @@
+
+## Loading and cleaning the OEWS dataset
+## --------------------------------------
+
+# Download: https://www.bls.gov/oes/special-requests/oesm24all.zip 
+# Website: https://www.bls.gov/oes/tables.htm
+oews_raw = 
+  suppressWarnings(
+  readxl::read_excel("data/all_data_M_2024.xlsx", sheet = 1) |> 
+  janitor::clean_names()
+  )
+
+# dplyr::glimpse(oews_raw) # Note the character variables
+oews = oews_raw |> 
+    dplyr::mutate(
+      dplyr::across( c(emp_prse:a_pct90), as.numeric ),
+      dplyr::across( is.character, as.factor )
+    )
+
+# dplyr::glimpse(oews) # All good
+# skimr::skim(oews) # Nice visual summary
+
+# A quick explorer app
+# used querychat_app first
+qc = querychat::querychat(
+  oews,
+  client = "openai/gpt-5-mini-2025-08-07", # ollama/ministral-3:3b
+  greeting = "Welcome to Our ISA 401 Assistant for Understanding the OEWS Dataset",
+  extra_instructions = "data/extra_instructions.md",
+  data_description = 'data/data_desc.md'
+)
+
+## Based on the documentation:
+# https://posit-dev.github.io/querychat/r/articles/build.html#programmatic-filtering
+
+# Step 2: Add UI component
+ui <- bslib::page_sidebar(
+  sidebar = qc$sidebar(),
+  bslib::card(
+    bslib::card_header("Data Table"),
+    DT::DTOutput("table")
+  ),
+  bslib::card(
+    fill = FALSE,
+    bslib::card_header("SQL Query"),
+    shiny::verbatimTextOutput("sql")
+  )
+)
+
+# Step 3: Use reactive values in server
+server <- function(input, output, session) {
+  qc_vals <- qc$server()
+  
+  output$table <- DT::renderDT({
+    DT::datatable(qc_vals$df(), fillContainer = TRUE)
+  })
+  
+  output$sql <- shiny::renderText({
+    qc_vals$sql() %||% "SELECT * FROM oews"
+  })
+}
+
+shiny::shinyApp(ui, server)
