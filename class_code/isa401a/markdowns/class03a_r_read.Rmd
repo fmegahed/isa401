@@ -1,0 +1,51 @@
+---
+title: 'Class 03: Importing Data in R'
+author: "Fadel Megahed"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    code_download: true
+    code_folding: show
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Reading CSV Files
+
+## Locally
+
+Note because you chose to use RMarkdown, there could be a discrepancy between the path needed for when you run the code line by line and when you run it in RMarkdown.  
+
+  - **RMarkdown Run:** Uses the path based on the RMarkdown file location.  
+  - **Line-by-Line Testing:** Uses the path based on the Project location.  
+  
+So to fix this, whenever we open a RMarkdown, we will automatically set the working directory to the the folder containing the markdown.
+
+```{r local_file}
+usa_df = readr::read_csv("../data/US000.csv")
+```
+
+## From an Online Location
+
+```{r fred}
+unrate = readr::read_csv("https://fred.stlouisfed.org/graph/fredgraph.csv?bgcolor=%23ebf3fb&chart_type=line&drp=0&fo=open%20sans&graph_bgcolor=%23ffffff&height=450&mode=fred&recession_bars=on&txtcolor=%23444444&ts=12&tts=12&width=1320&nt=0&thu=0&trc=0&show_legend=yes&show_axis_titles=yes&show_tooltip=yes&id=UNRATE&scale=left&cosd=1948-01-01&coed=2025-12-01&line_color=%230073e6&link_values=false&line_style=solid&mark_type=none&mw=3&lw=3&ost=-99999&oet=99999&mma=0&fml=a&fq=Monthly&fam=avg&fgst=lin&fgsnd=2020-02-01&line_index=1&transformation=lin&vintage_date=2026-02-04&revision_date=2026-02-04&nd=1948-01-01")
+
+unrate_read_dot_csv = read.csv("https://fred.stlouisfed.org/graph/fredgraph.csv?bgcolor=%23ebf3fb&chart_type=line&drp=0&fo=open%20sans&graph_bgcolor=%23ffffff&height=450&mode=fred&recession_bars=on&txtcolor=%23444444&ts=12&tts=12&width=1320&nt=0&thu=0&trc=0&show_legend=yes&show_axis_titles=yes&show_tooltip=yes&id=UNRATE&scale=left&cosd=1948-01-01&coed=2025-12-01&line_color=%230073e6&link_values=false&line_style=solid&mark_type=none&mw=3&lw=3&ost=-99999&oet=99999&mma=0&fml=a&fq=Monthly&fam=avg&fgst=lin&fgsnd=2020-02-01&line_index=1&transformation=lin&vintage_date=2026-02-04&revision_date=2026-02-04&nd=1948-01-01")
+
+dplyr::glimpse(unrate)
+dplyr::glimpse(unrate_read_dot_csv)
+```
+
+## From GitHub
+
+You need to get the path for the raw file since that strips away any HTML.
+
+```{r github_csv}
+super_bowl = readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/2e9bd5a67e09b14d01f616b00f7f7e0931515d24/data/2021/2021-03-02/youtube.csv")
+```
+
