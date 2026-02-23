@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>ISA 401: Business Intelligence &amp; Data Visualization</title>
+    <meta charset="utf-8" />
+    <meta name="author" content=" Fadel M. Megahed, PhD   Raymond E. Gloss Professor in Business   Farmer School of Business  Miami University     @Fadel Megahed     fmegahed     fmegahed@miamioh.edu    Automated Scheduler for Office Hours  " />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/tile-view/tile-view.css" rel="stylesheet" />
+    <script src="libs/tile-view/tile-view.js"></script>
+    <link href="libs/animate.css/animate.xaringan.css" rel="stylesheet" />
+    <link href="libs/tachyons/tachyons.min.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra_fit-screen/fit-screen.js"></script>
+    <link href="libs/panelset/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset/panelset.js"></script>
+    <script type="application/json" id="xaringanExtra-editable-docid">{"id":"d13602f657da4e3a9db8d319e581c1a3","expires":14}</script>
+    <script src="libs/himalaya/himalaya.js"></script>
+    <script src="libs/js-cookie/js.cookie.js"></script>
+    <link href="libs/editable/editable.css" rel="stylesheet" />
+    <script src="libs/editable/editable.js"></script>
+    <script src="libs/mark.js/mark.min.js"></script>
+    <link href="libs/xaringanExtra-search/search.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-search/search.js"></script>
+    <script>window.addEventListener('load', function() { window.xeSearch = new RemarkSearch({"position":"bottom-left","caseSensitive":false,"showIcon":false,"autoSearch":true}) })</script>
+    <link href="libs/countdown/countdown.css" rel="stylesheet" />
+    <script src="libs/countdown/countdown.js"></script>
+    <link rel="stylesheet" href="../../style_files/fonts.css" type="text/css" />
+    <link rel="stylesheet" href="../../style_files/my-theme.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# ISA 401: Business Intelligence &amp; Data Visualization
+]
+.subtitle[
+## 09: Tidy Data &amp; Validation in <svg viewBox="0 0 581 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:white;" xmlns="http://www.w3.org/2000/svg"> <path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"></path></svg>
+]
+.author[
+### <br>Fadel M. Megahed, PhD <br><br>Raymond E. Gloss Professor in Business <br> Farmer School of Business<br> Miami University<br><br> <a href="https://www.linkedin.com/in/fadel-megahed-289046b4"><svg viewBox="0 0 448 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:white;" xmlns="http://www.w3.org/2000/svg"> <path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"></path></svg> <span class="citation">@Fadel</span> Megahed</a> <br> <a href="https://github.com/fmegahed/"><svg viewBox="0 0 496 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:white;" xmlns="http://www.w3.org/2000/svg"> <path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg> fmegahed</a> <br> <a href="mailto:fmegahed@miamioh.edu"><svg viewBox="0 0 512 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:white;" xmlns="http://www.w3.org/2000/svg"> <path d="M476 3.2L12.5 270.6c-18.1 10.4-15.8 35.6 2.2 43.2L121 358.4l287.3-253.2c5.5-4.9 13.3 2.6 8.6 8.3L176 407v80.5c0 23.6 28.5 32.9 42.5 15.8L282 426l124.6 52.2c14.2 6 30.4-2.9 33-18.2l72-432C515 7.8 493.3-6.8 476 3.2z"></path></svg> fmegahed@miamioh.edu</a><br> <a href="https://calendly.com/fmegahed"><svg viewBox="0 0 384 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:white;" xmlns="http://www.w3.org/2000/svg"> <path d="M202.021 0C122.202 0 70.503 32.703 29.914 91.026c-7.363 10.58-5.093 25.086 5.178 32.874l43.138 32.709c10.373 7.865 25.132 6.026 33.253-4.148 25.049-31.381 43.63-49.449 82.757-49.449 30.764 0 68.816 19.799 68.816 49.631 0 22.552-18.617 34.134-48.993 51.164-35.423 19.86-82.299 44.576-82.299 106.405V320c0 13.255 10.745 24 24 24h72.471c13.255 0 24-10.745 24-24v-5.773c0-42.86 125.268-44.645 125.268-160.627C377.504 66.256 286.902 0 202.021 0zM192 373.459c-38.196 0-69.271 31.075-69.271 69.271 0 38.195 31.075 69.27 69.271 69.27s69.271-31.075 69.271-69.271-31.075-69.27-69.271-69.27z"></path></svg> Automated Scheduler for Office Hours</a><br><br>
+]
+.date[
+### Spring 2026
+]
+
+---
+
+
+
+
+
+
+
+
+## Quick Refresher from Last Week
+
+
+✅ Extract tabular data from PDFs using `tabulapdf`.
+
+✅ Use vision APIs to interpret images and infographics.
+
+✅ Extract structured information from documents with LLM-based parsing.
+
+---
+
+## Kahoot/Quiz Review: Images &amp; Documents
+
+.pull-left[
+
+**Q1.** Which R package is commonly used to extract tables from PDF files?
+A. `rvest`
+B. `tabulapdf`
+C. `jsonlite`
+D. `httr2`
+
+**Q2.** What does a "vision API" typically accept as input?
+A. A CSV file
+B. An image file or URL
+C. A SQL query
+D. An HTML page
+
+]
+
+.pull-right[
+
+**Q3.** Why is LLM-based extraction useful for unstructured documents?
+A. It is always faster than regex
+B. It can understand context and infer structure
+C. It requires no API key
+D. It only works on JSON files
+
+**Q4.** When extracting data from an infographic, which approach is most reliable?
+A. Manually copying numbers
+B. Using OCR + LLM to interpret layout and values
+C. Downloading the raw CSV embedded in the image
+D. Using `read_csv()` directly on the image URL
+
+]
+
+<countdown-timer class="countdown" id="timer_d7f7b565" minutes="3" seconds="0" warn-when="60" update-every="1" tabindex="0" style="top:0;right:0;--countdown-font-size:1.5em;--countdown-color-background:#C3142D;--countdown-color-text:white;"></countdown-timer>
+
+
+---
+
+# Learning Objectives for Today's Class
+
+- **LO1:** Define the principles of tidy data
+
+- **LO2:** Reshape data using `pivot_longer()` and `pivot_wider()`
+
+- **LO3:** Perform rectangling and unnesting operations
+
+- **LO4:** Validate data types and value constraints
+
+- **LO5:** Detect and handle duplicates
+
+
+---
+class: inverse, center, middle
+
+# LO1: The Principles of Tidy Data 🧹
+
+---
+
+## What Is Tidy Data?
+
+.pull-left[
+
+Tidy data is a **standard way of organizing tabular data** so that:
+
+1. Each **variable** forms a column.
+2. Each **observation** forms a row.
+3. Each **value** has its own cell.
+
+These three rules make data **consistently structured**, which means the same tools work across different datasets.
+
+&gt; "Tidy datasets are all alike, but every messy dataset is messy in its own way." -- Hadley Wickham
+
+]
+
+.pull-right[
+
+&lt;img src="https://github.com/allisonhorst/stats-illustrations/raw/main/rstats-artwork/tidydata_1.jpg" alt="" width="100%" style="display: block; margin: auto;" /&gt;
+
+]
+
+.footnote[
+&lt;html&gt;&lt;hr&gt;&lt;/html&gt;
+**Source:** Illustration from the Openscapes blog, [Tidy Data for reproducibility, efficiency, and collaboration](https://www.openscapes.org/blog/2020/10/12/tidy-data/) by Julia Lowndes and Allison Horst.
+]
+
+---
+
+## The Three Rules Visualized
+
+&lt;img src="https://github.com/allisonhorst/stats-illustrations/raw/main/rstats-artwork/tidydata_2.jpg" alt="" width="90%" style="display: block; margin: auto;" /&gt;
+
+.footnote[
+&lt;html&gt;&lt;hr&gt;&lt;/html&gt;
+**Source:** Illustration from the Openscapes blog, [Tidy Data for reproducibility, efficiency, and collaboration](https://www.openscapes.org/blog/2020/10/12/tidy-data/) by Julia Lowndes and Allison Horst.
+]
+
+---
+
+## Tidy vs. Messy: A Job Market Example
+
+.pull-left[
+
+**Messy (wide) format:** Salary columns spread across years.
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; job_title &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; salary_2023 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; salary_2024 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; salary_2025 &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Data Analyst &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 65000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 68000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 72000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Data Scientist &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 95000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 100000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 108000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; BI Developer &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 78000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 82000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 87000 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+]
+
+.pull-right[
+
+**Tidy (long) format:** One row per observation.
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; job_title &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; salary &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Data Analyst &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2023 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 65000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Data Analyst &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2024 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 68000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Data Analyst &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2025 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 72000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Data Scientist &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2023 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 95000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Data Scientist &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2024 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 100000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Data Scientist &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2025 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 108000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; BI Developer &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2023 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 78000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; BI Developer &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2024 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 82000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; BI Developer &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2025 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 87000 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+]
+
+--
+
+.font80[
+The tidy format is better because: each variable (job title, year, salary) has its own column, and each row is one observation (a job in a specific year).
+]
+
+
+---
+
+## Activity: Tidy or Not?
+
+<countdown-timer class="countdown" id="timer_41b0d716" minutes="4" seconds="0" update-every="1" tabindex="0" style="top:0;right:0;--countdown-font-size:2em;"></countdown-timer>
+
+.panelset[
+
+.panel[.panel-name[Activity]
+
+.small[
+Examine the five `tidyr` built-in tables below (`table1` through `table4b`). Each displays TB cases from Afghanistan, Brazil, and China (1999--2000).
+
+- **Identify which table(s) are tidy.**
+- **For non-tidy tables, state which rule(s) are violated.**
+- Discuss with a neighbor.
+]
+]
+
+.panel[.panel-name[`table1`]
+
+
+```
+## # A tibble: 6 × 4
+##   country      year  cases population
+##   &lt;chr&gt;       &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;
+## 1 Afghanistan  1999    745   19987071
+## 2 Afghanistan  2000   2666   20595360
+## 3 Brazil       1999  37737  172006362
+## 4 Brazil       2000  80488  174504898
+## 5 China        1999 212258 1272915272
+## 6 China        2000 213766 1280428583
+```
+
+.can-edit.key-activity01[
+Tidy or not? ..............................
+Rules broken (if any): ..............................
+]
+
+]
+
+.panel[.panel-name[`table2`]
+
+
+```
+## # A tibble: 12 × 4
+##    country      year type            count
+##    &lt;chr&gt;       &lt;dbl&gt; &lt;chr&gt;           &lt;dbl&gt;
+##  1 Afghanistan  1999 cases             745
+##  2 Afghanistan  1999 population   19987071
+##  3 Afghanistan  2000 cases            2666
+##  4 Afghanistan  2000 population   20595360
+##  5 Brazil       1999 cases           37737
+##  6 Brazil       1999 population  172006362
+##  7 Brazil       2000 cases           80488
+##  8 Brazil       2000 population  174504898
+##  9 China        1999 cases          212258
+## 10 China        1999 population 1272915272
+## 11 China        2000 cases          213766
+## 12 China        2000 population 1280428583
+```
+
+.can-edit.key-activity02[
+Tidy or not? ..............................
+Rules broken (if any): ..............................
+]
+
+]
+
+.panel[.panel-name[`table3`]
+
+
+```
+## # A tibble: 6 × 3
+##   country      year rate             
+##   &lt;chr&gt;       &lt;dbl&gt; &lt;chr&gt;            
+## 1 Afghanistan  1999 745/19987071     
+## 2 Afghanistan  2000 2666/20595360    
+## 3 Brazil       1999 37737/172006362  
+## 4 Brazil       2000 80488/174504898  
+## 5 China        1999 212258/1272915272
+## 6 China        2000 213766/1280428583
+```
+
+.can-edit.key-activity03[
+Tidy or not? ..............................
+Rules broken (if any): ..............................
+]
+
+]
+
+.panel[.panel-name[`table4a` &amp; `table4b`]
+
+
+```
+## table4a (cases):
+```
+
+```
+## # A tibble: 3 × 3
+##   country     `1999` `2000`
+##   &lt;chr&gt;        &lt;dbl&gt;  &lt;dbl&gt;
+## 1 Afghanistan    745   2666
+## 2 Brazil       37737  80488
+## 3 China       212258 213766
+```
+
+```
+## 
+## table4b (population):
+```
+
+```
+## # A tibble: 3 × 3
+##   country         `1999`     `2000`
+##   &lt;chr&gt;            &lt;dbl&gt;      &lt;dbl&gt;
+## 1 Afghanistan   19987071   20595360
+## 2 Brazil       172006362  174504898
+## 3 China       1272915272 1280428583
+```
+
+.can-edit.key-activity04[
+Tidy or not? ..............................
+Rules broken (if any): ..............................
+]
+
+]
+
+]
+
+
+---
+
+## LO1 Check-In
+
+✅ You can now define tidy data by its three rules:
+
+- Each variable forms a column
+
+- Each observation forms a row
+
+- Each value has its own cell
+
+
+---
+class: inverse, center, middle
+
+# LO2: Reshaping Data with `pivot_longer()` and `pivot_wider()`
+
+---
+
+## Wide vs. Long Data
+
+&lt;img src="https://raw.githubusercontent.com/gadenbuie/tidyexplain/main/images/static/png/original-dfs-tidy.png" alt="" width="50%" style="display: block; margin: auto;" /&gt;
+
+.footnote[
+&lt;html&gt;&lt;hr&gt;&lt;/html&gt;
+**Source:** Garrick Aden-Buie's [tidyexplain GitHub Repository](https://github.com/gadenbuie/tidyexplain).
+]
+
+
+---
+
+## The `pivot_longer()` Function
+
+- **Use case:** When column names contain values (e.g., year columns `salary_2023`, `salary_2024`).
+
+- **Three key arguments:**
+  * `cols` -- which columns to pivot
+  * `names_to` -- name for the new "key" column
+  * `values_to` -- name for the new "value" column
+
+&lt;img src="https://github.com/gadenbuie/tidyexplain/raw/main/images/tidyr-pivoting.gif" alt="" width="40%" style="display: block; margin: auto;" /&gt;
+
+.footnote[
+&lt;html&gt;&lt;hr&gt;&lt;/html&gt;
+**Source:** Garrick Aden-Buie's [tidyexplain GitHub Repository](https://github.com/gadenbuie/tidyexplain).
+]
+
+
+---
+
+## Demo: `pivot_longer()` with Job Market Data
+
+.panelset[
+
+.panel[.panel-name[The Data]
+
+.font80[
+Suppose we scraped BLS wage data where each year is a separate column -- a common format in government data.
+]
+
+
+``` r
+wages_wide &lt;- tibble::tribble(
+  ~occupation,         ~avg_wage_2022, ~avg_wage_2023, ~avg_wage_2024,
+  "Data Analyst",       62000,          65000,          68000,
+  "Software Developer", 92000,          97000,          102000,
+  "BI Analyst",         70000,          73000,          77000,
+  "Database Admin",     75000,          78000,          82000
+)
+wages_wide
+```
+
+```
+## # A tibble: 4 × 4
+##   occupation         avg_wage_2022 avg_wage_2023 avg_wage_2024
+##   &lt;chr&gt;                      &lt;dbl&gt;         &lt;dbl&gt;         &lt;dbl&gt;
+## 1 Data Analyst               62000         65000         68000
+## 2 Software Developer         92000         97000        102000
+## 3 BI Analyst                 70000         73000         77000
+## 4 Database Admin             75000         78000         82000
+```
+
+]
+
+.panel[.panel-name[The Code]
+
+
+``` r
+wages_long &lt;- wages_wide |&gt;
+  tidyr::pivot_longer(
+    cols = dplyr::starts_with("avg_wage_"),   #&lt;&lt; columns to pivot
+    names_to = "year",                 #&lt;&lt; new column for the year
+    names_prefix = "avg_wage_",        #&lt;&lt; strip prefix from names
+    values_to = "avg_wage"             #&lt;&lt; new column for values
+  )
+wages_long
+```
+
+```
+## # A tibble: 12 × 3
+##    occupation         year  avg_wage
+##    &lt;chr&gt;              &lt;chr&gt;    &lt;dbl&gt;
+##  1 Data Analyst       2022     62000
+##  2 Data Analyst       2023     65000
+##  3 Data Analyst       2024     68000
+##  4 Software Developer 2022     92000
+##  5 Software Developer 2023     97000
+##  6 Software Developer 2024    102000
+##  7 BI Analyst         2022     70000
+##  8 BI Analyst         2023     73000
+##  9 BI Analyst         2024     77000
+## 10 Database Admin     2022     75000
+## 11 Database Admin     2023     78000
+## 12 Database Admin     2024     82000
+```
+
+]
+
+.panel[.panel-name[Why It Matters]
+
+.font80[
+- The long format enables easy grouping, filtering, and plotting by year.
+
+- Try this: `ggplot(wages_long, aes(x = year, y = avg_wage, color = occupation)) + geom_line(aes(group = occupation))`
+
+- Government data, BLS reports, and census tables almost always arrive in wide format -- you will need `pivot_longer()` regularly.
+]
+
+]
+
+]
+
+
+---
+
+## The `pivot_wider()` Function
+
+- **Use case:** When an observation is scattered across multiple rows (e.g., `table2` where "cases" and "population" are stacked).
+
+- **Two key arguments:**
+  * `names_from` -- column whose values become new column names
+  * `values_from` -- column whose values fill the new columns
+
+&lt;img src="https://github.com/gadenbuie/tidyexplain/raw/main/images/static/png/tidyr-pivot_wider.png" alt="" width="25%" style="display: block; margin: auto;" /&gt;
+
+.footnote[
+&lt;html&gt;&lt;hr&gt;&lt;/html&gt;
+**Source:** Garrick Aden-Buie's [tidyexplain GitHub Repository](https://github.com/gadenbuie/tidyexplain).
+]
+
+
+---
+
+## Demo: `pivot_wider()` with Stacked Metrics
+
+.panelset[
+
+.panel[.panel-name[The Data]
+
+
+``` r
+job_metrics_long &lt;- tibble::tribble(
+  ~company,    ~metric,         ~value,
+  "Google",    "avg_salary",    155000,
+  "Google",    "num_openings",  1200,
+  "Meta",      "avg_salary",    162000,
+  "Meta",      "num_openings",  850,
+  "Amazon",    "avg_salary",    148000,
+  "Amazon",    "num_openings",  2100
+)
+job_metrics_long
+```
+
+```
+## # A tibble: 6 × 3
+##   company metric        value
+##   &lt;chr&gt;   &lt;chr&gt;         &lt;dbl&gt;
+## 1 Google  avg_salary   155000
+## 2 Google  num_openings   1200
+## 3 Meta    avg_salary   162000
+## 4 Meta    num_openings    850
+## 5 Amazon  avg_salary   148000
+## 6 Amazon  num_openings   2100
+```
+
+]
+
+.panel[.panel-name[The Code]
+
+
+``` r
+job_metrics_wide &lt;- job_metrics_long |&gt;
+  tidyr::pivot_wider(
+    names_from = metric,      #&lt;&lt; column values become new column names
+    values_from = value        #&lt;&lt; values fill the new columns
+  )
+job_metrics_wide
+```
+
+```
+## # A tibble: 3 × 3
+##   company avg_salary num_openings
+##   &lt;chr&gt;        &lt;dbl&gt;        &lt;dbl&gt;
+## 1 Google      155000         1200
+## 2 Meta        162000          850
+## 3 Amazon      148000         2100
+```
+
+]
+
+.panel[.panel-name[When to Use]
+
+.font80[
+- Use `pivot_wider()` when you need to **compare metrics side by side** for each entity.
+
+- Common in dashboards where each row should represent one company/person/product.
+
+- **Rule of thumb:** If the same entity appears in multiple rows with different "type" labels, you likely need `pivot_wider()`.
+]
+
+]
+
+]
+
+
+---
+
+## Activity: Pivot BLS Wage Data
+
+<countdown-timer class="countdown" id="timer_7680d5de" minutes="5" seconds="0" update-every="1" tabindex="0" style="top:0;right:0;--countdown-font-size:2em;"></countdown-timer>
+
+.panelset[
+
+.panel[.panel-name[Instructions]
+
+.font80[
+1. The code below creates a wide-format dataset of mean hourly wages by state and occupation.
+2. **Pivot it to long format** so each row is one state-occupation-wage observation.
+3. Then **filter** to only occupations containing "Data" and **arrange** by wage descending.
+]
+
+
+``` r
+state_wages &lt;- tibble::tribble(
+  ~state,  ~data_analyst, ~data_scientist, ~bi_developer,
+  "OH",     32.50,         48.75,           38.20,
+  "CA",     42.10,         62.30,           49.50,
+  "NY",     40.80,         58.90,           47.10,
+  "TX",     34.20,         50.10,           40.30
+)
+
+# Your code: pivot_longer, then filter &amp; arrange
+```
+
+]
+
+.panel[.panel-name[Your Solution]
+
+.can-edit.key-activity05[
+```
+# Write your solution here
+```
+]
+
+]
+
+.panel[.panel-name[Reference Solution]
+
+
+``` r
+state_wages |&gt;
+  tidyr::pivot_longer(cols = -state,
+               names_to = "occupation",
+               values_to = "hourly_wage") |&gt;
+  dplyr::filter(stringr::str_detect(occupation, "data")) |&gt;
+  dplyr::arrange(dplyr::desc(hourly_wage))
+```
+
+]
+
+]
+
+
+---
+
+## LO2 Check-In
+
+✅ You can now reshape data using:
+
+- `pivot_longer()` to convert wide data to long (column names become values)
+
+- `pivot_wider()` to convert long data to wide (row values become column names)
+
+- `names_prefix` to strip common prefixes during pivoting
+
+
+---
+class: inverse, center, middle
+
+# LO3: Rectangling and Unnesting
+
+---
+
+## What Is Rectangling?
+
+- **Rectangling** is the process of converting **deeply nested data** (e.g., JSON from APIs or LLM outputs) into flat, rectangular data frames.
+
+- The `tidyr` package provides three key functions:
+
+| Function | Purpose |
+|----------|---------|
+| `unnest_wider()` | Turns each element of a list-column into its own column |
+| `unnest_longer()` | Turns each element of a list-column into its own row |
+| `hoist()` | Selectively pulls components from a list-column |
+
+- **Why this matters:** API responses and LLM-extracted data often arrive as nested lists. Rectangling turns them into analysis-ready tables.
+
+
+---
+
+## Demo: Unnesting Nested API Data
+
+.panelset[
+
+.panel[.panel-name[The Nested Data]
+
+.font80[
+Imagine we received this nested JSON response from a jobs API and parsed it with `jsonlite::fromJSON()`:
+]
+
+
+``` r
+jobs_nested &lt;- tibble::tibble(
+  company = c("Acme Corp", "Beta Inc"),
+  postings = list(
+    tibble::tibble(title = c("Data Analyst", "BI Developer"),
+           salary_min = c(60000, 70000),
+           salary_max = c(80000, 95000)),
+    tibble::tibble(title = c("Data Scientist"),
+           salary_min = c(95000),
+           salary_max = c(130000))
+  )
+)
+jobs_nested
+```
+
+```
+## # A tibble: 2 × 2
+##   company   postings        
+##   &lt;chr&gt;     &lt;list&gt;          
+## 1 Acme Corp &lt;tibble [2 × 3]&gt;
+## 2 Beta Inc  &lt;tibble [1 × 3]&gt;
+```
+
+]
+
+.panel[.panel-name[Unnesting]
+
+
+``` r
+jobs_flat &lt;- jobs_nested |&gt;
+  tidyr::unnest(postings)  #&lt;&lt; unnest the list-column
+
+jobs_flat
+```
+
+```
+## # A tibble: 3 × 4
+##   company   title          salary_min salary_max
+##   &lt;chr&gt;     &lt;chr&gt;               &lt;dbl&gt;      &lt;dbl&gt;
+## 1 Acme Corp Data Analyst        60000      80000
+## 2 Acme Corp BI Developer        70000      95000
+## 3 Beta Inc  Data Scientist      95000     130000
+```
+
+.font80[
+Each posting now gets its own row, with the parent `company` repeated as needed.
+]
+
+]
+
+.panel[.panel-name[`unnest_wider` Example]
+
+
+``` r
+# When each list element is a named list (like a single record)
+company_info &lt;- tibble::tibble(
+  company = c("Acme Corp", "Beta Inc"),
+  details = list(
+    list(industry = "Tech", founded = 2005, employees = 500),
+    list(industry = "Finance", founded = 2010, employees = 200)
+  )
+)
+
+company_info |&gt; tidyr::unnest_wider(details) #&lt;&lt; each list key becomes a column
+```
+
+```
+## # A tibble: 2 × 4
+##   company   industry founded employees
+##   &lt;chr&gt;     &lt;chr&gt;      &lt;dbl&gt;     &lt;dbl&gt;
+## 1 Acme Corp Tech        2005       500
+## 2 Beta Inc  Finance     2010       200
+```
+
+]
+
+]
+
+
+---
+
+## Demo: `unnest_longer()` for Repeated Elements
+
+
+``` r
+# When each list element contains a vector of values
+skills_data &lt;- tibble::tibble(
+  job_title = c("Data Analyst", "Data Scientist"),
+  required_skills = list(
+    c("SQL", "Excel", "R", "Tableau"),
+    c("Python", "R", "TensorFlow", "SQL", "Docker")
+  )
+)
+
+skills_data |&gt;
+  tidyr::unnest_longer(required_skills) #&lt;&lt; each skill becomes its own row
+```
+
+```
+## # A tibble: 9 × 2
+##   job_title      required_skills
+##   &lt;chr&gt;          &lt;chr&gt;          
+## 1 Data Analyst   SQL            
+## 2 Data Analyst   Excel          
+## 3 Data Analyst   R              
+## 4 Data Analyst   Tableau        
+## 5 Data Scientist Python         
+## 6 Data Scientist R              
+## 7 Data Scientist TensorFlow     
+## 8 Data Scientist SQL            
+## 9 Data Scientist Docker
+```
+
+.font80[
+This is extremely useful for analyzing skill frequencies across job postings -- a common BI task.
+]
+
+
+---
+
+## LO3 Check-In
+
+✅ You can now perform rectangling operations using:
+
+- `unnest()` to flatten list-columns of data frames
+
+- `unnest_wider()` to expand named lists into columns
+
+- `unnest_longer()` to expand vectors/lists into rows
+
+
+---
+class: inverse, center, middle
+
+# LO4: Validating Data Types and Value Constraints
+
+---
+
+## Why Validate Data?
+
+- **Tidy data is NOT the same as clean data.** Data can be perfectly tidy (correct structure) but still contain:
+  * Wrong data types (salary stored as character)
+  * Impossible values (negative salaries, salary_min &gt; salary_max)
+  * Missing values in critical fields
+  * Constraint violations (percentages &gt; 100)
+
+- Validation is the process of **checking data against rules** and reporting violations.
+
+- In production BI systems, validation pipelines run **automatically** before data enters dashboards or models.
+
+
+---
+
+## The `pointblank` Package <svg aria-hidden="true" role="img" viewBox="0 0 448 512" style="height:1em;width:0.88em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:gold;overflow:visible;position:relative;"><path d="M50.7 58.5L0 160H208V32H93.7C75.5 32 58.9 42.3 50.7 58.5zM240 160H448L397.3 58.5C389.1 42.3 372.5 32 354.3 32H240V160zm208 32H0V416c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V192z"/></svg>
+
+- The [pointblank](https://rstudio.github.io/pointblank/) package provides a **data validation framework** for R.
+
+- Workflow:
+  1. **Create an agent** -- attach it to your data
+  2. **Define validation steps** -- specify rules for columns
+  3. **Interrogate** -- run all checks and get a report
+
+
+``` r
+agent &lt;- pointblank::create_agent(my_data) |&gt;          # Step 1
+  pointblank::col_is_numeric(columns = vars(salary)) |&gt; # Step 2
+  pointblank::col_vals_gt(columns = vars(salary), 0) |&gt;
+  pointblank::col_vals_lte(columns = vars(pct), 100) |&gt;
+  pointblank::interrogate()                             # Step 3
+```
+
+.footnote[
+&lt;html&gt;&lt;hr&gt;&lt;/html&gt;
+**Source:** [pointblank documentation](https://rstudio.github.io/pointblank/).
+]
+
+
+---
+
+## Demo: Validating Job Market Data
+
+.panelset[
+
+.panel[.panel-name[The Data]
+
+
+``` r
+job_data &lt;- tibble::tribble(
+  ~job_id, ~title,            ~salary_min, ~salary_max, ~experience_yrs, ~remote_pct,
+  1,       "Data Analyst",     55000,       75000,       2,               80,
+  2,       "BI Developer",     70000,       65000,       3,               50,
+  3,       "Data Scientist",   -5000,       120000,      5,               110,
+  4,       "ML Engineer",      95000,       140000,      NA,              100,
+  5,       "Data Analyst",     55000,       75000,       2,               80,
+  6,       "Analytics Mgr",    85000,       115000,      7,               40
+)
+job_data
+```
+
+```
+## # A tibble: 6 × 6
+##   job_id title          salary_min salary_max experience_yrs remote_pct
+##    &lt;dbl&gt; &lt;chr&gt;               &lt;dbl&gt;      &lt;dbl&gt;          &lt;dbl&gt;      &lt;dbl&gt;
+## 1      1 Data Analyst        55000      75000              2         80
+## 2      2 BI Developer        70000      65000              3         50
+## 3      3 Data Scientist      -5000     120000              5        110
+## 4      4 ML Engineer         95000     140000             NA        100
+## 5      5 Data Analyst        55000      75000              2         80
+## 6      6 Analytics Mgr       85000     115000              7         40
+```
+
+.font80[
+Can you spot the issues? Row 2 has min &gt; max, row 3 has negative salary and remote_pct &gt; 100, row 4 has missing experience, and rows 1 &amp; 5 are duplicates.
+]
+
+]
+
+.panel[.panel-name[Validation Code]
+
+
+``` r
+act &lt;- pointblank::action_levels(warn_at = 0.01, stop_at = NULL)
+
+agent &lt;- pointblank::create_agent(job_data, actions = act) |&gt;
+  pointblank::col_is_numeric(columns = vars(salary_min, salary_max)) |&gt;         #&lt;&lt; type check
+  pointblank::col_vals_gt(columns = vars(salary_min, salary_max), value = 0) |&gt; #&lt;&lt; positive salaries
+  pointblank::col_vals_lte(columns = vars(salary_min),                          #&lt;&lt; min &lt;= max
+               columns(salary_max)) |&gt;
+  pointblank::col_vals_between(columns = vars(remote_pct), 0, 100) |&gt;           #&lt;&lt; pct in range
+  pointblank::col_vals_not_null(columns = vars(experience_yrs)) |&gt;              #&lt;&lt; no NAs
+  pointblank::interrogate()
+
+agent
+```
+
+]
+
+.panel[.panel-name[Using Expressions]
+
+
+``` r
+# For cross-column checks, use col_vals_expr()
+agent2 &lt;- pointblank::create_agent(job_data, actions = act) |&gt;
+  pointblank::col_vals_expr(expr = expr(salary_min &lt;= salary_max)) |&gt;  #&lt;&lt; cross-column
+  pointblank::col_vals_expr(expr = expr(salary_min &gt; 0)) |&gt;
+  pointblank::col_vals_expr(expr = expr(remote_pct &gt;= 0 &amp; remote_pct &lt;= 100)) |&gt;
+  pointblank::interrogate()
+
+agent2
+```
+
+.font80[
+`col_vals_expr()` is the most flexible validator -- it accepts any logical expression involving one or more columns.
+]
+
+]
+
+]
+
+
+---
+
+## LO4 Check-In
+
+✅ You can now validate data using `pointblank` by:
+
+- Checking column types with `col_is_numeric()`, `col_is_character()`, etc.
+
+- Checking value constraints with `col_vals_gt()`, `col_vals_between()`, etc.
+
+- Checking cross-column rules with `col_vals_expr()`
+
+
+---
+class: inverse, center, middle
+
+# LO5: Detecting and Handling Duplicates
+
+---
+
+## Why Duplicates Matter
+
+- Duplicate rows can **inflate counts**, **bias averages**, and **corrupt joins**.
+
+- Common sources of duplicates in job market data:
+  * The same posting scraped from multiple pages
+  * API pagination returning overlapping results
+  * Data entry errors
+
+- R provides several tools for detection and removal.
+
+
+---
+
+## Detecting Duplicates with `dplyr`
+
+
+``` r
+# Our job_data from earlier -- rows 1 and 5 are identical
+job_data |&gt;
+  dplyr::group_by(title, salary_min, salary_max, experience_yrs, remote_pct) |&gt;
+  dplyr::filter(dplyr::n() &gt; 1) |&gt;     #&lt;&lt; keep only groups with more than 1 row
+  dplyr::ungroup()
+```
+
+```
+## # A tibble: 2 × 6
+##   job_id title        salary_min salary_max experience_yrs remote_pct
+##    &lt;dbl&gt; &lt;chr&gt;             &lt;dbl&gt;      &lt;dbl&gt;          &lt;dbl&gt;      &lt;dbl&gt;
+## 1      1 Data Analyst      55000      75000              2         80
+## 2      5 Data Analyst      55000      75000              2         80
+```
+
+--
+
+**Removing duplicates:**
+
+
+``` r
+job_data_deduped &lt;- job_data |&gt;
+  dplyr::distinct(title, salary_min, salary_max, experience_yrs, remote_pct,
+                  .keep_all = TRUE) #&lt;&lt; keep all columns, remove dup rows
+
+nrow(job_data)
+```
+
+```
+## [1] 6
+```
+
+``` r
+nrow(job_data_deduped)
+```
+
+```
+## [1] 5
+```
+
+
+---
+
+## LO5 Check-In
+
+✅ You can now detect and handle duplicates using:
+
+- `dplyr::distinct()` to remove exact duplicates
+
+- `dplyr::group_by() |&gt; filter(n() &gt; 1)` to inspect duplicates before removal
+
+- `janitor::get_dupes()` for quick duplicate detection
+
+
+---
+class: inverse, center, middle
+
+# Comprehensive Activity: Tidy, Validate, Deduplicate
+
+---
+
+## Activity: End-to-End Data Quality Pipeline
+
+<countdown-timer class="countdown" id="timer_e3189bcc" minutes="8" seconds="0" update-every="1" tabindex="0" style="top:0;right:0;--countdown-font-size:2em;"></countdown-timer>
+
+.panelset[
+
+.panel[.panel-name[Instructions]
+
+.font80[
+You will take messy job posting data and apply the full pipeline:
+
+1. **Pivot** the data from wide to long format
+2. **Validate** that salaries are positive and min &lt;= max
+3. **Remove duplicates**
+4. **Report** a data quality score (% of rows passing all checks)
+]
+
+
+``` r
+messy_postings &lt;- tibble::tribble(
+  ~company,     ~role,              ~salary_q1, ~salary_q2, ~salary_q3, ~salary_q4,
+  "Acme",       "Data Analyst",      62000,      63000,      65000,      68000,
+  "Acme",       "Data Analyst",      62000,      63000,      65000,      68000,
+  "Beta",       "BI Developer",      75000,      -1000,      78000,      80000,
+  "Gamma",      "Data Scientist",    95000,      98000,      102000,     105000
+)
+```
+
+]
+
+.panel[.panel-name[Your Solution]
+
+.can-edit.key-activity06[
+```
+# Step 1: Pivot to long
+
+# Step 2: Remove duplicates
+
+# Step 3: Validate
+
+# Step 4: Compute quality score
+```
+]
+
+]
+
+.panel[.panel-name[Reference Solution]
+
+
+``` r
+clean_postings &lt;- messy_postings |&gt;
+  # Step 1: Pivot
+  tidyr::pivot_longer(cols = dplyr::starts_with("salary_"),
+               names_to = "quarter", values_to = "salary") |&gt;
+  # Step 2: Deduplicate
+  dplyr::distinct() |&gt;
+  # Step 3: Validate
+  dplyr::mutate(is_valid = salary &gt; 0)
+
+# Step 4: Quality score
+quality_score &lt;- mean(clean_postings$is_valid) * 100
+cat("Data quality score:", quality_score, "%")
+```
+
+]
+
+]
+
+
+---
+class: inverse, center, middle
+
+# Recap
+
+---
+
+## Summary of Main Points
+
+By now, you should be able to do the following:
+
+✅ **LO1:** Define the three principles of tidy data (variables in columns, observations in rows, values in cells)
+
+✅ **LO2:** Reshape data using `pivot_longer()` and `pivot_wider()`
+
+✅ **LO3:** Perform rectangling with `unnest()`, `unnest_wider()`, and `unnest_longer()`
+
+✅ **LO4:** Validate data types and value constraints using `pointblank`
+
+✅ **LO5:** Detect and handle duplicates with `distinct()` and `get_dupes()`
+
+---
+
+## Job Market Connection
+
+.pull-left[
+
+&gt; "Clean, validated data is what separates analysts from data entry."
+
+- **80% of data work** is getting data into the right shape.
+
+- Employers expect you to deliver **trustworthy data** -- that means tidy structure, validated values, and no surprise duplicates.
+
+- The pipeline you learned today (tidy, validate, deduplicate) is the foundation of every **production BI system**.
+
+]
+
+.pull-right[
+
+&lt;img src="https://github.com/allisonhorst/stats-illustrations/raw/main/rstats-artwork/tidydata_5.jpg" alt="" width="100%" style="display: block; margin: auto;" /&gt;
+
+.footnote[
+**Source:** Illustration by Julia Lowndes and Allison Horst.
+]
+
+]
+
+
+---
+
+## Readings and Resources
+
+.pull-left[
+.center[[&lt;img src="https://d33wubrfki0l68.cloudfront.net/b88ef926a004b0fce72b2526b0b5c4413666a4cb/24a30/cover.png" height="300px"&gt;](https://r4ds.had.co.nz)]
+
+* [Tidy Data](https://r4ds.had.co.nz/tidy-data.html) -- R for Data Science
+* [Pivoting vignette](https://tidyr.tidyverse.org/articles/pivot.html)
+]
+
+.pull-right[
+* [Rectangling vignette](https://tidyr.tidyverse.org/articles/rectangle.html)
+* [{tidyr} cheatsheet](https://github.com/rstudio/cheatsheets/blob/main/tidyr.pdf)
+* [pointblank documentation](https://rstudio.github.io/pointblank/)
+]
+
+
+---
+
+## Things to Do to Prepare for Next Class
+
+- **Read:** [Introduction to Data Cleaning with R](https://cran.r-project.org/doc/contrib/de_Jonge+van_der_Loo-Introduction_to_data_cleaning_with_R.pdf), Sections 3--4
+
+- **Try:** The [Pivot Playground Shiny App](../apps/pivot_playground/) to practice `pivot_longer()` and `pivot_wider()` interactively.
+
+- **Next class:** Cleaning &amp; Imputation -- handling missing data, imputation techniques, and text standardization.
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+  "highlightStyle": "magula",
+  "highlightLines": true,
+  "highlightLanguage": "r",
+  "countIncrementalSlides": false,
+  "ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

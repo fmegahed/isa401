@@ -1,0 +1,96 @@
+---
+title: 'Class 05: Web Scraping'
+author: "Fadel Megahed"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
+    number_sections: TRUE
+    code_download: TRUE
+    code_folding: show
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Intro to `robotstxt`
+
+From the class activity, let us look at the <https://www.indeed.com/jobs/> example. 
+
+```{r indeed, warning=FALSE}
+robotstxt::paths_allowed(
+  paths= "/jobs/",
+  domain = "https://www.indeed.com"
+)
+```
+
+Given that this returned `TRUE`, it means that we are allowed to scrape this webpage (directory from the website).
+
+
+# The BLS Scrape Example
+
+
+```{r bls_scrape}
+# step 0 is confirming that I can scrape the directory/webpage
+# Returned true so I can srape this
+robotstxt::paths_allowed(
+  paths = "/emp/",
+  domain = "https://www.bls.gov/"
+)
+
+robotstxt::paths_allowed(
+  paths = "https://www.bls.gov/emp/tables/fastest-growing-occupations.htm",
+)
+
+# step 1
+
+# this fails for this particular website because it expects a user agent
+# bls_fail = rvest::read_html("https://www.bls.gov/emp/tables/fastest-growing-occupations.htm")
+
+resp = httr2::request(
+  "https://www.bls.gov/emp/tables/fastest-growing-occupations.htm"
+  ) |> 
+  httr2::req_user_agent("An ISA 401 Bot from Miami University") |> 
+  httr2::req_perform()
+
+bls_webpage = resp |> httr2::resp_body_raw() |> rvest::read_html()
+bls_webpage
+
+
+# step 2: which is to utilize CSS selectors to just focus on the table
+bls_webpage |> 
+  rvest::html_elements(css = "#BLStable_2025_7_18_12_5") ->
+  bls_table_element
+
+# Step 3: extract the table / clean it (i.e., make it human readable)
+bls_table = bls_table_element |> rvest::html_table()
+
+bls_table_clean = bls_table[[1]]
+
+
+# DISCLAIMER: YOU MIGHT HATE THAT THERE ARE NO SINGLE RIGHT WAYS FOR THE
+# SELECTOR
+bls_webpage |> 
+  rvest::html_elements("table") |> 
+  rvest::html_table() |> 
+  magrittr::extract2(1) -> # extract2 is equivalent to my [[]]; 1 is first sublist
+  tbl_b
+
+bls_webpage |> 
+  rvest::html_elements(".regular") |> 
+  rvest::html_table() |> 
+  magrittr::extract2(1) -> # extract2 is equivalent to my [[]]; 1 is first sublist
+  tbl_c
+
+bls_webpage |> 
+  rvest::html_elements("div > table") |> 
+  rvest::html_table() |> 
+  magrittr::extract2(1) -> # extract2 is equivalent to my [[]]; 1 is first sublist
+  tbl_d
+
+
+```
+
+

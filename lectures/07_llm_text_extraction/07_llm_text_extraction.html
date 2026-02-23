@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>ISA 401: Business Intelligence &amp; Data Visualization</title>
+    <meta charset="utf-8" />
+    <meta name="author" content=" Fadel M. Megahed, PhD   Raymond E. Gloss Professor in Business   Farmer School of Business  Miami University     @Fadel Megahed     fmegahed     fmegahed@miamioh.edu    Automated Scheduler for Office Hours  " />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/tile-view/tile-view.css" rel="stylesheet" />
+    <script src="libs/tile-view/tile-view.js"></script>
+    <link href="libs/animate.css/animate.xaringan.css" rel="stylesheet" />
+    <link href="libs/tachyons/tachyons.min.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra_fit-screen/fit-screen.js"></script>
+    <link href="libs/panelset/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset/panelset.js"></script>
+    <script type="application/json" id="xaringanExtra-editable-docid">{"id":"x9b674f752cb443ea93d5eb97c2e3d8f","expires":14}</script>
+    <script src="libs/himalaya/himalaya.js"></script>
+    <script src="libs/js-cookie/js.cookie.js"></script>
+    <link href="libs/editable/editable.css" rel="stylesheet" />
+    <script src="libs/editable/editable.js"></script>
+    <script src="libs/mark.js/mark.min.js"></script>
+    <link href="libs/xaringanExtra-search/search.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-search/search.js"></script>
+    <script>window.addEventListener('load', function() { window.xeSearch = new RemarkSearch({"position":"bottom-left","caseSensitive":false,"showIcon":false,"autoSearch":true}) })</script>
+    <link href="libs/countdown/countdown.css" rel="stylesheet" />
+    <script src="libs/countdown/countdown.js"></script>
+    <link rel="stylesheet" href="../../style_files/fonts.css" type="text/css" />
+    <link rel="stylesheet" href="../../style_files/my-theme.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# ISA 401: Business Intelligence &amp; Data Visualization
+]
+.subtitle[
+## 07: LLM Text Extraction in <svg viewBox="0 0 581 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:white;" xmlns="http://www.w3.org/2000/svg"> <path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"></path></svg>
+]
+.author[
+### <br>Fadel M. Megahed, PhD <br><br>Raymond E. Gloss Professor in Business <br> Farmer School of Business<br> Miami University<br><br> <a href="https://www.linkedin.com/in/fadel-megahed-289046b4"><svg viewBox="0 0 448 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:white;" xmlns="http://www.w3.org/2000/svg"> <path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"></path></svg> <span class="citation">@Fadel</span> Megahed</a> <br> <a href="https://github.com/fmegahed/"><svg viewBox="0 0 496 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:white;" xmlns="http://www.w3.org/2000/svg"> <path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg> fmegahed</a> <br> <a href="mailto:fmegahed@miamioh.edu"><svg viewBox="0 0 512 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:white;" xmlns="http://www.w3.org/2000/svg"> <path d="M476 3.2L12.5 270.6c-18.1 10.4-15.8 35.6 2.2 43.2L121 358.4l287.3-253.2c5.5-4.9 13.3 2.6 8.6 8.3L176 407v80.5c0 23.6 28.5 32.9 42.5 15.8L282 426l124.6 52.2c14.2 6 30.4-2.9 33-18.2l72-432C515 7.8 493.3-6.8 476 3.2z"></path></svg> fmegahed@miamioh.edu</a><br> <a href="https://calendly.com/fmegahed"><svg viewBox="0 0 384 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:white;" xmlns="http://www.w3.org/2000/svg"> <path d="M202.021 0C122.202 0 70.503 32.703 29.914 91.026c-7.363 10.58-5.093 25.086 5.178 32.874l43.138 32.709c10.373 7.865 25.132 6.026 33.253-4.148 25.049-31.381 43.63-49.449 82.757-49.449 30.764 0 68.816 19.799 68.816 49.631 0 22.552-18.617 34.134-48.993 51.164-35.423 19.86-82.299 44.576-82.299 106.405V320c0 13.255 10.745 24 24 24h72.471c13.255 0 24-10.745 24-24v-5.773c0-42.86 125.268-44.645 125.268-160.627C377.504 66.256 286.902 0 202.021 0zM192 373.459c-38.196 0-69.271 31.075-69.271 69.271 0 38.195 31.075 69.27 69.271 69.27s69.271-31.075 69.271-69.271-31.075-69.27-69.271-69.27z"></path></svg> Automated Scheduler for Office Hours</a><br><br>
+]
+.date[
+### Spring 2026
+]
+
+---
+
+
+
+
+
+
+
+
+## Quick Refresher from Last Week
+
+✅ Scrape structured data from web pages using `rvest` in <svg aria-hidden="true" role="img" viewBox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#C3142D;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/></svg>.
+
+✅ Handle pagination and dynamic content when scraping.
+
+✅ Clean and reshape scraped data into tidy formats.
+
+
+---
+
+## Kahoot/Quiz Review: Web Scraping Concepts
+
+Test your knowledge from the previous lectures on web scraping:
+
+1. What function from `rvest` extracts text from HTML nodes?
+
+2. What does `html_attr()` return compared to `html_text()`?
+
+3. When would you use `httr2` instead of `rvest` for web data collection?
+
+4. What is the purpose of checking `robots.txt` before scraping?
+
+5. How do you handle a paginated website in a scraping workflow?
+
+<countdown-timer class="countdown" id="timer_9abbedbe" minutes="3" seconds="0" update-every="1" tabindex="0" style="top:0;right:0;--countdown-color-running-background:#C3142D;--countdown-color-finished-background:#84d6d3;--countdown-color-running-text:#FFC8CAFF;--countdown-color-finished-text:#003736FF;"></countdown-timer>
+
+
+---
+
+## Learning Objectives for Today's Class
+
+- **LO1:** Explain the role of LLMs in extracting structured data from text
+
+- **LO2:** Use LLM APIs (Claude/GPT) to parse unstructured text from <svg aria-hidden="true" role="img" viewBox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#C3142D;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/></svg>
+
+- **LO3:** Design effective prompts for data extraction
+
+- **LO4:** Compare LLM-based extraction to regex approaches
+
+
+---
+class: inverse, center, middle
+
+# The LLM Revolution in Data Extraction
+
+
+---
+
+## The Problem: Messy Unstructured Text
+
+Consider this **real job posting** scraped from the web:
+
+.font80[
+&gt; _"We're looking for a Sr. Data Analyst (remote OK, $95-120K) with 3+ yrs exp in Python/R, SQL, and Tableau. MS preferred. Must be comfortable with large datasets and stakeholder communication. Benefits include 401k match, unlimited PTO, and health/dental/vision. Position based in Cincinnati, OH but open to remote candidates nationwide."_
+]
+
+--
+
+**Activity:** What structured fields would you extract from this text?
+
+Take 2 minutes to write down every piece of structured data you can identify.
+
+<countdown-timer class="countdown" id="timer_878cb4dc" minutes="2" seconds="0" update-every="1" tabindex="0" style="top:0;right:0;--countdown-color-running-background:#C3142D;--countdown-color-finished-background:#84d6d3;--countdown-color-running-text:#FFC8CAFF;--countdown-color-finished-text:#003736FF;"></countdown-timer>
+
+
+---
+
+## Traditional Approach: Regex
+
+Extracting just the **salary** from that posting with regex:
+
+
+``` r
+posting &lt;- "We're looking for a Sr. Data Analyst (remote OK, $95-120K)
+with 3+ yrs exp in Python/R, SQL, and Tableau. MS preferred."
+
+# Attempt to extract salary range
+stringr::str_extract(posting, "\\$[\\d,]+-[\\d,]+[Kk]?")
+```
+
+--
+
+Now imagine writing regex for: job title, skills, education, experience, remote status, location, benefits...
+
+- Each field needs its own pattern
+- Patterns break when format changes
+- Edge cases multiply quickly
+
+**There has to be a better way.** 🤔
+
+
+---
+
+## Why LLMs Change the Game
+
+.pull-left[
+### Before LLMs
+- Write **custom regex** per field
+- Build **rule-based parsers**
+- Handle **edge cases** manually
+- Rebuild when formats change
+- Weeks of development time
+]
+
+.pull-right[
+### With LLMs
+- **One prompt** extracts all fields
+- Handles **format variation** naturally
+- Understands **context and synonyms**
+- Works across **different sources**
+- Minutes to prototype
+]
+
+--
+
+&lt;br&gt;
+
+.center[**The key insight:** LLMs understand language *semantically*, not just syntactically. They can infer that "MS preferred" means `education: "Master's degree"` and that "$95-120K" means `salary_min: 95000, salary_max: 120000`.]
+
+
+---
+
+## The Job Market Connection
+
+This is one of **2026's most in-demand skills**: turning unstructured data into structured insights at scale.
+
+.pull-left[
+**Unstructured data is everywhere:**
+- Job postings
+- Customer reviews
+- Support tickets
+- News articles
+- Social media posts
+- Medical records
+- Legal documents
+]
+
+.pull-right[
+**Business value:**
+- Competitive intelligence
+- Market research
+- Sentiment analysis
+- Compliance monitoring
+- Trend detection
+- Automated reporting
+]
+
+--
+
+&gt; According to industry estimates, **80-90% of enterprise data is unstructured.** The ability to programmatically extract insights from this data is a career-defining skill.
+
+
+---
+
+## The LLM Extraction Pipeline
+
+.center[**From raw text to structured data in 4 steps:**]
+
+```
+  +-------------------+      +-------------------+      +-------------------+      +-------------------+
+  |  1. Raw Text      | ---&gt; |  2. Send to LLM   | ---&gt; |  3. Parse JSON    | ---&gt; |  4. Tidy Data     |
+  |  (scraped/loaded) |      |  (via API call)   |      |  (jsonlite)       |      |  (tibble/df)      |
+  +-------------------+      +-------------------+      +-------------------+      +-------------------+
+```
+
+Each step uses tools we already know:
+
+| Step | Tool | Package |
+|:-----|:-----|:--------|
+| 1. Collect text | Web scraping or file I/O | `rvest`, `readr` |
+| 2. Call the LLM | HTTP POST with JSON body | `httr2` |
+| 3. Parse response | JSON to R list | `jsonlite` |
+| 4. Structure output | List to data frame | `tibble`, `dplyr` |
+
+Today, we focus on **steps 2-4**.
+
+
+---
+
+## Section Check-In: LO1
+
+✅ We understand the challenge of extracting structured data from unstructured text.
+
+✅ We see why regex alone is fragile for complex extraction tasks.
+
+✅ We recognize that LLMs offer a semantic approach to text understanding.
+
+**Key takeaway:** LLMs complement traditional parsing by handling the messy, variable parts of text extraction.
+
+
+---
+class: inverse, center, middle
+
+# Connecting to LLM APIs
+
+
+---
+
+## Step 1: API Key Management with `.Renviron`
+
+**Never hardcode API keys in your scripts.** Use environment variables instead.
+
+
+``` r
+# Open your project-level .Renviron file
+usethis::edit_r_environ()
+
+# Add your API key(s) -- one per line, no quotes needed:
+# ANTHROPIC_API_KEY=sk-ant-api03-xxxxx
+# OPENAI_API_KEY=sk-xxxxx
+```
+
+--
+
+After saving and **restarting R**, access keys with:
+
+
+``` r
+Sys.getenv("ANTHROPIC_API_KEY")  # Returns your key
+Sys.getenv("OPENAI_API_KEY")     # Returns your key
+```
+
+.footnote[
+&lt;html&gt;
+&lt;hr&gt;
+&lt;/html&gt;
+**Important:** Add `.Renviron` to your `.gitignore` to prevent accidentally pushing secrets to GitHub.
+]
+
+
+---
+
+## Step 2: Building Requests with httr2
+
+.panelset[
+
+.panel[.panel-name[Overview]
+
+Recall from our API lecture: `httr2` builds HTTP requests step by step using the pipe operator.
+
+For LLM APIs, the pattern is:
+
+1. **Set the base URL** (e.g., `https://api.anthropic.com/v1/messages`)
+2. **Add headers** (API key, content type, API version)
+3. **Add a JSON body** (model, messages, parameters)
+4. **Perform the request** and parse the response
+
+]
+
+.panel[.panel-name[Claude API Structure]
+
+
+``` r
+httr2::request("https://api.anthropic.com/v1/messages") |&gt;
+  httr2::req_headers(
+    `x-api-key` = Sys.getenv("ANTHROPIC_API_KEY"),
+    `anthropic-version` = "2023-06-01",
+    `content-type` = "application/json"
+  ) |&gt;
+  httr2::req_body_json(list(
+    model = "claude-sonnet-4-20250514",
+    max_tokens = 1024,
+    messages = list(
+      list(role = "user", content = "Your prompt here")
+    )
+  )) |&gt;
+  httr2::req_perform()
+```
+
+]
+
+.panel[.panel-name[OpenAI API Structure]
+
+
+``` r
+httr2::request("https://api.openai.com/v1/chat/completions") |&gt;
+  httr2::req_headers(
+    Authorization = paste("Bearer", Sys.getenv("OPENAI_API_KEY")),
+    `Content-Type` = "application/json"
+  ) |&gt;
+  httr2::req_body_json(list(
+    model = "gpt-4o-mini",
+    messages = list(
+      list(role = "user", content = "Your prompt here")
+    ),
+    temperature = 0
+  )) |&gt;
+  httr2::req_perform()
+```
+
+]
+
+]
+
+
+---
+
+## Step 3: A Helper Function for Claude
+
+Let us wrap the API call into a **reusable function**:
+
+
+``` r
+ask_claude &lt;- function(prompt,
+                       model = "claude-sonnet-4-20250514",
+                       max_tokens = 1024) {
+
+  resp &lt;- httr2::request("https://api.anthropic.com/v1/messages") |&gt;
+    httr2::req_headers(
+      `x-api-key` = Sys.getenv("ANTHROPIC_API_KEY"),
+      `anthropic-version` = "2023-06-01",
+      `content-type` = "application/json"
+    ) |&gt;
+    httr2::req_body_json(list(
+      model = model,
+      max_tokens = max_tokens,
+      messages = list(list(role = "user", content = prompt))
+    )) |&gt;
+    httr2::req_perform()
+
+  # Extract the text from the response
+  resp |&gt;
+    httr2::resp_body_json() |&gt;
+    purrr::pluck("content", 1, "text")
+}
+```
+
+
+---
+
+## Demo: Sending a Job Posting to Claude
+
+.panelset[
+
+.panel[.panel-name[The Request]
+
+
+``` r
+job_text &lt;- "We're looking for a Sr. Data Analyst (remote OK, $95-120K)
+with 3+ yrs exp in Python/R, SQL, and Tableau. MS preferred. Must be
+comfortable with large datasets and stakeholder communication. Benefits
+include 401k match, unlimited PTO, and health/dental/vision. Position
+based in Cincinnati, OH but open to remote candidates nationwide."
+
+result &lt;- ask_claude(
+  prompt = paste("Extract key information from this job posting:", job_text)
+)
+```
+
+]
+
+.panel[.panel-name[The Response]
+
+Claude returns a **natural language summary** by default:
+
+```
+Here are the key details from this job posting:
+
+- **Title:** Sr. Data Analyst
+- **Salary:** $95,000 - $120,000
+- **Experience:** 3+ years
+- **Skills:** Python, R, SQL, Tableau
+- **Education:** Master's degree preferred
+- **Location:** Cincinnati, OH (remote available)
+- **Benefits:** 401k match, unlimited PTO, health/dental/vision
+```
+
+This is useful, but we want **structured data** we can put in a data frame. That brings us to prompt engineering...
+
+]
+
+]
+
+
+---
+
+## Section Check-In: LO2
+
+✅ We can securely manage API keys using `.Renviron` files.
+
+✅ We can construct `httr2` requests to the Claude (and OpenAI) APIs.
+
+✅ We can send text to an LLM and receive a response programmatically.
+
+**Key takeaway:** LLM APIs follow the same request/response pattern as other web APIs. The main difference is the JSON body structure.
+
+
+---
+class: inverse, center, middle
+
+# Designing Extraction Prompts
+
+
+---
+
+## Prompt Design Principles
+
+.pull-left[
+### Be Specific
+- Name **exact fields** you want
+- Specify **data types** (string, number, array)
+- Define **how to handle missing data**
+
+### Request Structured Output
+- Ask for **JSON format explicitly**
+- Provide a **schema/template**
+- Use the word "only" to avoid extra text
+]
+
+.pull-right[
+### Define the Schema
+- List all fields with descriptions
+- Provide **examples** of expected values
+- Specify **constraints** (e.g., "array of strings")
+
+### Handle Edge Cases
+- What if a field is not mentioned?
+- What if information is ambiguous?
+- Instruct: use `null` for missing values
+]
+
+
+---
+
+## Crafting the Extraction Prompt
+
+Here is a prompt template designed for **consistent, parseable** output:
+
+.font80[
+
+``` r
+extraction_prompt &lt;- '
+You are a data extraction assistant. Given a job posting, extract the
+following fields and return ONLY valid JSON (no markdown, no explanation):
+
+{
+  "job_title": "string",
+  "skills": ["array", "of", "strings"],
+  "min_experience_years": number or null,
+  "education_level": "string or null",
+  "salary_min": number or null,
+  "salary_max": number or null,
+  "remote_status": "remote" | "hybrid" | "onsite" | "unknown",
+  "location": "string or null",
+  "benefits": ["array", "of", "strings"]
+}
+
+Rules:
+- Use null for any field not mentioned in the posting
+- Salary should be annual in USD (convert from hourly/monthly if needed)
+- Skills should be individual technologies, not phrases
+
+Job posting:
+'
+```
+]
+
+
+---
+
+## Putting It Together: Full Extraction
+
+.panelset[
+
+.panel[.panel-name[Code]
+
+
+``` r
+extract_job_info &lt;- function(job_text) {
+  prompt &lt;- paste0(extraction_prompt, job_text)
+
+  raw_json &lt;- ask_claude(prompt, max_tokens = 512)
+
+  # Parse the JSON string into an R list
+  parsed &lt;- jsonlite::fromJSON(raw_json)
+
+  return(parsed)
+}
+
+# Run extraction
+job_info &lt;- extract_job_info(job_text)
+```
+
+]
+
+.panel[.panel-name[Raw JSON Output]
+
+```json
+{
+  "job_title": "Sr. Data Analyst",
+  "skills": ["Python", "R", "SQL", "Tableau"],
+  "min_experience_years": 3,
+  "education_level": "Master's degree",
+  "salary_min": 95000,
+  "salary_max": 120000,
+  "remote_status": "remote",
+  "location": "Cincinnati, OH",
+  "benefits": ["401k match", "unlimited PTO",
+               "health insurance", "dental insurance",
+               "vision insurance"]
+}
+```
+
+]
+
+.panel[.panel-name[As a Data Frame]
+
+
+``` r
+# Convert to a single-row tibble
+job_df &lt;- tibble::tibble(
+  job_title = job_info$job_title,
+  skills = paste(job_info$skills, collapse = ", "),
+  min_experience_years = job_info$min_experience_years,
+  education_level = job_info$education_level,
+  salary_min = job_info$salary_min,
+  salary_max = job_info$salary_max,
+  remote_status = job_info$remote_status,
+  location = job_info$location,
+  benefits = paste(job_info$benefits, collapse = ", ")
+)
+
+dplyr::glimpse(job_df)
+```
+
+]
+
+]
+
+
+---
+
+## Handling JSON Parsing Robustly
+
+Sometimes LLMs return extra text around the JSON. Here is a safer parser:
+
+
+``` r
+safe_extract_json &lt;- function(text) {
+  # Find the JSON object boundaries
+  json_start &lt;- regexpr("\\{", text)
+  json_end &lt;- max(gregexpr("\\}", text)[[1]])
+
+  if (json_start == -1 || json_end == -1) {
+    warning("No JSON object found in response")
+    return(NULL)
+  }
+
+  json_str &lt;- substr(text, json_start, json_end)
+
+  tryCatch(
+    jsonlite::fromJSON(json_str),
+    error = function(e) {
+      warning(paste("JSON parse error:", e$message))
+      return(NULL)
+    }
+  )
+}
+```
+
+**Pro tip:** Adding `"Return ONLY valid JSON"` to your prompt reduces the need for this fallback.
+
+
+---
+
+## Prompt Iteration: Debugging Common Issues
+
+| Problem | Symptom | Fix |
+|:--------|:--------|:----|
+| Extra text around JSON | `jsonlite::fromJSON()` fails | Add "Return ONLY valid JSON, no explanation" |
+| Inconsistent field names | `salary` vs `salary_range` | Provide exact JSON template in prompt |
+| Missing fields | Some fields silently omitted | Add "Include ALL fields, use null if unknown" |
+| Wrong types | Salary as string "$95K" | Specify "salary_min should be a number (integer)" |
+| Array vs string | Skills as one comma-separated string | Specify "skills should be a JSON array of strings" |
+
+--
+
+**Iteration workflow:**
+1. Start with a **simple prompt** and test on 3-5 examples
+2. Identify **failure patterns** in the output
+3. Add **specific instructions** to address each failure
+4. Set `temperature = 0` (OpenAI) for more deterministic output
+5. Repeat until output is consistent across diverse inputs
+
+
+---
+
+## Scaling: Processing Multiple Postings
+
+
+``` r
+# A vector of job posting texts (e.g., from web scraping)
+job_postings &lt;- c(
+  "Data Scientist at TechCo, $130-160K, PhD preferred...",
+  "Junior BI Analyst, Cincinnati, $55-65K, Excel/SQL...",
+  "ML Engineer (Remote), 5+ yrs, Python/TensorFlow, $150-180K...",
+  "Analytics Manager, hybrid, MBA preferred, $110-140K...",
+  "Entry-level Data Analyst, $50-60K, Bachelor's required..."
+)
+
+# Extract structured data from each posting
+all_jobs &lt;- purrr::map(job_postings, \(posting) {
+  Sys.sleep(1)  # Rate limiting: be polite to the API
+  result &lt;- ask_claude(paste0(extraction_prompt, posting))
+  safe_extract_json(result)
+}) |&gt;
+  purrr::compact() |&gt;  # Remove any NULLs from failures
+  purrr::map(\(x) { x$skills &lt;- paste(x$skills, collapse = ", ")
+                     x$benefits &lt;- paste(x$benefits, collapse = ", ")
+                     tibble::as_tibble(x) }) |&gt;
+  dplyr::bind_rows()
+```
+
+
+---
+
+## Activity: Extract Data from Job Postings
+
+Using the `ask_claude()` function and the `extraction_prompt` template, do the following:
+
+1. **Copy** the helper function and prompt template into your R script.
+
+2. **Pick 5 job postings** from a job board (Indeed, LinkedIn, USAJobs, etc.) and store their text as character strings in R.
+
+3. **Run the extraction** on all 5 postings to produce a single tidy data frame.
+
+4. **Inspect the results:** Are all fields correctly extracted? Any `null`s that should have values?
+
+5. **Bonus:** Modify the prompt to add a new field: `seniority_level` (entry/mid/senior/lead).
+
+<countdown-timer class="countdown" id="timer_50226afd" minutes="8" seconds="0" update-every="1" tabindex="0" style="top:0;right:0;--countdown-color-running-background:#C3142D;--countdown-color-finished-background:#84d6d3;--countdown-color-running-text:#FFC8CAFF;--countdown-color-finished-text:#003736FF;"></countdown-timer>
+
+
+---
+
+## Section Check-In: LO3
+
+✅ We can design prompts that return structured JSON output.
+
+✅ We can define a schema with field names, types, and rules for missing data.
+
+✅ We can parse JSON responses into tidy data frames using `jsonlite`.
+
+✅ We can scale extraction across multiple documents with `purrr::map()`.
+
+**Key takeaway:** The prompt *is* the program. A well-designed prompt replaces hundreds of lines of regex/parsing code.
+
+
+---
+class: inverse, center, middle
+
+# LLM vs Regex: When to Use What
+
+
+---
+
+## Accuracy Comparison
+
+| Criterion | Regex | LLM Extraction |
+|:----------|:------|:---------------|
+| **Exact pattern match** (e.g., phone numbers) | ✅ Excellent | Good |
+| **Semantic understanding** (e.g., "MS preferred" -&gt; Master's) | Poor | ✅ Excellent |
+| **Format variation** (e.g., "$95K" vs "$95,000/yr") | Fragile | ✅ Robust |
+| **Multi-field extraction** | One pattern per field | ✅ Single prompt |
+| **Novel/unseen formats** | Fails | ✅ Adapts |
+| **100% deterministic output** | ✅ Yes | No (stochastic) |
+| **Speed** (per document) | ✅ Microseconds | ~1-3 seconds |
+
+--
+
+**Bottom line:** Regex excels at well-defined, consistent patterns. LLMs excel at messy, variable, semantically rich text.
+
+
+---
+
+## Effort Comparison
+
+.pull-left[
+### Regex Approach
+
+``` r
+# Just salary extraction took this:
+salary_pattern &lt;- paste0(
+  "\\$[\\d,]+\\.?\\d*\\s*",
+  "[-–to]+\\s*",
+  "\\$?[\\d,]+\\.?\\d*",
+  "\\s*[Kk]?\\s*",
+  "(/yr|/year|per year|annual)?"
+)
+
+# Now repeat for: title, skills,
+# education, experience, location,
+# remote status, benefits...
+# Each with its own edge cases.
+```
+
+**Estimated effort:** 2-5 days for a robust multi-field extractor
+]
+
+.pull-right[
+### LLM Approach
+
+``` r
+# All fields in one prompt:
+prompt &lt;- "Extract these fields
+as JSON: job_title, skills,
+salary_min, salary_max,
+education, experience_years,
+location, remote_status,
+benefits.
+Return ONLY valid JSON."
+```
+
+&lt;br&gt;
+
+**Estimated effort:** 1-2 hours including testing and refinement
+]
+
+
+---
+
+## Cost Analysis
+
+How much does LLM extraction cost at scale?
+
+.font90[
+| Scenario | Model | Est. Tokens/Posting | Cost/Posting | Cost for 1,000 |
+|:---------|:------|:--------------------|:-------------|:----------------|
+| Short posting (200 words) | Claude Sonnet | ~800 | ~$0.005 | ~$5 |
+| Long posting (500 words) | Claude Sonnet | ~1,500 | ~$0.009 | ~$9 |
+| Short posting (200 words) | GPT-4o-mini | ~800 | ~$0.001 | ~$1 |
+| Any posting | Regex | 0 | $0.00 | $0.00 |
+]
+
+--
+
+**Key considerations:**
+
+- **Development time** has a cost too: even at $50/hr, 3 days of regex work = $1,200 (equivalent to extracting from ~130,000+ postings with Claude Sonnet)
+- LLM costs are **dropping rapidly** (10x cheaper than 2 years ago)
+- For one-off analyses, LLMs are almost always more cost-effective
+
+
+---
+
+## Real-World Example: Same Task, Two Approaches
+
+.pull-left[
+### Regex: Extract education level
+
+``` r
+# Must account for many variations:
+edu_patterns &lt;- c(
+  "(?i)ph\\.?d", "(?i)doctorate",
+  "(?i)master'?s?", "(?i)m\\.?s\\.?",
+  "(?i)m\\.?b\\.?a\\.?",
+  "(?i)bachelor'?s?", "(?i)b\\.?s\\.?",
+  "(?i)b\\.?a\\.?"
+)
+# Still misses: "graduate degree",
+# "advanced degree", "4-year degree",
+# "post-secondary education"
+```
+]
+
+.pull-right[
+### LLM: Extract education level
+
+``` r
+# Handles all of these naturally:
+# "MS preferred"
+# "Ph.D. required"
+# "4-year degree minimum"
+# "graduate degree preferred"
+# "post-secondary education"
+# "Bachelor's or equivalent exp"
+# -&gt; All correctly mapped to a
+#    standardized education level
+```
+]
+
+The LLM understands that "4-year degree" = "Bachelor's" and "graduate degree" = "Master's or PhD" **without explicit rules**.
+
+
+---
+
+## Decision Framework
+
+.center[**Which approach should you use?**]
+
+```
+                        Is the text format
+                        highly consistent?
+                       /                  \
+                     YES                   NO
+                     /                       \
+              Is it a single            Use an LLM
+              known pattern?
+              /           \
+            YES            NO
+            /                \
+      Use Regex         Use an LLM
+      (fast &amp; free)     (flexible)
+```
+
+--
+
+**Hybrid approach** (best of both worlds):
+- Use **regex** for well-defined fields (emails, phone numbers, URLs, dates)
+- Use **LLMs** for semantic fields (skills, job titles, qualifications)
+- **Validate** LLM output with regex patterns where possible
+
+
+---
+
+## Section Check-In: LO4
+
+✅ We can compare regex and LLM approaches across accuracy, effort, and cost.
+
+✅ We understand that regex is best for consistent, well-defined patterns.
+
+✅ We understand that LLMs are best for variable, semantically rich text.
+
+✅ We can apply a decision framework to choose the right tool.
+
+**Key takeaway:** This is not an either/or decision. The best data pipelines combine both approaches strategically.
+
+
+---
+class: inverse, center, middle
+
+# Recap
+
+
+---
+
+## Summary of Main Points
+
+By now, you should be able to do the following:
+
+- **LO1:** Explain why LLMs are transformative for extracting structured data from unstructured text ✅
+
+- **LO2:** Use `httr2` to call the Claude API (or OpenAI API) from <svg aria-hidden="true" role="img" viewBox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#C3142D;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/></svg> and process text programmatically ✅
+
+- **LO3:** Design prompts that return consistent JSON output and parse results into tidy data frames ✅
+
+- **LO4:** Evaluate when to use LLMs vs regex (or both) based on accuracy, effort, and cost ✅
+
+
+---
+
+## Readings and Resources
+
+.pull-left[
+**API Documentation:**
+- [Anthropic API Reference](https://docs.anthropic.com/en/api/getting-started)
+- [OpenAI API Reference](https://platform.openai.com/docs/api-reference)
+- [httr2 Getting Started](https://httr2.r-lib.org/articles/httr2.html)
+
+**Prompt Engineering:**
+- [Anthropic Prompt Engineering Guide](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview)
+- [OpenAI Prompt Engineering Guide](https://platform.openai.com/docs/guides/prompt-engineering)
+]
+
+.pull-right[
+**Further Reading:**
+- [Managing Secrets in R](https://httr.r-lib.org/articles/secrets.html)
+- [jsonlite Package Documentation](https://cran.r-project.org/web/packages/jsonlite/vignettes/json-aaquickstart.html)
+- [purrr: Functional Programming Tools](https://purrr.tidyverse.org/)
+]
+
+
+---
+
+## What's Next
+
+- **Practice:** Try extracting structured data from a different domain (reviews, news articles, support tickets)
+
+- **Experiment** with different prompt designs and compare the quality of extraction
+
+- **Explore** the `ellmer` package in <svg aria-hidden="true" role="img" viewBox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#C3142D;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/></svg> for a higher-level interface to LLM APIs
+
+- Next class, we will build on these skills to create **end-to-end data pipelines** that combine scraping, extraction, and analysis
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+  "highlightStyle": "magula",
+  "highlightLines": true,
+  "highlightLanguage": "r",
+  "countIncrementalSlides": false,
+  "ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

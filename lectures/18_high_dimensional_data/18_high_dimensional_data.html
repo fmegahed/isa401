@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>ISA 401: Business Intelligence &amp; Data Visualization</title>
+    <meta charset="utf-8" />
+    <meta name="author" content=" Fadel M. Megahed, PhD   Raymond E. Gloss Professor in Business   Farmer School of Business  Miami University     @Fadel Megahed     fmegahed     fmegahed@miamioh.edu    Automated Scheduler for Office Hours  " />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/tile-view/tile-view.css" rel="stylesheet" />
+    <script src="libs/tile-view/tile-view.js"></script>
+    <link href="libs/animate.css/animate.xaringan.css" rel="stylesheet" />
+    <link href="libs/tachyons/tachyons.min.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra_fit-screen/fit-screen.js"></script>
+    <link href="libs/panelset/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset/panelset.js"></script>
+    <script type="application/json" id="xaringanExtra-editable-docid">{"id":"x73eb16b8d24497ebc9505597c6cccb0","expires":14}</script>
+    <script src="libs/himalaya/himalaya.js"></script>
+    <script src="libs/js-cookie/js.cookie.js"></script>
+    <link href="libs/editable/editable.css" rel="stylesheet" />
+    <script src="libs/editable/editable.js"></script>
+    <script src="libs/mark.js/mark.min.js"></script>
+    <link href="libs/xaringanExtra-search/search.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-search/search.js"></script>
+    <script>window.addEventListener('load', function() { window.xeSearch = new RemarkSearch({"position":"bottom-left","caseSensitive":false,"showIcon":false,"autoSearch":true}) })</script>
+    <link href="libs/countdown/countdown.css" rel="stylesheet" />
+    <script src="libs/countdown/countdown.js"></script>
+    <link href="libs/htmltools-fill/fill.css" rel="stylesheet" />
+    <script src="libs/htmlwidgets/htmlwidgets.js"></script>
+    <link href="libs/datatables-css/datatables-crosstalk.css" rel="stylesheet" />
+    <script src="libs/datatables-binding/datatables.js"></script>
+    <script src="libs/jquery/jquery-3.6.0.min.js"></script>
+    <link href="libs/dt-core/css/jquery.dataTables.min.css" rel="stylesheet" />
+    <link href="libs/dt-core/css/jquery.dataTables.extra.css" rel="stylesheet" />
+    <script src="libs/dt-core/js/jquery.dataTables.min.js"></script>
+    <link href="libs/crosstalk/css/crosstalk.min.css" rel="stylesheet" />
+    <script src="libs/crosstalk/js/crosstalk.min.js"></script>
+    <link rel="stylesheet" href="../../style_files/fonts.css" type="text/css" />
+    <link rel="stylesheet" href="../../style_files/my-theme.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# ISA 401: Business Intelligence &amp; Data Visualization
+]
+.subtitle[
+## 18: Visualizing High-Dimensional Data in <svg viewBox="0 0 581 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:white;" xmlns="http://www.w3.org/2000/svg"> <path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"></path></svg>
+]
+.author[
+### <br>Fadel M. Megahed, PhD <br><br>Raymond E. Gloss Professor in Business <br> Farmer School of Business<br> Miami University<br><br> <a href="https://www.linkedin.com/in/fadel-megahed-289046b4"><svg viewBox="0 0 448 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:white;" xmlns="http://www.w3.org/2000/svg"> <path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"></path></svg> <span class="citation">@Fadel</span> Megahed</a> <br> <a href="https://github.com/fmegahed/"><svg viewBox="0 0 496 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:white;" xmlns="http://www.w3.org/2000/svg"> <path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg> fmegahed</a> <br> <a href="mailto:fmegahed@miamioh.edu"><svg viewBox="0 0 512 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:white;" xmlns="http://www.w3.org/2000/svg"> <path d="M476 3.2L12.5 270.6c-18.1 10.4-15.8 35.6 2.2 43.2L121 358.4l287.3-253.2c5.5-4.9 13.3 2.6 8.6 8.3L176 407v80.5c0 23.6 28.5 32.9 42.5 15.8L282 426l124.6 52.2c14.2 6 30.4-2.9 33-18.2l72-432C515 7.8 493.3-6.8 476 3.2z"></path></svg> fmegahed@miamioh.edu</a><br> <a href="https://calendly.com/fmegahed"><svg viewBox="0 0 384 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:white;" xmlns="http://www.w3.org/2000/svg"> <path d="M202.021 0C122.202 0 70.503 32.703 29.914 91.026c-7.363 10.58-5.093 25.086 5.178 32.874l43.138 32.709c10.373 7.865 25.132 6.026 33.253-4.148 25.049-31.381 43.63-49.449 82.757-49.449 30.764 0 68.816 19.799 68.816 49.631 0 22.552-18.617 34.134-48.993 51.164-35.423 19.86-82.299 44.576-82.299 106.405V320c0 13.255 10.745 24 24 24h72.471c13.255 0 24-10.745 24-24v-5.773c0-42.86 125.268-44.645 125.268-160.627C377.504 66.256 286.902 0 202.021 0zM192 373.459c-38.196 0-69.271 31.075-69.271 69.271 0 38.195 31.075 69.27 69.271 69.27s69.271-31.075 69.271-69.271-31.075-69.27-69.271-69.27z"></path></svg> Automated Scheduler for Office Hours</a><br><br>
+]
+.date[
+### Spring 2026
+]
+
+---
+
+
+
+
+
+
+
+
+## Quick Refresher from Last Week
+
+
+✅ Identify common text-visualization techniques (word clouds, bar charts of term frequency).
+
+✅ Create word clouds and network graphs from text data in <svg aria-hidden="true" role="img" viewBox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#C3142D;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/></svg>.
+
+✅ Apply sentiment analysis and visualize sentiment scores.
+
+---
+
+## Kahoot/Quiz Review: Text Data Visualization
+
+.pull-left[
+
+**Q1.** Which function from the `tidytext` package splits text into individual words?
+A. `str_split()`
+B. `unnest_tokens()`
+C. `strsplit()`
+D. `tokenize()`
+
+**Q2.** In a word cloud, what visual property encodes term frequency?
+A. Color hue
+B. Position on the x-axis
+C. Font size
+D. Font style (bold/italic)
+
+]
+
+.pull-right[
+
+**Q3.** Which sentiment lexicon assigns words a numeric score from -5 to +5?
+A. Bing
+B. NRC
+C. AFINN
+D. Loughran
+
+**Q4.** What does a network graph of text data typically show?
+A. Sentiment over time
+B. Co-occurrence of words
+C. Word frequency per document
+D. Topic distributions
+
+]
+
+
+<countdown-timer class="countdown" id="timer_2a263424" minutes="3" seconds="0" warn-when="60" update-every="1" tabindex="0" style="top:0;right:0;--countdown-font-size:1.5em;--countdown-color-background:#C3142D;--countdown-color-text:white;"></countdown-timer>
+
+
+---
+
+# Learning Objectives for Today's Class
+
+- **LO1:** Define high-dimensional data and describe its visualization challenges
+
+- **LO2:** Create parallel coordinates plots, radar charts, and heatmaps in <svg aria-hidden="true" role="img" viewBox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#C3142D;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/></svg>
+
+- **LO3:** Use small multiples and faceting to compare distributions across categories
+
+
+---
+class: inverse, center, middle
+
+# What is High-Dimensional Data?
+
+---
+
+# Why Does Dimensionality Matter?
+
+.pull-left[
+
+Most of the charts we have built so far encode **two or three variables** at most:
+
+- A scatter plot uses **x** and **y**
+- A bar chart uses a **category** and a **count/value**
+- A line chart uses **time** and a **metric**
+
+**But real business data is rarely that simple.**
+
+A single job-market dataset might have columns for salary, experience, skills count, industry, location, education level, company size, and more.
+
+]
+
+.pull-right[
+
+.content-box-grey[
+
+.font120[**The Core Challenge**]
+
+We live in a 2-D display world. How do we faithfully represent data that lives in 10, 50, or 100+ dimensions?
+
+&gt; "The greatest value of a picture is when it forces us to notice what we never expected to see." -- John Tukey
+
+]
+
+]
+
+
+---
+
+# Defining Key Terms
+
+<countdown-timer class="countdown" id="timer_359b80ff" minutes="3" seconds="0" update-every="1" tabindex="0" style="top:0;right:0;--countdown-font-size:2em;"></countdown-timer>
+
+.panelset[
+
+.panel[.panel-name[Activity]
+
+&gt; In 3 minutes, define the terms in the next tab using the sample data below as context.
+
+.font70[
+<div class="datatables html-widget html-fill-item" id="htmlwidget-ddf2f9d21e02caedb41b" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-ddf2f9d21e02caedb41b">{"x":{"filter":"none","vertical":false,"data":[["Data Analyst","BI Developer","Data Scientist","Analyst Intern","ML Engineer","Report Developer"],[65000,78000,95000,35000,110000,60000],[2,4,3,0,5,2],[5,8,12,3,15,6],["Tech","Finance","Healthcare","Consulting","Tech","Manufacturing"],["Bachelors","Masters","PhD","Bachelors","Masters","Bachelors"],["Large","Medium","Large","Small","Large","Medium"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>title<\/th>\n      <th>salary<\/th>\n      <th>experience<\/th>\n      <th>skills_count<\/th>\n      <th>industry<\/th>\n      <th>education<\/th>\n      <th>company_size<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":6,"dom":"tip","columnDefs":[{"className":"dt-right","targets":[1,2,3]},{"name":"title","targets":0},{"name":"salary","targets":1},{"name":"experience","targets":2},{"name":"skills_count","targets":3},{"name":"industry","targets":4},{"name":"education","targets":5},{"name":"company_size","targets":6}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[6,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+]
+
+]
+
+.panel[.panel-name[Your Definitions]
+
+.can-edit.key-activity1[
+
+**Data Types:** .font70[(Edit below)]
+
+- Multivariate data: ________________
+
+- Big Data: ________________
+
+- Tall Data: ________________
+
+- Wide Data: ________________
+
+- High Dimensional Data: ________________
+
+]
+]
+]
+
+
+---
+
+# Taxonomy of Dimensionality
+
+**Based on the number of attributes (columns/variables):**
+
+- **1:** Univariate (histogram, boxplot)
+- **2:** Bivariate (scatter plot, line chart)
+- **3:** Trivariate (bubble chart, 3-D scatter)
+- **4+:** Multivariate / High-Dimensional
+
+**Key questions to think about:**
+
+- .can-edit.key-activity2a[What is the problem with visualizing multivariate data (especially when `\(p &gt; 6-7\)` dimensions)? ______________]
+
+- .can-edit.key-activity2b[Any ideas about what to do? ______________]
+
+
+---
+
+# Encoding Mechanisms: How We Map Variables to Visuals
+
+When we have many variables, we need **multiple encoding channels**:
+
+| Channel | Best For | Example |
+|---------|----------|---------|
+| **x-axis** | Numeric / ordinal variable | GDP per capita |
+| **y-axis** | Numeric / ordinal variable | Life expectancy |
+| **Area / size** | Numeric variable | Population |
+| **Color hue** | Nominal / categorical | Continent |
+| **Color intensity** | Numeric / ordinal | Growth rate |
+| **Shape** | Nominal (limited to ~6) | Country group |
+| **Motion / animation** | Time | Year |
+| **Faceting** | Categorical | Region subsets |
+
+&gt; The more channels we use simultaneously, the more dimensions we can display -- but cognitive load increases.
+
+
+---
+
+# Hans Rosling: The Best Stats You Have Seen
+
+.panelset[
+
+.panel[.panel-name[Watch the Video]
+
+&gt; While watching this video, answer the questions in the next tab.
+
+&lt;center&gt;
+&lt;div style="max-width:600px"&gt;&lt;div style="position:relative;height:0;padding-bottom:56.25%"&gt;&lt;iframe src="https://embed.ted.com/talks/lang/en/hans_rosling_the_best_stats_you_ve_ever_seen" width="600" height="350" style="position:absolute;left:0;top:0;width:100%;height:100%" frameborder="0" scrolling="no" allowfullscreen&gt;&lt;/iframe&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;/center&gt;
+
+]
+
+.panel[.panel-name[Your Answers]
+
+- .can-edit.key-activity3a[What data is represented in this visualization? Be specific. ____]
+
+- .can-edit.key-activity3b[How is each data type visually encoded (x, y, size, color, motion)? ___________]
+
+- .can-edit.key-activity3c[Do you think the encodings are appropriate? Why or why not? _________]
+
+]
+]
+
+---
+
+# What Makes the Gapminder Chart Work?
+
+&gt; Motion charts are essentially **animated bubble charts**. A bubble chart shows data using the .bold[x-axis], .bold[y-axis], and the .bold[size] and .bold[color] of the bubble. A motion chart displays .red[.bold[changes over time by showing movement within the two-dimensional space and changes in the size and color of the bubbles]]. -- [Juice Analytics](https://www.juiceanalytics.com/writing/better-know-visualization-motion-charts)
+
+**Encoding mechanisms in the Gapminder chart:**
+
+- .bold[x-axis]: GDP per capita (**numeric**)
+- .bold[y-axis]: Life expectancy (**numeric**)
+- .bold[area]: Population (**numeric**)
+- .bold[color]: Continent (**nominal**)
+- .bold[motion/animation]: Year (**time**)
+
+That is **five dimensions** on a single 2-D screen -- powerful and intuitive.
+
+&lt;iframe src="https://www.gapminder.org/tools/?embedded=true#$chart-type=bubbles&amp;url=v1" style="width: 100%; height: 250px; margin: 0; border: 1px solid grey;" allowfullscreen&gt;&lt;/iframe&gt;
+
+
+---
+
+## LO1 Check-In
+
+✅ You can now:
+
+- Define multivariate, big, tall, wide, and high-dimensional data
+
+- Explain why visualizing many variables simultaneously is challenging
+
+- Identify the encoding channels available for mapping variables to visuals
+
+
+---
+class: inverse, center, middle
+
+# Parallel Coordinates, Radar Charts &amp; Heatmaps
+
+---
+
+# Parallel Coordinates Plots
+
+&gt; Parallel coordinates is a visualization technique used to plot individual data elements across many performance measures. Each measure corresponds to a **vertical axis** and each data element is displayed as a **series of connected points** along the axes. -- [Juice Analytics](https://www.juiceanalytics.com/writing/writing/parallel-coordinates)
+
+.pull-left[
+
+**When to use:**
+- Comparing many numeric variables simultaneously
+- Spotting clusters, outliers, and correlations
+- Exploring patterns across job profiles, products, etc.
+
+**Key considerations:**
+- Variable **order** matters -- try different arrangements
+- **Scaling** is critical (use standardization)
+- Too many lines can create visual clutter
+
+]
+
+.pull-right[
+
+&lt;img src="https://images.squarespace-cdn.com/content/v1/52f42657e4b0b3416ff6b831/1614951876498-9TIQE0EHNCGUFQSNEP6J/Parallel_Coordinates_Plot_-_Learn_about_this_chart_and_tools.jpg?format=1000w" alt="" height="280" style="display: block; margin: auto;" /&gt;
+
+]
+
+
+---
+
+# Demo: Parallel Coordinates with `GGally::ggparcoord()`
+
+.panelset[
+
+.panel[.panel-name[Create Data]
+
+
+``` r
+job_profiles &lt;- tibble::tribble(
+  ~role,               ~salary_k, ~skills, ~experience, ~satisfaction, ~growth_pct,
+  "Data Analyst",       65,        5,       2,           7.5,           12,
+  "BI Developer",       78,        8,       4,           7.0,           10,
+  "Data Scientist",     95,       12,       3,           8.5,           22,
+  "ML Engineer",       110,       15,       5,           8.0,           28,
+  "Report Developer",   60,        6,       2,           6.5,            8,
+  "Analytics Manager",  92,       10,       7,           7.8,           15,
+  "Data Engineer",     100,       11,       4,           7.2,           25,
+  "Statistician",       80,        9,       3,           7.0,           11
+)
+
+job_profiles
+```
+
+```
+## # A tibble: 8 × 6
+##   role              salary_k skills experience satisfaction growth_pct
+##   &lt;chr&gt;                &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;        &lt;dbl&gt;      &lt;dbl&gt;
+## 1 Data Analyst            65      5          2          7.5         12
+## 2 BI Developer            78      8          4          7           10
+## 3 Data Scientist          95     12          3          8.5         22
+## 4 ML Engineer            110     15          5          8           28
+## 5 Report Developer        60      6          2          6.5          8
+## 6 Analytics Manager       92     10          7          7.8         15
+## 7 Data Engineer          100     11          4          7.2         25
+## 8 Statistician            80      9          3          7           11
+```
+
+]
+
+.panel[.panel-name[Plot Code]
+
+
+``` r
+GGally::ggparcoord(
+  data = job_profiles,
+  columns = 2:6,            # numeric columns
+  groupColumn = 1,          # color by role
+  scale = "std",            # standardize to mean 0, sd 1
+  showPoints = TRUE
+) +
+  ggplot2::scale_color_brewer(palette = "Paired") +
+  ggplot2::geom_line(linewidth = 1.2) +
+  ggplot2::geom_point(size = 3) +
+  ggplot2::theme_bw(base_size = 12) +
+  ggplot2::theme(legend.position = "top",
+        axis.text.x = ggplot2::element_text(angle = 15, hjust = 1)) +
+  ggplot2::labs(x = "Variable", y = "Standardized Value",
+       title = "Parallel Coordinates: Job Role Profiles",
+       color = "Role")
+```
+
+]
+
+.panel[.panel-name[Output]
+
+&lt;img src="18_high_dimensional_data_files/figure-html/parcoord-plot-run-1.png" alt="" style="display: block; margin: auto;" /&gt;
+
+]
+]
+
+
+---
+
+# Radar Charts
+
+&gt; Radar charts (also called spider or web charts) show how individual items perform **across multiple measures** arranged radially. Each axis represents a variable, and the data point on each axis connects to form a polygon.
+
+.pull-left[
+
+**When to use:**
+- Comparing a **small number** of items (2-5) across several metrics
+- Showing strengths and weaknesses of profiles
+- Presenting skill assessments or balanced scorecards
+
+**Limitations:**
+- Hard to read with many items or many axes
+- Area can be misleading (depends on variable order)
+- Not ideal for precise comparisons
+
+]
+
+.pull-right[
+
+&lt;img src="https://images.squarespace-cdn.com/content/v1/52f42657e4b0b3416ff6b831/1633047594333-7OEOYF4YZU4TMI2VMJSR/A_Night_Under_The_Stars___Jordan_Vincent.png?format=1000w" alt="" height="280" style="display: block; margin: auto;" /&gt;
+
+]
+
+
+---
+
+# Demo: Radar Chart with `ggradar`
+
+.panelset[
+
+.panel[.panel-name[Prepare Data]
+
+
+``` r
+# ggradar expects: first column = group, remaining columns = values in [0, 1]
+skill_profiles &lt;- tibble::tribble(
+  ~role,            ~R, ~Python, ~SQL, ~Tableau, ~Excel, ~Stats,
+  "Data Analyst",   0.6,  0.3,   0.8,   0.7,     0.9,    0.5,
+  "Data Scientist",  0.9,  0.9,   0.7,   0.5,     0.4,    0.9,
+  "BI Developer",   0.4,  0.2,   0.9,   0.9,     0.7,    0.3,
+  "ML Engineer",    0.7,  0.95,  0.6,   0.3,     0.2,    0.8
+)
+
+skill_profiles
+```
+
+```
+## # A tibble: 4 × 7
+##   role               R Python   SQL Tableau Excel Stats
+##   &lt;chr&gt;          &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 Data Analyst     0.6   0.3    0.8     0.7   0.9   0.5
+## 2 Data Scientist   0.9   0.9    0.7     0.5   0.4   0.9
+## 3 BI Developer     0.4   0.2    0.9     0.9   0.7   0.3
+## 4 ML Engineer      0.7   0.95   0.6     0.3   0.2   0.8
+```
+
+]
+
+.panel[.panel-name[Plot Code]
+
+
+``` r
+ggradar::ggradar(
+  skill_profiles,
+  grid.min = 0, grid.mid = 0.5, grid.max = 1,
+  values.radar = c("0", "0.5", "1"),
+  group.line.width = 1.2,
+  group.point.size = 3,
+  legend.position = "bottom",
+  legend.text.size = 10,
+  axis.label.size = 4
+) +
+  ggplot2::labs(title = "Skill Profiles Across Job Roles")
+```
+
+]
+
+.panel[.panel-name[Output]
+
+&lt;img src="18_high_dimensional_data_files/figure-html/radar-plot-run-1.png" alt="" style="display: block; margin: auto;" /&gt;
+
+]
+]
+
+
+---
+
+# Heatmaps
+
+.pull-left[
+
+**What is a heatmap?**
+
+- A matrix visualization where **color intensity** encodes the value in each cell
+- Rows and columns represent categories or observations
+- Useful for spotting **patterns, clusters, and outliers** in large matrices
+
+**When to use:**
+- Skill-by-industry matrices
+- Correlation matrices
+- Time-of-day / day-of-week patterns
+
+]
+
+.pull-right[
+
+**Key considerations:**
+- Choose a **sequential** color scale for single-direction data (e.g., 0 to max)
+- Choose a **diverging** color scale for data with a meaningful midpoint (e.g., correlations from -1 to +1)
+- **Ordering** rows/columns (e.g., by clustering) reveals structure
+
+]
+
+
+---
+
+# Demo: Heatmap with `pheatmap`
+
+.panelset[
+
+.panel[.panel-name[Create Matrix]
+
+
+``` r
+# Skill demand matrix: industries x skills
+skill_demand &lt;- tibble::tribble(
+  ~industry,       ~R, ~Python, ~SQL, ~Tableau, ~Excel, ~ML, ~Cloud,
+  "Tech",           9,    9,     8,     5,       3,      9,    8,
+  "Finance",        6,    7,     9,     7,       8,      5,    4,
+  "Healthcare",     5,    6,     7,     6,       7,      4,    3,
+  "Consulting",     4,    5,     6,     8,       9,      3,    3,
+  "Manufacturing",  3,    4,     5,     7,       9,      2,    2,
+  "Retail",         3,    5,     7,     8,       8,      4,    5
+)
+
+# Convert to matrix for pheatmap
+skill_matrix &lt;- skill_demand |&gt; dplyr::select(-industry) |&gt; as.matrix()
+rownames(skill_matrix) &lt;- skill_demand$industry
+```
+
+]
+
+.panel[.panel-name[Plot Code]
+
+
+``` r
+pheatmap::pheatmap(
+  skill_matrix,
+  color = colorRampPalette(c("white", "#84d6d3", miamired))(50),
+  cluster_rows = TRUE,
+  cluster_cols = TRUE,
+  display_numbers = TRUE,
+  number_format = "%d",
+  fontsize = 11,
+  main = "Skill Demand by Industry (1-10 Scale)"
+)
+```
+
+]
+
+.panel[.panel-name[Output]
+
+&lt;img src="18_high_dimensional_data_files/figure-html/heatmap-plot-run-1.png" alt="" style="display: block; margin: auto;" /&gt;
+
+]
+]
+
+
+---
+
+# Bonus: Correlation Heatmap
+
+A common use case for heatmaps is visualizing **correlation matrices** -- this instantly reveals which variables move together:
+
+
+``` r
+# Using our job_profiles data
+cor_matrix &lt;- job_profiles |&gt;
+  dplyr::select(-role) |&gt;
+  cor()
+
+pheatmap::pheatmap(
+  cor_matrix,
+  color = colorRampPalette(c(miamired, "white", "#84d6d3"))(50),
+  display_numbers = TRUE,
+  number_format = "%.2f",
+  fontsize = 11,
+  main = "Correlation Matrix: Job Profile Variables"
+)
+```
+
+&lt;img src="18_high_dimensional_data_files/figure-html/cor-heatmap-1.png" alt="" style="display: block; margin: auto;" /&gt;
+
+&gt; **Reading tip:** Strong positive correlations (near +1) appear in teal; strong negative correlations (near -1) appear in red.
+
+
+---
+
+# When to Use Which Chart?
+
+| Chart | Best For | Max Items | Limitations |
+|-------|----------|-----------|-------------|
+| **Parallel Coordinates** | Comparing many numeric variables | 20-30 lines | Clutter with too many observations |
+| **Radar Chart** | Comparing profiles | 3-5 items | Misleading areas; hard to read with many axes |
+| **Heatmap** | Matrix data / correlations | Unlimited rows &amp; cols | Requires good color scale and ordering |
+| **Bubble Chart** | 4-5 variables | 50-100 points | Overlapping bubbles |
+| **Small Multiples** | Comparing distributions | 12-20 panels | Space-intensive |
+
+
+---
+
+## Activity: Create a Parallel Coordinates Plot
+
+Using the `job_profiles` data from our earlier demo (or your own data), create a parallel coordinates plot that:
+
+1. Groups lines by `role`
+2. Uses `scale = "uniminmax"` (scales each variable to [0, 1])
+3. Includes points and a clean theme
+4. Has a descriptive title
+
+
+``` r
+# Start with the job_profiles data
+GGally::ggparcoord(
+  data = job_profiles,
+  columns = ___,
+  groupColumn = ___,
+  scale = "uniminmax",
+  showPoints = ___
+) +
+  ggplot2::theme_bw() +
+  ggplot2::labs(title = "___")
+```
+
+<countdown-timer class="countdown" id="timer_cd0fa1fd" minutes="5" seconds="0" warn-when="60" update-every="1" tabindex="0" style="top:0;right:0;--countdown-font-size:1.5em;--countdown-color-background:#C3142D;--countdown-color-text:white;"></countdown-timer>
+
+
+---
+
+## LO2 Check-In
+
+✅ You can now create high-dimensional visualizations in <svg aria-hidden="true" role="img" viewBox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#C3142D;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/></svg>:
+
+- **Parallel coordinates** with `GGally::ggparcoord()` for comparing numeric profiles
+
+- **Radar charts** with `ggradar::ggradar()` for comparing a few items across metrics
+
+- **Heatmaps** with `pheatmap::pheatmap()` for matrix data with color-encoded values
+
+
+---
+class: inverse, center, middle
+
+# Small Multiples &amp; Faceting
+
+---
+
+# The Principle of Small Multiples
+
+&gt; "Illustrations of postage-stamp size are indexed by category or a label, sequenced over time like the frames of a movie, or ordered by a quantitative variable not used in the single image itself." -- Edward Tufte, *Envisioning Information* (1990)
+
+.pull-left[
+
+**Why small multiples work:**
+- Same chart structure repeated across subsets
+- Easy to compare because the **scale is consistent**
+- The eye can scan for differences quickly
+- Avoids overplotting and clutter
+
+]
+
+.pull-right[
+
+&lt;img src="https://images.squarespace-cdn.com/content/v1/52f42657e4b0b3416ff6b831/1614444947046-W4UOZ7ISU9IV4CG8URSU/FIres-detected-in-Amazon.png?format=1000w" alt="" width="95%" style="display: block; margin: auto;" /&gt;
+
+.font70[Source: NYT analysis of Amazon rain forest fires]
+
+]
+
+
+---
+
+# Demo: `facet_wrap()` for Salary Distributions
+
+.panelset[
+
+.panel[.panel-name[Create Data]
+
+
+``` r
+set.seed(401)
+jobs_facet &lt;- tibble::tibble(
+  industry = rep(c("Tech", "Finance", "Healthcare", "Consulting"), each = 60),
+  experience = rep(rep(c("Entry", "Mid", "Senior"), each = 20), 4),
+  salary_k = c(
+    rnorm(20, 65, 10), rnorm(20, 85, 12), rnorm(20, 110, 15),  # Tech
+    rnorm(20, 60, 8),  rnorm(20, 80, 10), rnorm(20, 105, 14),  # Finance
+    rnorm(20, 55, 9),  rnorm(20, 72, 11), rnorm(20, 95, 13),   # Healthcare
+    rnorm(20, 58, 8),  rnorm(20, 75, 10), rnorm(20, 100, 12)   # Consulting
+  )
+) |&gt;
+  dplyr::mutate(experience = factor(experience, levels = c("Entry", "Mid", "Senior")))
+```
+
+]
+
+.panel[.panel-name[facet_wrap Code]
+
+
+``` r
+ggplot2::ggplot(jobs_facet, ggplot2::aes(x = salary_k, fill = experience)) +
+  ggplot2::geom_histogram(bins = 12, alpha = 0.7, color = "white") +
+  ggplot2::facet_wrap(~ industry, nrow = 1) +
+  ggplot2::scale_fill_manual(values = c("Entry" = "#84d6d3", "Mid" = "#f4a261", "Senior" = miamired)) +
+  ggplot2::theme_bw(base_size = 11) +
+  ggplot2::theme(legend.position = "top") +
+  ggplot2::labs(x = "Salary ($ thousands)", y = "Count",
+       title = "Salary Distributions by Industry and Experience Level",
+       fill = "Experience")
+```
+
+]
+
+.panel[.panel-name[Output]
+
+&lt;img src="18_high_dimensional_data_files/figure-html/facet-wrap-plot-run-1.png" alt="" style="display: block; margin: auto;" /&gt;
+
+]
+]
+
+
+---
+
+# `facet_grid()`: Two-Dimensional Faceting
+
+When you want to facet by **two variables simultaneously**, use `facet_grid(rows ~ cols)`:
+
+
+``` r
+ggplot2::ggplot(jobs_facet, ggplot2::aes(x = salary_k)) +
+  ggplot2::geom_density(fill = "#84d6d3", alpha = 0.5) +
+  ggplot2::facet_grid(experience ~ industry) +
+  ggplot2::theme_bw(base_size = 10) +
+  ggplot2::labs(x = "Salary ($ thousands)", y = "Density",
+       title = "Salary Density by Industry (columns) and Experience Level (rows)")
+```
+
+&lt;img src="18_high_dimensional_data_files/figure-html/facet-grid-run-1.png" alt="" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+# Quick Alternative: `DataExplorer::plot_boxplot()`
+
+For rapid exploration, `DataExplorer` can generate faceted boxplots in a single line:
+
+
+``` r
+DataExplorer::plot_boxplot(
+  data = jobs_facet,
+  by = "industry",
+  theme_config = ggplot2::theme_bw(base_size = 10)
+)
+```
+
+.font80[
+This is especially useful when you have **many numeric variables** and want to quickly see how they distribute across a grouping variable -- no manual faceting required.
+]
+
+&lt;img src="18_high_dimensional_data_files/figure-html/data-explorer-box-run-1.png" alt="" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+## Activity: Small Multiples with Faceting
+
+Using the `jobs_facet` data (or a dataset of your choice), create a faceted visualization that shows:
+
+1. **Boxplots** of salary by experience level
+2. **Faceted** by industry using `facet_wrap()`
+3. A color scheme that distinguishes experience levels
+
+
+``` r
+ggplot2::ggplot(jobs_facet, ggplot2::aes(x = ___, y = ___, fill = ___)) +
+  ggplot2::geom_boxplot() +
+  ggplot2::facet_wrap(~ ___) +
+  ggplot2::theme_bw() +
+  ggplot2::labs(title = "___")
+```
+
+<countdown-timer class="countdown" id="timer_91009155" minutes="5" seconds="0" warn-when="60" update-every="1" tabindex="0" style="top:0;right:0;--countdown-font-size:1.5em;--countdown-color-background:#C3142D;--countdown-color-text:white;"></countdown-timer>
+
+
+---
+
+## LO3 Check-In
+
+✅ You can now use small multiples and faceting by:
+
+- Applying `facet_wrap()` to split a chart by one categorical variable
+
+- Applying `facet_grid()` to split by two categorical variables (rows and columns)
+
+- Using `DataExplorer::plot_boxplot()` for quick faceted exploration
+
+
+---
+
+# The Big Picture: Choosing the Right Tool
+
+.content-box-grey[
+.font120[**Real business data has 10, 50, 100+ variables -- you need tools to see it all.**]
+
+The key insight is that **no single chart handles all dimensions**. Instead, you build a **toolkit**:
+
+- **Parallel coordinates** for scanning across many numeric variables at once
+- **Radar charts** for focused comparisons of a few profiles
+- **Heatmaps** for spotting patterns in matrix data
+- **Small multiples** for comparing distributions across categories
+- **Bubble/motion charts** for encoding 4-5 variables with animation
+]
+
+&gt; The best analysts are not those who memorize chart types, but those who can **match the question to the visual encoding** that answers it most clearly.
+
+
+---
+class: inverse, center, middle
+
+# Recap
+
+---
+
+## Summary of Main Points
+
+By now, you should be able to do the following:
+
+✅ **LO1:** Define high-dimensional data and explain why standard 2-D charts are insufficient for multivariate datasets.
+
+✅ **LO2:** Create parallel coordinates plots (`GGally::ggparcoord()`), radar charts (`ggradar::ggradar()`), and heatmaps (`pheatmap::pheatmap()`) in <svg aria-hidden="true" role="img" viewBox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#C3142D;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/></svg>.
+
+✅ **LO3:** Use `facet_wrap()` and `facet_grid()` for small multiples, and `DataExplorer::plot_boxplot()` for rapid exploration.
+
+
+---
+
+## Key Functions Reference
+
+| Function | Purpose |
+|----------|---------|
+| `GGally::ggparcoord()` | Create parallel coordinates plots |
+| `ggradar::ggradar()` | Create radar/spider charts |
+| `pheatmap::pheatmap()` | Create clustered heatmaps |
+| `ggplot2::facet_wrap()` | Facet a plot by one variable |
+| `ggplot2::facet_grid()` | Facet by two variables (rows x cols) |
+| `DataExplorer::plot_boxplot()` | Quick faceted boxplots by a grouping variable |
+| `scales::rescale()` | Rescale numeric values to [0, 1] |
+
+
+---
+
+## Readings and Resources
+
+- [GGally package documentation](https://ggobi.github.io/ggally/) -- Comprehensive guide to `ggparcoord()` and other GGally functions.
+
+- [ggradar GitHub repository](https://github.com/ricardo-bion/ggradar) -- Examples and usage for radar charts in ggplot2.
+
+- [pheatmap CRAN page](https://cran.r-project.org/package=pheatmap) -- Documentation for the `pheatmap` package.
+
+- [Tufte, E.R. (1990). *Envisioning Information*.](https://www.amazon.com/Envisioning-Information-Edward-R-Tufte/dp/0961392118) -- The definitive text on small multiples and information design.
+
+- [Hans Rosling TED Talk](https://www.ted.com/talks/hans_rosling_the_best_stats_you_ve_ever_seen) -- The iconic talk demonstrating motion bubble charts.
+
+
+---
+
+## Things to Do to Prepare for Next Class
+
+- **Review:** Experiment with `ggparcoord()`, `ggradar()`, and `pheatmap()` on a dataset of your choice.
+
+- **Explore:** Try the [Gapminder interactive tool](https://www.gapminder.org/tools/) and identify how each variable is encoded.
+
+- **Reflect:** For your project dataset, which high-dimensional visualization technique would be most appropriate? Why?
+
+- **Next class:** Data Storytelling &amp; Dashboards -- turning charts into compelling narratives.
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+  "highlightStyle": "magula",
+  "highlightLines": true,
+  "highlightLanguage": "r",
+  "countIncrementalSlides": false,
+  "ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

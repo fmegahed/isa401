@@ -1,0 +1,337 @@
+---
+title: "ISA 401: Business Intelligence & Data Visualization"
+subtitle: '04: Connecting to APIs in `r icons::icon_style(icons::fontawesome("r-project"), fill = "white")`'
+author: '<br>Fadel M. Megahed, PhD <br><br>Raymond E. Gloss Professor in Business <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("linkedin"), fill = "white")` @Fadel Megahed](https://www.linkedin.com/in/fadel-megahed-289046b4) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
+date: "Spring 2026"
+output:
+  xaringan::moon_reader:
+    self_contained: true
+    css: [default, "../../style_files/fonts.css", "../../style_files/my-theme.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: magula
+      highlightLines: true
+      highlightLanguage: ["r"]
+      countIncrementalSlides: false
+      ratio: "16:9"
+header-includes:  
+  - "../../style_files/header.html"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache = FALSE,
+                      echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE,
+                      progress = FALSE, 
+                      verbose = FALSE,
+                      dev = 'png',
+                      fig.height = 2.5,
+                      dpi = 300,
+                      fig.align = 'center')
+
+options(htmltools.dir.version = FALSE)
+
+miamired = '#C3142D'
+
+if(require(pacman)==FALSE) install.packages("pacman")
+if(require(devtools)==FALSE) install.packages("devtools")
+
+if(require(countdown)==FALSE) devtools::install_github("gadenbuie/countdown")
+if(require(xaringanExtra)==FALSE) devtools::install_github("gadenbuie/xaringanExtra")
+
+
+pacman::p_load(tidyverse, magrittr, lubridate, janitor, # data analysis pkgs
+               httr, jsonlite, tidycensus, # for APIs
+               fontawesome, RefManageR, xaringanExtra, countdown) # for slides
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+if(require(xaringanthemer) == FALSE) install.packages("xaringanthemer")
+library(xaringanthemer)
+
+style_mono_accent(base_color = "#84d6d3",
+                  base_font_size = "20px")
+
+xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "tachyons", "panelset", "search", "fit_screen", "editable", 
+                                    "clipable"))
+```
+
+
+## Quick Refresher from Last Week
+
+
+`r emo::ji("check")` Subset data in `r fontawesome::fa(name = 'r-project', fill = miamired)`.  
+
+`r emo::ji("check")` Read text-files, binary files (e.g., Excel, SAS, SPSS, Stata, etc), json files, etc.  
+
+`r emo::ji("check")` Export data from `r fontawesome::fa(name = 'r-project', fill = miamired)`.
+
+---
+
+# Learning Objectives for Today's Class
+
+- Define what an API is and why APIs matter  
+
+- Construct API requests and handle authentication 
+
+- Parse JSON responses into data frames
+
+
+---
+class: inverse, center, middle
+
+# What is an API? <br> (A Web Server Based Perspective)
+
+---
+
+## What is an API? [1]
+
+- An **API** is an acronym for application programming interface. 
+
+- It is a **popular** approach to interact with an application/service or data since it:  
+  * Defines a set of functionalities independent of implementation (i.e., it only exposes information that a programmer might find useful and keep those parts consistent even if the implementation changes later)
+  * Provides some level of privacy/control over one's internal data and the rate at which it can be accessed. 
+
+---
+
+## What is an API? [2]
+
+<center>
+
+<iframe width="896" height="504" src="https://www.youtube.com/embed/s7wmiS2mSXY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+</center>
+
+
+---
+
+## What is an API?  [3]
+
+.center[**Scenario:** Alone, you went into a warehouse and are trying to retrieve 3 screwdrivers, a toolbox, and 15 Phillips screws. But you do not know, where those things are in the warehouse.]
+
+```{r api_as_a_warehouse, echo=FALSE, out.width='60%', fig.cap='The API is the set of instructions provided by the warehouse manager on where/how to retrieve this information without touching/accessing other things in there.'}
+
+knitr::include_graphics("https://miro.medium.com/max/1400/1*oklkpcOX4lpttIAsd2gwXg.jpeg")
+```
+
+.footnote[
+<html>
+<hr>
+</html>
+**Source:** [Matt Z. (2018). What is an API? (explanation with cartoon picture so a 5 year old could understand it)](https://medium.com/@xiang_zhou/what-is-an-api-explanation-with-cartoon-picture-so-a-5-year-old-could-understand-it-6c6c42b75be4)
+]
+
+
+---
+class: inverse, center, middle
+
+# API Useages for Business Analysts and Data Scientists
+
+---
+
+## Application #1: Request Data from Web Server
+
+This is the **classical** example, which was explained in the previous slides and we will be coding several in-class demos to illustrate how to perform such operations in `r fontawesome::fa("r-project", fill = miamired)`.
+
+---
+
+## Application #2: Access Python Libraries
+
+<iframe src="https://pandas.pydata.org/docs/reference/api/pandas.read_csv.html" frameBorder="0" height="450" width="1000" title="Pandas API Reference" class="container p-0 flex-grow space-iframe">
+</iframe>
+
+---
+
+## Application #3: Use a Pretrained ML Model
+
+<iframe src="https://player.vimeo.com/video/692375454?h=4e0c951c7c&color=ffffff&title=0&byline=0&portrait=0" width="1000" height="450" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+<p>Please click on the <a href="https://vimeo.com/692375454"> "Watch on Vimeo" to see OpenAI's explanation of their DALL&middot;E 2 model</a>.</p>
+
+
+---
+class: inverse, center, middle
+
+# Accessing APIs in `r icons::icon_style(icons::fontawesome("r-project"), fill = "white")`
+
+---
+
+## The 2 Step Process
+
+Before you dive into the API documentation, you **should first check if there is a R (or Python if you are familiar)** package/library that serves as a wrapper for that API.
+
+.font90[
+1. **Find** the **API's documentation** and find information about the following:  
+  A. Does the API require an **authentication key**?   
+  B. What are the API's **base URL** and **query parameters**?  
+  C. How does the request URL look like (including query strings)?  
+  D. Do you need to send headers (for example `User-Agent`, `Authorization`, `Authorization-Key`, `Accept`)? 
+  
+2. Construct that request in `r fontawesome::fa("r-project", fill = miamired)` by **either**:   
+  A. **If the endpoint requires no headers and no authentication**, and it returns JSON, use:
+`jsonlite::fromJSON("https://api.example.com/endpoint?param=value")`; **OR**  
+  B. **If the endpoint requires headers and/or authentication**, use **httr2** to build and perform the request, then parse the response:
+`httr2::request(base_url) |> httr2::req_url_query(...) |> httr2::req_headers(...) |> httr2::req_perform() |> httr2::resp_body_json()` 
+]
+
+---
+
+## Demo: The USAJOBS API
+
+.panelset[
+
+.panel[.panel-name[Demo Description]
+
+.small[
+- Go to [USAJOBS API: API Request](https://developer.usajobs.gov/apirequest/) to request an API key. Once you fill the form, expect to get three emails: (a) documenting your request; (b) confirming your email; and (c) actual API. 
+
+- Save the Key in Your Project Environment via `usethis::edit_r_environment("project")`.  
+
+- Understand the four steps defined in the [documentation](https://developer.usajobs.gov/tutorials/search-jobs) and be ready to execute this in R with Fadel in class.
+]
+
+]
+
+.panel[.panel-name[Querying the API]
+
+```{r usajobs, echo = FALSE, results='hide'}
+# * Make the API request with httr2 ----
+host <- "data.usajobs.gov"
+user_agent <- "megahefm@miamioh.edu"
+auth_key <- Sys.getenv("USAJOBS_API_KEY")
+
+req <- httr2::request("https://data.usajobs.gov/api/search") |>
+  httr2::req_method("GET") |>
+  httr2::req_url_query(Keyword = "Data Analyst", JobCategoryCode=2210) |>
+  httr2::req_headers(
+    Host = host,
+    `User-Agent` = user_agent,
+    `Authorization-Key` = auth_key
+  )
+
+resp <- httr2::req_perform(req)
+
+data <- resp |>
+  httr2::resp_body_string() |>
+  jsonlite::fromJSON(flatten = T)
+
+# Example: peek at returned positions (if present)
+usajobs_df = data$SearchResult$SearchResultItems |> tidyr::unnest(cols=c("MatchedObjectDescriptor.PositionLocation", "MatchedObjectDescriptor.ApplyURI", "MatchedObjectDescriptor.PositionRemuneration"))
+dplyr::glimpse(usajobs_df)
+```
+
+]
+
+.panel[.panel-name[Questions to Answer]
+
+From the query results, answer the following questions:  
+
+A. How many Data Analyst-related federal jobs are open right now?  
+
+B. Which agency/department has the most Data Analyst-related federal jobs?  
+
+C. What is the typical salary range for those jobs?
+
+```{r usajobs2, echo = FALSE, results='hide', eval=FALSE}
+# number of jobs
+nrow(usajobs_df)
+
+# agency hiring the most
+usajobs_df |> 
+  dplyr::count(MatchedObjectDescriptor.DepartmentName)
+
+# typical salary range
+usajobs_df |> 
+  dplyr::mutate(
+    MinimumRange = as.numeric(MinimumRange),
+    MaximumRange = as.numeric(MaximumRange)
+  ) |> 
+  dplyr::summarise(
+    avg_min_salary = mean(MinimumRange),
+    avg_high_salary = mean(MaximumRange)
+  ) |> 
+  rowMeans()
+```
+
+]
+
+]
+
+
+---
+
+## Class Activity: Remotive.com
+
+
+- Go to <https://remotive.com/> and see how the URL changes when you click on different filters.
+
+- Then, go to the [Remotive API](https://remotive.com/api/remote-jobs) and visually examine the output in your browser.  
+
+- Using the **API**, set the experience to `entry_level` and the skills to `data+visualization`. 
+
+- Use the **httr2** package to obtain the data.  
+
+- **Bonus:** Try to return a data frame of 25 observations with 13 variables. 
+
+
+
+```{r remotive, include=F, eval=F}
+library(httr2)
+library(dplyr)
+library(tibble)
+
+base_url <- "https://remotive.com/api/remote-jobs"
+
+req <- httr2::request(base_url) |>
+  httr2::req_method("GET") |>
+  httr2::req_url_query(
+    experience="entry-level",
+    skills = "data+visualization",
+    limit = 100
+  )
+
+resp <- httr2::req_perform(req)
+
+resp |> httr2::resp_raw()
+
+payload <-   httr2::resp_body_json(resp) |> magrittr::extract2("jobs")
+
+df <- dplyr::bind_rows(payload) |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(
+    dplyr::across(-tags, dplyr::first),
+    tags = paste(unlist(tags, use.names = FALSE), collapse = ", "),
+    .groups = "drop"
+  )
+```
+
+
+
+
+---
+class: inverse, center, middle
+
+# Recap
+
+---
+
+## Summary of Main Points
+
+By now, you should be able to do the following:
+
+- Describe what we mean by an API  
+
+- Explain how APIs will be a huge part of your career as a business analyst and/or data scientist  
+
+- Use APIs for extracting web data
+
+
+---
+
+## Things to Do to Prepare for Next Class
+
+* [Getting Started with httr2](https://httr2.r-lib.org/articles/httr2.html)  
+* [Managing secrets](https://httr.r-lib.org/articles/secrets.html)    
+
+

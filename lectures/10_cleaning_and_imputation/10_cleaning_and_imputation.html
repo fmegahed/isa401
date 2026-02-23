@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>ISA 401: Business Intelligence &amp; Data Visualization</title>
+    <meta charset="utf-8" />
+    <meta name="author" content=" Fadel M. Megahed, PhD   Raymond E. Gloss Professor in Business   Farmer School of Business  Miami University     @Fadel Megahed     fmegahed     fmegahed@miamioh.edu    Automated Scheduler for Office Hours  " />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/tile-view/tile-view.css" rel="stylesheet" />
+    <script src="libs/tile-view/tile-view.js"></script>
+    <link href="libs/animate.css/animate.xaringan.css" rel="stylesheet" />
+    <link href="libs/tachyons/tachyons.min.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra_fit-screen/fit-screen.js"></script>
+    <link href="libs/panelset/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset/panelset.js"></script>
+    <script type="application/json" id="xaringanExtra-editable-docid">{"id":"x4e1648781264ed483c77f6aa70a1603","expires":14}</script>
+    <script src="libs/himalaya/himalaya.js"></script>
+    <script src="libs/js-cookie/js.cookie.js"></script>
+    <link href="libs/editable/editable.css" rel="stylesheet" />
+    <script src="libs/editable/editable.js"></script>
+    <script src="libs/mark.js/mark.min.js"></script>
+    <link href="libs/xaringanExtra-search/search.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-search/search.js"></script>
+    <script>window.addEventListener('load', function() { window.xeSearch = new RemarkSearch({"position":"bottom-left","caseSensitive":false,"showIcon":false,"autoSearch":true}) })</script>
+    <link href="libs/countdown/countdown.css" rel="stylesheet" />
+    <script src="libs/countdown/countdown.js"></script>
+    <link rel="stylesheet" href="../../style_files/fonts.css" type="text/css" />
+    <link rel="stylesheet" href="../../style_files/my-theme.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# ISA 401: Business Intelligence &amp; Data Visualization
+]
+.subtitle[
+## 10: Cleaning &amp; Imputation in <svg viewBox="0 0 581 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:white;" xmlns="http://www.w3.org/2000/svg"> <path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"></path></svg>
+]
+.author[
+### <br>Fadel M. Megahed, PhD <br><br>Raymond E. Gloss Professor in Business <br> Farmer School of Business<br> Miami University<br><br> <a href="https://www.linkedin.com/in/fadel-megahed-289046b4"><svg viewBox="0 0 448 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:white;" xmlns="http://www.w3.org/2000/svg"> <path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"></path></svg> <span class="citation">@Fadel</span> Megahed</a> <br> <a href="https://github.com/fmegahed/"><svg viewBox="0 0 496 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:white;" xmlns="http://www.w3.org/2000/svg"> <path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg> fmegahed</a> <br> <a href="mailto:fmegahed@miamioh.edu"><svg viewBox="0 0 512 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:white;" xmlns="http://www.w3.org/2000/svg"> <path d="M476 3.2L12.5 270.6c-18.1 10.4-15.8 35.6 2.2 43.2L121 358.4l287.3-253.2c5.5-4.9 13.3 2.6 8.6 8.3L176 407v80.5c0 23.6 28.5 32.9 42.5 15.8L282 426l124.6 52.2c14.2 6 30.4-2.9 33-18.2l72-432C515 7.8 493.3-6.8 476 3.2z"></path></svg> fmegahed@miamioh.edu</a><br> <a href="https://calendly.com/fmegahed"><svg viewBox="0 0 384 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:white;" xmlns="http://www.w3.org/2000/svg"> <path d="M202.021 0C122.202 0 70.503 32.703 29.914 91.026c-7.363 10.58-5.093 25.086 5.178 32.874l43.138 32.709c10.373 7.865 25.132 6.026 33.253-4.148 25.049-31.381 43.63-49.449 82.757-49.449 30.764 0 68.816 19.799 68.816 49.631 0 22.552-18.617 34.134-48.993 51.164-35.423 19.86-82.299 44.576-82.299 106.405V320c0 13.255 10.745 24 24 24h72.471c13.255 0 24-10.745 24-24v-5.773c0-42.86 125.268-44.645 125.268-160.627C377.504 66.256 286.902 0 202.021 0zM192 373.459c-38.196 0-69.271 31.075-69.271 69.271 0 38.195 31.075 69.27 69.271 69.27s69.271-31.075 69.271-69.271-31.075-69.27-69.271-69.27z"></path></svg> Automated Scheduler for Office Hours</a><br><br>
+]
+.date[
+### Spring 2026
+]
+
+---
+
+
+
+
+
+
+
+
+## Quick Refresher from Last Week
+
+
+✅ Define the principles of tidy data.
+
+✅ Reshape data using `pivot_longer()` and `pivot_wider()`.
+
+✅ Perform rectangling and unnesting operations.
+
+✅ Validate data types and value constraints with `pointblank`.
+
+✅ Detect and handle duplicates.
+
+---
+
+## Kahoot/Quiz Review: Tidy Data &amp; Validation
+
+.pull-left[
+
+**Q1.** Which function converts wide data to long format?
+A. `pivot_wider()`
+B. `pivot_longer()`
+C. `unnest()`
+D. `spread()`
+
+**Q2.** In tidy data, each row represents:
+A. A variable
+B. A column header
+C. An observation
+D. A data type
+
+**Q3.** Which `pointblank` function checks that values in a column are greater than a threshold?
+A. `col_is_numeric()`
+B. `col_vals_gt()`
+C. `col_vals_expr()`
+D. `col_vals_not_null()`
+
+]
+
+.pull-right[
+
+**Q4.** What does `unnest_wider()` do?
+A. Converts each element of a list-column into its own row
+B. Converts each element of a list-column into its own column
+C. Removes nested columns entirely
+D. Joins two data frames side by side
+
+**Q5.** To detect duplicate rows in a data frame, which function is most direct?
+A. `dplyr::filter()`
+B. `janitor::get_dupes()`
+C. `tidyr::pivot_longer()`
+D. `pointblank::interrogate()`
+
+]
+
+<countdown-timer class="countdown" id="timer_de01d4dc" minutes="3" seconds="0" warn-when="60" update-every="1" tabindex="0" style="top:0;right:0;--countdown-font-size:1.5em;--countdown-color-background:#C3142D;--countdown-color-text:white;"></countdown-timer>
+
+
+---
+
+# Learning Objectives for Today's Class
+
+- **LO1:** Identify different types of missing data (MCAR, MAR, MNAR)
+
+- **LO2:** Apply appropriate imputation techniques (mean, median, K-NN)
+
+- **LO3:** Clean and standardize text fields
+
+
+---
+class: inverse, center, middle
+
+# LO1: Types of Missing Data
+
+---
+
+## The Data Cleaning Value Chain
+
+.pull-left[
+
+After tidying and validating data, we often discover two remaining problems:
+
+1. **Missing values** -- cells with no data (`NA` in R)
+2. **Inconsistent text** -- variations of the same value (e.g., "Sr.", "Senior", "SENIOR")
+
+Today we learn how to diagnose, handle, and fix these issues.
+
+]
+
+.pull-right[
+
+&lt;img src="../../figures/statValueChain.PNG" alt="" width="100%" style="display: block; margin: auto;" /&gt;
+
+.footnote[
+&lt;html&gt;&lt;hr&gt;&lt;/html&gt;
+**Source:** [De Jonge and Van Der Loo (2013), An introduction to data cleaning with R](https://cran.r-project.org/doc/contrib/de_Jonge+van_der_Loo-Introduction_to_data_cleaning_with_R.pdf).
+]
+
+]
+
+
+---
+
+## Visualizing Missingness with `visdat`
+
+.font80[
+Before classifying *why* data is missing, we need to **see where** it is missing. The `visdat` package provides quick visual summaries.
+]
+
+
+``` r
+# Create a sample job market dataset with missing values
+set.seed(401)
+job_market &lt;- tibble::tibble(
+  job_id = 1:200,
+  title = sample(c("Data Analyst", "BI Developer", "Data Scientist", NA), 200, replace = TRUE, prob = c(0.35, 0.25, 0.3, 0.1)),
+  salary = ifelse(runif(200) &gt; 0.15, round(rnorm(200, 75000, 15000)), NA),
+  experience = ifelse(runif(200) &gt; 0.2, sample(1:15, 200, replace = TRUE), NA),
+  company_size = sample(c("Small", "Medium", "Large", NA), 200, replace = TRUE, prob = c(0.3, 0.3, 0.3, 0.1))
+)
+
+visdat::vis_miss(job_market) #&lt;&lt; visualize missingness patterns
+```
+
+&lt;img src="10_cleaning_and_imputation_files/figure-html/visdat-demo-1.png" alt="" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+## Missingness Patterns with `naniar`
+
+
+``` r
+naniar::gg_miss_upset(job_market) #&lt;&lt; which columns co-occur as missing?
+```
+
+&lt;img src="10_cleaning_and_imputation_files/figure-html/naniar-upset-1.png" alt="" style="display: block; margin: auto;" /&gt;
+
+.font80[
+The upset plot shows which **combinations of columns** are missing together. This helps diagnose whether missingness is random or systematic.
+]
+
+
+---
+
+## Type 1: Missing Completely at Random (MCAR)
+
+- **Definition:** The probability of a value being missing is **unrelated to any observed or unobserved data**.
+
+- **Job market example:** A batch of salary records is lost due to a database migration error. The missing records are a random subset -- missingness has nothing to do with the salary amount, job title, or any other variable.
+
+- **Consequence:** The remaining data is a simple random sample of the full dataset. Analysis is valid but has reduced statistical power.
+
+- **Handling approach:** Safe to use **complete case analysis** (`na.omit()`) or **simple imputation** (mean/median).
+
+.footnote[
+&lt;html&gt;&lt;hr&gt;&lt;/html&gt;
+**Source:** Mack C, Su Z, Westreich D. (2018). [Types of Missing Data](https://www.ncbi.nlm.nih.gov/books/NBK493614/), AHRQ.
+]
+
+
+---
+
+## Type 2: Missing at Random (MAR)
+
+- **Definition:** The probability of a value being missing is related to **observed data but not the missing value itself**.
+
+- **Job market example:** Salary is more likely to be missing for job postings from **small companies** than large companies. The missingness depends on company size (observed) but not on the actual salary amount (unobserved).
+
+- **Consequence:** Complete case analysis may introduce **bias** because the remaining cases are not representative.
+
+- **Handling approach:** **Imputation** that accounts for the observed predictors (e.g., K-NN imputation using company size).
+
+
+---
+
+## Type 3: Missing Not at Random (MNAR)
+
+- **Definition:** The probability of a value being missing is related to **the missing value itself**.
+
+- **Job market example:** Companies with **very high salaries** deliberately leave salary fields blank to avoid publicizing compensation. The missingness depends on the actual salary value.
+
+- **Consequence:** Both complete case analysis and standard imputation can produce **biased results**.
+
+- **Handling approach:** Requires **domain expertise** and potentially **sensitivity analysis**. Standard imputation may not be appropriate.
+
+
+---
+
+## Summary: Choosing an Approach Based on Missingness Type
+
+| Type | Related to... | Complete Cases OK? | Imputation OK? |
+|------|---------------|-------------------|----------------|
+| **MCAR** | Nothing | Yes (reduced power) | Yes (any method) |
+| **MAR** | Observed variables | Risky (potential bias) | Yes (use predictors) |
+| **MNAR** | The missing value itself | No (bias likely) | Risky (needs expertise) |
+
+--
+
+.font80[
+**Practical tip:** In the real world, you often cannot definitively prove the missingness type. The best strategy is to:
+1. Visualize and explore the missingness pattern
+2. Check if missingness correlates with observed variables
+3. Use domain knowledge to make an informed judgment
+4. Document your assumptions
+]
+
+
+---
+
+## Activity: Classify the Missingness
+
+<countdown-timer class="countdown" id="timer_2dca2b08" minutes="3" seconds="0" update-every="1" tabindex="0" style="top:0;right:0;--countdown-font-size:2em;"></countdown-timer>
+
+.panelset[
+
+.panel[.panel-name[Scenarios]
+
+.font80[
+For each scenario below, identify the most likely missingness type (MCAR, MAR, or MNAR):
+
+1. A survey of alumni salaries where high earners are less likely to respond.
+2. A web scraping job where some pages fail to load due to network timeouts.
+3. A job board where salary is only posted for entry-level positions but not for senior roles.
+4. A dataset where some rows are missing because a lab technician accidentally deleted random records.
+]
+
+]
+
+.panel[.panel-name[Your Answers]
+
+.can-edit.key-activity07[
+1. Scenario 1: ..............................
+2. Scenario 2: ..............................
+3. Scenario 3: ..............................
+4. Scenario 4: ..............................
+]
+
+]
+
+.panel[.panel-name[Reference Answers]
+
+.font80[
+1. **MNAR** -- Missingness is related to the value itself (high earners do not report).
+2. **MCAR** -- Network timeouts are unrelated to the data content.
+3. **MAR** -- Missingness depends on an observed variable (seniority level), not salary itself.
+4. **MCAR** -- Random deletion is independent of any variable.
+]
+
+]
+
+]
+
+
+---
+
+## LO1 Check-In
+
+✅ You can now identify types of missing data:
+
+- **MCAR:** Missingness is completely random -- safe for simple methods
+
+- **MAR:** Missingness depends on observed variables -- use predictive imputation
+
+- **MNAR:** Missingness depends on the missing value -- requires domain expertise
+
+
+---
+class: inverse, center, middle
+
+# LO2: Imputation Techniques
+
+---
+
+## What Is Imputation?
+
+- **Imputation** is the process of replacing missing values with **estimated** values.
+
+- The goal is to produce a **complete dataset** that preserves the statistical properties of the original data as closely as possible.
+
+- **Warning:** All imputation introduces some degree of error. The key is choosing a method that minimizes bias.
+
+| Method | Complexity | When to Use |
+|--------|-----------|-------------|
+| Mean/Median | Low | MCAR, numeric columns, quick baseline |
+| Mode | Low | MCAR, categorical columns |
+| K-NN | Medium | MAR, when similar observations exist |
+| Model-based (mice, etc.) | High | MAR, complex relationships |
+
+
+---
+
+## Mean/Median Imputation: Concept
+
+.pull-left[
+
+**Mean imputation:** Replace each `NA` with the column mean.
+
+**Median imputation:** Replace each `NA` with the column median.
+
+**Pros:**
+- Simple, fast, easy to explain
+
+**Cons:**
+- Reduces variance (all imputed values are identical)
+- Does not preserve relationships between variables
+- Can distort the distribution shape
+
+]
+
+.pull-right[
+
+&lt;img src="10_cleaning_and_imputation_files/figure-html/mean-impute-concept-1.png" alt="" style="display: block; margin: auto;" /&gt;
+
+.font70[Notice the spike at the mean in the imputed distribution -- this is the telltale sign of mean imputation.]
+
+]
+
+
+---
+
+## Demo: Mean/Median Imputation in R
+
+.panelset[
+
+.panel[.panel-name[The Data]
+
+
+``` r
+jobs_missing &lt;- tibble::tribble(
+  ~title,             ~salary,  ~experience,
+  "Data Analyst",      65000,    3,
+  "BI Developer",      NA,       5,
+  "Data Scientist",    95000,    NA,
+  "ML Engineer",       NA,       7,
+  "Data Analyst",      62000,    2,
+  "BI Developer",      78000,    4
+)
+jobs_missing
+```
+
+```
+## # A tibble: 6 × 3
+##   title          salary experience
+##   &lt;chr&gt;           &lt;dbl&gt;      &lt;dbl&gt;
+## 1 Data Analyst    65000          3
+## 2 BI Developer       NA          5
+## 3 Data Scientist  95000         NA
+## 4 ML Engineer        NA          7
+## 5 Data Analyst    62000          2
+## 6 BI Developer    78000          4
+```
+
+]
+
+.panel[.panel-name[Mean Imputation]
+
+
+``` r
+mean_salary &lt;- mean(jobs_missing$salary, na.rm = TRUE)
+median_exp  &lt;- median(jobs_missing$experience, na.rm = TRUE)
+
+jobs_mean_imputed &lt;- jobs_missing |&gt;
+  tidyr::replace_na(list(             #&lt;&lt; replace NAs with specified values
+    salary = mean_salary,
+    experience = median_exp
+  ))
+
+jobs_mean_imputed
+```
+
+```
+## # A tibble: 6 × 3
+##   title          salary experience
+##   &lt;chr&gt;           &lt;dbl&gt;      &lt;dbl&gt;
+## 1 Data Analyst    65000          3
+## 2 BI Developer    75000          5
+## 3 Data Scientist  95000          4
+## 4 ML Engineer     75000          7
+## 5 Data Analyst    62000          2
+## 6 BI Developer    78000          4
+```
+
+]
+
+.panel[.panel-name[Limitations]
+
+.font80[
+- The imputed salaries for both the BI Developer and the ML Engineer are identical (the mean), even though their roles and experience differ substantially.
+
+- Mean imputation **ignores relationships** between columns -- it does not account for the fact that ML Engineers typically earn more than BI Developers.
+
+- This is why we need more sophisticated methods like K-NN.
+]
+
+]
+
+]
+
+
+---
+
+## K-Nearest Neighbors (K-NN) Imputation
+
+.pull-left[
+
+**Concept:** For each missing value, find the K most similar complete observations (neighbors) and use their values to impute.
+
+**How it works:**
+1. Compute distances between the incomplete row and all complete rows
+2. Select the K nearest neighbors
+3. Use the neighbors' values (weighted average for numeric, mode for categorical) as the imputed value
+
+**Advantages over mean/median:**
+- Preserves relationships between variables
+- Imputed values are context-sensitive
+- Works for both numeric and categorical data
+
+]
+
+.pull-right[
+
+&lt;img src="10_cleaning_and_imputation_files/figure-html/knn-concept-1.png" alt="" style="display: block; margin: auto;" /&gt;
+
+]
+
+
+---
+
+## Demo: K-NN Imputation with `VIM::kNN()`
+
+.panelset[
+
+.panel[.panel-name[Code]
+
+
+``` r
+# Using our jobs_missing data from before
+jobs_knn_imputed &lt;- VIM::kNN(
+  data = jobs_missing,
+  k = 3                   #&lt;&lt; number of neighbors
+)
+
+# kNN adds indicator columns showing which values were imputed
+jobs_knn_imputed
+```
+
+```
+##            title salary experience title_imp salary_imp experience_imp
+## 1   Data Analyst  65000          3     FALSE      FALSE          FALSE
+## 2   BI Developer  65000          5     FALSE       TRUE          FALSE
+## 3 Data Scientist  95000          4     FALSE      FALSE           TRUE
+## 4    ML Engineer  65000          7     FALSE       TRUE          FALSE
+## 5   Data Analyst  62000          2     FALSE      FALSE          FALSE
+## 6   BI Developer  78000          4     FALSE      FALSE          FALSE
+```
+
+]
+
+.panel[.panel-name[Comparison]
+
+
+``` r
+comparison &lt;- tibble::tibble(
+  title = jobs_missing$title,
+  original = jobs_missing$salary,
+  mean_imputed = jobs_mean_imputed$salary,
+  knn_imputed = jobs_knn_imputed$salary
+)
+comparison
+```
+
+```
+## # A tibble: 6 × 4
+##   title          original mean_imputed knn_imputed
+##   &lt;chr&gt;             &lt;dbl&gt;        &lt;dbl&gt;       &lt;dbl&gt;
+## 1 Data Analyst      65000        65000       65000
+## 2 BI Developer         NA        75000       65000
+## 3 Data Scientist    95000        95000       95000
+## 4 ML Engineer          NA        75000       65000
+## 5 Data Analyst      62000        62000       62000
+## 6 BI Developer      78000        78000       78000
+```
+
+.font80[
+Notice how K-NN produces **different imputed values** for different rows based on their other attributes, whereas mean imputation gives the same value to every missing cell.
+]
+
+]
+
+.panel[.panel-name[Before/After Visualization]
+
+
+``` r
+# Visualize which values were imputed
+*VIM::aggr(jobs_missing, col = c("#84d6d3", miamired),
+          numbers = TRUE, sortVars = TRUE)
+```
+
+.font80[
+The `VIM::aggr()` function shows the pattern of missingness with a combination bar chart, helping you understand which variables and combinations are affected.
+]
+
+]
+
+]
+
+
+---
+
+## Choosing an Imputation Method
+
+| Criterion | Mean/Median | K-NN | Model-based (mice) |
+|-----------|------------|------|---------------------|
+| Speed | Fast | Moderate | Slow |
+| Preserves relationships | No | Yes | Yes |
+| Handles mixed types | No (numeric only) | Yes | Yes |
+| Suitable for MCAR | Yes | Yes | Yes |
+| Suitable for MAR | Risky | Yes | Yes |
+| Interpretability | High | Medium | Low |
+
+--
+
+.font80[
+**Recommendation for this course:** Start with visualizing missingness (`visdat`/`naniar`), then apply K-NN imputation (`VIM::kNN()`) as your default. Use mean/median only for quick baselines or when the missingness is clearly MCAR and the column is independent.
+]
+
+
+---
+
+## Activity: Impute Missing Salary Data
+
+<countdown-timer class="countdown" id="timer_d162d42d" minutes="5" seconds="0" update-every="1" tabindex="0" style="top:0;right:0;--countdown-font-size:2em;"></countdown-timer>
+
+.panelset[
+
+.panel[.panel-name[Instructions]
+
+.font80[
+1. Visualize the missingness in the `airquality` dataset using `visdat::vis_miss()`.
+2. Apply mean imputation to the `Ozone` column.
+3. Apply K-NN imputation (k=5) to the entire dataset using `VIM::kNN()`.
+4. Compare the distributions of `Ozone` across original, mean-imputed, and K-NN-imputed versions.
+]
+
+
+``` r
+data(airquality) # built-in R dataset
+
+# Step 1: Visualize
+visdat::vis_miss(airquality)
+
+# Step 2: Mean imputation
+air_mean &lt;- airquality |&gt;
+  dplyr::mutate(Ozone = tidyr::replace_na(Ozone, mean(Ozone, na.rm = TRUE)))
+
+# Step 3: K-NN imputation
+air_knn &lt;- VIM::kNN(airquality, k = 5)
+
+# Step 4: Compare (your code here)
+```
+
+]
+
+.panel[.panel-name[Your Solution]
+
+.can-edit.key-activity08[
+```
+# Write your comparison code here
+```
+]
+
+]
+
+.panel[.panel-name[Reference Solution]
+
+
+``` r
+comparison_df &lt;- tibble::tibble(
+  original = airquality$Ozone,
+  mean_imp = air_mean$Ozone,
+  knn_imp  = air_knn$Ozone
+) |&gt; tidyr::pivot_longer(dplyr::everything(), names_to = "method", values_to = "ozone")
+
+ggplot2::ggplot(comparison_df, ggplot2::aes(x = ozone, fill = method)) +
+  ggplot2::geom_histogram(bins = 25, alpha = 0.5, position = "identity") +
+  ggplot2::theme_minimal()
+```
+
+]
+
+]
+
+
+---
+
+## LO2 Check-In
+
+✅ You can now apply imputation techniques:
+
+- **Mean/median** for quick, simple imputation (MCAR only)
+
+- **K-NN** via `VIM::kNN()` for context-aware imputation (MAR and MCAR)
+
+- **Comparison** of methods by examining distribution changes
+
+
+---
+class: inverse, center, middle
+
+# LO3: Cleaning and Standardizing Text
+
+---
+
+## Why Text Cleaning Matters
+
+- Real-world job data is full of **inconsistent text**:
+
+| Raw Value | Should Be |
+|-----------|-----------|
+| "Sr. Data Analyst" | "Senior Data Analyst" |
+| "Jr Developer" | "Junior Developer" |
+| "data scientist" | "Data Scientist" |
+| "New York,  NY" | "New York, NY" |
+| "Salary: &amp;lt;b&amp;gt;$85,000&amp;lt;/b&amp;gt;" | "$85,000" |
+
+- Without standardization, `group_by()` and `distinct()` treat these as **different values**.
+
+- The `stringr` package (part of `tidyverse`) is our primary tool.
+
+
+---
+
+## Key `stringr` Functions for Text Cleaning
+
+<div id="eayjdrzqox" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+  
+  <table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false" style="-webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'; display: table; border-collapse: collapse; line-height: normal; margin-left: auto; margin-right: auto; color: #333333; font-size: 16px; font-weight: normal; font-style: normal; background-color: #FFFFFF; width: auto; border-top-style: solid; border-top-width: 2px; border-top-color: #A8A8A8; border-right-style: none; border-right-width: 2px; border-right-color: #D3D3D3; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #A8A8A8; border-left-style: none; border-left-width: 2px; border-left-color: #D3D3D3;" bgcolor="#FFFFFF">
+  <thead style="border-style: none;">
+    <tr class="gt_col_headings" style="border-style: none; border-top-style: solid; border-top-width: 2px; border-top-color: #D3D3D3; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3;">
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Function" style="border-style: none; color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: normal; text-transform: inherit; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: bottom; padding-top: 5px; padding-bottom: 6px; padding-left: 5px; padding-right: 5px; overflow-x: hidden; text-align: left;" bgcolor="#FFFFFF" valign="bottom" align="left">Function</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Purpose" style="border-style: none; color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: normal; text-transform: inherit; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: bottom; padding-top: 5px; padding-bottom: 6px; padding-left: 5px; padding-right: 5px; overflow-x: hidden; text-align: left;" bgcolor="#FFFFFF" valign="bottom" align="left">Purpose</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Example" style="border-style: none; color: #333333; background-color: #FFFFFF; font-size: 100%; font-weight: normal; text-transform: inherit; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: bottom; padding-top: 5px; padding-bottom: 6px; padding-left: 5px; padding-right: 5px; overflow-x: hidden; text-align: left;" bgcolor="#FFFFFF" valign="bottom" align="left">Example</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body" style="border-style: none; border-top-style: solid; border-top-width: 2px; border-top-color: #D3D3D3; border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #D3D3D3;">
+    <tr style="border-style: none;"><td headers="Function" class="gt_row gt_left" style="border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden; text-align: left;" valign="middle" align="left"><span class="gt_from_md"><code style="margin-top: 0;">str_to_lower()</code> / <code style="margin-bottom: 0;">str_to_title()</code></span></td>
+<td headers="Purpose" class="gt_row gt_left" style="border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden; text-align: left;" valign="middle" align="left"><span class="gt_from_md">Standardize case</span></td>
+<td headers="Example" class="gt_row gt_left" style="border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden; text-align: left;" valign="middle" align="left"><span class="gt_from_md"><code style="margin-top: 0; margin-bottom: 0;">str_to_title(&quot;data scientist&quot;)</code> -&gt; “Data Scientist”</span></td></tr>
+    <tr style="border-style: none;"><td headers="Function" class="gt_row gt_left" style="border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden; text-align: left;" valign="middle" align="left"><span class="gt_from_md"><code style="margin-top: 0;">str_replace()</code> / <code style="margin-bottom: 0;">str_replace_all()</code></span></td>
+<td headers="Purpose" class="gt_row gt_left" style="border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden; text-align: left;" valign="middle" align="left"><span class="gt_from_md">Find and replace patterns</span></td>
+<td headers="Example" class="gt_row gt_left" style="border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden; text-align: left;" valign="middle" align="left"><span class="gt_from_md"><code style="margin-top: 0; margin-bottom: 0;">str_replace(&quot;Sr.&quot;, &quot;Senior&quot;)</code> -&gt; “Senior”</span></td></tr>
+    <tr style="border-style: none;"><td headers="Function" class="gt_row gt_left" style="border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden; text-align: left;" valign="middle" align="left"><span class="gt_from_md"><code style="margin-top: 0; margin-bottom: 0;">str_squish()</code></span></td>
+<td headers="Purpose" class="gt_row gt_left" style="border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden; text-align: left;" valign="middle" align="left"><span class="gt_from_md">Collapse multiple spaces to one</span></td>
+<td headers="Example" class="gt_row gt_left" style="border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden; text-align: left;" valign="middle" align="left"><span class="gt_from_md"><code style="margin-top: 0; margin-bottom: 0;">str_squish(&quot;New York,  NY&quot;)</code> -&gt; “New York, NY”</span></td></tr>
+    <tr style="border-style: none;"><td headers="Function" class="gt_row gt_left" style="border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden; text-align: left;" valign="middle" align="left"><span class="gt_from_md"><code style="margin-top: 0; margin-bottom: 0;">str_trim()</code></span></td>
+<td headers="Purpose" class="gt_row gt_left" style="border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden; text-align: left;" valign="middle" align="left"><span class="gt_from_md">Remove leading/trailing whitespace</span></td>
+<td headers="Example" class="gt_row gt_left" style="border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden; text-align: left;" valign="middle" align="left"><span class="gt_from_md"><code style="margin-top: 0; margin-bottom: 0;">str_trim(&quot;  Data Analyst  &quot;)</code> -&gt; “Data Analyst”</span></td></tr>
+    <tr style="border-style: none;"><td headers="Function" class="gt_row gt_left" style="border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden; text-align: left;" valign="middle" align="left"><span class="gt_from_md"><code style="margin-top: 0;">str_remove()</code> / <code style="margin-bottom: 0;">str_remove_all()</code></span></td>
+<td headers="Purpose" class="gt_row gt_left" style="border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden; text-align: left;" valign="middle" align="left"><span class="gt_from_md">Remove matching patterns</span></td>
+<td headers="Example" class="gt_row gt_left" style="border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden; text-align: left;" valign="middle" align="left"><span class="gt_from_md"><code style="margin-top: 0; margin-bottom: 0;">str_remove_all(&quot;&lt;b&gt;&quot;, &quot;&lt;.*?&gt;&quot;)</code> -&gt; “”</span></td></tr>
+    <tr style="border-style: none;"><td headers="Function" class="gt_row gt_left" style="border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden; text-align: left;" valign="middle" align="left"><span class="gt_from_md"><code style="margin-top: 0; margin-bottom: 0;">str_detect()</code></span></td>
+<td headers="Purpose" class="gt_row gt_left" style="border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden; text-align: left;" valign="middle" align="left"><span class="gt_from_md">Test if pattern matches</span></td>
+<td headers="Example" class="gt_row gt_left" style="border-style: none; padding-top: 8px; padding-bottom: 8px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden; text-align: left;" valign="middle" align="left"><span class="gt_from_md"><code style="margin-top: 0; margin-bottom: 0;">str_detect(&quot;Senior Analyst&quot;, &quot;Senior&quot;)</code> -&gt; TRUE</span></td></tr>
+  </tbody>
+  
+</table>
+</div>
+
+
+---
+
+## Demo: Standardizing Job Titles
+
+.panelset[
+
+.panel[.panel-name[The Messy Data]
+
+
+``` r
+messy_jobs &lt;- tibble::tribble(
+  ~raw_title,                      ~company,       ~location,
+  "Sr. Data Analyst",              "Acme Corp",    "New York,  NY",
+  "data analyst",                  "acme corp",    "new york, ny",
+  "Jr Developer",                  "Beta Inc.",    "San Francisco, CA",
+  "JUNIOR DEVELOPER",             "BETA INC",     "san francisco,  ca",
+  "Sr Data Scientist",            "Gamma LLC",    "  Chicago, IL  ",
+  "senior data scientist  ",      "Gamma, LLC",   "Chicago,IL"
+)
+messy_jobs
+```
+
+```
+## # A tibble: 6 × 3
+##   raw_title                 company    location            
+##   &lt;chr&gt;                     &lt;chr&gt;      &lt;chr&gt;               
+## 1 "Sr. Data Analyst"        Acme Corp  "New York,  NY"     
+## 2 "data analyst"            acme corp  "new york, ny"      
+## 3 "Jr Developer"            Beta Inc.  "San Francisco, CA" 
+## 4 "JUNIOR DEVELOPER"        BETA INC   "san francisco,  ca"
+## 5 "Sr Data Scientist"       Gamma LLC  "  Chicago, IL  "   
+## 6 "senior data scientist  " Gamma, LLC "Chicago,IL"
+```
+
+]
+
+.panel[.panel-name[Cleaning Code]
+
+
+``` r
+clean_jobs &lt;- messy_jobs |&gt;
+  dplyr::mutate(
+    # Step 1: Standardize abbreviations
+    clean_title = stringr::str_replace_all(raw_title,
+*                   c("Sr\\.?" = "Senior", "Jr\\.?" = "Junior")),
+    # Step 2: Standardize case
+*   clean_title = stringr::str_to_title(clean_title),
+    # Step 3: Remove extra whitespace
+*   clean_title = stringr::str_squish(clean_title),
+    # Step 4: Clean company names
+    clean_company = stringr::str_to_title(stringr::str_squish(company)),
+*   clean_company = stringr::str_remove_all(clean_company, "[.,]"),
+    # Step 5: Standardize locations
+    clean_location = stringr::str_to_title(stringr::str_squish(location)),
+    clean_location = stringr::str_replace(clean_location, ",(\\S)", ", \\1") #&lt;&lt; add space after comma
+  )
+```
+
+]
+
+.panel[.panel-name[Result]
+
+
+``` r
+clean_jobs |&gt; dplyr::select(clean_title, clean_company, clean_location)
+```
+
+```
+## # A tibble: 6 × 3
+##   clean_title           clean_company clean_location   
+##   &lt;chr&gt;                 &lt;chr&gt;         &lt;chr&gt;            
+## 1 Senior Data Analyst   Acme Corp     New York, Ny     
+## 2 Data Analyst          Acme Corp     New York, Ny     
+## 3 Junior Developer      Beta Inc      San Francisco, Ca
+## 4 Junior Developer      Beta Inc      San Francisco, Ca
+## 5 Senior Data Scientist Gamma Llc     Chicago, Il      
+## 6 Senior Data Scientist Gamma Llc     Chicago, Il
+```
+
+.font80[
+After cleaning, "Sr. Data Analyst" and "data analyst" collapse into comparable forms, and locations are consistently formatted.
+]
+
+]
+
+]
+
+
+---
+
+## Removing HTML Tags from Scraped Data
+
+- Job descriptions scraped from websites often contain **HTML artifacts**:
+
+
+``` r
+raw_descriptions &lt;- c(
+  "&lt;p&gt;We are looking for a &lt;b&gt;Data Analyst&lt;/b&gt; with 3+ years experience.&lt;/p&gt;",
+  "&lt;div class='desc'&gt;Must know &lt;em&gt;SQL&lt;/em&gt; and &lt;strong&gt;R&lt;/strong&gt;.&lt;/div&gt;",
+  "No HTML here -- just plain text."
+)
+
+# Remove all HTML tags using a regex pattern
+*clean_descriptions &lt;- stringr::str_remove_all(raw_descriptions, "&lt;[^&gt;]+&gt;")
+clean_descriptions
+```
+
+```
+## [1] "We are looking for a Data Analyst with 3+ years experience."
+## [2] "Must know SQL and R."                                       
+## [3] "No HTML here -- just plain text."
+```
+
+.font80[
+The regex `&lt;[^&gt;]+&gt;` matches any HTML tag (anything between `&lt;` and `&gt;`) and removes it.
+]
+
+
+---
+
+## Demo: A Complete Text Cleaning Pipeline
+
+.panelset[
+
+.panel[.panel-name[Full Pipeline]
+
+
+``` r
+raw_data &lt;- tibble::tribble(
+  ~title,                    ~description,                                         ~salary_text,
+  "sr. data analyst",        "&lt;p&gt;Analyze data using &lt;b&gt;R&lt;/b&gt; and SQL.&lt;/p&gt;",        "$65,000 - $80,000",
+  "JUNIOR BI DEVELOPER",     "&lt;div&gt;Build dashboards in &lt;em&gt;Tableau&lt;/em&gt;.&lt;/div&gt;",   "$55000-$70000",
+  "  Data Scientist  ",      "Use ML models for prediction.  ",                     "85000"
+)
+
+cleaned &lt;- raw_data |&gt;
+  dplyr::mutate(
+    title = title |&gt; stringr::str_replace_all(c("sr\\." = "Senior", "sr " = "Senior ")) |&gt;
+      stringr::str_to_title() |&gt; stringr::str_squish() |&gt; stringr::str_trim(),
+    description = description |&gt; stringr::str_remove_all("&lt;[^&gt;]+&gt;") |&gt; stringr::str_squish(),
+    salary_min = salary_text |&gt; stringr::str_extract("\\d[\\d,]+") |&gt;
+      stringr::str_remove_all(",") |&gt; as.numeric(),
+    salary_max = salary_text |&gt;
+      stringr::str_extract_all("\\d[\\d,]+") |&gt; purrr::map_chr(~ tail(.x, 1)) |&gt;
+      stringr::str_remove_all(",") |&gt; as.numeric()
+  )
+cleaned |&gt; dplyr::select(title, description, salary_min, salary_max)
+```
+
+```
+## # A tibble: 3 × 4
+##   title               description                   salary_min salary_max
+##   &lt;chr&gt;               &lt;chr&gt;                              &lt;dbl&gt;      &lt;dbl&gt;
+## 1 Senior Data Analyst Analyze data using R and SQL.      65000      80000
+## 2 Junior Bi Developer Build dashboards in Tableau.       55000      70000
+## 3 Data Scientist      Use ML models for prediction.      85000      85000
+```
+
+]
+
+.panel[.panel-name[Key Techniques]
+
+.font80[
+1. **`str_replace_all()` with a named vector** -- apply multiple replacements in one call
+2. **`str_to_title()` + `str_squish()`** -- normalize case and whitespace
+3. **`str_remove_all("&lt;[^&gt;]+&gt;")`** -- strip HTML tags
+4. **`str_extract()` with regex** -- pull numeric salary values from free-text fields
+5. **`as.numeric()`** -- convert extracted strings to numbers for analysis
+]
+
+]
+
+]
+
+
+---
+
+## Common Text Cleaning Patterns for Job Data
+
+| Problem | Solution | Code |
+|---------|----------|------|
+| Mixed case | Standardize to title case | `str_to_title(x)` |
+| Extra spaces | Collapse whitespace | `str_squish(x)` |
+| Abbreviations | Replace with full forms | `str_replace_all(x, c("Sr." = "Senior"))` |
+| HTML tags | Strip tags | `str_remove_all(x, "&lt;[^&gt;]+&gt;")` |
+| Leading/trailing spaces | Trim | `str_trim(x)` |
+| Salary as text | Extract numbers | `str_extract(x, "\\d+") |&gt; as.numeric()` |
+| Inconsistent separators | Normalize | `str_replace(x, ",(?=\\S)", ", ")` |
+
+
+---
+
+## Activity: Clean a Messy Job Posting Dataset
+
+<countdown-timer class="countdown" id="timer_635bb876" minutes="7" seconds="0" update-every="1" tabindex="0" style="top:0;right:0;--countdown-font-size:2em;"></countdown-timer>
+
+.panelset[
+
+.panel[.panel-name[Instructions]
+
+.font80[
+Starting from the dataset below, perform the following:
+
+1. **Standardize** job titles (fix abbreviations, case, whitespace)
+2. **Remove HTML** from descriptions
+3. **Extract** numeric salary values from the text
+4. **Impute** missing experience values using K-NN (k=3)
+5. Compute the **number of unique clean job titles**
+]
+
+
+``` r
+messy &lt;- tibble::tribble(
+  ~title,                    ~description,                               ~salary,            ~experience,
+  "sr. analyst",             "&lt;p&gt;Advanced analytics role&lt;/p&gt;",            "$70,000-$90,000",  5,
+  "SR. ANALYST",             "&lt;b&gt;Analytics&lt;/b&gt; and reporting",            "75000 - 95000",    NA,
+  "Jr. developer",           "Build web apps with &lt;em&gt;React&lt;/em&gt;",       "$55,000",          2,
+  "junior developer",        "Frontend development role",                 "58000",            NA,
+  "  Data Scientist  ",      "&lt;div&gt;ML and AI research&lt;/div&gt;",            "$95,000-$120,000", 7
+)
+```
+
+]
+
+.panel[.panel-name[Your Solution]
+
+.can-edit.key-activity09[
+```
+# Write your complete cleaning pipeline here
+```
+]
+
+]
+
+.panel[.panel-name[Reference Solution]
+
+
+``` r
+cleaned &lt;- messy |&gt;
+  dplyr::mutate(
+    clean_title = title |&gt;
+      stringr::str_replace_all(c("sr\\." = "Senior", "Sr\\." = "Senior",
+                        "Jr\\." = "Junior", "jr\\." = "Junior")) |&gt;
+      stringr::str_to_title() |&gt; stringr::str_squish() |&gt; stringr::str_trim(),
+    clean_desc = stringr::str_remove_all(description, "&lt;[^&gt;]+&gt;") |&gt; stringr::str_squish(),
+    salary_min = salary |&gt; stringr::str_extract("\\d[\\d,]+") |&gt;
+      stringr::str_remove_all(",") |&gt; as.numeric()
+  )
+
+# Impute missing experience
+cleaned_imputed &lt;- VIM::kNN(cleaned, variable = "experience", k = 3)
+
+# Count unique titles
+dplyr::n_distinct(cleaned_imputed$clean_title)
+```
+
+]
+
+]
+
+
+---
+
+## LO3 Check-In
+
+✅ You can now clean and standardize text using:
+
+- `str_replace_all()` for abbreviation standardization
+
+- `str_to_title()` and `str_squish()` for case and whitespace normalization
+
+- `str_remove_all("&lt;[^&gt;]+&gt;")` for HTML tag removal
+
+- `str_extract()` for pulling structured values from free text
+
+
+---
+class: inverse, center, middle
+
+# Putting It All Together
+
+---
+
+## The 80% Rule
+
+.pull-left[
+
+&gt; "80% of a data analyst's time is spent cleaning data -- this IS the job."
+
+The techniques from today's lecture form the **core workflow** of every data professional:
+
+1. **Diagnose** -- visualize missingness, identify text inconsistencies
+2. **Classify** -- determine the missingness type (MCAR, MAR, MNAR)
+3. **Impute** -- apply the appropriate method (mean, K-NN, etc.)
+4. **Standardize** -- clean text fields for consistent grouping and analysis
+
+]
+
+.pull-right[
+
+&lt;img src="10_cleaning_and_imputation_files/figure-html/eighty-percent-1.png" alt="" style="display: block; margin: auto;" /&gt;
+
+]
+
+
+---
+class: inverse, center, middle
+
+# Recap
+
+---
+
+## Summary of Main Points
+
+By now, you should be able to do the following:
+
+✅ **LO1:** Identify types of missing data -- MCAR (random), MAR (depends on observed), MNAR (depends on missing)
+
+✅ **LO2:** Apply imputation techniques -- mean/median for simple cases, K-NN (`VIM::kNN()`) for context-aware imputation
+
+✅ **LO3:** Clean and standardize text -- fix abbreviations, normalize case, remove HTML, extract structured values
+
+
+---
+
+## Key Functions Reference
+
+| Function | Package | Purpose |
+|----------|---------|---------|
+| `vis_miss()` | visdat | Visualize missingness |
+| `gg_miss_upset()` | naniar | Show co-occurrence of missing values |
+| `replace_na()` | tidyr | Mean/median imputation |
+| `kNN()` | VIM | K-Nearest Neighbors imputation |
+| `str_replace_all()` | stringr | Pattern replacement |
+| `str_to_title()` / `str_squish()` / `str_trim()` | stringr | Text normalization |
+| `str_remove_all()` | stringr | Remove patterns (e.g., HTML tags) |
+| `str_extract()` | stringr | Extract patterns from text |
+
+
+---
+
+## Readings and Resources
+
+.pull-left[
+.center[[&lt;img src="../../figures/intro_data_cleaning_book.png" height="300px"&gt;](https://cran.r-project.org/doc/contrib/de_Jonge+van_der_Loo-Introduction_to_data_cleaning_with_R.pdf)]
+
+* [From technically correct to consistent data](https://cran.r-project.org/doc/contrib/de_Jonge+van_der_Loo-Introduction_to_data_cleaning_with_R.pdf)
+]
+
+.pull-right[
+* [VIM package vignette](https://cran.r-project.org/web/packages/VIM/vignettes/VIM.html)
+* [naniar documentation](https://naniar.njtierney.com/)
+* [stringr cheatsheet](https://github.com/rstudio/cheatsheets/blob/main/strings.pdf)
+* [Types of Missing Data (AHRQ)](https://www.ncbi.nlm.nih.gov/books/NBK493614/)
+]
+
+
+---
+
+## Things to Do to Prepare for Next Class
+
+- **Read:** [De Jonge and Van Der Loo (2013)](https://cran.r-project.org/doc/contrib/de_Jonge+van_der_Loo-Introduction_to_data_cleaning_with_R.pdf), Sections 4--5 on data correction and imputation.
+
+- **Practice:** Apply the cleaning pipeline to a dataset of your choice -- try `janitor::clean_names()` + `stringr` standardization + `VIM::kNN()` imputation.
+
+- **Next class:** Fundamentals of Data Visualization -- we move from data preparation to telling stories with data.
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+  "highlightStyle": "magula",
+  "highlightLines": true,
+  "highlightLanguage": "r",
+  "countIncrementalSlides": false,
+  "ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

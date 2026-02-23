@@ -1,0 +1,999 @@
+---
+title: "ISA 401: Business Intelligence & Data Visualization"
+subtitle: '09: Tidy Data &amp; Validation in `r icons::icon_style(icons::fontawesome("r-project"), fill = "white")`'
+author: '<br>Fadel M. Megahed, PhD <br><br>Raymond E. Gloss Professor in Business <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("linkedin"), fill = "white")` @Fadel Megahed](https://www.linkedin.com/in/fadel-megahed-289046b4) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
+date: "Spring 2026"
+output:
+  xaringan::moon_reader:
+    self_contained: true
+    css: [default, "../../style_files/fonts.css", "../../style_files/my-theme.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: magula
+      highlightLines: true
+      highlightLanguage: ["r"]
+      countIncrementalSlides: false
+      ratio: "16:9"
+header-includes:
+  - "../../style_files/header.html"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache = FALSE,
+                      echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE,
+                      progress = FALSE,
+                      verbose = FALSE,
+                      dev = 'png',
+                      fig.height = 2.5,
+                      dpi = 300,
+                      fig.align = 'center')
+
+options(htmltools.dir.version = FALSE)
+
+miamired = '#C3142D'
+
+if(require(pacman)==FALSE) install.packages("pacman")
+if(require(devtools)==FALSE) install.packages("devtools")
+
+if(require(countdown)==FALSE) devtools::install_github("gadenbuie/countdown")
+if(require(xaringanExtra)==FALSE) devtools::install_github("gadenbuie/xaringanExtra")
+
+
+pacman::p_load(tidyverse, magrittr, lubridate, janitor, # data analysis pkgs
+               tidyr, pointblank, # for tidy data and validation
+               fontawesome, RefManageR, xaringanExtra, countdown) # for slides
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+if(require(xaringanthemer) == FALSE) install.packages("xaringanthemer")
+library(xaringanthemer)
+
+xaringanthemer::style_mono_accent(base_color = "#84d6d3",
+                  base_font_size = "20px")
+
+xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "tachyons", "panelset", "search", "fit_screen", "editable",
+                                    "clipable"))
+```
+
+
+## Quick Refresher from Last Week
+
+
+`r emo::ji("check")` Extract tabular data from PDFs using `tabulapdf`.
+
+`r emo::ji("check")` Use vision APIs to interpret images and infographics.
+
+`r emo::ji("check")` Extract structured information from documents with LLM-based parsing.
+
+---
+
+## Kahoot/Quiz Review: Images & Documents
+
+.pull-left[
+
+**Q1.** Which R package is commonly used to extract tables from PDF files?
+A. `rvest`
+B. `tabulapdf`
+C. `jsonlite`
+D. `httr2`
+
+**Q2.** What does a "vision API" typically accept as input?
+A. A CSV file
+B. An image file or URL
+C. A SQL query
+D. An HTML page
+
+]
+
+.pull-right[
+
+**Q3.** Why is LLM-based extraction useful for unstructured documents?
+A. It is always faster than regex
+B. It can understand context and infer structure
+C. It requires no API key
+D. It only works on JSON files
+
+**Q4.** When extracting data from an infographic, which approach is most reliable?
+A. Manually copying numbers
+B. Using OCR + LLM to interpret layout and values
+C. Downloading the raw CSV embedded in the image
+D. Using `read_csv()` directly on the image URL
+
+]
+
+`r countdown(minutes = 3, warn_when = 60, color_background = miamired, color_text = "white", font_size = "1.5em", top = 0, right = 0)`
+
+
+---
+
+# Learning Objectives for Today's Class
+
+- **LO1:** Define the principles of tidy data
+
+- **LO2:** Reshape data using `pivot_longer()` and `pivot_wider()`
+
+- **LO3:** Perform rectangling and unnesting operations
+
+- **LO4:** Validate data types and value constraints
+
+- **LO5:** Detect and handle duplicates
+
+
+---
+class: inverse, center, middle
+
+# LO1: The Principles of Tidy Data `r emo::ji('broom')`
+
+---
+
+## What Is Tidy Data?
+
+.pull-left[
+
+Tidy data is a **standard way of organizing tabular data** so that:
+
+1. Each **variable** forms a column.
+2. Each **observation** forms a row.
+3. Each **value** has its own cell.
+
+These three rules make data **consistently structured**, which means the same tools work across different datasets.
+
+> "Tidy datasets are all alike, but every messy dataset is messy in its own way." -- Hadley Wickham
+
+]
+
+.pull-right[
+
+```{r tidy-illustration, echo=FALSE, out.width='100%'}
+knitr::include_graphics('https://github.com/allisonhorst/stats-illustrations/raw/main/rstats-artwork/tidydata_1.jpg')
+```
+
+]
+
+.footnote[
+<html><hr></html>
+**Source:** Illustration from the Openscapes blog, [Tidy Data for reproducibility, efficiency, and collaboration](https://www.openscapes.org/blog/2020/10/12/tidy-data/) by Julia Lowndes and Allison Horst.
+]
+
+---
+
+## The Three Rules Visualized
+
+```{r tidy-rules, echo=FALSE, out.width='90%'}
+knitr::include_graphics('https://github.com/allisonhorst/stats-illustrations/raw/main/rstats-artwork/tidydata_2.jpg')
+```
+
+.footnote[
+<html><hr></html>
+**Source:** Illustration from the Openscapes blog, [Tidy Data for reproducibility, efficiency, and collaboration](https://www.openscapes.org/blog/2020/10/12/tidy-data/) by Julia Lowndes and Allison Horst.
+]
+
+---
+
+## Tidy vs. Messy: A Job Market Example
+
+.pull-left[
+
+**Messy (wide) format:** Salary columns spread across years.
+
+```{r messy-example, echo=FALSE}
+messy_jobs <- tibble::tribble(
+  ~job_title,        ~salary_2023, ~salary_2024, ~salary_2025,
+  "Data Analyst",     65000,        68000,        72000,
+  "Data Scientist",   95000,        100000,       108000,
+  "BI Developer",     78000,        82000,        87000
+)
+knitr::kable(messy_jobs, format = "html")
+```
+
+]
+
+.pull-right[
+
+**Tidy (long) format:** One row per observation.
+
+```{r tidy-example, echo=FALSE}
+tidy_jobs <- messy_jobs |>
+  tidyr::pivot_longer(
+    cols = dplyr::starts_with("salary_"),
+    names_to = "year",
+    names_prefix = "salary_",
+    values_to = "salary"
+  )
+knitr::kable(tidy_jobs, format = "html")
+```
+
+]
+
+--
+
+.font80[
+The tidy format is better because: each variable (job title, year, salary) has its own column, and each row is one observation (a job in a specific year).
+]
+
+
+---
+
+## Activity: Tidy or Not?
+
+`r countdown(minutes = 4, seconds = 0, top = 0, font_size = "2em")`
+
+.panelset[
+
+.panel[.panel-name[Activity]
+
+.small[
+Examine the five `tidyr` built-in tables below (`table1` through `table4b`). Each displays TB cases from Afghanistan, Brazil, and China (1999--2000).
+
+- **Identify which table(s) are tidy.**
+- **For non-tidy tables, state which rule(s) are violated.**
+- Discuss with a neighbor.
+]
+]
+
+.panel[.panel-name[`table1`]
+
+```{r activity-table1, echo=FALSE}
+print(tidyr::table1, width = 80)
+```
+
+.can-edit.key-activity01[
+Tidy or not? ..............................
+Rules broken (if any): ..............................
+]
+
+]
+
+.panel[.panel-name[`table2`]
+
+```{r activity-table2, echo=FALSE}
+print(tidyr::table2, width = 80)
+```
+
+.can-edit.key-activity02[
+Tidy or not? ..............................
+Rules broken (if any): ..............................
+]
+
+]
+
+.panel[.panel-name[`table3`]
+
+```{r activity-table3, echo=FALSE}
+print(tidyr::table3, width = 80)
+```
+
+.can-edit.key-activity03[
+Tidy or not? ..............................
+Rules broken (if any): ..............................
+]
+
+]
+
+.panel[.panel-name[`table4a` & `table4b`]
+
+```{r activity-table4, echo=FALSE}
+cat("table4a (cases):")
+print(tidyr::table4a, width = 80)
+cat("\ntable4b (population):")
+print(tidyr::table4b, width = 80)
+```
+
+.can-edit.key-activity04[
+Tidy or not? ..............................
+Rules broken (if any): ..............................
+]
+
+]
+
+]
+
+
+---
+
+## LO1 Check-In
+
+`r emo::ji("check")` You can now define tidy data by its three rules:
+
+- Each variable forms a column
+
+- Each observation forms a row
+
+- Each value has its own cell
+
+
+---
+class: inverse, center, middle
+
+# LO2: Reshaping Data with `pivot_longer()` and `pivot_wider()`
+
+---
+
+## Wide vs. Long Data
+
+```{r wide-vs-long-graphic, echo=FALSE, out.width='50%'}
+knitr::include_graphics('https://raw.githubusercontent.com/gadenbuie/tidyexplain/main/images/static/png/original-dfs-tidy.png')
+```
+
+.footnote[
+<html><hr></html>
+**Source:** Garrick Aden-Buie's [tidyexplain GitHub Repository](https://github.com/gadenbuie/tidyexplain).
+]
+
+
+---
+
+## The `pivot_longer()` Function
+
+- **Use case:** When column names contain values (e.g., year columns `salary_2023`, `salary_2024`).
+
+- **Three key arguments:**
+  * `cols` -- which columns to pivot
+  * `names_to` -- name for the new "key" column
+  * `values_to` -- name for the new "value" column
+
+```{r pivot-longer-animation, echo=FALSE, out.width='40%'}
+knitr::include_graphics('https://github.com/gadenbuie/tidyexplain/raw/main/images/tidyr-pivoting.gif')
+```
+
+.footnote[
+<html><hr></html>
+**Source:** Garrick Aden-Buie's [tidyexplain GitHub Repository](https://github.com/gadenbuie/tidyexplain).
+]
+
+
+---
+
+## Demo: `pivot_longer()` with Job Market Data
+
+.panelset[
+
+.panel[.panel-name[The Data]
+
+.font80[
+Suppose we scraped BLS wage data where each year is a separate column -- a common format in government data.
+]
+
+```{r pivot-longer-data}
+wages_wide <- tibble::tribble(
+  ~occupation,         ~avg_wage_2022, ~avg_wage_2023, ~avg_wage_2024,
+  "Data Analyst",       62000,          65000,          68000,
+  "Software Developer", 92000,          97000,          102000,
+  "BI Analyst",         70000,          73000,          77000,
+  "Database Admin",     75000,          78000,          82000
+)
+wages_wide
+```
+
+]
+
+.panel[.panel-name[The Code]
+
+```{r pivot-longer-code}
+wages_long <- wages_wide |>
+  tidyr::pivot_longer(
+    cols = dplyr::starts_with("avg_wage_"),   #<< columns to pivot
+    names_to = "year",                 #<< new column for the year
+    names_prefix = "avg_wage_",        #<< strip prefix from names
+    values_to = "avg_wage"             #<< new column for values
+  )
+wages_long
+```
+
+]
+
+.panel[.panel-name[Why It Matters]
+
+.font80[
+- The long format enables easy grouping, filtering, and plotting by year.
+
+- Try this: `ggplot(wages_long, aes(x = year, y = avg_wage, color = occupation)) + geom_line(aes(group = occupation))`
+
+- Government data, BLS reports, and census tables almost always arrive in wide format -- you will need `pivot_longer()` regularly.
+]
+
+]
+
+]
+
+
+---
+
+## The `pivot_wider()` Function
+
+- **Use case:** When an observation is scattered across multiple rows (e.g., `table2` where "cases" and "population" are stacked).
+
+- **Two key arguments:**
+  * `names_from` -- column whose values become new column names
+  * `values_from` -- column whose values fill the new columns
+
+```{r pivot-wider-illustration, echo=FALSE, out.width='25%'}
+knitr::include_graphics('https://github.com/gadenbuie/tidyexplain/raw/main/images/static/png/tidyr-pivot_wider.png')
+```
+
+.footnote[
+<html><hr></html>
+**Source:** Garrick Aden-Buie's [tidyexplain GitHub Repository](https://github.com/gadenbuie/tidyexplain).
+]
+
+
+---
+
+## Demo: `pivot_wider()` with Stacked Metrics
+
+.panelset[
+
+.panel[.panel-name[The Data]
+
+```{r pivot-wider-data}
+job_metrics_long <- tibble::tribble(
+  ~company,    ~metric,         ~value,
+  "Google",    "avg_salary",    155000,
+  "Google",    "num_openings",  1200,
+  "Meta",      "avg_salary",    162000,
+  "Meta",      "num_openings",  850,
+  "Amazon",    "avg_salary",    148000,
+  "Amazon",    "num_openings",  2100
+)
+job_metrics_long
+```
+
+]
+
+.panel[.panel-name[The Code]
+
+```{r pivot-wider-code}
+job_metrics_wide <- job_metrics_long |>
+  tidyr::pivot_wider(
+    names_from = metric,      #<< column values become new column names
+    values_from = value        #<< values fill the new columns
+  )
+job_metrics_wide
+```
+
+]
+
+.panel[.panel-name[When to Use]
+
+.font80[
+- Use `pivot_wider()` when you need to **compare metrics side by side** for each entity.
+
+- Common in dashboards where each row should represent one company/person/product.
+
+- **Rule of thumb:** If the same entity appears in multiple rows with different "type" labels, you likely need `pivot_wider()`.
+]
+
+]
+
+]
+
+
+---
+
+## Activity: Pivot BLS Wage Data
+
+`r countdown(minutes = 5, seconds = 0, top = 0, font_size = "2em")`
+
+.panelset[
+
+.panel[.panel-name[Instructions]
+
+.font80[
+1. The code below creates a wide-format dataset of mean hourly wages by state and occupation.
+2. **Pivot it to long format** so each row is one state-occupation-wage observation.
+3. Then **filter** to only occupations containing "Data" and **arrange** by wage descending.
+]
+
+```{r pivot-activity-starter, eval=FALSE}
+state_wages <- tibble::tribble(
+  ~state,  ~data_analyst, ~data_scientist, ~bi_developer,
+  "OH",     32.50,         48.75,           38.20,
+  "CA",     42.10,         62.30,           49.50,
+  "NY",     40.80,         58.90,           47.10,
+  "TX",     34.20,         50.10,           40.30
+)
+
+# Your code: pivot_longer, then filter & arrange
+```
+
+]
+
+.panel[.panel-name[Your Solution]
+
+.can-edit.key-activity05[
+```
+# Write your solution here
+```
+]
+
+]
+
+.panel[.panel-name[Reference Solution]
+
+```{r pivot-activity-solution, eval=FALSE}
+state_wages |>
+  tidyr::pivot_longer(cols = -state,
+               names_to = "occupation",
+               values_to = "hourly_wage") |>
+  dplyr::filter(stringr::str_detect(occupation, "data")) |>
+  dplyr::arrange(dplyr::desc(hourly_wage))
+```
+
+]
+
+]
+
+
+---
+
+## LO2 Check-In
+
+`r emo::ji("check")` You can now reshape data using:
+
+- `pivot_longer()` to convert wide data to long (column names become values)
+
+- `pivot_wider()` to convert long data to wide (row values become column names)
+
+- `names_prefix` to strip common prefixes during pivoting
+
+
+---
+class: inverse, center, middle
+
+# LO3: Rectangling and Unnesting
+
+---
+
+## What Is Rectangling?
+
+- **Rectangling** is the process of converting **deeply nested data** (e.g., JSON from APIs or LLM outputs) into flat, rectangular data frames.
+
+- The `tidyr` package provides three key functions:
+
+| Function | Purpose |
+|----------|---------|
+| `unnest_wider()` | Turns each element of a list-column into its own column |
+| `unnest_longer()` | Turns each element of a list-column into its own row |
+| `hoist()` | Selectively pulls components from a list-column |
+
+- **Why this matters:** API responses and LLM-extracted data often arrive as nested lists. Rectangling turns them into analysis-ready tables.
+
+
+---
+
+## Demo: Unnesting Nested API Data
+
+.panelset[
+
+.panel[.panel-name[The Nested Data]
+
+.font80[
+Imagine we received this nested JSON response from a jobs API and parsed it with `jsonlite::fromJSON()`:
+]
+
+```{r rectangling-data}
+jobs_nested <- tibble::tibble(
+  company = c("Acme Corp", "Beta Inc"),
+  postings = list(
+    tibble::tibble(title = c("Data Analyst", "BI Developer"),
+           salary_min = c(60000, 70000),
+           salary_max = c(80000, 95000)),
+    tibble::tibble(title = c("Data Scientist"),
+           salary_min = c(95000),
+           salary_max = c(130000))
+  )
+)
+jobs_nested
+```
+
+]
+
+.panel[.panel-name[Unnesting]
+
+```{r rectangling-unnest}
+jobs_flat <- jobs_nested |>
+  tidyr::unnest(postings)  #<< unnest the list-column
+
+jobs_flat
+```
+
+.font80[
+Each posting now gets its own row, with the parent `company` repeated as needed.
+]
+
+]
+
+.panel[.panel-name[`unnest_wider` Example]
+
+```{r unnest-wider-example}
+# When each list element is a named list (like a single record)
+company_info <- tibble::tibble(
+  company = c("Acme Corp", "Beta Inc"),
+  details = list(
+    list(industry = "Tech", founded = 2005, employees = 500),
+    list(industry = "Finance", founded = 2010, employees = 200)
+  )
+)
+
+company_info |> tidyr::unnest_wider(details) #<< each list key becomes a column
+```
+
+]
+
+]
+
+
+---
+
+## Demo: `unnest_longer()` for Repeated Elements
+
+```{r unnest-longer-demo}
+# When each list element contains a vector of values
+skills_data <- tibble::tibble(
+  job_title = c("Data Analyst", "Data Scientist"),
+  required_skills = list(
+    c("SQL", "Excel", "R", "Tableau"),
+    c("Python", "R", "TensorFlow", "SQL", "Docker")
+  )
+)
+
+skills_data |>
+  tidyr::unnest_longer(required_skills) #<< each skill becomes its own row
+```
+
+.font80[
+This is extremely useful for analyzing skill frequencies across job postings -- a common BI task.
+]
+
+
+---
+
+## LO3 Check-In
+
+`r emo::ji("check")` You can now perform rectangling operations using:
+
+- `unnest()` to flatten list-columns of data frames
+
+- `unnest_wider()` to expand named lists into columns
+
+- `unnest_longer()` to expand vectors/lists into rows
+
+
+---
+class: inverse, center, middle
+
+# LO4: Validating Data Types and Value Constraints
+
+---
+
+## Why Validate Data?
+
+- **Tidy data is NOT the same as clean data.** Data can be perfectly tidy (correct structure) but still contain:
+  * Wrong data types (salary stored as character)
+  * Impossible values (negative salaries, salary_min > salary_max)
+  * Missing values in critical fields
+  * Constraint violations (percentages > 100)
+
+- Validation is the process of **checking data against rules** and reporting violations.
+
+- In production BI systems, validation pipelines run **automatically** before data enters dashboards or models.
+
+
+---
+
+## The `pointblank` Package `r fontawesome::fa('box', fill='gold')`
+
+- The [pointblank](https://rstudio.github.io/pointblank/) package provides a **data validation framework** for R.
+
+- Workflow:
+  1. **Create an agent** -- attach it to your data
+  2. **Define validation steps** -- specify rules for columns
+  3. **Interrogate** -- run all checks and get a report
+
+```{r pointblank-workflow, eval=FALSE}
+agent <- pointblank::create_agent(my_data) |>          # Step 1
+  pointblank::col_is_numeric(columns = vars(salary)) |> # Step 2
+  pointblank::col_vals_gt(columns = vars(salary), 0) |>
+  pointblank::col_vals_lte(columns = vars(pct), 100) |>
+  pointblank::interrogate()                             # Step 3
+```
+
+.footnote[
+<html><hr></html>
+**Source:** [pointblank documentation](https://rstudio.github.io/pointblank/).
+]
+
+
+---
+
+## Demo: Validating Job Market Data
+
+.panelset[
+
+.panel[.panel-name[The Data]
+
+```{r validation-data}
+job_data <- tibble::tribble(
+  ~job_id, ~title,            ~salary_min, ~salary_max, ~experience_yrs, ~remote_pct,
+  1,       "Data Analyst",     55000,       75000,       2,               80,
+  2,       "BI Developer",     70000,       65000,       3,               50,
+  3,       "Data Scientist",   -5000,       120000,      5,               110,
+  4,       "ML Engineer",      95000,       140000,      NA,              100,
+  5,       "Data Analyst",     55000,       75000,       2,               80,
+  6,       "Analytics Mgr",    85000,       115000,      7,               40
+)
+job_data
+```
+
+.font80[
+Can you spot the issues? Row 2 has min > max, row 3 has negative salary and remote_pct > 100, row 4 has missing experience, and rows 1 & 5 are duplicates.
+]
+
+]
+
+.panel[.panel-name[Validation Code]
+
+```{r validation-code, eval=FALSE}
+act <- pointblank::action_levels(warn_at = 0.01, stop_at = NULL)
+
+agent <- pointblank::create_agent(job_data, actions = act) |>
+  pointblank::col_is_numeric(columns = vars(salary_min, salary_max)) |>         #<< type check
+  pointblank::col_vals_gt(columns = vars(salary_min, salary_max), value = 0) |> #<< positive salaries
+  pointblank::col_vals_lte(columns = vars(salary_min),                          #<< min <= max
+               columns(salary_max)) |>
+  pointblank::col_vals_between(columns = vars(remote_pct), 0, 100) |>           #<< pct in range
+  pointblank::col_vals_not_null(columns = vars(experience_yrs)) |>              #<< no NAs
+  pointblank::interrogate()
+
+agent
+```
+
+]
+
+.panel[.panel-name[Using Expressions]
+
+```{r validation-expr, eval=FALSE}
+# For cross-column checks, use col_vals_expr()
+agent2 <- pointblank::create_agent(job_data, actions = act) |>
+  pointblank::col_vals_expr(expr = expr(salary_min <= salary_max)) |>  #<< cross-column
+  pointblank::col_vals_expr(expr = expr(salary_min > 0)) |>
+  pointblank::col_vals_expr(expr = expr(remote_pct >= 0 & remote_pct <= 100)) |>
+  pointblank::interrogate()
+
+agent2
+```
+
+.font80[
+`col_vals_expr()` is the most flexible validator -- it accepts any logical expression involving one or more columns.
+]
+
+]
+
+]
+
+
+---
+
+## LO4 Check-In
+
+`r emo::ji("check")` You can now validate data using `pointblank` by:
+
+- Checking column types with `col_is_numeric()`, `col_is_character()`, etc.
+
+- Checking value constraints with `col_vals_gt()`, `col_vals_between()`, etc.
+
+- Checking cross-column rules with `col_vals_expr()`
+
+
+---
+class: inverse, center, middle
+
+# LO5: Detecting and Handling Duplicates
+
+---
+
+## Why Duplicates Matter
+
+- Duplicate rows can **inflate counts**, **bias averages**, and **corrupt joins**.
+
+- Common sources of duplicates in job market data:
+  * The same posting scraped from multiple pages
+  * API pagination returning overlapping results
+  * Data entry errors
+
+- R provides several tools for detection and removal.
+
+
+---
+
+## Detecting Duplicates with `dplyr`
+
+```{r duplicates-demo}
+# Our job_data from earlier -- rows 1 and 5 are identical
+job_data |>
+  dplyr::group_by(title, salary_min, salary_max, experience_yrs, remote_pct) |>
+  dplyr::filter(dplyr::n() > 1) |>     #<< keep only groups with more than 1 row
+  dplyr::ungroup()
+```
+
+--
+
+**Removing duplicates:**
+
+```{r duplicates-remove}
+job_data_deduped <- job_data |>
+  dplyr::distinct(title, salary_min, salary_max, experience_yrs, remote_pct,
+                  .keep_all = TRUE) #<< keep all columns, remove dup rows
+
+nrow(job_data)
+nrow(job_data_deduped)
+```
+
+
+---
+
+## LO5 Check-In
+
+`r emo::ji("check")` You can now detect and handle duplicates using:
+
+- `dplyr::distinct()` to remove exact duplicates
+
+- `dplyr::group_by() |> filter(n() > 1)` to inspect duplicates before removal
+
+- `janitor::get_dupes()` for quick duplicate detection
+
+
+---
+class: inverse, center, middle
+
+# Comprehensive Activity: Tidy, Validate, Deduplicate
+
+---
+
+## Activity: End-to-End Data Quality Pipeline
+
+`r countdown(minutes = 8, seconds = 0, top = 0, font_size = "2em")`
+
+.panelset[
+
+.panel[.panel-name[Instructions]
+
+.font80[
+You will take messy job posting data and apply the full pipeline:
+
+1. **Pivot** the data from wide to long format
+2. **Validate** that salaries are positive and min <= max
+3. **Remove duplicates**
+4. **Report** a data quality score (% of rows passing all checks)
+]
+
+```{r activity-end-to-end-data, eval=FALSE}
+messy_postings <- tibble::tribble(
+  ~company,     ~role,              ~salary_q1, ~salary_q2, ~salary_q3, ~salary_q4,
+  "Acme",       "Data Analyst",      62000,      63000,      65000,      68000,
+  "Acme",       "Data Analyst",      62000,      63000,      65000,      68000,
+  "Beta",       "BI Developer",      75000,      -1000,      78000,      80000,
+  "Gamma",      "Data Scientist",    95000,      98000,      102000,     105000
+)
+```
+
+]
+
+.panel[.panel-name[Your Solution]
+
+.can-edit.key-activity06[
+```
+# Step 1: Pivot to long
+
+# Step 2: Remove duplicates
+
+# Step 3: Validate
+
+# Step 4: Compute quality score
+```
+]
+
+]
+
+.panel[.panel-name[Reference Solution]
+
+```{r activity-end-to-end-solution, eval=FALSE}
+clean_postings <- messy_postings |>
+  # Step 1: Pivot
+  tidyr::pivot_longer(cols = dplyr::starts_with("salary_"),
+               names_to = "quarter", values_to = "salary") |>
+  # Step 2: Deduplicate
+  dplyr::distinct() |>
+  # Step 3: Validate
+  dplyr::mutate(is_valid = salary > 0)
+
+# Step 4: Quality score
+quality_score <- mean(clean_postings$is_valid) * 100
+cat("Data quality score:", quality_score, "%")
+```
+
+]
+
+]
+
+
+---
+class: inverse, center, middle
+
+# Recap
+
+---
+
+## Summary of Main Points
+
+By now, you should be able to do the following:
+
+`r emo::ji("check")` **LO1:** Define the three principles of tidy data (variables in columns, observations in rows, values in cells)
+
+`r emo::ji("check")` **LO2:** Reshape data using `pivot_longer()` and `pivot_wider()`
+
+`r emo::ji("check")` **LO3:** Perform rectangling with `unnest()`, `unnest_wider()`, and `unnest_longer()`
+
+`r emo::ji("check")` **LO4:** Validate data types and value constraints using `pointblank`
+
+`r emo::ji("check")` **LO5:** Detect and handle duplicates with `distinct()` and `get_dupes()`
+
+---
+
+## Job Market Connection
+
+.pull-left[
+
+> "Clean, validated data is what separates analysts from data entry."
+
+- **80% of data work** is getting data into the right shape.
+
+- Employers expect you to deliver **trustworthy data** -- that means tidy structure, validated values, and no surprise duplicates.
+
+- The pipeline you learned today (tidy, validate, deduplicate) is the foundation of every **production BI system**.
+
+]
+
+.pull-right[
+
+```{r advantages-tidy, echo=FALSE, out.width='100%'}
+knitr::include_graphics('https://github.com/allisonhorst/stats-illustrations/raw/main/rstats-artwork/tidydata_5.jpg')
+```
+
+.footnote[
+**Source:** Illustration by Julia Lowndes and Allison Horst.
+]
+
+]
+
+
+---
+
+## Readings and Resources
+
+.pull-left[
+.center[[<img src="https://d33wubrfki0l68.cloudfront.net/b88ef926a004b0fce72b2526b0b5c4413666a4cb/24a30/cover.png" height="300px">](https://r4ds.had.co.nz)]
+
+* [Tidy Data](https://r4ds.had.co.nz/tidy-data.html) -- R for Data Science
+* [Pivoting vignette](https://tidyr.tidyverse.org/articles/pivot.html)
+]
+
+.pull-right[
+* [Rectangling vignette](https://tidyr.tidyverse.org/articles/rectangle.html)
+* [{tidyr} cheatsheet](https://github.com/rstudio/cheatsheets/blob/main/tidyr.pdf)
+* [pointblank documentation](https://rstudio.github.io/pointblank/)
+]
+
+
+---
+
+## Things to Do to Prepare for Next Class
+
+- **Read:** [Introduction to Data Cleaning with R](https://cran.r-project.org/doc/contrib/de_Jonge+van_der_Loo-Introduction_to_data_cleaning_with_R.pdf), Sections 3--4
+
+- **Try:** The [Pivot Playground Shiny App](../apps/pivot_playground/) to practice `pivot_longer()` and `pivot_wider()` interactively.
+
+- **Next class:** Cleaning & Imputation -- handling missing data, imputation techniques, and text standardization.

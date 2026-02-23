@@ -1,0 +1,618 @@
+---
+title: "ISA 401: Business Intelligence & Data Visualization"
+subtitle: '12: Lab — Tableau'
+author: '<br>Fadel M. Megahed, PhD <br><br>Raymond E. Gloss Professor in Business <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("linkedin"), fill = "white")` @Fadel Megahed](https://www.linkedin.com/in/fadel-megahed-289046b4) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
+date: "Spring 2026"
+output:
+  xaringan::moon_reader:
+    self_contained: true
+    css: [default, "../../style_files/fonts.css", "../../style_files/my-theme.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: magula
+      highlightLines: true
+      highlightLanguage: ["r"]
+      countIncrementalSlides: false
+      ratio: "16:9"
+header-includes:
+  - "../../style_files/header.html"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache = FALSE,
+                      echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE,
+                      progress = FALSE,
+                      verbose = FALSE,
+                      dev = 'png',
+                      fig.height = 2.5,
+                      dpi = 300,
+                      fig.align = 'center')
+
+options(htmltools.dir.version = FALSE)
+
+miamired = '#C3142D'
+
+if(require(pacman)==FALSE) install.packages("pacman")
+if(require(devtools)==FALSE) install.packages("devtools")
+
+if(require(countdown)==FALSE) devtools::install_github("gadenbuie/countdown")
+if(require(xaringanExtra)==FALSE) devtools::install_github("gadenbuie/xaringanExtra")
+
+
+pacman::p_load(tidyverse, magrittr, # data analysis pkgs
+               fontawesome, RefManageR, xaringanExtra, countdown) # for slides
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+if(require(xaringanthemer) == FALSE) install.packages("xaringanthemer")
+library(xaringanthemer)
+
+xaringanthemer::style_mono_accent(base_color = "#84d6d3",
+                  base_font_size = "20px")
+
+xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "tachyons", "panelset", "search", "fit_screen", "editable",
+                                    "clipable"))
+```
+
+
+## Quick Refresher from Last Week
+
+`r emo::ji("check")` Explain Tufte's principles of graphical excellence and the data-ink ratio.
+
+`r emo::ji("check")` Select appropriate visual encodings based on data types.
+
+`r emo::ji("check")` Apply color theory and accessibility guidelines.
+
+`r emo::ji("check")` Identify and critique misleading visualizations.
+
+**Today:** We put these principles into practice using **Tableau Desktop**.
+
+
+---
+
+# Learning Objectives for Today's Lab
+
+- **LO1:** Import and prepare data in Tableau
+
+- **LO2:** Create common chart types (bar, line, scatter, box plots)
+
+- **LO3:** Build interactive filters and parameters
+
+- **LO4:** Construct a multi-view dashboard
+
+.font130[**Job Market Connection:** Tableau appears in **60%+ of BI job postings**. Hands-on experience is essential.]
+
+
+---
+
+# Tableau Interface Overview
+
+When you open Tableau Desktop, you will encounter these key areas:
+
+.font80[
+| Area | Purpose |
+|------|---------|
+| **Data Source pane** | Connect to files, databases; preview and join data |
+| **Worksheet** | Build individual charts by dragging fields to shelves |
+| **Marks card** | Control color, size, labels, tooltips, and shape |
+| **Rows / Columns shelves** | Define what goes on each axis |
+| **Filters shelf** | Restrict which data points appear |
+| **Show Me panel** | Tableau suggests chart types based on your field selections |
+| **Dashboard** | Combine multiple worksheets into a single interactive view |
+]
+
+`[Screenshot: Annotated Tableau Desktop interface showing Data pane, Shelves, Marks card, and Show Me panel]`
+
+
+---
+
+# Key Tableau Terminology
+
+Before we begin, familiarize yourself with these terms:
+
+- **Dimension** (blue pill): Categorical fields (e.g., state, job_title). Used to **group** data.
+
+- **Measure** (green pill): Numeric fields (e.g., salary, skills_count). Used for **aggregation** (SUM, AVG, COUNT).
+
+- **Discrete** (blue): Creates **distinct** headers or labels.
+
+- **Continuous** (green): Creates an **axis** with a range.
+
+- **Marks card**: Controls visual properties -- Color, Size, Label, Detail, Tooltip, Shape.
+
+- **Pill**: A field dragged onto a shelf -- its color and shape indicate type.
+
+.font130[**Tip:** Right-click any pill to change between Dimension/Measure or Discrete/Continuous.]
+
+
+---
+class: inverse, center, middle
+
+# Step 1: Connect to Data
+
+
+---
+
+# Step 1a: Launch Tableau and Connect
+
+Follow these steps to connect your data:
+
+1. Open **Tableau Desktop** (ensure you have activated your student license).
+
+2. On the Start page, under **Connect**, click **Text file**.
+
+3. Navigate to the **job_market.csv** file you downloaded from Canvas.
+
+4. Click **Open** -- Tableau will display the Data Source pane.
+
+`[Screenshot: Tableau Start page with "Text file" highlighted under Connect]`
+
+
+---
+
+# Step 1b: Inspect and Verify Data Types
+
+.font80[
+Once the data loads in the **Data Source** pane:
+
+1. Review the **column headers** -- Tableau auto-detects data types with icons:
+   - **Abc** = String (text)
+   - **#** = Number (continuous)
+   - **Calendar** = Date
+
+2. **Verify** the following columns are typed correctly:
+
+| Column | Expected Type | Tableau Icon |
+|--------|--------------|--------------|
+| `job_title` | String | Abc |
+| `company` | String | Abc |
+| `salary_min` / `salary_max` | Number (decimal) | # |
+| `state` | String (Geographic role: State) | Abc / Globe |
+| `date_posted` | Date | Calendar |
+| `skills_count` | Number (whole) | # |
+
+3. To change a type: **click the icon** above the column name and select the correct type.
+]
+
+`[Screenshot: Tableau Data Source pane showing column headers with type icons]`
+
+
+---
+class: inverse, center, middle
+
+# Step 2: Bar Chart — Jobs by State
+
+
+---
+
+# Step 2a: Create a Bar Chart
+
+1. Click **Sheet 1** at the bottom to open a new worksheet.
+
+2. From the **Data** pane on the left:
+   - Drag **`state`** to the **Rows** shelf.
+   - Drag **`job_title`** (or `Number of Records`) to the **Columns** shelf.
+
+3. Tableau automatically creates a horizontal bar chart showing the count of jobs per state.
+
+4. **Sort descending:** Click the sort icon on the toolbar (or right-click the axis > **Sort** > **Descending**).
+
+`[Screenshot: Tableau worksheet with state on Rows, count on Columns, sorted descending]`
+
+
+---
+
+# Step 2b: Format the Bar Chart
+
+Apply Tufte's principles to clean up the chart:
+
+1. **Remove gridlines:** Right-click the chart background > **Format** > **Lines** tab > set Grid Lines to **None**.
+
+2. **Add data labels:** Drag `CNT(job_title)` to the **Label** mark on the Marks card.
+
+3. **Color:** Click the **Color** mark > choose a single color (e.g., `#C3142D` Miami Red).
+
+4. **Title:** Double-click the sheet title > rename to **"Job Postings by State"**.
+
+5. **Rename the sheet tab:** Right-click **Sheet 1** at the bottom > **Rename** > type **"Bar - Jobs by State"**.
+
+
+---
+
+# Step 2c: Add a Top-N Filter
+
+To focus on the most relevant states:
+
+1. Drag **`state`** to the **Filters** shelf.
+
+2. In the Filter dialog, go to the **Top** tab.
+
+3. Select **By field** > **Top 15** by **`job_title`** > **Count**.
+
+4. Click **OK**.
+
+5. Your bar chart now shows only the **top 15 states** by job count.
+
+`[Screenshot: Tableau Filter dialog showing Top 15 configuration]`
+
+
+---
+class: inverse, center, middle
+
+# Step 3: Scatter Plot — Salary vs. Skills
+
+
+---
+
+# Step 3a: Build the Scatter Plot
+
+1. Open a **new worksheet** (click the new-sheet icon at the bottom).
+
+2. Drag **`skills_count`** to **Columns**.
+
+3. Drag **`salary_max`** (or an average salary measure) to **Rows**.
+
+4. Tableau will create a scatter plot.
+
+5. Drag **`job_category`** to the **Color** mark to color-code by job category.
+
+6. **Rename** the sheet to **"Scatter - Salary vs Skills"**.
+
+`[Screenshot: Scatter plot with skills_count on x-axis, salary on y-axis, colored by job_category]`
+
+
+---
+
+# Step 3b: Add a Trend Line
+
+1. Go to the **Analytics** pane (next to the Data pane).
+
+2. Drag **Trend Line** onto the chart.
+
+3. Choose **Linear** for a simple regression line.
+
+4. Hover over the trend line to see the R-squared value and equation.
+
+5. **Formatting:** Right-click the trend line > **Format** > adjust color and thickness.
+
+6. **Discussion:** What does the relationship between skills count and salary tell you about the job market?
+
+
+---
+class: inverse, center, middle
+
+# Step 4: Box Plot — Salary by Category
+
+
+---
+
+# Step 4a: Create the Box Plot
+
+1. Open a **new worksheet**.
+
+2. Drag **`job_category`** to **Columns**.
+
+3. Drag **`salary_max`** to **Rows**.
+
+4. On the **Marks** card, change the mark type from **Automatic** to **Box-and-Whisker** (click the dropdown).
+   - Alternatively: go to **Analysis** menu > check **Box Plot**.
+
+5. Each box shows the **median, IQR, and outliers** for salary within each category.
+
+`[Screenshot: Box plot with job categories on x-axis, salary distributions shown as boxes]`
+
+
+---
+
+# Step 4b: Format the Box Plot
+
+1. **Sort** categories by median salary: right-click the x-axis > **Sort** > **Field: salary_max** > **Aggregation: Median** > **Descending**.
+
+2. **Color the boxes:** Drag **`job_category`** to the **Color** mark.
+
+3. **Rotate labels** if they overlap: right-click the x-axis > **Format** > **Alignment** > angle the text.
+
+4. **Rename** the sheet to **"Box - Salary by Category"**.
+
+
+---
+class: inverse, center, middle
+
+# Step 5: Map — Job Locations
+
+
+---
+
+# Step 5a: Build the Map
+
+1. Open a **new worksheet**.
+
+2. Double-click **`state`** in the Data pane -- Tableau auto-generates a map if the geographic role is assigned.
+
+3. If the map does not appear:
+   - Right-click **`state`** > **Geographic Role** > **State/Province**.
+   - Then double-click it again.
+
+4. Drag **`job_title`** (count) to the **Color** mark to create a **choropleth map** showing job density.
+
+5. Drag **`job_title`** (count) to the **Label** mark to show values on the map.
+
+`[Screenshot: Choropleth map of the U.S. with states colored by job posting count]`
+
+
+---
+
+# Step 5b: Format the Map
+
+1. **Color palette:** Click the **Color** mark > **Edit Colors** > choose a **sequential** palette (e.g., Blue or Orange).
+
+2. **Borders:** Right-click the map > **Format** > **Borders** > set state borders to a thin gray line.
+
+3. **Tooltip:** Hover over a state to see the default tooltip. Click the **Tooltip** mark to customize:
+   ```
+   State: <state>
+   Job Count: <CNT(job_title)>
+   ```
+
+4. **Rename** the sheet to **"Map - Job Locations"**.
+
+
+---
+class: inverse, center, middle
+
+# Step 6: Filters and Parameters
+
+
+---
+
+# Step 6a: Add Interactive Filters
+
+Filters allow dashboard users to drill down into the data:
+
+1. Go to **any worksheet** (e.g., the bar chart).
+
+2. Drag **`job_category`** to the **Filters** shelf.
+
+3. Check **all categories** > click **OK**.
+
+4. Right-click the filter on the Filters shelf > **Show Filter** -- a filter control appears on the right side of the worksheet.
+
+5. **Filter type:** Right-click the filter card > choose **Multiple Values (Dropdown)** for a compact selector.
+
+`[Screenshot: Worksheet with a job_category dropdown filter visible on the right]`
+
+
+---
+
+# Step 6b: Create a Salary Range Parameter
+
+Parameters let users set custom thresholds:
+
+1. In the Data pane, click the **dropdown arrow** > **Create Parameter**.
+
+2. Configure:
+   - **Name:** `Min Salary Threshold`
+   - **Data type:** Float
+   - **Current value:** 50000
+   - **Range:** Minimum = 0, Maximum = 250000, Step size = 5000
+
+3. Click **OK**.
+
+4. Right-click the parameter > **Show Parameter** -- a slider appears.
+
+`[Screenshot: Create Parameter dialog with Min Salary Threshold configured]`
+
+
+---
+
+# Step 6c: Apply the Parameter as a Filter
+
+1. Create a **calculated field**: right-click in the Data pane > **Create Calculated Field**.
+
+2. Name it `Salary Above Threshold` and enter:
+   ```
+   [salary_max] >= [Min Salary Threshold]
+   ```
+
+3. Drag `Salary Above Threshold` to the **Filters** shelf > select **True**.
+
+4. Now, when users adjust the slider, the charts update to show only jobs above that salary threshold.
+
+5. **Test it:** Move the slider and confirm that the charts respond.
+
+
+---
+class: inverse, center, middle
+
+# Step 7: Build the Dashboard
+
+
+---
+
+# Step 7a: Create a New Dashboard
+
+1. Click the **New Dashboard** icon at the bottom of the workbook (looks like a grid with a plus sign).
+
+2. Set the **dashboard size**: under **Size** in the left pane, choose **Automatic** or **Fixed: 1200 x 800**.
+
+3. From the **Sheets** section on the left, **drag each worksheet** onto the dashboard canvas:
+   - Place the **bar chart** in the top-left.
+   - Place the **scatter plot** in the top-right.
+   - Place the **box plot** in the bottom-left.
+   - Place the **map** in the bottom-right.
+
+`[Screenshot: Dashboard layout with four charts arranged in a 2x2 grid]`
+
+
+---
+
+# Step 7b: Add Dashboard Title and Filters
+
+1. **Title:** From the left pane, drag a **Text** object to the top. Type: **"Job Market Explorer Dashboard"** with a large font size.
+
+2. **Global filter:** Click the dropdown arrow on any chart in the dashboard > **Filters** > select **`job_category`**. Then click the filter's dropdown > **Apply to Worksheets** > **All Using This Data Source**.
+
+3. Now, one filter controls all four charts simultaneously.
+
+4. **Repeat** for the **`Min Salary Threshold`** parameter: right-click any blank area > **Parameters** > select it.
+
+
+---
+
+# Step 7c: Enable Cross-Filtering (Actions)
+
+1. Go to **Dashboard** menu > **Actions**.
+
+2. Click **Add Action** > **Filter**.
+
+3. Configure:
+   - **Source:** All sheets in the dashboard.
+   - **Target:** All sheets in the dashboard.
+   - **Run action on:** Select.
+   - **Clearing the selection will:** Show all values.
+
+4. Click **OK** twice.
+
+5. **Test:** Click a state on the map -- the bar chart, scatter plot, and box plot will filter to show only that state's data.
+
+`[Screenshot: Dashboard Actions dialog with cross-filter configured]`
+
+
+---
+class: inverse, center, middle
+
+# Step 8: Polish and Export
+
+
+---
+
+# Step 8a: Visual Polish
+
+Apply the design principles from Lecture 11:
+
+1. **Consistent colors:** Use the same color palette across all charts. Go to each sheet > **Color** mark > choose the same palette.
+
+2. **Remove clutter:** Hide unnecessary headers, gridlines, and borders.
+
+3. **Alignment:** Use **Layout** options in the dashboard to ensure charts are evenly spaced.
+
+4. **Tooltips:** Customize tooltips on each sheet to show relevant information only.
+
+5. **Font consistency:** Use the same font family and size hierarchy across all chart titles.
+
+
+---
+
+# Step 8b: Export Your Work
+
+You have several options for sharing:
+
+| Export Method | Use Case |
+|---------------|----------|
+| **Tableau Public** | Free hosting; publicly accessible link |
+| **PDF / Image** | Static snapshot for reports |
+| **Packaged Workbook (.twbx)** | Share the entire workbook with data |
+| **Tableau Server / Cloud** | Enterprise hosting for organizations |
+
+**For this class:**
+
+1. Go to **File** > **Save As** > save as a `.twbx` (packaged workbook).
+
+2. **Optional:** Publish to Tableau Public for portfolio use.
+
+
+---
+
+# Activity: Recreate the Job Market Explorer
+
+`r countdown(minutes = 20, seconds = 0, top = 0, font_size = "2em")`
+
+.panelset[
+
+.panel[.panel-name[Instructions]
+
+> Using the steps covered today, build a **Job Market Explorer** dashboard in Tableau that includes:
+
+1. A **bar chart** showing top 15 states by job count
+2. A **scatter plot** of salary vs. skills count
+3. A **box plot** of salary distribution by job category
+4. A **map** showing geographic distribution
+5. A **global filter** for job category
+6. **Cross-filtering** so clicking one chart filters the others
+
+**Save** your workbook as `job_market_dashboard.twbx`.
+
+]
+
+.panel[.panel-name[Checklist]
+
+.can-edit.key-activity03[
+
+- [ ] Connected to job_market.csv
+- [ ] Bar chart created and formatted
+- [ ] Scatter plot with trend line
+- [ ] Box plot sorted by median salary
+- [ ] Map with choropleth coloring
+- [ ] Global job_category filter
+- [ ] Cross-filtering enabled
+- [ ] Dashboard title added
+- [ ] Consistent color palette
+- [ ] Saved as .twbx
+
+]
+
+]
+
+.panel[.panel-name[Troubleshooting]
+
+**Common issues:**
+
+- **Map not showing:** Check that `state` has the Geographic Role set to State/Province.
+- **Box plot not appearing:** Change mark type manually on the Marks card.
+- **Filter not applying globally:** Ensure you selected "All Using This Data Source" in the filter options.
+- **Parameter not updating charts:** Verify the calculated field is on the Filters shelf with "True" selected.
+- **Dashboard too crowded:** Try a **Horizontal** or **Vertical** container layout instead of free-form.
+
+]
+
+]
+
+
+---
+class: inverse, center, middle
+
+# Wrap-Up
+
+
+---
+
+# Summary of What We Built
+
+Today you built a **four-chart interactive dashboard** in Tableau:
+
+`r emo::ji("check")` **LO1:** Imported a CSV and verified data types in the Data Source pane.
+
+`r emo::ji("check")` **LO2:** Created bar, scatter, box, and map charts.
+
+`r emo::ji("check")` **LO3:** Added interactive filters, parameters, and cross-filtering actions.
+
+`r emo::ji("check")` **LO4:** Combined all views into a single dashboard with a unified design.
+
+
+---
+
+# Next Steps
+
+**For next class (Power BI Lab):**
+
+1. **Install Power BI Desktop** (free, Windows only). Download from [powerbi.microsoft.com](https://powerbi.microsoft.com/en-us/desktop/).
+   - Mac users: Use a Windows VM or the computer lab.
+
+2. **Bring** the same `job_market.csv` file -- we will recreate this dashboard in Power BI.
+
+3. **Reflect:** As you work, note what felt **easy** and **hard** in Tableau. We will compare experiences in the Power BI lab.
+
+**Assignment:** Submit your `job_market_dashboard.twbx` file on Canvas by the due date listed in the Modules page.

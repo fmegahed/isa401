@@ -49,3 +49,34 @@ You need to get the path for the raw file since that strips away any HTML.
 super_bowl = readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/2e9bd5a67e09b14d01f616b00f7f7e0931515d24/data/2021/2021-03-02/youtube.csv")
 ```
 
+
+# Reading JSON Files
+
+To read JSON files, we will use the **jsonlite** package. 
+
+```{r json_demo}
+cincy_jobs = jsonlite::fromJSON(
+  txt = "https://www.themuse.com/api/public/jobs?page=1&location=Cincinnati%2C%20OH",
+  flatten = T
+)
+
+# the viewing of the link on Chrome
+cincy_jobs_res = cincy_jobs[['results']] # $results or [[7]]
+
+# overwritting my results (optional depending on your data analysis strategy)
+cincy_jobs_res = cincy_jobs_res |> 
+  tidyr::unnest(
+    # specifying the list columns (hoping to make them contain single values)
+    # these were identified by running dplyr::glimpse(cincy_jobs_res) in console
+    cols = c('locations'),
+    names_repair = "universal"
+  ) 
+
+# if you want to combine the different rows for that same job that got put in 4 rows, you can group by the job id (unique) and then summarise to combine the
+# locations field using commas [good use of AI] with the constraint of keeping all cols
+
+names(cincy_jobs)
+
+```
+
+Note that the choice of converting from list columns to seperate cols/rows will depend on your data analysis strategy

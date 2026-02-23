@@ -1,0 +1,845 @@
+---
+title: "ISA 401: Business Intelligence & Data Visualization"
+subtitle: '11: Fundamentals of Data Visualization'
+author: '<br>Fadel M. Megahed, PhD <br><br>Raymond E. Gloss Professor in Business <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("linkedin"), fill = "white")` @Fadel Megahed](https://www.linkedin.com/in/fadel-megahed-289046b4) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
+date: "Spring 2026"
+output:
+  xaringan::moon_reader:
+    self_contained: true
+    css: [default, "../../style_files/fonts.css", "../../style_files/my-theme.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: magula
+      highlightLines: true
+      highlightLanguage: ["r"]
+      countIncrementalSlides: false
+      ratio: "16:9"
+header-includes:
+  - "../../style_files/header.html"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache = FALSE,
+                      echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE,
+                      progress = FALSE,
+                      verbose = FALSE,
+                      dev = 'png',
+                      fig.height = 2.5,
+                      dpi = 300,
+                      fig.align = 'center')
+
+options(htmltools.dir.version = FALSE)
+
+miamired = '#C3142D'
+
+if(require(pacman)==FALSE) install.packages("pacman")
+if(require(devtools)==FALSE) install.packages("devtools")
+
+if(require(countdown)==FALSE) devtools::install_github("gadenbuie/countdown")
+if(require(xaringanExtra)==FALSE) devtools::install_github("gadenbuie/xaringanExtra")
+
+
+pacman::p_load(tidyverse, magrittr, lubridate, janitor, # data analysis pkgs
+               scales, colorBlindness, # for visualization principles
+               fontawesome, RefManageR, xaringanExtra, countdown) # for slides
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+if(require(xaringanthemer) == FALSE) install.packages("xaringanthemer")
+library(xaringanthemer)
+
+xaringanthemer::style_mono_accent(base_color = "#84d6d3",
+                  base_font_size = "20px")
+
+xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "tachyons", "panelset", "search", "fit_screen", "editable",
+                                    "clipable"))
+```
+
+
+---
+class: inverse, center, middle
+
+# Exam 1 Review
+
+---
+
+## Exam 1 Review
+
+Fadel will review selected exam questions in Canvas. Please log in and follow along.
+
+- Open **Canvas > Quizzes > Exam 1** to see your results.
+
+- We will walk through the most commonly missed questions.
+
+- Feel free to ask clarifying questions as we go.
+
+
+---
+class: inverse, center, middle
+
+# Fundamentals of Data Visualization
+
+---
+
+# Learning Objectives for Today's Class
+
+- **LO1:** Explain Tufte's principles of graphical excellence
+
+- **LO2:** Select appropriate visual encodings based on data types
+
+- **LO3:** Apply color theory and accessibility guidelines
+
+- **LO4:** Identify and critique misleading visualizations
+
+
+---
+class: inverse, center, middle
+
+# LO1: Graphical Excellence
+
+
+---
+
+# Why Visualize? Anscombe's Quartet
+
+.font80[
+Anscombe (1973) created four datasets with **nearly identical** summary statistics:
+]
+
+.panelset[
+
+.panel[.panel-name[The Data]
+
+```{r anscombe-data, echo=FALSE, fig.height=1.5}
+pacman::p_load(Tmisc)
+df_stats = quartet |> dplyr::group_by(set) |>
+  dplyr::summarise(x.mean = mean(x) |> round(2),
+            x.sd = sd(x) |> round(2),
+            y.mean = mean(y) |> round(2),
+            y.sd = sd(y) |> round(2),
+            corr = cor(x, y) |> round(2))
+knitr::kable(df_stats, format = "html",
+             caption = "Summary statistics are virtually identical across all four sets.")
+```
+
+]
+
+.panel[.panel-name[The Plots]
+
+```{r anscombe-plots, echo=FALSE, fig.height=3.5}
+ggplot2::ggplot(quartet, ggplot2::aes(x, y)) +
+  ggplot2::geom_point(color = miamired, size = 2) +
+  ggplot2::geom_smooth(method = lm, se = FALSE, color = "steelblue") +
+  ggplot2::facet_wrap(~set, nrow = 1) +
+  ggplot2::theme_bw(base_size = 12) +
+  ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(6), limits = c(0, 20)) +
+  ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(6), limits = c(0, 15)) +
+  ggplot2::labs(title = "Anscombe's Quartet: Same stats, very different stories")
+```
+
+]
+
+.panel[.panel-name[`r fontawesome::fa(name = 'r-project', fill = miamired)` Code]
+
+```{r anscombe-code, eval=FALSE}
+pacman::p_load(Tmisc) # contains 'quartet' dataset
+ggplot2::ggplot(quartet, ggplot2::aes(x, y)) +
+  ggplot2::geom_point(color = miamired, size = 2) +
+  ggplot2::geom_smooth(method = lm, se = FALSE, color = "steelblue") +
+  ggplot2::facet_wrap(~set, nrow = 1) +
+  ggplot2::theme_bw(base_size = 12) +
+  ggplot2::scale_x_continuous(breaks = scales::pretty_breaks(6), limits = c(0, 20)) +
+  ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(6), limits = c(0, 15)) +
+  ggplot2::labs(title = "Anscombe's Quartet: Same stats, very different stories")
+```
+
+]
+
+]
+
+.footnote[
+<html><hr></html>
+**Source:** Anscombe, F.J. (1973). "Graphs in Statistical Analysis." *The American Statistician* 27(1): 17--21.
+]
+
+
+---
+
+# The Lesson: Always Visualize Your Data
+
+- Summary statistics alone can **hide** important patterns.
+
+- A **modern version** of Anscombe's idea is the Datasaurus Dozen (Matejka & Fitzmaurice, 2017):
+  * 13 datasets with identical summary statistics but wildly different shapes (including a dinosaur!).
+
+- **Takeaway:** Visualization is not optional -- it is an essential part of data analysis.
+
+.footnote[
+<html><hr></html>
+**Source:** Matejka, J. & Fitzmaurice, G. (2017). "Same Stats, Different Graphs." *Proc. CHI 2017*. [Link](https://www.research.autodesk.com/publications/same-stats-different-graphs/).
+]
+
+
+---
+
+# Tufte's Graphical Excellence
+
+According to Tufte, excellent graphics should:
+
+.font80[
+- **Show the data** clearly and honestly
+
+- Lead the viewer to think about the **substance** rather than the methodology or design
+
+- **Avoid distorting** what the data have to say
+
+- Present **many numbers in a small space**
+
+- Make **large datasets coherent**
+
+- Encourage the eye to **compare different pieces of data**
+
+- **Reveal the data at several levels of detail**, from broad overview to fine structure
+
+- Serve a clear **purpose**: description, exploration, tabulation, or decoration
+
+- Be **closely integrated** with statistical and verbal descriptions
+]
+
+.footnote[
+<html><hr></html>
+**Source:** Tufte, E.R. (2001). *The Visual Display of Quantitative Information*. Graphics Press, p. 13.
+]
+
+
+---
+
+# The Data-Ink Ratio
+
+- **Data-ink** is the non-erasable ink used to present the data itself.
+
+- Removing data-ink would cause the graphic to lose its content.
+
+$$
+\text{Data-ink ratio} = \frac{\text{Data-ink}}{\text{Total ink used to print the graphic}}
+$$
+
+- **Tufte's principle:** Maximize the data-ink ratio, within reason.
+
+- **Eliminate chartjunk:** Decorative elements (3D effects, gradient fills, heavy gridlines) that add no information.
+
+- **But note:** Some research suggests that memorable embellishments can aid recall (Bateman et al., 2010).
+
+
+---
+
+# Data-Ink in Practice
+
+.panelset[
+
+.panel[.panel-name[High Chartjunk]
+
+```{r chartjunk-high, echo=FALSE, fig.height=3.5}
+# A chart with excessive non-data-ink
+df_example = tibble::tibble(
+  category = c("Product A", "Product B", "Product C", "Product D"),
+  sales = c(120, 85, 150, 95)
+)
+
+ggplot2::ggplot(df_example, ggplot2::aes(x = category, y = sales, fill = category)) +
+  ggplot2::geom_bar(stat = "identity", color = "black", linewidth = 1.5) +
+  ggplot2::theme_gray(base_size = 14) +
+  ggplot2::theme(panel.grid.major = ggplot2::element_line(color = "darkgray", linewidth = 1),
+        panel.grid.minor = ggplot2::element_line(color = "gray", linewidth = 0.5),
+        legend.position = "right",
+        panel.background = ggplot2::element_rect(fill = "lightyellow")) +
+  ggplot2::labs(title = "QUARTERLY SALES REPORT!!!", subtitle = "Data from Q4 Survey",
+       x = "Product Category", y = "Sales ($K)", fill = "Product")
+```
+
+]
+
+.panel[.panel-name[High Data-Ink]
+
+```{r chartjunk-low, echo=FALSE, fig.height=3.5}
+ggplot2::ggplot(df_example, ggplot2::aes(x = reorder(category, -sales), y = sales)) +
+  ggplot2::geom_bar(stat = "identity", fill = miamired, width = 0.6) +
+  ggplot2::geom_text(ggplot2::aes(label = paste0("$", sales, "K")), vjust = -0.5, size = 4) +
+  ggplot2::theme_minimal(base_size = 14) +
+  ggplot2::theme(panel.grid.major.x = ggplot2::element_blank(),
+        panel.grid.minor = ggplot2::element_blank()) +
+  ggplot2::labs(x = NULL, y = "Sales ($K)")
+```
+
+]
+
+]
+
+
+---
+
+## Graphical Integrity: Key Principles
+
+- Clear, detailed, and thorough **labeling** with appropriate scales.
+
+- The size of the graphic effect should be **directly proportional** to the numerical quantities (the "Lie Factor").
+
+- Show **data variation**, not design variation.
+
+- In context of the Lie Factor:
+
+$$\text{Lie Factor} = \frac{\text{Size of effect shown in graphic}}{\text{Size of effect in data}}$$
+
+- Values close to **1.0** are honest. Values far from 1.0 indicate distortion.
+
+.footnote[
+<html><hr></html>
+**Source:** Tufte, E.R. (2001). *The Visual Display of Quantitative Information*. Graphics Press, pp. 53--77.
+]
+
+
+---
+
+## LO1 Check-In
+
+`r emo::ji("check")` You can now explain Tufte's principles of graphical excellence.
+
+`r emo::ji("check")` You understand the data-ink ratio and why chartjunk should be minimized.
+
+`r emo::ji("check")` You know that **always visualizing your data** can reveal patterns that summary statistics miss.
+
+
+---
+class: inverse, center, middle
+
+# LO2: Visual Encodings
+
+
+---
+
+# Data Types Review (Stevens' Scales)
+
+Before choosing a visual encoding, we must understand our **data types**:
+
+| Scale | Description | Example | Operations |
+|-------|-------------|---------|------------|
+| **Nominal** | Categories with no order | Red, Blue, Green | $=, \neq$ |
+| **Ordinal** | Categories with a meaningful order | Low, Medium, High | $<, >$ |
+| **Interval** | Numeric, zero is arbitrary | Temperature in Celsius | $+, -$ |
+| **Ratio** | Numeric, zero is meaningful | Weight, salary, count | $\times, \div$ |
+
+- **Why this matters:** The data type determines which visual encodings are appropriate.
+
+
+---
+
+# Visual Encoding Channels
+
+Different visual channels vary in **precision** and **effectiveness**:
+
+.pull-left[
+**For Quantitative Data** (ranked by accuracy):
+1. Position along a common scale
+2. Length
+3. Angle / Slope
+4. Area
+5. Volume
+6. Color saturation / luminance
+]
+
+.pull-right[
+**For Categorical Data** (ranked by effectiveness):
+1. Spatial region
+2. Color hue
+3. Shape
+4. Motion
+5. Texture
+]
+
+.footnote[
+<html><hr></html>
+**Source:** Cleveland, W.S. & McGill, R. (1984). "Graphical Perception." *JASA*, 79(387): 531--554. Also: Mackinlay, J. (1986). "Automating the Design of Graphical Presentations of Relational Information." *ACM TOG*, 5(2): 110--141.
+]
+
+
+---
+
+# Encoding Effectiveness: A Visual Summary
+
+- **Position** is the most accurate channel -- bar charts and scatter plots excel because they use position.
+
+- **Length** is next -- that is why bar charts are so effective.
+
+- **Angle** is less accurate -- this is why **pie charts are problematic** (we compare angles poorly).
+
+- **Area** is even less precise -- bubble charts require careful design.
+
+- **Color** is best used for **categories** (hue) or very coarse **magnitude** (saturation), not for precise quantitative comparisons.
+
+.font130[**Rule of thumb:** Encode your most important variable with position, then length, then color.]
+
+
+---
+
+# Choosing the Right Chart Type
+
+| Goal | Recommended Chart | Encoding Used |
+|------|------------------|---------------|
+| Compare categories | Bar chart (horizontal or vertical) | Position + Length |
+| Show trends over time | Line chart | Position |
+| Show part-to-whole | Stacked bar or treemap | Length / Area |
+| Show relationships | Scatter plot | Position (x, y) |
+| Show distributions | Histogram, box plot, violin | Position + Length |
+| Show geographic patterns | Choropleth map | Position + Color |
+
+- **Avoid** pie charts when there are more than 2-3 categories.
+
+- **Avoid** 3D charts in almost all cases -- they distort perception.
+
+- When in doubt, **start with a bar chart or scatter plot** and iterate.
+
+
+---
+
+## Activity: Match the Encoding
+
+`r countdown(minutes = 3, seconds = 0, top = 0, font_size = "2em")`
+
+.panelset[
+
+.panel[.panel-name[Activity]
+
+> For each scenario below, choose the **best visual encoding** and the chart type you would use. Write your answers in the editable panel.
+
+1. Compare **total sales** across 5 product categories
+2. Show how **temperature** changed over 12 months
+3. Display the **proportion** of market share for 3 companies
+4. Visualize the **relationship** between salary and years of experience
+5. Show the **geographic distribution** of job postings across the U.S.
+
+]
+
+.panel[.panel-name[Your Answers]
+
+.can-edit.key-activity01[
+
+1. Total sales across categories: Encoding = ________, Chart = ________
+2. Temperature over time: Encoding = ________, Chart = ________
+3. Market share proportions: Encoding = ________, Chart = ________
+4. Salary vs. experience: Encoding = ________, Chart = ________
+5. Geographic distribution: Encoding = ________, Chart = ________
+
+]
+]
+
+.panel[.panel-name[Suggested Answers]
+
+<details>
+<summary>Click to reveal suggested answers</summary>
+
+1. **Position/Length** -- Horizontal or vertical bar chart
+2. **Position** -- Line chart (time on x-axis)
+3. **Length** -- Stacked bar or bar chart (avoid pie charts if possible)
+4. **Position** -- Scatter plot
+5. **Position + Color** -- Choropleth or bubble map
+
+</details>
+
+]
+
+]
+
+
+---
+
+## LO2 Check-In
+
+`r emo::ji("check")` You can rank visual encoding channels by effectiveness.
+
+`r emo::ji("check")` You know that **position** and **length** are the most accurate channels.
+
+`r emo::ji("check")` You can select an appropriate chart type based on data type and analysis goal.
+
+
+---
+class: inverse, center, middle
+
+# LO3: Color Theory & Accessibility
+
+
+---
+
+# Three Types of Color Scales
+
+| Scale Type | When to Use | Example |
+|------------|-------------|---------|
+| **Sequential** | Ordered data, low-to-high | Light blue to dark blue (e.g., population density) |
+| **Diverging** | Data with a meaningful midpoint | Red -- White -- Blue (e.g., temperature anomaly) |
+| **Qualitative** | Unordered categories | Distinct hues (e.g., product categories) |
+
+- **Key principle:** Match your color scale to your data type.
+
+.footnote[
+<html><hr></html>
+**Source:** Brewer, C.A. (1999). "Color Use Guidelines for Data Representation." *Proc. ASA Section on Statistical Graphics*.
+]
+
+
+---
+
+# Demo: Color Scales in `r fontawesome::fa(name = 'r-project', fill = miamired)`
+
+.panelset[
+
+.panel[.panel-name[Sequential]
+
+```{r color-sequential, echo=TRUE, fig.height=3}
+ggplot2::ggplot(faithfuld, ggplot2::aes(waiting, eruptions, fill = density)) +
+  ggplot2::geom_tile() +
+  ggplot2::scale_fill_viridis_c(option = "magma") + # sequential, colorblind-safe
+  ggplot2::theme_minimal(base_size = 12) +
+  ggplot2::labs(title = "Sequential scale: Old Faithful eruption density")
+```
+
+]
+
+.panel[.panel-name[Diverging]
+
+```{r color-diverging, echo=TRUE, fig.height=3}
+df_div = tibble::tibble(x = 1:11, value = seq(-5, 5, by = 1))
+ggplot2::ggplot(df_div, ggplot2::aes(x = x, y = 1, fill = value)) +
+  ggplot2::geom_tile(height = 0.5) +
+  ggplot2::scale_fill_gradient2(low = "steelblue", mid = "white", high = miamired, midpoint = 0) +
+  ggplot2::theme_void(base_size = 12) +
+  ggplot2::labs(title = "Diverging scale: centered at zero")
+```
+
+]
+
+.panel[.panel-name[Qualitative]
+
+```{r color-qualitative, echo=TRUE, fig.height=3}
+df_cat = tibble::tibble(category = LETTERS[1:5], value = c(30, 25, 20, 15, 10))
+ggplot2::ggplot(df_cat, ggplot2::aes(x = reorder(category, -value), y = value, fill = category)) +
+  ggplot2::geom_col(width = 0.6) +
+  ggplot2::scale_fill_brewer(palette = "Set2") + # qualitative, colorblind-friendly
+  ggplot2::theme_minimal(base_size = 12) +
+  ggplot2::labs(title = "Qualitative scale: distinct categories", x = NULL, y = "Value")
+```
+
+]
+
+]
+
+
+---
+
+# Color Blindness: Why It Matters
+
+> "About **1 in 12 men** (8%) and **1 in 200 women** are color blind." -- NIH
+
+- The most common form is **red-green** color blindness (deuteranopia/protanopia).
+
+- A chart that relies on red vs. green to distinguish categories will **fail** for ~8% of your audience.
+
+- **Solutions:**
+  * Use **viridis** or **ColorBrewer** palettes designed for accessibility.
+  * Add **redundant encodings**: shapes, patterns, or direct labels.
+  * Test your charts with the `colorBlindness` package in `r fontawesome::fa(name = 'r-project', fill = miamired)`.
+
+
+---
+
+# Demo: Testing for Color Blindness
+
+.panelset[
+
+.panel[.panel-name[Original Chart]
+
+```{r cb-original, echo=FALSE, fig.height=3.5}
+p_original = ggplot2::ggplot(iris, ggplot2::aes(Sepal.Length, Sepal.Width, color = Species)) +
+  ggplot2::geom_point(size = 2) +
+  ggplot2::scale_color_manual(values = c("red", "green", "blue")) +
+  ggplot2::theme_minimal(base_size = 12) +
+  ggplot2::labs(title = "Default colors: problematic for color-blind viewers")
+p_original
+```
+
+]
+
+.panel[.panel-name[Simulated Color Blindness]
+
+```{r cb-simulated, echo=FALSE, fig.height=3.5}
+colorBlindness::cvdPlot(p_original)
+```
+
+]
+
+.panel[.panel-name[Accessible Version]
+
+```{r cb-accessible, echo=FALSE, fig.height=3.5}
+ggplot2::ggplot(iris, ggplot2::aes(Sepal.Length, Sepal.Width, color = Species, shape = Species)) +
+  ggplot2::geom_point(size = 2) +
+  ggplot2::scale_color_viridis_d(end = 0.85) + # colorblind-safe palette
+  ggplot2::theme_minimal(base_size = 12) +
+  ggplot2::labs(title = "Viridis palette + shape encoding: accessible to all viewers")
+```
+
+]
+
+.panel[.panel-name[`r fontawesome::fa(name = 'r-project', fill = miamired)` Code]
+
+```{r cb-code, eval=FALSE}
+# Test your chart for color blindness
+p = ggplot2::ggplot(iris, ggplot2::aes(Sepal.Length, Sepal.Width, color = Species)) +
+  ggplot2::geom_point(size = 2) +
+  ggplot2::scale_color_manual(values = c("red", "green", "blue")) +
+  ggplot2::theme_minimal()
+
+colorBlindness::cvdPlot(p) # simulates multiple types of color blindness
+
+# Accessible version: use viridis + redundant shape encoding
+ggplot2::ggplot(iris, ggplot2::aes(Sepal.Length, Sepal.Width, color = Species, shape = Species)) +
+  ggplot2::geom_point(size = 2) +
+  ggplot2::scale_color_viridis_d(end = 0.85) +
+  ggplot2::theme_minimal()
+```
+
+]
+
+]
+
+
+---
+
+# Practical Color Guidelines
+
+When designing dashboards and reports, follow these rules:
+
+1. **Limit your palette:** Use **3-5 colors** maximum for categories. More than 7 becomes overwhelming.
+
+2. **Use gray as a default:** Highlight only the data that matters; gray out the rest.
+
+3. **Reserve red for alerts:** Red draws attention -- use it intentionally (e.g., below-target values).
+
+4. **Be consistent:** The same color should mean the same thing across all charts in a dashboard.
+
+5. **Tools to help:**
+   - [ColorBrewer2.org](https://colorbrewer2.org/) -- palette selection with colorblind filters
+   - [Viz Palette](https://projects.susielu.com/viz-palette) -- test palettes against colorblind simulations
+   - `scale_color_viridis_d()` / `scale_fill_viridis_c()` in `r fontawesome::fa(name = 'r-project', fill = miamired)`
+
+
+---
+
+## LO3 Check-In
+
+`r emo::ji("check")` You can distinguish sequential, diverging, and qualitative color scales.
+
+`r emo::ji("check")` You know to use **viridis** or **ColorBrewer** palettes for accessibility.
+
+`r emo::ji("check")` You can test charts for color blindness using the `colorBlindness` package.
+
+
+---
+class: inverse, center, middle
+
+# LO4: Misleading Visualizations
+
+
+---
+
+# Common Ways Charts Mislead
+
+| Technique | Why It's Misleading |
+|-----------|-------------------|
+| **Truncated y-axis** | Exaggerates differences by starting above zero |
+| **3D effects** | Distorts area and angle perception |
+| **Dual y-axes** | Implies a relationship that may not exist |
+| **Cherry-picked time range** | Hides the broader trend |
+| **Inconsistent intervals** | Distorts the rate of change |
+| **Area/volume scaling** | Human perception of area is nonlinear |
+
+- Tufte's **Lie Factor**: $\text{Lie Factor} = \frac{\text{Size of effect in graphic}}{\text{Size of effect in data}}$
+
+- A Lie Factor $> 1.05$ or $< 0.95$ indicates meaningful distortion.
+
+
+---
+
+# Activity: Critique "Salaries by Occupation"
+
+`r countdown(minutes = 5, seconds = 0, top = 0, font_size = "2em")`
+
+.panelset[
+
+.panel[.panel-name[Activity]
+
+> Below are **five versions** of the same data: median annual salary for five occupations. Identify which charts are **misleading** and explain why.
+
+.font80[The underlying data: Data Scientist ($105K), Software Engineer ($110K), Business Analyst ($75K), Marketing Manager ($90K), Accountant ($72K).]
+
+]
+
+.panel[.panel-name[Chart A: Truncated Axis]
+
+```{r misleading-a, echo=FALSE, fig.height=3}
+salary_data = tibble::tibble(
+  occupation = c("Data Scientist", "Software Eng.", "Business Analyst", "Marketing Mgr.", "Accountant"),
+  salary = c(105, 110, 75, 90, 72)
+)
+
+ggplot2::ggplot(salary_data, ggplot2::aes(x = reorder(occupation, salary), y = salary)) +
+  ggplot2::geom_col(fill = "steelblue", width = 0.6) +
+  ggplot2::coord_cartesian(ylim = c(65, 115)) + # truncated axis!
+  ggplot2::theme_minimal(base_size = 11) +
+  ggplot2::labs(title = "Chart A: Median Salary by Occupation", x = NULL, y = "Salary ($K)") +
+  ggplot2::coord_flip(ylim = c(65, 115))
+```
+
+.can-edit.key-activity02a[**Your critique:** ]
+
+]
+
+.panel[.panel-name[Chart B: Honest Bar]
+
+```{r misleading-b, echo=FALSE, fig.height=3}
+ggplot2::ggplot(salary_data, ggplot2::aes(x = reorder(occupation, salary), y = salary)) +
+  ggplot2::geom_col(fill = miamired, width = 0.6) +
+  ggplot2::geom_text(ggplot2::aes(label = paste0("$", salary, "K")), hjust = -0.1, size = 3.5) +
+  ggplot2::coord_flip(ylim = c(0, 125)) +
+  ggplot2::theme_minimal(base_size = 11) +
+  ggplot2::labs(title = "Chart B: Median Salary by Occupation", x = NULL, y = "Salary ($K)")
+```
+
+.can-edit.key-activity02b[**Your critique:** ]
+
+]
+
+.panel[.panel-name[Chart C: 3D Pie]
+
+.font80[
+Imagine a 3D pie chart with the five slices representing salary proportions. The tilt and perspective make the front slices appear larger than they actually are.
+]
+
+`[Placeholder: 3D Pie Chart -- front slices appear disproportionately large]`
+
+.can-edit.key-activity02c[**Your critique:** ]
+
+]
+
+.panel[.panel-name[Chart D: Bubble Area]
+
+```{r misleading-d, echo=FALSE, fig.height=3}
+ggplot2::ggplot(salary_data, ggplot2::aes(x = occupation, y = 1, size = salary)) +
+  ggplot2::geom_point(color = "steelblue", alpha = 0.7) +
+  ggplot2::scale_size_area(max_size = 20) +
+  ggplot2::theme_void(base_size = 11) +
+  ggplot2::geom_text(ggplot2::aes(label = paste0(occupation, "\n$", salary, "K")), size = 2.5, vjust = 3) +
+  ggplot2::labs(title = "Chart D: Salary by Occupation (Bubble)") +
+  ggplot2::theme(legend.position = "none", plot.title = ggplot2::element_text(hjust = 0.5))
+```
+
+.can-edit.key-activity02d[**Your critique:** ]
+
+]
+
+.panel[.panel-name[Chart E: Dot Plot]
+
+```{r misleading-e, echo=FALSE, fig.height=3}
+ggplot2::ggplot(salary_data, ggplot2::aes(x = salary, y = reorder(occupation, salary))) +
+  ggplot2::geom_point(size = 4, color = miamired) +
+  ggplot2::geom_segment(ggplot2::aes(xend = 0, yend = occupation), color = "gray70") +
+  ggplot2::theme_minimal(base_size = 11) +
+  ggplot2::scale_x_continuous(labels = scales::dollar_format(suffix = "K"), limits = c(0, 120)) +
+  ggplot2::labs(title = "Chart E: Median Salary by Occupation", x = "Annual Salary", y = NULL)
+```
+
+.can-edit.key-activity02e[**Your critique:** ]
+
+]
+
+]
+
+
+---
+
+# Discussion: Which Charts Were Misleading?
+
+- **Chart A** (Truncated axis): The y-axis starts at $65K, exaggerating the differences. The Accountant bar looks tiny compared to Software Engineer, but the actual difference is ~$38K vs. a visual that suggests a much larger gap.
+
+- **Chart C** (3D Pie): Perspective distortion makes front slices appear larger. Pie charts already use the weak "angle" encoding; 3D makes it worse.
+
+- **Chart D** (Bubbles): Area perception is nonlinear -- we tend to underestimate differences. Without labels, this chart would be very hard to read accurately.
+
+- **Charts B and E** are honest: they use position/length with a zero baseline and are easy to compare.
+
+
+---
+
+# Job Market Connection
+
+.pull-left[
+
+**Your dashboard will be judged on design.**
+
+- Recruiters, hiring managers, and stakeholders form impressions in **seconds**.
+
+- A misleading or ugly chart can undermine your credibility.
+
+- Applying Tufte's principles and accessibility guidelines is what separates a **student project** from a **professional deliverable**.
+
+- These principles directly apply to the Job Market Explorer dashboard you are building.
+
+]
+
+.pull-right[
+
+**In job postings, you will often see:**
+
+- "Create clear, compelling visualizations"
+- "Design dashboards for executive audiences"
+- "Ensure accessibility compliance"
+
+.font130[**Knowing these principles gets you hired.**]
+
+]
+
+
+---
+class: inverse, center, middle
+
+# Recap
+
+
+---
+
+# Summary of Main Points
+
+By now, you should be able to:
+
+`r emo::ji("check")` **LO1:** Explain Tufte's principles of graphical excellence (data-ink ratio, avoid chartjunk, show the data)
+
+`r emo::ji("check")` **LO2:** Select appropriate visual encodings based on data types (position > length > angle > area > color)
+
+`r emo::ji("check")` **LO3:** Apply color theory and accessibility guidelines (sequential, diverging, qualitative scales; viridis; `colorBlindness` package)
+
+`r emo::ji("check")` **LO4:** Identify and critique misleading visualizations (truncated axes, 3D effects, lie factor)
+
+
+---
+
+# Readings & Next Steps
+
+To prepare for the next class (Tableau Lab), please complete the following:
+
+1. **Read:** [The Lie Factor and the Baseline Paradox](https://nightingaledvs.com/the-lie-factor-and-the-baseline-paradox/) -- note how the lie factor may be context-dependent.
+
+2. **Read:** Bateman, S. et al. (2010). [Useful Junk? The Effects of Visual Embellishment on Comprehension and Memorability of Charts](https://dl.acm.org/doi/pdf/10.1145/1753326.1753716) -- an experimental counter-argument to Tufte's simplicity principle.
+
+3. **Install Tableau Desktop** using your Miami University student license. Instructions are on Canvas under **Modules > Software Setup**.
+
+4. **Download** the Job Market dataset from Canvas -- you will use it in the Tableau lab.

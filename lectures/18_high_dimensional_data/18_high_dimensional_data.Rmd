@@ -1,0 +1,932 @@
+---
+title: "ISA 401: Business Intelligence & Data Visualization"
+subtitle: '18: Visualizing High-Dimensional Data in `r icons::icon_style(icons::fontawesome("r-project"), fill = "white")`'
+author: '<br>Fadel M. Megahed, PhD <br><br>Raymond E. Gloss Professor in Business <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("linkedin"), fill = "white")` @Fadel Megahed](https://www.linkedin.com/in/fadel-megahed-289046b4) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
+date: "Spring 2026"
+output:
+  xaringan::moon_reader:
+    self_contained: true
+    css: [default, "../../style_files/fonts.css", "../../style_files/my-theme.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: magula
+      highlightLines: true
+      highlightLanguage: ["r"]
+      countIncrementalSlides: false
+      ratio: "16:9"
+header-includes:
+  - "../../style_files/header.html"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache = FALSE,
+                      echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE,
+                      progress = FALSE,
+                      verbose = FALSE,
+                      dev = 'png',
+                      fig.height = 3,
+                      dpi = 300,
+                      fig.align = 'center')
+
+options(htmltools.dir.version = FALSE)
+
+miamired = '#C3142D'
+
+if(require(pacman)==FALSE) install.packages("pacman")
+if(require(devtools)==FALSE) install.packages("devtools")
+
+if(require(countdown)==FALSE) devtools::install_github("gadenbuie/countdown")
+if(require(xaringanExtra)==FALSE) devtools::install_github("gadenbuie/xaringanExtra")
+
+
+pacman::p_load(tidyverse, magrittr, lubridate, janitor, # data analysis pkgs
+               DT, # for nicely printed output
+               GGally, ggradar, pheatmap, scales, # for high-dimensional charts
+               DataExplorer,
+               fontawesome, RefManageR, xaringanExtra, countdown) # for slides
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+if(require(xaringanthemer) == FALSE) install.packages("xaringanthemer")
+library(xaringanthemer)
+
+style_mono_accent(base_color = "#84d6d3",
+                  base_font_size = "20px")
+
+xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "tachyons", "panelset", "search", "fit_screen", "editable",
+                                    "clipable"))
+```
+
+
+## Quick Refresher from Last Week
+
+
+`r emo::ji("check")` Identify common text-visualization techniques (word clouds, bar charts of term frequency).
+
+`r emo::ji("check")` Create word clouds and network graphs from text data in `r fontawesome::fa("r-project", fill = miamired)`.
+
+`r emo::ji("check")` Apply sentiment analysis and visualize sentiment scores.
+
+---
+
+## Kahoot/Quiz Review: Text Data Visualization
+
+.pull-left[
+
+**Q1.** Which function from the `tidytext` package splits text into individual words?
+A. `str_split()`
+B. `unnest_tokens()`
+C. `strsplit()`
+D. `tokenize()`
+
+**Q2.** In a word cloud, what visual property encodes term frequency?
+A. Color hue
+B. Position on the x-axis
+C. Font size
+D. Font style (bold/italic)
+
+]
+
+.pull-right[
+
+**Q3.** Which sentiment lexicon assigns words a numeric score from -5 to +5?
+A. Bing
+B. NRC
+C. AFINN
+D. Loughran
+
+**Q4.** What does a network graph of text data typically show?
+A. Sentiment over time
+B. Co-occurrence of words
+C. Word frequency per document
+D. Topic distributions
+
+]
+
+
+`r countdown(minutes = 3, warn_when = 60, color_background = miamired, color_text = "white", font_size = "1.5em", top = 0, right = 0)`
+
+
+---
+
+# Learning Objectives for Today's Class
+
+- **LO1:** Define high-dimensional data and describe its visualization challenges
+
+- **LO2:** Create parallel coordinates plots, radar charts, and heatmaps in `r fontawesome::fa("r-project", fill = miamired)`
+
+- **LO3:** Use small multiples and faceting to compare distributions across categories
+
+
+---
+class: inverse, center, middle
+
+# What is High-Dimensional Data?
+
+---
+
+# Why Does Dimensionality Matter?
+
+.pull-left[
+
+Most of the charts we have built so far encode **two or three variables** at most:
+
+- A scatter plot uses **x** and **y**
+- A bar chart uses a **category** and a **count/value**
+- A line chart uses **time** and a **metric**
+
+**But real business data is rarely that simple.**
+
+A single job-market dataset might have columns for salary, experience, skills count, industry, location, education level, company size, and more.
+
+]
+
+.pull-right[
+
+.content-box-grey[
+
+.font120[**The Core Challenge**]
+
+We live in a 2-D display world. How do we faithfully represent data that lives in 10, 50, or 100+ dimensions?
+
+> "The greatest value of a picture is when it forces us to notice what we never expected to see." -- John Tukey
+
+]
+
+]
+
+
+---
+
+# Defining Key Terms
+
+`r countdown(minutes = 3, seconds = 0, top = 0, font_size = "2em")`
+
+.panelset[
+
+.panel[.panel-name[Activity]
+
+> In 3 minutes, define the terms in the next tab using the sample data below as context.
+
+.font70[
+```{r job_data_preview, echo=FALSE}
+jobs_data <- tibble::tribble(
+  ~title,              ~salary, ~experience, ~skills_count, ~industry,      ~education,   ~company_size,
+  "Data Analyst",       65000,  2,           5,             "Tech",         "Bachelors",  "Large",
+
+  "BI Developer",       78000,  4,           8,             "Finance",      "Masters",    "Medium",
+  "Data Scientist",     95000,  3,           12,            "Healthcare",   "PhD",        "Large",
+  "Analyst Intern",     35000,  0,           3,             "Consulting",   "Bachelors",  "Small",
+  "ML Engineer",       110000,  5,           15,            "Tech",         "Masters",    "Large",
+  "Report Developer",   60000,  2,           6,             "Manufacturing","Bachelors",  "Medium"
+)
+DT::datatable(jobs_data, rownames = FALSE, options = list(pageLength = 6, dom = 'tip'))
+```
+]
+
+]
+
+.panel[.panel-name[Your Definitions]
+
+.can-edit.key-activity1[
+
+**Data Types:** .font70[(Edit below)]
+
+- Multivariate data: ________________
+
+- Big Data: ________________
+
+- Tall Data: ________________
+
+- Wide Data: ________________
+
+- High Dimensional Data: ________________
+
+]
+]
+]
+
+
+---
+
+# Taxonomy of Dimensionality
+
+**Based on the number of attributes (columns/variables):**
+
+- **1:** Univariate (histogram, boxplot)
+- **2:** Bivariate (scatter plot, line chart)
+- **3:** Trivariate (bubble chart, 3-D scatter)
+- **4+:** Multivariate / High-Dimensional
+
+**Key questions to think about:**
+
+- .can-edit.key-activity2a[What is the problem with visualizing multivariate data (especially when $p > 6-7$ dimensions)? ______________]
+
+- .can-edit.key-activity2b[Any ideas about what to do? ______________]
+
+
+---
+
+# Encoding Mechanisms: How We Map Variables to Visuals
+
+When we have many variables, we need **multiple encoding channels**:
+
+| Channel | Best For | Example |
+|---------|----------|---------|
+| **x-axis** | Numeric / ordinal variable | GDP per capita |
+| **y-axis** | Numeric / ordinal variable | Life expectancy |
+| **Area / size** | Numeric variable | Population |
+| **Color hue** | Nominal / categorical | Continent |
+| **Color intensity** | Numeric / ordinal | Growth rate |
+| **Shape** | Nominal (limited to ~6) | Country group |
+| **Motion / animation** | Time | Year |
+| **Faceting** | Categorical | Region subsets |
+
+> The more channels we use simultaneously, the more dimensions we can display -- but cognitive load increases.
+
+
+---
+
+# Hans Rosling: The Best Stats You Have Seen
+
+.panelset[
+
+.panel[.panel-name[Watch the Video]
+
+> While watching this video, answer the questions in the next tab.
+
+<center>
+<div style="max-width:600px"><div style="position:relative;height:0;padding-bottom:56.25%"><iframe src="https://embed.ted.com/talks/lang/en/hans_rosling_the_best_stats_you_ve_ever_seen" width="600" height="350" style="position:absolute;left:0;top:0;width:100%;height:100%" frameborder="0" scrolling="no" allowfullscreen></iframe></div></div>
+</center>
+
+]
+
+.panel[.panel-name[Your Answers]
+
+- .can-edit.key-activity3a[What data is represented in this visualization? Be specific. ____]
+
+- .can-edit.key-activity3b[How is each data type visually encoded (x, y, size, color, motion)? ___________]
+
+- .can-edit.key-activity3c[Do you think the encodings are appropriate? Why or why not? _________]
+
+]
+]
+
+---
+
+# What Makes the Gapminder Chart Work?
+
+> Motion charts are essentially **animated bubble charts**. A bubble chart shows data using the .bold[x-axis], .bold[y-axis], and the .bold[size] and .bold[color] of the bubble. A motion chart displays .red[.bold[changes over time by showing movement within the two-dimensional space and changes in the size and color of the bubbles]]. -- [Juice Analytics](https://www.juiceanalytics.com/writing/better-know-visualization-motion-charts)
+
+**Encoding mechanisms in the Gapminder chart:**
+
+- .bold[x-axis]: GDP per capita (**numeric**)
+- .bold[y-axis]: Life expectancy (**numeric**)
+- .bold[area]: Population (**numeric**)
+- .bold[color]: Continent (**nominal**)
+- .bold[motion/animation]: Year (**time**)
+
+That is **five dimensions** on a single 2-D screen -- powerful and intuitive.
+
+<iframe src="https://www.gapminder.org/tools/?embedded=true#$chart-type=bubbles&url=v1" style="width: 100%; height: 250px; margin: 0; border: 1px solid grey;" allowfullscreen></iframe>
+
+
+---
+
+## LO1 Check-In
+
+`r emo::ji("check")` You can now:
+
+- Define multivariate, big, tall, wide, and high-dimensional data
+
+- Explain why visualizing many variables simultaneously is challenging
+
+- Identify the encoding channels available for mapping variables to visuals
+
+
+---
+class: inverse, center, middle
+
+# Parallel Coordinates, Radar Charts & Heatmaps
+
+---
+
+# Parallel Coordinates Plots
+
+> Parallel coordinates is a visualization technique used to plot individual data elements across many performance measures. Each measure corresponds to a **vertical axis** and each data element is displayed as a **series of connected points** along the axes. -- [Juice Analytics](https://www.juiceanalytics.com/writing/writing/parallel-coordinates)
+
+.pull-left[
+
+**When to use:**
+- Comparing many numeric variables simultaneously
+- Spotting clusters, outliers, and correlations
+- Exploring patterns across job profiles, products, etc.
+
+**Key considerations:**
+- Variable **order** matters -- try different arrangements
+- **Scaling** is critical (use standardization)
+- Too many lines can create visual clutter
+
+]
+
+.pull-right[
+
+```{r parcoord-concept, echo=FALSE, out.height=280}
+knitr::include_graphics('https://images.squarespace-cdn.com/content/v1/52f42657e4b0b3416ff6b831/1614951876498-9TIQE0EHNCGUFQSNEP6J/Parallel_Coordinates_Plot_-_Learn_about_this_chart_and_tools.jpg?format=1000w')
+```
+
+]
+
+
+---
+
+# Demo: Parallel Coordinates with `GGally::ggparcoord()`
+
+.panelset[
+
+.panel[.panel-name[Create Data]
+
+```{r parcoord-data}
+job_profiles <- tibble::tribble(
+  ~role,               ~salary_k, ~skills, ~experience, ~satisfaction, ~growth_pct,
+  "Data Analyst",       65,        5,       2,           7.5,           12,
+  "BI Developer",       78,        8,       4,           7.0,           10,
+  "Data Scientist",     95,       12,       3,           8.5,           22,
+  "ML Engineer",       110,       15,       5,           8.0,           28,
+  "Report Developer",   60,        6,       2,           6.5,            8,
+  "Analytics Manager",  92,       10,       7,           7.8,           15,
+  "Data Engineer",     100,       11,       4,           7.2,           25,
+  "Statistician",       80,        9,       3,           7.0,           11
+)
+
+job_profiles
+```
+
+]
+
+.panel[.panel-name[Plot Code]
+
+```{r parcoord-plot, fig.height=3.5, fig.width=9, eval=FALSE}
+GGally::ggparcoord(
+  data = job_profiles,
+  columns = 2:6,            # numeric columns
+  groupColumn = 1,          # color by role
+  scale = "std",            # standardize to mean 0, sd 1
+  showPoints = TRUE
+) +
+  ggplot2::scale_color_brewer(palette = "Paired") +
+  ggplot2::geom_line(linewidth = 1.2) +
+  ggplot2::geom_point(size = 3) +
+  ggplot2::theme_bw(base_size = 12) +
+  ggplot2::theme(legend.position = "top",
+        axis.text.x = ggplot2::element_text(angle = 15, hjust = 1)) +
+  ggplot2::labs(x = "Variable", y = "Standardized Value",
+       title = "Parallel Coordinates: Job Role Profiles",
+       color = "Role")
+```
+
+]
+
+.panel[.panel-name[Output]
+
+```{r parcoord-plot-run, fig.height=3.5, fig.width=9, echo=FALSE}
+GGally::ggparcoord(
+  data = job_profiles,
+  columns = 2:6,
+  groupColumn = 1,
+  scale = "std",
+  showPoints = TRUE
+) +
+  ggplot2::scale_color_brewer(palette = "Paired") +
+  ggplot2::geom_line(linewidth = 1.2) +
+  ggplot2::geom_point(size = 3) +
+  ggplot2::theme_bw(base_size = 12) +
+  ggplot2::theme(legend.position = "top",
+        axis.text.x = ggplot2::element_text(angle = 15, hjust = 1)) +
+  ggplot2::labs(x = "Variable", y = "Standardized Value",
+       title = "Parallel Coordinates: Job Role Profiles",
+       color = "Role")
+```
+
+]
+]
+
+
+---
+
+# Radar Charts
+
+> Radar charts (also called spider or web charts) show how individual items perform **across multiple measures** arranged radially. Each axis represents a variable, and the data point on each axis connects to form a polygon.
+
+.pull-left[
+
+**When to use:**
+- Comparing a **small number** of items (2-5) across several metrics
+- Showing strengths and weaknesses of profiles
+- Presenting skill assessments or balanced scorecards
+
+**Limitations:**
+- Hard to read with many items or many axes
+- Area can be misleading (depends on variable order)
+- Not ideal for precise comparisons
+
+]
+
+.pull-right[
+
+```{r radar-concept, echo=FALSE, out.height=280}
+knitr::include_graphics('https://images.squarespace-cdn.com/content/v1/52f42657e4b0b3416ff6b831/1633047594333-7OEOYF4YZU4TMI2VMJSR/A_Night_Under_The_Stars___Jordan_Vincent.png?format=1000w')
+```
+
+]
+
+
+---
+
+# Demo: Radar Chart with `ggradar`
+
+.panelset[
+
+.panel[.panel-name[Prepare Data]
+
+```{r radar-data}
+# ggradar expects: first column = group, remaining columns = values in [0, 1]
+skill_profiles <- tibble::tribble(
+  ~role,            ~R, ~Python, ~SQL, ~Tableau, ~Excel, ~Stats,
+  "Data Analyst",   0.6,  0.3,   0.8,   0.7,     0.9,    0.5,
+  "Data Scientist",  0.9,  0.9,   0.7,   0.5,     0.4,    0.9,
+  "BI Developer",   0.4,  0.2,   0.9,   0.9,     0.7,    0.3,
+  "ML Engineer",    0.7,  0.95,  0.6,   0.3,     0.2,    0.8
+)
+
+skill_profiles
+```
+
+]
+
+.panel[.panel-name[Plot Code]
+
+```{r radar-plot, fig.height=4, fig.width=8, eval=FALSE}
+ggradar::ggradar(
+  skill_profiles,
+  grid.min = 0, grid.mid = 0.5, grid.max = 1,
+  values.radar = c("0", "0.5", "1"),
+  group.line.width = 1.2,
+  group.point.size = 3,
+  legend.position = "bottom",
+  legend.text.size = 10,
+  axis.label.size = 4
+) +
+  ggplot2::labs(title = "Skill Profiles Across Job Roles")
+```
+
+]
+
+.panel[.panel-name[Output]
+
+```{r radar-plot-run, fig.height=4, fig.width=8, echo=FALSE}
+ggradar::ggradar(
+  skill_profiles,
+  grid.min = 0, grid.mid = 0.5, grid.max = 1,
+  values.radar = c("0", "0.5", "1"),
+  group.line.width = 1.2,
+  group.point.size = 3,
+  legend.position = "bottom",
+  legend.text.size = 10,
+  axis.label.size = 4
+) +
+  ggplot2::labs(title = "Skill Profiles Across Job Roles")
+```
+
+]
+]
+
+
+---
+
+# Heatmaps
+
+.pull-left[
+
+**What is a heatmap?**
+
+- A matrix visualization where **color intensity** encodes the value in each cell
+- Rows and columns represent categories or observations
+- Useful for spotting **patterns, clusters, and outliers** in large matrices
+
+**When to use:**
+- Skill-by-industry matrices
+- Correlation matrices
+- Time-of-day / day-of-week patterns
+
+]
+
+.pull-right[
+
+**Key considerations:**
+- Choose a **sequential** color scale for single-direction data (e.g., 0 to max)
+- Choose a **diverging** color scale for data with a meaningful midpoint (e.g., correlations from -1 to +1)
+- **Ordering** rows/columns (e.g., by clustering) reveals structure
+
+]
+
+
+---
+
+# Demo: Heatmap with `pheatmap`
+
+.panelset[
+
+.panel[.panel-name[Create Matrix]
+
+```{r heatmap-data}
+# Skill demand matrix: industries x skills
+skill_demand <- tibble::tribble(
+  ~industry,       ~R, ~Python, ~SQL, ~Tableau, ~Excel, ~ML, ~Cloud,
+  "Tech",           9,    9,     8,     5,       3,      9,    8,
+  "Finance",        6,    7,     9,     7,       8,      5,    4,
+  "Healthcare",     5,    6,     7,     6,       7,      4,    3,
+  "Consulting",     4,    5,     6,     8,       9,      3,    3,
+  "Manufacturing",  3,    4,     5,     7,       9,      2,    2,
+  "Retail",         3,    5,     7,     8,       8,      4,    5
+)
+
+# Convert to matrix for pheatmap
+skill_matrix <- skill_demand |> dplyr::select(-industry) |> as.matrix()
+rownames(skill_matrix) <- skill_demand$industry
+```
+
+]
+
+.panel[.panel-name[Plot Code]
+
+```{r heatmap-plot, fig.height=3.5, fig.width=7, eval=FALSE}
+pheatmap::pheatmap(
+  skill_matrix,
+  color = colorRampPalette(c("white", "#84d6d3", miamired))(50),
+  cluster_rows = TRUE,
+  cluster_cols = TRUE,
+  display_numbers = TRUE,
+  number_format = "%d",
+  fontsize = 11,
+  main = "Skill Demand by Industry (1-10 Scale)"
+)
+```
+
+]
+
+.panel[.panel-name[Output]
+
+```{r heatmap-plot-run, fig.height=3.5, fig.width=7, echo=FALSE}
+pheatmap::pheatmap(
+  skill_matrix,
+  color = colorRampPalette(c("white", "#84d6d3", miamired))(50),
+  cluster_rows = TRUE,
+  cluster_cols = TRUE,
+  display_numbers = TRUE,
+  number_format = "%d",
+  fontsize = 11,
+  main = "Skill Demand by Industry (1-10 Scale)"
+)
+```
+
+]
+]
+
+
+---
+
+# Bonus: Correlation Heatmap
+
+A common use case for heatmaps is visualizing **correlation matrices** -- this instantly reveals which variables move together:
+
+```{r cor-heatmap, fig.height=3.5, fig.width=6}
+# Using our job_profiles data
+cor_matrix <- job_profiles |>
+  dplyr::select(-role) |>
+  cor()
+
+pheatmap::pheatmap(
+  cor_matrix,
+  color = colorRampPalette(c(miamired, "white", "#84d6d3"))(50),
+  display_numbers = TRUE,
+  number_format = "%.2f",
+  fontsize = 11,
+  main = "Correlation Matrix: Job Profile Variables"
+)
+```
+
+> **Reading tip:** Strong positive correlations (near +1) appear in teal; strong negative correlations (near -1) appear in red.
+
+
+---
+
+# When to Use Which Chart?
+
+| Chart | Best For | Max Items | Limitations |
+|-------|----------|-----------|-------------|
+| **Parallel Coordinates** | Comparing many numeric variables | 20-30 lines | Clutter with too many observations |
+| **Radar Chart** | Comparing profiles | 3-5 items | Misleading areas; hard to read with many axes |
+| **Heatmap** | Matrix data / correlations | Unlimited rows & cols | Requires good color scale and ordering |
+| **Bubble Chart** | 4-5 variables | 50-100 points | Overlapping bubbles |
+| **Small Multiples** | Comparing distributions | 12-20 panels | Space-intensive |
+
+
+---
+
+## Activity: Create a Parallel Coordinates Plot
+
+Using the `job_profiles` data from our earlier demo (or your own data), create a parallel coordinates plot that:
+
+1. Groups lines by `role`
+2. Uses `scale = "uniminmax"` (scales each variable to [0, 1])
+3. Includes points and a clean theme
+4. Has a descriptive title
+
+```{r activity-parcoord-starter, eval=FALSE}
+# Start with the job_profiles data
+GGally::ggparcoord(
+  data = job_profiles,
+  columns = ___,
+  groupColumn = ___,
+  scale = "uniminmax",
+  showPoints = ___
+) +
+  ggplot2::theme_bw() +
+  ggplot2::labs(title = "___")
+```
+
+`r countdown(minutes = 5, warn_when = 60, color_background = miamired, color_text = "white", font_size = "1.5em", top = 0, right = 0)`
+
+
+---
+
+## LO2 Check-In
+
+`r emo::ji("check")` You can now create high-dimensional visualizations in `r fontawesome::fa("r-project", fill = miamired)`:
+
+- **Parallel coordinates** with `GGally::ggparcoord()` for comparing numeric profiles
+
+- **Radar charts** with `ggradar::ggradar()` for comparing a few items across metrics
+
+- **Heatmaps** with `pheatmap::pheatmap()` for matrix data with color-encoded values
+
+
+---
+class: inverse, center, middle
+
+# Small Multiples & Faceting
+
+---
+
+# The Principle of Small Multiples
+
+> "Illustrations of postage-stamp size are indexed by category or a label, sequenced over time like the frames of a movie, or ordered by a quantitative variable not used in the single image itself." -- Edward Tufte, *Envisioning Information* (1990)
+
+.pull-left[
+
+**Why small multiples work:**
+- Same chart structure repeated across subsets
+- Easy to compare because the **scale is consistent**
+- The eye can scan for differences quickly
+- Avoids overplotting and clutter
+
+]
+
+.pull-right[
+
+```{r small-multiples-example, echo=FALSE, out.width='95%'}
+knitr::include_graphics('https://images.squarespace-cdn.com/content/v1/52f42657e4b0b3416ff6b831/1614444947046-W4UOZ7ISU9IV4CG8URSU/FIres-detected-in-Amazon.png?format=1000w')
+```
+
+.font70[Source: NYT analysis of Amazon rain forest fires]
+
+]
+
+
+---
+
+# Demo: `facet_wrap()` for Salary Distributions
+
+.panelset[
+
+.panel[.panel-name[Create Data]
+
+```{r facet-data}
+set.seed(401)
+jobs_facet <- tibble::tibble(
+  industry = rep(c("Tech", "Finance", "Healthcare", "Consulting"), each = 60),
+  experience = rep(rep(c("Entry", "Mid", "Senior"), each = 20), 4),
+  salary_k = c(
+    rnorm(20, 65, 10), rnorm(20, 85, 12), rnorm(20, 110, 15),  # Tech
+    rnorm(20, 60, 8),  rnorm(20, 80, 10), rnorm(20, 105, 14),  # Finance
+    rnorm(20, 55, 9),  rnorm(20, 72, 11), rnorm(20, 95, 13),   # Healthcare
+    rnorm(20, 58, 8),  rnorm(20, 75, 10), rnorm(20, 100, 12)   # Consulting
+  )
+) |>
+  dplyr::mutate(experience = factor(experience, levels = c("Entry", "Mid", "Senior")))
+```
+
+]
+
+.panel[.panel-name[facet_wrap Code]
+
+```{r facet-wrap-plot, fig.height=3.5, fig.width=10, eval=FALSE}
+ggplot2::ggplot(jobs_facet, ggplot2::aes(x = salary_k, fill = experience)) +
+  ggplot2::geom_histogram(bins = 12, alpha = 0.7, color = "white") +
+  ggplot2::facet_wrap(~ industry, nrow = 1) +
+  ggplot2::scale_fill_manual(values = c("Entry" = "#84d6d3", "Mid" = "#f4a261", "Senior" = miamired)) +
+  ggplot2::theme_bw(base_size = 11) +
+  ggplot2::theme(legend.position = "top") +
+  ggplot2::labs(x = "Salary ($ thousands)", y = "Count",
+       title = "Salary Distributions by Industry and Experience Level",
+       fill = "Experience")
+```
+
+]
+
+.panel[.panel-name[Output]
+
+```{r facet-wrap-plot-run, fig.height=3.5, fig.width=10, echo=FALSE}
+ggplot2::ggplot(jobs_facet, ggplot2::aes(x = salary_k, fill = experience)) +
+  ggplot2::geom_histogram(bins = 12, alpha = 0.7, color = "white") +
+  ggplot2::facet_wrap(~ industry, nrow = 1) +
+  ggplot2::scale_fill_manual(values = c("Entry" = "#84d6d3", "Mid" = "#f4a261", "Senior" = miamired)) +
+  ggplot2::theme_bw(base_size = 11) +
+  ggplot2::theme(legend.position = "top") +
+  ggplot2::labs(x = "Salary ($ thousands)", y = "Count",
+       title = "Salary Distributions by Industry and Experience Level",
+       fill = "Experience")
+```
+
+]
+]
+
+
+---
+
+# `facet_grid()`: Two-Dimensional Faceting
+
+When you want to facet by **two variables simultaneously**, use `facet_grid(rows ~ cols)`:
+
+```{r facet-grid, fig.height=3.5, fig.width=10, eval=FALSE}
+ggplot2::ggplot(jobs_facet, ggplot2::aes(x = salary_k)) +
+  ggplot2::geom_density(fill = "#84d6d3", alpha = 0.5) +
+  ggplot2::facet_grid(experience ~ industry) +
+  ggplot2::theme_bw(base_size = 10) +
+  ggplot2::labs(x = "Salary ($ thousands)", y = "Density",
+       title = "Salary Density by Industry (columns) and Experience Level (rows)")
+```
+
+```{r facet-grid-run, fig.height=3.5, fig.width=10, echo=FALSE}
+ggplot2::ggplot(jobs_facet, ggplot2::aes(x = salary_k)) +
+  ggplot2::geom_density(fill = "#84d6d3", alpha = 0.5) +
+  ggplot2::facet_grid(experience ~ industry) +
+  ggplot2::theme_bw(base_size = 10) +
+  ggplot2::labs(x = "Salary ($ thousands)", y = "Density",
+       title = "Salary Density by Industry (columns) and Experience Level (rows)")
+```
+
+
+---
+
+# Quick Alternative: `DataExplorer::plot_boxplot()`
+
+For rapid exploration, `DataExplorer` can generate faceted boxplots in a single line:
+
+```{r data-explorer-box, fig.height=3, fig.width=9, eval=FALSE}
+DataExplorer::plot_boxplot(
+  data = jobs_facet,
+  by = "industry",
+  theme_config = ggplot2::theme_bw(base_size = 10)
+)
+```
+
+.font80[
+This is especially useful when you have **many numeric variables** and want to quickly see how they distribute across a grouping variable -- no manual faceting required.
+]
+
+```{r data-explorer-box-run, fig.height=3, fig.width=9, echo=FALSE}
+DataExplorer::plot_boxplot(
+  data = jobs_facet,
+  by = "industry",
+  theme_config = ggplot2::theme_bw(base_size = 10)
+)
+```
+
+
+---
+
+## Activity: Small Multiples with Faceting
+
+Using the `jobs_facet` data (or a dataset of your choice), create a faceted visualization that shows:
+
+1. **Boxplots** of salary by experience level
+2. **Faceted** by industry using `facet_wrap()`
+3. A color scheme that distinguishes experience levels
+
+```{r activity-facet-starter, eval=FALSE}
+ggplot2::ggplot(jobs_facet, ggplot2::aes(x = ___, y = ___, fill = ___)) +
+  ggplot2::geom_boxplot() +
+  ggplot2::facet_wrap(~ ___) +
+  ggplot2::theme_bw() +
+  ggplot2::labs(title = "___")
+```
+
+`r countdown(minutes = 5, warn_when = 60, color_background = miamired, color_text = "white", font_size = "1.5em", top = 0, right = 0)`
+
+
+---
+
+## LO3 Check-In
+
+`r emo::ji("check")` You can now use small multiples and faceting by:
+
+- Applying `facet_wrap()` to split a chart by one categorical variable
+
+- Applying `facet_grid()` to split by two categorical variables (rows and columns)
+
+- Using `DataExplorer::plot_boxplot()` for quick faceted exploration
+
+
+---
+
+# The Big Picture: Choosing the Right Tool
+
+.content-box-grey[
+.font120[**Real business data has 10, 50, 100+ variables -- you need tools to see it all.**]
+
+The key insight is that **no single chart handles all dimensions**. Instead, you build a **toolkit**:
+
+- **Parallel coordinates** for scanning across many numeric variables at once
+- **Radar charts** for focused comparisons of a few profiles
+- **Heatmaps** for spotting patterns in matrix data
+- **Small multiples** for comparing distributions across categories
+- **Bubble/motion charts** for encoding 4-5 variables with animation
+]
+
+> The best analysts are not those who memorize chart types, but those who can **match the question to the visual encoding** that answers it most clearly.
+
+
+---
+class: inverse, center, middle
+
+# Recap
+
+---
+
+## Summary of Main Points
+
+By now, you should be able to do the following:
+
+`r emo::ji("check")` **LO1:** Define high-dimensional data and explain why standard 2-D charts are insufficient for multivariate datasets.
+
+`r emo::ji("check")` **LO2:** Create parallel coordinates plots (`GGally::ggparcoord()`), radar charts (`ggradar::ggradar()`), and heatmaps (`pheatmap::pheatmap()`) in `r fontawesome::fa("r-project", fill = miamired)`.
+
+`r emo::ji("check")` **LO3:** Use `facet_wrap()` and `facet_grid()` for small multiples, and `DataExplorer::plot_boxplot()` for rapid exploration.
+
+
+---
+
+## Key Functions Reference
+
+| Function | Purpose |
+|----------|---------|
+| `GGally::ggparcoord()` | Create parallel coordinates plots |
+| `ggradar::ggradar()` | Create radar/spider charts |
+| `pheatmap::pheatmap()` | Create clustered heatmaps |
+| `ggplot2::facet_wrap()` | Facet a plot by one variable |
+| `ggplot2::facet_grid()` | Facet by two variables (rows x cols) |
+| `DataExplorer::plot_boxplot()` | Quick faceted boxplots by a grouping variable |
+| `scales::rescale()` | Rescale numeric values to [0, 1] |
+
+
+---
+
+## Readings and Resources
+
+- [GGally package documentation](https://ggobi.github.io/ggally/) -- Comprehensive guide to `ggparcoord()` and other GGally functions.
+
+- [ggradar GitHub repository](https://github.com/ricardo-bion/ggradar) -- Examples and usage for radar charts in ggplot2.
+
+- [pheatmap CRAN page](https://cran.r-project.org/package=pheatmap) -- Documentation for the `pheatmap` package.
+
+- [Tufte, E.R. (1990). *Envisioning Information*.](https://www.amazon.com/Envisioning-Information-Edward-R-Tufte/dp/0961392118) -- The definitive text on small multiples and information design.
+
+- [Hans Rosling TED Talk](https://www.ted.com/talks/hans_rosling_the_best_stats_you_ve_ever_seen) -- The iconic talk demonstrating motion bubble charts.
+
+
+---
+
+## Things to Do to Prepare for Next Class
+
+- **Review:** Experiment with `ggparcoord()`, `ggradar()`, and `pheatmap()` on a dataset of your choice.
+
+- **Explore:** Try the [Gapminder interactive tool](https://www.gapminder.org/tools/) and identify how each variable is encoded.
+
+- **Reflect:** For your project dataset, which high-dimensional visualization technique would be most appropriate? Why?
+
+- **Next class:** Data Storytelling & Dashboards -- turning charts into compelling narratives.

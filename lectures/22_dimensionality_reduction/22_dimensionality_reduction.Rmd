@@ -1,0 +1,954 @@
+---
+title: "ISA 401: Business Intelligence & Data Visualization"
+subtitle: '22: Dimensionality Reduction in `r icons::icon_style(icons::fontawesome("r-project"), fill = "white")`'
+author: '<br>Fadel M. Megahed, PhD <br><br>Raymond E. Gloss Professor in Business <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("linkedin"), fill = "white")` @Fadel Megahed](https://www.linkedin.com/in/fadel-megahed-289046b4) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
+date: "Spring 2026"
+output:
+  xaringan::moon_reader:
+    self_contained: true
+    css: [default, "../../style_files/fonts.css", "../../style_files/my-theme.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: magula
+      highlightLines: true
+      highlightLanguage: ["r"]
+      countIncrementalSlides: false
+      ratio: "16:9"
+header-includes:
+  - "../../style_files/header.html"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache = FALSE,
+                      echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE,
+                      progress = FALSE,
+                      verbose = FALSE,
+                      dev = 'png',
+                      fig.height = 2.5,
+                      dpi = 300,
+                      fig.align = 'center')
+
+options(htmltools.dir.version = FALSE)
+
+miamired = '#C3142D'
+
+if(require(pacman)==FALSE) install.packages("pacman")
+if(require(devtools)==FALSE) install.packages("devtools")
+
+if(require(countdown)==FALSE) devtools::install_github("gadenbuie/countdown")
+if(require(xaringanExtra)==FALSE) devtools::install_github("gadenbuie/xaringanExtra")
+
+
+pacman::p_load(tidyverse, magrittr, lubridate, janitor, # data analysis pkgs
+               factoextra, Rtsne, # for dimensionality reduction
+               fontawesome, RefManageR, xaringanExtra, countdown) # for slides
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+if(require(xaringanthemer) == FALSE) install.packages("xaringanthemer")
+library(xaringanthemer)
+
+style_mono_accent(base_color = "#84d6d3",
+                  base_font_size = "20px")
+
+xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "tachyons", "panelset", "search", "fit_screen", "editable",
+                                    "clipable"))
+```
+
+```{r create-shared-data, include=FALSE}
+# Create job market data (shared across lectures 20-22)
+set.seed(401)
+job_data <- tibble::tibble(
+  salary = round(c(runif(30, 35000, 55000), runif(40, 60000, 100000), runif(30, 100000, 160000)), -3),
+  skills_count = c(sample(3:6, 30, replace = TRUE), sample(6:10, 40, replace = TRUE), sample(9:15, 30, replace = TRUE)),
+  experience_years = round(c(runif(30, 0, 3), runif(40, 3, 10), runif(30, 8, 20)), 1),
+  is_remote = sample(c(0, 1), 100, replace = TRUE, prob = c(0.55, 0.45)),
+  education_level = c(sample(1:2, 30, replace = TRUE), sample(2:3, 40, replace = TRUE), sample(3:4, 30, replace = TRUE))
+)
+
+# Scale and cluster (from Lecture 21)
+job_scaled <- scale(job_data)
+set.seed(123)
+km_result <- kmeans(job_scaled, centers = 3, nstart = 25)
+job_data$cluster <- factor(km_result$cluster)
+```
+
+
+## Quick Refresher from Lecture 21
+
+`r emo::ji("check")` Explain the k-means algorithm step by step
+
+`r emo::ji("check")` Perform k-means clustering manually and with `r fontawesome::fa('r-project', fill = miamired)`
+
+`r emo::ji("check")` Select optimal $k$ using elbow and silhouette methods
+
+`r emo::ji("check")` Interpret, visualize, and name clusters
+
+
+---
+
+# Kahoot: Clustering Concepts
+
+.panelset[
+.panel[.panel-name[Let's Play!]
+
+Let us go to Kahoot and compete for a $10 `r fontawesome::fa('coffee', fill = 'darkgreen')` Starbucks gift card. To evaluate your understanding of the material, please answer the questions correctly and as quickly as possible to get the most points.
+
+**Topics covered:**
+- K-means algorithm steps
+- Elbow and silhouette methods
+- Cluster interpretation and naming
+- Practical issues with k-means
+
+]
+
+.panel[.panel-name[Sample Questions]
+
+1. In k-means, what happens after points are assigned to the nearest centroid?
+   - a) Algorithm stops  b) Centroids are updated  c) K increases  d) Data is re-scaled
+
+2. The elbow method plots total WSS against:
+   - a) Number of features  b) Number of data points  c) Number of clusters  d) Iterations
+
+3. A silhouette value close to 1 means:
+   - a) Point is misclassified  b) Point is on the boundary  c) Point fits well in its cluster  d) More clusters needed
+
+4. Why do we use `nstart = 25` in `kmeans()`?
+   - a) Run 25 iterations  b) Use 25 features  c) Try 25 random initializations  d) Create 25 clusters
+
+5. K-means assumes clusters are approximately:
+   - a) Elongated  b) Spherical  c) Linear  d) Hierarchical
+
+]
+]
+
+
+---
+
+# Learning Objectives for Today's Class
+
+After today's lecture, you should be able to:
+
+1. Explain why dimensionality reduction is useful
+
+2. Perform and interpret PCA (Principal Component Analysis)
+
+3. Create and interpret biplots
+
+4. Compare PCA vs. t-SNE for visualization
+
+
+---
+class: inverse, center, middle
+
+# LO 1: Why Dimensionality Reduction?
+
+---
+
+# The Curse of Dimensionality
+
+When you have **many features** (dimensions), several problems arise:
+
+.pull-left[
+**Visualization challenges:**
+- We can plot 2D or 3D easily
+- 4+ dimensions? We need projections
+- 10+ dimensions? Nearly impossible to visualize directly
+
+**Computational challenges:**
+- Distance calculations become expensive
+- More features = more noise
+- "Empty space" grows exponentially
+]
+
+.pull-right[
+**The key insight:**
+
+Even when data lives in a 10-dimensional space, the **meaningful structure** often lies in just 2-3 dimensions.
+
+**Analogy:** Think of a 3D object (like a coffee mug) casting a 2D **shadow** on a wall. The shadow captures the essential shape, even though information is lost.
+
+**Dimensionality reduction finds the best "shadow."**
+]
+
+
+---
+
+# When Do You Need Dimensionality Reduction?
+
+| Scenario | Dimensionality Reduction? | Why? |
+|----------|--------------------------|------|
+| 2-3 numeric features | **No** | You can plot directly |
+| 5-10 features, want to visualize clusters | **Yes** | Cannot plot 5+ dimensions |
+| 50+ features (e.g., survey data) | **Yes** | Reduce noise, find key patterns |
+| Text data (bag of words) | **Yes** | Thousands of word columns |
+| Image data | **Yes** | Millions of pixel values |
+
+**In our case:** We have 5 job features. `fviz_cluster()` already used PCA behind the scenes in Lecture 21!
+
+
+---
+
+# Two Approaches to Dimensionality Reduction
+
+.pull-left[
+### PCA (Principal Component Analysis) `r fontawesome::fa("compress-arrows-alt", fill = miamired)`
+
+- **Linear** transformation
+- Finds directions of **maximum variance**
+- Components are **interpretable** (loadings)
+- Preserves **global structure**
+- Deterministic (same input = same output)
+- Best for: interpretation, feature compression
+]
+
+.pull-right[
+### t-SNE `r fontawesome::fa("project-diagram", fill = miamired)`
+
+- **Non-linear** transformation
+- Preserves **local neighborhoods**
+- Components are **not interpretable**
+- Preserves **local structure** (nearby points stay nearby)
+- Stochastic (different runs = slightly different output)
+- Best for: visualization of clusters
+]
+
+
+---
+
+# Check-in: Dimensionality Reduction Motivation
+
+`r countdown(minutes = 2, seconds = 0, top = 0, font_size = "2em")`
+
+**Answer the following:**
+
+1. You have a dataset with 100 features from a customer survey. Why might you want to reduce this to fewer dimensions?
+
+2. In Lecture 21, `fviz_cluster()` plotted our 5-feature job data in 2D. How did it do this?
+
+3. If you can only visualize data in 2D, is information always lost? Explain.
+
+.can-edit.key-activity01[Write your answers here]
+
+
+---
+class: inverse, center, middle
+
+# LO 2: Principal Component Analysis (PCA)
+
+---
+
+# PCA Intuition
+
+PCA finds **new axes** (called principal components) that capture the **most variance** in the data.
+
+.pull-left[
+**Imagine a cloud of data points:**
+
+- **PC1:** The direction along which the data varies the most (the "longest" axis of the cloud)
+
+- **PC2:** The direction of maximum remaining variance, **perpendicular** to PC1
+
+- **PC3:** The next direction, perpendicular to both PC1 and PC2
+
+- And so on...
+]
+
+.pull-right[
+**Key properties:**
+
+- Each PC captures a **decreasing** amount of variance
+
+- PCs are **uncorrelated** (orthogonal)
+
+- Total variance is **preserved** -- just redistributed
+
+- Often, the first 2-3 PCs capture 70-90% of total variance
+]
+
+
+---
+
+# Running PCA with `prcomp()`
+
+.panelset[
+.panel[.panel-name[Code]
+
+.font80[
+```{r pca-run}
+# Run PCA on scaled data (exclude cluster column)
+pca_result <- prcomp(job_scaled, center = FALSE, scale. = FALSE) # already scaled
+
+# Summary: variance explained by each component
+summary(pca_result)
+```
+]
+
+**Note:** We use `center = FALSE, scale. = FALSE` because `job_scaled` is already centered and scaled.
+
+]
+
+.panel[.panel-name[Interpretation]
+
+.font90[
+- **Standard deviation:** How much variance each PC captures
+- **Proportion of Variance:** Fraction of total variance explained by each PC
+- **Cumulative Proportion:** Running total -- tells you how many PCs you need
+
+**Example:** If PC1 + PC2 explain 70% of variance, you can represent 5D data in 2D while keeping 70% of the information.
+]
+
+]
+]
+
+
+---
+
+# Scree Plot: How Many Components?
+
+.panelset[
+.panel[.panel-name[Code]
+
+.font80[
+```{r scree-code, eval=FALSE}
+factoextra::fviz_eig(
+  pca_result,
+  addlabels = TRUE,
+  ylim = c(0, 60),
+  main = "Scree Plot: Variance Explained by Each PC",
+  xlab = "Principal Component",
+  ylab = "Percentage of Variance Explained"
+) + ggplot2::theme_minimal()
+```
+]
+
+]
+
+.panel[.panel-name[Plot]
+
+```{r scree-out, ref.label='scree-code', echo=FALSE, fig.height=3.5}
+```
+
+**How to read:** Look for the "elbow" -- similar to the k-means elbow method! Components after the elbow add little new information.
+
+]
+]
+
+
+---
+
+# Cumulative Variance Explained
+
+.panelset[
+.panel[.panel-name[Code]
+
+.font80[
+```{r cumvar-code, eval=FALSE}
+# Compute cumulative variance
+var_explained <- summary(pca_result)$importance
+cum_var <- tibble::tibble(
+  PC = paste0("PC", 1:ncol(job_scaled)),
+  cumulative_var = var_explained["Cumulative Proportion", ] * 100
+)
+
+ggplot2::ggplot(cum_var, ggplot2::aes(x = PC, y = cumulative_var, group = 1)) +
+  ggplot2::geom_line(color = miamired, linewidth = 1) +
+  ggplot2::geom_point(color = miamired, size = 3) +
+  ggplot2::geom_hline(yintercept = 80, linetype = "dashed", color = "gray40") +
+  ggplot2::annotate("text", x = 4, y = 83, label = "80% threshold", color = "gray40") +
+  ggplot2::theme_minimal() +
+  ggplot2::labs(title = "Cumulative Variance Explained",
+       x = "Principal Component", y = "Cumulative % Variance") +
+  ggplot2::ylim(0, 105)
+```
+]
+
+]
+
+.panel[.panel-name[Plot]
+
+```{r cumvar-out, ref.label='cumvar-code', echo=FALSE, fig.height=3.5}
+```
+
+**Rule of thumb:** Keep enough PCs to explain ~80% of variance.
+
+]
+]
+
+
+---
+
+# PCA Scores: The Transformed Data
+
+.font80[
+```{r pca-scores}
+# PCA scores (transformed coordinates)
+pca_scores <- tibble::as_tibble(pca_result$x)
+pca_scores$cluster <- job_data$cluster
+
+# First few rows
+head(pca_scores, 5) |> dplyr::mutate(dplyr::across(PC1:PC5, ~round(., 3)))
+```
+]
+
+**Each row is a job posting, now expressed in PC coordinates** rather than the original features (salary, skills, etc.).
+
+
+---
+
+# Visualizing Jobs in PC Space
+
+.panelset[
+.panel[.panel-name[Code]
+
+.font80[
+```{r pca-scatter-code, eval=FALSE}
+ggplot2::ggplot(pca_scores, ggplot2::aes(x = PC1, y = PC2, color = cluster)) +
+  ggplot2::geom_point(size = 3, alpha = 0.7) +
+  ggplot2::scale_color_manual(values = c("#E41A1C", "#377EB8", "#4DAF4A"),
+                     labels = c("Entry-Level", "Mid-Career", "Senior")) +
+  ggplot2::theme_minimal() +
+  ggplot2::labs(title = "Job Postings in PCA Space",
+       subtitle = "Colored by k-means cluster assignment",
+       x = paste0("PC1 (", round(summary(pca_result)$importance[2,1]*100, 1), "% var)"),
+       y = paste0("PC2 (", round(summary(pca_result)$importance[2,2]*100, 1), "% var)"),
+       color = "Cluster") +
+  ggplot2::theme(legend.position = "bottom")
+```
+]
+
+]
+
+.panel[.panel-name[Plot]
+
+```{r pca-scatter-out, ref.label='pca-scatter-code', echo=FALSE, fig.height=3.5}
+```
+
+**Observe:** Clusters that overlap in this 2D projection may still be well-separated in higher dimensions.
+
+]
+]
+
+
+---
+
+# Check-in: PCA Concepts
+
+`r countdown(minutes = 2, seconds = 0, top = 0, font_size = "2em")`
+
+**True or False:**
+
+1. PC1 always explains the most variance.
+
+2. Principal components are correlated with each other.
+
+3. PCA changes the values but preserves total variance.
+
+4. You always need to keep all principal components.
+
+5. PCA requires scaled data to work properly.
+
+.can-edit.key-activity02[Write your T/F answers here]
+
+
+---
+class: inverse, center, middle
+
+# LO 3: Biplots
+
+---
+
+# What is a Biplot?
+
+A **biplot** is a powerful visualization that shows **both observations and features** on the same plot:
+
+- **Points** = individual observations (job postings) projected onto PC1 and PC2
+- **Arrows** = original features, showing how they relate to the principal components
+
+**How to read the arrows:**
+
+- **Direction:** Which PC the feature loads on
+- **Length:** How much the feature contributes to the PCs
+- **Angle between arrows:**
+  + **Small angle** = positively correlated features
+  + **Right angle** (90 degrees) = uncorrelated features
+  + **Opposite direction** (180 degrees) = negatively correlated features
+
+
+---
+
+# Creating a Biplot with `factoextra`
+
+.panelset[
+.panel[.panel-name[Code]
+
+.font80[
+```{r biplot-code, eval=FALSE}
+factoextra::fviz_pca_biplot(
+  pca_result,
+  geom.ind = "point",             # show points for individuals
+  col.ind = job_data$cluster,     # color by cluster
+  palette = c("#E41A1C", "#377EB8", "#4DAF4A"),
+  addEllipses = TRUE,             # add concentration ellipses
+  ellipse.type = "convex",
+  col.var = "black",              # feature arrows in black
+  repel = TRUE,                   # avoid label overlap
+  title = "PCA Biplot: Job Postings with Feature Loadings"
+) + ggplot2::theme_minimal() +
+  ggplot2::theme(legend.position = "bottom")
+```
+]
+
+]
+
+.panel[.panel-name[Plot]
+
+```{r biplot-out, ref.label='biplot-code', echo=FALSE, fig.height=4}
+```
+
+]
+]
+
+
+---
+
+# Interpreting the Biplot
+
+.panelset[
+.panel[.panel-name[Loadings Table]
+
+.font80[
+```{r loadings-table}
+# Extract and display loadings
+loadings <- tibble::as_tibble(pca_result$rotation, rownames = "Feature")
+loadings |>
+  dplyr::select(Feature, PC1, PC2) |>
+  dplyr::mutate(dplyr::across(PC1:PC2, ~round(., 3)))
+```
+]
+
+]
+
+.panel[.panel-name[Interpretation]
+
+**Reading the loadings:**
+
+- Features with **high absolute PC1 loadings** vary along the horizontal axis
+  + e.g., If `salary` and `experience_years` both load heavily on PC1, they move together
+
+- Features with **high absolute PC2 loadings** vary along the vertical axis
+  + e.g., If `is_remote` loads on PC2, remote status distinguishes groups vertically
+
+- **Cluster separation:** If clusters are well-separated along PC1, the features loading on PC1 are what drive the grouping
+
+**Example interpretation:** "Salary and experience load together on PC1, suggesting the primary dimension separating job postings is seniority. Remote status loads on PC2, capturing a secondary distinction."
+
+]
+]
+
+
+---
+
+# Contribution of Features to PCs
+
+.panelset[
+.panel[.panel-name[Code]
+
+.font80[
+```{r contrib-code, eval=FALSE}
+# Contribution of each variable to PC1 and PC2
+p1 <- factoextra::fviz_contrib(pca_result, choice = "var", axes = 1,
+                                 title = "Contributions to PC1") + ggplot2::theme_minimal()
+p2 <- factoextra::fviz_contrib(pca_result, choice = "var", axes = 2,
+                                 title = "Contributions to PC2") + ggplot2::theme_minimal()
+gridExtra::grid.arrange(p1, p2, ncol = 2)
+```
+]
+
+]
+
+.panel[.panel-name[Plot]
+
+```{r contrib-out, ref.label='contrib-code', echo=FALSE, fig.height=3.5}
+```
+
+The red dashed line represents the expected average contribution. Features above the line contribute more than average.
+
+]
+]
+
+
+---
+
+# Check-in: Biplot Interpretation
+
+`r countdown(minutes = 3, seconds = 0, top = 0, font_size = "2em")`
+
+**Look at the biplot we created and answer:**
+
+1. Which features load most heavily on PC1?
+
+2. Which features load most heavily on PC2?
+
+3. If two feature arrows point in the same direction, what does that mean?
+
+4. Based on the biplot, what is the primary dimension separating the job clusters?
+
+.can-edit.key-activity03[Write your answers here]
+
+
+---
+class: inverse, center, middle
+
+# LO 4: PCA vs. t-SNE
+
+---
+
+# What is t-SNE?
+
+**t-SNE** (t-distributed Stochastic Neighbor Embedding) is a **non-linear** dimensionality reduction method designed for **visualization**.
+
+**How it works (intuition):**
+
+1. Compute **pairwise similarities** between all points in high-dimensional space (how "close" each pair is)
+
+2. Create a low-dimensional (2D) map where similar points are placed near each other
+
+3. **Optimize** the map so that pairwise similarities in 2D match those in the original space
+
+**Key difference from PCA:** t-SNE preserves **local neighborhoods** (nearby points stay nearby) rather than global structure.
+
+
+---
+
+# Running t-SNE with `Rtsne`
+
+.panelset[
+.panel[.panel-name[Code]
+
+.font80[
+```{r tsne-run}
+set.seed(42)
+tsne_result <- Rtsne::Rtsne(
+  X = job_scaled,
+  dims = 2,           # reduce to 2 dimensions
+  perplexity = 15,    # controls neighborhood size (5-50)
+  max_iter = 1000,    # number of iterations
+  check_duplicates = FALSE
+)
+
+# Store results
+tsne_df <- tibble::tibble(
+  tSNE1 = tsne_result$Y[, 1],
+  tSNE2 = tsne_result$Y[, 2],
+  cluster = job_data$cluster
+)
+head(tsne_df, 5)
+```
+]
+
+]
+
+.panel[.panel-name[About Perplexity]
+
+**Perplexity** is the key hyperparameter in t-SNE:
+
+- Controls the **effective number of neighbors** each point considers
+- **Low perplexity (5-10):** Focuses on very local structure; tight clusters
+- **High perplexity (30-50):** Considers broader context; more spread out
+- **Rule of thumb:** Try values between 5 and 50; perplexity should be less than the number of data points
+
+**Perplexity is roughly analogous to the number of nearest neighbors.**
+
+]
+]
+
+
+---
+
+# Visualizing t-SNE Results
+
+.panelset[
+.panel[.panel-name[Code]
+
+.font80[
+```{r tsne-viz-code, eval=FALSE}
+ggplot2::ggplot(tsne_df, ggplot2::aes(x = tSNE1, y = tSNE2, color = cluster)) +
+  ggplot2::geom_point(size = 3, alpha = 0.7) +
+  ggplot2::scale_color_manual(values = c("#E41A1C", "#377EB8", "#4DAF4A"),
+                     labels = c("Entry-Level", "Mid-Career", "Senior")) +
+  ggplot2::theme_minimal() +
+  ggplot2::labs(title = "t-SNE Visualization of Job Postings",
+       subtitle = "Colored by k-means cluster assignment (k=3)",
+       x = "t-SNE Dimension 1",
+       y = "t-SNE Dimension 2",
+       color = "Cluster") +
+  ggplot2::theme(legend.position = "bottom")
+```
+]
+
+]
+
+.panel[.panel-name[Plot]
+
+```{r tsne-viz-out, ref.label='tsne-viz-code', echo=FALSE, fig.height=3.5}
+```
+
+]
+]
+
+
+---
+
+# Effect of Perplexity on t-SNE
+
+.panelset[
+.panel[.panel-name[Code]
+
+.font60[
+```{r perplexity-code, eval=FALSE}
+perplexities <- c(5, 15, 25, 32)
+tsne_plots <- purrr::map(perplexities, function(p) {
+  set.seed(42)
+  tsne <- Rtsne::Rtsne(job_scaled, perplexity = p, dims = 2, check_duplicates = FALSE)
+  tibble::tibble(tSNE1 = tsne$Y[, 1], tSNE2 = tsne$Y[, 2],
+         cluster = job_data$cluster, perplexity = paste("Perplexity =", p))
+})
+
+dplyr::bind_rows(tsne_plots) |>
+  ggplot2::ggplot(ggplot2::aes(x = tSNE1, y = tSNE2, color = cluster)) +
+  ggplot2::geom_point(size = 2, alpha = 0.7) +
+  ggplot2::facet_wrap(~perplexity, scales = "free", nrow = 1) +
+  ggplot2::scale_color_manual(values = c("#E41A1C", "#377EB8", "#4DAF4A")) +
+  ggplot2::theme_minimal() +
+  ggplot2::labs(title = "Effect of Perplexity on t-SNE Output") +
+  ggplot2::theme(legend.position = "none")
+```
+]
+
+]
+
+.panel[.panel-name[Plot]
+
+```{r perplexity-out, ref.label='perplexity-code', echo=FALSE, fig.height=3.5}
+```
+
+**Notice:** Higher perplexity = broader context = more global structure preserved.
+
+]
+]
+
+
+---
+
+# PCA vs. t-SNE: Side-by-Side Comparison
+
+.panelset[
+.panel[.panel-name[Code]
+
+.font60[
+```{r comparison-code, eval=FALSE}
+# PCA plot
+pca_plot_df <- tibble::tibble(Dim1 = pca_result$x[, 1], Dim2 = pca_result$x[, 2],
+                       cluster = job_data$cluster, method = "PCA")
+# t-SNE plot
+tsne_plot_df <- tibble::tibble(Dim1 = tsne_result$Y[, 1], Dim2 = tsne_result$Y[, 2],
+                        cluster = job_data$cluster, method = "t-SNE (perplexity=15)")
+
+dplyr::bind_rows(pca_plot_df, tsne_plot_df) |>
+  ggplot2::ggplot(ggplot2::aes(x = Dim1, y = Dim2, color = cluster)) +
+  ggplot2::geom_point(size = 3, alpha = 0.7) +
+  ggplot2::facet_wrap(~method, scales = "free") +
+  ggplot2::scale_color_manual(values = c("#E41A1C", "#377EB8", "#4DAF4A")) +
+  ggplot2::theme_minimal() +
+  ggplot2::labs(title = "PCA vs. t-SNE: Same Data, Different Projections",
+       color = "Cluster") +
+  ggplot2::theme(legend.position = "bottom")
+```
+]
+
+]
+
+.panel[.panel-name[Plot]
+
+```{r comparison-out, ref.label='comparison-code', echo=FALSE, fig.height=3.5}
+```
+
+]
+]
+
+
+---
+
+# PCA vs. t-SNE: When to Use Which
+
+| Aspect | PCA | t-SNE |
+|--------|-----|-------|
+| **Type** | Linear | Non-linear |
+| **Interpretability** | High (loadings, biplots) | Low (axes have no meaning) |
+| **Global structure** | Preserved | Not guaranteed |
+| **Local structure** | May be distorted | Well-preserved |
+| **Speed** | Fast | Slower (O(n^2)) |
+| **Deterministic** | Yes | No (random seed matters) |
+| **Best for** | Understanding *which features matter* | Visualizing *cluster separation* |
+
+.center[.font120[**Use PCA for interpretation. Use t-SNE for visualization.**]]
+
+
+---
+
+# Common Pitfalls with t-SNE
+
+**Things to watch out for:**
+
+1. **Cluster sizes are meaningless** -- t-SNE distorts distances, so a bigger cluster in the plot is NOT necessarily a bigger group
+
+2. **Distances between clusters are meaningless** -- far apart in t-SNE does NOT mean far apart in reality
+
+3. **Always set a seed** -- results change with different random initializations
+
+4. **Perplexity matters** -- always try multiple values and compare
+
+5. **Don't interpret axes** -- unlike PCA, the t-SNE axes have no intrinsic meaning
+
+**Bottom line:** t-SNE tells you IF clusters exist, but PCA tells you WHY.
+
+
+---
+
+# Combining PCA + Clustering: The Full Workflow
+
+Here is the complete unsupervised learning workflow we have built across Lectures 20-22:
+
+.font110[
+1. **Prepare data** (Lecture 20): Select features, encode, handle NAs
+
+2. **Scale features** (Lecture 20): `scale()` for z-score standardization
+
+3. **Cluster** (Lecture 21): `kmeans()` with optimal $k$ from elbow/silhouette
+
+4. **Reduce dimensions** (Lecture 22): `prcomp()` for PCA, `Rtsne()` for t-SNE
+
+5. **Visualize & interpret:** Biplot to understand *why*, t-SNE to show *that*
+
+6. **Name & report:** Give clusters business-meaningful names
+]
+
+
+---
+
+# Non-Graded Activity: PCA and Biplot Analysis
+
+`r countdown(minutes = 10, seconds = 0, top = 0, font_size = "2em")`
+
+.panelset[
+.panel[.panel-name[Instructions]
+
+Using the job data, complete the following:
+
+1. **Run** PCA with `prcomp()` on the scaled job features
+2. **Create** a scree plot -- how many PCs capture 80% of variance?
+3. **Build** a biplot colored by cluster assignments from Lecture 21
+4. **Interpret** the loadings -- which features drive PC1? PC2?
+5. **Compare** PCA vs. t-SNE on the same data
+
+.font80[
+```{r activity-code, eval=FALSE}
+# Step 1: PCA
+my_pca <- prcomp(job_scaled, center = FALSE, scale. = FALSE)
+
+# Step 2: Scree plot
+factoextra::fviz_eig(my_pca, addlabels = TRUE)
+
+# Step 3: Biplot
+factoextra::fviz_pca_biplot(my_pca, col.ind = job_data$cluster, palette = "jco",
+                             addEllipses = TRUE, repel = TRUE)
+
+# Step 4: Loadings
+my_pca$rotation[, 1:2] |> round(3)
+
+# Step 5: t-SNE comparison
+set.seed(42)
+my_tsne <- Rtsne::Rtsne(job_scaled, perplexity = 15, dims = 2, check_duplicates = FALSE)
+plot(my_tsne$Y, col = km_result$cluster, pch = 19, main = "t-SNE")
+```
+]
+
+]
+
+.panel[.panel-name[Your Work]
+
+.can-edit.key-activity04[
+- PCs needed for 80% variance: ___
+- Top features on PC1: ___
+- Top features on PC2: ___
+- PCA vs. t-SNE: which shows clearer clusters? ___
+- Which method would you use to explain results to a manager? Why? ___
+]
+
+]
+]
+
+
+---
+
+# Check-in: PCA vs. t-SNE
+
+`r countdown(minutes = 2, seconds = 0, top = 0, font_size = "2em")`
+
+**Choose PCA or t-SNE for each scenario:**
+
+1. You want to understand which features drive customer segments.
+
+2. You need to create a compelling cluster visualization for a presentation.
+
+3. You want to reduce 100 survey features to a manageable number for modeling.
+
+4. You want to check if your k-means clusters are well-separated.
+
+5. You need reproducible results that don't change between runs.
+
+.can-edit.key-activity05[Write PCA or t-SNE for each:
+1: ___ , 2: ___ , 3: ___ , 4: ___ , 5: ___]
+
+
+---
+class: inverse, center, middle
+
+# Recap
+
+---
+
+# Summary of Main Points
+
+`r emo::ji("check")` **Dimensionality reduction** is useful when you have too many features to visualize -- it projects high-dimensional data into a lower-dimensional space
+
+`r emo::ji("check")` **PCA** finds linear combinations of features (principal components) that capture maximum variance; use `prcomp()` and examine the scree plot
+
+`r emo::ji("check")` **Biplots** show observations AND feature loadings together; use `fviz_pca_biplot()` to see which features drive cluster separation
+
+`r emo::ji("check")` **t-SNE** is a non-linear method best for *visualizing* clusters; PCA is best for *interpreting* structure. Use both together for a complete picture.
+
+
+---
+
+# Looking Ahead & Readings
+
+**Looking back at our data mining journey:**
+
+- **Lecture 20:** Data mining overview, feature matrices, scaling
+- **Lecture 21:** K-means clustering -- grouping similar observations
+- **Lecture 22:** Dimensionality reduction -- understanding and visualizing structure
+
+**Recommended Readings:**
+
+- [An Introduction to Statistical Learning (ISLR)](https://www.statlearning.com/) -- Chapter 12.2 (PCA)
+
+- [Distill.pub: How to Use t-SNE Effectively](https://distill.pub/2016/misread-tsne/) -- Excellent interactive guide
+
+**Job market connection:** PCA is used in genomics, NLP, finance, and marketing analytics. Understanding dimensionality reduction opens doors across industries. `r fontawesome::fa("briefcase", fill = miamired)`
+
+**Try the Shiny app:** Explore PCA and t-SNE interactively with the PCA Explorer app.

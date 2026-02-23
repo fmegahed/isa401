@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>ISA 401: Business Intelligence &amp; Data Visualization</title>
+    <meta charset="utf-8" />
+    <meta name="author" content=" Fadel M. Megahed, PhD   Raymond E. Gloss Professor in Business   Farmer School of Business  Miami University     @Fadel Megahed     fmegahed     fmegahed@miamioh.edu    Automated Scheduler for Office Hours  " />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/tile-view/tile-view.css" rel="stylesheet" />
+    <script src="libs/tile-view/tile-view.js"></script>
+    <link href="libs/animate.css/animate.xaringan.css" rel="stylesheet" />
+    <link href="libs/tachyons/tachyons.min.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra_fit-screen/fit-screen.js"></script>
+    <link href="libs/panelset/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset/panelset.js"></script>
+    <script type="application/json" id="xaringanExtra-editable-docid">{"id":"xeecc7feba5f43b085fec4c69d995e3e","expires":14}</script>
+    <script src="libs/himalaya/himalaya.js"></script>
+    <script src="libs/js-cookie/js.cookie.js"></script>
+    <link href="libs/editable/editable.css" rel="stylesheet" />
+    <script src="libs/editable/editable.js"></script>
+    <script src="libs/mark.js/mark.min.js"></script>
+    <link href="libs/xaringanExtra-search/search.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-search/search.js"></script>
+    <script>window.addEventListener('load', function() { window.xeSearch = new RemarkSearch({"position":"bottom-left","caseSensitive":false,"showIcon":false,"autoSearch":true}) })</script>
+    <link href="libs/countdown/countdown.css" rel="stylesheet" />
+    <script src="libs/countdown/countdown.js"></script>
+    <link rel="stylesheet" href="../../style_files/fonts.css" type="text/css" />
+    <link rel="stylesheet" href="../../style_files/my-theme.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# ISA 401: Business Intelligence &amp; Data Visualization
+]
+.subtitle[
+## 13: Lab — Power BI
+]
+.author[
+### <br>Fadel M. Megahed, PhD <br><br>Raymond E. Gloss Professor in Business <br> Farmer School of Business<br> Miami University<br><br> <a href="https://www.linkedin.com/in/fadel-megahed-289046b4"><svg viewBox="0 0 448 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:white;" xmlns="http://www.w3.org/2000/svg"> <path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"></path></svg> <span class="citation">@Fadel</span> Megahed</a> <br> <a href="https://github.com/fmegahed/"><svg viewBox="0 0 496 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:white;" xmlns="http://www.w3.org/2000/svg"> <path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg> fmegahed</a> <br> <a href="mailto:fmegahed@miamioh.edu"><svg viewBox="0 0 512 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:white;" xmlns="http://www.w3.org/2000/svg"> <path d="M476 3.2L12.5 270.6c-18.1 10.4-15.8 35.6 2.2 43.2L121 358.4l287.3-253.2c5.5-4.9 13.3 2.6 8.6 8.3L176 407v80.5c0 23.6 28.5 32.9 42.5 15.8L282 426l124.6 52.2c14.2 6 30.4-2.9 33-18.2l72-432C515 7.8 493.3-6.8 476 3.2z"></path></svg> fmegahed@miamioh.edu</a><br> <a href="https://calendly.com/fmegahed"><svg viewBox="0 0 384 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:white;" xmlns="http://www.w3.org/2000/svg"> <path d="M202.021 0C122.202 0 70.503 32.703 29.914 91.026c-7.363 10.58-5.093 25.086 5.178 32.874l43.138 32.709c10.373 7.865 25.132 6.026 33.253-4.148 25.049-31.381 43.63-49.449 82.757-49.449 30.764 0 68.816 19.799 68.816 49.631 0 22.552-18.617 34.134-48.993 51.164-35.423 19.86-82.299 44.576-82.299 106.405V320c0 13.255 10.745 24 24 24h72.471c13.255 0 24-10.745 24-24v-5.773c0-42.86 125.268-44.645 125.268-160.627C377.504 66.256 286.902 0 202.021 0zM192 373.459c-38.196 0-69.271 31.075-69.271 69.271 0 38.195 31.075 69.27 69.271 69.27s69.271-31.075 69.271-69.271-31.075-69.27-69.271-69.27z"></path></svg> Automated Scheduler for Office Hours</a><br><br>
+]
+.date[
+### Spring 2026
+]
+
+---
+
+
+
+
+
+
+
+
+## Quick Refresher from Last Week
+
+✅ Imported and prepared data in Tableau.
+
+✅ Created bar, scatter, box, and map charts.
+
+✅ Built interactive filters, parameters, and cross-filtering.
+
+✅ Constructed a multi-view Job Market Explorer dashboard.
+
+**Today:** We rebuild the same dashboard in **Power BI Desktop** and compare the two tools.
+
+
+---
+
+# Tableau vs. Power BI: Quick Comparison
+
+.font80[
+| Dimension | Tableau | Power BI |
+|-----------|---------|----------|
+| **Vendor** | Salesforce | Microsoft |
+| **Strength** | Visual exploration, ad-hoc analysis | Integration with Microsoft ecosystem |
+| **Data modeling** | Joins in Data Source pane | Full relational model + DAX |
+| **Calculated fields** | Tableau calculations | DAX measures &amp; calculated columns |
+| **Pricing** | Higher per-user cost | Included with many Microsoft 365 plans |
+| **Publishing** | Tableau Server / Public | Power BI Service / Embedded |
+| **Learning curve** | Drag-and-drop, intuitive | Steeper for DAX; easier if you know Excel |
+| **Market share** | Strong in analytics-first orgs | Dominant in Microsoft-centric orgs |
+]
+
+.font130[**Bottom line:** Know both = more opportunities.]
+
+
+---
+
+# Learning Objectives for Today's Lab
+
+- **LO1:** Import data and create relationships in Power BI
+
+- **LO2:** Build visualizations and add slicers
+
+- **LO3:** Write basic DAX measures
+
+- **LO4:** Compare Tableau and Power BI strengths
+
+
+---
+class: inverse, center, middle
+
+# Step 1: Import Data into Power BI
+
+
+---
+
+# Step 1a: Launch Power BI and Load the CSV
+
+1. Open **Power BI Desktop**.
+
+2. On the Home ribbon, click **Get Data** &gt; **Text/CSV**.
+
+3. Navigate to your **`job_market.csv`** file and click **Open**.
+
+4. A preview window appears. Verify:
+   - Column headers are detected correctly.
+   - Data types look reasonable (Power BI auto-detects).
+
+5. Click **Transform Data** to open **Power Query Editor** (we will verify types there).
+
+`[Screenshot: Power BI Get Data dialog with Text/CSV selected]`
+
+
+---
+
+# Step 1b: Verify in Power Query Editor
+
+.font80[
+In the Power Query Editor:
+
+1. Check the **data type icon** next to each column header:
+   - **ABC** = Text
+   - **1.2** = Decimal Number
+   - **123** = Whole Number
+   - **Calendar** = Date
+
+2. **Fix any incorrect types:** Click the icon &gt; select the correct type.
+
+| Column | Expected Type |
+|--------|--------------|
+| `job_title` | Text |
+| `salary_min` / `salary_max` | Decimal Number |
+| `state` | Text |
+| `date_posted` | Date |
+| `skills_count` | Whole Number |
+| `job_category` | Text |
+
+3. Click **Close &amp; Apply** on the Home ribbon to load the data into the model.
+]
+
+`[Screenshot: Power Query Editor with column types verified]`
+
+
+---
+class: inverse, center, middle
+
+# Step 2: Data Types and Relationships
+
+
+---
+
+# Step 2a: Review the Data Model
+
+1. In the left sidebar, click the **Model** view icon (three connected boxes).
+
+2. You will see your `job_market` table. With a single table, there are no relationships to create yet.
+
+3. **Why this matters:** In real projects, you will have multiple tables (e.g., `jobs`, `companies`, `skills`) and need to define **relationships** (joins) between them.
+
+4. **Key concepts:**
+   - **Primary key:** A column with unique values in one table.
+   - **Foreign key:** A column in another table that references the primary key.
+   - **Cardinality:** One-to-many, many-to-many, etc.
+
+`[Screenshot: Power BI Model view showing the job_market table]`
+
+
+---
+
+# Step 2b: Set Data Categories
+
+Power BI can enhance visuals if you assign **data categories** to geographic columns:
+
+1. Switch to **Data** view (table icon in the left sidebar).
+
+2. Click the **`state`** column header.
+
+3. In the **Column tools** ribbon, find **Data Category** &gt; select **State or Province**.
+
+4. This enables Power BI to auto-generate maps for the `state` column.
+
+5. **Optional:** If you have a `city` column, set its category to **City**.
+
+`[Screenshot: Column tools ribbon with Data Category dropdown set to State or Province]`
+
+
+---
+class: inverse, center, middle
+
+# Step 3: Recreate Charts from Tableau
+
+
+---
+
+# Step 3a: Bar Chart — Jobs by State
+
+1. Switch to **Report** view (chart icon in the left sidebar).
+
+2. In the **Visualizations** pane, click the **Clustered Bar Chart** icon.
+
+3. Drag **`state`** to the **Y-axis** field.
+
+4. Drag **`job_title`** to the **X-axis** field -- Power BI will auto-aggregate as **Count**.
+
+5. **Sort:** Click the three-dot menu (**...**) on the chart &gt; **Sort axis** &gt; **Count of job_title** &gt; **Descending**.
+
+6. **Top-N filter:** In the **Filters** pane, expand the `state` filter &gt; select **Top N** &gt; set to **Top 15** by **Count of job_title** &gt; click **Apply filter**.
+
+`[Screenshot: Clustered bar chart of top 15 states by job count]`
+
+
+---
+
+# Step 3b: Format the Bar Chart
+
+1. Click the chart to select it.
+
+2. In the **Format** pane (paint roller icon):
+   - **Data colors:** Set all bars to a single color (e.g., `#C3142D`).
+   - **Data labels:** Toggle **On** to show counts on each bar.
+   - **Title:** Change to **"Job Postings by State"**.
+   - **Gridlines:** Toggle off Y-axis gridlines for a cleaner look.
+
+3. **Resize** the chart by dragging its handles on the canvas.
+
+
+---
+
+# Step 3c: Scatter Plot — Salary vs. Skills
+
+1. Click an empty area on the canvas.
+
+2. Select the **Scatter Chart** visual from the Visualizations pane.
+
+3. Assign fields:
+   - **X-axis:** `skills_count`
+   - **Y-axis:** `salary_max` (it will auto-aggregate as Sum -- change to **Average** or drag individual values)
+   - **Legend:** `job_category`
+   - **Size:** Leave blank (or use `Count of job_title`)
+
+4. **Add a trend line:** Click the **Analytics** icon (magnifying glass) in the Visualizations pane &gt; **Trend line** &gt; toggle **On**.
+
+5. **Title:** Change to **"Salary vs. Skills Count"**.
+
+`[Screenshot: Scatter chart with trend line, colored by job category]`
+
+
+---
+
+# Step 3d: Map — Job Locations
+
+1. Click an empty area on the canvas.
+
+2. Select the **Filled Map** (choropleth) visual.
+
+3. Assign fields:
+   - **Location:** `state`
+   - **Color saturation:** `Count of job_title`
+
+4. Power BI uses the **data category** you set earlier to map states correctly.
+
+5. **Format:**
+   - Choose a **sequential** color scale (e.g., light-to-dark blue).
+   - **Title:** Change to **"Job Postings by State (Map)"**.
+
+`[Screenshot: Filled map of the U.S. with states colored by job count]`
+
+
+---
+
+# Step 3e: Box Plot — Salary by Category
+
+Power BI does not have a native box plot in the default visuals, so we need a workaround:
+
+**Option A: Use a custom visual**
+
+1. In the Visualizations pane, click the three dots (**...**) &gt; **Get more visuals**.
+
+2. Search for **"Box and Whisker"** in the AppSource marketplace.
+
+3. Click **Add** to install it.
+
+4. Select the new Box and Whisker visual and assign:
+   - **Category:** `job_category`
+   - **Values:** `salary_max`
+
+**Option B: Use a Violin Plot or a table with percentiles (if the custom visual is unavailable)**
+
+5. **Title:** Change to **"Salary Distribution by Category"**.
+
+`[Screenshot: Box and Whisker chart from AppSource showing salary distributions]`
+
+
+---
+
+# Step 3f: Arrange the Four Charts
+
+1. **Resize and position** the four charts on the canvas in a 2x2 grid layout:
+
+| Top-Left | Top-Right |
+|----------|-----------|
+| Bar Chart | Scatter Plot |
+| **Bottom-Left** | **Bottom-Right** |
+| Box Plot | Map |
+
+2. **Align charts:** Select multiple charts (Ctrl+Click) &gt; **Format** ribbon &gt; **Align** &gt; **Distribute Horizontally** / **Vertically**.
+
+3. **Add a title:** Insert a **Text Box** from the **Insert** ribbon &gt; type **"Job Market Explorer Dashboard"** &gt; format with a larger font.
+
+
+---
+class: inverse, center, middle
+
+# Step 4: Slicers and Cross-Filtering
+
+
+---
+
+# Step 4a: Add a Job Category Slicer
+
+**Slicers** in Power BI are the equivalent of Tableau's filters:
+
+1. Click an empty area on the canvas.
+
+2. Select the **Slicer** visual from the Visualizations pane.
+
+3. Drag **`job_category`** into the **Field** well.
+
+4. **Slicer style:** Click the dropdown on the slicer &gt; choose **Dropdown** (to save space) or **List** (for visibility).
+
+5. Place the slicer at the **top of the dashboard** above the charts.
+
+`[Screenshot: Slicer showing job categories as a dropdown above the dashboard]`
+
+
+---
+
+# Step 4b: Add a Salary Range Slicer
+
+1. Add another **Slicer** visual.
+
+2. Drag **`salary_max`** into the Field well.
+
+3. Power BI automatically creates a **range slider** for numeric fields.
+
+4. Users can drag the handles to set a minimum and maximum salary range.
+
+5. Place this slicer next to the job category slicer at the top.
+
+`[Screenshot: Numeric range slicer for salary_max next to the category slicer]`
+
+
+---
+
+# Step 4c: Cross-Filtering Behavior
+
+Power BI enables **cross-filtering by default**:
+
+- **Click** a bar in the bar chart -- all other visuals update to reflect that state.
+
+- **Click** a category in the scatter plot legend -- the bar chart and map filter accordingly.
+
+**To customize interactions:**
+
+1. Click a chart to select it.
+
+2. Go to the **Format** ribbon &gt; **Edit Interactions**.
+
+3. Icons appear on every other chart:
+   - **Filter** (funnel): the target chart filters when you click the source.
+   - **Highlight** (highlight icon): the target chart highlights matching data.
+   - **None** (circle with line): no interaction.
+
+4. Choose the interaction type for each pair of charts.
+
+
+---
+class: inverse, center, middle
+
+# Step 5: Introduction to DAX
+
+
+---
+
+# Step 5a: What Is DAX?
+
+**DAX** (Data Analysis Expressions) is Power BI's formula language:
+
+- Similar to Excel formulas but designed for **relational data models**.
+
+- Used to create **measures** (dynamic calculations) and **calculated columns** (static, row-level).
+
+- **Measures** are computed at query time and respond to filters/slicers.
+
+| Concept | Excel Equivalent | DAX Example |
+|---------|-----------------|-------------|
+| Sum a column | `=SUM(A:A)` | `SUMX(Jobs, Jobs[Salary])` |
+| Count rows | `=COUNTA(A:A)` | `COUNTROWS(Jobs)` |
+| Average | `=AVERAGE(A:A)` | `AVERAGE(Jobs[Salary])` |
+| Conditional | `=SUMIFS(...)` | `CALCULATE(SUM(...), Filter)` |
+
+
+---
+
+# Step 5b: Create Your First Measure — avg_salary
+
+1. In the **Data** pane, right-click the `job_market` table &gt; **New Measure**.
+
+2. In the formula bar, type:
+
+```
+avg_salary = AVERAGE(job_market[salary_max])
+```
+
+3. Press **Enter**. The measure appears in the Data pane with a calculator icon.
+
+4. **Format the measure:** Select `avg_salary` &gt; in the **Measure tools** ribbon &gt; **Format** &gt; **Currency** (or **Decimal Number**).
+
+5. **Use it:** Drag `avg_salary` into a **Card** visual to display the overall average salary on your dashboard.
+
+`[Screenshot: Card visual showing avg_salary formatted as currency]`
+
+
+---
+
+# Step 5c: Create job_count Measure
+
+1. Right-click the table &gt; **New Measure**.
+
+2. Type:
+
+```
+job_count = COUNTROWS(job_market)
+```
+
+3. Press **Enter**.
+
+4. Drag `job_count` into another **Card** visual.
+
+5. This card dynamically updates when slicers or cross-filters are applied -- showing the count of jobs **in the current filter context**.
+
+
+---
+
+# Step 5d: Create salary_premium Measure
+
+This measure calculates how much each category's average salary exceeds the overall average:
+
+1. Right-click the table &gt; **New Measure**.
+
+2. Type:
+
+```
+salary_premium =
+    AVERAGE(job_market[salary_max])
+    - CALCULATE(AVERAGE(job_market[salary_max]), ALL(job_market[job_category]))
+```
+
+3. Press **Enter**.
+
+4. **How it works:**
+   - `AVERAGE(job_market[salary_max])` computes the average salary **in the current filter context** (e.g., for "Data Scientist").
+   - `CALCULATE(... ALL(job_category))` computes the **overall** average, ignoring the category filter.
+   - The difference is the **premium** (or deficit) for that category.
+
+5. **Use it:** Create a **Clustered Bar Chart** with `job_category` on the axis and `salary_premium` as the value.
+
+`[Screenshot: Bar chart showing salary premium by job category, some positive, some negative]`
+
+
+---
+class: inverse, center, middle
+
+# Step 6: Dashboard Layout and Formatting
+
+
+---
+
+# Step 6a: Apply a Consistent Theme
+
+1. Go to the **View** ribbon &gt; **Themes**.
+
+2. Choose a built-in theme or click **Browse for Themes** to import a custom `.json` theme file.
+
+3. **Recommended:** Use a simple theme with a white background and a single accent color.
+
+4. **Consistency checklist:**
+   - Same font family across all visuals.
+   - Same accent color for data bars and points.
+   - Chart titles in the same size and weight.
+   - Slicer styling matches the overall theme.
+
+
+---
+
+# Step 6b: Final Layout and Polish
+
+1. **Arrange visuals** in a clean grid with consistent spacing.
+
+2. **Add KPI cards** at the top: `avg_salary`, `job_count`, and optionally `salary_premium`.
+
+3. **Remove visual headers** if they add clutter: Format pane &gt; **General** &gt; **Header icons** &gt; toggle off.
+
+4. **Bookmarks (optional):** Use **View** &gt; **Bookmarks** to save specific filter states (e.g., "Data Science Jobs Only").
+
+5. **Mobile layout (optional):** Go to **View** &gt; **Mobile Layout** to arrange visuals for phone viewing.
+
+`[Screenshot: Final polished dashboard with cards at top, slicers below, four charts in a grid]`
+
+
+---
+
+# Activity: Build the Job Market Dashboard in Power BI
+
+<countdown-timer class="countdown" id="timer_1244b176" minutes="20" seconds="0" update-every="1" tabindex="0" style="top:0;right:0;--countdown-font-size:2em;"></countdown-timer>
+
+.panelset[
+
+.panel[.panel-name[Instructions]
+
+&gt; Recreate the **Job Market Explorer** dashboard in Power BI with:
+
+1. A **bar chart** of top 15 states by job count
+2. A **scatter plot** of salary vs. skills count
+3. A **map** of job locations
+4. A **box plot** (custom visual) of salary by category
+5. **Slicers** for job category and salary range
+6. **DAX measures:** `avg_salary`, `job_count`, `salary_premium`
+7. **Card visuals** displaying the DAX measures
+
+**Save** your file as `job_market_dashboard.pbix`.
+
+]
+
+.panel[.panel-name[Checklist]
+
+.can-edit.key-activity04[
+
+- [ ] Imported CSV and verified data types
+- [ ] Set state to Geographic data category
+- [ ] Bar chart with Top-N filter
+- [ ] Scatter plot with trend line
+- [ ] Filled map with sequential color
+- [ ] Box plot (custom visual)
+- [ ] Job category slicer
+- [ ] Salary range slicer
+- [ ] avg_salary measure + Card
+- [ ] job_count measure + Card
+- [ ] salary_premium measure + Bar chart
+- [ ] Consistent theme applied
+- [ ] Saved as .pbix
+
+]
+
+]
+
+.panel[.panel-name[Troubleshooting]
+
+**Common issues:**
+
+- **Map not showing:** Ensure `state` has the Data Category set to "State or Province."
+- **DAX error:** Check that table and column names in your formula exactly match the Data pane (case-sensitive).
+- **Measure shows blank:** Measures need a visual context -- drag them into a visual, not just onto the canvas.
+- **Custom visual not available:** Check your organization's admin settings or try an alternative AppSource visual.
+- **Slicer not filtering a chart:** Use Edit Interactions to verify the interaction type is set to Filter.
+
+]
+
+]
+
+
+---
+class: inverse, center, middle
+
+# Comparison Discussion
+
+
+---
+
+# Structured Comparison: Tableau vs. Power BI
+
+Based on your hands-on experience over the last two labs:
+
+| Task | Easier in Tableau? | Easier in Power BI? | About the Same? |
+|------|-------------------|---------------------|-----------------|
+| Connecting to CSV | | | |
+| Creating a bar chart | | | |
+| Creating a scatter plot | | | |
+| Creating a map | | | |
+| Creating a box plot | | | |
+| Adding filters/slicers | | | |
+| Custom calculations | | | |
+| Dashboard layout | | | |
+| Cross-filtering | | | |
+| Publishing/sharing | | | |
+
+
+---
+
+# Discussion: When to Choose Which Tool
+
+.pull-left[
+
+**Choose Tableau when:**
+
+- You need fast, **ad-hoc exploration** of large datasets.
+
+- The audience expects **polished, interactive** dashboards.
+
+- Your organization is **analytics-first** (not tied to Microsoft).
+
+- You need advanced **spatial** or **statistical** visualizations.
+
+]
+
+.pull-right[
+
+**Choose Power BI when:**
+
+- Your organization uses **Microsoft 365** / Azure / SharePoint.
+
+- You need **data modeling** with multiple related tables.
+
+- **DAX** provides the calculation power you need.
+
+- **Cost** is a concern -- Power BI Pro is often bundled with existing licenses.
+
+- You want tight **Excel integration**.
+
+]
+
+.font130[**In practice:** Many organizations use both. Knowing both makes you a stronger candidate.]
+
+
+---
+class: inverse, center, middle
+
+# Wrap-Up
+
+
+---
+
+# Summary of What We Built
+
+Today you recreated the Job Market Explorer dashboard in Power BI:
+
+✅ **LO1:** Imported data, set data categories, and explored the model view.
+
+✅ **LO2:** Built bar, scatter, map, and box plot visuals with slicers.
+
+✅ **LO3:** Wrote DAX measures: `avg_salary`, `job_count`, `salary_premium`.
+
+✅ **LO4:** Compared Tableau and Power BI across multiple dimensions.
+
+
+---
+
+# Next Steps
+
+1. **Submit** your `job_market_dashboard.pbix` file on Canvas.
+
+2. **Reflect** on the comparison: Write a short paragraph (3-5 sentences) about which tool you preferred and why. Submit this on Canvas as part of the assignment.
+
+3. **For next class:** We will explore **Flourish and Datawrapper** -- lightweight, web-based tools for quick visualizations and data storytelling.
+
+4. **Portfolio tip:** Having dashboards in **both Tableau and Power BI** demonstrates versatility. Consider publishing both to your online portfolio.
+
+.font130[**Microsoft shops = Power BI. Know both = more opportunities.**]
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+  "highlightStyle": "magula",
+  "highlightLines": true,
+  "highlightLanguage": "r",
+  "countIncrementalSlides": false,
+  "ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

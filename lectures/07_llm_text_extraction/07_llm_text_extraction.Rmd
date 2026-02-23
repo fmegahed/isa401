@@ -1,0 +1,941 @@
+---
+title: "ISA 401: Business Intelligence & Data Visualization"
+subtitle: '07: LLM Text Extraction in `r icons::icon_style(icons::fontawesome("r-project"), fill = "white")`'
+author: '<br>Fadel M. Megahed, PhD <br><br>Raymond E. Gloss Professor in Business <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("linkedin"), fill = "white")` @Fadel Megahed](https://www.linkedin.com/in/fadel-megahed-289046b4) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
+date: "Spring 2026"
+output:
+  xaringan::moon_reader:
+    self_contained: true
+    css: [default, "../../style_files/fonts.css", "../../style_files/my-theme.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: magula
+      highlightLines: true
+      highlightLanguage: ["r"]
+      countIncrementalSlides: false
+      ratio: "16:9"
+header-includes:
+  - "../../style_files/header.html"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache = FALSE,
+                      echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE,
+                      progress = FALSE,
+                      verbose = FALSE,
+                      dev = 'png',
+                      fig.height = 2.5,
+                      dpi = 300,
+                      fig.align = 'center')
+
+options(htmltools.dir.version = FALSE)
+
+miamired = '#C3142D'
+
+if(require(pacman)==FALSE) install.packages("pacman")
+if(require(devtools)==FALSE) install.packages("devtools")
+
+if(require(countdown)==FALSE) devtools::install_github("gadenbuie/countdown")
+if(require(xaringanExtra)==FALSE) devtools::install_github("gadenbuie/xaringanExtra")
+
+
+pacman::p_load(tidyverse, magrittr, lubridate, janitor, # data analysis pkgs
+               httr2, jsonlite, # for APIs
+               fontawesome, RefManageR, xaringanExtra, countdown) # for slides
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+if(require(xaringanthemer) == FALSE) install.packages("xaringanthemer")
+library(xaringanthemer)
+
+xaringanthemer::style_mono_accent(base_color = "#84d6d3",
+                  base_font_size = "20px")
+
+xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "tachyons", "panelset", "search", "fit_screen", "editable",
+                                    "clipable"))
+```
+
+
+## Quick Refresher from Last Week
+
+`r emo::ji("check")` Scrape structured data from web pages using `rvest` in `r fontawesome::fa(name = 'r-project', fill = miamired)`.
+
+`r emo::ji("check")` Handle pagination and dynamic content when scraping.
+
+`r emo::ji("check")` Clean and reshape scraped data into tidy formats.
+
+
+---
+
+## Kahoot/Quiz Review: Web Scraping Concepts
+
+Test your knowledge from the previous lectures on web scraping:
+
+1. What function from `rvest` extracts text from HTML nodes?
+
+2. What does `html_attr()` return compared to `html_text()`?
+
+3. When would you use `httr2` instead of `rvest` for web data collection?
+
+4. What is the purpose of checking `robots.txt` before scraping?
+
+5. How do you handle a paginated website in a scraping workflow?
+
+```{r quiz-countdown, echo=FALSE}
+countdown::countdown(minutes = 3, seconds = 0, top = 0, right = 0,
+          color_running_background = miamired,
+          color_finished_background = "#84d6d3")
+```
+
+
+---
+
+## Learning Objectives for Today's Class
+
+- **LO1:** Explain the role of LLMs in extracting structured data from text
+
+- **LO2:** Use LLM APIs (Claude/GPT) to parse unstructured text from `r fontawesome::fa(name = 'r-project', fill = miamired)`
+
+- **LO3:** Design effective prompts for data extraction
+
+- **LO4:** Compare LLM-based extraction to regex approaches
+
+
+---
+class: inverse, center, middle
+
+# The LLM Revolution in Data Extraction
+
+
+---
+
+## The Problem: Messy Unstructured Text
+
+Consider this **real job posting** scraped from the web:
+
+.font80[
+> _"We're looking for a Sr. Data Analyst (remote OK, $95-120K) with 3+ yrs exp in Python/R, SQL, and Tableau. MS preferred. Must be comfortable with large datasets and stakeholder communication. Benefits include 401k match, unlimited PTO, and health/dental/vision. Position based in Cincinnati, OH but open to remote candidates nationwide."_
+]
+
+--
+
+**Activity:** What structured fields would you extract from this text?
+
+Take 2 minutes to write down every piece of structured data you can identify.
+
+```{r activity1-countdown, echo=FALSE}
+countdown::countdown(minutes = 2, seconds = 0, top = 0, right = 0,
+          color_running_background = miamired,
+          color_finished_background = "#84d6d3")
+```
+
+
+---
+
+## Traditional Approach: Regex
+
+Extracting just the **salary** from that posting with regex:
+
+```{r regex-example, eval=FALSE}
+posting <- "We're looking for a Sr. Data Analyst (remote OK, $95-120K)
+with 3+ yrs exp in Python/R, SQL, and Tableau. MS preferred."
+
+# Attempt to extract salary range
+stringr::str_extract(posting, "\\$[\\d,]+-[\\d,]+[Kk]?")
+```
+
+--
+
+Now imagine writing regex for: job title, skills, education, experience, remote status, location, benefits...
+
+- Each field needs its own pattern
+- Patterns break when format changes
+- Edge cases multiply quickly
+
+**There has to be a better way.** `r emo::ji("thinking")`
+
+
+---
+
+## Why LLMs Change the Game
+
+.pull-left[
+### Before LLMs
+- Write **custom regex** per field
+- Build **rule-based parsers**
+- Handle **edge cases** manually
+- Rebuild when formats change
+- Weeks of development time
+]
+
+.pull-right[
+### With LLMs
+- **One prompt** extracts all fields
+- Handles **format variation** naturally
+- Understands **context and synonyms**
+- Works across **different sources**
+- Minutes to prototype
+]
+
+--
+
+<br>
+
+.center[**The key insight:** LLMs understand language *semantically*, not just syntactically. They can infer that "MS preferred" means `education: "Master's degree"` and that "$95-120K" means `salary_min: 95000, salary_max: 120000`.]
+
+
+---
+
+## The Job Market Connection
+
+This is one of **2026's most in-demand skills**: turning unstructured data into structured insights at scale.
+
+.pull-left[
+**Unstructured data is everywhere:**
+- Job postings
+- Customer reviews
+- Support tickets
+- News articles
+- Social media posts
+- Medical records
+- Legal documents
+]
+
+.pull-right[
+**Business value:**
+- Competitive intelligence
+- Market research
+- Sentiment analysis
+- Compliance monitoring
+- Trend detection
+- Automated reporting
+]
+
+--
+
+> According to industry estimates, **80-90% of enterprise data is unstructured.** The ability to programmatically extract insights from this data is a career-defining skill.
+
+
+---
+
+## The LLM Extraction Pipeline
+
+.center[**From raw text to structured data in 4 steps:**]
+
+```
+  +-------------------+      +-------------------+      +-------------------+      +-------------------+
+  |  1. Raw Text      | ---> |  2. Send to LLM   | ---> |  3. Parse JSON    | ---> |  4. Tidy Data     |
+  |  (scraped/loaded) |      |  (via API call)   |      |  (jsonlite)       |      |  (tibble/df)      |
+  +-------------------+      +-------------------+      +-------------------+      +-------------------+
+```
+
+Each step uses tools we already know:
+
+| Step | Tool | Package |
+|:-----|:-----|:--------|
+| 1. Collect text | Web scraping or file I/O | `rvest`, `readr` |
+| 2. Call the LLM | HTTP POST with JSON body | `httr2` |
+| 3. Parse response | JSON to R list | `jsonlite` |
+| 4. Structure output | List to data frame | `tibble`, `dplyr` |
+
+Today, we focus on **steps 2-4**.
+
+
+---
+
+## Section Check-In: LO1
+
+`r emo::ji("check")` We understand the challenge of extracting structured data from unstructured text.
+
+`r emo::ji("check")` We see why regex alone is fragile for complex extraction tasks.
+
+`r emo::ji("check")` We recognize that LLMs offer a semantic approach to text understanding.
+
+**Key takeaway:** LLMs complement traditional parsing by handling the messy, variable parts of text extraction.
+
+
+---
+class: inverse, center, middle
+
+# Connecting to LLM APIs
+
+
+---
+
+## Step 1: API Key Management with `.Renviron`
+
+**Never hardcode API keys in your scripts.** Use environment variables instead.
+
+```{r renviron-demo, eval=FALSE}
+# Open your project-level .Renviron file
+usethis::edit_r_environ()
+
+# Add your API key(s) -- one per line, no quotes needed:
+# ANTHROPIC_API_KEY=sk-ant-api03-xxxxx
+# OPENAI_API_KEY=sk-xxxxx
+```
+
+--
+
+After saving and **restarting R**, access keys with:
+
+```{r getenv-demo, eval=FALSE}
+Sys.getenv("ANTHROPIC_API_KEY")  # Returns your key
+Sys.getenv("OPENAI_API_KEY")     # Returns your key
+```
+
+.footnote[
+<html>
+<hr>
+</html>
+**Important:** Add `.Renviron` to your `.gitignore` to prevent accidentally pushing secrets to GitHub.
+]
+
+
+---
+
+## Step 2: Building Requests with httr2
+
+.panelset[
+
+.panel[.panel-name[Overview]
+
+Recall from our API lecture: `httr2` builds HTTP requests step by step using the pipe operator.
+
+For LLM APIs, the pattern is:
+
+1. **Set the base URL** (e.g., `https://api.anthropic.com/v1/messages`)
+2. **Add headers** (API key, content type, API version)
+3. **Add a JSON body** (model, messages, parameters)
+4. **Perform the request** and parse the response
+
+]
+
+.panel[.panel-name[Claude API Structure]
+
+```{r claude-structure, eval=FALSE}
+httr2::request("https://api.anthropic.com/v1/messages") |>
+  httr2::req_headers(
+    `x-api-key` = Sys.getenv("ANTHROPIC_API_KEY"),
+    `anthropic-version` = "2023-06-01",
+    `content-type` = "application/json"
+  ) |>
+  httr2::req_body_json(list(
+    model = "claude-sonnet-4-20250514",
+    max_tokens = 1024,
+    messages = list(
+      list(role = "user", content = "Your prompt here")
+    )
+  )) |>
+  httr2::req_perform()
+```
+
+]
+
+.panel[.panel-name[OpenAI API Structure]
+
+```{r openai-structure, eval=FALSE}
+httr2::request("https://api.openai.com/v1/chat/completions") |>
+  httr2::req_headers(
+    Authorization = paste("Bearer", Sys.getenv("OPENAI_API_KEY")),
+    `Content-Type` = "application/json"
+  ) |>
+  httr2::req_body_json(list(
+    model = "gpt-4o-mini",
+    messages = list(
+      list(role = "user", content = "Your prompt here")
+    ),
+    temperature = 0
+  )) |>
+  httr2::req_perform()
+```
+
+]
+
+]
+
+
+---
+
+## Step 3: A Helper Function for Claude
+
+Let us wrap the API call into a **reusable function**:
+
+```{r claude-helper, eval=FALSE}
+ask_claude <- function(prompt,
+                       model = "claude-sonnet-4-20250514",
+                       max_tokens = 1024) {
+
+  resp <- httr2::request("https://api.anthropic.com/v1/messages") |>
+    httr2::req_headers(
+      `x-api-key` = Sys.getenv("ANTHROPIC_API_KEY"),
+      `anthropic-version` = "2023-06-01",
+      `content-type` = "application/json"
+    ) |>
+    httr2::req_body_json(list(
+      model = model,
+      max_tokens = max_tokens,
+      messages = list(list(role = "user", content = prompt))
+    )) |>
+    httr2::req_perform()
+
+  # Extract the text from the response
+  resp |>
+    httr2::resp_body_json() |>
+    purrr::pluck("content", 1, "text")
+}
+```
+
+
+---
+
+## Demo: Sending a Job Posting to Claude
+
+.panelset[
+
+.panel[.panel-name[The Request]
+
+```{r demo-request, eval=FALSE}
+job_text <- "We're looking for a Sr. Data Analyst (remote OK, $95-120K)
+with 3+ yrs exp in Python/R, SQL, and Tableau. MS preferred. Must be
+comfortable with large datasets and stakeholder communication. Benefits
+include 401k match, unlimited PTO, and health/dental/vision. Position
+based in Cincinnati, OH but open to remote candidates nationwide."
+
+result <- ask_claude(
+  prompt = paste("Extract key information from this job posting:", job_text)
+)
+```
+
+]
+
+.panel[.panel-name[The Response]
+
+Claude returns a **natural language summary** by default:
+
+```
+Here are the key details from this job posting:
+
+- **Title:** Sr. Data Analyst
+- **Salary:** $95,000 - $120,000
+- **Experience:** 3+ years
+- **Skills:** Python, R, SQL, Tableau
+- **Education:** Master's degree preferred
+- **Location:** Cincinnati, OH (remote available)
+- **Benefits:** 401k match, unlimited PTO, health/dental/vision
+```
+
+This is useful, but we want **structured data** we can put in a data frame. That brings us to prompt engineering...
+
+]
+
+]
+
+
+---
+
+## Section Check-In: LO2
+
+`r emo::ji("check")` We can securely manage API keys using `.Renviron` files.
+
+`r emo::ji("check")` We can construct `httr2` requests to the Claude (and OpenAI) APIs.
+
+`r emo::ji("check")` We can send text to an LLM and receive a response programmatically.
+
+**Key takeaway:** LLM APIs follow the same request/response pattern as other web APIs. The main difference is the JSON body structure.
+
+
+---
+class: inverse, center, middle
+
+# Designing Extraction Prompts
+
+
+---
+
+## Prompt Design Principles
+
+.pull-left[
+### Be Specific
+- Name **exact fields** you want
+- Specify **data types** (string, number, array)
+- Define **how to handle missing data**
+
+### Request Structured Output
+- Ask for **JSON format explicitly**
+- Provide a **schema/template**
+- Use the word "only" to avoid extra text
+]
+
+.pull-right[
+### Define the Schema
+- List all fields with descriptions
+- Provide **examples** of expected values
+- Specify **constraints** (e.g., "array of strings")
+
+### Handle Edge Cases
+- What if a field is not mentioned?
+- What if information is ambiguous?
+- Instruct: use `null` for missing values
+]
+
+
+---
+
+## Crafting the Extraction Prompt
+
+Here is a prompt template designed for **consistent, parseable** output:
+
+.font80[
+```{r prompt-template, eval=FALSE}
+extraction_prompt <- '
+You are a data extraction assistant. Given a job posting, extract the
+following fields and return ONLY valid JSON (no markdown, no explanation):
+
+{
+  "job_title": "string",
+  "skills": ["array", "of", "strings"],
+  "min_experience_years": number or null,
+  "education_level": "string or null",
+  "salary_min": number or null,
+  "salary_max": number or null,
+  "remote_status": "remote" | "hybrid" | "onsite" | "unknown",
+  "location": "string or null",
+  "benefits": ["array", "of", "strings"]
+}
+
+Rules:
+- Use null for any field not mentioned in the posting
+- Salary should be annual in USD (convert from hourly/monthly if needed)
+- Skills should be individual technologies, not phrases
+
+Job posting:
+'
+```
+]
+
+
+---
+
+## Putting It Together: Full Extraction
+
+.panelset[
+
+.panel[.panel-name[Code]
+
+```{r full-extraction, eval=FALSE}
+extract_job_info <- function(job_text) {
+  prompt <- paste0(extraction_prompt, job_text)
+
+  raw_json <- ask_claude(prompt, max_tokens = 512)
+
+  # Parse the JSON string into an R list
+  parsed <- jsonlite::fromJSON(raw_json)
+
+  return(parsed)
+}
+
+# Run extraction
+job_info <- extract_job_info(job_text)
+```
+
+]
+
+.panel[.panel-name[Raw JSON Output]
+
+```json
+{
+  "job_title": "Sr. Data Analyst",
+  "skills": ["Python", "R", "SQL", "Tableau"],
+  "min_experience_years": 3,
+  "education_level": "Master's degree",
+  "salary_min": 95000,
+  "salary_max": 120000,
+  "remote_status": "remote",
+  "location": "Cincinnati, OH",
+  "benefits": ["401k match", "unlimited PTO",
+               "health insurance", "dental insurance",
+               "vision insurance"]
+}
+```
+
+]
+
+.panel[.panel-name[As a Data Frame]
+
+```{r as-df, eval=FALSE}
+# Convert to a single-row tibble
+job_df <- tibble::tibble(
+  job_title = job_info$job_title,
+  skills = paste(job_info$skills, collapse = ", "),
+  min_experience_years = job_info$min_experience_years,
+  education_level = job_info$education_level,
+  salary_min = job_info$salary_min,
+  salary_max = job_info$salary_max,
+  remote_status = job_info$remote_status,
+  location = job_info$location,
+  benefits = paste(job_info$benefits, collapse = ", ")
+)
+
+dplyr::glimpse(job_df)
+```
+
+]
+
+]
+
+
+---
+
+## Handling JSON Parsing Robustly
+
+Sometimes LLMs return extra text around the JSON. Here is a safer parser:
+
+```{r safe-parse, eval=FALSE}
+safe_extract_json <- function(text) {
+  # Find the JSON object boundaries
+  json_start <- regexpr("\\{", text)
+  json_end <- max(gregexpr("\\}", text)[[1]])
+
+  if (json_start == -1 || json_end == -1) {
+    warning("No JSON object found in response")
+    return(NULL)
+  }
+
+  json_str <- substr(text, json_start, json_end)
+
+  tryCatch(
+    jsonlite::fromJSON(json_str),
+    error = function(e) {
+      warning(paste("JSON parse error:", e$message))
+      return(NULL)
+    }
+  )
+}
+```
+
+**Pro tip:** Adding `"Return ONLY valid JSON"` to your prompt reduces the need for this fallback.
+
+
+---
+
+## Prompt Iteration: Debugging Common Issues
+
+| Problem | Symptom | Fix |
+|:--------|:--------|:----|
+| Extra text around JSON | `jsonlite::fromJSON()` fails | Add "Return ONLY valid JSON, no explanation" |
+| Inconsistent field names | `salary` vs `salary_range` | Provide exact JSON template in prompt |
+| Missing fields | Some fields silently omitted | Add "Include ALL fields, use null if unknown" |
+| Wrong types | Salary as string "$95K" | Specify "salary_min should be a number (integer)" |
+| Array vs string | Skills as one comma-separated string | Specify "skills should be a JSON array of strings" |
+
+--
+
+**Iteration workflow:**
+1. Start with a **simple prompt** and test on 3-5 examples
+2. Identify **failure patterns** in the output
+3. Add **specific instructions** to address each failure
+4. Set `temperature = 0` (OpenAI) for more deterministic output
+5. Repeat until output is consistent across diverse inputs
+
+
+---
+
+## Scaling: Processing Multiple Postings
+
+```{r batch-extract, eval=FALSE}
+# A vector of job posting texts (e.g., from web scraping)
+job_postings <- c(
+  "Data Scientist at TechCo, $130-160K, PhD preferred...",
+  "Junior BI Analyst, Cincinnati, $55-65K, Excel/SQL...",
+  "ML Engineer (Remote), 5+ yrs, Python/TensorFlow, $150-180K...",
+  "Analytics Manager, hybrid, MBA preferred, $110-140K...",
+  "Entry-level Data Analyst, $50-60K, Bachelor's required..."
+)
+
+# Extract structured data from each posting
+all_jobs <- purrr::map(job_postings, \(posting) {
+  Sys.sleep(1)  # Rate limiting: be polite to the API
+  result <- ask_claude(paste0(extraction_prompt, posting))
+  safe_extract_json(result)
+}) |>
+  purrr::compact() |>  # Remove any NULLs from failures
+  purrr::map(\(x) { x$skills <- paste(x$skills, collapse = ", ")
+                     x$benefits <- paste(x$benefits, collapse = ", ")
+                     tibble::as_tibble(x) }) |>
+  dplyr::bind_rows()
+```
+
+
+---
+
+## Activity: Extract Data from Job Postings
+
+Using the `ask_claude()` function and the `extraction_prompt` template, do the following:
+
+1. **Copy** the helper function and prompt template into your R script.
+
+2. **Pick 5 job postings** from a job board (Indeed, LinkedIn, USAJobs, etc.) and store their text as character strings in R.
+
+3. **Run the extraction** on all 5 postings to produce a single tidy data frame.
+
+4. **Inspect the results:** Are all fields correctly extracted? Any `null`s that should have values?
+
+5. **Bonus:** Modify the prompt to add a new field: `seniority_level` (entry/mid/senior/lead).
+
+```{r activity2-countdown, echo=FALSE}
+countdown::countdown(minutes = 8, seconds = 0, top = 0, right = 0,
+          color_running_background = miamired,
+          color_finished_background = "#84d6d3")
+```
+
+
+---
+
+## Section Check-In: LO3
+
+`r emo::ji("check")` We can design prompts that return structured JSON output.
+
+`r emo::ji("check")` We can define a schema with field names, types, and rules for missing data.
+
+`r emo::ji("check")` We can parse JSON responses into tidy data frames using `jsonlite`.
+
+`r emo::ji("check")` We can scale extraction across multiple documents with `purrr::map()`.
+
+**Key takeaway:** The prompt *is* the program. A well-designed prompt replaces hundreds of lines of regex/parsing code.
+
+
+---
+class: inverse, center, middle
+
+# LLM vs Regex: When to Use What
+
+
+---
+
+## Accuracy Comparison
+
+| Criterion | Regex | LLM Extraction |
+|:----------|:------|:---------------|
+| **Exact pattern match** (e.g., phone numbers) | `r emo::ji("check")` Excellent | Good |
+| **Semantic understanding** (e.g., "MS preferred" -> Master's) | Poor | `r emo::ji("check")` Excellent |
+| **Format variation** (e.g., "$95K" vs "$95,000/yr") | Fragile | `r emo::ji("check")` Robust |
+| **Multi-field extraction** | One pattern per field | `r emo::ji("check")` Single prompt |
+| **Novel/unseen formats** | Fails | `r emo::ji("check")` Adapts |
+| **100% deterministic output** | `r emo::ji("check")` Yes | No (stochastic) |
+| **Speed** (per document) | `r emo::ji("check")` Microseconds | ~1-3 seconds |
+
+--
+
+**Bottom line:** Regex excels at well-defined, consistent patterns. LLMs excel at messy, variable, semantically rich text.
+
+
+---
+
+## Effort Comparison
+
+.pull-left[
+### Regex Approach
+```{r regex-effort, eval=FALSE}
+# Just salary extraction took this:
+salary_pattern <- paste0(
+  "\\$[\\d,]+\\.?\\d*\\s*",
+  "[-–to]+\\s*",
+  "\\$?[\\d,]+\\.?\\d*",
+  "\\s*[Kk]?\\s*",
+  "(/yr|/year|per year|annual)?"
+)
+
+# Now repeat for: title, skills,
+# education, experience, location,
+# remote status, benefits...
+# Each with its own edge cases.
+```
+
+**Estimated effort:** 2-5 days for a robust multi-field extractor
+]
+
+.pull-right[
+### LLM Approach
+```{r llm-effort, eval=FALSE}
+# All fields in one prompt:
+prompt <- "Extract these fields
+as JSON: job_title, skills,
+salary_min, salary_max,
+education, experience_years,
+location, remote_status,
+benefits.
+Return ONLY valid JSON."
+```
+
+<br>
+
+**Estimated effort:** 1-2 hours including testing and refinement
+]
+
+
+---
+
+## Cost Analysis
+
+How much does LLM extraction cost at scale?
+
+.font90[
+| Scenario | Model | Est. Tokens/Posting | Cost/Posting | Cost for 1,000 |
+|:---------|:------|:--------------------|:-------------|:----------------|
+| Short posting (200 words) | Claude Sonnet | ~800 | ~$0.005 | ~$5 |
+| Long posting (500 words) | Claude Sonnet | ~1,500 | ~$0.009 | ~$9 |
+| Short posting (200 words) | GPT-4o-mini | ~800 | ~$0.001 | ~$1 |
+| Any posting | Regex | 0 | $0.00 | $0.00 |
+]
+
+--
+
+**Key considerations:**
+
+- **Development time** has a cost too: even at $50/hr, 3 days of regex work = $1,200 (equivalent to extracting from ~130,000+ postings with Claude Sonnet)
+- LLM costs are **dropping rapidly** (10x cheaper than 2 years ago)
+- For one-off analyses, LLMs are almost always more cost-effective
+
+
+---
+
+## Real-World Example: Same Task, Two Approaches
+
+.pull-left[
+### Regex: Extract education level
+```{r regex-edu, eval=FALSE}
+# Must account for many variations:
+edu_patterns <- c(
+  "(?i)ph\\.?d", "(?i)doctorate",
+  "(?i)master'?s?", "(?i)m\\.?s\\.?",
+  "(?i)m\\.?b\\.?a\\.?",
+  "(?i)bachelor'?s?", "(?i)b\\.?s\\.?",
+  "(?i)b\\.?a\\.?"
+)
+# Still misses: "graduate degree",
+# "advanced degree", "4-year degree",
+# "post-secondary education"
+```
+]
+
+.pull-right[
+### LLM: Extract education level
+```{r llm-edu, eval=FALSE}
+# Handles all of these naturally:
+# "MS preferred"
+# "Ph.D. required"
+# "4-year degree minimum"
+# "graduate degree preferred"
+# "post-secondary education"
+# "Bachelor's or equivalent exp"
+# -> All correctly mapped to a
+#    standardized education level
+```
+]
+
+The LLM understands that "4-year degree" = "Bachelor's" and "graduate degree" = "Master's or PhD" **without explicit rules**.
+
+
+---
+
+## Decision Framework
+
+.center[**Which approach should you use?**]
+
+```
+                        Is the text format
+                        highly consistent?
+                       /                  \
+                     YES                   NO
+                     /                       \
+              Is it a single            Use an LLM
+              known pattern?
+              /           \
+            YES            NO
+            /                \
+      Use Regex         Use an LLM
+      (fast & free)     (flexible)
+```
+
+--
+
+**Hybrid approach** (best of both worlds):
+- Use **regex** for well-defined fields (emails, phone numbers, URLs, dates)
+- Use **LLMs** for semantic fields (skills, job titles, qualifications)
+- **Validate** LLM output with regex patterns where possible
+
+
+---
+
+## Section Check-In: LO4
+
+`r emo::ji("check")` We can compare regex and LLM approaches across accuracy, effort, and cost.
+
+`r emo::ji("check")` We understand that regex is best for consistent, well-defined patterns.
+
+`r emo::ji("check")` We understand that LLMs are best for variable, semantically rich text.
+
+`r emo::ji("check")` We can apply a decision framework to choose the right tool.
+
+**Key takeaway:** This is not an either/or decision. The best data pipelines combine both approaches strategically.
+
+
+---
+class: inverse, center, middle
+
+# Recap
+
+
+---
+
+## Summary of Main Points
+
+By now, you should be able to do the following:
+
+- **LO1:** Explain why LLMs are transformative for extracting structured data from unstructured text `r emo::ji("check")`
+
+- **LO2:** Use `httr2` to call the Claude API (or OpenAI API) from `r fontawesome::fa(name = 'r-project', fill = miamired)` and process text programmatically `r emo::ji("check")`
+
+- **LO3:** Design prompts that return consistent JSON output and parse results into tidy data frames `r emo::ji("check")`
+
+- **LO4:** Evaluate when to use LLMs vs regex (or both) based on accuracy, effort, and cost `r emo::ji("check")`
+
+
+---
+
+## Readings and Resources
+
+.pull-left[
+**API Documentation:**
+- [Anthropic API Reference](https://docs.anthropic.com/en/api/getting-started)
+- [OpenAI API Reference](https://platform.openai.com/docs/api-reference)
+- [httr2 Getting Started](https://httr2.r-lib.org/articles/httr2.html)
+
+**Prompt Engineering:**
+- [Anthropic Prompt Engineering Guide](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview)
+- [OpenAI Prompt Engineering Guide](https://platform.openai.com/docs/guides/prompt-engineering)
+]
+
+.pull-right[
+**Further Reading:**
+- [Managing Secrets in R](https://httr.r-lib.org/articles/secrets.html)
+- [jsonlite Package Documentation](https://cran.r-project.org/web/packages/jsonlite/vignettes/json-aaquickstart.html)
+- [purrr: Functional Programming Tools](https://purrr.tidyverse.org/)
+]
+
+
+---
+
+## What's Next
+
+- **Practice:** Try extracting structured data from a different domain (reviews, news articles, support tickets)
+
+- **Experiment** with different prompt designs and compare the quality of extraction
+
+- **Explore** the `ellmer` package in `r fontawesome::fa(name = 'r-project', fill = miamired)` for a higher-level interface to LLM APIs
+
+- Next class, we will build on these skills to create **end-to-end data pipelines** that combine scraping, extraction, and analysis

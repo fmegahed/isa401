@@ -1,0 +1,1040 @@
+---
+title: "ISA 401: Business Intelligence & Data Visualization"
+subtitle: '06: Web Scraping II in `r icons::icon_style(icons::fontawesome("r-project"), fill = "white")`'
+author: '<br>Fadel M. Megahed, PhD <br><br>Raymond E. Glos Professor in Business <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("linkedin"), fill = "white")` @Fadel Megahed](https://www.linkedin.com/in/fadel-megahed-289046b4) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
+date: "Spring 2026"
+output:
+  xaringan::moon_reader:
+    self_contained: true
+    css: [default, "../../style_files/fonts.css", "../../style_files/my-theme.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: magula
+      highlightLines: true
+      highlightLanguage: ["r"]
+      countIncrementalSlides: false
+      ratio: "16:9"
+header-includes:
+  - "../../style_files/header.html"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache = FALSE,
+                      echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE,
+                      progress = FALSE,
+                      verbose = FALSE,
+                      dev = 'png',
+                      fig.height = 2.5,
+                      dpi = 300,
+                      fig.align = 'center')
+
+options(htmltools.dir.version = FALSE)
+
+miamired = '#C3142D'
+
+if(require(pacman)==FALSE) install.packages("pacman")
+if(require(devtools)==FALSE) install.packages("devtools")
+
+if(require(countdown)==FALSE) devtools::install_github("gadenbuie/countdown")
+if(require(xaringanExtra)==FALSE) devtools::install_github("gadenbuie/xaringanExtra")
+
+
+pacman::p_load(tidyverse, magrittr, lubridate, janitor, # data analysis pkgs
+               rvest, polite, purrr, # for web scraping
+               fontawesome, RefManageR, xaringanExtra, countdown) # for slides
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+if(require(xaringanthemer) == FALSE) install.packages("xaringanthemer")
+library(xaringanthemer)
+
+xaringanthemer::style_mono_accent(base_color = "#84d6d3",
+                  base_font_size = "20px")
+
+xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "tachyons", "panelset", "search", "fit_screen", "editable",
+                                    "clipable"))
+```
+
+
+## Quick Refresher from Web Scraping I
+
+`r emo::ji("check")` Understand the structure of HTML and how `robots.txt` governs scraping permissions.
+
+`r emo::ji("check")` Parse HTML documents using `rvest::read_html()`.
+
+`r emo::ji("check")` Extract text and attributes from HTML elements with CSS selectors.
+
+`r emo::ji("check")` Handle missing data and inconsistencies when scraping.
+
+---
+
+## Kahoot/Quiz Review: HTML & CSS Selectors
+
+In class, we will go over the Kahoot titled: "06: Web Scraping, Git, Docker and HF". The Kahoot is comprised of 9 questions.
+
+```{bash eval=FALSE, include = F}
+# install Docker Desktop and open it
+
+# In CMD open app repo and type the following:
+docker build -t querychat .
+
+# -p maps the port on your local machine to the port inside the container
+docker run -p 7860:7860 querychat
+
+# open it in http://localhost:7860/
+```
+
+
+---
+
+## Learning Objectives for Today's Class
+
+- **LO1:** Build reusable scraping functions
+
+- **LO2:** Iterate over multiple pages using `purrr::map()`
+
+- **LO3:** Implement polite scraping with delays
+
+- **LO4:** Handle errors gracefully with `possibly()`
+
+
+---
+class: inverse, center, middle
+
+# Building Scraping Functions
+### LO1: Reusable scraping functions
+
+---
+
+## Why Functions? The DRY Principle
+
+.pull-left[
+**D**on't **R**epeat **Y**ourself
+
+- Copy-pasting scraping code for every URL is **error-prone** and **tedious**
+
+- Functions let you:
+  * **Encapsulate** scraping logic in one place
+  * **Parameterize** inputs (e.g., the URL)
+  * **Test** once, **reuse** everywhere
+  * **Debug** in a single location
+
+- A scraping function typically takes a **URL** as input and returns a **tibble** (or a named list) as output
+]
+
+.pull-right[
+```r
+# BAD: copy-paste approach
+page1 <- rvest::read_html("https://example.com/page/1")
+title1 <- page1 |> rvest::html_elements("h2") |> rvest::html_text2()
+
+page2 <- rvest::read_html("https://example.com/page/2")
+title2 <- page2 |> rvest::html_elements("h2") |> rvest::html_text2()
+
+# Repeat for every page...
+```
+
+```r
+# GOOD: function approach
+scrape_page <- function(url) {
+  page <- rvest::read_html(url)
+  titles <- page |> rvest::html_elements("h2") |> rvest::html_text2()
+  tibble::tibble(title = titles)
+}
+
+# Reuse for any URL
+scrape_page("https://example.com/page/1")
+scrape_page("https://example.com/page/2")
+```
+]
+
+---
+
+## From Script to Function: Step by Step
+
+.panelset[
+
+.panel[.panel-name[Step 1: Working Script]
+
+Start with code that works for **one page**:
+
+```{r script-step1, eval=FALSE}
+# Scrape a single Wikipedia page about a plane crash
+url <- "https://en.wikipedia.org/wiki/Aviation_accidents_and_incidents"
+
+page <- rvest::read_html(url)
+
+# Extract all external links from the page
+links <- page |>
+  rvest::html_elements("a") |>
+  rvest::html_attr("href")
+
+text <- page |>
+  rvest::html_elements("a") |>
+  rvest::html_text2()
+
+result <- tibble::tibble(link_text = text, url = links)
+head(result)
+```
+]
+
+.panel[.panel-name[Step 2: Identify Inputs]
+
+Ask yourself: **What changes between runs?**
+
+- The **URL** changes -- everything else stays the same
+- The **CSS selectors** might also vary across sites
+
+```r
+# These are your function PARAMETERS:
+url <- "https://en.wikipedia.org/wiki/Aviation_accidents_and_incidents"
+#       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#       This changes!
+```
+]
+
+.panel[.panel-name[Step 3: Wrap in function()]
+
+.font90[
+```{r script-step3, eval=FALSE}
+scrape_links <- function(url) {
+
+  page <- rvest::read_html(url)
+
+  links <- page |>
+    rvest::html_elements("a") |>
+    rvest::html_attr("href")
+
+  text <- page |>
+    rvest::html_elements("a") |>
+    rvest::html_text2()
+
+  tibble::tibble(
+    link_text = text,
+    link_url = links,
+    source_page = url
+  )
+}
+
+# Now use it
+scrape_links("https://en.wikipedia.org/wiki/Aviation_accidents_and_incidents")
+```
+]
+]
+]
+
+
+---
+
+## Anatomy of a Good Scraping Function
+
+```{r anatomy-func, eval=FALSE}
+scrape_job_details <- function(url) {
+
+  # 1. Read the page (may be preceded by the httr2 approach to handle cookies, headers, etc.)
+  page <- rvest::read_html(url)
+
+  # 2. Extract each field with targeted selectors
+  title <- page |> rvest::html_element("h1.job-title") |> rvest::html_text2()
+  company <- page |> rvest::html_element("span.company-name") |> rvest::html_text2()
+  salary <- page |> rvest::html_element("div.salary") |> rvest::html_text2()
+  location <- page |> rvest::html_element("span.location") |> rvest::html_text2()
+
+  # 3. Return a one-row tibble
+  tibble::tibble(
+    job_title = title,
+    company = company,
+    salary = salary,
+    location = location,
+    source_url = url
+  )
+}
+```
+
+**Key principles:** one URL in `r fontawesome::fa("arrow-right", fill = miamired)` one tibble row out, descriptive column names, include the source URL for traceability.
+
+---
+
+## Live Demo: Scraping Wikipedia Tables
+
+.panelset[
+
+.panel[.panel-name[The Goal]
+
+Scrape the table of aviation accidents from a specific *PlaneCrashInfo* year page and return it as a clean tibble.
+
+**Target:** [List of accidents and incidents involving commercial aircraft (2026)](https://www.planecrashinfo.com/2026/2026.htm)
+
+]
+
+.panel[.panel-name[Building the Function]
+
+```{r scrape_fn, eval=FALSE}
+scrape_plane_crashes <- function(year) {
+
+  url <- paste0(
+    "https://www.planecrashinfo.com/",
+    year, "/", year, ".htm"
+  )
+
+  req <- rvest::read_html_live(url)
+
+  # Wikipedia tables can be extracted directly
+  tables <- page |> rvest::html_elements("table") |> rvest::html_table(header = T)
+
+  # Return data frame
+  return(tables[[1]])
+}
+```
+
+]
+
+.panel[.panel-name[Testing It]
+
+```{r wiki-test, eval=FALSE}
+# Test with a single year
+accidents_2026 <- scrape_plane_crashes(2026)
+dplyr::glimpse(accidents_2026)
+```
+
+Always test your function on a single case before scaling up!
+
+]
+
+]
+
+---
+
+## `r fontawesome::fa("laptop-code", fill = miamired)` Activity: Write Your Own Scraping Function
+
+Write a function called `scrape_quotes()` that:
+
+1. Takes a **page number** as input
+2. Constructs the URL: `http://quotes.toscrape.com/page/{number}/`
+3. Extracts the **quote text**, **author**, and **tags**
+4. Returns a tibble with columns: `quote`, `author`, `tags`, `page`
+
+.pull-left[
+**Starter code:**
+.font80[
+```r
+scrape_quotes <- function(page_num) {
+  url <- paste0(
+    "https://quotes.toscrape.com/page/",
+    page_num, "/"
+  )
+  page <- rvest::read_html(url)
+  # YOUR CODE HERE:
+  # Extract quotes, authors, tags | Return a tibble
+}
+```
+]
+]
+
+.pull-right[
+**Hints:**
+- Quotes are in `.text` elements
+- Authors are in `.author` elements
+- Tags are in `.tag` elements (multiple per quote)
+
+```{r activity-timer1, echo=FALSE}
+countdown::countdown(minutes = 5, top = 0, right = 0,
+          font_size = "2em",
+          color_running_background = miamired)
+```
+]
+
+
+---
+
+## LO1 Check-in `r emo::ji("check")`
+
+You should now be able to:
+
+- Explain **why** wrapping scraping code in a function is preferable to copy-paste
+
+- Identify which parts of a scraping script should become **function parameters**
+
+- Write a function that takes a URL (or page parameter), scrapes data, and returns a **tibble**
+
+
+---
+class: inverse, center, middle
+
+# Scaling Up with purrr
+### LO2: Iterating over multiple pages
+
+---
+
+## Why purrr::map()?
+
+.pull-left[
+.font90[
+**The problem:** You have a function that scrapes one page, but you need to scrape **many** pages.
+
+**Option 1: for loop**
+```r
+results <- list()
+for (i in 1:10) {
+  results[[i]] <- scrape_page(urls[i])
+}
+dplyr::bind_rows(results)
+```
+
+**Option 2: purrr::map() `r emo::ji("check")`**
+```r
+purrr::map(urls, scrape_page) |> dplyr::bind_rows()
+```
+
+`purrr::map()` is **cleaner**, **more readable**, and integrates naturally with the tidyverse.
+]
+]
+
+.pull-right[
+```{r map-diagram, echo=FALSE, fig.cap="map() applies a function to each element of a list/vector and returns a list of results.", out.width="95%"}
+knitr::include_graphics("https://d33wubrfki0l68.cloudfront.net/f0494d020aa517ae7b1011cea4c4a9f21702df8b/2577b/diagrams/functionals/map.png")
+```
+
+.footnote[
+<html><hr></html>
+**Source:** [Hadley Wickham, Advanced R (2nd ed.), Ch. 9](https://adv-r.hadley.nz/functionals.html)
+]
+]
+
+---
+
+## The map() Family at a Glance
+
+| Function | Returns | Use case |
+|----------|---------|----------|
+| `map()` | A **list** | When outputs vary in structure |
+| `map_chr()` | A **character** vector | Extracting single strings |
+| `map_dbl()` | A **double** vector | Extracting single numbers |
+| `map_lgl()` | A **logical** vector | TRUE/FALSE checks |
+| `map_dfr()` | A **data frame** (row-bound) | Combining tibbles from each iteration |
+| `map_df()` | Same as `map_dfr()` | Shorthand alias |
+
+For scraping, **`map_dfr()`** is your best friend -- it applies the function to each input and row-binds the resulting tibbles into one data frame.
+
+```r
+all_quotes <- purrr::map_dfr(1:10, scrape_quotes)
+```
+
+---
+
+## Demo: Scraping Multiple Years of Accidents
+
+.panelset[
+
+.panel[.panel-name[Setup]
+
+We already built `scrape_plane_crashes()` for one year. Now let's scale it to **6 years** (2021--2026).
+
+```{r multi-year-setup, eval=FALSE}
+years <- 2021:2026
+```
+
+**Goal:** One clean data frame with all accident records across these years.
+
+]
+
+.panel[.panel-name[Using map_dfr]
+
+```{r multi-year-map, eval=FALSE}
+all_accidents <- purrr::map_dfr(years, scrape_plane_crashes)
+
+# How many records total?
+nrow(all_accidents)
+
+# Records per year
+all_accidents |> dplyr::count(year)
+```
+
+That is it -- one line of code replaces a loop that would span 10+ lines.
+
+]
+
+.panel[.panel-name[Adding Delays]
+
+**Important:** When scraping multiple pages, add a delay between requests to avoid overwhelming the server.
+
+```{r multi-year-delay, eval=FALSE}
+scrape_plane_crashes_polite <- function(year) {
+  Sys.sleep(1)  # Wait 1 second between requests
+  scrape_plane_crashes(year)
+}
+
+all_accidents <- purrr::map_dfr(years, scrape_plane_crashes_polite)
+dplyr::glimpse(all_accidents)
+```
+
+]
+
+.panel[.panel-name[Quick Analysis]
+
+```{r multi-year-analysis, eval=FALSE}
+# Accidents by year
+all_accidents |>
+  dplyr::count(year) |>
+  ggplot2::ggplot(ggplot2::aes(x = year, y = n)) +
+  ggplot2::geom_col(fill = miamired) +
+  ggplot2::labs(title = "Commercial Aviation Accidents by Year",
+       x = "Year", y = "Number of Incidents") +
+  ggplot2::theme_minimal()
+```
+
+]
+
+]
+
+---
+
+## Job Market Connection `r fontawesome::fa("briefcase", fill = miamired)`
+
+.pull-left[
+**Building a scraping pipeline = automating your job search research**
+
+Imagine you want to track Data Analyst job postings across multiple company career pages:
+
+```r
+# Define company career page URLs
+google_url <- "https://www.google.com/about/careers/applications/jobs/results/?q=data%20analyst&page=" # where page number goes from 1 to 9
+
+# List of URLs to scrape
+career_urls <- paste0(
+  "https://www.google.com/about/careers/applications/jobs/results/?q=data%20analyst&page=",
+  1:9, 
+)
+
+# Write your function to scrape job titles, companies, locations, etc. from each page
+
+# Scrape all with one line
+all_jobs <- purrr::map_dfr(career_urls, scrape_careers)
+```
+]
+
+.pull-right[
+**This skill is directly transferable to:**
+
+- Market research (scraping competitor pricing across pages)
+
+- Academic research (collecting data from multiple sources)
+
+- Business dashboards (automated data collection pipelines)
+
+- Any scenario where the **same structure** repeats across **many URLs**
+]
+
+---
+
+## LO2 Check-in `r emo::ji("check")`
+
+You should now be able to:
+
+- Explain when and why to use `purrr::map()` instead of a for loop
+
+- Use `map_dfr()` to apply a scraping function over multiple inputs and combine results
+
+- Add `Sys.sleep()` between requests to pace your scraping
+
+
+---
+class: inverse, center, middle
+
+# Being a Polite Scraper
+### LO3: Rate limiting and the polite package
+
+---
+
+## Why Rate Limiting Matters
+
+.pull-left[
+**Without rate limiting, you risk:**
+
+- `r fontawesome::fa("ban", fill = miamired)` Getting your **IP blocked** by the server
+
+- `r fontawesome::fa("server", fill = miamired)` **Overloading** small websites (especially non-commercial ones)
+
+- `r fontawesome::fa("gavel", fill = miamired)` Violating the site's **Terms of Service**
+
+- `r fontawesome::fa("exclamation-triangle", fill = miamired)` Receiving **incomplete** or **error** responses (HTTP 429: Too Many Requests)
+]
+
+.pull-right[
+**Best practices:**
+
+1. Always check `robots.txt` first
+
+2. Add delays between requests (1--5 seconds is common)
+
+3. Identify yourself with a meaningful `User-Agent` string
+
+4. Scrape during **off-peak hours** when possible
+
+5. **Cache** results so you do not re-scrape needlessly
+
+6. Only scrape what you **need**
+]
+
+---
+
+## The Simple Approach: Sys.sleep()
+
+The quickest way to add delays is `Sys.sleep()`:
+
+```{r sys-sleep-demo, eval=FALSE}
+scrape_with_delay <- function(url, delay = 1) {
+  Sys.sleep(delay)  # Pause before each request
+
+  page <- rvest::read_html(url)
+
+  titles <- page |>
+    rvest::html_elements("h2") |>
+    rvest::html_text2()
+
+  tibble::tibble(title = titles, source = url)
+}
+
+# Use with map
+urls <- paste0("http://quotes.toscrape.com/page/", 1:5, "/")
+results <- purrr::map_dfr(urls, ~scrape_with_delay(.x, delay = 2))
+```
+
+**Pros:** Simple, no extra packages.
+**Cons:** Does not check `robots.txt` automatically, no session management, no built-in caching.
+
+---
+
+## The polite Package: bow() + scrape()
+
+.pull-left[
+.font90[
+The `polite` package automates respectful scraping:
+
+1. **`bow(url)`** -- Introduce yourself to the server
+   - Checks `robots.txt`
+   - Sets a polite `User-Agent`
+   - Stores session info
+
+2. **`scrape(session)`** -- Fetch the page
+   - Respects crawl delay from `robots.txt`
+   - Automatically throttles requests
+
+3. **`nod(session, path)`** -- Navigate to a new path within the same domain
+]
+]
+
+.pull-right[
+.font90[
+```{r polite-basic, eval=FALSE}
+# Step 1: Bow (introduce yourself)
+session <- polite::bow(
+  url = "https://quotes.toscrape.com",
+  user_agent = "ISA401 Student Bot (educational)"
+)
+
+# See what robots.txt says
+print(session)
+
+# Step 2: Scrape the page
+page <- polite::scrape(session)
+
+# Step 3: Extract data as usual with rvest
+quotes <- page |>
+  rvest::html_elements(".text") |>
+  rvest::html_text2()
+
+head(quotes)
+```
+]
+]
+
+---
+
+## polite in a Multi-Page Pipeline
+
+```{r polite-pipeline, eval=FALSE}
+scrape_quotes_polite <- function(page_num) {
+
+  # Establish session with bow()
+  session <- polite::bow(
+    url = "http://quotes.toscrape.com",
+    user_agent = "ISA401 Student Bot (educational)"
+  )
+
+  # Navigate to the specific page with nod()
+  session <- polite::nod(session, path = paste0("page/", page_num, "/"))
+
+  # Scrape the page (respects robots.txt and crawl delay)
+  page <- polite::scrape(session)
+
+  # Extract data
+  quotes <- page |> rvest::html_elements(".text") |> rvest::html_text2()
+  authors <- page |> rvest::html_elements(".author") |> rvest::html_text2()
+
+  tibble::tibble(quote = quotes, author = authors, page = page_num)
+}
+
+# Scrape 5 pages politely
+all_quotes <- purrr::map_dfr(1:5, scrape_quotes_polite)
+nrow(all_quotes)
+```
+
+
+---
+
+## LO3 Check-in `r emo::ji("check")`
+
+You should now be able to:
+
+- Explain **why** rate limiting and polite scraping matter
+
+- Use `Sys.sleep()` to introduce delays between requests
+
+- Use the `polite` package workflow: `bow()` `r fontawesome::fa("arrow-right", fill = miamired)` `nod()` `r fontawesome::fa("arrow-right", fill = miamired)` `scrape()`
+
+
+---
+class: inverse, center, middle
+
+# Graceful Error Handling
+### LO4: Using possibly() and tryCatch()
+
+---
+
+## The Problem: One Bad URL Breaks Everything
+
+.pull-left[
+Imagine you are scraping 50 pages and **page 23** has been taken down:
+```{r error-problem, eval=FALSE}
+urls <- paste0(
+  "http://quotes.toscrape.com/page/", 1:50, "/"
+)
+
+# This will STOP at the first error
+results <- purrr::map_dfr(urls, scrape_quotes) #<<
+```
+
+`r fontawesome::fa("exclamation-circle", fill = miamired)` **Result:** You lose results from pages 1--22 and never reach 24--50!
+]
+
+.pull-right[
+**Common causes of mid-pipeline errors:**
+
+- A page has been **removed** (HTTP 404)
+
+- The server is **temporarily down** (HTTP 503)
+
+- The page **structure changed** (missing CSS class)
+
+- A **timeout** occurred on one request
+
+- The page **requires authentication**
+
+**We need a way to skip errors and keep going.**
+]
+
+---
+
+## tryCatch(): The Base R Approach
+
+`tryCatch()` lets you **catch** errors and return a fallback value instead of crashing:
+
+```{r trycatch-demo, eval=FALSE}
+scrape_safe <- function(url) {
+  tryCatch(
+    {
+      # The code that might fail
+      page <- rvest::read_html(url)
+      titles <- page |> rvest::html_elements("h2") |> rvest::html_text2()
+      tibble::tibble(title = titles, url = url)
+    },
+    error = function(e) {
+      # What to do if it fails
+      message("Failed to scrape: ", url, " - ", e$message)
+      tibble::tibble(title = NA_character_, url = url)
+    }
+  )
+}
+
+# Now this won't crash on bad URLs
+scrape_safe("https://httpstat.us/404")  # Returns tibble with NA
+scrape_safe("http://quotes.toscrape.com/page/1/")  # Returns real data
+```
+
+**Pros:** Full control over error behavior. **Cons:** Verbose, repetitive.
+
+---
+
+## purrr::possibly(): The Elegant Wrapper
+
+`possibly()` creates a **modified version** of your function that returns a default value on error instead of stopping:
+
+```{r possibly-intro, eval=FALSE}
+# Original function (will crash on bad URLs)
+scrape_quotes  # our function from earlier
+
+# Wrapped function (returns NULL on error)
+safe_scrape_quotes <- purrr::possibly(scrape_quotes, otherwise = NULL) #<<
+```
+
+.pull-left[
+**How it works:**
+.font90[
+- `possibly(f, otherwise)` returns a **new function**
+- The new function behaves exactly like `f`...
+- ...except when `f` throws an error, it returns `otherwise` instead
+]
+]
+
+.pull-right[
+```r
+# These are equivalent:
+safe_scrape_quotes(1)  # works normally
+safe_scrape_quotes(999)  # returns NULL
+                         # (no page 999 exists)
+```
+]
+
+---
+
+## possibly() in a Full Pipeline
+
+```{r possibly-pipeline, eval=FALSE}
+# Step 1: Define your scraping function
+scrape_quotes <- function(page_num) {
+  url <- paste0("http://quotes.toscrape.com/page/", page_num, "/")
+  Sys.sleep(1)
+  page <- rvest::read_html(url)
+  quotes <- page |> rvest::html_elements(".text") |> rvest::html_text2()
+  authors <- page |> rvest::html_elements(".author") |> rvest::html_text2()
+  tibble::tibble(quote = quotes, author = authors, page = page_num)
+}
+
+# Step 2: Wrap with possibly()
+safe_scrape <- purrr::possibly(scrape_quotes, otherwise = NULL) #<<
+
+# Step 3: Map over inputs (including some that might fail)
+page_numbers <- c(1:5, 999, 6:10)  # page 999 doesn't exist
+
+results <- purrr::map(page_numbers, safe_scrape) |> #<<
+  purrr::compact() |>  # Remove NULLs (failed pages) #<<
+  dplyr::bind_rows()   # Combine successful results #<<
+
+nrow(results)  # All successful pages combined
+```
+
+**Key insight:** `compact()` removes `NULL` entries from a list, so only successful scrapes are kept.
+
+---
+
+## Side-by-Side: With vs. Without Error Handling
+
+.panelset[
+
+.panel[.panel-name[Without Error Handling]
+
+```{r no-error-handling, eval=FALSE}
+# This will CRASH when it hits a bad page
+scrape_quotes <- function(page_num) {
+  url <- paste0("http://quotes.toscrape.com/page/",
+                page_num, "/")
+  page <- rvest::read_html(url)
+  quotes <- page |> rvest::html_elements(".text") |> rvest::html_text2()
+  authors <- page |> rvest::html_elements(".author") |> rvest::html_text2()
+  tibble::tibble(quote = quotes, author = authors, page = page_num)
+}
+
+# Risky: one error kills everything
+pages <- c(1, 2, 999, 3, 4)
+results <- purrr::map_dfr(pages, scrape_quotes)
+# Error in open.connection(x, "rb") :
+#   HTTP error 404. ---- PIPELINE STOPS HERE
+```
+
+`r fontawesome::fa("times-circle", fill = miamired)` Pages 3 and 4 are never reached.
+
+]
+
+.panel[.panel-name[With possibly()]
+
+```{r with-error-handling, eval=FALSE}
+# Same function, but wrapped safely
+safe_scrape <- purrr::possibly(scrape_quotes, otherwise = NULL)
+
+# Resilient: errors are caught silently
+pages <- c(1, 2, 999, 3, 4)
+results <- purrr::map(pages, safe_scrape) |>
+  purrr::compact() |>
+  dplyr::bind_rows()
+
+nrow(results)  # Contains data from pages 1, 2, 3, 4
+# Page 999 was skipped gracefully
+```
+
+`r emo::ji("check")` All valid pages are successfully scraped.
+
+]
+
+.panel[.panel-name[With Logging]
+
+```{r with-logging, eval=FALSE}
+# Track which pages succeeded/failed
+safe_scrape_verbose <- function(page_num) {
+  result <- tryCatch(
+    scrape_quotes(page_num),
+    error = function(e) {
+      message("FAILED page ", page_num, ": ", e$message)
+      NULL
+    }
+  )
+  if (!is.null(result)) message("OK page ", page_num)
+  result
+}
+
+pages <- c(1, 2, 999, 3, 4)
+results <- purrr::map(pages, safe_scrape_verbose) |>
+  purrr::compact() |>
+  dplyr::bind_rows()
+# Messages:
+# OK page 1
+# OK page 2
+# FAILED page 999: HTTP error 404.
+# OK page 3
+# OK page 4
+```
+
+]
+
+]
+
+
+---
+
+## `r fontawesome::fa("laptop-code", fill = miamired)` Activity: Write, Test, and Wrap with possibly()
+
+**Task:** Build a scraping function, test it, and make it error-resilient.
+
+.pull-left[
+**Step 1:** Write `scrape_book()` to scrape a single book page from [books.toscrape.com](http://books.toscrape.com):
+```r
+scrape_book <- function(page_num) {
+  url <- paste0(
+    "http://books.toscrape.com/catalogue/page-",
+    page_num, ".html"
+  )
+  page <- rvest::read_html(url)
+  titles <- page |>
+    rvest::html_elements("h3 a") |> rvest::html_attr("title")
+  prices <- page |>
+    rvest::html_elements(".price_color") |> rvest::html_text2()
+  tibble::tibble(title = titles, price = prices,
+         page = page_num)
+}
+```
+]
+
+.pull-right[
+**Step 2:** Test on valid and invalid pages:
+```r
+scrape_book(1)   # Should work
+scrape_book(999) # Should error
+```
+
+**Step 3:** Wrap with `possibly()` and scrape pages 1--5 plus page 999:
+```r
+safe_scrape_book <- purrr::possibly(
+  scrape_book, otherwise = NULL
+)
+
+results <- purrr::map(c(1:5, 999), safe_scrape_book) |>
+  purrr::compact() |>
+  dplyr::bind_rows()
+
+nrow(results)  # Should be 100 (20 per page x 5)
+```
+
+```{r activity-timer2, echo=FALSE}
+countdown::countdown(minutes = 6, top = 0, right = 0,
+          font_size = "2em",
+          color_running_background = miamired)
+```
+]
+
+
+---
+
+## LO4 Check-in `r emo::ji("check")`
+
+You should now be able to:
+
+- Explain why **error handling** is essential in multi-page scraping pipelines
+
+- Use `tryCatch()` to catch errors and return fallback values
+
+- Use `purrr::possibly()` to wrap functions for safe iteration
+
+- Combine `possibly()`, `map()`, `compact()`, and `bind_rows()` into a resilient pipeline
+
+
+---
+class: inverse, center, middle
+
+# Recap
+
+---
+
+## Summary of Main Points
+
+By now, you should be able to do the following:
+
+`r emo::ji("check")` **LO1:** Build reusable scraping functions -- encapsulate scraping logic, parameterize URLs, return tidy tibbles
+
+`r emo::ji("check")` **LO2:** Iterate over multiple pages with `purrr::map_dfr()` -- scale from one page to hundreds with a single line
+
+`r emo::ji("check")` **LO3:** Scrape politely -- use `Sys.sleep()` and the `polite` package (`bow()` / `nod()` / `scrape()`) to respect servers
+
+`r emo::ji("check")` **LO4:** Handle errors gracefully -- use `possibly()` so one failed request does not crash your entire pipeline
+
+
+---
+
+## Readings and Resources
+
+.pull-left[
+**Essential:**
+
+- [rvest documentation](https://rvest.tidyverse.org/)
+
+- [purrr::map() reference](https://purrr.tidyverse.org/reference/map.html)
+
+- [polite package vignette](https://dmi3kno.github.io/polite/)
+
+- [R for Data Science (2e): Ch. 24 -- Web Scraping](https://r4ds.hadley.nz/webscraping)
+]
+
+.pull-right[
+**Supplementary:**
+
+- [Advanced R: Functionals (Ch. 9)](https://adv-r.hadley.nz/functionals.html) -- deep dive into `map()` and friends
+
+- [purrr tutorial by Jenny Bryan](https://jennybc.github.io/purrr-tutorial/)
+
+- [SelectorGadget Chrome Extension](https://chrome.google.com/webstore/detail/selectorgadget/mhjhnkcfbdhnjickkkdbjoemdmbfginb) -- interactive CSS selector tool
+]
+
+
+---
+
+## Next Steps
+
+- **Homework:** Practice building a scraping pipeline that scrapes multiple pages and handles errors
+
+- **Coming Up Next:** LLM-based text extraction -- using large language models to parse unstructured text from web pages and documents
+
+- **Key Takeaway:** The pattern `write function` `r fontawesome::fa("arrow-right", fill = miamired)` `wrap with possibly()` `r fontawesome::fa("arrow-right", fill = miamired)` `map over inputs` `r fontawesome::fa("arrow-right", fill = miamired)` `combine results` is fundamental to scalable data collection in `r fontawesome::fa("r-project", fill = miamired)`
+
+

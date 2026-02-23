@@ -1,0 +1,949 @@
+---
+title: "ISA 401: Business Intelligence & Data Visualization"
+subtitle: '08: Images & Documents in `r icons::icon_style(icons::fontawesome("r-project"), fill = "white")`'
+author: '<br>Fadel M. Megahed, PhD <br><br>Raymond E. Gloss Professor in Business <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("linkedin"), fill = "white")` @Fadel Megahed](https://www.linkedin.com/in/fadel-megahed-289046b4) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
+date: "Spring 2026"
+output:
+  xaringan::moon_reader:
+    self_contained: true
+    css: [default, "../../style_files/fonts.css", "../../style_files/my-theme.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: magula
+      highlightLines: true
+      highlightLanguage: ["r"]
+      countIncrementalSlides: false
+      ratio: "16:9"
+header-includes:
+  - "../../style_files/header.html"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache = FALSE,
+                      echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE,
+                      progress = FALSE,
+                      verbose = FALSE,
+                      dev = 'png',
+                      fig.height = 2.5,
+                      dpi = 300,
+                      fig.align = 'center')
+
+options(htmltools.dir.version = FALSE)
+
+miamired = '#C3142D'
+
+if(require(pacman)==FALSE) install.packages("pacman")
+if(require(devtools)==FALSE) install.packages("devtools")
+
+if(require(countdown)==FALSE) devtools::install_github("gadenbuie/countdown")
+if(require(xaringanExtra)==FALSE) devtools::install_github("gadenbuie/xaringanExtra")
+
+
+pacman::p_load(tidyverse, magrittr, lubridate, janitor, # data analysis pkgs
+               pdftools, httr2, jsonlite, base64enc, # for PDFs and APIs
+               fontawesome, RefManageR, xaringanExtra, countdown) # for slides
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+if(require(xaringanthemer) == FALSE) install.packages("xaringanthemer")
+library(xaringanthemer)
+
+xaringanthemer::style_mono_accent(base_color = "#84d6d3",
+                  base_font_size = "20px")
+
+xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "tachyons", "panelset", "search", "fit_screen", "editable",
+                                    "clipable"))
+```
+
+
+## Quick Refresher from Last Class
+
+`r emo::ji("check")` Use LLM APIs to extract structured data from unstructured text
+
+`r emo::ji("check")` Apply prompt engineering techniques for consistent JSON output
+
+`r emo::ji("check")` Parse LLM responses into tidy data frames in `r fontawesome::fa(name = 'r-project', fill = miamired)`
+
+
+---
+
+## Kahoot/Quiz Review
+
+Test your understanding of prompt engineering and JSON parsing:
+
+1. What role does the **system prompt** play when calling an LLM API for structured extraction?
+
+2. Why is it important to specify the **exact JSON schema** you want in your prompt?
+
+3. When parsing a nested JSON response from an LLM, which `r fontawesome::fa(name = 'r-project', fill = miamired)` function(s) help flatten it into a data frame?
+
+4. What happens if the LLM returns **malformed JSON** -- how should your code handle it?
+
+5. Name one advantage of using **few-shot examples** in your extraction prompt.
+
+`r countdown::countdown(minutes = 5, warn_when = 60, top = 0)`
+
+
+---
+
+## Learning Objectives for Today's Class
+
+- **LO1:** Extract tabular data from PDF documents
+
+- **LO2:** Use vision APIs to analyze images
+
+- **LO3:** Extract structured information from infographics
+
+
+---
+class: inverse, center, middle
+
+# Extracting Data from PDFs
+
+
+---
+
+## The Problem: Data Trapped in PDFs
+
+.pull-left[
+Many organizations publish critical data **only as PDF reports**:
+
+- Bureau of Labor Statistics (BLS) salary reports
+- SEC financial filings
+- Government census tables
+- Annual reports and whitepapers
+
+The data is **visible** but not **accessible** for analysis.
+]
+
+.pull-right[
+```{r bls-pdf-example, echo=FALSE, out.width='95%', fig.cap='Example: BLS Occupational Employment and Wage Statistics are often distributed as PDF tables.'}
+knitr::include_graphics("https://www.bls.gov/oes/images/oes_brochure_2021.png")
+```
+]
+
+
+---
+
+## The pdftools Package: Extracting Text
+
+The [`pdftools`](https://docs.ropensci.org/pdftools/) `r fontawesome::fa('box', fill = 'gold')` package provides `pdf_text()` to extract raw text from PDF files.
+
+```{r pdftools-demo, eval=FALSE}
+# Extract text from a PDF (one string per page)
+pdf_url <- "https://www.bls.gov/news.release/pdf/ocwage.pdf"
+pdf_pages <- pdftools::pdf_text(pdf_url)
+
+# How many pages?
+length(pdf_pages)
+
+# View first page text
+cat(pdf_pages[1])
+```
+
+**Key insight:** `pdf_text()` returns a **character vector** where each element is one page of text. Tables appear as whitespace-aligned text -- useful but not structured.
+
+
+---
+
+## pdftools: Additional Utilities
+
+Beyond `pdf_text()`, the `pdftools` package provides several helpful functions:
+
+```{r pdftools-utils, eval=FALSE}
+# Get metadata about the PDF
+pdftools::pdf_info(pdf_url)  # author, creation date, number of pages, etc.
+
+# Extract table of contents (if present)
+pdftools::pdf_toc(pdf_url)
+
+# Get the number of pages
+pdftools::pdf_length(pdf_url)
+
+# Render a PDF page as an image (useful for vision APIs later!)
+pdftools::pdf_render_page(pdf_url, page = 1, dpi = 150) |>
+  png::writePNG("page1.png")
+```
+
+**Pro tip:** `pdf_render_page()` converts PDF pages to images -- a bridge between PDF extraction and vision API extraction that we will use later.
+
+
+---
+
+## pdftools: From Text to Data
+
+Once you have raw text, you can use string processing to extract tables:
+
+```{r pdftools-parse, eval=FALSE}
+# Extract text from a specific page
+page_text <- pdf_pages[2]
+
+# Split into lines
+lines <- strsplit(page_text, "\n")[[1]]
+
+# Filter lines that look like table rows (contain numbers)
+table_lines <- lines[grepl("\\d{2,}", lines)]
+
+# Parse fixed-width columns using readr::read_fwf or string manipulation
+salary_data <- readr::read_fwf(
+  I(paste(table_lines, collapse = "\n")),
+  col_positions = readr::fwf_empty(
+    I(paste(table_lines, collapse = "\n"))
+  )
+)
+
+head(salary_data)
+```
+
+**Limitation:** This approach requires manual tuning for each PDF layout.
+
+
+---
+
+## tabulapdf: Purpose-Built Table Extraction
+
+.panelset[
+
+.panel[.panel-name[About tabulapdf]
+
+The [`tabulapdf`](https://docs.ropensci.org/tabulapdf/) `r fontawesome::fa('box', fill = 'gold')` package wraps the Java-based Tabula library, which is specifically designed to extract **tables** from PDFs.
+
+- Automatically detects table boundaries
+- Returns data frames directly
+- Handles multi-page tables
+- Requires Java (install via `install.packages("tabulapdf")`)
+
+```{r tabula-install, eval=FALSE}
+if(require(tabulapdf) == FALSE) install.packages("tabulapdf")
+```
+
+]
+
+.panel[.panel-name[Basic Usage]
+
+```{r tabula-demo, eval=FALSE}
+# Extract all tables from a PDF
+pdf_url <- "https://www.bls.gov/news.release/pdf/ocwage.pdf"
+tables <- tabulapdf::extract_tables(pdf_url)
+
+# tables is a list of data frames -- one per detected table
+length(tables)
+
+# Inspect the first extracted table
+tables[[1]] |>
+  janitor::clean_names() |>
+  head(10)
+```
+
+]
+
+.panel[.panel-name[Targeted Extraction]
+
+```{r tabula-targeted, eval=FALSE}
+# Extract from specific pages only
+tables_p2 <- tabulapdf::extract_tables(
+  pdf_url,
+  pages = 2,
+  method = "lattice"  # "lattice" for bordered tables, "stream" for borderless
+)
+
+# Clean column names and convert types
+salary_df <- tables_p2[[1]] |>
+  janitor::clean_names() |>
+  dplyr::mutate(
+    dplyr::across(dplyr::where(is.character) & !occupation,
+                  ~ as.numeric(gsub("[,$]", "", .x)))
+  )
+
+salary_df
+```
+
+]
+
+]
+
+
+---
+
+## Comparing Approaches: pdftools vs tabulapdf
+
+| Feature | `pdftools::pdf_text()` | `tabulapdf::extract_tables()` |
+|---------|----------------------|------------------------------|
+| **Output** | Raw text (character) | Data frames |
+| **Best for** | Free-form text, paragraphs | Structured tables |
+| **Dependencies** | Minimal (C library) | Requires Java |
+| **Table detection** | Manual parsing needed | Automatic |
+| **Accuracy** | Depends on parsing | High for well-formatted tables |
+| **Speed** | Very fast | Moderate |
+
+**Rule of thumb:** Start with `tabulapdf` for tables. Fall back to `pdftools` + string parsing when tables are irregular.
+
+
+---
+
+## Activity: Extract Salary Data from a BLS PDF
+
+.font90[
+**Your task:** Extract the occupational salary data from a BLS PDF report.
+
+**Steps:**
+
+1. Download or link to a BLS PDF (e.g., `"https://www.bls.gov/news.release/pdf/ocwage.pdf"`)
+
+2. Try **both** approaches:
+   - `pdftools::pdf_text()` -- examine the raw text output
+   - `tabulapdf::extract_tables()` -- extract structured tables
+
+3. Clean the resulting data frame:
+   - Apply `janitor::clean_names()`
+   - Convert salary columns to numeric
+
+4. Answer: What is the **median annual wage** for "Computer and Mathematical" occupations?
+]
+
+`r countdown::countdown(minutes = 5, warn_when = 60, top = 0)`
+
+
+---
+
+## Section Check-In: PDF Extraction
+
+`r emo::ji("check")` You can use `pdftools::pdf_text()` to extract raw text from PDFs
+
+`r emo::ji("check")` You can use `tabulapdf::extract_tables()` to pull structured tables
+
+`r emo::ji("check")` You know when to use each approach
+
+**Up next:** What about data locked inside *images*?
+
+
+---
+class: inverse, center, middle
+
+# Seeing with AI: Vision APIs
+
+
+---
+
+## How Vision APIs Work
+
+.pull-left[
+Traditional workflow for image data:
+
+1. **Human** looks at an image
+2. **Human** manually types numbers into a spreadsheet
+3. Error-prone, slow, does not scale
+
+AI Vision workflow:
+
+1. **Send** image to a vision-capable LLM
+2. **Receive** structured text/JSON description
+3. Automated, scalable, auditable
+]
+
+.pull-right[
+```{r vision-flow, echo=FALSE, out.width='100%'}
+# Conceptual diagram placeholder
+knitr::include_graphics("https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg")
+```
+
+.center[.font80[**Send image** `r fontawesome::fa("arrow-right")` **API processes** `r fontawesome::fa("arrow-right")` **Get structured data back**]]
+]
+
+
+---
+
+## Encoding Images for API Requests
+
+Vision APIs expect images as **base64-encoded strings**. The `base64enc` `r fontawesome::fa('box', fill = 'gold')` package handles this:
+
+```{r base64-demo, eval=FALSE}
+# Option 1: Encode a local file
+img_raw <- readBin("chart.png", "raw", file.info("chart.png")$size)
+img_base64 <- base64enc::base64encode(img_raw)
+
+# Option 2: Encode from a URL (download first)
+tmp <- tempfile(fileext = ".png")
+download.file("https://example.com/chart.png", tmp, mode = "wb")
+img_raw <- readBin(tmp, "raw", file.info(tmp)$size)
+img_base64 <- base64enc::base64encode(img_raw)
+
+# The result is a long string like "iVBORw0KGgoAAAANSUhEUg..."
+nchar(img_base64)  # typically thousands of characters
+```
+
+**Why base64?** APIs communicate via JSON, which is text-based. Binary image data must be encoded as text to embed in the request body.
+
+
+---
+
+## Building a Vision API Request with httr2
+
+.panelset[
+
+.panel[.panel-name[Request Structure]
+
+To send an image to the Claude API for analysis, we need:
+
+1. **API Key** stored in `.Renviron` as `ANTHROPIC_API_KEY`
+2. **Base64-encoded image** embedded in the message
+3. **A prompt** telling the model what to extract
+
+```{r vision-structure, eval=FALSE}
+# Ensure your API key is set
+# usethis::edit_r_environ("project")
+# Add: ANTHROPIC_API_KEY=sk-ant-...
+
+api_key <- Sys.getenv("ANTHROPIC_API_KEY")
+```
+
+]
+
+.panel[.panel-name[Building the Request]
+
+```{r vision-request, eval=FALSE}
+# Build the API request
+req <- httr2::request("https://api.anthropic.com/v1/messages") |>
+  httr2::req_method("POST") |>
+  httr2::req_headers(
+    `x-api-key` = api_key,
+    `anthropic-version` = "2023-06-01",
+    `content-type` = "application/json"
+  ) |>
+  httr2::req_body_json(list(
+    model = "claude-sonnet-4-20250514",
+    max_tokens = 1024,
+    messages = list(list(
+      role = "user",
+      content = list(
+        list(type = "image", source = list(
+          type = "base64", media_type = "image/png", data = img_base64
+        )),
+        list(type = "text", text = "Extract all data from this chart as a JSON array of objects with keys: category, value.")
+      )
+    ))
+  ))
+```
+
+]
+
+.panel[.panel-name[Parsing the Response]
+
+```{r vision-response, eval=FALSE}
+# Perform the request
+resp <- httr2::req_perform(req)
+
+# Extract the text response
+result <- resp |>
+  httr2::resp_body_json()
+
+# The model's text response
+model_text <- result$content[[1]]$text
+
+# Parse the JSON from the response
+extracted_data <- jsonlite::fromJSON(model_text)
+
+# Convert to a tibble
+extracted_df <- tibble::as_tibble(extracted_data)
+extracted_df
+```
+
+]
+
+]
+
+
+---
+
+## Demo: Analyzing an Infographic with Claude Vision
+
+.panelset[
+
+.panel[.panel-name[The Task]
+
+We will send a BLS infographic to Claude and ask it to extract the underlying data as a structured JSON table.
+
+**Goal:** Go from a *picture of data* to a *data frame* we can analyze.
+
+```{r demo-infographic-url, eval=FALSE}
+# Example: a BLS employment infographic
+img_url <- "https://www.bls.gov/ooh/images/15702.png"
+
+# Download and encode
+tmp <- tempfile(fileext = ".png")
+download.file(img_url, tmp, mode = "wb")
+img_raw <- readBin(tmp, "raw", file.info(tmp)$size)
+img_b64 <- base64enc::base64encode(img_raw)
+```
+
+]
+
+.panel[.panel-name[API Call]
+
+```{r demo-api-call, eval=FALSE}
+req <- httr2::request("https://api.anthropic.com/v1/messages") |>
+  httr2::req_method("POST") |>
+  httr2::req_headers(
+    `x-api-key` = Sys.getenv("ANTHROPIC_API_KEY"),
+    `anthropic-version` = "2023-06-01",
+    `content-type` = "application/json"
+  ) |>
+  httr2::req_body_json(list(
+    model = "claude-sonnet-4-20250514",
+    max_tokens = 2048,
+    messages = list(list(
+      role = "user",
+      content = list(
+        list(type = "image", source = list(
+          type = "base64", media_type = "image/png", data = img_b64
+        )),
+        list(type = "text", text = "Extract ALL data shown in this infographic. Return a JSON array of objects. Each object should have descriptive keys matching the labels in the image. Include ALL numbers, percentages, and categories visible.")
+      )
+    ))
+  ))
+
+resp <- httr2::req_perform(req)
+```
+
+]
+
+.panel[.panel-name[Results]
+
+```{r demo-results, eval=FALSE}
+# Parse the response
+result <- resp |> httr2::resp_body_json()
+model_text <- result$content[[1]]$text
+
+# Extract JSON from the response (model may wrap it in markdown)
+json_str <- stringr::str_extract(model_text, "\\[.*\\]")
+
+# Parse into a data frame
+infographic_df <- jsonlite::fromJSON(json_str) |>
+  tibble::as_tibble()
+
+infographic_df |>
+  knitr::kable(format = "html")
+```
+
+]
+
+]
+
+
+---
+
+## Prompt Tips for Vision Extraction
+
+When sending images to an LLM for data extraction, your prompt matters:
+
+.pull-left[
+**Do:**
+- Specify the **exact output format** (JSON schema)
+- Ask for **ALL** visible data, not just "some"
+- Mention expected data types (numbers, percentages)
+- Request keys that match the image labels
+- Use few-shot examples for complex layouts
+]
+
+.pull-right[
+**Avoid:**
+- Vague prompts like "describe this image"
+- Asking for interpretation instead of extraction
+- Forgetting to handle markdown-wrapped JSON
+- Assuming the model will infer your schema
+]
+
+**Example prompt:**
+> "Extract all data from this bar chart. Return a JSON array where each object has keys: `occupation` (string), `median_salary` (number), `employment_count` (number)."
+
+
+---
+
+## Handling Errors and Edge Cases
+
+Vision API calls can fail or return unexpected results. Defensive coding is essential:
+
+```{r error-handling, eval=FALSE}
+# Wrap API calls in tryCatch for robustness
+safe_extract <- function(image_path, prompt) {
+  tryCatch({
+    result <- extract_chart_data(image_path, prompt)
+    if(nrow(result) == 0) {
+      warning("API returned empty data frame")
+      return(tibble::tibble())
+    }
+    result
+  }, error = function(e) {
+    message("API call failed: ", e$message)
+    tibble::tibble()  # return empty tibble on failure
+  })
+}
+
+# Common issues to watch for:
+# 1. API rate limits (429 errors) -- add httr2::req_retry()
+# 2. Model returns text instead of JSON -- use regex extraction
+# 3. Image too large -- resize before encoding
+# 4. Hallucinated values -- always validate against the source
+```
+
+
+---
+
+## Section Check-In: Vision APIs
+
+`r emo::ji("check")` You understand how to encode images as base64 for API requests
+
+`r emo::ji("check")` You can build a vision API request using `httr2` to the Claude API
+
+`r emo::ji("check")` You can parse structured data from the model's response
+
+**Up next:** Putting it all together -- recovering data from charts and infographics.
+
+
+---
+class: inverse, center, middle
+
+# Recovering Data from Charts
+
+
+---
+
+## Chart Data Recovery: The Motivation
+
+.font90[
+Data visualization is powerful -- but sometimes the **original data is lost** and only the chart remains:
+
+- A colleague shares a **screenshot** of a dashboard
+- A report contains a **bar chart** but no underlying CSV
+- A news article includes an **infographic** with no data download
+
+**Vision APIs let you reverse-engineer the data from the image.**
+]
+
+
+---
+
+## Combining PDF + Vision: Scanned Documents
+
+Some PDFs are **scanned images** -- `pdf_text()` returns empty strings because there is no text layer. Combine `pdftools` with the vision API:
+
+```{r scanned-doc, eval=FALSE}
+# Step 1: Render the PDF page as an image
+img_bitmap <- pdftools::pdf_render_page("scanned_report.pdf", page = 1, dpi = 200)
+png::writePNG(img_bitmap, "scanned_page1.png")
+
+# Step 2: Encode and send to vision API
+scanned_df <- extract_chart_data(
+  image_path = "scanned_page1.png",
+  prompt = "This is a scanned table from a government report. Extract all rows
+  and columns as a JSON array. Each object should have keys matching the
+  column headers visible in the table."
+)
+
+# Step 3: Clean the result
+scanned_df |>
+  janitor::clean_names() |>
+  dplyr::mutate(dplyr::across(dplyr::where(is.character), stringr::str_trim))
+```
+
+**This is the ultimate fallback:** when no other tool can parse the PDF, render it as an image and use AI vision.
+
+
+---
+
+## Example: Bar Chart to Data Frame
+
+.pull-left[
+**Before:** An image of a bar chart
+
+```{r bar-chart-example, echo=FALSE, fig.height=4, fig.width=5, dpi=150}
+# Create a sample chart to demonstrate
+sample_data <- tibble::tibble(
+  occupation = c("Software Dev", "Data Analyst",
+                 "Accountant", "Nurse", "Teacher"),
+  median_salary = c(120730, 82360, 77250, 81220, 61690)
+)
+
+ggplot2::ggplot(sample_data, ggplot2::aes(x = reorder(occupation, median_salary),
+                         y = median_salary)) +
+  ggplot2::geom_col(fill = "#84d6d3") +
+  ggplot2::geom_text(ggplot2::aes(label = scales::dollar(median_salary)),
+            hjust = -0.1, size = 3) +
+  ggplot2::coord_flip() +
+  ggplot2::scale_y_continuous(labels = scales::dollar, limits = c(0, 150000)) +
+  ggplot2::labs(title = "Median Annual Salary by Occupation",
+       x = NULL, y = "Median Salary") +
+  ggplot2::theme_minimal()
+```
+]
+
+.pull-right[
+**After:** A tidy data frame extracted via Vision API
+
+| occupation | median_salary |
+|:-----------|-------------:|
+| Software Dev | 120,730 |
+| Data Analyst | 82,360 |
+| Accountant | 77,250 |
+| Nurse | 81,220 |
+| Teacher | 61,690 |
+
+This data can now be joined, filtered, aggregated, and visualized in `r fontawesome::fa(name = 'r-project', fill = miamired)`.
+]
+
+
+---
+
+## Building a Reusable Extraction Function
+
+```{r extract-function, eval=FALSE}
+extract_chart_data <- function(image_path, prompt, api_key = Sys.getenv("ANTHROPIC_API_KEY")) {
+  # Encode image
+  img_raw <- readBin(image_path, "raw", file.info(image_path)$size)
+  img_b64 <- base64enc::base64encode(img_raw)
+  ext <- tools::file_ext(image_path)
+  media_type <- paste0("image/", ifelse(ext == "jpg", "jpeg", ext))
+
+  # Build and send request
+  resp <- httr2::request("https://api.anthropic.com/v1/messages") |>
+    httr2::req_method("POST") |>
+    httr2::req_headers(`x-api-key` = api_key, `anthropic-version` = "2023-06-01",
+                       `content-type` = "application/json") |>
+    httr2::req_body_json(list(
+      model = "claude-sonnet-4-20250514", max_tokens = 2048,
+      messages = list(list(role = "user", content = list(
+        list(type = "image", source = list(type = "base64", media_type = media_type, data = img_b64)),
+        list(type = "text", text = prompt)
+      )))
+    )) |> httr2::req_perform()
+
+  # Parse response
+  model_text <- httr2::resp_body_json(resp)$content[[1]]$text
+  json_str <- stringr::str_extract(model_text, "\\[.*\\]")
+  jsonlite::fromJSON(json_str) |> tibble::as_tibble()
+}
+```
+
+
+---
+
+## Using the Extraction Function
+
+```{r use-function, eval=FALSE}
+# Extract data from a saved chart image
+salary_df <- extract_chart_data(
+  image_path = "bls_salary_chart.png",
+  prompt = "Extract all data from this bar chart. Return a JSON array where
+  each object has keys: occupation (string), median_salary (number)."
+)
+
+# Now we can work with it like any data frame
+salary_df |>
+  dplyr::arrange(dplyr::desc(median_salary)) |>
+  dplyr::mutate(salary_formatted = scales::dollar(median_salary))
+```
+
+**Benefits of wrapping this in a function:**
+- Reusable across projects
+- Easy to modify the prompt per use case
+- Handles encoding and parsing in one call
+
+
+---
+
+## Validating Extracted Data
+
+.font90[
+Vision API extraction is powerful but not perfect. Always **validate** the output:
+
+```{r validate-data, eval=FALSE}
+# 1. Check dimensions -- does the number of rows match what you see?
+nrow(extracted_df)  # compare to the number of bars/rows in the chart
+
+# 2. Check value ranges -- are numbers plausible?
+summary(extracted_df$median_salary)
+
+# 3. Check for missing or NA values
+colSums(is.na(extracted_df))
+
+# 4. Cross-reference a few values manually against the source image
+# If the chart says "Software Dev: $120,730", does the data frame agree?
+
+# 5. Run the extraction twice and compare (LLM outputs can vary)
+run1 <- extract_chart_data("chart.png", prompt)
+run2 <- extract_chart_data("chart.png", prompt)
+all.equal(run1, run2)
+```
+
+**Best practice:** For high-stakes analyses, run the extraction multiple times and take the consensus values. Report any discrepancies.
+]
+
+
+---
+
+## Decision Framework: When to Use What
+
+.font80[
+
+| Scenario | Tool | Why |
+|----------|------|-----|
+| Data is in a **CSV/Excel file** | `readr`, `readxl` | Direct import -- always prefer structured data |
+| Data is on a **webpage** (HTML table) | `rvest` web scraping | Tables are in the DOM, scraping is reliable |
+| Data is behind an **API** | `httr2` + `jsonlite` | API returns structured JSON directly |
+| Data is in a **PDF table** | `tabulapdf` / `pdftools` | Designed for extracting tables from PDFs |
+| Data is in **unstructured text** | LLM text API | LLM can parse natural language into structure |
+| Data is in an **image/chart** | LLM vision API | Only way to extract data from pixels |
+| Data is in a **scanned document** | LLM vision API | OCR + extraction in one step |
+
+]
+
+**General principle:** Use the **simplest tool** that works. Vision APIs are powerful but slower and costlier than direct parsing.
+
+
+---
+
+## Decision Framework: A Flowchart
+
+.center[
+
+Is the data in a **structured file** (CSV, Excel, JSON)?
+`r fontawesome::fa("arrow-down")` Yes: Use `readr`, `readxl`, `jsonlite`
+
+Is the data on a **webpage**?
+`r fontawesome::fa("arrow-down")` Yes: Use `rvest` or an API if available
+
+Is the data in a **PDF**?
+`r fontawesome::fa("arrow-down")` Yes: Try `tabulapdf` first, then `pdftools`
+
+Is the data in **unstructured text**?
+`r fontawesome::fa("arrow-down")` Yes: Use an LLM text API with JSON schema
+
+Is the data in an **image or screenshot**?
+`r fontawesome::fa("arrow-down")` Yes: Use an LLM vision API with JSON schema
+
+]
+
+
+---
+
+## Activity: Extract Data from a BLS Infographic
+
+.font90[
+**Your task:** Use the Claude Vision API to extract salary data from a BLS infographic image.
+
+**Steps:**
+
+1. Find a BLS infographic image (e.g., from <https://www.bls.gov/ooh/images/>) or save a screenshot of a BLS chart
+
+2. Encode the image using `base64enc::base64encode()`
+
+3. Send it to the Claude API with a prompt requesting JSON output
+
+4. Parse the JSON response into a tibble
+
+5. Create a simple `ggplot2` visualization of the extracted data
+
+**Bonus:** Use the `extract_chart_data()` function from the earlier slide.
+]
+
+`r countdown::countdown(minutes = 8, warn_when = 60, top = 0)`
+
+
+---
+
+## Job Market Connection
+
+.pull-left[
+.font90[
+**Why does this matter for your career?**
+
+Many organizations still distribute critical data in formats that resist analysis:
+
+- **Consulting firms** share findings as PDF reports
+- **Government agencies** publish data as infographics
+- **Executives** share dashboard screenshots in emails
+- **Legacy systems** produce reports only as images or PDFs
+
+**You can now unlock all of this data** using the tools from today's lecture.
+]
+]
+
+.pull-right[
+.center[
+`r fontawesome::fa("file-pdf", height = "2em", fill = miamired)` PDFs
+`r fontawesome::fa("arrow-down", fill = "#84d6d3")`
+`r fontawesome::fa("image", height = "2em", fill = miamired)` Images
+`r fontawesome::fa("arrow-down", fill = "#84d6d3")`
+`r fontawesome::fa("table", height = "2em", fill = miamired)` Tidy Data Frames
+`r fontawesome::fa("arrow-down", fill = "#84d6d3")`
+`r fontawesome::fa("chart-bar", height = "2em", fill = miamired)` Insights
+]
+]
+
+
+---
+
+## Section Check-In: Infographic Data Recovery
+
+`r emo::ji("check")` You can extract underlying data from chart images using Vision APIs
+
+`r emo::ji("check")` You can build a reusable extraction function
+
+`r emo::ji("check")` You know when to use scraping vs API vs LLM text vs LLM vision
+
+
+---
+class: inverse, center, middle
+
+# Recap
+
+
+---
+
+## Summary of Main Points
+
+By now, you should be able to do the following:
+
+- **Extract tabular data from PDF documents** using `pdftools` and `tabulapdf`
+
+- **Use vision APIs to analyze images** by encoding images as base64 and sending them to the Claude API via `httr2`
+
+- **Extract structured information from infographics** and recover the underlying data from charts and screenshots
+
+
+---
+
+## Readings and Resources
+
+.pull-left[
+**PDF Extraction:**
+- [pdftools: Extracting Text and Data from PDFs](https://docs.ropensci.org/pdftools/)
+- [tabulapdf: Extract Tables from PDFs](https://docs.ropensci.org/tabulapdf/)
+
+**Vision APIs:**
+- [Anthropic Vision Documentation](https://docs.anthropic.com/en/docs/build-with-claude/vision)
+- [httr2: Getting Started](https://httr2.r-lib.org/articles/httr2.html)
+]
+
+.pull-right[
+**Additional Resources:**
+- [base64enc Package](https://cran.r-project.org/web/packages/base64enc/)
+- [BLS Occupational Outlook Handbook](https://www.bls.gov/ooh/)
+- [R for Data Science: Data Import](https://r4ds.hadley.nz/data-import)
+]
+
+
+---
+
+## Things to Do to Prepare for Next Class
+
+- Review the [pdftools vignette](https://docs.ropensci.org/pdftools/) and try extracting text from a PDF of your choice
+
+- Read the [Anthropic Vision documentation](https://docs.anthropic.com/en/docs/build-with-claude/vision) to understand image input options
+
+- Ensure your `ANTHROPIC_API_KEY` is set in your `.Renviron` file
+
+- **Next up:** Tidy Data and Data Validation -- making sure your extracted data is clean and ready for analysis

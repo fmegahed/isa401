@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>ISA 401: Business Intelligence &amp; Data Visualization</title>
+    <meta charset="utf-8" />
+    <meta name="author" content=" Fadel M. Megahed, PhD   Raymond E. Gloss Professor in Business   Farmer School of Business  Miami University     @Fadel Megahed     fmegahed     fmegahed@miamioh.edu    Automated Scheduler for Office Hours  " />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/tile-view/tile-view.css" rel="stylesheet" />
+    <script src="libs/tile-view/tile-view.js"></script>
+    <link href="libs/animate.css/animate.xaringan.css" rel="stylesheet" />
+    <link href="libs/tachyons/tachyons.min.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra_fit-screen/fit-screen.js"></script>
+    <link href="libs/panelset/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset/panelset.js"></script>
+    <script type="application/json" id="xaringanExtra-editable-docid">{"id":"x61786a987d2460aa3d8bbaa49398786","expires":14}</script>
+    <script src="libs/himalaya/himalaya.js"></script>
+    <script src="libs/js-cookie/js.cookie.js"></script>
+    <link href="libs/editable/editable.css" rel="stylesheet" />
+    <script src="libs/editable/editable.js"></script>
+    <script src="libs/mark.js/mark.min.js"></script>
+    <link href="libs/xaringanExtra-search/search.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-search/search.js"></script>
+    <script>window.addEventListener('load', function() { window.xeSearch = new RemarkSearch({"position":"bottom-left","caseSensitive":false,"showIcon":false,"autoSearch":true}) })</script>
+    <link href="libs/countdown/countdown.css" rel="stylesheet" />
+    <script src="libs/countdown/countdown.js"></script>
+    <link rel="stylesheet" href="../../style_files/fonts.css" type="text/css" />
+    <link rel="stylesheet" href="../../style_files/my-theme.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# ISA 401: Business Intelligence &amp; Data Visualization
+]
+.subtitle[
+## 12: Lab — Tableau
+]
+.author[
+### <br>Fadel M. Megahed, PhD <br><br>Raymond E. Gloss Professor in Business <br> Farmer School of Business<br> Miami University<br><br> <a href="https://www.linkedin.com/in/fadel-megahed-289046b4"><svg viewBox="0 0 448 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:white;" xmlns="http://www.w3.org/2000/svg"> <path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"></path></svg> <span class="citation">@Fadel</span> Megahed</a> <br> <a href="https://github.com/fmegahed/"><svg viewBox="0 0 496 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:white;" xmlns="http://www.w3.org/2000/svg"> <path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg> fmegahed</a> <br> <a href="mailto:fmegahed@miamioh.edu"><svg viewBox="0 0 512 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:white;" xmlns="http://www.w3.org/2000/svg"> <path d="M476 3.2L12.5 270.6c-18.1 10.4-15.8 35.6 2.2 43.2L121 358.4l287.3-253.2c5.5-4.9 13.3 2.6 8.6 8.3L176 407v80.5c0 23.6 28.5 32.9 42.5 15.8L282 426l124.6 52.2c14.2 6 30.4-2.9 33-18.2l72-432C515 7.8 493.3-6.8 476 3.2z"></path></svg> fmegahed@miamioh.edu</a><br> <a href="https://calendly.com/fmegahed"><svg viewBox="0 0 384 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:white;" xmlns="http://www.w3.org/2000/svg"> <path d="M202.021 0C122.202 0 70.503 32.703 29.914 91.026c-7.363 10.58-5.093 25.086 5.178 32.874l43.138 32.709c10.373 7.865 25.132 6.026 33.253-4.148 25.049-31.381 43.63-49.449 82.757-49.449 30.764 0 68.816 19.799 68.816 49.631 0 22.552-18.617 34.134-48.993 51.164-35.423 19.86-82.299 44.576-82.299 106.405V320c0 13.255 10.745 24 24 24h72.471c13.255 0 24-10.745 24-24v-5.773c0-42.86 125.268-44.645 125.268-160.627C377.504 66.256 286.902 0 202.021 0zM192 373.459c-38.196 0-69.271 31.075-69.271 69.271 0 38.195 31.075 69.27 69.271 69.27s69.271-31.075 69.271-69.271-31.075-69.27-69.271-69.27z"></path></svg> Automated Scheduler for Office Hours</a><br><br>
+]
+.date[
+### Spring 2026
+]
+
+---
+
+
+
+
+
+
+
+
+## Quick Refresher from Last Week
+
+✅ Explain Tufte's principles of graphical excellence and the data-ink ratio.
+
+✅ Select appropriate visual encodings based on data types.
+
+✅ Apply color theory and accessibility guidelines.
+
+✅ Identify and critique misleading visualizations.
+
+**Today:** We put these principles into practice using **Tableau Desktop**.
+
+
+---
+
+# Learning Objectives for Today's Lab
+
+- **LO1:** Import and prepare data in Tableau
+
+- **LO2:** Create common chart types (bar, line, scatter, box plots)
+
+- **LO3:** Build interactive filters and parameters
+
+- **LO4:** Construct a multi-view dashboard
+
+.font130[**Job Market Connection:** Tableau appears in **60%+ of BI job postings**. Hands-on experience is essential.]
+
+
+---
+
+# Tableau Interface Overview
+
+When you open Tableau Desktop, you will encounter these key areas:
+
+.font80[
+| Area | Purpose |
+|------|---------|
+| **Data Source pane** | Connect to files, databases; preview and join data |
+| **Worksheet** | Build individual charts by dragging fields to shelves |
+| **Marks card** | Control color, size, labels, tooltips, and shape |
+| **Rows / Columns shelves** | Define what goes on each axis |
+| **Filters shelf** | Restrict which data points appear |
+| **Show Me panel** | Tableau suggests chart types based on your field selections |
+| **Dashboard** | Combine multiple worksheets into a single interactive view |
+]
+
+`[Screenshot: Annotated Tableau Desktop interface showing Data pane, Shelves, Marks card, and Show Me panel]`
+
+
+---
+
+# Key Tableau Terminology
+
+Before we begin, familiarize yourself with these terms:
+
+- **Dimension** (blue pill): Categorical fields (e.g., state, job_title). Used to **group** data.
+
+- **Measure** (green pill): Numeric fields (e.g., salary, skills_count). Used for **aggregation** (SUM, AVG, COUNT).
+
+- **Discrete** (blue): Creates **distinct** headers or labels.
+
+- **Continuous** (green): Creates an **axis** with a range.
+
+- **Marks card**: Controls visual properties -- Color, Size, Label, Detail, Tooltip, Shape.
+
+- **Pill**: A field dragged onto a shelf -- its color and shape indicate type.
+
+.font130[**Tip:** Right-click any pill to change between Dimension/Measure or Discrete/Continuous.]
+
+
+---
+class: inverse, center, middle
+
+# Step 1: Connect to Data
+
+
+---
+
+# Step 1a: Launch Tableau and Connect
+
+Follow these steps to connect your data:
+
+1. Open **Tableau Desktop** (ensure you have activated your student license).
+
+2. On the Start page, under **Connect**, click **Text file**.
+
+3. Navigate to the **job_market.csv** file you downloaded from Canvas.
+
+4. Click **Open** -- Tableau will display the Data Source pane.
+
+`[Screenshot: Tableau Start page with "Text file" highlighted under Connect]`
+
+
+---
+
+# Step 1b: Inspect and Verify Data Types
+
+.font80[
+Once the data loads in the **Data Source** pane:
+
+1. Review the **column headers** -- Tableau auto-detects data types with icons:
+   - **Abc** = String (text)
+   - **#** = Number (continuous)
+   - **Calendar** = Date
+
+2. **Verify** the following columns are typed correctly:
+
+| Column | Expected Type | Tableau Icon |
+|--------|--------------|--------------|
+| `job_title` | String | Abc |
+| `company` | String | Abc |
+| `salary_min` / `salary_max` | Number (decimal) | # |
+| `state` | String (Geographic role: State) | Abc / Globe |
+| `date_posted` | Date | Calendar |
+| `skills_count` | Number (whole) | # |
+
+3. To change a type: **click the icon** above the column name and select the correct type.
+]
+
+`[Screenshot: Tableau Data Source pane showing column headers with type icons]`
+
+
+---
+class: inverse, center, middle
+
+# Step 2: Bar Chart — Jobs by State
+
+
+---
+
+# Step 2a: Create a Bar Chart
+
+1. Click **Sheet 1** at the bottom to open a new worksheet.
+
+2. From the **Data** pane on the left:
+   - Drag **`state`** to the **Rows** shelf.
+   - Drag **`job_title`** (or `Number of Records`) to the **Columns** shelf.
+
+3. Tableau automatically creates a horizontal bar chart showing the count of jobs per state.
+
+4. **Sort descending:** Click the sort icon on the toolbar (or right-click the axis &gt; **Sort** &gt; **Descending**).
+
+`[Screenshot: Tableau worksheet with state on Rows, count on Columns, sorted descending]`
+
+
+---
+
+# Step 2b: Format the Bar Chart
+
+Apply Tufte's principles to clean up the chart:
+
+1. **Remove gridlines:** Right-click the chart background &gt; **Format** &gt; **Lines** tab &gt; set Grid Lines to **None**.
+
+2. **Add data labels:** Drag `CNT(job_title)` to the **Label** mark on the Marks card.
+
+3. **Color:** Click the **Color** mark &gt; choose a single color (e.g., `#C3142D` Miami Red).
+
+4. **Title:** Double-click the sheet title &gt; rename to **"Job Postings by State"**.
+
+5. **Rename the sheet tab:** Right-click **Sheet 1** at the bottom &gt; **Rename** &gt; type **"Bar - Jobs by State"**.
+
+
+---
+
+# Step 2c: Add a Top-N Filter
+
+To focus on the most relevant states:
+
+1. Drag **`state`** to the **Filters** shelf.
+
+2. In the Filter dialog, go to the **Top** tab.
+
+3. Select **By field** &gt; **Top 15** by **`job_title`** &gt; **Count**.
+
+4. Click **OK**.
+
+5. Your bar chart now shows only the **top 15 states** by job count.
+
+`[Screenshot: Tableau Filter dialog showing Top 15 configuration]`
+
+
+---
+class: inverse, center, middle
+
+# Step 3: Scatter Plot — Salary vs. Skills
+
+
+---
+
+# Step 3a: Build the Scatter Plot
+
+1. Open a **new worksheet** (click the new-sheet icon at the bottom).
+
+2. Drag **`skills_count`** to **Columns**.
+
+3. Drag **`salary_max`** (or an average salary measure) to **Rows**.
+
+4. Tableau will create a scatter plot.
+
+5. Drag **`job_category`** to the **Color** mark to color-code by job category.
+
+6. **Rename** the sheet to **"Scatter - Salary vs Skills"**.
+
+`[Screenshot: Scatter plot with skills_count on x-axis, salary on y-axis, colored by job_category]`
+
+
+---
+
+# Step 3b: Add a Trend Line
+
+1. Go to the **Analytics** pane (next to the Data pane).
+
+2. Drag **Trend Line** onto the chart.
+
+3. Choose **Linear** for a simple regression line.
+
+4. Hover over the trend line to see the R-squared value and equation.
+
+5. **Formatting:** Right-click the trend line &gt; **Format** &gt; adjust color and thickness.
+
+6. **Discussion:** What does the relationship between skills count and salary tell you about the job market?
+
+
+---
+class: inverse, center, middle
+
+# Step 4: Box Plot — Salary by Category
+
+
+---
+
+# Step 4a: Create the Box Plot
+
+1. Open a **new worksheet**.
+
+2. Drag **`job_category`** to **Columns**.
+
+3. Drag **`salary_max`** to **Rows**.
+
+4. On the **Marks** card, change the mark type from **Automatic** to **Box-and-Whisker** (click the dropdown).
+   - Alternatively: go to **Analysis** menu &gt; check **Box Plot**.
+
+5. Each box shows the **median, IQR, and outliers** for salary within each category.
+
+`[Screenshot: Box plot with job categories on x-axis, salary distributions shown as boxes]`
+
+
+---
+
+# Step 4b: Format the Box Plot
+
+1. **Sort** categories by median salary: right-click the x-axis &gt; **Sort** &gt; **Field: salary_max** &gt; **Aggregation: Median** &gt; **Descending**.
+
+2. **Color the boxes:** Drag **`job_category`** to the **Color** mark.
+
+3. **Rotate labels** if they overlap: right-click the x-axis &gt; **Format** &gt; **Alignment** &gt; angle the text.
+
+4. **Rename** the sheet to **"Box - Salary by Category"**.
+
+
+---
+class: inverse, center, middle
+
+# Step 5: Map — Job Locations
+
+
+---
+
+# Step 5a: Build the Map
+
+1. Open a **new worksheet**.
+
+2. Double-click **`state`** in the Data pane -- Tableau auto-generates a map if the geographic role is assigned.
+
+3. If the map does not appear:
+   - Right-click **`state`** &gt; **Geographic Role** &gt; **State/Province**.
+   - Then double-click it again.
+
+4. Drag **`job_title`** (count) to the **Color** mark to create a **choropleth map** showing job density.
+
+5. Drag **`job_title`** (count) to the **Label** mark to show values on the map.
+
+`[Screenshot: Choropleth map of the U.S. with states colored by job posting count]`
+
+
+---
+
+# Step 5b: Format the Map
+
+1. **Color palette:** Click the **Color** mark &gt; **Edit Colors** &gt; choose a **sequential** palette (e.g., Blue or Orange).
+
+2. **Borders:** Right-click the map &gt; **Format** &gt; **Borders** &gt; set state borders to a thin gray line.
+
+3. **Tooltip:** Hover over a state to see the default tooltip. Click the **Tooltip** mark to customize:
+   ```
+   State: &lt;state&gt;
+   Job Count: &lt;CNT(job_title)&gt;
+   ```
+
+4. **Rename** the sheet to **"Map - Job Locations"**.
+
+
+---
+class: inverse, center, middle
+
+# Step 6: Filters and Parameters
+
+
+---
+
+# Step 6a: Add Interactive Filters
+
+Filters allow dashboard users to drill down into the data:
+
+1. Go to **any worksheet** (e.g., the bar chart).
+
+2. Drag **`job_category`** to the **Filters** shelf.
+
+3. Check **all categories** &gt; click **OK**.
+
+4. Right-click the filter on the Filters shelf &gt; **Show Filter** -- a filter control appears on the right side of the worksheet.
+
+5. **Filter type:** Right-click the filter card &gt; choose **Multiple Values (Dropdown)** for a compact selector.
+
+`[Screenshot: Worksheet with a job_category dropdown filter visible on the right]`
+
+
+---
+
+# Step 6b: Create a Salary Range Parameter
+
+Parameters let users set custom thresholds:
+
+1. In the Data pane, click the **dropdown arrow** &gt; **Create Parameter**.
+
+2. Configure:
+   - **Name:** `Min Salary Threshold`
+   - **Data type:** Float
+   - **Current value:** 50000
+   - **Range:** Minimum = 0, Maximum = 250000, Step size = 5000
+
+3. Click **OK**.
+
+4. Right-click the parameter &gt; **Show Parameter** -- a slider appears.
+
+`[Screenshot: Create Parameter dialog with Min Salary Threshold configured]`
+
+
+---
+
+# Step 6c: Apply the Parameter as a Filter
+
+1. Create a **calculated field**: right-click in the Data pane &gt; **Create Calculated Field**.
+
+2. Name it `Salary Above Threshold` and enter:
+   ```
+   [salary_max] &gt;= [Min Salary Threshold]
+   ```
+
+3. Drag `Salary Above Threshold` to the **Filters** shelf &gt; select **True**.
+
+4. Now, when users adjust the slider, the charts update to show only jobs above that salary threshold.
+
+5. **Test it:** Move the slider and confirm that the charts respond.
+
+
+---
+class: inverse, center, middle
+
+# Step 7: Build the Dashboard
+
+
+---
+
+# Step 7a: Create a New Dashboard
+
+1. Click the **New Dashboard** icon at the bottom of the workbook (looks like a grid with a plus sign).
+
+2. Set the **dashboard size**: under **Size** in the left pane, choose **Automatic** or **Fixed: 1200 x 800**.
+
+3. From the **Sheets** section on the left, **drag each worksheet** onto the dashboard canvas:
+   - Place the **bar chart** in the top-left.
+   - Place the **scatter plot** in the top-right.
+   - Place the **box plot** in the bottom-left.
+   - Place the **map** in the bottom-right.
+
+`[Screenshot: Dashboard layout with four charts arranged in a 2x2 grid]`
+
+
+---
+
+# Step 7b: Add Dashboard Title and Filters
+
+1. **Title:** From the left pane, drag a **Text** object to the top. Type: **"Job Market Explorer Dashboard"** with a large font size.
+
+2. **Global filter:** Click the dropdown arrow on any chart in the dashboard &gt; **Filters** &gt; select **`job_category`**. Then click the filter's dropdown &gt; **Apply to Worksheets** &gt; **All Using This Data Source**.
+
+3. Now, one filter controls all four charts simultaneously.
+
+4. **Repeat** for the **`Min Salary Threshold`** parameter: right-click any blank area &gt; **Parameters** &gt; select it.
+
+
+---
+
+# Step 7c: Enable Cross-Filtering (Actions)
+
+1. Go to **Dashboard** menu &gt; **Actions**.
+
+2. Click **Add Action** &gt; **Filter**.
+
+3. Configure:
+   - **Source:** All sheets in the dashboard.
+   - **Target:** All sheets in the dashboard.
+   - **Run action on:** Select.
+   - **Clearing the selection will:** Show all values.
+
+4. Click **OK** twice.
+
+5. **Test:** Click a state on the map -- the bar chart, scatter plot, and box plot will filter to show only that state's data.
+
+`[Screenshot: Dashboard Actions dialog with cross-filter configured]`
+
+
+---
+class: inverse, center, middle
+
+# Step 8: Polish and Export
+
+
+---
+
+# Step 8a: Visual Polish
+
+Apply the design principles from Lecture 11:
+
+1. **Consistent colors:** Use the same color palette across all charts. Go to each sheet &gt; **Color** mark &gt; choose the same palette.
+
+2. **Remove clutter:** Hide unnecessary headers, gridlines, and borders.
+
+3. **Alignment:** Use **Layout** options in the dashboard to ensure charts are evenly spaced.
+
+4. **Tooltips:** Customize tooltips on each sheet to show relevant information only.
+
+5. **Font consistency:** Use the same font family and size hierarchy across all chart titles.
+
+
+---
+
+# Step 8b: Export Your Work
+
+You have several options for sharing:
+
+| Export Method | Use Case |
+|---------------|----------|
+| **Tableau Public** | Free hosting; publicly accessible link |
+| **PDF / Image** | Static snapshot for reports |
+| **Packaged Workbook (.twbx)** | Share the entire workbook with data |
+| **Tableau Server / Cloud** | Enterprise hosting for organizations |
+
+**For this class:**
+
+1. Go to **File** &gt; **Save As** &gt; save as a `.twbx` (packaged workbook).
+
+2. **Optional:** Publish to Tableau Public for portfolio use.
+
+
+---
+
+# Activity: Recreate the Job Market Explorer
+
+<countdown-timer class="countdown" id="timer_fcd439eb" minutes="20" seconds="0" update-every="1" tabindex="0" style="top:0;right:0;--countdown-font-size:2em;"></countdown-timer>
+
+.panelset[
+
+.panel[.panel-name[Instructions]
+
+&gt; Using the steps covered today, build a **Job Market Explorer** dashboard in Tableau that includes:
+
+1. A **bar chart** showing top 15 states by job count
+2. A **scatter plot** of salary vs. skills count
+3. A **box plot** of salary distribution by job category
+4. A **map** showing geographic distribution
+5. A **global filter** for job category
+6. **Cross-filtering** so clicking one chart filters the others
+
+**Save** your workbook as `job_market_dashboard.twbx`.
+
+]
+
+.panel[.panel-name[Checklist]
+
+.can-edit.key-activity03[
+
+- [ ] Connected to job_market.csv
+- [ ] Bar chart created and formatted
+- [ ] Scatter plot with trend line
+- [ ] Box plot sorted by median salary
+- [ ] Map with choropleth coloring
+- [ ] Global job_category filter
+- [ ] Cross-filtering enabled
+- [ ] Dashboard title added
+- [ ] Consistent color palette
+- [ ] Saved as .twbx
+
+]
+
+]
+
+.panel[.panel-name[Troubleshooting]
+
+**Common issues:**
+
+- **Map not showing:** Check that `state` has the Geographic Role set to State/Province.
+- **Box plot not appearing:** Change mark type manually on the Marks card.
+- **Filter not applying globally:** Ensure you selected "All Using This Data Source" in the filter options.
+- **Parameter not updating charts:** Verify the calculated field is on the Filters shelf with "True" selected.
+- **Dashboard too crowded:** Try a **Horizontal** or **Vertical** container layout instead of free-form.
+
+]
+
+]
+
+
+---
+class: inverse, center, middle
+
+# Wrap-Up
+
+
+---
+
+# Summary of What We Built
+
+Today you built a **four-chart interactive dashboard** in Tableau:
+
+✅ **LO1:** Imported a CSV and verified data types in the Data Source pane.
+
+✅ **LO2:** Created bar, scatter, box, and map charts.
+
+✅ **LO3:** Added interactive filters, parameters, and cross-filtering actions.
+
+✅ **LO4:** Combined all views into a single dashboard with a unified design.
+
+
+---
+
+# Next Steps
+
+**For next class (Power BI Lab):**
+
+1. **Install Power BI Desktop** (free, Windows only). Download from [powerbi.microsoft.com](https://powerbi.microsoft.com/en-us/desktop/).
+   - Mac users: Use a Windows VM or the computer lab.
+
+2. **Bring** the same `job_market.csv` file -- we will recreate this dashboard in Power BI.
+
+3. **Reflect:** As you work, note what felt **easy** and **hard** in Tableau. We will compare experiences in the Power BI lab.
+
+**Assignment:** Submit your `job_market_dashboard.twbx` file on Canvas by the due date listed in the Modules page.
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+  "highlightStyle": "magula",
+  "highlightLines": true,
+  "highlightLanguage": "r",
+  "countIncrementalSlides": false,
+  "ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

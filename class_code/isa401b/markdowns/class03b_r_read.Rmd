@@ -53,4 +53,34 @@ super_bowl = readr::read_csv("https://raw.githubusercontent.com/rfordatascience/
 ```
 
 
+# JSON Data
 
+We are using the **jsonlite** package to read json data. 
+
+```{r cincy_jobs}
+cincy_jobs = jsonlite::fromJSON(
+  txt = 'https://www.themuse.com/api/public/jobs?page=1&location=Cincinnati%2C%20OH',
+  flatten = T
+)
+
+names(cincy_jobs)
+
+# to pull the results data.frame (by viewing the list in the Global env)
+# we can either use [['results']] or [[7]] $results
+
+cincy_jobs_df = cincy_jobs[['results']]
+  
+dplyr::glimpse(cincy_jobs_df)
+
+# optional you can also go one by one and change list columns to single cols
+# this will depend on your goal for the data analysis
+# it depends on your subsequent step
+
+cincy_jobs_df2 = cincy_jobs_df |> 
+  tidyr::unnest(
+    cols = c('locations'), names_repair = "unique"
+  )
+
+```
+
+Note that the unnesting can impact the number of rows for your data.

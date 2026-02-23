@@ -1,0 +1,100 @@
+---
+title: 'Class 04: Intro to APIs'
+author: "Fadel Megahed"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: True
+    toc_float: True
+    number_sections: True
+    code_download: True
+    code_folding: show
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Getting Data from the USAJobs API
+
+```{r our_request}
+# var request = require('request');    
+#             
+# var host = 'data.usajobs.gov';  
+# var userAgent = 'your@email.address';  
+# var authKey = 'YourAPIKey';    
+#             
+# request({      
+#     url: 'https://data.usajobs.gov/api/search?JobCategoryCode=2210&Keyword=Software Development&LocationName=Washington, DC',      
+#     method: 'GET',      
+#     headers: {          
+#         "Host": host,          
+#         "User-Agent": userAgent,          
+#         "Authorization-Key": authKey      
+#     }  
+# }, function(error, response, body) {      
+#     var data = JSON.parse(body);  
+# });
+
+host = 'data.usajobs.gov'
+user_agent = "fmegahed@miamioh.edu"
+auth_key = Sys.getenv('USAJOBS_API_KEY')
+
+my_req = httr2::request("https://data.usajobs.gov/api/search") |> 
+  httr2::req_headers(
+    # LHS: Is the Name of the Header Input per the API documentation
+    # Note that this is case sensitive (I think it is)
+    # I added `backticks` (key next to 1) for header inputs that had a "-"
+    
+    # RHS: is the name of the object in r which we defined in lines 39-41
+    Host = host,
+    `User-Agent` = user_agent,
+    `Authorization-Key` = auth_key
+  ) |> 
+  httr2::req_url_query(
+    # JobCategoryCode=2210&Keyword=Software Development
+    JobCategoryCode = 2210,
+    Keyword = "Data Analyst",
+    ResultsPerPage=500
+  )
+
+# executing the request to get a response back
+response = httr2::req_perform(my_req)
+
+usajobs_data = response |> 
+  httr2::resp_body_string() |> 
+  jsonlite::fromJSON(flatten = T)
+
+# By inspecting the usajobs_data (global environment -> clicked on the blue circle that has a triangle); Alternatively, you could have done
+dplyr::glimpse(usajobs_data)
+
+usajobs_df = usajobs_data$SearchResult$SearchResultItems
+
+# Q1: Number of Fed Jobs based on our criteria --> 36
+usajobs_data$SearchResult$SearchResultCountAll
+# also from nrow(usajobs_df)
+
+# Let us clean some of these list columns so you know how that is done
+
+usajobs_df |> 
+  tidyr::unnest(
+    cols = c(
+      "MatchedObjectDescriptor.PositionLocation",
+      "MatchedObjectDescriptor.JobCategory",
+      "MatchedObjectDescriptor.PositionSchedule"
+    ),
+    names_sep = '.'
+  ) -> 
+  usajobs_df_clean
+
+
+usajobs_df_clean |> 
+  # returns the distinct items for first column
+  # needed that given that one job had two possible locations
+  # row 33 of our original data and it became row 33 and 34
+  dplyr::distinct(MatchedObjectId, MatchedObjectDescriptor.OrganizationName) |> 
+  dplyr::count(MatchedObjectDescriptor.OrganizationName)
+
+
+```
+

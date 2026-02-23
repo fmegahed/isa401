@@ -1,0 +1,88 @@
+---
+title: 'Class 05: Scraping a Single Web Page'
+author: "Fadel Megahed"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
+    number_sections: TRUE
+    code_download: TRUE
+    code_folding: show
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Scraping the BLS Webpage
+
+In this example, we will be scraping the [Top Growing Jobs BLS Web Page](https://www.bls.gov/emp/tables/fastest-growing-occupations.htm).
+
+```{r web_page_bls}
+# step 0: am I allowed to scrape this webpage
+# this returned TRUE, which means I am allowed to scrape the webpage
+robotstxt::paths_allowed(
+  paths= "/emp/",
+  domain = "https://www.bls.gov"
+  )
+
+robotstxt::paths_allowed(paths = "https://www.bls.gov/emp/tables/fastest-growing-occupations.htm")
+
+
+# step 1: get the backend HTML page into R
+# FOR THIS EXAMPLE, the simple rvest::read_html() failed with a "cannot open the connection" error, so we will start by declaring ourselves
+
+# bls_fail = rvest::read_html_live(
+#   "https://www.bls.gov/emp/tables/fastest-growing-occupations.htm"
+# )
+
+url <- "https://www.bls.gov/emp/tables/fastest-growing-occupations.htm"
+
+resp <- httr2::request(url) |>
+  httr2::req_user_agent("ISA401 Course Scraper (Miami University)") |>
+  # httr2::req_retry(max_tries = 3) |>
+  # httr2::req_timeout(60) |>
+  httr2::req_perform()
+
+# if the previous step works correctly
+# page will be a list of 2 that contains: 
+# (a) head [metadata]; and (b) body[ things that we see]
+page <- resp |> httr2::resp_body_raw() |> rvest::read_html()
+
+print(page) # this returns the head and body of the webpage
+
+# step 2: from the page, extract the part of interest
+table_1 = page |> rvest::html_elements("table#BLStable_2025_7_18_12_5.regular")
+
+# step 3: we make this human readable
+table_1_clean = table_1 |> rvest::html_table()
+table_1_clean = table_1_clean[[1]]
+
+
+# Alternate approaches for pulling that table from "page"
+
+t1_b = # the page is step 1
+  page |> 
+  # step 2
+  rvest::html_elements("table") |> 
+  # step 3
+  rvest::html_table() |> 
+  magrittr::extract2(1) # the extract2 fn is equivalent to the [[]]
+
+
+t1_c = # the page is step 1
+  page |> 
+  # step 2
+  rvest::html_elements(".regular") |> 
+  # step 3
+  rvest::html_table() |> 
+  magrittr::extract2(1) # the extract2 fn is equivalent to the [[]]
+
+
+
+```
+
+
+

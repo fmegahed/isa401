@@ -1,0 +1,969 @@
+---
+title: "ISA 401: Business Intelligence & Data Visualization"
+subtitle: '21: Clustering in `r icons::icon_style(icons::fontawesome("r-project"), fill = "white")`'
+author: '<br>Fadel M. Megahed, PhD <br><br>Raymond E. Gloss Professor in Business <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("linkedin"), fill = "white")` @Fadel Megahed](https://www.linkedin.com/in/fadel-megahed-289046b4) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
+date: "Spring 2026"
+output:
+  xaringan::moon_reader:
+    self_contained: true
+    css: [default, "../../style_files/fonts.css", "../../style_files/my-theme.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: magula
+      highlightLines: true
+      highlightLanguage: ["r"]
+      countIncrementalSlides: false
+      ratio: "16:9"
+header-includes:
+  - "../../style_files/header.html"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache = FALSE,
+                      echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE,
+                      progress = FALSE,
+                      verbose = FALSE,
+                      dev = 'png',
+                      fig.height = 2.5,
+                      dpi = 300,
+                      fig.align = 'center')
+
+options(htmltools.dir.version = FALSE)
+
+miamired = '#C3142D'
+
+if(require(pacman)==FALSE) install.packages("pacman")
+if(require(devtools)==FALSE) install.packages("devtools")
+
+if(require(countdown)==FALSE) devtools::install_github("gadenbuie/countdown")
+if(require(xaringanExtra)==FALSE) devtools::install_github("gadenbuie/xaringanExtra")
+
+
+pacman::p_load(tidyverse, magrittr, lubridate, janitor, # data analysis pkgs
+               factoextra, cluster, NbClust, # for clustering
+               fontawesome, RefManageR, xaringanExtra, countdown) # for slides
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+if(require(xaringanthemer) == FALSE) install.packages("xaringanthemer")
+library(xaringanthemer)
+
+style_mono_accent(base_color = "#84d6d3",
+                  base_font_size = "20px")
+
+xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "tachyons", "panelset", "search", "fit_screen", "editable",
+                                    "clipable"))
+```
+
+
+## Quick Refresher from Lecture 20
+
+`r emo::ji("check")` Define data mining and its role in the analytics pipeline
+
+`r emo::ji("check")` Distinguish between supervised and unsupervised learning
+
+`r emo::ji("check")` Prepare feature matrices for analysis
+
+`r emo::ji("check")` Apply feature scaling and normalization
+
+
+---
+
+# Kahoot: Data Mining Concepts
+
+.panelset[
+.panel[.panel-name[Let's Play!]
+
+Let us go to Kahoot and compete for a $10 `r fontawesome::fa('coffee', fill = 'darkgreen')` Starbucks gift card. To evaluate your understanding of the material, please answer the questions correctly and as quickly as possible to get the most points.
+
+**Topics covered:**
+- Supervised vs. unsupervised learning
+- Feature matrices and feature selection
+- Feature scaling (z-score vs. min-max)
+- When and why to scale features
+
+]
+
+.panel[.panel-name[Sample Questions]
+
+1. Which of the following is an example of **unsupervised** learning?
+   - a) Predicting email spam  b) Clustering customers  c) Regression  d) Classification
+
+2. What does `scale()` do to a feature's mean?
+   - a) Sets it to 1  b) Sets it to 0  c) Doubles it  d) No change
+
+3. Which algorithm is **most affected** by unscaled features?
+   - a) Decision trees  b) k-means  c) Random forest  d) Logistic regression
+
+4. A feature matrix should contain only ______ values.
+   - a) Text  b) Numeric  c) Boolean  d) Categorical
+
+5. Min-max normalization scales values to what range?
+   - a) [-1, 1]  b) [0, 100]  c) [0, 1]  d) [-inf, inf]
+
+]
+]
+
+
+---
+
+# Learning Objectives for Today's Class
+
+After today's lecture, you should be able to:
+
+1. Explain the k-means algorithm step by step
+
+2. Perform k-means clustering manually and with `r fontawesome::fa('r-project', fill = miamired)`
+
+3. Select optimal $k$ using elbow and silhouette methods
+
+4. Interpret, visualize, and name clusters
+
+
+---
+class: inverse, center, middle
+
+# LO 1: The K-Means Algorithm
+
+---
+
+# What is K-Means Clustering?
+
+**K-means** is the most widely used clustering algorithm. It partitions $n$ observations into $k$ clusters, where each observation belongs to the cluster with the **nearest centroid** (mean).
+
+**Key properties:**
+- Requires you to **specify** the number of clusters $k$
+- Uses **Euclidean distance** to assign points to clusters
+- Minimizes the **within-cluster sum of squares (WSS):**
+
+$$\text{WSS} = \sum_{j=1}^{k}\sum_{x_i \in C_j} ||x_i - \mu_j||^2$$
+
+where $\mu_j$ is the centroid of cluster $C_j$
+
+
+---
+
+# The K-Means Algorithm: Step by Step
+
+.font120[
+
+**Step 1:** Choose the number of clusters $k$
+
+**Step 2:** Randomly initialize $k$ centroids
+
+**Step 3:** **Assign** each data point to the nearest centroid
+
+**Step 4:** **Update** each centroid as the mean of all assigned points
+
+**Step 5:** **Repeat** steps 3-4 until centroids stop moving (convergence)
+
+]
+
+The algorithm is guaranteed to converge, but may find a **local** (not global) minimum. That is why we often run it multiple times with different random starts.
+
+
+---
+
+# Visualizing K-Means: Iteration 0
+
+.panelset[
+.panel[.panel-name[Raw Data]
+
+.font70[
+```{r kmeans-viz-data}
+# Create a small dataset for visualization
+set.seed(42)
+demo_data <- tibble::tibble(
+  x = c(1, 1.5, 2, 5, 5.5, 6, 3, 3.5, 8, 8.5),
+  y = c(2, 1.8, 2.5, 8, 7.5, 8.2, 5, 4.5, 3, 3.5)
+)
+
+ggplot2::ggplot(demo_data, ggplot2::aes(x, y)) +
+  ggplot2::geom_point(size = 4) +
+  ggplot2::geom_text(ggplot2::aes(label = 1:10), vjust = -1, size = 3) +
+  ggplot2::theme_minimal() +
+  ggplot2::labs(title = "Step 0: Raw data (10 points)", x = "X", y = "Y") +
+  ggplot2::xlim(0, 10) + ggplot2::ylim(0, 10)
+```
+]
+
+]
+
+.panel[.panel-name[Random Centroids]
+
+.font70[
+```{r kmeans-viz-init}
+# Randomly pick 3 initial centroids (points 1, 5, 9)
+centroids <- demo_data[c(1, 5, 9), ] |> dplyr::mutate(cluster = factor(1:3))
+
+ggplot2::ggplot(demo_data, ggplot2::aes(x, y)) +
+  ggplot2::geom_point(size = 4, color = "gray50") +
+  ggplot2::geom_point(data = centroids, ggplot2::aes(color = cluster), size = 8, shape = 17) +
+  ggplot2::geom_text(ggplot2::aes(label = 1:10), vjust = -1, size = 3) +
+  ggplot2::theme_minimal() +
+  ggplot2::labs(title = "Step 1: Random centroids selected (triangles)",
+       x = "X", y = "Y") +
+  ggplot2::xlim(0, 10) + ggplot2::ylim(0, 10) +
+  ggplot2::theme(legend.position = "none")
+```
+]
+
+]
+]
+
+
+---
+
+# Visualizing K-Means: Assignment & Update
+
+.panelset[
+.panel[.panel-name[Assign Points]
+
+.font70[
+```{r kmeans-viz-assign}
+# Assign each point to nearest centroid
+assign_cluster <- function(point, centroids) {
+  dists <- sqrt((centroids$x - point[1])^2 + (centroids$y - point[2])^2)
+  which.min(dists)
+}
+demo_data$cluster <- factor(apply(demo_data[, 1:2], 1, assign_cluster, centroids = centroids))
+
+ggplot2::ggplot(demo_data, ggplot2::aes(x, y, color = cluster)) +
+  ggplot2::geom_point(size = 4) +
+  ggplot2::geom_point(data = centroids, ggplot2::aes(color = cluster), size = 8, shape = 17) +
+  ggplot2::geom_text(ggplot2::aes(label = 1:10), vjust = -1, size = 3, color = "black") +
+  ggplot2::theme_minimal() +
+  ggplot2::labs(title = "Step 2: Points assigned to nearest centroid", x = "X", y = "Y") +
+  ggplot2::xlim(0, 10) + ggplot2::ylim(0, 10)
+```
+]
+
+]
+
+.panel[.panel-name[Update Centroids]
+
+.font70[
+```{r kmeans-viz-update}
+# Compute new centroids
+new_centroids <- demo_data |>
+  dplyr::group_by(cluster) |>
+  dplyr::summarise(x = mean(x), y = mean(y), .groups = "drop")
+
+ggplot2::ggplot(demo_data, ggplot2::aes(x, y, color = cluster)) +
+  ggplot2::geom_point(size = 4) +
+  ggplot2::geom_point(data = centroids, ggplot2::aes(color = cluster), size = 6, shape = 17, alpha = 0.3) +
+  ggplot2::geom_point(data = new_centroids, ggplot2::aes(color = cluster), size = 8, shape = 17) +
+  ggplot2::geom_segment(data = tibble::tibble(x = centroids$x, y = centroids$y,
+                              xend = new_centroids$x, yend = new_centroids$y,
+                              cluster = centroids$cluster),
+               ggplot2::aes(x = x, y = y, xend = xend, yend = yend),
+               arrow = arrow(length = ggplot2::unit(0.2, "cm")), linetype = "dashed", color = "black") +
+  ggplot2::theme_minimal() +
+  ggplot2::labs(title = "Step 3: Centroids updated to cluster means", x = "X", y = "Y") +
+  ggplot2::xlim(0, 10) + ggplot2::ylim(0, 10)
+```
+]
+
+]
+]
+
+
+---
+
+# Visualizing K-Means: Final Result
+
+```{r kmeans-viz-final}
+# Run actual k-means
+set.seed(42)
+km_demo <- kmeans(demo_data[, 1:2], centers = 3, nstart = 25)
+demo_data$final_cluster <- factor(km_demo$cluster)
+
+ggplot2::ggplot(demo_data, ggplot2::aes(x, y, color = final_cluster)) +
+  ggplot2::geom_point(size = 4) +
+  ggplot2::geom_point(data = tibble::as_tibble(km_demo$centers) |> dplyr::mutate(final_cluster = factor(1:3)),
+             ggplot2::aes(color = final_cluster), size = 8, shape = 17) +
+  ggplot2::geom_text(ggplot2::aes(label = 1:10), vjust = -1, size = 3, color = "black") +
+  ggplot2::theme_minimal() +
+  ggplot2::labs(title = "Final k-means result (k=3)", x = "X", y = "Y") +
+  ggplot2::xlim(0, 10) + ggplot2::ylim(0, 10)
+```
+
+
+---
+
+# Important Properties of K-Means
+
+- **Initialization matters:** Different starting centroids can lead to different results
+  + Solution: Use `nstart = 25` (or more) to run multiple times and pick the best
+
+- **K must be specified:** The algorithm does not choose $k$ for you
+  + We will learn how to select $k$ using elbow and silhouette methods
+
+- **Sensitive to outliers:** Extreme values pull centroids away from true cluster centers
+
+- **Assumes spherical clusters:** Works best when clusters are roughly round and equal-sized
+
+- **Scales matter:** Always scale your features first! (Lecture 20)
+
+
+---
+
+# Check-in: K-Means Steps
+
+`r countdown(minutes = 2, seconds = 0, top = 0, font_size = "2em")`
+
+**Put these steps in the correct order:**
+
+A. Update centroids to the mean of assigned points
+
+B. Choose the number of clusters $k$
+
+C. Randomly initialize centroids
+
+D. Assign each point to the nearest centroid
+
+E. Check if centroids have moved; if yes, go to step D
+
+.can-edit.key-activity01[Write the correct order here: ___, ___, ___, ___, ___]
+
+
+---
+class: inverse, center, middle
+
+# LO 2: K-Means by Hand and in `r fontawesome::fa('r-project', fill = 'white')`
+
+---
+
+# Manual K-Means Exercise
+
+`r countdown(minutes = 5, seconds = 0, top = 0, font_size = "2em")`
+
+.panelset[
+.panel[.panel-name[The Data]
+
+Use $k = 2$ and Euclidean distance. **Starting centroids: Point A and Point D.**
+
+| Point | X | Y |
+|-------|---|---|
+| A | 1 | 1 |
+| B | 2 | 1 |
+| C | 1 | 2 |
+| D | 5 | 4 |
+| E | 6 | 5 |
+| F | 5 | 5 |
+
+**Iteration 1:** Compute distance from each point to centroids A(1,1) and D(5,4). Assign each point to the nearest centroid. Then compute new centroids.
+
+]
+
+.panel[.panel-name[Your Work]
+
+.can-edit.key-activity02[
+
+**Distances to A(1,1):**
+- A: ___ , B: ___ , C: ___ , D: ___ , E: ___ , F: ___
+
+**Distances to D(5,4):**
+- A: ___ , B: ___ , C: ___ , D: ___ , E: ___ , F: ___
+
+**Assignments:** A: ___, B: ___, C: ___, D: ___, E: ___, F: ___
+
+**New Centroids:**
+- Cluster 1: ( ___ , ___ )
+- Cluster 2: ( ___ , ___ )
+]
+
+]
+
+.panel[.panel-name[Solution]
+
+.font80[
+```{r manual-solution}
+points <- tibble::tibble(point = LETTERS[1:6], x = c(1,2,1,5,6,5), y = c(1,1,2,4,5,5))
+# Distances to A(1,1)
+points$dist_A <- round(sqrt((points$x - 1)^2 + (points$y - 1)^2), 2)
+# Distances to D(5,4)
+points$dist_D <- round(sqrt((points$x - 5)^2 + (points$y - 4)^2), 2)
+points$cluster <- ifelse(points$dist_A < points$dist_D, 1, 2)
+points
+```
+]
+
+New centroids: Cluster 1 = `r paste0("(", round(mean(c(1,2,1)), 1), ", ", round(mean(c(1,1,2)), 1), ")")`, Cluster 2 = `r paste0("(", round(mean(c(5,6,5)), 1), ", ", round(mean(c(4,5,5)), 1), ")")`
+
+]
+]
+
+
+---
+
+# K-Means in `r fontawesome::fa('r-project', fill = miamired)`: Setting Up Job Data
+
+```{r job-data-setup}
+# Create job market data (same structure as Lecture 20)
+set.seed(401)
+job_data <- tibble::tibble(
+  salary = round(c(runif(30, 35000, 55000), runif(40, 60000, 100000), runif(30, 100000, 160000)), -3),
+  skills_count = c(sample(3:6, 30, replace = TRUE), sample(6:10, 40, replace = TRUE), sample(9:15, 30, replace = TRUE)),
+  experience_years = round(c(runif(30, 0, 3), runif(40, 3, 10), runif(30, 8, 20)), 1),
+  is_remote = sample(c(0, 1), 100, replace = TRUE, prob = c(0.55, 0.45)),
+  education_level = c(sample(1:2, 30, replace = TRUE), sample(2:3, 40, replace = TRUE), sample(3:4, 30, replace = TRUE))
+)
+
+# Scale the features
+job_scaled <- scale(job_data)
+head(job_scaled, 3) |> round(3)
+```
+
+
+---
+
+# Why We Scale Before Clustering
+
+Remember from Lecture 20: **distance-based methods require scaled features!**
+
+.font90[
+```{r scale-importance}
+# Compare ranges before and after scaling
+tibble::tibble(
+  feature = names(job_data),
+  raw_range = sapply(job_data, function(x) paste0(round(min(x), 0), " - ", round(max(x), 0))),
+  scaled_range = sapply(tibble::as_tibble(job_scaled), function(x) paste0(round(min(x), 2), " - ", round(max(x), 2)))
+)
+```
+]
+
+Without scaling, `salary` (35K-160K) would dominate the distance calculations, making `is_remote` (0-1) almost irrelevant.
+
+
+---
+
+# The `kmeans()` Function in `r fontawesome::fa('r-project', fill = miamired)`
+
+The key arguments for `kmeans()`:
+
+| Argument | Description | Recommended Value |
+|----------|------------|-------------------|
+| `x` | Numeric matrix or data frame | Your scaled feature matrix |
+| `centers` | Number of clusters ($k$) | Determined by elbow/silhouette |
+| `nstart` | Number of random starts | 25 or more |
+| `iter.max` | Maximum iterations | 100 (default is fine) |
+| `algorithm` | Algorithm variant | "Hartigan-Wong" (default) |
+
+**Critical:** Always use `nstart > 1` to avoid local minima!
+
+
+---
+
+# Running K-Means with `kmeans()`
+
+.panelset[
+.panel[.panel-name[Code]
+
+.font80[
+```{r kmeans-run}
+# Run k-means with k=3
+set.seed(123)
+km_result <- kmeans(
+  x = job_scaled,   # scaled feature matrix
+  centers = 3,      # number of clusters
+  nstart = 25       # run 25 times with different random starts
+)
+
+# Key outputs
+cat("Cluster sizes:", km_result$size, "\n")
+cat("Within-cluster SS:", round(km_result$withinss, 1), "\n")
+cat("Total WSS:", round(km_result$tot.withinss, 1), "\n")
+cat("Between SS / Total SS:", round(km_result$betweenss / km_result$totss * 100, 1), "%")
+```
+]
+
+]
+
+.panel[.panel-name[Cluster Centers]
+
+.font80[
+```{r kmeans-centers}
+# View cluster centers (in scaled units)
+round(km_result$centers, 3)
+```
+]
+
+**Interpretation:** Each row shows the average (scaled) value for each feature within that cluster.
+
+]
+]
+
+
+---
+
+# Visualizing Clusters with `factoextra`
+
+.panelset[
+.panel[.panel-name[Code]
+
+.font80[
+```{r fviz-cluster-code, eval=FALSE}
+factoextra::fviz_cluster(
+  object = km_result,
+  data = job_scaled,
+  ellipse.type = "convex",
+  palette = "jco",
+  ggtheme = ggplot2::theme_minimal(),
+  main = "K-Means Clustering of Job Postings (k=3)"
+)
+```
+]
+
+]
+
+.panel[.panel-name[Plot]
+
+```{r fviz-cluster-out, ref.label='fviz-cluster-code', echo=FALSE, fig.height=4}
+```
+
+**Note:** This plot uses PCA to project the data into 2D. We will learn more about PCA in Lecture 22.
+
+]
+]
+
+
+---
+class: inverse, center, middle
+
+# LO 3: Selecting Optimal K
+
+---
+
+# The Elbow Method
+
+The **elbow method** plots the total within-cluster sum of squares (WSS) against different values of $k$. The "elbow" point where WSS starts to plateau suggests the optimal $k$.
+
+.panelset[
+.panel[.panel-name[Code]
+
+.font80[
+```{r elbow-code, eval=FALSE}
+factoextra::fviz_nbclust(
+  x = job_scaled,
+  FUNcluster = kmeans,
+  method = "wss",        # within sum of squares
+  k.max = 10,
+  nstart = 25
+) +
+  ggplot2::labs(title = "Elbow Method: Optimal Number of Clusters",
+       subtitle = "Look for the 'elbow' where WSS starts to plateau") +
+  ggplot2::theme_minimal()
+```
+]
+
+]
+
+.panel[.panel-name[Plot]
+
+```{r elbow-out, ref.label='elbow-code', echo=FALSE, fig.height=3.5}
+```
+
+]
+]
+
+
+---
+
+# The Silhouette Method
+
+The **silhouette method** measures how similar each point is to its own cluster versus the nearest neighboring cluster. Values range from -1 to 1:
+
+- **Close to 1:** Well-matched to its cluster
+- **Close to 0:** On the boundary between two clusters
+- **Negative:** Possibly assigned to the wrong cluster
+
+.panelset[
+.panel[.panel-name[Code]
+
+.font80[
+```{r sil-code, eval=FALSE}
+factoextra::fviz_nbclust(
+  x = job_scaled,
+  FUNcluster = kmeans,
+  method = "silhouette",
+  k.max = 10,
+  nstart = 25
+) +
+  ggplot2::labs(title = "Silhouette Method: Optimal Number of Clusters",
+       subtitle = "Higher average silhouette width = better clustering") +
+  ggplot2::theme_minimal()
+```
+]
+
+]
+
+.panel[.panel-name[Plot]
+
+```{r sil-out, ref.label='sil-code', echo=FALSE, fig.height=3.5}
+```
+
+]
+]
+
+
+---
+
+# Elbow vs. Silhouette: How to Choose
+
+| Method | What It Shows | How to Read |
+|--------|--------------|-------------|
+| **Elbow** | Total WSS vs. k | Look for the "bend" |
+| **Silhouette** | Avg. silhouette width vs. k | Pick the maximum |
+
+**Practical advice:**
+
+- If both methods agree, use that $k$
+
+- If they disagree, consider the **domain context:**
+  + Does the number of clusters make business sense?
+  + Can you meaningfully interpret and name each cluster?
+
+- **There is no single "correct" $k$** -- clustering is exploratory!
+
+
+---
+
+# Understanding Within-Cluster Sum of Squares
+
+**WSS** measures how tight (compact) your clusters are:
+
+$$\text{WSS}_j = \sum_{x_i \in C_j} ||x_i - \mu_j||^2$$
+
+- **Lower WSS** = tighter, more compact clusters
+- WSS **always decreases** as $k$ increases (at $k = n$, WSS = 0)
+- The elbow method looks for the point where **adding more clusters** provides **diminishing returns**
+
+**Between-cluster SS** (BSS) measures separation between clusters:
+
+$$\frac{\text{BSS}}{\text{TSS}} \times 100\%$$
+
+A higher ratio means clusters are well-separated. Aim for 60%+ in practice.
+
+
+---
+
+# Check-in: Optimal K Selection
+
+`r countdown(minutes = 2, seconds = 0, top = 0, font_size = "2em")`
+
+**Answer the following:**
+
+1. If the elbow plot shows a clear bend at $k = 4$ and the silhouette plot peaks at $k = 3$, which would you choose and why?
+
+2. Why is running k-means with `nstart = 25` better than `nstart = 1`?
+
+3. A silhouette value of -0.2 for a data point means what?
+
+.can-edit.key-activity03[Write your answers here]
+
+
+---
+class: inverse, center, middle
+
+# LO 4: Interpreting and Naming Clusters
+
+---
+
+# Interpreting Cluster Centers
+
+.panelset[
+.panel[.panel-name[Scaled Centers]
+
+.font80[
+```{r interpret-scaled}
+# Cluster centers in scaled units
+centers_scaled <- tibble::as_tibble(km_result$centers, rownames = "Cluster")
+centers_scaled |> dplyr::mutate(dplyr::across(dplyr::where(is.numeric), ~round(., 2)))
+```
+]
+
+**Positive values** = above average, **Negative values** = below average.
+
+]
+
+.panel[.panel-name[Original Scale]
+
+.font80[
+```{r interpret-original}
+# Add cluster assignments back to original data
+job_data$cluster <- factor(km_result$cluster)
+
+# Summary statistics per cluster (original scale)
+job_data |>
+  dplyr::group_by(cluster) |>
+  dplyr::summarise(
+    avg_salary = round(mean(salary), 0),
+    avg_skills = round(mean(skills_count), 1),
+    avg_experience = round(mean(experience_years), 1),
+    pct_remote = round(mean(is_remote) * 100, 0),
+    avg_education = round(mean(education_level), 1),
+    n = dplyr::n()
+  )
+```
+]
+
+]
+]
+
+
+---
+
+# From Scaled Centers to Business Insights
+
+.font80[
+```{r centers-unscaled}
+# Unscale the cluster centers to original units
+centers_original <- t(apply(km_result$centers, 1, function(row) {
+  row * attr(job_scaled, "scaled:scale") + attr(job_scaled, "scaled:center")
+}))
+rownames(centers_original) <- paste("Cluster", 1:3)
+round(centers_original, 1)
+```
+]
+
+**How to read this table:**
+- Each row is a cluster center **in the original units** (dollars, years, counts)
+- Compare across clusters to find what makes each unique
+- The features with the **largest differences** across clusters are the most distinguishing
+
+
+---
+
+# Naming Your Clusters
+
+Based on the cluster profiles, we can give each cluster a descriptive **business name:**
+
+.font110[
+
+| Cluster | Salary | Experience | Skills | Name |
+|---------|--------|------------|--------|------|
+| 1 | Low | Low | Few | **"Entry-Level Starters"** |
+| 2 | Medium | Medium | Moderate | **"Mid-Career Professionals"** |
+| 3 | High | High | Many | **"Senior Specialists"** |
+
+]
+
+**Good cluster names should be:**
+- Descriptive and memorable
+- Based on the distinguishing features
+- Meaningful to business stakeholders
+
+**Job market connection:** "Customer segmentation uses this exact technique -- it's in every marketing analytics job description." `r fontawesome::fa("briefcase", fill = miamired)`
+
+
+---
+
+# Visualizing Cluster Profiles
+
+.panelset[
+.panel[.panel-name[Code]
+
+.font70[
+```{r cluster-profile-code, eval=FALSE}
+job_data |>
+  tidyr::pivot_longer(-cluster, names_to = "feature", values_to = "value") |>
+  ggplot2::ggplot(ggplot2::aes(x = feature, y = value, fill = cluster)) +
+  ggplot2::geom_boxplot(alpha = 0.7) +
+  ggplot2::facet_wrap(~feature, scales = "free", nrow = 1) +
+  ggplot2::scale_fill_manual(values = c("#E41A1C", "#377EB8", "#4DAF4A")) +
+  ggplot2::theme_minimal() +
+  ggplot2::labs(title = "Feature Distributions by Cluster",
+       x = "", y = "Value", fill = "Cluster") +
+  ggplot2::theme(axis.text.x = ggplot2::element_blank(),
+        legend.position = "bottom")
+```
+]
+
+]
+
+.panel[.panel-name[Plot]
+
+```{r cluster-profile-out, ref.label='cluster-profile-code', echo=FALSE, fig.height=3.5}
+```
+
+]
+]
+
+
+---
+
+# Scatter Plot with Cluster Colors
+
+.panelset[
+.panel[.panel-name[Code]
+
+.font80[
+```{r scatter-cluster-code, eval=FALSE}
+ggplot2::ggplot(job_data, ggplot2::aes(x = experience_years, y = salary, color = cluster)) +
+  ggplot2::geom_point(size = 3, alpha = 0.7) +
+  ggplot2::scale_color_manual(values = c("#E41A1C", "#377EB8", "#4DAF4A"),
+                     labels = c("Entry-Level", "Mid-Career", "Senior")) +
+  ggplot2::theme_minimal() +
+  ggplot2::labs(title = "Job Postings Colored by Cluster Assignment",
+       x = "Experience (Years)", y = "Salary ($)",
+       color = "Cluster") +
+  ggplot2::scale_y_continuous(labels = scales::dollar_format()) +
+  ggplot2::theme(legend.position = "bottom")
+```
+]
+
+]
+
+.panel[.panel-name[Plot]
+
+```{r scatter-cluster-out, ref.label='scatter-cluster-code', echo=FALSE, fig.height=3.5}
+```
+
+]
+]
+
+
+---
+
+# Silhouette Plot for Cluster Quality
+
+.panelset[
+.panel[.panel-name[Code]
+
+.font80[
+```{r sil-detail-code, eval=FALSE}
+# Compute silhouette values
+sil <- cluster::silhouette(km_result$cluster, dist(job_scaled))
+
+# Plot
+factoextra::fviz_silhouette(sil, palette = "jco") +
+  ggplot2::theme_minimal() +
+  ggplot2::labs(title = "Silhouette Plot: How Well Does Each Point Fit Its Cluster?")
+```
+]
+
+]
+
+.panel[.panel-name[Plot]
+
+```{r sil-detail-out, ref.label='sil-detail-code', echo=FALSE, fig.height=3.5}
+```
+
+Points with negative silhouette values may be misclassified.
+
+]
+]
+
+
+---
+
+# Non-Graded Activity: K-Means on Job Data
+
+`r countdown(minutes = 10, seconds = 0, top = 0, font_size = "2em")`
+
+.panelset[
+.panel[.panel-name[Instructions]
+
+Complete the following steps using the job data:
+
+1. **Scale** the features using `scale()`
+2. **Run** elbow and silhouette methods to determine optimal $k$
+3. **Perform** k-means with your chosen $k$
+4. **Interpret** the cluster centers -- what makes each cluster unique?
+5. **Name** each cluster with a descriptive label
+
+.font80[
+```{r activity-code, eval=FALSE}
+# Step 1-2: Find optimal k
+factoextra::fviz_nbclust(job_scaled, kmeans, method = "wss", k.max = 10, nstart = 25)
+factoextra::fviz_nbclust(job_scaled, kmeans, method = "silhouette", k.max = 10, nstart = 25)
+
+# Step 3: Run k-means
+my_km <- kmeans(job_scaled, centers = ___, nstart = 25) # fill in your k
+
+# Step 4: Interpret
+job_data$my_cluster <- factor(my_km$cluster)
+job_data |> dplyr::group_by(my_cluster) |>
+  dplyr::summarise(dplyr::across(salary:education_level, mean))
+
+# Step 5: Visualize
+factoextra::fviz_cluster(my_km, data = job_scaled, palette = "jco", ggtheme = ggplot2::theme_minimal())
+```
+]
+
+]
+
+.panel[.panel-name[Your Work]
+
+.can-edit.key-activity04[
+- Optimal k from elbow: ___
+- Optimal k from silhouette: ___
+- My chosen k: ___
+- Cluster names:
+  - Cluster 1: ___
+  - Cluster 2: ___
+  - Cluster 3: ___
+]
+
+]
+]
+
+
+---
+
+# Check-in: Cluster Interpretation
+
+`r countdown(minutes = 2, seconds = 0, top = 0, font_size = "2em")`
+
+**A k-means analysis on customer data produces 3 clusters with these average values:**
+
+| Cluster | Purchases/Month | Avg. Spend | Tenure (Years) |
+|---------|----------------|------------|----------------|
+| 1 | 12 | $450 | 5.2 |
+| 2 | 2 | $30 | 0.8 |
+| 3 | 6 | $120 | 3.1 |
+
+**Questions:**
+1. Name each cluster
+2. Which cluster would you target for a loyalty program? Why?
+
+.can-edit.key-activity05[Write your answers here]
+
+
+---
+class: inverse, center, middle
+
+# Recap
+
+---
+
+# Summary of Main Points
+
+`r emo::ji("check")` **Explain the k-means algorithm** -- choose $k$, initialize centroids, assign points, update centroids, repeat until convergence
+
+`r emo::ji("check")` **Perform k-means clustering** -- by hand (compute distances, assign, recompute) and with `kmeans()` in `r fontawesome::fa('r-project', fill = miamired)`
+
+`r emo::ji("check")` **Select optimal $k$** -- elbow method (WSS) and silhouette method; consider domain context when they disagree
+
+`r emo::ji("check")` **Interpret and name clusters** -- examine cluster centers, compute summary stats, visualize with `fviz_cluster()`, and give clusters descriptive business names
+
+
+---
+
+# Looking Ahead & Readings
+
+**Next class:** We will learn about **dimensionality reduction** -- PCA and t-SNE -- to visualize high-dimensional data and understand what drives cluster separation.
+
+**Recommended Readings:**
+
+- [An Introduction to Statistical Learning (ISLR)](https://www.statlearning.com/) -- Chapter 12.4 (K-Means Clustering)
+
+- [factoextra documentation](https://rpkgs.datanovia.com/factoextra/) -- Reference for clustering visualization
+
+**Job market connection:** Customer segmentation uses this exact technique -- it appears in virtually every marketing analytics and data science job description. `r fontawesome::fa("briefcase", fill = miamired)`
+
+**Try the Shiny app:** Explore k-means interactively with the K-Means Explorer app.

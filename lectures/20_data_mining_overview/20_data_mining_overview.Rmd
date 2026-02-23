@@ -1,0 +1,870 @@
+---
+title: "ISA 401: Business Intelligence & Data Visualization"
+subtitle: '20: Data Mining Overview'
+author: '<br>Fadel M. Megahed, PhD <br><br>Raymond E. Gloss Professor in Business <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("linkedin"), fill = "white")` @Fadel Megahed](https://www.linkedin.com/in/fadel-megahed-289046b4) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
+date: "Spring 2026"
+output:
+  xaringan::moon_reader:
+    self_contained: true
+    css: [default, "../../style_files/fonts.css", "../../style_files/my-theme.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: magula
+      highlightLines: true
+      highlightLanguage: ["r"]
+      countIncrementalSlides: false
+      ratio: "16:9"
+header-includes:
+  - "../../style_files/header.html"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache = FALSE,
+                      echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE,
+                      progress = FALSE,
+                      verbose = FALSE,
+                      dev = 'png',
+                      fig.height = 2.5,
+                      dpi = 300,
+                      fig.align = 'center')
+
+options(htmltools.dir.version = FALSE)
+
+miamired = '#C3142D'
+
+if(require(pacman)==FALSE) install.packages("pacman")
+if(require(devtools)==FALSE) install.packages("devtools")
+
+if(require(countdown)==FALSE) devtools::install_github("gadenbuie/countdown")
+if(require(xaringanExtra)==FALSE) devtools::install_github("gadenbuie/xaringanExtra")
+
+
+pacman::p_load(tidyverse, magrittr, lubridate, janitor, # data analysis pkgs
+               corrplot, GGally, # for data mining overview
+               fontawesome, RefManageR, xaringanExtra, countdown) # for slides
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+if(require(xaringanthemer) == FALSE) install.packages("xaringanthemer")
+library(xaringanthemer)
+
+style_mono_accent(base_color = "#84d6d3",
+                  base_font_size = "20px")
+
+xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "tachyons", "panelset", "search", "fit_screen", "editable",
+                                    "clipable"))
+```
+
+
+class: inverse, center, middle
+
+# Exam 2 Review
+
+---
+
+# Exam 2 Review
+
+**Fadel will review exam questions in Canvas.**
+
+- Please log in to [Canvas](https://miamioh.instructure.com/) and navigate to the Exam 2 results
+
+- We will walk through selected questions together
+
+- Use this time to clarify any concepts you found challenging
+
+- If you have questions about specific problems, please raise your hand
+
+
+---
+class: inverse, center, middle
+
+# Data Mining Overview
+
+---
+
+# Learning Objectives for Today's Class
+
+After today's lecture, you should be able to:
+
+1. Define data mining and its role in the analytics pipeline
+
+2. Distinguish between supervised and unsupervised learning
+
+3. Prepare feature matrices for analysis
+
+4. Apply feature scaling and normalization
+
+
+---
+class: inverse, center, middle
+
+# LO 1-2: What is Data Mining?
+
+---
+
+# What is Data Mining?
+
+**Data mining** is the process of discovering patterns, correlations, and knowledge from large amounts of data.
+
+- Also known as **Knowledge Discovery from Data (KDD)**
+
+- The goal is to extract **actionable insights** that are:
+  + **Valid:** hold on new data with some certainty
+  + **Useful:** should be possible to act on the findings
+  + **Unexpected:** non-obvious to the analyst
+  + **Understandable:** humans should be able to interpret the pattern
+
+- **Job market connection:** "Can we group similar jobs without labels?" `r emo::ji("thinking")`
+
+
+---
+
+# The Analytics Pipeline
+
+Data mining sits within a broader analytics workflow:
+
+.font120[
+1. **Data Collection** `r fontawesome::fa("database", fill = miamired)` -- Gather raw data (APIs, scraping, databases)
+
+2. **Data Cleaning** `r fontawesome::fa("broom", fill = miamired)` -- Handle missing values, outliers, formatting
+
+3. **Exploratory Analysis** `r fontawesome::fa("chart-bar", fill = miamired)` -- Visualize and summarize
+
+4. **Modeling** `r fontawesome::fa("cogs", fill = miamired)` -- Apply data mining algorithms
+
+5. **Deployment** `r fontawesome::fa("rocket", fill = miamired)` -- Dashboards, reports, automated systems
+]
+
+**You have already mastered steps 1-3 this semester!** Now we move into step 4.
+
+
+---
+
+# The CRISP-DM Framework
+
+The most widely used framework for data mining projects:
+
+.pull-left[
+1. **Business Understanding** -- What problem are we solving?
+
+2. **Data Understanding** -- What data do we have?
+
+3. **Data Preparation** -- Clean, transform, engineer features
+
+4. **Modeling** -- Apply algorithms
+
+5. **Evaluation** -- Does the model solve the problem?
+
+6. **Deployment** -- Put it into production
+]
+
+.pull-right[
+**Key insight:** Most project time (60-80%) is spent in steps 1-3!
+
+The modeling step is often the *easiest* part -- the hard work is understanding and preparing the data.
+
+**This mirrors your experience** this semester: scraping, cleaning, and transforming data takes far more effort than visualization.
+]
+
+
+---
+
+# Supervised vs. Unsupervised Learning
+
+.pull-left[
+### Supervised Learning `r fontawesome::fa("chalkboard-teacher", fill = miamired)`
+
+- Uses **labeled data** (we know the outcome)
+
+- **Classification:** Predict a category
+  + e.g., "Will this applicant get hired?"
+
+- **Regression:** Predict a number
+  + e.g., "What salary will this job offer?"
+
+- Examples: logistic regression, decision trees, random forests
+]
+
+.pull-right[
+### Unsupervised Learning `r fontawesome::fa("search", fill = miamired)`
+
+- Uses **unlabeled data** (no known outcome)
+
+- **Clustering:** Group similar observations
+  + e.g., "What types of jobs exist in this market?"
+
+- **Dimensionality Reduction:** Simplify features
+  + e.g., "Can we reduce 20 features to 2 for visualization?"
+
+- Examples: k-means, PCA, t-SNE
+]
+
+
+---
+
+# A Summary of Common Data Mining Approaches
+
+| Approach | Type | Goal | Example |
+|----------|------|------|---------|
+| **Linear Regression** | Supervised | Predict continuous outcome | Salary prediction |
+| **Logistic Regression** | Supervised | Predict binary outcome | Hired vs. not hired |
+| **Decision Trees** | Supervised | Classify/predict with rules | Loan approval |
+| **k-Means Clustering** | Unsupervised | Group similar items | Customer segments |
+| **Hierarchical Clustering** | Unsupervised | Nested groupings | Taxonomy creation |
+| **PCA** | Unsupervised | Reduce dimensions | Feature compression |
+| **t-SNE** | Unsupervised | Visualize high-dim data | Cluster visualization |
+
+**In ISA 401, we focus on the unsupervised methods** (shaded rows in the table above).
+
+
+---
+
+# Supervised vs. Unsupervised: Job Market Framing
+
+.panelset[
+.panel[.panel-name[Concept]
+
+| Aspect | Supervised | Unsupervised |
+|--------|-----------|--------------|
+| **Data** | Labeled | Unlabeled |
+| **Goal** | Predict outcome | Discover structure |
+| **Evaluation** | Accuracy, RMSE | Silhouette, inertia |
+| **Examples** | Spam detection, price prediction | Customer segmentation, topic modeling |
+
+**In this class, we focus on unsupervised methods** -- specifically clustering and dimensionality reduction.
+
+]
+
+.panel[.panel-name[Job Market Framing]
+
+Think about the job postings you have scraped this semester:
+
+- **Supervised:** If we had labels like "entry-level" or "senior," we could train a classifier
+- **Unsupervised:** Without those labels, can we *discover* natural groupings?
+
+.center[.font150[**This is exactly what clustering does!**]]
+
+]
+]
+
+
+---
+
+# Check-in: Supervised vs. Unsupervised
+
+`r countdown(minutes = 2, seconds = 0, top = 0, font_size = "2em")`
+
+**Classify each scenario as supervised or unsupervised:**
+
+1. Predicting whether a customer will churn based on their purchase history
+
+2. Grouping news articles by topic without pre-defined categories
+
+3. Estimating house prices from square footage, bedrooms, and location
+
+4. Finding clusters of similar gene expression patterns
+
+.can-edit.key-activity01[Write your answers here]
+
+
+---
+class: inverse, center, middle
+
+# LO 3: Feature Matrices
+
+---
+
+# What is a Feature Matrix?
+
+A **feature matrix** is the structured numerical representation of your data that algorithms can process.
+
+- Each **row** = one observation (e.g., a job posting)
+- Each **column** = one feature (e.g., salary, skills count)
+- All values must be **numeric**
+
+**Common transformations:**
+- Binary encoding: `is_remote` (0 or 1)
+- Ordinal encoding: `education_level` (1 = HS, 2 = Bachelor's, 3 = Master's, 4 = PhD)
+- Count features: `skills_count` (number of skills listed)
+
+
+---
+
+# Creating a Feature Matrix from Job Data
+
+.panelset[
+.panel[.panel-name[Create Data]
+
+.font80[
+```{r create-job-data}
+set.seed(401)
+job_data <- tibble::tibble(
+  job_id = 1:100,
+  salary = round(runif(100, 35000, 150000), -3),
+  skills_count = sample(3:15, 100, replace = TRUE),
+  experience_years = round(runif(100, 0, 20), 1),
+  is_remote = sample(c(0, 1), 100, replace = TRUE, prob = c(0.6, 0.4)),
+  education_level = sample(1:4, 100, replace = TRUE, prob = c(0.1, 0.5, 0.3, 0.1))
+)
+head(job_data, 5)
+```
+]
+
+]
+
+.panel[.panel-name[Feature Matrix]
+
+.font80[
+```{r feature-matrix}
+# Select only numeric features (drop the ID column)
+feature_matrix <- job_data |> dplyr::select(-job_id)
+str(feature_matrix)
+```
+]
+
+]
+
+.panel[.panel-name[Summary Stats]
+
+.font80[
+```{r summary-stats}
+summary(feature_matrix)
+```
+]
+
+]
+]
+
+
+---
+
+# Choosing the Right Features
+
+Not every column in your dataset should be a feature. Consider:
+
+.pull-left[
+**Good features:**
+- `salary` -- meaningful numeric measure
+- `skills_count` -- captures job complexity
+- `experience_years` -- quantifies requirements
+- `is_remote` -- binary, captures work arrangement
+- `education_level` -- ordinal, captures requirements
+]
+
+.pull-right[
+**Bad features:**
+- `job_id` -- arbitrary identifier
+- `company_name` -- text, not numeric
+- `date_posted` -- not directly informative for clustering
+- `job_description` -- unstructured text
+
+**Rule:** Features should be numeric, meaningful, and *relevant to the grouping you seek*.
+]
+
+
+---
+
+# Exploring Correlations with `corrplot`
+
+.panelset[
+.panel[.panel-name[Code]
+
+.font80[
+```{r corrplot-code, eval=FALSE}
+# Compute the correlation matrix
+cor_matrix <- cor(feature_matrix)
+
+# Visualize with corrplot
+corrplot::corrplot(cor_matrix,
+                   method = "color",
+                   type = "upper",
+                   addCoef.col = "black",
+                   tl.col = "black",
+                   tl.srt = 45,
+                   title = "Correlation Matrix of Job Features",
+                   mar = c(0, 0, 2, 0))
+```
+]
+
+]
+
+.panel[.panel-name[Plot]
+
+```{r corrplot-out, ref.label='corrplot-code', echo=FALSE, fig.height=4}
+```
+
+]
+]
+
+
+---
+
+# Pairwise Plots with `GGally::ggpairs()`
+
+.panelset[
+.panel[.panel-name[Code]
+
+.font80[
+```{r ggpairs-code, eval=FALSE}
+GGally::ggpairs(
+  feature_matrix,
+  title = "Pairwise Relationships in Job Features",
+  lower = list(continuous = GGally::wrap("points", alpha = 0.3, size = 0.8)),
+  upper = list(continuous = GGally::wrap("cor", size = 3)),
+  diag = list(continuous = GGally::wrap("densityDiag", fill = miamired, alpha = 0.4))
+) + ggplot2::theme_minimal()
+```
+]
+
+]
+
+.panel[.panel-name[Plot]
+
+```{r ggpairs-out, ref.label='ggpairs-code', echo=FALSE, fig.height=4.5}
+```
+
+]
+]
+
+
+---
+
+# Why Correlations and Pairwise Plots Matter
+
+- **Before clustering**, we need to understand our features
+
+- **High correlation** between features means redundant information
+  + May want to drop one or use dimensionality reduction (Lecture 22)
+
+- **Pairwise plots** reveal:
+  + Potential clusters visible in 2D projections
+  + Outliers that may distort results
+  + Non-linear relationships
+
+- **Key takeaway:** Always explore your feature matrix before feeding it into an algorithm!
+
+
+---
+
+# Check-in: Feature Matrices
+
+`r countdown(minutes = 2, seconds = 0, top = 0, font_size = "2em")`
+
+**Answer the following:**
+
+1. You have a dataset with columns: `company_name`, `salary`, `rating`, `num_reviews`, `city`. Which columns would you include in a feature matrix for clustering? Why?
+
+2. What transformation would you apply to a `city` column if you wanted to include geographic information?
+
+3. If two features have a correlation of 0.95, what would you do?
+
+.can-edit.key-activity02[Write your answers here]
+
+
+---
+
+# Handling Missing Data Before Modeling
+
+Before scaling or modeling, you must handle missing values:
+
+.font90[
+```{r missing-data, eval=FALSE}
+# Check for missing values
+colSums(is.na(feature_matrix))
+
+# Option 1: Remove rows with any NA (simplest)
+clean_data <- na.omit(feature_matrix)
+
+# Option 2: Replace NAs with column medians (preserves more data)
+clean_data <- feature_matrix |>
+  dplyr::mutate(dplyr::across(dplyr::everything(), ~ifelse(is.na(.), median(., na.rm = TRUE), .)))
+```
+]
+
+**Which approach to use?**
+- **Few NAs** (< 5% of rows): `na.omit()` is fine
+- **Many NAs:** Median/mean imputation preserves sample size
+- **Systematic NAs:** Investigate *why* data is missing before removing
+
+
+---
+
+# Data Types and Encoding Summary
+
+| Original Type | Encoding Method | Example |
+|--------------|----------------|---------|
+| Continuous numeric | Use as-is | Salary, experience years |
+| Binary categorical | 0/1 encoding | Remote: Yes=1, No=0 |
+| Ordinal categorical | Numeric ordering | Education: HS=1, BS=2, MS=3, PhD=4 |
+| Nominal categorical | One-hot encoding | City: separate 0/1 column per city |
+| Count data | Use as-is or normalize | Skills count |
+
+**Important:** The encoding method affects how features contribute to distance calculations and clustering results.
+
+
+---
+class: inverse, center, middle
+
+# LO 4: Feature Scaling and Normalization
+
+---
+
+# Why Does Scaling Matter?
+
+Consider computing the **Euclidean distance** between two job postings:
+
+.panelset[
+.panel[.panel-name[Without Scaling]
+
+.font80[
+```{r no-scale}
+# Two job postings: salary vs skills_count
+job_a <- c(salary = 50000, skills_count = 5)
+job_b <- c(salary = 80000, skills_count = 12)
+
+# Euclidean distance WITHOUT scaling
+dist_no_scale <- sqrt(sum((job_a - job_b)^2))
+cat("Distance without scaling:", dist_no_scale, "\n")
+cat("Salary contributes:", (50000 - 80000)^2, "vs Skills:", (5 - 12)^2)
+```
+]
+
+**Salary completely dominates the distance!** Skills count is practically ignored.
+
+]
+
+.panel[.panel-name[With Scaling]
+
+.font80[
+```{r with-scale}
+# Z-score scaling
+job_a_scaled <- c(salary = (50000 - 92500) / 33000, skills_count = (5 - 9) / 3.5)
+job_b_scaled <- c(salary = (80000 - 92500) / 33000, skills_count = (12 - 9) / 3.5)
+
+dist_scaled <- sqrt(sum((job_a_scaled - job_b_scaled)^2))
+cat("Distance with scaling:", round(dist_scaled, 3), "\n")
+cat("Salary contributes:", round((job_a_scaled[1] - job_b_scaled[1])^2, 3),
+    "vs Skills:", round((job_a_scaled[2] - job_b_scaled[2])^2, 3))
+```
+]
+
+**Now both features contribute meaningfully to the distance.**
+
+]
+]
+
+
+---
+
+# Euclidean Distance: A Quick Review
+
+The **Euclidean distance** between two points $\mathbf{a}$ and $\mathbf{b}$ in $p$-dimensional space is:
+
+$$d(\mathbf{a}, \mathbf{b}) = \sqrt{\sum_{i=1}^{p}(a_i - b_i)^2}$$
+
+```{r create-scaled-features, include=FALSE}
+# Pre-compute scaled features so the euclidean-demo chunk can use them
+scaled_features <- scale(feature_matrix)
+```
+
+.font90[
+```{r euclidean-demo}
+# Example with 5 features (our scaled job data)
+job1 <- scaled_features[1, ] # First job posting (scaled)
+job2 <- scaled_features[2, ] # Second job posting (scaled)
+
+# Euclidean distance
+eucl_dist <- sqrt(sum((job1 - job2)^2))
+cat("Euclidean distance between job 1 and job 2:", round(eucl_dist, 3))
+```
+]
+
+**This is the distance measure used by k-means clustering** -- which is why scaling matters so much!
+
+
+---
+
+# The `scale()` Function in `r fontawesome::fa('r-project', fill = miamired)`
+
+.panelset[
+.panel[.panel-name[How It Works]
+
+The `scale()` function performs **z-score standardization**:
+
+$$z = \frac{x - \bar{x}}{s}$$
+
+- Centers data to **mean = 0**
+- Scales to **standard deviation = 1**
+
+.font80[
+```{r scale-demo}
+# Apply scale() to our feature matrix
+scaled_features <- scale(feature_matrix)
+head(scaled_features, 4) |> round(3)
+```
+]
+
+]
+
+.panel[.panel-name[Verify]
+
+.font80[
+```{r scale-verify}
+# Check that means are ~0 and SDs are ~1
+tibble::tibble(
+  feature = colnames(scaled_features),
+  mean = colMeans(scaled_features) |> round(4),
+  sd = apply(scaled_features, 2, sd) |> round(4)
+)
+```
+]
+
+]
+]
+
+
+---
+
+# Min-Max Normalization
+
+An alternative to z-score scaling is **min-max normalization**, which scales values to [0, 1]:
+
+$$x_{norm} = \frac{x - x_{min}}{x_{max} - x_{min}}$$
+
+.font80[
+```{r minmax}
+# Min-max normalization function
+min_max_norm <- function(x) { (x - min(x)) / (max(x) - min(x)) }
+
+# Apply to our feature matrix
+minmax_features <- feature_matrix |> dplyr::mutate(dplyr::across(dplyr::everything(), min_max_norm))
+head(minmax_features, 4) |> round(3)
+```
+]
+
+**When to use which?**
+- **Z-score:** When you want to preserve the shape of the distribution; handles outliers better
+- **Min-max:** When you need values bounded in [0, 1]; sensitive to outliers
+
+
+---
+
+# Before vs. After Scaling: Visualization
+
+.panelset[
+.panel[.panel-name[Code]
+
+.font70[
+```{r scale-viz-code, eval=FALSE}
+# Reshape for plotting
+raw_long <- feature_matrix |>
+  tidyr::pivot_longer(dplyr::everything(), names_to = "feature", values_to = "value") |>
+  dplyr::mutate(type = "Raw")
+
+scaled_long <- tibble::as_tibble(scaled_features) |>
+  tidyr::pivot_longer(dplyr::everything(), names_to = "feature", values_to = "value") |>
+  dplyr::mutate(type = "Z-Score Scaled")
+
+dplyr::bind_rows(raw_long, scaled_long) |>
+  ggplot2::ggplot(ggplot2::aes(x = value, fill = feature)) +
+  ggplot2::geom_density(alpha = 0.5) +
+  ggplot2::facet_wrap(~type, scales = "free_x") +
+  ggplot2::theme_minimal() +
+  ggplot2::labs(title = "Distribution of Features: Raw vs. Scaled",
+       x = "Value", y = "Density") +
+  ggplot2::theme(legend.position = "bottom")
+```
+]
+
+]
+
+.panel[.panel-name[Plot]
+
+```{r scale-viz-out, ref.label='scale-viz-code', echo=FALSE, fig.height=3.5}
+```
+
+]
+]
+
+
+---
+
+# Before vs. After Scaling: Box Plots
+
+.panelset[
+.panel[.panel-name[Raw Data]
+
+.font80[
+```{r boxplot-raw, fig.height=3}
+feature_matrix |>
+  tidyr::pivot_longer(dplyr::everything(), names_to = "feature", values_to = "value") |>
+  ggplot2::ggplot(ggplot2::aes(x = feature, y = value, fill = feature)) +
+  ggplot2::geom_boxplot(alpha = 0.7) +
+  ggplot2::theme_minimal() +
+  ggplot2::labs(title = "Raw Feature Distributions", y = "Value") +
+  ggplot2::theme(legend.position = "none")
+```
+]
+
+]
+
+.panel[.panel-name[Scaled Data]
+
+.font80[
+```{r boxplot-scaled, fig.height=3}
+tibble::as_tibble(scaled_features) |>
+  tidyr::pivot_longer(dplyr::everything(), names_to = "feature", values_to = "value") |>
+  ggplot2::ggplot(ggplot2::aes(x = feature, y = value, fill = feature)) +
+  ggplot2::geom_boxplot(alpha = 0.7) +
+  ggplot2::theme_minimal() +
+  ggplot2::labs(title = "Z-Score Scaled Feature Distributions", y = "Scaled Value") +
+  ggplot2::theme(legend.position = "none")
+```
+]
+
+]
+]
+
+
+---
+
+# When to Scale and When Not To
+
+| Scenario | Scale? | Why? |
+|----------|--------|------|
+| Features on vastly different scales | **Yes** | Prevents one feature from dominating |
+| All features already on same scale | Maybe | Not harmful, but not strictly necessary |
+| Tree-based models (decision trees) | **No** | Trees are scale-invariant |
+| Distance-based methods (k-means, KNN) | **Yes** | Distance calculations require comparable scales |
+| PCA / dimensionality reduction | **Yes** | Variance-based methods need comparable scales |
+
+.center[.font120[**Rule of thumb:** When in doubt, scale your features!]]
+
+
+---
+
+# The Complete Data Mining Prep Workflow
+
+Here is the workflow we will follow for the next two lectures:
+
+.font110[
+1. **Select features** -- choose numeric columns relevant to your analysis
+
+2. **Handle missing data** -- `na.omit()` or imputation
+
+3. **Explore** -- correlation matrix, pairwise plots
+
+4. **Scale** -- `scale()` for z-score standardization
+
+5. **Apply algorithm** -- k-means (Lecture 21), PCA/t-SNE (Lecture 22)
+
+6. **Interpret** -- name clusters, explain components
+]
+
+**Today we covered steps 1-4. Next class: steps 5-6!**
+
+
+---
+
+# Non-Graded Activity: Build Your Own Feature Matrix
+
+`r countdown(minutes = 8, seconds = 0, top = 0, font_size = "2em")`
+
+.panelset[
+.panel[.panel-name[Instructions]
+
+Using the job data we created earlier (or your own scraped data), complete the following:
+
+1. **Create** a feature matrix with at least 4 numeric columns
+
+2. **Compute** the correlation matrix and identify the two most correlated features
+
+3. **Scale** your feature matrix using `scale()`
+
+4. **Compare** the distributions before and after scaling
+
+.font90[
+```{r activity-starter, eval=FALSE}
+# Step 1: Your feature matrix
+my_features <- job_data |> dplyr::select(-job_id)
+
+# Step 2: Correlation
+cor(my_features) |> round(3)
+
+# Step 3: Scale
+my_scaled <- scale(my_features)
+
+# Step 4: Compare summary stats
+summary(my_features)
+summary(my_scaled)
+```
+]
+
+]
+
+.panel[.panel-name[Your Work]
+
+.can-edit.key-activity03[Write your observations here:
+
+- Most correlated features: ___
+- After scaling, what changed? ___
+- Any surprising patterns? ___
+]
+
+]
+]
+
+
+---
+
+# Check-in: Scaling Concepts
+
+`r countdown(minutes = 2, seconds = 0, top = 0, font_size = "2em")`
+
+**True or False:**
+
+1. Z-score scaling always produces values between 0 and 1.
+
+2. You should scale features before running k-means clustering.
+
+3. Min-max normalization preserves the original mean and standard deviation.
+
+4. If all features are measured in the same units, scaling is unnecessary.
+
+.can-edit.key-activity04[Write your T/F answers here]
+
+
+---
+class: inverse, center, middle
+
+# Recap
+
+---
+
+# Summary of Main Points
+
+`r emo::ji("check")` **Define data mining** and its role in the analytics pipeline -- knowledge discovery from data through the pipeline of collect, clean, explore, model, deploy
+
+`r emo::ji("check")` **Distinguish between supervised and unsupervised learning** -- supervised uses labeled data (classification, regression), unsupervised discovers structure (clustering, dimensionality reduction)
+
+`r emo::ji("check")` **Prepare feature matrices** for analysis -- convert data to numeric format, explore with correlation matrices and pairwise plots
+
+`r emo::ji("check")` **Apply feature scaling and normalization** -- z-score with `scale()`, min-max normalization, understand when and why to scale
+
+
+---
+
+# Looking Ahead & Readings
+
+**Next class:** We will dive into **k-means clustering** -- learning the algorithm step-by-step and applying it to job market data.
+
+**Recommended Readings:**
+
+- [An Introduction to Statistical Learning (ISLR)](https://www.statlearning.com/) -- Chapter 12.1-12.2 (Unsupervised Learning overview)
+
+- [R for Data Science](https://r4ds.hadley.nz/) -- Review of data transformation concepts
+
+**Job market connection:** Clustering and segmentation are core to marketing and customer analytics roles. Understanding feature engineering and scaling is essential for any data science position. `r fontawesome::fa("briefcase", fill = miamired)`

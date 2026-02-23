@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>ISA 401: Business Intelligence &amp; Data Visualization</title>
+    <meta charset="utf-8" />
+    <meta name="author" content=" Fadel M. Megahed, PhD   Raymond E. Gloss Professor in Business   Farmer School of Business  Miami University     @Fadel Megahed     fmegahed     fmegahed@miamioh.edu    Automated Scheduler for Office Hours  " />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/tile-view/tile-view.css" rel="stylesheet" />
+    <script src="libs/tile-view/tile-view.js"></script>
+    <link href="libs/animate.css/animate.xaringan.css" rel="stylesheet" />
+    <link href="libs/tachyons/tachyons.min.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra_fit-screen/fit-screen.js"></script>
+    <link href="libs/panelset/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset/panelset.js"></script>
+    <script type="application/json" id="xaringanExtra-editable-docid">{"id":"f99db3eb68454f658180628adb2bc42a","expires":14}</script>
+    <script src="libs/himalaya/himalaya.js"></script>
+    <script src="libs/js-cookie/js.cookie.js"></script>
+    <link href="libs/editable/editable.css" rel="stylesheet" />
+    <script src="libs/editable/editable.js"></script>
+    <script src="libs/mark.js/mark.min.js"></script>
+    <link href="libs/xaringanExtra-search/search.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-search/search.js"></script>
+    <script>window.addEventListener('load', function() { window.xeSearch = new RemarkSearch({"position":"bottom-left","caseSensitive":false,"showIcon":false,"autoSearch":true}) })</script>
+    <link href="libs/countdown/countdown.css" rel="stylesheet" />
+    <script src="libs/countdown/countdown.js"></script>
+    <script src="libs/htmlwidgets/htmlwidgets.js"></script>
+    <script src="libs/jquery/jquery-3.6.0.min.js"></script>
+    <link href="libs/leaflet/leaflet.css" rel="stylesheet" />
+    <script src="libs/leaflet/leaflet.js"></script>
+    <link href="libs/leafletfix/leafletfix.css" rel="stylesheet" />
+    <script src="libs/proj4/proj4.min.js"></script>
+    <script src="libs/Proj4Leaflet/proj4leaflet.js"></script>
+    <link href="libs/rstudio_leaflet/rstudio_leaflet.css" rel="stylesheet" />
+    <script src="libs/leaflet-binding/leaflet.js"></script>
+    <link rel="stylesheet" href="../../style_files/fonts.css" type="text/css" />
+    <link rel="stylesheet" href="../../style_files/my-theme.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# ISA 401: Business Intelligence &amp; Data Visualization
+]
+.subtitle[
+## 16: Visualizing Spatial Data in <svg viewBox="0 0 581 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:white;" xmlns="http://www.w3.org/2000/svg"> <path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"></path></svg>
+]
+.author[
+### <br>Fadel M. Megahed, PhD <br><br>Raymond E. Gloss Professor in Business <br> Farmer School of Business<br> Miami University<br><br> <a href="https://www.linkedin.com/in/fadel-megahed-289046b4"><svg viewBox="0 0 448 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:white;" xmlns="http://www.w3.org/2000/svg"> <path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"></path></svg> <span class="citation">@Fadel</span> Megahed</a> <br> <a href="https://github.com/fmegahed/"><svg viewBox="0 0 496 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:white;" xmlns="http://www.w3.org/2000/svg"> <path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg> fmegahed</a> <br> <a href="mailto:fmegahed@miamioh.edu"><svg viewBox="0 0 512 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:white;" xmlns="http://www.w3.org/2000/svg"> <path d="M476 3.2L12.5 270.6c-18.1 10.4-15.8 35.6 2.2 43.2L121 358.4l287.3-253.2c5.5-4.9 13.3 2.6 8.6 8.3L176 407v80.5c0 23.6 28.5 32.9 42.5 15.8L282 426l124.6 52.2c14.2 6 30.4-2.9 33-18.2l72-432C515 7.8 493.3-6.8 476 3.2z"></path></svg> fmegahed@miamioh.edu</a><br> <a href="https://calendly.com/fmegahed"><svg viewBox="0 0 384 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:white;" xmlns="http://www.w3.org/2000/svg"> <path d="M202.021 0C122.202 0 70.503 32.703 29.914 91.026c-7.363 10.58-5.093 25.086 5.178 32.874l43.138 32.709c10.373 7.865 25.132 6.026 33.253-4.148 25.049-31.381 43.63-49.449 82.757-49.449 30.764 0 68.816 19.799 68.816 49.631 0 22.552-18.617 34.134-48.993 51.164-35.423 19.86-82.299 44.576-82.299 106.405V320c0 13.255 10.745 24 24 24h72.471c13.255 0 24-10.745 24-24v-5.773c0-42.86 125.268-44.645 125.268-160.627C377.504 66.256 286.902 0 202.021 0zM192 373.459c-38.196 0-69.271 31.075-69.271 69.271 0 38.195 31.075 69.27 69.271 69.27s69.271-31.075 69.271-69.271-31.075-69.27-69.271-69.27z"></path></svg> Automated Scheduler for Office Hours</a><br><br>
+]
+.date[
+### Spring 2026
+]
+
+---
+
+
+
+
+
+
+
+
+## Quick Refresher from Last Week
+
+
+✅ Identify appropriate chart types for time series data.
+
+✅ Create line charts, area charts, and seasonal plots with ggplot2.
+
+✅ Add annotations and reference lines to highlight trends and events.
+
+✅ Use faceting to compare multiple time series.
+
+---
+
+## Kahoot/Quiz Review: Time Series Visualization
+
+.pull-left[
+
+**Q1.** Which geom is most appropriate for a single continuous time series?
+A. `geom_bar()`
+B. `geom_line()`
+C. `geom_point()`
+D. `geom_tile()`
+
+**Q2.** What does `scale_x_date(date_labels = "%b %Y")` produce?
+A. "2026-02-15"
+B. "Feb 2026"
+C. "February 2026"
+D. "02/15/2026"
+
+**Q3.** Which function adds a horizontal reference line to a ggplot?
+A. `geom_vline()`
+B. `geom_hline()`
+C. `geom_abline()`
+D. `annotate()`
+
+]
+
+.pull-right[
+
+**Q4.** What is the primary advantage of faceting time series by group?
+A. It makes the chart more colorful
+B. It allows side-by-side comparison without overplotting
+C. It reduces the data size
+D. It adds interactivity
+
+**Q5.** When visualizing seasonal patterns, which approach is most effective?
+A. A single line chart with all years overlapping
+B. Overlaying years on the same x-axis (month) with color
+C. A pie chart for each season
+D. A scatter plot of date vs. value
+
+]
+
+
+<countdown-timer class="countdown" id="timer_5f3d6002" minutes="3" seconds="0" warn-when="60" update-every="1" tabindex="0" style="top:0;right:0;--countdown-font-size:1.5em;--countdown-color-background:#C3142D;--countdown-color-text:white;"></countdown-timer>
+
+
+---
+
+# Learning Objectives for Today's Class
+
+- **LO1:** Differentiate between choropleth, dot/bubble, and flow maps
+
+- **LO2:** Create choropleth and proportional symbol maps with ggplot2
+
+- **LO3:** Build interactive maps with Leaflet
+
+- **LO4:** Combine spatial and temporal dimensions in visualizations
+
+
+---
+class: inverse, center, middle
+
+# Types of Spatial Maps
+
+---
+
+## Why Geography Matters
+
+.pull-left[
+
+- **Where should you look for a job?** Geography is one of the strongest predictors of salary and opportunity.
+
+- The same occupation can pay **50-100% more** in one metro area versus another.
+
+- Spatial visualization helps us see patterns that tables cannot reveal: regional clusters, geographic disparities, and migration flows.
+
+- Today we learn three fundamental map types that every BI analyst should know.
+
+]
+
+.pull-right[
+
+&lt;table&gt;
+&lt;caption&gt;Same job, different geography&lt;/caption&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; metric &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; san_francisco &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; oxford_oh &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Median Data Analyst Salary &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; $95,000 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; $55,000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Cost of Living Index &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 180 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 85 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Job Postings (monthly) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2,400 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 35 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Major Employers &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Tech Giants &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; University &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+]
+
+
+---
+
+## Map Type 1: Choropleth Maps
+
+- A **choropleth** map shades geographic regions (states, counties, countries) according to a data variable.
+
+- Best for: **rates, averages, and proportions** aggregated to known geographic boundaries.
+
+- The color intensity encodes the data value for each region.
+
+| Strength | Weakness |
+|----------|----------|
+| Easy to read for regional patterns | Can mislead when regions differ in size |
+| Familiar to general audiences | Not suitable for point-level data |
+| Good for comparing across regions | Hides within-region variation |
+
+.footnote[
+&lt;html&gt;&lt;hr&gt;&lt;/html&gt;
+**Example use case:** Average salary by state, unemployment rate by county, job growth rate by region.
+]
+
+
+---
+
+## Map Type 2: Dot / Bubble Maps
+
+- A **dot map** places points at specific locations; a **bubble map** sizes those points by a variable.
+
+- Best for: **point-level data** or **counts** at specific locations.
+
+- Unlike choropleths, bubble maps show where activity is concentrated **within** regions.
+
+| Strength | Weakness |
+|----------|----------|
+| Shows exact locations of events | Can become cluttered with many points |
+| Circle size encodes magnitude | Overlapping circles obscure data |
+| Works well with interactive zoom | Requires latitude/longitude coordinates |
+
+.footnote[
+&lt;html&gt;&lt;hr&gt;&lt;/html&gt;
+**Example use case:** Job posting locations sized by salary, company headquarters, event locations.
+]
+
+
+---
+
+## Map Type 3: Flow Maps
+
+- A **flow map** uses lines or arrows to show movement between locations.
+
+- Best for: **migration, trade, commuting patterns**, and other origin-destination data.
+
+- Line thickness or color typically encodes the volume of flow.
+
+| Strength | Weakness |
+|----------|----------|
+| Shows directional relationships | Can become very cluttered |
+| Reveals migration/trade patterns | Requires origin-destination data |
+| Powerful for storytelling | Difficult to read with many flows |
+
+.footnote[
+&lt;html&gt;&lt;hr&gt;&lt;/html&gt;
+**Example use case:** Where tech workers relocate from/to, supply chain flows, commuting patterns between cities.
+]
+
+
+---
+
+## Choosing the Right Map Type
+
+| Question | Map Type |
+|----------|----------|
+| How does a **rate or average** vary across regions? | Choropleth |
+| **Where exactly** are events or entities located? | Dot / Bubble |
+| How do things **move** between locations? | Flow |
+| How does a spatial pattern **change over time**? | Animated or faceted version of any type |
+
+- In practice, you often **combine** types: a choropleth background with bubble overlays.
+
+- Always ask: **What is the spatial unit?** Regions use choropleths. Points use dots. Connections use flows.
+
+
+---
+
+## LO1 Check-In
+
+✅ You can now differentiate between the three major spatial map types:
+
+- **Choropleth:** shaded regions for rates/averages
+
+- **Dot/Bubble:** points at locations, sized by magnitude
+
+- **Flow:** arrows/lines showing movement between places
+
+
+---
+class: inverse, center, middle
+
+# Choropleth and Proportional Symbol Maps in <svg aria-hidden="true" role="img" viewBox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:white;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/></svg>
+
+---
+
+## Sample Data: Jobs by State
+
+We will use a sample dataset of average data analyst salaries and job counts by state.
+
+.font80[
+
+``` r
+state_jobs &lt;- tibble::tribble(
+  ~state, ~avg_salary, ~job_count, ~region,
+  "california", 92000, 4500, "West",
+  "texas", 75000, 3200, "South",
+  "new york", 88000, 3800, "Northeast",
+  "florida", 68000, 2100, "South",
+  "illinois", 72000, 1800, "Midwest",
+  "washington", 95000, 2200, "West",
+  "massachusetts", 85000, 1600, "Northeast",
+  "virginia", 78000, 1400, "South",
+  "ohio", 65000, 1100, "Midwest",
+  "georgia", 70000, 1300, "South",
+  "pennsylvania", 73000, 1500, "Northeast",
+  "north carolina", 71000, 1200, "South",
+  "michigan", 67000, 900, "Midwest",
+  "colorado", 82000, 1100, "West",
+  "arizona", 69000, 800, "West",
+  "minnesota", 74000, 950, "Midwest",
+  "maryland", 80000, 1050, "South",
+  "oregon", 79000, 700, "West",
+  "indiana", 63000, 650, "Midwest",
+  "tennessee", 66000, 750, "South"
+)
+```
+]
+
+
+---
+
+## Choropleth Map: Average Salary by State
+
+.panelset[
+
+.panel[.panel-name[Code]
+
+
+``` r
+# Get the US state boundaries from the maps package
+us_states &lt;- ggplot2::map_data("state")
+
+# Join our salary data to the map data
+map_df &lt;- us_states |&gt;
+  dplyr::left_join(state_jobs, by = c("region" = "state"))
+
+# Create the choropleth
+ggplot2::ggplot(map_df, ggplot2::aes(x = long, y = lat, group = group)) +
+  ggplot2::geom_polygon(ggplot2::aes(fill = avg_salary), color = "white", linewidth = 0.3) +
+  viridis::scale_fill_viridis(option = "plasma", labels = scales::dollar,
+                     na.value = "grey90",
+                     name = "Avg Salary") +
+  ggplot2::coord_map("polyconic") +
+  ggplot2::labs(title = "Average Data Analyst Salary by State",
+       subtitle = "States in grey have no data in our sample") +
+  ggplot2::theme_void() +
+  ggplot2::theme(plot.title = ggplot2::element_text(face = "bold", size = 14),
+        legend.position = "right")
+```
+
+]
+
+.panel[.panel-name[Output]
+
+&lt;img src="16_visualizing_spatial_data_files/figure-html/choropleth-output-1.png" alt="" style="display: block; margin: auto;" /&gt;
+
+]
+
+.panel[.panel-name[Discussion]
+
+Key observations:
+
+- **West Coast** and **Northeast** states show the highest salaries (darker shading).
+
+- **Midwest** states cluster at lower salary levels.
+
+- The `maps` package provides state boundaries; `viridis` ensures colorblind-safe palettes.
+
+- `coord_map("polyconic")` preserves geographic proportions better than default coordinates.
+
+]
+
+]
+
+
+---
+
+## Proportional Symbol Map: Job Count by City
+
+.panelset[
+
+.panel[.panel-name[Data]
+
+
+``` r
+city_jobs &lt;- tibble::tribble(
+  ~city, ~state, ~lat, ~lng, ~job_count, ~avg_salary,
+  "San Francisco", "CA", 37.77, -122.42, 1800, 105000,
+  "New York", "NY", 40.71, -74.01, 2500, 95000,
+  "Seattle", "WA", 47.61, -122.33, 1200, 98000,
+  "Austin", "TX", 30.27, -97.74, 900, 82000,
+  "Chicago", "IL", 41.88, -87.63, 1100, 78000,
+  "Boston", "MA", 42.36, -71.06, 850, 90000,
+  "Denver", "CO", 39.74, -104.99, 600, 80000,
+  "Atlanta", "GA", 33.75, -84.39, 750, 72000,
+  "Miami", "FL", 25.76, -80.19, 500, 70000,
+  "Portland", "OR", 45.52, -122.68, 400, 78000,
+  "Raleigh", "NC", 35.78, -78.64, 550, 74000,
+  "Columbus", "OH", 39.96, -83.00, 450, 66000,
+  "Minneapolis", "MN", 44.98, -93.27, 520, 76000,
+  "Phoenix", "AZ", 33.45, -112.07, 480, 68000,
+  "Washington DC", "DC", 38.91, -77.04, 1400, 92000
+)
+```
+
+]
+
+.panel[.panel-name[Code]
+
+
+``` r
+us_states &lt;- ggplot2::map_data("state")
+
+ggplot2::ggplot() +
+  ggplot2::geom_polygon(data = us_states,
+               ggplot2::aes(x = long, y = lat, group = group),
+               fill = "grey95", color = "grey70", linewidth = 0.2) +
+  ggplot2::geom_point(data = city_jobs,
+             ggplot2::aes(x = lng, y = lat, size = job_count, color = avg_salary),
+             alpha = 0.75) +
+  ggplot2::scale_size_continuous(range = c(2, 12), labels = scales::comma,
+                        name = "Job Count") +
+  viridis::scale_color_viridis(option = "inferno", labels = scales::dollar,
+                      name = "Avg Salary") +
+  ggplot2::coord_map("polyconic") +
+  ggplot2::labs(title = "Data Analyst Job Opportunities by City",
+       subtitle = "Bubble size = job count, color = average salary") +
+  ggplot2::theme_void() +
+  ggplot2::theme(plot.title = ggplot2::element_text(face = "bold", size = 14))
+```
+
+]
+
+.panel[.panel-name[Output]
+
+&lt;img src="16_visualizing_spatial_data_files/figure-html/bubble-output-1.png" alt="" style="display: block; margin: auto;" /&gt;
+
+]
+
+]
+
+
+---
+
+## Choropleth Design Best Practices
+
+When building choropleth maps, keep these guidelines in mind:
+
+1. **Use sequential color scales** for continuous data (e.g., light to dark).
+
+2. **Use diverging scales** when there is a meaningful midpoint (e.g., above/below average).
+
+3. **Normalize your data** -- show rates or per-capita values, not raw counts (large states always have more of everything).
+
+4. **Label key states** if the audience may not recognize all shapes.
+
+5. **Provide context** -- always include a legend with meaningful units (dollars, percentages).
+
+
+``` r
+# Diverging scale example: salary relative to national average
+ggplot2::scale_fill_gradient2(low = "blue", mid = "white", high = "red",
+                     midpoint = 75000,
+                     labels = scales::dollar)
+```
+
+
+---
+
+## Activity: Create Your Own Choropleth
+
+Using the `state_jobs` data and the `maps` package, create a choropleth map showing **job count** (not salary) by state. Try the following:
+
+1. Use `scale_fill_viridis(option = "viridis")` instead of `"plasma"`
+2. Add a meaningful title and subtitle
+3. Experiment with `coord_map("albers", lat0 = 30, lat1 = 40)` as an alternative projection
+
+.can-edit.key-activity01[
+
+``` r
+us_states &lt;- ggplot2::map_data("state")
+
+map_df &lt;- us_states |&gt;
+  dplyr::left_join(state_jobs, by = c("region" = "state"))
+
+# Your code here: create a choropleth of job_count
+ggplot2::ggplot(map_df, ggplot2::aes(x = long, y = lat, group = group)) +
+  ggplot2::geom_polygon(ggplot2::aes(fill = ____), color = "white") +
+  viridis::scale_fill_viridis(option = "____") +
+  ggplot2::coord_map("____") +
+  ggplot2::theme_void()
+```
+]
+
+<countdown-timer class="countdown" id="timer_a8f6d7c3" minutes="5" seconds="0" update-every="1" tabindex="0" style="top:0;right:0;--countdown-font-size:2em;"></countdown-timer>
+
+
+---
+
+## LO2 Check-In
+
+✅ You can now create static spatial visualizations in R:
+
+- **Choropleth maps** using `ggplot2` + `maps` + `geom_polygon()`
+
+- **Proportional symbol maps** using `geom_point()` with `size` aesthetic
+
+- Color palettes from `viridis` for colorblind accessibility
+
+- Proper map projections with `coord_map()`
+
+
+---
+class: inverse, center, middle
+
+# Interactive Maps with Leaflet
+
+---
+
+## Why Leaflet?
+
+- **Leaflet** is the most popular open-source JavaScript library for interactive maps.
+
+- The <svg aria-hidden="true" role="img" viewBox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#C3142D;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/></svg> package `leaflet` provides a clean interface from R.
+
+- Key advantages over static maps:
+
+| Feature | Static (ggplot2) | Interactive (Leaflet) |
+|---------|-----------------|----------------------|
+| Zoom and pan | No | Yes |
+| Click for details | No | Yes (popups) |
+| Layer toggling | No | Yes |
+| Base map tiles | Manual | Built-in (OpenStreetMap, etc.) |
+| Embedding in Shiny | Requires `renderPlot` | Native `renderLeaflet` |
+
+
+---
+
+## Leaflet Basics: Markers and Popups
+
+.panelset[
+
+.panel[.panel-name[Code]
+
+
+``` r
+leaflet::leaflet(city_jobs) |&gt;
+  leaflet::addTiles() |&gt;                         # Add OpenStreetMap tiles
+  leaflet::setView(lng = -98.58, lat = 39.83, zoom = 4) |&gt;
+  leaflet::addMarkers(
+    lng = ~lng, lat = ~lat,
+    popup = ~paste0(
+      "&lt;b&gt;", city, ", ", state, "&lt;/b&gt;&lt;br&gt;",
+      "Jobs: ", scales::comma(job_count), "&lt;br&gt;",
+      "Avg Salary: ", scales::dollar(avg_salary)
+    ),
+    label = ~city
+  )
+```
+
+]
+
+.panel[.panel-name[Output]
+
+<div id="htmlwidget-72bf0c55f22316f0bbd2" style="width:100%;height:350px;" class="leaflet html-widget"></div>
+<script type="application/json" data-for="htmlwidget-72bf0c55f22316f0bbd2">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"https://openstreetmap.org/copyright/\">OpenStreetMap<\/a>,  <a href=\"https://opendatacommons.org/licenses/odbl/\">ODbL<\/a>"}]},{"method":"addMarkers","args":[[37.77,40.71,47.61,30.27,41.88,42.36,39.74,33.75,25.76,45.52,35.78,39.96,44.98,33.45,38.91],[-122.42,-74.01000000000001,-122.33,-97.73999999999999,-87.63,-71.06,-104.99,-84.39,-80.19,-122.68,-78.64,-83,-93.27,-112.07,-77.04000000000001],null,null,null,{"interactive":true,"draggable":false,"keyboard":true,"title":"","alt":"","zIndexOffset":0,"opacity":1,"riseOnHover":false,"riseOffset":250},["<b>San Francisco, CA<\/b><br>Jobs: 1,800<br>Avg Salary: $105,000","<b>New York, NY<\/b><br>Jobs: 2,500<br>Avg Salary: $95,000","<b>Seattle, WA<\/b><br>Jobs: 1,200<br>Avg Salary: $98,000","<b>Austin, TX<\/b><br>Jobs: 900<br>Avg Salary: $82,000","<b>Chicago, IL<\/b><br>Jobs: 1,100<br>Avg Salary: $78,000","<b>Boston, MA<\/b><br>Jobs: 850<br>Avg Salary: $90,000","<b>Denver, CO<\/b><br>Jobs: 600<br>Avg Salary: $80,000","<b>Atlanta, GA<\/b><br>Jobs: 750<br>Avg Salary: $72,000","<b>Miami, FL<\/b><br>Jobs: 500<br>Avg Salary: $70,000","<b>Portland, OR<\/b><br>Jobs: 400<br>Avg Salary: $78,000","<b>Raleigh, NC<\/b><br>Jobs: 550<br>Avg Salary: $74,000","<b>Columbus, OH<\/b><br>Jobs: 450<br>Avg Salary: $66,000","<b>Minneapolis, MN<\/b><br>Jobs: 520<br>Avg Salary: $76,000","<b>Phoenix, AZ<\/b><br>Jobs: 480<br>Avg Salary: $68,000","<b>Washington DC, DC<\/b><br>Jobs: 1,400<br>Avg Salary: $92,000"],null,null,null,["San Francisco","New York","Seattle","Austin","Chicago","Boston","Denver","Atlanta","Miami","Portland","Raleigh","Columbus","Minneapolis","Phoenix","Washington DC"],{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]}],"setView":[[39.83,-98.58],4,[]],"limits":{"lat":[25.76,47.61],"lng":[-122.68,-71.06]}},"evals":[],"jsHooks":[]}</script>
+
+]
+
+.panel[.panel-name[Key Functions]
+
+| Function | Purpose |
+|----------|---------|
+| `leaflet()` | Initialize a map with data |
+| `addTiles()` | Add a base map layer (default: OpenStreetMap) |
+| `setView()` | Set the initial center and zoom level |
+| `addMarkers()` | Add clickable markers with popups |
+| `addCircleMarkers()` | Add circles (can encode size/color) |
+| `addPolygons()` | Add filled polygons for choropleths |
+
+]
+
+]
+
+
+---
+
+## Circle Markers: Encoding Data Visually
+
+.panelset[
+
+.panel[.panel-name[Code]
+
+
+``` r
+# Create a color palette based on salary
+salary_pal &lt;- leaflet::colorNumeric(palette = "YlOrRd",
+                           domain = city_jobs$avg_salary)
+
+leaflet::leaflet(city_jobs) |&gt;
+  leaflet::addTiles() |&gt;
+  leaflet::setView(lng = -98.58, lat = 39.83, zoom = 4) |&gt;
+  leaflet::addCircleMarkers(
+    lng = ~lng, lat = ~lat,
+    radius = ~sqrt(job_count) / 5,          # Size by job count
+    color = ~salary_pal(avg_salary),         # Color by salary
+    fillOpacity = 0.7, stroke = TRUE, weight = 1,
+    popup = ~paste0(
+      "&lt;b&gt;", city, ", ", state, "&lt;/b&gt;&lt;br&gt;",
+      "Jobs: ", scales::comma(job_count), "&lt;br&gt;",
+      "Avg Salary: ", scales::dollar(avg_salary)
+    )
+  ) |&gt;
+  leaflet::addLegend("bottomright", pal = salary_pal,
+            values = ~avg_salary, title = "Avg Salary",
+            labFormat = leaflet::labelFormat(prefix = "$"))
+```
+
+]
+
+.panel[.panel-name[Output]
+
+<div id="htmlwidget-f5f49a1715e501170f7b" style="width:100%;height:350px;" class="leaflet html-widget"></div>
+<script type="application/json" data-for="htmlwidget-f5f49a1715e501170f7b">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"https://openstreetmap.org/copyright/\">OpenStreetMap<\/a>,  <a href=\"https://opendatacommons.org/licenses/odbl/\">ODbL<\/a>"}]},{"method":"addCircleMarkers","args":[[37.77,40.71,47.61,30.27,41.88,42.36,39.74,33.75,25.76,45.52,35.78,39.96,44.98,33.45,38.91],[-122.42,-74.01000000000001,-122.33,-97.73999999999999,-87.63,-71.06,-104.99,-84.39,-80.19,-122.68,-78.64,-83,-93.27,-112.07,-77.04000000000001],[8.485281374238571,10,6.92820323027551,6,6.633249580710801,5.830951894845301,4.898979485566356,5.477225575051661,4.47213595499958,4,4.69041575982343,4.242640687119286,4.560701700396551,4.381780460041329,7.483314773547884],null,null,{"interactive":true,"className":"","stroke":true,"color":["#800026","#E41E1D","#CD0C22","#FEA847","#FFC763","#FC542B","#FEB751","#FFE896","#FFF0A8","#FFC763","#FFE085","#FFFFCC","#FED774","#FFF8BA","#F44025"],"weight":1,"opacity":0.5,"fill":true,"fillColor":["#800026","#E41E1D","#CD0C22","#FEA847","#FFC763","#FC542B","#FEB751","#FFE896","#FFF0A8","#FFC763","#FFE085","#FFFFCC","#FED774","#FFF8BA","#F44025"],"fillOpacity":0.7},null,null,["<b>San Francisco, CA<\/b><br>Jobs: 1,800<br>Avg Salary: $105,000","<b>New York, NY<\/b><br>Jobs: 2,500<br>Avg Salary: $95,000","<b>Seattle, WA<\/b><br>Jobs: 1,200<br>Avg Salary: $98,000","<b>Austin, TX<\/b><br>Jobs: 900<br>Avg Salary: $82,000","<b>Chicago, IL<\/b><br>Jobs: 1,100<br>Avg Salary: $78,000","<b>Boston, MA<\/b><br>Jobs: 850<br>Avg Salary: $90,000","<b>Denver, CO<\/b><br>Jobs: 600<br>Avg Salary: $80,000","<b>Atlanta, GA<\/b><br>Jobs: 750<br>Avg Salary: $72,000","<b>Miami, FL<\/b><br>Jobs: 500<br>Avg Salary: $70,000","<b>Portland, OR<\/b><br>Jobs: 400<br>Avg Salary: $78,000","<b>Raleigh, NC<\/b><br>Jobs: 550<br>Avg Salary: $74,000","<b>Columbus, OH<\/b><br>Jobs: 450<br>Avg Salary: $66,000","<b>Minneapolis, MN<\/b><br>Jobs: 520<br>Avg Salary: $76,000","<b>Phoenix, AZ<\/b><br>Jobs: 480<br>Avg Salary: $68,000","<b>Washington DC, DC<\/b><br>Jobs: 1,400<br>Avg Salary: $92,000"],null,null,{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]},{"method":"addLegend","args":[{"colors":["#FFFFCC , #FFF0A8 10.2564102564103%, #FEDC7D 23.0769230769231%, #FEB751 35.8974358974359%, #FD913E 48.7179487179487%, #FC542B 61.5384615384615%, #E41E1D 74.3589743589744%, #BE0126 87.1794871794872%, #800026 100%, #800026 "],"labels":["$70,000","$75,000","$80,000","$85,000","$90,000","$95,000","$100,000","$105,000"],"na_color":null,"na_label":"NA","opacity":0.5,"position":"bottomright","type":"numeric","title":"Avg Salary","extra":{"p_1":0.1025641025641026,"p_n":1},"layerId":null,"className":"info legend","group":null}]}],"setView":[[39.83,-98.58],4,[]],"limits":{"lat":[25.76,47.61],"lng":[-122.68,-71.06]}},"evals":[],"jsHooks":[]}</script>
+
+]
+
+]
+
+
+---
+
+## Layer Controls
+
+- Leaflet supports **multiple tile layers** and **overlay toggles** so users can customize the view.
+
+
+``` r
+leaflet::leaflet(city_jobs) |&gt;
+  # Base layers (user picks one)
+  leaflet::addTiles(group = "OpenStreetMap") |&gt;
+  leaflet::addProviderTiles(leaflet::providers$CartoDB.Positron, group = "Light") |&gt;
+  leaflet::addProviderTiles(leaflet::providers$Esri.WorldImagery, group = "Satellite") |&gt;
+  # Overlay (user can toggle on/off)
+  leaflet::addCircleMarkers(
+    lng = ~lng, lat = ~lat,
+    radius = ~sqrt(job_count) / 5,
+    color = ~salary_pal(avg_salary),
+    fillOpacity = 0.7, group = "Job Locations",
+    popup = ~paste0("&lt;b&gt;", city, "&lt;/b&gt;&lt;br&gt;Salary: ",
+                    scales::dollar(avg_salary))
+  ) |&gt;
+  leaflet::addLayersControl(
+    baseGroups = c("OpenStreetMap", "Light", "Satellite"),
+    overlayGroups = c("Job Locations"),
+    options = leaflet::layersControlOptions(collapsed = FALSE)
+  )
+```
+
+
+---
+
+## Activity: Build an Interactive Job Map
+
+Using the `city_jobs` data, build a Leaflet map with the following features:
+
+1. **Circle markers** sized by `job_count` and colored by `avg_salary`
+2. **Popups** showing city, state, job count, and salary
+3. **At least two base map options** with `addLayersControl()`
+4. A **legend** for the salary color scale
+
+.can-edit.key-activity02[
+
+``` r
+# Start with leaflet::leaflet(city_jobs) and build up
+leaflet::leaflet(city_jobs) |&gt;
+  leaflet::addTiles(group = "Default") |&gt;
+  leaflet::addProviderTiles(leaflet::providers$CartoDB.Positron, group = "Light") |&gt;
+  leaflet::addCircleMarkers(
+    lng = ~lng, lat = ~lat,
+    radius = ~____, color = ~____,
+    popup = ~paste0(____),
+    fillOpacity = 0.7
+  ) |&gt;
+  leaflet::addLegend(____) |&gt;
+  leaflet::addLayersControl(____)
+```
+]
+
+<countdown-timer class="countdown" id="timer_95780ca3" minutes="7" seconds="0" update-every="1" tabindex="0" style="top:0;right:0;--countdown-font-size:2em;"></countdown-timer>
+
+
+---
+
+## LO3 Check-In
+
+✅ You can now build interactive maps with Leaflet:
+
+- Create maps with `leaflet()` and add base tiles with `addTiles()`
+
+- Plot data as markers (`addMarkers()`) or circles (`addCircleMarkers()`)
+
+- Add popups, legends, and layer controls for user interactivity
+
+- Use `colorNumeric()` or `colorBin()` for mapping data to colors
+
+
+---
+class: inverse, center, middle
+
+# Combining Spatial and Temporal Dimensions
+
+---
+
+## Spatiotemporal Visualization: Why?
+
+- Many real-world phenomena have **both** a spatial and temporal component.
+
+- Job markets shift over time: tech hubs emerge, industries relocate, remote work redistributes talent.
+
+- We can visualize spatiotemporal data using:
+
+| Approach | Description |
+|----------|-------------|
+| **Small multiples (facets)** | One map per time period, side by side |
+| **Animation** | Maps that play through time like a movie |
+| **Interactive slider** | User controls the time dimension |
+
+- Today we focus on **faceted maps** in ggplot2 -- the most reproducible approach.
+
+
+---
+
+## Sample Data: Job Growth Over Time
+
+
+``` r
+job_growth &lt;- tibble::tribble(
+  ~state, ~year, ~job_index,
+  "california", 2020, 100, "california", 2021, 95,
+  "california", 2022, 108, "california", 2023, 118,
+  "california", 2024, 130,
+  "texas", 2020, 100, "texas", 2021, 97,
+  "texas", 2022, 112, "texas", 2023, 125,
+  "texas", 2024, 140,
+  "new york", 2020, 100, "new york", 2021, 88,
+  "new york", 2022, 96, "new york", 2023, 104,
+  "new york", 2024, 112,
+  "florida", 2020, 100, "florida", 2021, 96,
+  "florida", 2022, 110, "florida", 2023, 122,
+  "florida", 2024, 138,
+  "illinois", 2020, 100, "illinois", 2021, 92,
+  "illinois", 2022, 98, "illinois", 2023, 103,
+  "illinois", 2024, 107,
+  "washington", 2020, 100, "washington", 2021, 98,
+  "washington", 2022, 115, "washington", 2023, 128,
+  "washington", 2024, 142,
+  "ohio", 2020, 100, "ohio", 2021, 94,
+  "ohio", 2022, 99, "ohio", 2023, 102,
+  "ohio", 2024, 105
+)
+```
+
+
+---
+
+## Faceted Choropleth: Job Growth by Year
+
+.panelset[
+
+.panel[.panel-name[Code]
+
+
+``` r
+us_states &lt;- ggplot2::map_data("state")
+
+map_growth &lt;- us_states |&gt;
+  dplyr::left_join(job_growth, by = c("region" = "state"),
+            relationship = "many-to-many") |&gt;
+  dplyr::filter(!is.na(year))
+
+ggplot2::ggplot(map_growth, ggplot2::aes(x = long, y = lat, group = group)) +
+  ggplot2::geom_polygon(ggplot2::aes(fill = job_index), color = "white", linewidth = 0.2) +
+  viridis::scale_fill_viridis(option = "mako", direction = -1,
+                     name = "Job Index\n(2020=100)") +
+  ggplot2::facet_wrap(~year, nrow = 1) +
+  ggplot2::coord_map("polyconic") +
+  ggplot2::labs(title = "Data Analyst Job Growth Index by State (2020-2024)",
+       subtitle = "Index: 2020 = 100; higher values = more growth") +
+  ggplot2::theme_void() +
+  ggplot2::theme(plot.title = ggplot2::element_text(face = "bold", size = 13),
+        strip.text = ggplot2::element_text(face = "bold", size = 11))
+```
+
+]
+
+.panel[.panel-name[Output]
+
+&lt;img src="16_visualizing_spatial_data_files/figure-html/facet-map-output-1.png" alt="" style="display: block; margin: auto;" /&gt;
+
+]
+
+.panel[.panel-name[Insights]
+
+- **Texas, Florida, and Washington** show the strongest job growth (darkest shading by 2024).
+
+- **New York and Illinois** recovered more slowly from the 2021 dip.
+
+- Faceted maps let readers compare the same geography across time periods **without animation**.
+
+- This approach is more reproducible and accessible than animated GIFs.
+
+]
+
+]
+
+
+---
+
+## Alternative: Sparkline Maps
+
+Another approach combines a **static map** with **small time series** (sparklines) embedded at each location.
+
+
+``` r
+# Conceptual approach: overlay mini line charts on a map
+# This requires manual positioning with annotation_custom() or
+# specialized packages like geofacet
+
+library(geofacet)
+
+# geofacet arranges small multiples in a geographic layout
+ggplot2::ggplot(job_growth, ggplot2::aes(x = year, y = job_index)) +
+  ggplot2::geom_line(color = miamired, linewidth = 0.8) +
+  ggplot2::geom_point(color = miamired, size = 1) +
+  geofacet::facet_geo(~state, grid = "us_state_grid2") +
+  ggplot2::labs(title = "Job Growth Trends by State",
+       y = "Job Index (2020=100)", x = NULL) +
+  ggplot2::theme_minimal() +
+  ggplot2::theme(strip.text = ggplot2::element_text(size = 6))
+```
+
+- The `geofacet` package creates **small multiples arranged geographically** -- a powerful hybrid of spatial and temporal visualization.
+
+
+---
+
+## Activity: Spatiotemporal Exploration
+
+Using the `job_growth` data, answer these questions by creating appropriate visualizations:
+
+1. **Create a faceted choropleth** for just the years 2020 and 2024 (side by side). Which states changed the most?
+
+2. **Create a line chart** faceted by state showing the job index trajectory over 2020-2024. Which state had the most consistent growth?
+
+.can-edit.key-activity03[
+
+``` r
+# Part 1: Faceted choropleth for 2020 vs 2024
+map_growth |&gt;
+  dplyr::filter(year %in% c(2020, 2024)) |&gt;
+  ggplot2::ggplot(ggplot2::aes(x = long, y = lat, group = group)) +
+  ggplot2::geom_polygon(ggplot2::aes(fill = job_index), color = "white") +
+  ggplot2::facet_wrap(~year) +
+  # ... complete the visualization
+
+# Part 2: Line chart by state
+job_growth |&gt;
+  ggplot2::ggplot(ggplot2::aes(x = year, y = job_index, color = state)) +
+  # ... complete the visualization
+```
+]
+
+<countdown-timer class="countdown" id="timer_786a29e1" minutes="6" seconds="0" update-every="1" tabindex="0" style="top:0;right:0;--countdown-font-size:2em;"></countdown-timer>
+
+
+---
+
+## LO4 Check-In
+
+✅ You can now combine spatial and temporal dimensions:
+
+- **Faceted maps** (`facet_wrap()`) show the same geography at different time points
+
+- **Indexed data** (base year = 100) enables fair comparison of growth across states
+
+- **Geofacet** layouts arrange sparklines in geographic positions
+
+- Choose facets for print/static; animations or sliders for interactive dashboards
+
+
+---
+class: inverse, center, middle
+
+# Recap
+
+---
+
+## Summary of Main Points
+
+By now, you should be able to do the following:
+
+✅ **LO1:** Differentiate between choropleth, dot/bubble, and flow maps -- and know when to use each
+
+✅ **LO2:** Create choropleth maps (`ggplot2` + `maps`) and proportional symbol maps (`geom_point()`)
+
+✅ **LO3:** Build interactive maps with `leaflet` -- markers, circle markers, popups, legends, and layer controls
+
+✅ **LO4:** Visualize spatiotemporal patterns using faceted choropleths and geographic small multiples
+
+
+---
+
+## Key Functions Reference
+
+| Function | Package | Purpose |
+|----------|---------|---------|
+| `map_data("state")` | maps | Get US state boundary coordinates |
+| `geom_polygon()` | ggplot2 | Draw filled polygons (choropleth) |
+| `coord_map()` | ggplot2 | Apply map projections |
+| `scale_fill_viridis()` | viridis | Colorblind-safe fill scales |
+| `leaflet()` | leaflet | Initialize an interactive map |
+| `addTiles()` / `addProviderTiles()` | leaflet | Add base map layers |
+| `addMarkers()` / `addCircleMarkers()` | leaflet | Add data points to map |
+| `addPolygons()` | leaflet | Add choropleth polygons |
+| `addLegend()` | leaflet | Add a color legend |
+| `addLayersControl()` | leaflet | Add base/overlay toggle |
+
+
+---
+
+## Readings and Resources
+
+- [Leaflet for R](https://rstudio.github.io/leaflet/) -- Official documentation with full examples for choropleths, markers, and more.
+
+- [Geocomputation with R, Ch. 8: Making Maps](https://r.geocompx.org/adv-map) -- Comprehensive guide to spatial visualization in R.
+
+- [Wilke, C. (2019). Fundamentals of Data Visualization, Ch. 15: Geospatial Data](https://clauswilke.com/dataviz/geospatial-data.html) -- Design principles for maps.
+
+- [Healy, K. (2018). Data Visualization, Ch. 7: Draw Maps](https://socviz.co/maps.html) -- Practical examples with ggplot2 and maps.
+
+
+---
+
+## Things to Do to Prepare for Next Class
+
+- **Read:** [Leaflet for R: Getting Started](https://rstudio.github.io/leaflet/)
+
+- **Install:** Run `install.packages(c("leaflet", "sf", "maps", "viridis"))` if you have not already.
+
+- **Explore:** Visit our [Job Map Explorer Shiny app](https://huggingface.co/spaces/fmegahed/job_map_explorer) and experiment with the filters.
+
+- **Next class:** Visualizing Text Data -- word clouds, co-occurrence networks, and sentiment analysis.
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+  "highlightStyle": "magula",
+  "highlightLines": true,
+  "highlightLanguage": "r",
+  "countIncrementalSlides": false,
+  "ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

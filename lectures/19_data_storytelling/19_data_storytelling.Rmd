@@ -1,0 +1,1079 @@
+---
+title: "ISA 401: Business Intelligence & Data Visualization"
+subtitle: '19: Data Storytelling &amp; Dashboards'
+author: '<br>Fadel M. Megahed, PhD <br><br>Raymond E. Gloss Professor in Business <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("linkedin"), fill = "white")` @Fadel Megahed](https://www.linkedin.com/in/fadel-megahed-289046b4) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
+date: "Spring 2026"
+output:
+  xaringan::moon_reader:
+    self_contained: true
+    css: [default, "../../style_files/fonts.css", "../../style_files/my-theme.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: magula
+      highlightLines: true
+      highlightLanguage: ["r"]
+      countIncrementalSlides: false
+      ratio: "16:9"
+header-includes:
+  - "../../style_files/header.html"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache = FALSE,
+                      echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE,
+                      progress = FALSE,
+                      verbose = FALSE,
+                      dev = 'png',
+                      fig.height = 3,
+                      dpi = 300,
+                      fig.align = 'center')
+
+options(htmltools.dir.version = FALSE)
+
+miamired = '#C3142D'
+
+if(require(pacman)==FALSE) install.packages("pacman")
+if(require(devtools)==FALSE) install.packages("devtools")
+
+if(require(countdown)==FALSE) devtools::install_github("gadenbuie/countdown")
+if(require(xaringanExtra)==FALSE) devtools::install_github("gadenbuie/xaringanExtra")
+
+
+pacman::p_load(tidyverse, magrittr, lubridate, janitor, # data analysis pkgs
+               DT, # for nicely printed output
+               fontawesome, RefManageR, xaringanExtra, countdown) # for slides
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+if(require(xaringanthemer) == FALSE) install.packages("xaringanthemer")
+library(xaringanthemer)
+
+style_mono_accent(base_color = "#84d6d3",
+                  base_font_size = "20px")
+
+xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "tachyons", "panelset", "search", "fit_screen", "editable",
+                                    "clipable"))
+```
+
+
+## Quick Refresher from Last Week
+
+
+`r emo::ji("check")` Define high-dimensional data and describe its visualization challenges.
+
+`r emo::ji("check")` Create parallel coordinates plots, radar charts, and heatmaps in `r fontawesome::fa("r-project", fill = miamired)`.
+
+`r emo::ji("check")` Use small multiples and faceting to compare distributions across categories.
+
+---
+
+## Kahoot/Quiz Review: High-Dimensional Data Visualization
+
+.pull-left[
+
+**Q1.** What does a parallel coordinates plot use to represent each variable?
+A. A horizontal bar
+B. A vertical axis
+C. A pie slice
+D. A color gradient
+
+**Q2.** Which package provides the `ggparcoord()` function?
+A. ggplot2
+B. GGally
+C. plotly
+D. ggradar
+
+**Q3.** What is the maximum recommended number of items to compare on a radar chart?
+A. 2
+B. 3-5
+C. 10-15
+D. 25+
+
+]
+
+.pull-right[
+
+**Q4.** In a heatmap, what visual property encodes the value in each cell?
+A. Cell size
+B. Cell position
+C. Color intensity
+D. Border thickness
+
+**Q5.** What ggplot2 function creates small multiples by splitting a chart across panels?
+A. `geom_facet()`
+B. `facet_wrap()`
+C. `small_mult()`
+D. `grid_panel()`
+
+]
+
+
+`r countdown(minutes = 3, warn_when = 60, color_background = miamired, color_text = "white", font_size = "1.5em", top = 0, right = 0)`
+
+
+---
+
+# Learning Objectives for Today's Class
+
+- **LO1:** Apply data storytelling principles (context, narrative arc)
+
+- **LO2:** Select meaningful KPIs for dashboards
+
+- **LO3:** Design dashboards for different audiences
+
+- **LO4:** Conduct user testing and iterate on feedback
+
+
+---
+class: inverse, center, middle
+
+# Data Storytelling Principles
+
+---
+
+# Why Storytelling Matters
+
+.pull-left[
+
+> "A dashboard without narrative is just charts on a page -- **storytelling drives decisions**."
+
+Consider two scenarios:
+
+**Scenario A:** You email your manager a dashboard link with 12 charts. They glance at it for 10 seconds and close the tab.
+
+**Scenario B:** You present three key findings with a clear narrative: "Here is what we found, why it matters, and what we should do." Your manager acts on it immediately.
+
+**The difference is not the data -- it is the story.**
+
+]
+
+.pull-right[
+
+.content-box-grey[
+
+.font120[**Data alone does not persuade.**]
+
+Research shows that stories are:
+- **22x more memorable** than facts alone (Stanford study)
+- Processed in **multiple brain regions** (not just analytical centers)
+- The primary way humans have **communicated knowledge** for millennia
+
+]
+
+]
+
+.footnote[
+<html><hr></html>
+**Source:** Dykes, B. (2020). *Effective Data Storytelling*. Wiley.
+]
+
+
+---
+
+# The Narrative Arc for Data
+
+Every good data story follows the same structure as a traditional narrative:
+
+.content-box-grey[
+.center[.font150[**Setup** &#8594; **Conflict** &#8594; **Resolution**]]
+]
+
+<br>
+
+.font80[
+| Stage | Purpose | Data Story Element |
+|-------|---------|-------------------|
+| **Setup** | Establish context | "We collected 500 job postings from 12 industries over 6 months." |
+| **Conflict** | Reveal the tension | "Skills requirements are shifting dramatically -- 40% of postings now require Python, up from 15% two years ago." |
+| **Resolution** | Provide the answer | "Here are the three skills you need to invest in now, and here is the training plan." |
+]
+
+> The **conflict** is where the value lives. Without tension, there is no reason to pay attention.
+
+
+---
+
+# Applying the Framework: Job Market Example
+
+.panelset[
+
+.panel[.panel-name[Setup]
+
+.content-box-grey[
+
+.font110[**"We analyzed 500 job postings for analytics roles across 12 industries."**]
+
+- Data was collected from major job boards over 6 months (Jan - Jun 2025)
+- Roles included: Data Analyst, BI Developer, Data Scientist, ML Engineer
+- Variables tracked: required skills, salary range, experience level, industry
+
+]
+
+> The Setup answers: **What data do we have and where did it come from?**
+
+]
+
+.panel[.panel-name[Conflict]
+
+.content-box-grey[
+
+.font110[**"The skills landscape is shifting faster than curricula can adapt."**]
+
+- Python surpassed Excel as the #1 required skill for the first time
+- Cloud skills (AWS, Azure) appeared in 35% of postings, up from 12% in 2023
+- Traditional BI tools (Crystal Reports, SSRS) dropped below 5%
+- The gap between what universities teach and what employers want is widening
+
+]
+
+> The Conflict answers: **What is surprising, alarming, or important?**
+
+]
+
+.panel[.panel-name[Resolution]
+
+.content-box-grey[
+
+.font110[**"Three strategic recommendations for students and career centers."**]
+
+1. **Prioritize Python and SQL** -- these two skills appear in 78% of all postings
+2. **Add cloud literacy** -- even one AWS/Azure certification doubles interview callbacks
+3. **Build portfolio projects** -- 62% of senior roles explicitly request a project portfolio
+
+]
+
+> The Resolution answers: **What should we do about it?**
+
+]
+]
+
+
+---
+
+# Good vs. Bad Data Storytelling
+
+.pull-left[
+
+.content-box-grey[
+.center[.font120[**Bad Storytelling**] .font70[`r emo::ji("x")`]]
+
+- "Here are 15 charts about job postings."
+- No context for why the analysis was done
+- Every chart has a different color scheme
+- No clear takeaway or recommendation
+- The audience has to figure out the "so what?" themselves
+- Data is presented but not **interpreted**
+
+]
+
+]
+
+.pull-right[
+
+.content-box-grey[
+.center[.font120[**Good Storytelling**] .font70[`r emo::ji("check")`]]
+
+- Opens with a compelling question: "Are you learning the right skills?"
+- Three charts, each supporting one key finding
+- Consistent visual language throughout
+- Each chart has a clear, action-oriented title
+- Ends with specific recommendations
+- Data is **interpreted and contextualized**
+
+]
+
+]
+
+<br>
+
+> **Key principle:** An action-oriented chart title (e.g., "Python overtakes Excel as top required skill") is always better than a descriptive one (e.g., "Skills frequency bar chart").
+
+
+---
+
+# Activity: Write a Narrative Arc
+
+`r countdown(minutes = 5, seconds = 0, top = 0, font_size = "2em")`
+
+.panelset[
+
+.panel[.panel-name[Instructions]
+
+> Using your own project data (or the job market example), write a three-part narrative arc. You have 5 minutes.
+
+Think about:
+- What is the **context** your audience needs?
+- What is the **surprising or important finding**?
+- What **action** should your audience take?
+
+]
+
+.panel[.panel-name[Your Narrative]
+
+.can-edit.key-narrative[
+
+**Setup:** ________________________________
+
+**Conflict:** ________________________________
+
+**Resolution:** ________________________________
+
+]
+
+]
+
+.panel[.panel-name[Discussion]
+
+After writing your narrative, consider:
+
+- Did you start with the data or with the audience? (You should start with the **audience**.)
+- Is your conflict genuinely surprising or just a restatement of what was already known?
+- Is your resolution actionable? Can someone **do something** based on it?
+
+]
+]
+
+
+---
+
+## LO1 Check-In
+
+`r emo::ji("check")` You can now apply data storytelling principles by:
+
+- Structuring findings as **Setup, Conflict, Resolution**
+
+- Writing action-oriented chart titles instead of descriptive ones
+
+- Leading with the audience's needs, not the data's structure
+
+
+---
+class: inverse, center, middle
+
+# Selecting Meaningful KPIs
+
+---
+
+# What is a KPI?
+
+.pull-left[
+
+.content-box-grey[
+
+.font120[**Key Performance Indicator (KPI)**]
+
+A **measurable value** that demonstrates how effectively an organization is achieving its key business objectives.
+
+Not every metric is a KPI. KPIs are the **critical few** measures that matter most.
+
+]
+
+**Examples:**
+- Revenue growth rate
+- Customer acquisition cost
+- Employee turnover rate
+- Net Promoter Score (NPS)
+
+]
+
+.pull-right[
+
+**What makes a metric a KPI vs. just a metric?**
+
+| Metric | KPI? | Why? |
+|--------|------|------|
+| Page views | No | Vanity metric -- no direct business impact |
+| Conversion rate | Yes | Directly tied to revenue |
+| # of meetings held | No | Activity, not outcome |
+| Customer lifetime value | Yes | Drives strategic decisions |
+
+> A KPI should **change behavior** when it changes value. If nobody would act differently based on the number, it is not a KPI.
+
+]
+
+
+---
+
+# The SMART Framework for KPIs
+
+Good KPIs are **SMART**:
+
+.font80[
+| Letter | Stands For | Example (Career Center) |
+|--------|-----------|------------------------|
+| **S** | Specific | "Percentage of graduates employed in their field within 6 months" -- not just "employment rate" |
+| **M** | Measurable | Can be tracked via alumni surveys and employer verification |
+| **A** | Achievable | A target of 85% (not 100%) is realistic |
+| **R** | Relevant | Directly reflects the career center's mission |
+| **T** | Time-bound | Measured at 6 months and 12 months post-graduation |
+]
+
+<br>
+
+> **Common mistake:** Choosing KPIs because they are **easy to measure** rather than because they are **important to measure**.
+
+
+---
+
+# Activity: KPIs for a University Career Center
+
+`r countdown(minutes = 5, seconds = 0, top = 0, font_size = "2em")`
+
+.panelset[
+
+.panel[.panel-name[Instructions]
+
+> Imagine you are building a dashboard for Miami University's career center. What KPIs would you track? Work in groups and identify 5-7 KPIs.
+
+Think about:
+- Who are the **stakeholders** (students, employers, administrators)?
+- What **decisions** do they need to make?
+- What **data** is available?
+
+]
+
+.panel[.panel-name[Your KPIs]
+
+.can-edit.key-kpis[
+
+.pull-left[
+.font110[**Student-Facing KPIs:**]
+
+1. ________________
+2. ________________
+3. ________________
+]
+
+.pull-right[
+.font110[**Operational KPIs:**]
+
+1. ________________
+2. ________________
+3. ________________
+4. ________________
+]
+
+]
+
+]
+
+.panel[.panel-name[Suggested KPIs]
+
+.font90[
+
+| KPI | Stakeholder | SMART? |
+|-----|-------------|--------|
+| **Placement rate** (% employed in field within 6 months) | Students, Admins | Yes |
+| **Median time-to-hire** (days from graduation to offer) | Students | Yes |
+| **Salary premium** (grad salary vs. regional median) | Students, Admins | Yes |
+| **Employer satisfaction score** (post-hire survey) | Employers | Yes |
+| **Career fair attendance rate** | Admins | Yes |
+| **Resume review turnaround** (avg. days) | Students | Yes |
+| **Internship-to-hire conversion rate** | Employers, Students | Yes |
+
+]
+
+]
+]
+
+
+---
+
+## LO2 Check-In
+
+`r emo::ji("check")` You can now select meaningful KPIs by:
+
+- Distinguishing between vanity metrics and actionable KPIs
+
+- Applying the **SMART** framework to evaluate KPI quality
+
+- Connecting KPIs to **stakeholder decisions** and organizational mission
+
+
+---
+class: inverse, center, middle
+
+# Designing Dashboards for Different Audiences
+
+---
+
+# One Dataset, Three Dashboards
+
+The same underlying data can (and should) be presented differently depending on who is looking at it.
+
+.content-box-grey[
+
+**Consider a job market dataset with 500 postings.** Three audiences need different views:
+
+1. **Students:** "What skills should I learn? What salary can I expect?"
+2. **Employers:** "How competitive is our compensation? Where are the talent gaps?"
+3. **Administrators:** "Are our programs aligned with market demand? Where should we invest?"
+
+]
+
+> The biggest design mistake is building **one dashboard for all audiences**. Each audience has different questions, different expertise, and different time to spend.
+
+
+---
+
+# Dashboard Design: Student View
+
+.pull-left[
+
+.content-box-grey[
+.center[.font120[**Student Dashboard**]]
+
+**Primary question:** "Am I on the right track?"
+
+**Layout wireframe:**
+
+```
++---------------------------+
+|  [KPI Cards: Top 3 Skills |
+|   Avg Salary | Open Roles] |
++---------------------------+
+| Skills Gap   | Salary by  |
+| Bar Chart    | Experience |
+|              | Box Plot   |
++--------------+------------+
+| Top Companies Hiring      |
+| (Sortable Table)          |
++---------------------------+
+```
+
+]
+
+]
+
+.pull-right[
+
+**Design decisions:**
+
+- .bold[KPI cards at the top] for at-a-glance answers
+- .bold[Skills gap chart] shows what they need to learn
+- .bold[Salary by experience] sets realistic expectations
+- .bold[Company table] is actionable -- they can apply immediately
+- .bold[Color:] limited palette, friendly tone
+- .bold[Interactivity:] filter by major/industry
+
+> Students want **actionable guidance**, not comprehensive analysis.
+
+]
+
+
+---
+
+# Dashboard Design: Employer View
+
+.pull-left[
+
+.content-box-grey[
+.center[.font120[**Employer Dashboard**]]
+
+**Primary question:** "How competitive are we?"
+
+**Layout wireframe:**
+
+```
++---------------------------+
+| [KPI Cards: Our Salary vs |
+|  Market | Time to Fill |   |
+|  Applicant Quality Score]  |
++---------------------------+
+| Compensation  | Talent     |
+| Benchmark     | Pipeline   |
+| (Bullet Chart)| (Funnel)   |
++--------------+------------+
+| Skills Supply vs. Demand  |
+| (Diverging Bar Chart)     |
++---------------------------+
+```
+
+]
+
+]
+
+.pull-right[
+
+**Design decisions:**
+
+- .bold[Benchmarking] is the core function -- "us vs. market"
+- .bold[Bullet charts] compare performance to targets
+- .bold[Funnel chart] shows hiring pipeline health
+- .bold[Diverging bars] highlight supply/demand mismatches
+- .bold[Color:] professional, corporate palette
+- .bold[Interactivity:] filter by role, location, department
+
+> Employers want to see their **competitive position** at a glance.
+
+]
+
+
+---
+
+# Dashboard Design: Administrator View
+
+.pull-left[
+
+.content-box-grey[
+.center[.font120[**Administrator Dashboard**]]
+
+**Primary question:** "Where should we invest?"
+
+**Layout wireframe:**
+
+```
++---------------------------+
+| [KPI Cards: Placement Rate|
+|  Employer Satisfaction |   |
+|  Curriculum Alignment %]   |
++---------------------------+
+| Trend Lines  | Program    |
+| (Placement   | Comparison |
+|  over time)  | (Heatmap)  |
++--------------+------------+
+| Emerging Skills Forecast  |
+| (Time Series with Bands)  |
++---------------------------+
+```
+
+]
+
+]
+
+.pull-right[
+
+**Design decisions:**
+
+- .bold[Strategic KPIs] tied to accreditation and rankings
+- .bold[Trend lines] show direction, not just snapshots
+- .bold[Program comparison heatmap] identifies which departments are aligned with market demand
+- .bold[Forecasting] supports long-term planning
+- .bold[Color:] institutional branding
+- .bold[Interactivity:] drill-down by college, major, year
+
+> Administrators need **strategic, longitudinal** views for resource allocation.
+
+]
+
+
+---
+
+# Information Hierarchy in Dashboard Design
+
+.content-box-grey[
+
+.font120[**The 5-Second Rule:**] A dashboard user should be able to answer their primary question within 5 seconds of looking at the dashboard.
+
+]
+
+.font80[
+**Hierarchy of visual prominence:**
+
+| Level | Element | Purpose | Example |
+|-------|---------|---------|---------|
+| **1 (Loudest)** | KPI cards / big numbers | Immediate status check | "87% Placement Rate" |
+| **2** | Primary chart | Main finding or trend | Salary trend line |
+| **3** | Secondary charts | Supporting context | Skills breakdown, comparisons |
+| **4** | Tables / details | On-demand drill-down | Individual job postings |
+| **5 (Quietest)** | Filters / controls | User customization | Date range, industry selector |
+]
+
+> Position Level 1 at the **top** and Level 5 at the **edges or bottom**.
+
+
+---
+
+# Common Dashboard Design Pitfalls
+
+.pull-left[
+
+.content-box-grey[
+.center[.font120[**Do NOT Do This**]]
+
+- Cramming 15+ charts onto one screen
+- Using 3-D effects on bar charts or pie charts
+- Inconsistent color coding across charts
+- No clear visual hierarchy (everything is the same size)
+- Decorative elements that add no information (chart junk)
+- Requiring users to scroll horizontally
+
+]
+
+]
+
+.pull-right[
+
+.content-box-grey[
+.center[.font120[**Do This Instead**]]
+
+- Limit to 5-7 visual elements per screen
+- Use 2-D charts with clear labels
+- Establish a consistent color legend and use it everywhere
+- Make the most important element the largest
+- Every pixel should encode data or aid comprehension
+- Design for a fixed viewport (16:9 or the target screen)
+
+]
+
+]
+
+.footnote[
+<html><hr></html>
+**Source:** Few, S. (2013). *Information Dashboard Design: Displaying Data for At-a-Glance Monitoring*. Analytics Press.
+]
+
+
+---
+
+## Activity: Design a Dashboard Wireframe
+
+`r countdown(minutes = 7, seconds = 0, top = 0, font_size = "2em")`
+
+.panelset[
+
+.panel[.panel-name[Instructions]
+
+> Choose one audience (student, employer, or administrator) and sketch a dashboard wireframe for the job market data. You have 7 minutes.
+
+Your wireframe should include:
+1. **3-4 KPI cards** at the top
+2. **2-3 charts** in the body (specify chart type)
+3. **Filters** on the side or top
+4. A **title** that communicates the dashboard's purpose
+
+You may sketch on paper, a whiteboard, or use the editable panel.
+
+]
+
+.panel[.panel-name[Your Wireframe]
+
+.can-edit.key-wireframe[
+
+**Dashboard Title:** ________________________________
+
+**Target Audience:** ________________________________
+
+**KPI Cards (top row):**
+- KPI 1: __________ | KPI 2: __________ | KPI 3: __________
+
+**Chart 1 (left):** Type: __________ | Shows: __________
+
+**Chart 2 (right):** Type: __________ | Shows: __________
+
+**Filters:** __________
+
+]
+
+]
+]
+
+
+---
+
+## LO3 Check-In
+
+`r emo::ji("check")` You can now design dashboards for different audiences by:
+
+- Tailoring KPIs and chart selections to stakeholder questions
+
+- Applying the **5-Second Rule** and information hierarchy
+
+- Avoiding common design pitfalls (clutter, inconsistent colors, no hierarchy)
+
+
+---
+class: inverse, center, middle
+
+# User Testing & Iteration
+
+---
+
+# Why Test Your Dashboard?
+
+.pull-left[
+
+> "You are not your user." -- UX Design Principle
+
+What seems obvious to you (the designer) may confuse your audience:
+
+- You know what every color means -- they do not
+- You know where to click -- they do not
+- You know the data source -- they do not
+
+**User testing reveals these gaps** before you present to stakeholders.
+
+]
+
+.pull-right[
+
+.content-box-grey[
+
+.font120[**Three Testing Methods**]
+
+1. **Heuristic Evaluation** -- Experts assess against design principles
+2. **Think-Aloud Protocol** -- Users narrate their thought process
+3. **A/B Testing** -- Compare two designs with real users
+
+]
+
+]
+
+
+---
+
+# Method 1: Heuristic Evaluation
+
+A **heuristic evaluation** is an expert review of a dashboard against established design principles.
+
+.font80[
+**Dashboard-specific heuristics (adapted from Nielsen):**
+
+| # | Heuristic | Dashboard Application |
+|---|-----------|----------------------|
+| 1 | **Visibility of system status** | Is it clear when data was last refreshed? |
+| 2 | **Match between system and real world** | Are labels in business language, not technical jargon? |
+| 3 | **User control and freedom** | Can users reset filters easily? |
+| 4 | **Consistency and standards** | Does red always mean "bad" across all charts? |
+| 5 | **Error prevention** | Do filters prevent impossible combinations? |
+| 6 | **Recognition over recall** | Are legends visible, not hidden behind tooltips? |
+| 7 | **Aesthetic and minimalist design** | Is every element necessary? |
+]
+
+> Typically conducted by **3-5 evaluators** who independently identify issues, then combine findings.
+
+
+---
+
+# Method 2: Think-Aloud Protocol
+
+In a **think-aloud** session, you ask a user to narrate what they are thinking as they interact with your dashboard.
+
+**How to run a think-aloud test:**
+
+1. **Set up:** Give the user a specific task (e.g., "Find the average salary for Data Analysts in Tech")
+2. **Observe:** Watch them interact. Do NOT help or guide them.
+3. **Listen:** They say things like "I am not sure what this color means" or "I expected the filter to be here"
+4. **Record:** Take notes on confusion points, errors, and time-on-task
+
+.content-box-grey[
+
+**Sample prompts for a job market dashboard:**
+
+- "Which industry pays the highest for entry-level roles?"
+- "What are the top 3 skills required across all postings?"
+- "Compare your current skills to what the market demands."
+
+]
+
+> Think-aloud sessions reveal **why** users struggle, not just **that** they struggle.
+
+
+---
+
+# Method 3: A/B Testing for Dashboards
+
+.pull-left[
+
+**A/B testing** compares two versions of a dashboard to see which performs better.
+
+**What to test:**
+- **Layout A** (KPIs on left) vs. **Layout B** (KPIs on top)
+- **Color scheme A** (sequential) vs. **Color scheme B** (diverging)
+- **Chart type A** (bar chart) vs. **Chart type B** (lollipop chart)
+
+**What to measure:**
+- Time to answer a specific question
+- Accuracy of interpretation
+- User preference (satisfaction score)
+
+]
+
+.pull-right[
+
+.content-box-grey[
+
+.font110[**A/B Test Structure**]
+
+```
+Group A (n=15)     Group B (n=15)
++-----------+      +-----------+
+| Version A |      | Version B |
++-----------+      +-----------+
+      |                  |
+      v                  v
+  Task 1-3           Task 1-3
+  (timed)            (timed)
+      |                  |
+      v                  v
+  Survey             Survey
+```
+
+Compare: time, accuracy, satisfaction
+
+]
+
+]
+
+
+---
+
+# The Feedback Loop: Iterate and Improve
+
+.content-box-grey[
+
+.center[.font150[**Design** &#8594; **Test** &#8594; **Learn** &#8594; **Redesign**]]
+
+]
+
+Good dashboards are never "done." They evolve through iteration:
+
+.font80[
+| Iteration | What Changed | Why |
+|-----------|-------------|-----|
+| v1 &#8594; v2 | Moved KPI cards from bottom to top | Users missed them during think-aloud tests |
+| v2 &#8594; v3 | Replaced pie chart with horizontal bar chart | Heuristic evaluation flagged poor angle perception |
+| v3 &#8594; v4 | Added "last updated" timestamp | Users did not trust the data without knowing its freshness |
+| v4 &#8594; v5 | Simplified from 8 charts to 5 | A/B test showed no accuracy loss but 30% faster task completion |
+]
+
+> **Each iteration should address specific, documented feedback** -- not just personal preference.
+
+
+---
+
+## Activity: Partner Dashboard Review
+
+`r countdown(minutes = 8, seconds = 0, top = 0, font_size = "2em")`
+
+.panelset[
+
+.panel[.panel-name[Instructions]
+
+> Swap dashboards (or wireframes) with a partner. You have 8 minutes total (4 minutes per review).
+
+**Use this structured feedback protocol:**
+
+1. **First impressions** (30 seconds): What do you notice first? Can you identify the dashboard's purpose?
+2. **Task completion** (2 minutes): Try to answer: "What is the most important finding?"
+3. **Heuristic check** (1 minute): Check for consistency, clarity, and hierarchy.
+4. **Written feedback** (30 seconds): Write your top 2 suggestions in the next tab.
+
+]
+
+.panel[.panel-name[Feedback Form]
+
+.can-edit.key-feedback[
+
+**Reviewer:** ________________
+
+**Dashboard reviewed:** ________________
+
+**First impression:** What did you notice first? ________________
+
+**Task:** Could you identify the main finding? (Yes/No) ________________
+
+**Strength #1:** ________________
+
+**Suggestion #1:** ________________
+
+**Suggestion #2:** ________________
+
+]
+
+]
+
+.panel[.panel-name[Debrief]
+
+After both reviews are complete, discuss with your partner:
+
+- Were you surprised by what they noticed (or missed)?
+- Did they interpret your charts the way you intended?
+- What is the **one change** you would make based on their feedback?
+
+> The goal is not to defend your design -- it is to **learn how others see it**.
+
+]
+]
+
+
+---
+
+## LO4 Check-In
+
+`r emo::ji("check")` You can now conduct user testing and iterate by:
+
+- Running a **heuristic evaluation** against established design principles
+
+- Conducting **think-aloud** sessions to uncover usability issues
+
+- Structuring **A/B tests** to compare design alternatives with measurable outcomes
+
+- Using a **design-test-learn-redesign** feedback loop
+
+
+---
+class: inverse, center, middle
+
+# Recap
+
+---
+
+## Summary of Main Points
+
+By now, you should be able to do the following:
+
+`r emo::ji("check")` **LO1:** Structure data findings as a narrative arc (Setup, Conflict, Resolution) and write action-oriented chart titles.
+
+`r emo::ji("check")` **LO2:** Select meaningful KPIs using the SMART framework and distinguish KPIs from vanity metrics.
+
+`r emo::ji("check")` **LO3:** Design audience-specific dashboards with clear information hierarchy and consistent visual language.
+
+`r emo::ji("check")` **LO4:** Conduct user testing (heuristic evaluation, think-aloud, A/B testing) and iterate on feedback.
+
+
+---
+
+## Key Concepts Reference
+
+.font80[
+| Concept | Definition |
+|---------|-----------|
+| **Narrative Arc** | Setup &#8594; Conflict &#8594; Resolution |
+| **KPI** | A measurable value tied to key business objectives |
+| **SMART** | Specific, Measurable, Achievable, Relevant, Time-bound |
+| **5-Second Rule** | Users should answer their primary question within 5 seconds |
+| **Information Hierarchy** | KPI cards &#8594; Primary charts &#8594; Secondary charts &#8594; Tables &#8594; Filters |
+| **Heuristic Evaluation** | Expert review against design principles |
+| **Think-Aloud Protocol** | Users narrate their thought process during interaction |
+| **A/B Testing** | Compare two designs with measurable outcomes |
+]
+
+
+---
+
+## Readings and Resources
+
+- [Dykes, B. (2020). *Effective Data Storytelling: How to Drive Change with Data, Narrative, and Visuals*.](https://www.amazon.com/Effective-Data-Storytelling-Drive-Change/dp/1119615712) Wiley. -- The definitive text on data storytelling.
+
+- [Few, S. (2013). *Information Dashboard Design*.](https://www.amazon.com/Information-Dashboard-Design-At-Glance/dp/1938377001) Analytics Press. -- Practical guide to dashboard design principles.
+
+- [Knaflic, C.N. (2015). *Storytelling with Data*.](https://www.storytellingwithdata.com/) -- Excellent introduction to decluttering and focusing visualizations.
+
+- [Nielsen, J. (1994). 10 Usability Heuristics for User Interface Design.](https://www.nngroup.com/articles/ten-usability-heuristics/) -- The classic heuristics adapted for dashboard evaluation.
+
+
+---
+
+## Things to Do to Prepare for Next Class
+
+- **Reflect:** For your project, write a one-paragraph narrative arc (Setup, Conflict, Resolution).
+
+- **Practice:** Identify 3-5 KPIs for your project dashboard and evaluate them against the SMART criteria.
+
+- **Review:** Read Chapter 1 of *Storytelling with Data* by Cole Nussbaumer Knaflic (available via Miami's library).
+
+- **Next class:** Data Mining Overview -- moving from visualization to prediction.

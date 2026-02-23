@@ -1,0 +1,1013 @@
+---
+title: "ISA 401: Business Intelligence & Data Visualization"
+subtitle: '16: Visualizing Spatial Data in `r icons::icon_style(icons::fontawesome("r-project"), fill = "white")`'
+author: '<br>Fadel M. Megahed, PhD <br><br>Raymond E. Gloss Professor in Business <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("linkedin"), fill = "white")` @Fadel Megahed](https://www.linkedin.com/in/fadel-megahed-289046b4) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
+date: "Spring 2026"
+output:
+  xaringan::moon_reader:
+    self_contained: true
+    css: [default, "../../style_files/fonts.css", "../../style_files/my-theme.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: magula
+      highlightLines: true
+      highlightLanguage: ["r"]
+      countIncrementalSlides: false
+      ratio: "16:9"
+header-includes:
+  - "../../style_files/header.html"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache = FALSE,
+                      echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE,
+                      progress = FALSE,
+                      verbose = FALSE,
+                      dev = 'png',
+                      fig.height = 2.5,
+                      dpi = 300,
+                      fig.align = 'center')
+
+options(htmltools.dir.version = FALSE)
+
+miamired = '#C3142D'
+
+if(require(pacman)==FALSE) install.packages("pacman")
+if(require(devtools)==FALSE) install.packages("devtools")
+
+if(require(countdown)==FALSE) devtools::install_github("gadenbuie/countdown")
+if(require(xaringanExtra)==FALSE) devtools::install_github("gadenbuie/xaringanExtra")
+
+
+pacman::p_load(tidyverse, magrittr, lubridate, janitor, # data analysis pkgs
+               leaflet, sf, maps, viridis, # for spatial visualization
+               fontawesome, RefManageR, xaringanExtra, countdown) # for slides
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+if(require(xaringanthemer) == FALSE) install.packages("xaringanthemer")
+library(xaringanthemer)
+
+xaringanthemer::style_mono_accent(base_color = "#84d6d3",
+                  base_font_size = "20px")
+
+xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "tachyons", "panelset", "search", "fit_screen", "editable",
+                                    "clipable"))
+```
+
+
+## Quick Refresher from Last Week
+
+
+`r emo::ji("check")` Identify appropriate chart types for time series data.
+
+`r emo::ji("check")` Create line charts, area charts, and seasonal plots with ggplot2.
+
+`r emo::ji("check")` Add annotations and reference lines to highlight trends and events.
+
+`r emo::ji("check")` Use faceting to compare multiple time series.
+
+---
+
+## Kahoot/Quiz Review: Time Series Visualization
+
+.pull-left[
+
+**Q1.** Which geom is most appropriate for a single continuous time series?
+A. `geom_bar()`
+B. `geom_line()`
+C. `geom_point()`
+D. `geom_tile()`
+
+**Q2.** What does `scale_x_date(date_labels = "%b %Y")` produce?
+A. "2026-02-15"
+B. "Feb 2026"
+C. "February 2026"
+D. "02/15/2026"
+
+**Q3.** Which function adds a horizontal reference line to a ggplot?
+A. `geom_vline()`
+B. `geom_hline()`
+C. `geom_abline()`
+D. `annotate()`
+
+]
+
+.pull-right[
+
+**Q4.** What is the primary advantage of faceting time series by group?
+A. It makes the chart more colorful
+B. It allows side-by-side comparison without overplotting
+C. It reduces the data size
+D. It adds interactivity
+
+**Q5.** When visualizing seasonal patterns, which approach is most effective?
+A. A single line chart with all years overlapping
+B. Overlaying years on the same x-axis (month) with color
+C. A pie chart for each season
+D. A scatter plot of date vs. value
+
+]
+
+
+`r countdown(minutes = 3, warn_when = 60, color_background = miamired, color_text = "white", font_size = "1.5em", top = 0, right = 0)`
+
+
+---
+
+# Learning Objectives for Today's Class
+
+- **LO1:** Differentiate between choropleth, dot/bubble, and flow maps
+
+- **LO2:** Create choropleth and proportional symbol maps with ggplot2
+
+- **LO3:** Build interactive maps with Leaflet
+
+- **LO4:** Combine spatial and temporal dimensions in visualizations
+
+
+---
+class: inverse, center, middle
+
+# Types of Spatial Maps
+
+---
+
+## Why Geography Matters
+
+.pull-left[
+
+- **Where should you look for a job?** Geography is one of the strongest predictors of salary and opportunity.
+
+- The same occupation can pay **50-100% more** in one metro area versus another.
+
+- Spatial visualization helps us see patterns that tables cannot reveal: regional clusters, geographic disparities, and migration flows.
+
+- Today we learn three fundamental map types that every BI analyst should know.
+
+]
+
+.pull-right[
+
+```{r why-geo-data, echo=FALSE}
+geo_summary <- tibble::tribble(
+  ~metric, ~san_francisco, ~oxford_oh,
+  "Median Data Analyst Salary", "$95,000", "$55,000",
+  "Cost of Living Index", "180", "85",
+  "Job Postings (monthly)", "2,400", "35",
+  "Major Employers", "Tech Giants", "University"
+)
+
+knitr::kable(geo_summary, format = "html",
+             caption = "Same job, different geography")
+```
+
+]
+
+
+---
+
+## Map Type 1: Choropleth Maps
+
+- A **choropleth** map shades geographic regions (states, counties, countries) according to a data variable.
+
+- Best for: **rates, averages, and proportions** aggregated to known geographic boundaries.
+
+- The color intensity encodes the data value for each region.
+
+| Strength | Weakness |
+|----------|----------|
+| Easy to read for regional patterns | Can mislead when regions differ in size |
+| Familiar to general audiences | Not suitable for point-level data |
+| Good for comparing across regions | Hides within-region variation |
+
+.footnote[
+<html><hr></html>
+**Example use case:** Average salary by state, unemployment rate by county, job growth rate by region.
+]
+
+
+---
+
+## Map Type 2: Dot / Bubble Maps
+
+- A **dot map** places points at specific locations; a **bubble map** sizes those points by a variable.
+
+- Best for: **point-level data** or **counts** at specific locations.
+
+- Unlike choropleths, bubble maps show where activity is concentrated **within** regions.
+
+| Strength | Weakness |
+|----------|----------|
+| Shows exact locations of events | Can become cluttered with many points |
+| Circle size encodes magnitude | Overlapping circles obscure data |
+| Works well with interactive zoom | Requires latitude/longitude coordinates |
+
+.footnote[
+<html><hr></html>
+**Example use case:** Job posting locations sized by salary, company headquarters, event locations.
+]
+
+
+---
+
+## Map Type 3: Flow Maps
+
+- A **flow map** uses lines or arrows to show movement between locations.
+
+- Best for: **migration, trade, commuting patterns**, and other origin-destination data.
+
+- Line thickness or color typically encodes the volume of flow.
+
+| Strength | Weakness |
+|----------|----------|
+| Shows directional relationships | Can become very cluttered |
+| Reveals migration/trade patterns | Requires origin-destination data |
+| Powerful for storytelling | Difficult to read with many flows |
+
+.footnote[
+<html><hr></html>
+**Example use case:** Where tech workers relocate from/to, supply chain flows, commuting patterns between cities.
+]
+
+
+---
+
+## Choosing the Right Map Type
+
+| Question | Map Type |
+|----------|----------|
+| How does a **rate or average** vary across regions? | Choropleth |
+| **Where exactly** are events or entities located? | Dot / Bubble |
+| How do things **move** between locations? | Flow |
+| How does a spatial pattern **change over time**? | Animated or faceted version of any type |
+
+- In practice, you often **combine** types: a choropleth background with bubble overlays.
+
+- Always ask: **What is the spatial unit?** Regions use choropleths. Points use dots. Connections use flows.
+
+
+---
+
+## LO1 Check-In
+
+`r emo::ji("check")` You can now differentiate between the three major spatial map types:
+
+- **Choropleth:** shaded regions for rates/averages
+
+- **Dot/Bubble:** points at locations, sized by magnitude
+
+- **Flow:** arrows/lines showing movement between places
+
+
+---
+class: inverse, center, middle
+
+# Choropleth and Proportional Symbol Maps in `r fontawesome::fa(name = 'r-project', fill = 'white')`
+
+---
+
+## Sample Data: Jobs by State
+
+We will use a sample dataset of average data analyst salaries and job counts by state.
+
+.font80[
+```{r state-jobs-data}
+state_jobs <- tibble::tribble(
+  ~state, ~avg_salary, ~job_count, ~region,
+  "california", 92000, 4500, "West",
+  "texas", 75000, 3200, "South",
+  "new york", 88000, 3800, "Northeast",
+  "florida", 68000, 2100, "South",
+  "illinois", 72000, 1800, "Midwest",
+  "washington", 95000, 2200, "West",
+  "massachusetts", 85000, 1600, "Northeast",
+  "virginia", 78000, 1400, "South",
+  "ohio", 65000, 1100, "Midwest",
+  "georgia", 70000, 1300, "South",
+  "pennsylvania", 73000, 1500, "Northeast",
+  "north carolina", 71000, 1200, "South",
+  "michigan", 67000, 900, "Midwest",
+  "colorado", 82000, 1100, "West",
+  "arizona", 69000, 800, "West",
+  "minnesota", 74000, 950, "Midwest",
+  "maryland", 80000, 1050, "South",
+  "oregon", 79000, 700, "West",
+  "indiana", 63000, 650, "Midwest",
+  "tennessee", 66000, 750, "South"
+)
+```
+]
+
+
+---
+
+## Choropleth Map: Average Salary by State
+
+.panelset[
+
+.panel[.panel-name[Code]
+
+```{r choropleth-code, eval=FALSE}
+# Get the US state boundaries from the maps package
+us_states <- ggplot2::map_data("state")
+
+# Join our salary data to the map data
+map_df <- us_states |>
+  dplyr::left_join(state_jobs, by = c("region" = "state"))
+
+# Create the choropleth
+ggplot2::ggplot(map_df, ggplot2::aes(x = long, y = lat, group = group)) +
+  ggplot2::geom_polygon(ggplot2::aes(fill = avg_salary), color = "white", linewidth = 0.3) +
+  viridis::scale_fill_viridis(option = "plasma", labels = scales::dollar,
+                     na.value = "grey90",
+                     name = "Avg Salary") +
+  ggplot2::coord_map("polyconic") +
+  ggplot2::labs(title = "Average Data Analyst Salary by State",
+       subtitle = "States in grey have no data in our sample") +
+  ggplot2::theme_void() +
+  ggplot2::theme(plot.title = ggplot2::element_text(face = "bold", size = 14),
+        legend.position = "right")
+```
+
+]
+
+.panel[.panel-name[Output]
+
+```{r choropleth-output, echo=FALSE, fig.height=4, fig.width=9}
+us_states <- ggplot2::map_data("state")
+
+map_df <- us_states |>
+  dplyr::left_join(state_jobs, by = c("region" = "state"))
+
+ggplot2::ggplot(map_df, ggplot2::aes(x = long, y = lat, group = group)) +
+  ggplot2::geom_polygon(ggplot2::aes(fill = avg_salary), color = "white", linewidth = 0.3) +
+  viridis::scale_fill_viridis(option = "plasma", labels = scales::dollar,
+                     na.value = "grey90",
+                     name = "Avg Salary") +
+  ggplot2::coord_map("polyconic") +
+  ggplot2::labs(title = "Average Data Analyst Salary by State",
+       subtitle = "States in grey have no data in our sample") +
+  ggplot2::theme_void() +
+  ggplot2::theme(plot.title = ggplot2::element_text(face = "bold", size = 14),
+        legend.position = "right")
+```
+
+]
+
+.panel[.panel-name[Discussion]
+
+Key observations:
+
+- **West Coast** and **Northeast** states show the highest salaries (darker shading).
+
+- **Midwest** states cluster at lower salary levels.
+
+- The `maps` package provides state boundaries; `viridis` ensures colorblind-safe palettes.
+
+- `coord_map("polyconic")` preserves geographic proportions better than default coordinates.
+
+]
+
+]
+
+
+---
+
+## Proportional Symbol Map: Job Count by City
+
+.panelset[
+
+.panel[.panel-name[Data]
+
+```{r city-jobs-data}
+city_jobs <- tibble::tribble(
+  ~city, ~state, ~lat, ~lng, ~job_count, ~avg_salary,
+  "San Francisco", "CA", 37.77, -122.42, 1800, 105000,
+  "New York", "NY", 40.71, -74.01, 2500, 95000,
+  "Seattle", "WA", 47.61, -122.33, 1200, 98000,
+  "Austin", "TX", 30.27, -97.74, 900, 82000,
+  "Chicago", "IL", 41.88, -87.63, 1100, 78000,
+  "Boston", "MA", 42.36, -71.06, 850, 90000,
+  "Denver", "CO", 39.74, -104.99, 600, 80000,
+  "Atlanta", "GA", 33.75, -84.39, 750, 72000,
+  "Miami", "FL", 25.76, -80.19, 500, 70000,
+  "Portland", "OR", 45.52, -122.68, 400, 78000,
+  "Raleigh", "NC", 35.78, -78.64, 550, 74000,
+  "Columbus", "OH", 39.96, -83.00, 450, 66000,
+  "Minneapolis", "MN", 44.98, -93.27, 520, 76000,
+  "Phoenix", "AZ", 33.45, -112.07, 480, 68000,
+  "Washington DC", "DC", 38.91, -77.04, 1400, 92000
+)
+```
+
+]
+
+.panel[.panel-name[Code]
+
+```{r bubble-code, eval=FALSE}
+us_states <- ggplot2::map_data("state")
+
+ggplot2::ggplot() +
+  ggplot2::geom_polygon(data = us_states,
+               ggplot2::aes(x = long, y = lat, group = group),
+               fill = "grey95", color = "grey70", linewidth = 0.2) +
+  ggplot2::geom_point(data = city_jobs,
+             ggplot2::aes(x = lng, y = lat, size = job_count, color = avg_salary),
+             alpha = 0.75) +
+  ggplot2::scale_size_continuous(range = c(2, 12), labels = scales::comma,
+                        name = "Job Count") +
+  viridis::scale_color_viridis(option = "inferno", labels = scales::dollar,
+                      name = "Avg Salary") +
+  ggplot2::coord_map("polyconic") +
+  ggplot2::labs(title = "Data Analyst Job Opportunities by City",
+       subtitle = "Bubble size = job count, color = average salary") +
+  ggplot2::theme_void() +
+  ggplot2::theme(plot.title = ggplot2::element_text(face = "bold", size = 14))
+```
+
+]
+
+.panel[.panel-name[Output]
+
+```{r bubble-output, echo=FALSE, fig.height=4, fig.width=9}
+us_states <- ggplot2::map_data("state")
+
+ggplot2::ggplot() +
+  ggplot2::geom_polygon(data = us_states,
+               ggplot2::aes(x = long, y = lat, group = group),
+               fill = "grey95", color = "grey70", linewidth = 0.2) +
+  ggplot2::geom_point(data = city_jobs,
+             ggplot2::aes(x = lng, y = lat, size = job_count, color = avg_salary),
+             alpha = 0.75) +
+  ggplot2::scale_size_continuous(range = c(2, 12), labels = scales::comma,
+                        name = "Job Count") +
+  viridis::scale_color_viridis(option = "inferno", labels = scales::dollar,
+                      name = "Avg Salary") +
+  ggplot2::coord_map("polyconic") +
+  ggplot2::labs(title = "Data Analyst Job Opportunities by City",
+       subtitle = "Bubble size = job count, color = average salary") +
+  ggplot2::theme_void() +
+  ggplot2::theme(plot.title = ggplot2::element_text(face = "bold", size = 14))
+```
+
+]
+
+]
+
+
+---
+
+## Choropleth Design Best Practices
+
+When building choropleth maps, keep these guidelines in mind:
+
+1. **Use sequential color scales** for continuous data (e.g., light to dark).
+
+2. **Use diverging scales** when there is a meaningful midpoint (e.g., above/below average).
+
+3. **Normalize your data** -- show rates or per-capita values, not raw counts (large states always have more of everything).
+
+4. **Label key states** if the audience may not recognize all shapes.
+
+5. **Provide context** -- always include a legend with meaningful units (dollars, percentages).
+
+```{r design-tip, eval=FALSE}
+# Diverging scale example: salary relative to national average
+ggplot2::scale_fill_gradient2(low = "blue", mid = "white", high = "red",
+                     midpoint = 75000,
+                     labels = scales::dollar)
+```
+
+
+---
+
+## Activity: Create Your Own Choropleth
+
+Using the `state_jobs` data and the `maps` package, create a choropleth map showing **job count** (not salary) by state. Try the following:
+
+1. Use `scale_fill_viridis(option = "viridis")` instead of `"plasma"`
+2. Add a meaningful title and subtitle
+3. Experiment with `coord_map("albers", lat0 = 30, lat1 = 40)` as an alternative projection
+
+.can-edit.key-activity01[
+```{r activity-choropleth, eval=FALSE}
+us_states <- ggplot2::map_data("state")
+
+map_df <- us_states |>
+  dplyr::left_join(state_jobs, by = c("region" = "state"))
+
+# Your code here: create a choropleth of job_count
+ggplot2::ggplot(map_df, ggplot2::aes(x = long, y = lat, group = group)) +
+  ggplot2::geom_polygon(ggplot2::aes(fill = ____), color = "white") +
+  viridis::scale_fill_viridis(option = "____") +
+  ggplot2::coord_map("____") +
+  ggplot2::theme_void()
+```
+]
+
+`r countdown(minutes = 5, seconds = 0, top = 0, font_size = "2em")`
+
+
+---
+
+## LO2 Check-In
+
+`r emo::ji("check")` You can now create static spatial visualizations in R:
+
+- **Choropleth maps** using `ggplot2` + `maps` + `geom_polygon()`
+
+- **Proportional symbol maps** using `geom_point()` with `size` aesthetic
+
+- Color palettes from `viridis` for colorblind accessibility
+
+- Proper map projections with `coord_map()`
+
+
+---
+class: inverse, center, middle
+
+# Interactive Maps with Leaflet
+
+---
+
+## Why Leaflet?
+
+- **Leaflet** is the most popular open-source JavaScript library for interactive maps.
+
+- The `r fontawesome::fa(name = 'r-project', fill = miamired)` package `leaflet` provides a clean interface from R.
+
+- Key advantages over static maps:
+
+| Feature | Static (ggplot2) | Interactive (Leaflet) |
+|---------|-----------------|----------------------|
+| Zoom and pan | No | Yes |
+| Click for details | No | Yes (popups) |
+| Layer toggling | No | Yes |
+| Base map tiles | Manual | Built-in (OpenStreetMap, etc.) |
+| Embedding in Shiny | Requires `renderPlot` | Native `renderLeaflet` |
+
+
+---
+
+## Leaflet Basics: Markers and Popups
+
+.panelset[
+
+.panel[.panel-name[Code]
+
+```{r leaflet-basics-code, eval=FALSE}
+leaflet::leaflet(city_jobs) |>
+  leaflet::addTiles() |>                         # Add OpenStreetMap tiles
+  leaflet::setView(lng = -98.58, lat = 39.83, zoom = 4) |>
+  leaflet::addMarkers(
+    lng = ~lng, lat = ~lat,
+    popup = ~paste0(
+      "<b>", city, ", ", state, "</b><br>",
+      "Jobs: ", scales::comma(job_count), "<br>",
+      "Avg Salary: ", scales::dollar(avg_salary)
+    ),
+    label = ~city
+  )
+```
+
+]
+
+.panel[.panel-name[Output]
+
+```{r leaflet-basics-output, echo=FALSE, fig.height=4}
+leaflet::leaflet(city_jobs, width = "100%", height = 350) |>
+  leaflet::addTiles() |>
+  leaflet::setView(lng = -98.58, lat = 39.83, zoom = 4) |>
+  leaflet::addMarkers(
+    lng = ~lng, lat = ~lat,
+    popup = ~paste0(
+      "<b>", city, ", ", state, "</b><br>",
+      "Jobs: ", scales::comma(job_count), "<br>",
+      "Avg Salary: ", scales::dollar(avg_salary)
+    ),
+    label = ~city
+  )
+```
+
+]
+
+.panel[.panel-name[Key Functions]
+
+| Function | Purpose |
+|----------|---------|
+| `leaflet()` | Initialize a map with data |
+| `addTiles()` | Add a base map layer (default: OpenStreetMap) |
+| `setView()` | Set the initial center and zoom level |
+| `addMarkers()` | Add clickable markers with popups |
+| `addCircleMarkers()` | Add circles (can encode size/color) |
+| `addPolygons()` | Add filled polygons for choropleths |
+
+]
+
+]
+
+
+---
+
+## Circle Markers: Encoding Data Visually
+
+.panelset[
+
+.panel[.panel-name[Code]
+
+```{r leaflet-circles-code, eval=FALSE}
+# Create a color palette based on salary
+salary_pal <- leaflet::colorNumeric(palette = "YlOrRd",
+                           domain = city_jobs$avg_salary)
+
+leaflet::leaflet(city_jobs) |>
+  leaflet::addTiles() |>
+  leaflet::setView(lng = -98.58, lat = 39.83, zoom = 4) |>
+  leaflet::addCircleMarkers(
+    lng = ~lng, lat = ~lat,
+    radius = ~sqrt(job_count) / 5,          # Size by job count
+    color = ~salary_pal(avg_salary),         # Color by salary
+    fillOpacity = 0.7, stroke = TRUE, weight = 1,
+    popup = ~paste0(
+      "<b>", city, ", ", state, "</b><br>",
+      "Jobs: ", scales::comma(job_count), "<br>",
+      "Avg Salary: ", scales::dollar(avg_salary)
+    )
+  ) |>
+  leaflet::addLegend("bottomright", pal = salary_pal,
+            values = ~avg_salary, title = "Avg Salary",
+            labFormat = leaflet::labelFormat(prefix = "$"))
+```
+
+]
+
+.panel[.panel-name[Output]
+
+```{r leaflet-circles-output, echo=FALSE, fig.height=4}
+salary_pal <- leaflet::colorNumeric(palette = "YlOrRd",
+                           domain = city_jobs$avg_salary)
+
+leaflet::leaflet(city_jobs, width = "100%", height = 350) |>
+  leaflet::addTiles() |>
+  leaflet::setView(lng = -98.58, lat = 39.83, zoom = 4) |>
+  leaflet::addCircleMarkers(
+    lng = ~lng, lat = ~lat,
+    radius = ~sqrt(job_count) / 5,
+    color = ~salary_pal(avg_salary),
+    fillOpacity = 0.7, stroke = TRUE, weight = 1,
+    popup = ~paste0(
+      "<b>", city, ", ", state, "</b><br>",
+      "Jobs: ", scales::comma(job_count), "<br>",
+      "Avg Salary: ", scales::dollar(avg_salary)
+    )
+  ) |>
+  leaflet::addLegend("bottomright", pal = salary_pal,
+            values = ~avg_salary, title = "Avg Salary",
+            labFormat = leaflet::labelFormat(prefix = "$"))
+```
+
+]
+
+]
+
+
+---
+
+## Layer Controls
+
+- Leaflet supports **multiple tile layers** and **overlay toggles** so users can customize the view.
+
+```{r leaflet-layers, eval=FALSE}
+leaflet::leaflet(city_jobs) |>
+  # Base layers (user picks one)
+  leaflet::addTiles(group = "OpenStreetMap") |>
+  leaflet::addProviderTiles(leaflet::providers$CartoDB.Positron, group = "Light") |>
+  leaflet::addProviderTiles(leaflet::providers$Esri.WorldImagery, group = "Satellite") |>
+  # Overlay (user can toggle on/off)
+  leaflet::addCircleMarkers(
+    lng = ~lng, lat = ~lat,
+    radius = ~sqrt(job_count) / 5,
+    color = ~salary_pal(avg_salary),
+    fillOpacity = 0.7, group = "Job Locations",
+    popup = ~paste0("<b>", city, "</b><br>Salary: ",
+                    scales::dollar(avg_salary))
+  ) |>
+  leaflet::addLayersControl(
+    baseGroups = c("OpenStreetMap", "Light", "Satellite"),
+    overlayGroups = c("Job Locations"),
+    options = leaflet::layersControlOptions(collapsed = FALSE)
+  )
+```
+
+
+---
+
+## Activity: Build an Interactive Job Map
+
+Using the `city_jobs` data, build a Leaflet map with the following features:
+
+1. **Circle markers** sized by `job_count` and colored by `avg_salary`
+2. **Popups** showing city, state, job count, and salary
+3. **At least two base map options** with `addLayersControl()`
+4. A **legend** for the salary color scale
+
+.can-edit.key-activity02[
+```{r activity-leaflet, eval=FALSE}
+# Start with leaflet::leaflet(city_jobs) and build up
+leaflet::leaflet(city_jobs) |>
+  leaflet::addTiles(group = "Default") |>
+  leaflet::addProviderTiles(leaflet::providers$CartoDB.Positron, group = "Light") |>
+  leaflet::addCircleMarkers(
+    lng = ~lng, lat = ~lat,
+    radius = ~____, color = ~____,
+    popup = ~paste0(____),
+    fillOpacity = 0.7
+  ) |>
+  leaflet::addLegend(____) |>
+  leaflet::addLayersControl(____)
+```
+]
+
+`r countdown(minutes = 7, seconds = 0, top = 0, font_size = "2em")`
+
+
+---
+
+## LO3 Check-In
+
+`r emo::ji("check")` You can now build interactive maps with Leaflet:
+
+- Create maps with `leaflet()` and add base tiles with `addTiles()`
+
+- Plot data as markers (`addMarkers()`) or circles (`addCircleMarkers()`)
+
+- Add popups, legends, and layer controls for user interactivity
+
+- Use `colorNumeric()` or `colorBin()` for mapping data to colors
+
+
+---
+class: inverse, center, middle
+
+# Combining Spatial and Temporal Dimensions
+
+---
+
+## Spatiotemporal Visualization: Why?
+
+- Many real-world phenomena have **both** a spatial and temporal component.
+
+- Job markets shift over time: tech hubs emerge, industries relocate, remote work redistributes talent.
+
+- We can visualize spatiotemporal data using:
+
+| Approach | Description |
+|----------|-------------|
+| **Small multiples (facets)** | One map per time period, side by side |
+| **Animation** | Maps that play through time like a movie |
+| **Interactive slider** | User controls the time dimension |
+
+- Today we focus on **faceted maps** in ggplot2 -- the most reproducible approach.
+
+
+---
+
+## Sample Data: Job Growth Over Time
+
+```{r spatiotemporal-data}
+job_growth <- tibble::tribble(
+  ~state, ~year, ~job_index,
+  "california", 2020, 100, "california", 2021, 95,
+  "california", 2022, 108, "california", 2023, 118,
+  "california", 2024, 130,
+  "texas", 2020, 100, "texas", 2021, 97,
+  "texas", 2022, 112, "texas", 2023, 125,
+  "texas", 2024, 140,
+  "new york", 2020, 100, "new york", 2021, 88,
+  "new york", 2022, 96, "new york", 2023, 104,
+  "new york", 2024, 112,
+  "florida", 2020, 100, "florida", 2021, 96,
+  "florida", 2022, 110, "florida", 2023, 122,
+  "florida", 2024, 138,
+  "illinois", 2020, 100, "illinois", 2021, 92,
+  "illinois", 2022, 98, "illinois", 2023, 103,
+  "illinois", 2024, 107,
+  "washington", 2020, 100, "washington", 2021, 98,
+  "washington", 2022, 115, "washington", 2023, 128,
+  "washington", 2024, 142,
+  "ohio", 2020, 100, "ohio", 2021, 94,
+  "ohio", 2022, 99, "ohio", 2023, 102,
+  "ohio", 2024, 105
+)
+```
+
+
+---
+
+## Faceted Choropleth: Job Growth by Year
+
+.panelset[
+
+.panel[.panel-name[Code]
+
+```{r facet-map-code, eval=FALSE}
+us_states <- ggplot2::map_data("state")
+
+map_growth <- us_states |>
+  dplyr::left_join(job_growth, by = c("region" = "state"),
+            relationship = "many-to-many") |>
+  dplyr::filter(!is.na(year))
+
+ggplot2::ggplot(map_growth, ggplot2::aes(x = long, y = lat, group = group)) +
+  ggplot2::geom_polygon(ggplot2::aes(fill = job_index), color = "white", linewidth = 0.2) +
+  viridis::scale_fill_viridis(option = "mako", direction = -1,
+                     name = "Job Index\n(2020=100)") +
+  ggplot2::facet_wrap(~year, nrow = 1) +
+  ggplot2::coord_map("polyconic") +
+  ggplot2::labs(title = "Data Analyst Job Growth Index by State (2020-2024)",
+       subtitle = "Index: 2020 = 100; higher values = more growth") +
+  ggplot2::theme_void() +
+  ggplot2::theme(plot.title = ggplot2::element_text(face = "bold", size = 13),
+        strip.text = ggplot2::element_text(face = "bold", size = 11))
+```
+
+]
+
+.panel[.panel-name[Output]
+
+```{r facet-map-output, echo=FALSE, fig.height=3.2, fig.width=12}
+us_states <- ggplot2::map_data("state")
+
+map_growth <- us_states |>
+  dplyr::left_join(job_growth, by = c("region" = "state"),
+            relationship = "many-to-many") |>
+  dplyr::filter(!is.na(year))
+
+ggplot2::ggplot(map_growth, ggplot2::aes(x = long, y = lat, group = group)) +
+  ggplot2::geom_polygon(ggplot2::aes(fill = job_index), color = "white", linewidth = 0.2) +
+  viridis::scale_fill_viridis(option = "mako", direction = -1,
+                     name = "Job Index\n(2020=100)") +
+  ggplot2::facet_wrap(~year, nrow = 1) +
+  ggplot2::coord_map("polyconic") +
+  ggplot2::labs(title = "Data Analyst Job Growth Index by State (2020-2024)",
+       subtitle = "Index: 2020 = 100; higher values = more growth") +
+  ggplot2::theme_void() +
+  ggplot2::theme(plot.title = ggplot2::element_text(face = "bold", size = 13),
+        strip.text = ggplot2::element_text(face = "bold", size = 11))
+```
+
+]
+
+.panel[.panel-name[Insights]
+
+- **Texas, Florida, and Washington** show the strongest job growth (darkest shading by 2024).
+
+- **New York and Illinois** recovered more slowly from the 2021 dip.
+
+- Faceted maps let readers compare the same geography across time periods **without animation**.
+
+- This approach is more reproducible and accessible than animated GIFs.
+
+]
+
+]
+
+
+---
+
+## Alternative: Sparkline Maps
+
+Another approach combines a **static map** with **small time series** (sparklines) embedded at each location.
+
+```{r sparkline-concept, eval=FALSE}
+# Conceptual approach: overlay mini line charts on a map
+# This requires manual positioning with annotation_custom() or
+# specialized packages like geofacet
+
+library(geofacet)
+
+# geofacet arranges small multiples in a geographic layout
+ggplot2::ggplot(job_growth, ggplot2::aes(x = year, y = job_index)) +
+  ggplot2::geom_line(color = miamired, linewidth = 0.8) +
+  ggplot2::geom_point(color = miamired, size = 1) +
+  geofacet::facet_geo(~state, grid = "us_state_grid2") +
+  ggplot2::labs(title = "Job Growth Trends by State",
+       y = "Job Index (2020=100)", x = NULL) +
+  ggplot2::theme_minimal() +
+  ggplot2::theme(strip.text = ggplot2::element_text(size = 6))
+```
+
+- The `geofacet` package creates **small multiples arranged geographically** -- a powerful hybrid of spatial and temporal visualization.
+
+
+---
+
+## Activity: Spatiotemporal Exploration
+
+Using the `job_growth` data, answer these questions by creating appropriate visualizations:
+
+1. **Create a faceted choropleth** for just the years 2020 and 2024 (side by side). Which states changed the most?
+
+2. **Create a line chart** faceted by state showing the job index trajectory over 2020-2024. Which state had the most consistent growth?
+
+.can-edit.key-activity03[
+```{r activity-spatiotemporal, eval=FALSE}
+# Part 1: Faceted choropleth for 2020 vs 2024
+map_growth |>
+  dplyr::filter(year %in% c(2020, 2024)) |>
+  ggplot2::ggplot(ggplot2::aes(x = long, y = lat, group = group)) +
+  ggplot2::geom_polygon(ggplot2::aes(fill = job_index), color = "white") +
+  ggplot2::facet_wrap(~year) +
+  # ... complete the visualization
+
+# Part 2: Line chart by state
+job_growth |>
+  ggplot2::ggplot(ggplot2::aes(x = year, y = job_index, color = state)) +
+  # ... complete the visualization
+```
+]
+
+`r countdown(minutes = 6, seconds = 0, top = 0, font_size = "2em")`
+
+
+---
+
+## LO4 Check-In
+
+`r emo::ji("check")` You can now combine spatial and temporal dimensions:
+
+- **Faceted maps** (`facet_wrap()`) show the same geography at different time points
+
+- **Indexed data** (base year = 100) enables fair comparison of growth across states
+
+- **Geofacet** layouts arrange sparklines in geographic positions
+
+- Choose facets for print/static; animations or sliders for interactive dashboards
+
+
+---
+class: inverse, center, middle
+
+# Recap
+
+---
+
+## Summary of Main Points
+
+By now, you should be able to do the following:
+
+`r emo::ji("check")` **LO1:** Differentiate between choropleth, dot/bubble, and flow maps -- and know when to use each
+
+`r emo::ji("check")` **LO2:** Create choropleth maps (`ggplot2` + `maps`) and proportional symbol maps (`geom_point()`)
+
+`r emo::ji("check")` **LO3:** Build interactive maps with `leaflet` -- markers, circle markers, popups, legends, and layer controls
+
+`r emo::ji("check")` **LO4:** Visualize spatiotemporal patterns using faceted choropleths and geographic small multiples
+
+
+---
+
+## Key Functions Reference
+
+| Function | Package | Purpose |
+|----------|---------|---------|
+| `map_data("state")` | maps | Get US state boundary coordinates |
+| `geom_polygon()` | ggplot2 | Draw filled polygons (choropleth) |
+| `coord_map()` | ggplot2 | Apply map projections |
+| `scale_fill_viridis()` | viridis | Colorblind-safe fill scales |
+| `leaflet()` | leaflet | Initialize an interactive map |
+| `addTiles()` / `addProviderTiles()` | leaflet | Add base map layers |
+| `addMarkers()` / `addCircleMarkers()` | leaflet | Add data points to map |
+| `addPolygons()` | leaflet | Add choropleth polygons |
+| `addLegend()` | leaflet | Add a color legend |
+| `addLayersControl()` | leaflet | Add base/overlay toggle |
+
+
+---
+
+## Readings and Resources
+
+- [Leaflet for R](https://rstudio.github.io/leaflet/) -- Official documentation with full examples for choropleths, markers, and more.
+
+- [Geocomputation with R, Ch. 8: Making Maps](https://r.geocompx.org/adv-map) -- Comprehensive guide to spatial visualization in R.
+
+- [Wilke, C. (2019). Fundamentals of Data Visualization, Ch. 15: Geospatial Data](https://clauswilke.com/dataviz/geospatial-data.html) -- Design principles for maps.
+
+- [Healy, K. (2018). Data Visualization, Ch. 7: Draw Maps](https://socviz.co/maps.html) -- Practical examples with ggplot2 and maps.
+
+
+---
+
+## Things to Do to Prepare for Next Class
+
+- **Read:** [Leaflet for R: Getting Started](https://rstudio.github.io/leaflet/)
+
+- **Install:** Run `install.packages(c("leaflet", "sf", "maps", "viridis"))` if you have not already.
+
+- **Explore:** Visit our [Job Map Explorer Shiny app](https://huggingface.co/spaces/fmegahed/job_map_explorer) and experiment with the filters.
+
+- **Next class:** Visualizing Text Data -- word clouds, co-occurrence networks, and sentiment analysis.

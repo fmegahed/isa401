@@ -1,0 +1,642 @@
+---
+title: "ISA 401: Business Intelligence & Data Visualization"
+subtitle: '14: Lab — Flourish &amp; DataWrapper'
+author: '<br>Fadel M. Megahed, PhD <br><br>Raymond E. Gloss Professor in Business <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("linkedin"), fill = "white")` @Fadel Megahed](https://www.linkedin.com/in/fadel-megahed-289046b4) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
+date: "Spring 2026"
+output:
+  xaringan::moon_reader:
+    self_contained: true
+    css: [default, "../../style_files/fonts.css", "../../style_files/my-theme.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: magula
+      highlightLines: true
+      highlightLanguage: ["r"]
+      countIncrementalSlides: false
+      ratio: "16:9"
+header-includes:
+  - "../../style_files/header.html"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache = FALSE,
+                      echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE,
+                      progress = FALSE,
+                      verbose = FALSE,
+                      dev = 'png',
+                      fig.height = 2.5,
+                      dpi = 300,
+                      fig.align = 'center')
+
+options(htmltools.dir.version = FALSE)
+
+miamired = '#C3142D'
+
+if(require(pacman)==FALSE) install.packages("pacman")
+if(require(devtools)==FALSE) install.packages("devtools")
+
+if(require(countdown)==FALSE) devtools::install_github("gadenbuie/countdown")
+if(require(xaringanExtra)==FALSE) devtools::install_github("gadenbuie/xaringanExtra")
+
+
+pacman::p_load(tidyverse, magrittr, lubridate, janitor, # data analysis pkgs
+               fontawesome, RefManageR, xaringanExtra, countdown) # for slides
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+if(require(xaringanthemer) == FALSE) install.packages("xaringanthemer")
+library(xaringanthemer)
+
+xaringanthemer::style_mono_accent(base_color = "#84d6d3",
+                  base_font_size = "20px")
+
+xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "tachyons", "panelset", "search", "fit_screen", "editable",
+                                    "clipable"))
+```
+
+
+## Quick Refresher from the Power BI Lab
+
+`r emo::ji("check")` Connected to data sources and built relationships in Power BI.
+
+`r emo::ji("check")` Created interactive dashboards with slicers and filters.
+
+`r emo::ji("check")` Published and shared Power BI reports.
+
+**Today:** We explore **web-based** visualization tools that require **zero coding** and are designed for fast, shareable, and embeddable outputs.
+
+---
+
+## Learning Objectives for Today's Lab
+
+By the end of this lab, you should be able to:
+
+1. **Create animated visualizations** (e.g., bar chart races) using Flourish.
+
+2. **Build searchable interactive tables** using Flourish.
+
+3. **Embed visualizations** in web pages using HTML embed codes.
+
+4. **Evaluate when to use** web-based visualization tools vs. desktop/code-based alternatives.
+
+---
+class: inverse, center, middle
+
+# Section 1: Introduction to Flourish
+
+---
+
+## What is Flourish?
+
+[Flourish](https://flourish.studio/) is a **web-based data visualization platform** that lets you create interactive, animated, and embeddable charts **without writing code**.
+
+**Key Features:**
+- .font90[Drag-and-drop interface with dozens of templates]
+- .font90[Animated transitions (bar chart races, story mode)]
+- .font90[Searchable and filterable tables]
+- .font90[Free tier for public projects; paid tier for private/branded work]
+- .font90[Used by BBC, Financial Times, Google News Lab, and many newsrooms]
+
+**Why Flourish for ISA 401?**
+- Quick visualizations for stakeholder presentations
+- Animated charts catch attention in a way static charts cannot
+- Embed directly into websites, blogs, or portfolio pages
+
+---
+
+## Setting Up Your Flourish Account
+
+**Step 1:** Navigate to [https://flourish.studio/](https://flourish.studio/)
+
+**Step 2:** Click **"Sign up free"** in the top-right corner.
+
+**Step 3:** Sign up with your **Miami University Google account** (or personal email).
+
+**Step 4:** Once logged in, you will see the **Flourish Dashboard**.
+
+[Screenshot: Flourish homepage with "Sign up free" button highlighted]
+
+**Step 5:** Click **"New visualization"** to browse available templates.
+
+[Screenshot: Flourish template gallery showing categories like Bar chart race, Line chart, Table, etc.]
+
+.font80[
+**Note:** All visualizations on the free tier are **public**. Do not upload any sensitive or proprietary data.
+]
+
+---
+class: inverse, center, middle
+
+# Step-by-Step: Bar Chart Race in Flourish
+
+---
+
+## Bar Chart Race: Preparing the Data
+
+A **bar chart race** is an animated bar chart where bars re-rank over time. We will create one showing **"Top Skills Demand by Year."**
+
+**Data Format Required:** Wide format with one row per skill and one column per year.
+
+| Skill         | 2019 | 2020 | 2021 | 2022 | 2023 | 2024 | 2025 |
+|:--------------|-----:|-----:|-----:|-----:|-----:|-----:|-----:|
+| Python        | 2400 | 3100 | 4200 | 5800 | 7500 | 9200 | 11000 |
+| SQL           | 3800 | 4000 | 4500 | 5200 | 6100 | 7000 | 7800 |
+| Tableau       | 1200 | 1600 | 2100 | 2800 | 3400 | 3900 | 4200 |
+| Excel         | 5100 | 5000 | 4800 | 4600 | 4500 | 4400 | 4300 |
+| Power BI      |  400 |  800 | 1500 | 2500 | 3800 | 5100 | 6200 |
+| R             | 1100 | 1300 | 1500 | 1700 | 1900 | 2000 | 2100 |
+| Machine Learning | 800 | 1200 | 1800 | 2600 | 3500 | 4800 | 6000 |
+
+.font80[
+**Note:** You can download a prepared CSV from Canvas, or create your own in Google Sheets/Excel.
+]
+
+---
+
+## Bar Chart Race: Creating the Visualization
+
+**Step 1:** From your Flourish dashboard, click **"New visualization"**.
+
+**Step 2:** Search for **"Bar chart race"** in the template gallery and select it.
+
+[Screenshot: Flourish template gallery with "Bar chart race" selected]
+
+**Step 3:** Click **"Data"** tab at the top. You will see a sample dataset pre-loaded.
+
+**Step 4:** **Replace the sample data:**
+- Click **"Upload data"** (or paste from clipboard)
+- Upload the CSV file or paste your skills data
+- Map columns: **Label** = Skill name column, **Values** = year columns
+
+[Screenshot: Flourish data tab showing uploaded skills data with column mapping]
+
+---
+
+## Bar Chart Race: Customizing the Chart
+
+**Step 5:** Click the **"Preview"** tab to see your animated chart.
+
+**Step 6:** Customize under the **"Story"** settings:
+- .font90[**Title:** "Top In-Demand Skills by Year (Job Postings)"]
+- .font90[**Bar colors:** Assign colors per skill (e.g., Python = blue, SQL = green)]
+- .font90[**Duration:** Adjust total animation time (try 15 seconds)]
+- .font90[**Labels:** Enable value labels on bars]
+- .font90[**Counter:** Set the year counter to display prominently]
+
+[Screenshot: Flourish preview showing animated bar chart race with skills ranking]
+
+**Step 7:** Click **"Play"** to preview the full animation.
+
+---
+
+## Bar Chart Race: Publishing
+
+**Step 8:** Click **"Export & publish"** in the top-right corner.
+
+**Step 9:** Choose **"Publish to share and embed"** and click **Publish**.
+
+**Step 10:** Copy the provided **link** and **embed code** for later use.
+
+[Screenshot: Flourish publish dialog showing share link and embed code]
+
+.font80[
+**Tip:** You can update the underlying data after publishing and the live visualization will update automatically.
+]
+
+---
+class: inverse, center, middle
+
+# Step-by-Step: Interactive Table in Flourish
+
+---
+
+## Interactive Table: Overview
+
+Flourish also provides **searchable, sortable, and filterable tables** -- much more engaging than static HTML tables.
+
+**Use case for ISA 401:** Create an interactive table of job postings with search and filter capabilities for a portfolio project.
+
+**Data:** We will use a subset of job postings data with columns:
+- Job Title, Company, Location, Salary, Skills Required, Date Posted
+
+---
+
+## Interactive Table: Building It
+
+**Step 1:** From the Flourish dashboard, click **"New visualization"**.
+
+**Step 2:** Search for **"Table"** and select the **"Interactive table"** template.
+
+[Screenshot: Flourish template gallery with interactive table template]
+
+**Step 3:** Click the **"Data"** tab and upload your job postings CSV.
+
+**Step 4:** Map your columns:
+- Ensure each column header is descriptive (e.g., "Job Title", "Company")
+- Flourish auto-detects column types (text, number, date)
+
+[Screenshot: Flourish data tab with job postings data loaded]
+
+---
+
+## Interactive Table: Customization and Publishing
+
+**Step 5:** Customize under **"Preview"**:
+- .font90[**Search bar:** Enabled by default -- users can search across all columns]
+- .font90[**Sorting:** Click column headers to sort ascending/descending]
+- .font90[**Pagination:** Set rows per page (e.g., 10 or 20)]
+- .font90[**Styling:** Adjust font size, header color, and row striping]
+- .font90[**Filters:** Add dropdown filters for Location or Skills columns]
+
+[Screenshot: Flourish interactive table preview with search bar and filters]
+
+**Step 6:** Publish using the same **"Export & publish"** workflow as before.
+
+**Step 7:** Save the **embed code** -- we will use it in Section 3.
+
+---
+class: inverse, center, middle
+
+# Section 2: Introduction to DataWrapper
+
+---
+
+## What is DataWrapper?
+
+[DataWrapper](https://www.datawrapper.de/) is a **web-based charting tool** focused on clean, publication-quality static and interactive charts.
+
+**Key Features:**
+- .font90[Designed by journalists for **clear, honest data communication**]
+- .font90[Excellent default styling (no design skills needed)]
+- .font90[Responsive charts that work on mobile]
+- .font90[Strong support for annotations, highlights, and context]
+- .font90[Free tier allows 10,000 chart views/month]
+
+**Flourish vs. DataWrapper:**
+
+| Feature | Flourish | DataWrapper |
+|:--------|:---------|:------------|
+| Animation | Excellent (bar chart races) | Limited |
+| Tables | Interactive, searchable | Basic |
+| Chart quality | Good | Excellent (publication-ready) |
+| Annotations | Basic | Excellent |
+| Best for | Animated, interactive stories | Clean, annotated static charts |
+
+---
+
+## Setting Up Your DataWrapper Account
+
+**Step 1:** Navigate to [https://www.datawrapper.de/](https://www.datawrapper.de/)
+
+**Step 2:** Click **"Sign up for free"** or **"Login"**.
+
+**Step 3:** Create an account with your **Miami email**.
+
+**Step 4:** Once logged in, click **"New Chart"** to begin.
+
+[Screenshot: DataWrapper dashboard with "New Chart" button]
+
+**DataWrapper's 4-Step Workflow:**
+1. **Upload Data** -- paste or upload CSV
+2. **Check & Describe** -- verify data types and column headers
+3. **Visualize** -- choose chart type and customize
+4. **Publish & Embed** -- get shareable link or embed code
+
+---
+class: inverse, center, middle
+
+# Step-by-Step: Salary Comparison Chart in DataWrapper
+
+---
+
+## Salary Chart: Upload and Check Data
+
+We will create a **clean, annotated salary comparison chart** showing median salaries across analytics job titles.
+
+**Step 1:** Click **"New Chart"** from your DataWrapper dashboard.
+
+**Step 2:** Paste or upload the following data:
+
+| Job Title | Median Salary ($) | 25th Percentile | 75th Percentile |
+|:----------|-------------------:|----------------:|----------------:|
+| Data Analyst | 65000 | 52000 | 78000 |
+| Business Analyst | 72000 | 58000 | 88000 |
+| Data Scientist | 105000 | 85000 | 130000 |
+| Data Engineer | 115000 | 92000 | 140000 |
+| ML Engineer | 130000 | 105000 | 160000 |
+| BI Developer | 85000 | 68000 | 105000 |
+
+[Screenshot: DataWrapper Step 1 -- data upload with pasted salary data]
+
+**Step 3:** In the **"Check & Describe"** step, verify that salary columns are recognized as numbers.
+
+---
+
+## Salary Chart: Visualize and Customize
+
+**Step 4:** Select chart type: **"Range Plot"** (dot plot with range) or **"Bar Chart"**.
+
+- .font90[For a **range plot**: shows 25th--75th percentile range with median marked]
+- .font90[For a **bar chart**: shows median salary with optional error bars]
+
+[Screenshot: DataWrapper chart type selection screen]
+
+**Step 5:** Customize in the **Visualize** step:
+- .font90[**Title:** "Median Salaries for Analytics Roles (2025)"]
+- .font90[**Description:** "Source: Glassdoor & LinkedIn Salary Data"]
+- .font90[**Sort:** By median salary, descending]
+- .font90[**Colors:** Use a single color or highlight specific roles]
+- .font90[**Annotations:** Add a note like "ML Engineers command the highest salaries"]
+- .font90[**Number formatting:** Add dollar signs and commas]
+
+[Screenshot: DataWrapper visualization preview showing salary range chart]
+
+---
+
+## Salary Chart: Publish
+
+**Step 6:** Click **"Publish"** at the bottom of the visualize step.
+
+**Step 7:** DataWrapper generates:
+- A **shareable link** (for previewing)
+- An **embed code** (for websites)
+- A **PNG download** (for reports and slides)
+
+[Screenshot: DataWrapper publish screen with embed code highlighted]
+
+**Step 8:** Copy the **embed code** -- we will use it in the next section.
+
+.font80[
+**Tip:** DataWrapper's PNG export is extremely high quality, making it ideal for academic papers, reports, and slide decks.
+]
+
+---
+class: inverse, center, middle
+
+# Section 3: Embedding Visualizations in Web Pages
+
+---
+
+## What is an Embed Code?
+
+An **embed code** is a snippet of HTML (usually an `<iframe>`) that displays content from another website inside your page.
+
+**Example embed code from Flourish:**
+```html
+<div class="flourish-embed flourish-bar-chart-race"
+     data-src="visualisation/12345678">
+  <script src="https://public.flourish.studio/resources/embed.js">
+  </script>
+</div>
+```
+
+**Example embed code from DataWrapper:**
+```html
+<iframe title="Median Salaries for Analytics Roles"
+        src="https://datawrapper.dwcdn.net/AbCdE/1/"
+        width="600" height="400"
+        style="border: none;">
+</iframe>
+```
+
+Both tools provide these codes automatically when you publish.
+
+---
+
+## Creating a Simple HTML Page
+
+**Step 1:** Open any text editor (VS Code, Notepad++, or even Notepad).
+
+**Step 2:** Create a file called `my_portfolio.html` with this structure:
+
+.font70[
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Data Visualization Portfolio</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 900px;
+           margin: 0 auto; padding: 20px; }
+    h1 { color: #C3142D; }
+    .viz-container { margin: 30px 0; }
+  </style>
+</head>
+<body>
+  <h1>ISA 401 - Visualization Portfolio</h1>
+
+  <h2>Bar Chart Race: Top Skills Demand</h2>
+  <div class="viz-container">
+    <!-- PASTE YOUR FLOURISH EMBED CODE HERE -->
+  </div>
+
+  <h2>Salary Comparison Chart</h2>
+  <div class="viz-container">
+    <!-- PASTE YOUR DATAWRAPPER EMBED CODE HERE -->
+  </div>
+</body>
+</html>
+```
+]
+
+---
+
+## Embedding Your Visualizations
+
+**Step 3:** Replace the comment placeholders with your actual embed codes:
+- Paste the **Flourish embed code** where it says `<!-- PASTE YOUR FLOURISH EMBED CODE HERE -->`
+- Paste the **DataWrapper embed code** where it says `<!-- PASTE YOUR DATAWRAPPER EMBED CODE HERE -->`
+
+**Step 4:** Save the file and open it in a web browser (double-click the `.html` file).
+
+[Screenshot: Browser showing the portfolio HTML page with both embedded visualizations]
+
+**Step 5:** Verify both visualizations are **interactive** in the browser:
+- The bar chart race should animate when you click play
+- The DataWrapper chart should show tooltips on hover
+
+.font80[
+**Common issues:**
+- If the viz does not load, check that you are connected to the internet (embeds fetch from external servers)
+- If the sizing is off, adjust the `width` and `height` attributes in the `<iframe>` tag
+]
+
+---
+class: inverse, center, middle
+
+# Section 4: Decision Framework
+
+---
+
+## When to Use Which Tool?
+
+.font80[
+
+| Criterion | Tableau | Power BI | Flourish | DataWrapper | `r fontawesome::fa(name = 'r-project', fill = miamired)` (ggplot2) |
+|:----------|:--------|:---------|:---------|:------------|:---------|
+| **Cost** | $$$  | Free (desktop) | Freemium | Freemium | Free |
+| **Learning Curve** | Medium | Medium | Low | Low | High |
+| **Interactivity** | Excellent | Excellent | Good | Basic | With Shiny |
+| **Animation** | Limited | Limited | Excellent | None | gganimate |
+| **Embed in Web** | Tableau Public | Power BI Service | Yes | Yes | With Shiny |
+| **Publication Quality** | Good | Good | Good | Excellent | Excellent |
+| **Reproducibility** | Low | Low | Low | Low | High |
+| **Handles Big Data** | Yes | Yes | No | No | Yes |
+| **Custom Analysis** | DAX | DAX/M | No | No | Full R |
+| **Best For** | Enterprise BI | Microsoft orgs | Animated stories | Clean charts | Research/custom |
+
+]
+
+---
+
+## Decision Flowchart
+
+**Ask yourself these questions:**
+
+1. **Do I need animation?** &rarr; **Flourish** (bar chart races, story mode)
+
+2. **Do I need a clean, annotated chart for a report?** &rarr; **DataWrapper** (or `r fontawesome::fa(name = 'r-project', fill = miamired)`)
+
+3. **Do I need an interactive dashboard with filters?** &rarr; **Tableau** or **Power BI**
+
+4. **Do I need reproducible, code-based analysis?** &rarr; `r fontawesome::fa(name = 'r-project', fill = miamired)` **(ggplot2 + Shiny)**
+
+5. **Do I need something quick for a stakeholder meeting tomorrow?** &rarr; **Flourish** or **DataWrapper**
+
+6. **Am I in a Microsoft-heavy organization?** &rarr; **Power BI**
+
+.font80[
+**The real answer:** Professionals use **multiple tools**. Your portfolio should demonstrate breadth.
+]
+
+---
+class: inverse, center, middle
+
+# Lab Activity
+
+---
+
+## Activity: Create and Embed Two Visualizations
+
+`r countdown::countdown(minutes = 30, seconds = 0, top = 0, font_size = "2em")`
+
+**Part 1 -- Flourish (15 min):**
+
+1. Go to [flourish.studio](https://flourish.studio/) and sign in
+2. Create a **bar chart race** OR an **interactive table** using data of your choice
+   - You may use the skills data provided, Canvas job data, or your own dataset
+3. Publish and copy the **embed code**
+
+**Part 2 -- DataWrapper (10 min):**
+
+1. Go to [datawrapper.de](https://www.datawrapper.de/) and sign in
+2. Create a **bar chart** or **range plot** comparing categories in your data
+3. Publish and copy the **embed code**
+
+**Part 3 -- Embed (5 min):**
+
+1. Create an HTML file using the template from Section 3
+2. Paste both embed codes into the HTML file
+3. Open in a browser and verify both visualizations work
+
+---
+
+## Activity: Submission Requirements
+
+**Submit to Canvas:**
+
+`r emo::ji("check")` Your `.html` file with both embedded visualizations
+
+`r emo::ji("check")` A screenshot of the page rendered in your browser
+
+`r emo::ji("check")` The **direct links** to both your Flourish and DataWrapper visualizations
+
+**Grading Criteria:**
+
+| Criterion | Points |
+|:----------|-------:|
+| Flourish visualization created and published | 30 |
+| DataWrapper visualization created and published | 30 |
+| Both embedded in working HTML page | 20 |
+| Data is meaningful and well-labeled | 10 |
+| Chart titles, annotations, and formatting | 10 |
+
+---
+
+## Activity: Tips and Troubleshooting
+
+**If Flourish is not loading your data:**
+- Ensure your CSV uses UTF-8 encoding
+- Check that column headers are in the first row
+- Remove any merged cells or special characters
+
+**If DataWrapper chart looks off:**
+- Double-check the "Check & Describe" step for correct data types
+- Make sure numbers do not have dollar signs or commas in the raw data
+
+**If embeds are not showing in your HTML:**
+- Ensure you are online (embeds fetch content from external servers)
+- Check for typos in the pasted embed code
+- Try a different browser if one does not render correctly
+
+---
+
+## Activity: Stretch Goals
+
+If you finish early, try one or more of these:
+
+`r emo::ji("star")` **Flourish Story:** Combine multiple Flourish visualizations into a scrollable "story" using Flourish's Story mode.
+
+`r emo::ji("star")` **DataWrapper Map:** Create a choropleth map in DataWrapper showing job postings by state.
+
+`r emo::ji("star")` **Custom Styling:** Modify your HTML page with CSS to match Miami University branding (use `#C3142D` for red and `#000000` for black).
+
+`r emo::ji("star")` **Add Context:** Write a short narrative paragraph between your two visualizations explaining what each chart reveals about the job market.
+
+---
+class: inverse, center, middle
+
+# Wrap-Up
+
+---
+
+## Summary of Today's Lab
+
+`r emo::ji("check")` **Flourish:** Best for animated charts (bar chart races) and interactive tables. Great for storytelling.
+
+`r emo::ji("check")` **DataWrapper:** Best for clean, publication-quality static/interactive charts. Excellent annotation support.
+
+`r emo::ji("check")` **Embedding:** Both tools produce embed codes (`<iframe>` or `<div>`) that can be placed in any HTML page.
+
+`r emo::ji("check")` **Tool selection** depends on your goal: animation, interactivity, reproducibility, audience, and organizational context.
+
+---
+
+## Job Market Connection
+
+.font200[`r emo::ji("briefcase")`]
+
+**Quick, shareable visualizations for stakeholder communication.**
+
+In many business roles, you will need to create a chart **in 10 minutes** for a meeting, not spend 2 hours coding in R. Tools like Flourish and DataWrapper fill that gap.
+
+**Portfolio tip:** Embed Flourish and DataWrapper visualizations in your personal website or GitHub Pages portfolio to show you can communicate data visually across **multiple platforms**.
+
+---
+
+## Looking Ahead
+
+**Next Class (Lecture 15):** Visualizing Time Series in `r fontawesome::fa(name = 'r-project', fill = miamired)`
+
+We will return to R and learn how to create:
+- Line charts and area charts for temporal data
+- Calendar heatmaps for daily patterns
+- Annotated time series highlighting key events
+- Faceted plots comparing multiple time series
+
+**Before next class:**
+- Complete today's lab submission on Canvas
+- Review ggplot2 `geom_line()` and `geom_area()` documentation

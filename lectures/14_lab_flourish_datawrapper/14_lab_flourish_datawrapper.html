@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>ISA 401: Business Intelligence &amp; Data Visualization</title>
+    <meta charset="utf-8" />
+    <meta name="author" content=" Fadel M. Megahed, PhD   Raymond E. Gloss Professor in Business   Farmer School of Business  Miami University     @Fadel Megahed     fmegahed     fmegahed@miamioh.edu    Automated Scheduler for Office Hours  " />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/tile-view/tile-view.css" rel="stylesheet" />
+    <script src="libs/tile-view/tile-view.js"></script>
+    <link href="libs/animate.css/animate.xaringan.css" rel="stylesheet" />
+    <link href="libs/tachyons/tachyons.min.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra_fit-screen/fit-screen.js"></script>
+    <link href="libs/panelset/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset/panelset.js"></script>
+    <script type="application/json" id="xaringanExtra-editable-docid">{"id":"xe678256952348179089b0d8cc6bbfbd","expires":14}</script>
+    <script src="libs/himalaya/himalaya.js"></script>
+    <script src="libs/js-cookie/js.cookie.js"></script>
+    <link href="libs/editable/editable.css" rel="stylesheet" />
+    <script src="libs/editable/editable.js"></script>
+    <script src="libs/mark.js/mark.min.js"></script>
+    <link href="libs/xaringanExtra-search/search.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-search/search.js"></script>
+    <script>window.addEventListener('load', function() { window.xeSearch = new RemarkSearch({"position":"bottom-left","caseSensitive":false,"showIcon":false,"autoSearch":true}) })</script>
+    <link href="libs/countdown/countdown.css" rel="stylesheet" />
+    <script src="libs/countdown/countdown.js"></script>
+    <link rel="stylesheet" href="../../style_files/fonts.css" type="text/css" />
+    <link rel="stylesheet" href="../../style_files/my-theme.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# ISA 401: Business Intelligence &amp; Data Visualization
+]
+.subtitle[
+## 14: Lab — Flourish &amp; DataWrapper
+]
+.author[
+### <br>Fadel M. Megahed, PhD <br><br>Raymond E. Gloss Professor in Business <br> Farmer School of Business<br> Miami University<br><br> <a href="https://www.linkedin.com/in/fadel-megahed-289046b4"><svg viewBox="0 0 448 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:white;" xmlns="http://www.w3.org/2000/svg"> <path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"></path></svg> <span class="citation">@Fadel</span> Megahed</a> <br> <a href="https://github.com/fmegahed/"><svg viewBox="0 0 496 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:white;" xmlns="http://www.w3.org/2000/svg"> <path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg> fmegahed</a> <br> <a href="mailto:fmegahed@miamioh.edu"><svg viewBox="0 0 512 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:white;" xmlns="http://www.w3.org/2000/svg"> <path d="M476 3.2L12.5 270.6c-18.1 10.4-15.8 35.6 2.2 43.2L121 358.4l287.3-253.2c5.5-4.9 13.3 2.6 8.6 8.3L176 407v80.5c0 23.6 28.5 32.9 42.5 15.8L282 426l124.6 52.2c14.2 6 30.4-2.9 33-18.2l72-432C515 7.8 493.3-6.8 476 3.2z"></path></svg> fmegahed@miamioh.edu</a><br> <a href="https://calendly.com/fmegahed"><svg viewBox="0 0 384 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:white;" xmlns="http://www.w3.org/2000/svg"> <path d="M202.021 0C122.202 0 70.503 32.703 29.914 91.026c-7.363 10.58-5.093 25.086 5.178 32.874l43.138 32.709c10.373 7.865 25.132 6.026 33.253-4.148 25.049-31.381 43.63-49.449 82.757-49.449 30.764 0 68.816 19.799 68.816 49.631 0 22.552-18.617 34.134-48.993 51.164-35.423 19.86-82.299 44.576-82.299 106.405V320c0 13.255 10.745 24 24 24h72.471c13.255 0 24-10.745 24-24v-5.773c0-42.86 125.268-44.645 125.268-160.627C377.504 66.256 286.902 0 202.021 0zM192 373.459c-38.196 0-69.271 31.075-69.271 69.271 0 38.195 31.075 69.27 69.271 69.27s69.271-31.075 69.271-69.271-31.075-69.27-69.271-69.27z"></path></svg> Automated Scheduler for Office Hours</a><br><br>
+]
+.date[
+### Spring 2026
+]
+
+---
+
+
+
+
+
+
+
+
+## Quick Refresher from the Power BI Lab
+
+✅ Connected to data sources and built relationships in Power BI.
+
+✅ Created interactive dashboards with slicers and filters.
+
+✅ Published and shared Power BI reports.
+
+**Today:** We explore **web-based** visualization tools that require **zero coding** and are designed for fast, shareable, and embeddable outputs.
+
+---
+
+## Learning Objectives for Today's Lab
+
+By the end of this lab, you should be able to:
+
+1. **Create animated visualizations** (e.g., bar chart races) using Flourish.
+
+2. **Build searchable interactive tables** using Flourish.
+
+3. **Embed visualizations** in web pages using HTML embed codes.
+
+4. **Evaluate when to use** web-based visualization tools vs. desktop/code-based alternatives.
+
+---
+class: inverse, center, middle
+
+# Section 1: Introduction to Flourish
+
+---
+
+## What is Flourish?
+
+[Flourish](https://flourish.studio/) is a **web-based data visualization platform** that lets you create interactive, animated, and embeddable charts **without writing code**.
+
+**Key Features:**
+- .font90[Drag-and-drop interface with dozens of templates]
+- .font90[Animated transitions (bar chart races, story mode)]
+- .font90[Searchable and filterable tables]
+- .font90[Free tier for public projects; paid tier for private/branded work]
+- .font90[Used by BBC, Financial Times, Google News Lab, and many newsrooms]
+
+**Why Flourish for ISA 401?**
+- Quick visualizations for stakeholder presentations
+- Animated charts catch attention in a way static charts cannot
+- Embed directly into websites, blogs, or portfolio pages
+
+---
+
+## Setting Up Your Flourish Account
+
+**Step 1:** Navigate to [https://flourish.studio/](https://flourish.studio/)
+
+**Step 2:** Click **"Sign up free"** in the top-right corner.
+
+**Step 3:** Sign up with your **Miami University Google account** (or personal email).
+
+**Step 4:** Once logged in, you will see the **Flourish Dashboard**.
+
+[Screenshot: Flourish homepage with "Sign up free" button highlighted]
+
+**Step 5:** Click **"New visualization"** to browse available templates.
+
+[Screenshot: Flourish template gallery showing categories like Bar chart race, Line chart, Table, etc.]
+
+.font80[
+**Note:** All visualizations on the free tier are **public**. Do not upload any sensitive or proprietary data.
+]
+
+---
+class: inverse, center, middle
+
+# Step-by-Step: Bar Chart Race in Flourish
+
+---
+
+## Bar Chart Race: Preparing the Data
+
+A **bar chart race** is an animated bar chart where bars re-rank over time. We will create one showing **"Top Skills Demand by Year."**
+
+**Data Format Required:** Wide format with one row per skill and one column per year.
+
+| Skill         | 2019 | 2020 | 2021 | 2022 | 2023 | 2024 | 2025 |
+|:--------------|-----:|-----:|-----:|-----:|-----:|-----:|-----:|
+| Python        | 2400 | 3100 | 4200 | 5800 | 7500 | 9200 | 11000 |
+| SQL           | 3800 | 4000 | 4500 | 5200 | 6100 | 7000 | 7800 |
+| Tableau       | 1200 | 1600 | 2100 | 2800 | 3400 | 3900 | 4200 |
+| Excel         | 5100 | 5000 | 4800 | 4600 | 4500 | 4400 | 4300 |
+| Power BI      |  400 |  800 | 1500 | 2500 | 3800 | 5100 | 6200 |
+| R             | 1100 | 1300 | 1500 | 1700 | 1900 | 2000 | 2100 |
+| Machine Learning | 800 | 1200 | 1800 | 2600 | 3500 | 4800 | 6000 |
+
+.font80[
+**Note:** You can download a prepared CSV from Canvas, or create your own in Google Sheets/Excel.
+]
+
+---
+
+## Bar Chart Race: Creating the Visualization
+
+**Step 1:** From your Flourish dashboard, click **"New visualization"**.
+
+**Step 2:** Search for **"Bar chart race"** in the template gallery and select it.
+
+[Screenshot: Flourish template gallery with "Bar chart race" selected]
+
+**Step 3:** Click **"Data"** tab at the top. You will see a sample dataset pre-loaded.
+
+**Step 4:** **Replace the sample data:**
+- Click **"Upload data"** (or paste from clipboard)
+- Upload the CSV file or paste your skills data
+- Map columns: **Label** = Skill name column, **Values** = year columns
+
+[Screenshot: Flourish data tab showing uploaded skills data with column mapping]
+
+---
+
+## Bar Chart Race: Customizing the Chart
+
+**Step 5:** Click the **"Preview"** tab to see your animated chart.
+
+**Step 6:** Customize under the **"Story"** settings:
+- .font90[**Title:** "Top In-Demand Skills by Year (Job Postings)"]
+- .font90[**Bar colors:** Assign colors per skill (e.g., Python = blue, SQL = green)]
+- .font90[**Duration:** Adjust total animation time (try 15 seconds)]
+- .font90[**Labels:** Enable value labels on bars]
+- .font90[**Counter:** Set the year counter to display prominently]
+
+[Screenshot: Flourish preview showing animated bar chart race with skills ranking]
+
+**Step 7:** Click **"Play"** to preview the full animation.
+
+---
+
+## Bar Chart Race: Publishing
+
+**Step 8:** Click **"Export &amp; publish"** in the top-right corner.
+
+**Step 9:** Choose **"Publish to share and embed"** and click **Publish**.
+
+**Step 10:** Copy the provided **link** and **embed code** for later use.
+
+[Screenshot: Flourish publish dialog showing share link and embed code]
+
+.font80[
+**Tip:** You can update the underlying data after publishing and the live visualization will update automatically.
+]
+
+---
+class: inverse, center, middle
+
+# Step-by-Step: Interactive Table in Flourish
+
+---
+
+## Interactive Table: Overview
+
+Flourish also provides **searchable, sortable, and filterable tables** -- much more engaging than static HTML tables.
+
+**Use case for ISA 401:** Create an interactive table of job postings with search and filter capabilities for a portfolio project.
+
+**Data:** We will use a subset of job postings data with columns:
+- Job Title, Company, Location, Salary, Skills Required, Date Posted
+
+---
+
+## Interactive Table: Building It
+
+**Step 1:** From the Flourish dashboard, click **"New visualization"**.
+
+**Step 2:** Search for **"Table"** and select the **"Interactive table"** template.
+
+[Screenshot: Flourish template gallery with interactive table template]
+
+**Step 3:** Click the **"Data"** tab and upload your job postings CSV.
+
+**Step 4:** Map your columns:
+- Ensure each column header is descriptive (e.g., "Job Title", "Company")
+- Flourish auto-detects column types (text, number, date)
+
+[Screenshot: Flourish data tab with job postings data loaded]
+
+---
+
+## Interactive Table: Customization and Publishing
+
+**Step 5:** Customize under **"Preview"**:
+- .font90[**Search bar:** Enabled by default -- users can search across all columns]
+- .font90[**Sorting:** Click column headers to sort ascending/descending]
+- .font90[**Pagination:** Set rows per page (e.g., 10 or 20)]
+- .font90[**Styling:** Adjust font size, header color, and row striping]
+- .font90[**Filters:** Add dropdown filters for Location or Skills columns]
+
+[Screenshot: Flourish interactive table preview with search bar and filters]
+
+**Step 6:** Publish using the same **"Export &amp; publish"** workflow as before.
+
+**Step 7:** Save the **embed code** -- we will use it in Section 3.
+
+---
+class: inverse, center, middle
+
+# Section 2: Introduction to DataWrapper
+
+---
+
+## What is DataWrapper?
+
+[DataWrapper](https://www.datawrapper.de/) is a **web-based charting tool** focused on clean, publication-quality static and interactive charts.
+
+**Key Features:**
+- .font90[Designed by journalists for **clear, honest data communication**]
+- .font90[Excellent default styling (no design skills needed)]
+- .font90[Responsive charts that work on mobile]
+- .font90[Strong support for annotations, highlights, and context]
+- .font90[Free tier allows 10,000 chart views/month]
+
+**Flourish vs. DataWrapper:**
+
+| Feature | Flourish | DataWrapper |
+|:--------|:---------|:------------|
+| Animation | Excellent (bar chart races) | Limited |
+| Tables | Interactive, searchable | Basic |
+| Chart quality | Good | Excellent (publication-ready) |
+| Annotations | Basic | Excellent |
+| Best for | Animated, interactive stories | Clean, annotated static charts |
+
+---
+
+## Setting Up Your DataWrapper Account
+
+**Step 1:** Navigate to [https://www.datawrapper.de/](https://www.datawrapper.de/)
+
+**Step 2:** Click **"Sign up for free"** or **"Login"**.
+
+**Step 3:** Create an account with your **Miami email**.
+
+**Step 4:** Once logged in, click **"New Chart"** to begin.
+
+[Screenshot: DataWrapper dashboard with "New Chart" button]
+
+**DataWrapper's 4-Step Workflow:**
+1. **Upload Data** -- paste or upload CSV
+2. **Check &amp; Describe** -- verify data types and column headers
+3. **Visualize** -- choose chart type and customize
+4. **Publish &amp; Embed** -- get shareable link or embed code
+
+---
+class: inverse, center, middle
+
+# Step-by-Step: Salary Comparison Chart in DataWrapper
+
+---
+
+## Salary Chart: Upload and Check Data
+
+We will create a **clean, annotated salary comparison chart** showing median salaries across analytics job titles.
+
+**Step 1:** Click **"New Chart"** from your DataWrapper dashboard.
+
+**Step 2:** Paste or upload the following data:
+
+| Job Title | Median Salary ($) | 25th Percentile | 75th Percentile |
+|:----------|-------------------:|----------------:|----------------:|
+| Data Analyst | 65000 | 52000 | 78000 |
+| Business Analyst | 72000 | 58000 | 88000 |
+| Data Scientist | 105000 | 85000 | 130000 |
+| Data Engineer | 115000 | 92000 | 140000 |
+| ML Engineer | 130000 | 105000 | 160000 |
+| BI Developer | 85000 | 68000 | 105000 |
+
+[Screenshot: DataWrapper Step 1 -- data upload with pasted salary data]
+
+**Step 3:** In the **"Check &amp; Describe"** step, verify that salary columns are recognized as numbers.
+
+---
+
+## Salary Chart: Visualize and Customize
+
+**Step 4:** Select chart type: **"Range Plot"** (dot plot with range) or **"Bar Chart"**.
+
+- .font90[For a **range plot**: shows 25th--75th percentile range with median marked]
+- .font90[For a **bar chart**: shows median salary with optional error bars]
+
+[Screenshot: DataWrapper chart type selection screen]
+
+**Step 5:** Customize in the **Visualize** step:
+- .font90[**Title:** "Median Salaries for Analytics Roles (2025)"]
+- .font90[**Description:** "Source: Glassdoor &amp; LinkedIn Salary Data"]
+- .font90[**Sort:** By median salary, descending]
+- .font90[**Colors:** Use a single color or highlight specific roles]
+- .font90[**Annotations:** Add a note like "ML Engineers command the highest salaries"]
+- .font90[**Number formatting:** Add dollar signs and commas]
+
+[Screenshot: DataWrapper visualization preview showing salary range chart]
+
+---
+
+## Salary Chart: Publish
+
+**Step 6:** Click **"Publish"** at the bottom of the visualize step.
+
+**Step 7:** DataWrapper generates:
+- A **shareable link** (for previewing)
+- An **embed code** (for websites)
+- A **PNG download** (for reports and slides)
+
+[Screenshot: DataWrapper publish screen with embed code highlighted]
+
+**Step 8:** Copy the **embed code** -- we will use it in the next section.
+
+.font80[
+**Tip:** DataWrapper's PNG export is extremely high quality, making it ideal for academic papers, reports, and slide decks.
+]
+
+---
+class: inverse, center, middle
+
+# Section 3: Embedding Visualizations in Web Pages
+
+---
+
+## What is an Embed Code?
+
+An **embed code** is a snippet of HTML (usually an `&lt;iframe&gt;`) that displays content from another website inside your page.
+
+**Example embed code from Flourish:**
+```html
+&lt;div class="flourish-embed flourish-bar-chart-race"
+     data-src="visualisation/12345678"&gt;
+  &lt;script src="https://public.flourish.studio/resources/embed.js"&gt;
+  &lt;/script&gt;
+&lt;/div&gt;
+```
+
+**Example embed code from DataWrapper:**
+```html
+&lt;iframe title="Median Salaries for Analytics Roles"
+        src="https://datawrapper.dwcdn.net/AbCdE/1/"
+        width="600" height="400"
+        style="border: none;"&gt;
+&lt;/iframe&gt;
+```
+
+Both tools provide these codes automatically when you publish.
+
+---
+
+## Creating a Simple HTML Page
+
+**Step 1:** Open any text editor (VS Code, Notepad++, or even Notepad).
+
+**Step 2:** Create a file called `my_portfolio.html` with this structure:
+
+.font70[
+```html
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;title&gt;My Data Visualization Portfolio&lt;/title&gt;
+  &lt;style&gt;
+    body { font-family: Arial, sans-serif; max-width: 900px;
+           margin: 0 auto; padding: 20px; }
+    h1 { color: #C3142D; }
+    .viz-container { margin: 30px 0; }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;ISA 401 - Visualization Portfolio&lt;/h1&gt;
+
+  &lt;h2&gt;Bar Chart Race: Top Skills Demand&lt;/h2&gt;
+  &lt;div class="viz-container"&gt;
+    &lt;!-- PASTE YOUR FLOURISH EMBED CODE HERE --&gt;
+  &lt;/div&gt;
+
+  &lt;h2&gt;Salary Comparison Chart&lt;/h2&gt;
+  &lt;div class="viz-container"&gt;
+    &lt;!-- PASTE YOUR DATAWRAPPER EMBED CODE HERE --&gt;
+  &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+```
+]
+
+---
+
+## Embedding Your Visualizations
+
+**Step 3:** Replace the comment placeholders with your actual embed codes:
+- Paste the **Flourish embed code** where it says `&lt;!-- PASTE YOUR FLOURISH EMBED CODE HERE --&gt;`
+- Paste the **DataWrapper embed code** where it says `&lt;!-- PASTE YOUR DATAWRAPPER EMBED CODE HERE --&gt;`
+
+**Step 4:** Save the file and open it in a web browser (double-click the `.html` file).
+
+[Screenshot: Browser showing the portfolio HTML page with both embedded visualizations]
+
+**Step 5:** Verify both visualizations are **interactive** in the browser:
+- The bar chart race should animate when you click play
+- The DataWrapper chart should show tooltips on hover
+
+.font80[
+**Common issues:**
+- If the viz does not load, check that you are connected to the internet (embeds fetch from external servers)
+- If the sizing is off, adjust the `width` and `height` attributes in the `&lt;iframe&gt;` tag
+]
+
+---
+class: inverse, center, middle
+
+# Section 4: Decision Framework
+
+---
+
+## When to Use Which Tool?
+
+.font80[
+
+| Criterion | Tableau | Power BI | Flourish | DataWrapper | <svg aria-hidden="true" role="img" viewBox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#C3142D;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/></svg> (ggplot2) |
+|:----------|:--------|:---------|:---------|:------------|:---------|
+| **Cost** | $$$  | Free (desktop) | Freemium | Freemium | Free |
+| **Learning Curve** | Medium | Medium | Low | Low | High |
+| **Interactivity** | Excellent | Excellent | Good | Basic | With Shiny |
+| **Animation** | Limited | Limited | Excellent | None | gganimate |
+| **Embed in Web** | Tableau Public | Power BI Service | Yes | Yes | With Shiny |
+| **Publication Quality** | Good | Good | Good | Excellent | Excellent |
+| **Reproducibility** | Low | Low | Low | Low | High |
+| **Handles Big Data** | Yes | Yes | No | No | Yes |
+| **Custom Analysis** | DAX | DAX/M | No | No | Full R |
+| **Best For** | Enterprise BI | Microsoft orgs | Animated stories | Clean charts | Research/custom |
+
+]
+
+---
+
+## Decision Flowchart
+
+**Ask yourself these questions:**
+
+1. **Do I need animation?** &amp;rarr; **Flourish** (bar chart races, story mode)
+
+2. **Do I need a clean, annotated chart for a report?** &amp;rarr; **DataWrapper** (or <svg aria-hidden="true" role="img" viewBox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#C3142D;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/></svg>)
+
+3. **Do I need an interactive dashboard with filters?** &amp;rarr; **Tableau** or **Power BI**
+
+4. **Do I need reproducible, code-based analysis?** &amp;rarr; <svg aria-hidden="true" role="img" viewBox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#C3142D;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/></svg> **(ggplot2 + Shiny)**
+
+5. **Do I need something quick for a stakeholder meeting tomorrow?** &amp;rarr; **Flourish** or **DataWrapper**
+
+6. **Am I in a Microsoft-heavy organization?** &amp;rarr; **Power BI**
+
+.font80[
+**The real answer:** Professionals use **multiple tools**. Your portfolio should demonstrate breadth.
+]
+
+---
+class: inverse, center, middle
+
+# Lab Activity
+
+---
+
+## Activity: Create and Embed Two Visualizations
+
+<countdown-timer class="countdown" id="timer_b16c9d71" minutes="30" seconds="0" update-every="1" tabindex="0" style="top:0;right:0;--countdown-font-size:2em;"></countdown-timer>
+
+**Part 1 -- Flourish (15 min):**
+
+1. Go to [flourish.studio](https://flourish.studio/) and sign in
+2. Create a **bar chart race** OR an **interactive table** using data of your choice
+   - You may use the skills data provided, Canvas job data, or your own dataset
+3. Publish and copy the **embed code**
+
+**Part 2 -- DataWrapper (10 min):**
+
+1. Go to [datawrapper.de](https://www.datawrapper.de/) and sign in
+2. Create a **bar chart** or **range plot** comparing categories in your data
+3. Publish and copy the **embed code**
+
+**Part 3 -- Embed (5 min):**
+
+1. Create an HTML file using the template from Section 3
+2. Paste both embed codes into the HTML file
+3. Open in a browser and verify both visualizations work
+
+---
+
+## Activity: Submission Requirements
+
+**Submit to Canvas:**
+
+✅ Your `.html` file with both embedded visualizations
+
+✅ A screenshot of the page rendered in your browser
+
+✅ The **direct links** to both your Flourish and DataWrapper visualizations
+
+**Grading Criteria:**
+
+| Criterion | Points |
+|:----------|-------:|
+| Flourish visualization created and published | 30 |
+| DataWrapper visualization created and published | 30 |
+| Both embedded in working HTML page | 20 |
+| Data is meaningful and well-labeled | 10 |
+| Chart titles, annotations, and formatting | 10 |
+
+---
+
+## Activity: Tips and Troubleshooting
+
+**If Flourish is not loading your data:**
+- Ensure your CSV uses UTF-8 encoding
+- Check that column headers are in the first row
+- Remove any merged cells or special characters
+
+**If DataWrapper chart looks off:**
+- Double-check the "Check &amp; Describe" step for correct data types
+- Make sure numbers do not have dollar signs or commas in the raw data
+
+**If embeds are not showing in your HTML:**
+- Ensure you are online (embeds fetch content from external servers)
+- Check for typos in the pasted embed code
+- Try a different browser if one does not render correctly
+
+---
+
+## Activity: Stretch Goals
+
+If you finish early, try one or more of these:
+
+⭐ **Flourish Story:** Combine multiple Flourish visualizations into a scrollable "story" using Flourish's Story mode.
+
+⭐ **DataWrapper Map:** Create a choropleth map in DataWrapper showing job postings by state.
+
+⭐ **Custom Styling:** Modify your HTML page with CSS to match Miami University branding (use `#C3142D` for red and `#000000` for black).
+
+⭐ **Add Context:** Write a short narrative paragraph between your two visualizations explaining what each chart reveals about the job market.
+
+---
+class: inverse, center, middle
+
+# Wrap-Up
+
+---
+
+## Summary of Today's Lab
+
+✅ **Flourish:** Best for animated charts (bar chart races) and interactive tables. Great for storytelling.
+
+✅ **DataWrapper:** Best for clean, publication-quality static/interactive charts. Excellent annotation support.
+
+✅ **Embedding:** Both tools produce embed codes (`&lt;iframe&gt;` or `&lt;div&gt;`) that can be placed in any HTML page.
+
+✅ **Tool selection** depends on your goal: animation, interactivity, reproducibility, audience, and organizational context.
+
+---
+
+## Job Market Connection
+
+.font200[💼]
+
+**Quick, shareable visualizations for stakeholder communication.**
+
+In many business roles, you will need to create a chart **in 10 minutes** for a meeting, not spend 2 hours coding in R. Tools like Flourish and DataWrapper fill that gap.
+
+**Portfolio tip:** Embed Flourish and DataWrapper visualizations in your personal website or GitHub Pages portfolio to show you can communicate data visually across **multiple platforms**.
+
+---
+
+## Looking Ahead
+
+**Next Class (Lecture 15):** Visualizing Time Series in <svg aria-hidden="true" role="img" viewBox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#C3142D;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/></svg>
+
+We will return to R and learn how to create:
+- Line charts and area charts for temporal data
+- Calendar heatmaps for daily patterns
+- Annotated time series highlighting key events
+- Faceted plots comparing multiple time series
+
+**Before next class:**
+- Complete today's lab submission on Canvas
+- Review ggplot2 `geom_line()` and `geom_area()` documentation
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+  "highlightStyle": "magula",
+  "highlightLines": true,
+  "highlightLanguage": "r",
+  "countIncrementalSlides": false,
+  "ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

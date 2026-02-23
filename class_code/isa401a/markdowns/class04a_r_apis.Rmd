@@ -1,0 +1,100 @@
+---
+title: 'Class 04: Intro to APIs'
+author: "Fadel Megahed"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: True
+    toc_float: True
+    number_sections: TRUE
+    code_download: TRUE
+    code_folding: show
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Demo 1: USA Jobs
+
+```{r our_request}
+# var request = require('request');    
+#             
+# var host = 'data.usajobs.gov';  
+# var userAgent = 'your@email.address';  
+# var authKey = 'YourAPIKey';    
+#             
+# request({      
+#     url: 'https://data.usajobs.gov/api/search?JobCategoryCode=2210&Keyword=Software Development&LocationName=Washington, DC',      
+#     method: 'GET',      
+#     headers: {          
+#         "Host": host,          
+#         "User-Agent": userAgent,          
+#         "Authorization-Key": authKey      
+#     }  
+# }, function(error, response, body) {      
+#     var data = JSON.parse(body);  
+# });
+
+host = 'data.usajobs.gov'
+user_agent = 'fmegahed@miamioh.edu'
+auth_key = Sys.getenv('USAJOBS_API_KEY')
+
+req = httr2::request('https://data.usajobs.gov/api/search') |> 
+  httr2::req_method("GET") |> 
+  httr2::req_headers(
+    # on the LHS name of argument for the req headers per the API
+    # (R does not like spaces or dashes in variable names and that is why
+    # we added the backticks `` for User-Agent)
+    # on the RHS is the name of the object as I created it in R
+    Host = host, 
+    `User-Agent` = user_agent,
+    `Authorization-Key` = auth_key
+  ) |> 
+  httr2::req_url_query(
+    JobCategoryCode=2210, # showing you an example similar to the documentation
+    Keyword="Data Analyst", # could have also added LocationName
+    ResultsPerPage = 500
+  )
+
+# executes the request and gets a response back
+response = httr2::req_perform(req)
+
+# let us get the data out of the response object
+usajobs_data = response |> 
+  httr2::resp_body_string() |> 
+  jsonlite::fromJSON(flatten = T)
+
+# usajobs_data returned a nested list, which we examined ine the Environment "Viewer" (by clicking on the blue circle with an arrow in it)
+# dplyr::glimpse(usajobs_data)
+
+# From the step above
+
+usajobs_df = usajobs_data$SearchResult$SearchResultItems |> 
+  # to pull list columns from the data (i.e., a col that contains a data frame)
+  tidyr::unnest(
+    # I did not unlist all list columns; below is just a sample of how 
+    # to approach this
+    cols = c("MatchedObjectDescriptor.PositionLocation",
+             "MatchedObjectDescriptor.JobCategory",
+             "MatchedObjectDescriptor.PositionOfferingType"),
+    names_sep = '.'
+  )
+
+
+# Q2: Counting either the organization or the department name
+usajobs_df |> 
+  # added a quick fix for getting distinct MatechObject IDs and keeping the other column
+  dplyr::distinct(MatchedObjectId, MatchedObjectDescriptor.OrganizationName) |> 
+  dplyr::count(
+    MatchedObjectDescriptor.OrganizationName
+  )
+
+```
+
+To answer the questions that we have:  
+
+1. The total number of federally available "Data Analyst"-related jobs can be computed using `unique(usajobs_df$MatchedObjectId) |> length()` and is equal to: `r unique(usajobs_df$MatchedObjectId) |> length()`. 
+
+2. 
+

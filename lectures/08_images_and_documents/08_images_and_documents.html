@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>ISA 401: Business Intelligence &amp; Data Visualization</title>
+    <meta charset="utf-8" />
+    <meta name="author" content=" Fadel M. Megahed, PhD   Raymond E. Gloss Professor in Business   Farmer School of Business  Miami University     @Fadel Megahed     fmegahed     fmegahed@miamioh.edu    Automated Scheduler for Office Hours  " />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/tile-view/tile-view.css" rel="stylesheet" />
+    <script src="libs/tile-view/tile-view.js"></script>
+    <link href="libs/animate.css/animate.xaringan.css" rel="stylesheet" />
+    <link href="libs/tachyons/tachyons.min.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra_fit-screen/fit-screen.js"></script>
+    <link href="libs/panelset/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset/panelset.js"></script>
+    <script type="application/json" id="xaringanExtra-editable-docid">{"id":"x167dfe7c6af40859073a53666c4ab6c","expires":14}</script>
+    <script src="libs/himalaya/himalaya.js"></script>
+    <script src="libs/js-cookie/js.cookie.js"></script>
+    <link href="libs/editable/editable.css" rel="stylesheet" />
+    <script src="libs/editable/editable.js"></script>
+    <script src="libs/mark.js/mark.min.js"></script>
+    <link href="libs/xaringanExtra-search/search.css" rel="stylesheet" />
+    <script src="libs/xaringanExtra-search/search.js"></script>
+    <script>window.addEventListener('load', function() { window.xeSearch = new RemarkSearch({"position":"bottom-left","caseSensitive":false,"showIcon":false,"autoSearch":true}) })</script>
+    <link href="libs/countdown/countdown.css" rel="stylesheet" />
+    <script src="libs/countdown/countdown.js"></script>
+    <link rel="stylesheet" href="../../style_files/fonts.css" type="text/css" />
+    <link rel="stylesheet" href="../../style_files/my-theme.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# ISA 401: Business Intelligence &amp; Data Visualization
+]
+.subtitle[
+## 08: Images &amp; Documents in <svg viewBox="0 0 581 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:white;" xmlns="http://www.w3.org/2000/svg"> <path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"></path></svg>
+]
+.author[
+### <br>Fadel M. Megahed, PhD <br><br>Raymond E. Gloss Professor in Business <br> Farmer School of Business<br> Miami University<br><br> <a href="https://www.linkedin.com/in/fadel-megahed-289046b4"><svg viewBox="0 0 448 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:white;" xmlns="http://www.w3.org/2000/svg"> <path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"></path></svg> <span class="citation">@Fadel</span> Megahed</a> <br> <a href="https://github.com/fmegahed/"><svg viewBox="0 0 496 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:white;" xmlns="http://www.w3.org/2000/svg"> <path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"></path></svg> fmegahed</a> <br> <a href="mailto:fmegahed@miamioh.edu"><svg viewBox="0 0 512 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:white;" xmlns="http://www.w3.org/2000/svg"> <path d="M476 3.2L12.5 270.6c-18.1 10.4-15.8 35.6 2.2 43.2L121 358.4l287.3-253.2c5.5-4.9 13.3 2.6 8.6 8.3L176 407v80.5c0 23.6 28.5 32.9 42.5 15.8L282 426l124.6 52.2c14.2 6 30.4-2.9 33-18.2l72-432C515 7.8 493.3-6.8 476 3.2z"></path></svg> fmegahed@miamioh.edu</a><br> <a href="https://calendly.com/fmegahed"><svg viewBox="0 0 384 512" style="height:1em;position:relative;display:inline-block;top:.1em;fill:white;" xmlns="http://www.w3.org/2000/svg"> <path d="M202.021 0C122.202 0 70.503 32.703 29.914 91.026c-7.363 10.58-5.093 25.086 5.178 32.874l43.138 32.709c10.373 7.865 25.132 6.026 33.253-4.148 25.049-31.381 43.63-49.449 82.757-49.449 30.764 0 68.816 19.799 68.816 49.631 0 22.552-18.617 34.134-48.993 51.164-35.423 19.86-82.299 44.576-82.299 106.405V320c0 13.255 10.745 24 24 24h72.471c13.255 0 24-10.745 24-24v-5.773c0-42.86 125.268-44.645 125.268-160.627C377.504 66.256 286.902 0 202.021 0zM192 373.459c-38.196 0-69.271 31.075-69.271 69.271 0 38.195 31.075 69.27 69.271 69.27s69.271-31.075 69.271-69.271-31.075-69.27-69.271-69.27z"></path></svg> Automated Scheduler for Office Hours</a><br><br>
+]
+.date[
+### Spring 2026
+]
+
+---
+
+
+
+
+
+
+
+
+## Quick Refresher from Last Class
+
+✅ Use LLM APIs to extract structured data from unstructured text
+
+✅ Apply prompt engineering techniques for consistent JSON output
+
+✅ Parse LLM responses into tidy data frames in <svg aria-hidden="true" role="img" viewBox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#C3142D;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/></svg>
+
+
+---
+
+## Kahoot/Quiz Review
+
+Test your understanding of prompt engineering and JSON parsing:
+
+1. What role does the **system prompt** play when calling an LLM API for structured extraction?
+
+2. Why is it important to specify the **exact JSON schema** you want in your prompt?
+
+3. When parsing a nested JSON response from an LLM, which <svg aria-hidden="true" role="img" viewBox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#C3142D;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/></svg> function(s) help flatten it into a data frame?
+
+4. What happens if the LLM returns **malformed JSON** -- how should your code handle it?
+
+5. Name one advantage of using **few-shot examples** in your extraction prompt.
+
+<countdown-timer class="countdown" id="timer_db8c6bc9" minutes="5" seconds="0" warn-when="60" update-every="1" tabindex="0" style="top:0;right:0;"></countdown-timer>
+
+
+---
+
+## Learning Objectives for Today's Class
+
+- **LO1:** Extract tabular data from PDF documents
+
+- **LO2:** Use vision APIs to analyze images
+
+- **LO3:** Extract structured information from infographics
+
+
+---
+class: inverse, center, middle
+
+# Extracting Data from PDFs
+
+
+---
+
+## The Problem: Data Trapped in PDFs
+
+.pull-left[
+Many organizations publish critical data **only as PDF reports**:
+
+- Bureau of Labor Statistics (BLS) salary reports
+- SEC financial filings
+- Government census tables
+- Annual reports and whitepapers
+
+The data is **visible** but not **accessible** for analysis.
+]
+
+.pull-right[
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="https://www.bls.gov/oes/images/oes_brochure_2021.png" alt="Example: BLS Occupational Employment and Wage Statistics are often distributed as PDF tables." width="95%" /&gt;
+&lt;p class="caption"&gt;Example: BLS Occupational Employment and Wage Statistics are often distributed as PDF tables.&lt;/p&gt;
+&lt;/div&gt;
+]
+
+
+---
+
+## The pdftools Package: Extracting Text
+
+The [`pdftools`](https://docs.ropensci.org/pdftools/) <svg aria-hidden="true" role="img" viewBox="0 0 448 512" style="height:1em;width:0.88em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:gold;overflow:visible;position:relative;"><path d="M50.7 58.5L0 160H208V32H93.7C75.5 32 58.9 42.3 50.7 58.5zM240 160H448L397.3 58.5C389.1 42.3 372.5 32 354.3 32H240V160zm208 32H0V416c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V192z"/></svg> package provides `pdf_text()` to extract raw text from PDF files.
+
+
+``` r
+# Extract text from a PDF (one string per page)
+pdf_url &lt;- "https://www.bls.gov/news.release/pdf/ocwage.pdf"
+pdf_pages &lt;- pdftools::pdf_text(pdf_url)
+
+# How many pages?
+length(pdf_pages)
+
+# View first page text
+cat(pdf_pages[1])
+```
+
+**Key insight:** `pdf_text()` returns a **character vector** where each element is one page of text. Tables appear as whitespace-aligned text -- useful but not structured.
+
+
+---
+
+## pdftools: Additional Utilities
+
+Beyond `pdf_text()`, the `pdftools` package provides several helpful functions:
+
+
+``` r
+# Get metadata about the PDF
+pdftools::pdf_info(pdf_url)  # author, creation date, number of pages, etc.
+
+# Extract table of contents (if present)
+pdftools::pdf_toc(pdf_url)
+
+# Get the number of pages
+pdftools::pdf_length(pdf_url)
+
+# Render a PDF page as an image (useful for vision APIs later!)
+pdftools::pdf_render_page(pdf_url, page = 1, dpi = 150) |&gt;
+  png::writePNG("page1.png")
+```
+
+**Pro tip:** `pdf_render_page()` converts PDF pages to images -- a bridge between PDF extraction and vision API extraction that we will use later.
+
+
+---
+
+## pdftools: From Text to Data
+
+Once you have raw text, you can use string processing to extract tables:
+
+
+``` r
+# Extract text from a specific page
+page_text &lt;- pdf_pages[2]
+
+# Split into lines
+lines &lt;- strsplit(page_text, "\n")[[1]]
+
+# Filter lines that look like table rows (contain numbers)
+table_lines &lt;- lines[grepl("\\d{2,}", lines)]
+
+# Parse fixed-width columns using readr::read_fwf or string manipulation
+salary_data &lt;- readr::read_fwf(
+  I(paste(table_lines, collapse = "\n")),
+  col_positions = readr::fwf_empty(
+    I(paste(table_lines, collapse = "\n"))
+  )
+)
+
+head(salary_data)
+```
+
+**Limitation:** This approach requires manual tuning for each PDF layout.
+
+
+---
+
+## tabulapdf: Purpose-Built Table Extraction
+
+.panelset[
+
+.panel[.panel-name[About tabulapdf]
+
+The [`tabulapdf`](https://docs.ropensci.org/tabulapdf/) <svg aria-hidden="true" role="img" viewBox="0 0 448 512" style="height:1em;width:0.88em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:gold;overflow:visible;position:relative;"><path d="M50.7 58.5L0 160H208V32H93.7C75.5 32 58.9 42.3 50.7 58.5zM240 160H448L397.3 58.5C389.1 42.3 372.5 32 354.3 32H240V160zm208 32H0V416c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V192z"/></svg> package wraps the Java-based Tabula library, which is specifically designed to extract **tables** from PDFs.
+
+- Automatically detects table boundaries
+- Returns data frames directly
+- Handles multi-page tables
+- Requires Java (install via `install.packages("tabulapdf")`)
+
+
+``` r
+if(require(tabulapdf) == FALSE) install.packages("tabulapdf")
+```
+
+]
+
+.panel[.panel-name[Basic Usage]
+
+
+``` r
+# Extract all tables from a PDF
+pdf_url &lt;- "https://www.bls.gov/news.release/pdf/ocwage.pdf"
+tables &lt;- tabulapdf::extract_tables(pdf_url)
+
+# tables is a list of data frames -- one per detected table
+length(tables)
+
+# Inspect the first extracted table
+tables[[1]] |&gt;
+  janitor::clean_names() |&gt;
+  head(10)
+```
+
+]
+
+.panel[.panel-name[Targeted Extraction]
+
+
+``` r
+# Extract from specific pages only
+tables_p2 &lt;- tabulapdf::extract_tables(
+  pdf_url,
+  pages = 2,
+  method = "lattice"  # "lattice" for bordered tables, "stream" for borderless
+)
+
+# Clean column names and convert types
+salary_df &lt;- tables_p2[[1]] |&gt;
+  janitor::clean_names() |&gt;
+  dplyr::mutate(
+    dplyr::across(dplyr::where(is.character) &amp; !occupation,
+                  ~ as.numeric(gsub("[,$]", "", .x)))
+  )
+
+salary_df
+```
+
+]
+
+]
+
+
+---
+
+## Comparing Approaches: pdftools vs tabulapdf
+
+| Feature | `pdftools::pdf_text()` | `tabulapdf::extract_tables()` |
+|---------|----------------------|------------------------------|
+| **Output** | Raw text (character) | Data frames |
+| **Best for** | Free-form text, paragraphs | Structured tables |
+| **Dependencies** | Minimal (C library) | Requires Java |
+| **Table detection** | Manual parsing needed | Automatic |
+| **Accuracy** | Depends on parsing | High for well-formatted tables |
+| **Speed** | Very fast | Moderate |
+
+**Rule of thumb:** Start with `tabulapdf` for tables. Fall back to `pdftools` + string parsing when tables are irregular.
+
+
+---
+
+## Activity: Extract Salary Data from a BLS PDF
+
+.font90[
+**Your task:** Extract the occupational salary data from a BLS PDF report.
+
+**Steps:**
+
+1. Download or link to a BLS PDF (e.g., `"https://www.bls.gov/news.release/pdf/ocwage.pdf"`)
+
+2. Try **both** approaches:
+   - `pdftools::pdf_text()` -- examine the raw text output
+   - `tabulapdf::extract_tables()` -- extract structured tables
+
+3. Clean the resulting data frame:
+   - Apply `janitor::clean_names()`
+   - Convert salary columns to numeric
+
+4. Answer: What is the **median annual wage** for "Computer and Mathematical" occupations?
+]
+
+<countdown-timer class="countdown" id="timer_69eb1e62" minutes="5" seconds="0" warn-when="60" update-every="1" tabindex="0" style="top:0;right:0;"></countdown-timer>
+
+
+---
+
+## Section Check-In: PDF Extraction
+
+✅ You can use `pdftools::pdf_text()` to extract raw text from PDFs
+
+✅ You can use `tabulapdf::extract_tables()` to pull structured tables
+
+✅ You know when to use each approach
+
+**Up next:** What about data locked inside *images*?
+
+
+---
+class: inverse, center, middle
+
+# Seeing with AI: Vision APIs
+
+
+---
+
+## How Vision APIs Work
+
+.pull-left[
+Traditional workflow for image data:
+
+1. **Human** looks at an image
+2. **Human** manually types numbers into a spreadsheet
+3. Error-prone, slow, does not scale
+
+AI Vision workflow:
+
+1. **Send** image to a vision-capable LLM
+2. **Receive** structured text/JSON description
+3. Automated, scalable, auditable
+]
+
+.pull-right[
+&lt;img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/1200px-Cat03.jpg" alt="" width="100%" style="display: block; margin: auto;" /&gt;
+
+.center[.font80[**Send image** <svg aria-hidden="true" role="img" viewBox="0 0 448 512" style="height:1em;width:0.88em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:currentColor;overflow:visible;position:relative;"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg> **API processes** <svg aria-hidden="true" role="img" viewBox="0 0 448 512" style="height:1em;width:0.88em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:currentColor;overflow:visible;position:relative;"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg> **Get structured data back**]]
+]
+
+
+---
+
+## Encoding Images for API Requests
+
+Vision APIs expect images as **base64-encoded strings**. The `base64enc` <svg aria-hidden="true" role="img" viewBox="0 0 448 512" style="height:1em;width:0.88em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:gold;overflow:visible;position:relative;"><path d="M50.7 58.5L0 160H208V32H93.7C75.5 32 58.9 42.3 50.7 58.5zM240 160H448L397.3 58.5C389.1 42.3 372.5 32 354.3 32H240V160zm208 32H0V416c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V192z"/></svg> package handles this:
+
+
+``` r
+# Option 1: Encode a local file
+img_raw &lt;- readBin("chart.png", "raw", file.info("chart.png")$size)
+img_base64 &lt;- base64enc::base64encode(img_raw)
+
+# Option 2: Encode from a URL (download first)
+tmp &lt;- tempfile(fileext = ".png")
+download.file("https://example.com/chart.png", tmp, mode = "wb")
+img_raw &lt;- readBin(tmp, "raw", file.info(tmp)$size)
+img_base64 &lt;- base64enc::base64encode(img_raw)
+
+# The result is a long string like "iVBORw0KGgoAAAANSUhEUg..."
+nchar(img_base64)  # typically thousands of characters
+```
+
+**Why base64?** APIs communicate via JSON, which is text-based. Binary image data must be encoded as text to embed in the request body.
+
+
+---
+
+## Building a Vision API Request with httr2
+
+.panelset[
+
+.panel[.panel-name[Request Structure]
+
+To send an image to the Claude API for analysis, we need:
+
+1. **API Key** stored in `.Renviron` as `ANTHROPIC_API_KEY`
+2. **Base64-encoded image** embedded in the message
+3. **A prompt** telling the model what to extract
+
+
+``` r
+# Ensure your API key is set
+# usethis::edit_r_environ("project")
+# Add: ANTHROPIC_API_KEY=sk-ant-...
+
+api_key &lt;- Sys.getenv("ANTHROPIC_API_KEY")
+```
+
+]
+
+.panel[.panel-name[Building the Request]
+
+
+``` r
+# Build the API request
+req &lt;- httr2::request("https://api.anthropic.com/v1/messages") |&gt;
+  httr2::req_method("POST") |&gt;
+  httr2::req_headers(
+    `x-api-key` = api_key,
+    `anthropic-version` = "2023-06-01",
+    `content-type` = "application/json"
+  ) |&gt;
+  httr2::req_body_json(list(
+    model = "claude-sonnet-4-20250514",
+    max_tokens = 1024,
+    messages = list(list(
+      role = "user",
+      content = list(
+        list(type = "image", source = list(
+          type = "base64", media_type = "image/png", data = img_base64
+        )),
+        list(type = "text", text = "Extract all data from this chart as a JSON array of objects with keys: category, value.")
+      )
+    ))
+  ))
+```
+
+]
+
+.panel[.panel-name[Parsing the Response]
+
+
+``` r
+# Perform the request
+resp &lt;- httr2::req_perform(req)
+
+# Extract the text response
+result &lt;- resp |&gt;
+  httr2::resp_body_json()
+
+# The model's text response
+model_text &lt;- result$content[[1]]$text
+
+# Parse the JSON from the response
+extracted_data &lt;- jsonlite::fromJSON(model_text)
+
+# Convert to a tibble
+extracted_df &lt;- tibble::as_tibble(extracted_data)
+extracted_df
+```
+
+]
+
+]
+
+
+---
+
+## Demo: Analyzing an Infographic with Claude Vision
+
+.panelset[
+
+.panel[.panel-name[The Task]
+
+We will send a BLS infographic to Claude and ask it to extract the underlying data as a structured JSON table.
+
+**Goal:** Go from a *picture of data* to a *data frame* we can analyze.
+
+
+``` r
+# Example: a BLS employment infographic
+img_url &lt;- "https://www.bls.gov/ooh/images/15702.png"
+
+# Download and encode
+tmp &lt;- tempfile(fileext = ".png")
+download.file(img_url, tmp, mode = "wb")
+img_raw &lt;- readBin(tmp, "raw", file.info(tmp)$size)
+img_b64 &lt;- base64enc::base64encode(img_raw)
+```
+
+]
+
+.panel[.panel-name[API Call]
+
+
+``` r
+req &lt;- httr2::request("https://api.anthropic.com/v1/messages") |&gt;
+  httr2::req_method("POST") |&gt;
+  httr2::req_headers(
+    `x-api-key` = Sys.getenv("ANTHROPIC_API_KEY"),
+    `anthropic-version` = "2023-06-01",
+    `content-type` = "application/json"
+  ) |&gt;
+  httr2::req_body_json(list(
+    model = "claude-sonnet-4-20250514",
+    max_tokens = 2048,
+    messages = list(list(
+      role = "user",
+      content = list(
+        list(type = "image", source = list(
+          type = "base64", media_type = "image/png", data = img_b64
+        )),
+        list(type = "text", text = "Extract ALL data shown in this infographic. Return a JSON array of objects. Each object should have descriptive keys matching the labels in the image. Include ALL numbers, percentages, and categories visible.")
+      )
+    ))
+  ))
+
+resp &lt;- httr2::req_perform(req)
+```
+
+]
+
+.panel[.panel-name[Results]
+
+
+``` r
+# Parse the response
+result &lt;- resp |&gt; httr2::resp_body_json()
+model_text &lt;- result$content[[1]]$text
+
+# Extract JSON from the response (model may wrap it in markdown)
+json_str &lt;- stringr::str_extract(model_text, "\\[.*\\]")
+
+# Parse into a data frame
+infographic_df &lt;- jsonlite::fromJSON(json_str) |&gt;
+  tibble::as_tibble()
+
+infographic_df |&gt;
+  knitr::kable(format = "html")
+```
+
+]
+
+]
+
+
+---
+
+## Prompt Tips for Vision Extraction
+
+When sending images to an LLM for data extraction, your prompt matters:
+
+.pull-left[
+**Do:**
+- Specify the **exact output format** (JSON schema)
+- Ask for **ALL** visible data, not just "some"
+- Mention expected data types (numbers, percentages)
+- Request keys that match the image labels
+- Use few-shot examples for complex layouts
+]
+
+.pull-right[
+**Avoid:**
+- Vague prompts like "describe this image"
+- Asking for interpretation instead of extraction
+- Forgetting to handle markdown-wrapped JSON
+- Assuming the model will infer your schema
+]
+
+**Example prompt:**
+&gt; "Extract all data from this bar chart. Return a JSON array where each object has keys: `occupation` (string), `median_salary` (number), `employment_count` (number)."
+
+
+---
+
+## Handling Errors and Edge Cases
+
+Vision API calls can fail or return unexpected results. Defensive coding is essential:
+
+
+``` r
+# Wrap API calls in tryCatch for robustness
+safe_extract &lt;- function(image_path, prompt) {
+  tryCatch({
+    result &lt;- extract_chart_data(image_path, prompt)
+    if(nrow(result) == 0) {
+      warning("API returned empty data frame")
+      return(tibble::tibble())
+    }
+    result
+  }, error = function(e) {
+    message("API call failed: ", e$message)
+    tibble::tibble()  # return empty tibble on failure
+  })
+}
+
+# Common issues to watch for:
+# 1. API rate limits (429 errors) -- add httr2::req_retry()
+# 2. Model returns text instead of JSON -- use regex extraction
+# 3. Image too large -- resize before encoding
+# 4. Hallucinated values -- always validate against the source
+```
+
+
+---
+
+## Section Check-In: Vision APIs
+
+✅ You understand how to encode images as base64 for API requests
+
+✅ You can build a vision API request using `httr2` to the Claude API
+
+✅ You can parse structured data from the model's response
+
+**Up next:** Putting it all together -- recovering data from charts and infographics.
+
+
+---
+class: inverse, center, middle
+
+# Recovering Data from Charts
+
+
+---
+
+## Chart Data Recovery: The Motivation
+
+.font90[
+Data visualization is powerful -- but sometimes the **original data is lost** and only the chart remains:
+
+- A colleague shares a **screenshot** of a dashboard
+- A report contains a **bar chart** but no underlying CSV
+- A news article includes an **infographic** with no data download
+
+**Vision APIs let you reverse-engineer the data from the image.**
+]
+
+
+---
+
+## Combining PDF + Vision: Scanned Documents
+
+Some PDFs are **scanned images** -- `pdf_text()` returns empty strings because there is no text layer. Combine `pdftools` with the vision API:
+
+
+``` r
+# Step 1: Render the PDF page as an image
+img_bitmap &lt;- pdftools::pdf_render_page("scanned_report.pdf", page = 1, dpi = 200)
+png::writePNG(img_bitmap, "scanned_page1.png")
+
+# Step 2: Encode and send to vision API
+scanned_df &lt;- extract_chart_data(
+  image_path = "scanned_page1.png",
+  prompt = "This is a scanned table from a government report. Extract all rows
+  and columns as a JSON array. Each object should have keys matching the
+  column headers visible in the table."
+)
+
+# Step 3: Clean the result
+scanned_df |&gt;
+  janitor::clean_names() |&gt;
+  dplyr::mutate(dplyr::across(dplyr::where(is.character), stringr::str_trim))
+```
+
+**This is the ultimate fallback:** when no other tool can parse the PDF, render it as an image and use AI vision.
+
+
+---
+
+## Example: Bar Chart to Data Frame
+
+.pull-left[
+**Before:** An image of a bar chart
+
+&lt;img src="08_images_and_documents_files/figure-html/bar-chart-example-1.png" alt="" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+**After:** A tidy data frame extracted via Vision API
+
+| occupation | median_salary |
+|:-----------|-------------:|
+| Software Dev | 120,730 |
+| Data Analyst | 82,360 |
+| Accountant | 77,250 |
+| Nurse | 81,220 |
+| Teacher | 61,690 |
+
+This data can now be joined, filtered, aggregated, and visualized in <svg aria-hidden="true" role="img" viewBox="0 0 581 512" style="height:1em;width:1.13em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#C3142D;overflow:visible;position:relative;"><path d="M581 226.6C581 119.1 450.9 32 290.5 32S0 119.1 0 226.6C0 322.4 103.3 402 239.4 418.1V480h99.1v-61.5c24.3-2.7 47.6-7.4 69.4-13.9L448 480h112l-67.4-113.7c54.5-35.4 88.4-84.9 88.4-139.7zm-466.8 14.5c0-73.5 98.9-133 220.8-133s211.9 40.7 211.9 133c0 50.1-26.5 85-70.3 106.4-2.4-1.6-4.7-2.9-6.4-3.7-10.2-5.2-27.8-10.5-27.8-10.5s86.6-6.4 86.6-92.7-90.6-87.9-90.6-87.9h-199V361c-74.1-21.5-125.2-67.1-125.2-119.9zm225.1 38.3v-55.6c57.8 0 87.8-6.8 87.8 27.3 0 36.5-38.2 28.3-87.8 28.3zm-.9 72.5H365c10.8 0 18.9 11.7 24 19.2-16.1 1.9-33 2.8-50.6 2.9v-22.1z"/></svg>.
+]
+
+
+---
+
+## Building a Reusable Extraction Function
+
+
+``` r
+extract_chart_data &lt;- function(image_path, prompt, api_key = Sys.getenv("ANTHROPIC_API_KEY")) {
+  # Encode image
+  img_raw &lt;- readBin(image_path, "raw", file.info(image_path)$size)
+  img_b64 &lt;- base64enc::base64encode(img_raw)
+  ext &lt;- tools::file_ext(image_path)
+  media_type &lt;- paste0("image/", ifelse(ext == "jpg", "jpeg", ext))
+
+  # Build and send request
+  resp &lt;- httr2::request("https://api.anthropic.com/v1/messages") |&gt;
+    httr2::req_method("POST") |&gt;
+    httr2::req_headers(`x-api-key` = api_key, `anthropic-version` = "2023-06-01",
+                       `content-type` = "application/json") |&gt;
+    httr2::req_body_json(list(
+      model = "claude-sonnet-4-20250514", max_tokens = 2048,
+      messages = list(list(role = "user", content = list(
+        list(type = "image", source = list(type = "base64", media_type = media_type, data = img_b64)),
+        list(type = "text", text = prompt)
+      )))
+    )) |&gt; httr2::req_perform()
+
+  # Parse response
+  model_text &lt;- httr2::resp_body_json(resp)$content[[1]]$text
+  json_str &lt;- stringr::str_extract(model_text, "\\[.*\\]")
+  jsonlite::fromJSON(json_str) |&gt; tibble::as_tibble()
+}
+```
+
+
+---
+
+## Using the Extraction Function
+
+
+``` r
+# Extract data from a saved chart image
+salary_df &lt;- extract_chart_data(
+  image_path = "bls_salary_chart.png",
+  prompt = "Extract all data from this bar chart. Return a JSON array where
+  each object has keys: occupation (string), median_salary (number)."
+)
+
+# Now we can work with it like any data frame
+salary_df |&gt;
+  dplyr::arrange(dplyr::desc(median_salary)) |&gt;
+  dplyr::mutate(salary_formatted = scales::dollar(median_salary))
+```
+
+**Benefits of wrapping this in a function:**
+- Reusable across projects
+- Easy to modify the prompt per use case
+- Handles encoding and parsing in one call
+
+
+---
+
+## Validating Extracted Data
+
+.font90[
+Vision API extraction is powerful but not perfect. Always **validate** the output:
+
+
+``` r
+# 1. Check dimensions -- does the number of rows match what you see?
+nrow(extracted_df)  # compare to the number of bars/rows in the chart
+
+# 2. Check value ranges -- are numbers plausible?
+summary(extracted_df$median_salary)
+
+# 3. Check for missing or NA values
+colSums(is.na(extracted_df))
+
+# 4. Cross-reference a few values manually against the source image
+# If the chart says "Software Dev: $120,730", does the data frame agree?
+
+# 5. Run the extraction twice and compare (LLM outputs can vary)
+run1 &lt;- extract_chart_data("chart.png", prompt)
+run2 &lt;- extract_chart_data("chart.png", prompt)
+all.equal(run1, run2)
+```
+
+**Best practice:** For high-stakes analyses, run the extraction multiple times and take the consensus values. Report any discrepancies.
+]
+
+
+---
+
+## Decision Framework: When to Use What
+
+.font80[
+
+| Scenario | Tool | Why |
+|----------|------|-----|
+| Data is in a **CSV/Excel file** | `readr`, `readxl` | Direct import -- always prefer structured data |
+| Data is on a **webpage** (HTML table) | `rvest` web scraping | Tables are in the DOM, scraping is reliable |
+| Data is behind an **API** | `httr2` + `jsonlite` | API returns structured JSON directly |
+| Data is in a **PDF table** | `tabulapdf` / `pdftools` | Designed for extracting tables from PDFs |
+| Data is in **unstructured text** | LLM text API | LLM can parse natural language into structure |
+| Data is in an **image/chart** | LLM vision API | Only way to extract data from pixels |
+| Data is in a **scanned document** | LLM vision API | OCR + extraction in one step |
+
+]
+
+**General principle:** Use the **simplest tool** that works. Vision APIs are powerful but slower and costlier than direct parsing.
+
+
+---
+
+## Decision Framework: A Flowchart
+
+.center[
+
+Is the data in a **structured file** (CSV, Excel, JSON)?
+<svg aria-hidden="true" role="img" viewBox="0 0 384 512" style="height:1em;width:0.75em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:currentColor;overflow:visible;position:relative;"><path d="M169.4 470.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 370.8 224 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 306.7L54.6 265.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg> Yes: Use `readr`, `readxl`, `jsonlite`
+
+Is the data on a **webpage**?
+<svg aria-hidden="true" role="img" viewBox="0 0 384 512" style="height:1em;width:0.75em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:currentColor;overflow:visible;position:relative;"><path d="M169.4 470.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 370.8 224 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 306.7L54.6 265.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg> Yes: Use `rvest` or an API if available
+
+Is the data in a **PDF**?
+<svg aria-hidden="true" role="img" viewBox="0 0 384 512" style="height:1em;width:0.75em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:currentColor;overflow:visible;position:relative;"><path d="M169.4 470.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 370.8 224 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 306.7L54.6 265.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg> Yes: Try `tabulapdf` first, then `pdftools`
+
+Is the data in **unstructured text**?
+<svg aria-hidden="true" role="img" viewBox="0 0 384 512" style="height:1em;width:0.75em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:currentColor;overflow:visible;position:relative;"><path d="M169.4 470.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 370.8 224 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 306.7L54.6 265.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg> Yes: Use an LLM text API with JSON schema
+
+Is the data in an **image or screenshot**?
+<svg aria-hidden="true" role="img" viewBox="0 0 384 512" style="height:1em;width:0.75em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:currentColor;overflow:visible;position:relative;"><path d="M169.4 470.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 370.8 224 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 306.7L54.6 265.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg> Yes: Use an LLM vision API with JSON schema
+
+]
+
+
+---
+
+## Activity: Extract Data from a BLS Infographic
+
+.font90[
+**Your task:** Use the Claude Vision API to extract salary data from a BLS infographic image.
+
+**Steps:**
+
+1. Find a BLS infographic image (e.g., from &lt;https://www.bls.gov/ooh/images/&gt;) or save a screenshot of a BLS chart
+
+2. Encode the image using `base64enc::base64encode()`
+
+3. Send it to the Claude API with a prompt requesting JSON output
+
+4. Parse the JSON response into a tibble
+
+5. Create a simple `ggplot2` visualization of the extracted data
+
+**Bonus:** Use the `extract_chart_data()` function from the earlier slide.
+]
+
+<countdown-timer class="countdown" id="timer_a8d9b694" minutes="8" seconds="0" warn-when="60" update-every="1" tabindex="0" style="top:0;right:0;"></countdown-timer>
+
+
+---
+
+## Job Market Connection
+
+.pull-left[
+.font90[
+**Why does this matter for your career?**
+
+Many organizations still distribute critical data in formats that resist analysis:
+
+- **Consulting firms** share findings as PDF reports
+- **Government agencies** publish data as infographics
+- **Executives** share dashboard screenshots in emails
+- **Legacy systems** produce reports only as images or PDFs
+
+**You can now unlock all of this data** using the tools from today's lecture.
+]
+]
+
+.pull-right[
+.center[
+<svg aria-hidden="true" role="img" viewBox="0 0 512 512" style="height:2em;width:2em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#C3142D;overflow:visible;position:relative;"><path d="M64 464l48 0 0 48-48 0c-35.3 0-64-28.7-64-64L0 64C0 28.7 28.7 0 64 0L229.5 0c17 0 33.3 6.7 45.3 18.7l90.5 90.5c12 12 18.7 28.3 18.7 45.3L384 304l-48 0 0-144-80 0c-17.7 0-32-14.3-32-32l0-80L64 48c-8.8 0-16 7.2-16 16l0 384c0 8.8 7.2 16 16 16zM176 352l32 0c30.9 0 56 25.1 56 56s-25.1 56-56 56l-16 0 0 32c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-48 0-80c0-8.8 7.2-16 16-16zm32 80c13.3 0 24-10.7 24-24s-10.7-24-24-24l-16 0 0 48 16 0zm96-80l32 0c26.5 0 48 21.5 48 48l0 64c0 26.5-21.5 48-48 48l-32 0c-8.8 0-16-7.2-16-16l0-128c0-8.8 7.2-16 16-16zm32 128c8.8 0 16-7.2 16-16l0-64c0-8.8-7.2-16-16-16l-16 0 0 96 16 0zm80-112c0-8.8 7.2-16 16-16l48 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-32 0 0 32 32 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-32 0 0 48c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-64 0-64z"/></svg> PDFs
+<svg aria-hidden="true" role="img" viewBox="0 0 384 512" style="height:1em;width:0.75em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#84d6d3;overflow:visible;position:relative;"><path d="M169.4 470.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 370.8 224 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 306.7L54.6 265.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg>
+<svg aria-hidden="true" role="img" viewBox="0 0 512 512" style="height:2em;width:2em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#C3142D;overflow:visible;position:relative;"><path d="M448 80c8.8 0 16 7.2 16 16V415.8l-5-6.5-136-176c-4.5-5.9-11.6-9.3-19-9.3s-14.4 3.4-19 9.3L202 340.7l-30.5-42.7C167 291.7 159.8 288 152 288s-15 3.7-19.5 10.1l-80 112L48 416.3l0-.3V96c0-8.8 7.2-16 16-16H448zM64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64zm80 192a48 48 0 1 0 0-96 48 48 0 1 0 0 96z"/></svg> Images
+<svg aria-hidden="true" role="img" viewBox="0 0 384 512" style="height:1em;width:0.75em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#84d6d3;overflow:visible;position:relative;"><path d="M169.4 470.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 370.8 224 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 306.7L54.6 265.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg>
+<svg aria-hidden="true" role="img" viewBox="0 0 512 512" style="height:2em;width:2em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#C3142D;overflow:visible;position:relative;"><path d="M64 256V160H224v96H64zm0 64H224v96H64V320zm224 96V320H448v96H288zM448 256H288V160H448v96zM64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64z"/></svg> Tidy Data Frames
+<svg aria-hidden="true" role="img" viewBox="0 0 384 512" style="height:1em;width:0.75em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#84d6d3;overflow:visible;position:relative;"><path d="M169.4 470.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 370.8 224 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 306.7L54.6 265.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg>
+<svg aria-hidden="true" role="img" viewBox="0 0 512 512" style="height:2em;width:2em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:#C3142D;overflow:visible;position:relative;"><path d="M24 32c13.3 0 24 10.7 24 24V408c0 13.3 10.7 24 24 24H488c13.3 0 24 10.7 24 24s-10.7 24-24 24H72c-39.8 0-72-32.2-72-72V56C0 42.7 10.7 32 24 32zM128 136c0-13.3 10.7-24 24-24l208 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-208 0c-13.3 0-24-10.7-24-24zm24 72H296c13.3 0 24 10.7 24 24s-10.7 24-24 24H152c-13.3 0-24-10.7-24-24s10.7-24 24-24zm0 96H424c13.3 0 24 10.7 24 24s-10.7 24-24 24H152c-13.3 0-24-10.7-24-24s10.7-24 24-24z"/></svg> Insights
+]
+]
+
+
+---
+
+## Section Check-In: Infographic Data Recovery
+
+✅ You can extract underlying data from chart images using Vision APIs
+
+✅ You can build a reusable extraction function
+
+✅ You know when to use scraping vs API vs LLM text vs LLM vision
+
+
+---
+class: inverse, center, middle
+
+# Recap
+
+
+---
+
+## Summary of Main Points
+
+By now, you should be able to do the following:
+
+- **Extract tabular data from PDF documents** using `pdftools` and `tabulapdf`
+
+- **Use vision APIs to analyze images** by encoding images as base64 and sending them to the Claude API via `httr2`
+
+- **Extract structured information from infographics** and recover the underlying data from charts and screenshots
+
+
+---
+
+## Readings and Resources
+
+.pull-left[
+**PDF Extraction:**
+- [pdftools: Extracting Text and Data from PDFs](https://docs.ropensci.org/pdftools/)
+- [tabulapdf: Extract Tables from PDFs](https://docs.ropensci.org/tabulapdf/)
+
+**Vision APIs:**
+- [Anthropic Vision Documentation](https://docs.anthropic.com/en/docs/build-with-claude/vision)
+- [httr2: Getting Started](https://httr2.r-lib.org/articles/httr2.html)
+]
+
+.pull-right[
+**Additional Resources:**
+- [base64enc Package](https://cran.r-project.org/web/packages/base64enc/)
+- [BLS Occupational Outlook Handbook](https://www.bls.gov/ooh/)
+- [R for Data Science: Data Import](https://r4ds.hadley.nz/data-import)
+]
+
+
+---
+
+## Things to Do to Prepare for Next Class
+
+- Review the [pdftools vignette](https://docs.ropensci.org/pdftools/) and try extracting text from a PDF of your choice
+
+- Read the [Anthropic Vision documentation](https://docs.anthropic.com/en/docs/build-with-claude/vision) to understand image input options
+
+- Ensure your `ANTHROPIC_API_KEY` is set in your `.Renviron` file
+
+- **Next up:** Tidy Data and Data Validation -- making sure your extracted data is clean and ready for analysis
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+  "highlightStyle": "magula",
+  "highlightLines": true,
+  "highlightLanguage": "r",
+  "countIncrementalSlides": false,
+  "ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

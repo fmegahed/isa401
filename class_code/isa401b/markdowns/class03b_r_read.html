@@ -11,7 +11,7 @@
 
 <meta name="author" content="Fadel Megahed" />
 
-<meta name="date" content="2026-02-04" />
+<meta name="date" content="2026-02-09" />
 
 <title>Class 03: Reading Data in R</title>
 
@@ -1589,7 +1589,7 @@ border-radius: 0px;
 
 <h1 class="title toc-ignore">Class 03: Reading Data in R</h1>
 <h4 class="author">Fadel Megahed</h4>
-<h4 class="date">2026-02-04</h4>
+<h4 class="date">2026-02-09</h4>
 
 </div>
 
@@ -1659,8 +1659,57 @@ HTML.</p>
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 </div>
 </div>
+<div id="json-data" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> JSON Data</h1>
+<p>We are using the <strong>jsonlite</strong> package to read json
+data.</p>
+<pre class="r"><code>cincy_jobs = jsonlite::fromJSON(
+  txt = &#39;https://www.themuse.com/api/public/jobs?page=1&amp;location=Cincinnati%2C%20OH&#39;,
+  flatten = T
+)
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogJ0NsYXNzIDAzOiBSZWFkaW5nIERhdGEgaW4gUicNCmF1dGhvcjogIkZhZGVsIE1lZ2FoZWQiDQpkYXRlOiAiYHIgU3lzLkRhdGUoKWAiDQpvdXRwdXQ6IA0KICBodG1sX2RvY3VtZW50Og0KICAgIHRvYzogdHJ1ZQ0KICAgIHRvY19mbG9hdDogdHJ1ZQ0KICAgIG51bWJlcl9zZWN0aW9uczogdHJ1ZQ0KICAgIGNvZGVfZG93bmxvYWQ6IHRydWUNCiAgICBjb2RlX2ZvbGRpbmc6IHNob3cNCi0tLQ0KDQpgYGB7ciBzZXR1cCwgaW5jbHVkZT1GQUxTRX0NCmtuaXRyOjpvcHRzX2NodW5rJHNldChlY2hvID0gVFJVRSkNCmBgYA0KDQojIFJlYWRpbmcgRGF0YSBmcm9tIENTVnMNCg0KIyMgTG9jYWxseTogRnJvbSBNeSBQQw0KDQpJbiBSLCB0aGVyZSBhcmUgc29tZSBkaWZmZXJlbmNlcyBmcm9tIGhvdyBydW5uaW5nIGNvZGUgYW5kIFJNYXJrZG93biBiZWhhdmUgaW4gdGVybXMgb2YgaG93IHRoZXkgY29uc2lkZXIgcGF0aHMgZm9yIGZpbGVzLiAgDQoNCiAgLSAqKlIgTWFya2Rvd246KiogVGhlIHJlbGF0aXZlIHBhdGggaXMgYmFzZWQgb24gdGhlIGxvY2F0aW9uIG9mIHRoZSBSTWFya2Rvd24gZmlsZS4gKipUaGlzIGlzIHRydWUgZm9yIHdoZW4geW91IGtuaXQgdGhlIGZpbGUuKiogIA0KICAtICoqUnVuIENvZGUgTGluZS1CeS1MaW5lOioqIFRoZSBwYXRoIGlzIGJhc2VkIG9uIHRoZSBwcm9qZWN0IGRpcmVjdG9yeSAoYXNzdW1pbmcgdGhhdCB5b3UgYXJlIHdvcmtpbmcgaW4gYSBwcm9qZWN0KS4NCiAgDQpUbyBhbGxldmlhdGUgYW55IGlzc3Vlcywgd2hlbiB3ZSBhcmUgd29ya2luZyBmcm9tIGEgUk1hcmtkb3duLCB3ZSB3aWxsIGFsc28gc2V0IHRoZSB3b3JraW5nIGRpcmVjdG9yeSB0byB0aGUgbWFya2Rvd24gZmlsZSBsb2NhdGlvbi9mb2xkZXIuIA0KDQpgYGB7ciBsb2NhbF9yZWFkfQ0KZGYgPSByZWFkcjo6cmVhZF9jc3YoIi4uL2RhdGEvVVMwMDAuY3N2IikNCg0KYGBgDQoNCg0KIyMgRnJvbSBGUkVEDQoNCmBgYHtyIGZyZWR9DQp1bnJhdGUgPSByZWFkcjo6cmVhZF9jc3YoImh0dHBzOi8vZnJlZC5zdGxvdWlzZmVkLm9yZy9ncmFwaC9mcmVkZ3JhcGguY3N2P2JnY29sb3I9JTIzZWJmM2ZiJmNoYXJ0X3R5cGU9bGluZSZkcnA9MCZmbz1vcGVuJTIwc2FucyZncmFwaF9iZ2NvbG9yPSUyM2ZmZmZmZiZoZWlnaHQ9NDUwJm1vZGU9ZnJlZCZyZWNlc3Npb25fYmFycz1vbiZ0eHRjb2xvcj0lMjM0NDQ0NDQmdHM9MTImdHRzPTEyJndpZHRoPTEzMjAmbnQ9MCZ0aHU9MCZ0cmM9MCZzaG93X2xlZ2VuZD15ZXMmc2hvd19heGlzX3RpdGxlcz15ZXMmc2hvd190b29sdGlwPXllcyZpZD1VTlJBVEUmc2NhbGU9bGVmdCZjb3NkPTE5NDgtMDEtMDEmY29lZD0yMDI1LTEyLTAxJmxpbmVfY29sb3I9JTIzMDA3M2U2JmxpbmtfdmFsdWVzPWZhbHNlJmxpbmVfc3R5bGU9c29saWQmbWFya190eXBlPW5vbmUmbXc9MyZsdz0zJm9zdD0tOTk5OTkmb2V0PTk5OTk5Jm1tYT0wJmZtbD1hJmZxPU1vbnRobHkmZmFtPWF2ZyZmZ3N0PWxpbiZmZ3NuZD0yMDIwLTAyLTAxJmxpbmVfaW5kZXg9MSZ0cmFuc2Zvcm1hdGlvbj1saW4mdmludGFnZV9kYXRlPTIwMjYtMDItMDQmcmV2aXNpb25fZGF0ZT0yMDI2LTAyLTA0Jm5kPTE5NDgtMDEtMDEiKQ0KDQp1bnJhdGVfcmVhZF9kb3RfY3N2ID0gcmVhZC5jc3YoImh0dHBzOi8vZnJlZC5zdGxvdWlzZmVkLm9yZy9ncmFwaC9mcmVkZ3JhcGguY3N2P2JnY29sb3I9JTIzZWJmM2ZiJmNoYXJ0X3R5cGU9bGluZSZkcnA9MCZmbz1vcGVuJTIwc2FucyZncmFwaF9iZ2NvbG9yPSUyM2ZmZmZmZiZoZWlnaHQ9NDUwJm1vZGU9ZnJlZCZyZWNlc3Npb25fYmFycz1vbiZ0eHRjb2xvcj0lMjM0NDQ0NDQmdHM9MTImdHRzPTEyJndpZHRoPTEzMjAmbnQ9MCZ0aHU9MCZ0cmM9MCZzaG93X2xlZ2VuZD15ZXMmc2hvd19heGlzX3RpdGxlcz15ZXMmc2hvd190b29sdGlwPXllcyZpZD1VTlJBVEUmc2NhbGU9bGVmdCZjb3NkPTE5NDgtMDEtMDEmY29lZD0yMDI1LTEyLTAxJmxpbmVfY29sb3I9JTIzMDA3M2U2JmxpbmtfdmFsdWVzPWZhbHNlJmxpbmVfc3R5bGU9c29saWQmbWFya190eXBlPW5vbmUmbXc9MyZsdz0zJm9zdD0tOTk5OTkmb2V0PTk5OTk5Jm1tYT0wJmZtbD1hJmZxPU1vbnRobHkmZmFtPWF2ZyZmZ3N0PWxpbiZmZ3NuZD0yMDIwLTAyLTAxJmxpbmVfaW5kZXg9MSZ0cmFuc2Zvcm1hdGlvbj1saW4mdmludGFnZV9kYXRlPTIwMjYtMDItMDQmcmV2aXNpb25fZGF0ZT0yMDI2LTAyLTA0Jm5kPTE5NDgtMDEtMDEiKQ0KDQpkcGx5cjo6Z2xpbXBzZSh1bnJhdGVfcmVhZF9kb3RfY3N2KSAjIHRoaXMgaXMgd2h5IEkgcHJlZmVyIHJlYWRyDQoNCmBgYA0KDQoNCiMjIEZyb20gR2l0SHViDQoNCk1ha2Ugc3VyZSB5b3UgZ2V0IHRoZSByYXcgbGluayBzaW5jZSB0aGUgb3RoZXIgcGFnZSBpcyBjb25zaWRlcmVkIGFuIEhUTUwuDQoNCmBgYHtyIHN1cGVyX2Jvd2x9DQpzdXBlcl9ib3dsID0gcmVhZHI6OnJlYWRfY3N2KCJodHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vcmZvcmRhdGFzY2llbmNlL3RpZHl0dWVzZGF5LzJlOWJkNWE2N2UwOWIxNGQwMWY2MTZiMDBmN2Y3ZTA5MzE1MTVkMjQvZGF0YS8yMDIxLzIwMjEtMDMtMDIveW91dHViZS5jc3YiKQ0KYGBgDQoNCg0KDQo=</div>
+names(cincy_jobs)</code></pre>
+<pre><code>## [1] &quot;page&quot;           &quot;page_count&quot;     &quot;items_per_page&quot; &quot;took&quot;          
+## [5] &quot;timed_out&quot;      &quot;total&quot;          &quot;results&quot;        &quot;aggregations&quot;</code></pre>
+<pre class="r"><code># to pull the results data.frame (by viewing the list in the Global env)
+# we can either use [[&#39;results&#39;]] or [[7]] $results
+
+cincy_jobs_df = cincy_jobs[[&#39;results&#39;]]
+  
+dplyr::glimpse(cincy_jobs_df)</code></pre>
+<pre><code>## Rows: 20
+## Columns: 15
+## $ contents           &lt;chr&gt; &quot;&lt;p&gt;&lt;strong&gt;About GlossGenius&lt;/strong&gt;&lt;/p&gt;\n\n&lt;p&gt;Gl…
+## $ name               &lt;chr&gt; &quot;Engineering Manager&quot;, &quot;Associate, Customer Experie…
+## $ type               &lt;chr&gt; &quot;external&quot;, &quot;external&quot;, &quot;external&quot;, &quot;external&quot;, &quot;ex…
+## $ publication_date   &lt;chr&gt; &quot;2026-01-23T23:33:10Z&quot;, &quot;2026-02-02T19:03:21Z&quot;, &quot;20…
+## $ short_name         &lt;chr&gt; &quot;engineering-manager&quot;, &quot;associate-customer-experien…
+## $ model_type         &lt;chr&gt; &quot;jobs&quot;, &quot;jobs&quot;, &quot;jobs&quot;, &quot;jobs&quot;, &quot;jobs&quot;, &quot;jobs&quot;, &quot;jo…
+## $ id                 &lt;int&gt; 20377897, 21182194, 20915007, 18157859, 16251932, 2…
+## $ locations          &lt;list&gt; [&lt;data.frame[1 x 1]&gt;], [&lt;data.frame[1 x 1]&gt;], [&lt;da…
+## $ categories         &lt;list&gt; [&lt;data.frame[0 x 0]&gt;], [&lt;data.frame[0 x 0]&gt;], [&lt;da…
+## $ levels             &lt;list&gt; [&lt;data.frame[1 x 2]&gt;], [&lt;data.frame[1 x 2]&gt;], [&lt;da…
+## $ tags               &lt;list&gt; [], [], [], [], [], [], [], [], [], [], [], [], []…
+## $ refs.landing_page  &lt;chr&gt; &quot;https://www.themuse.com/jobs/glossgenius/engineeri…
+## $ company.id         &lt;int&gt; 15000202, 15000097, 15000097, 15000488, 15000097, 1…
+## $ company.short_name &lt;chr&gt; &quot;glossgenius&quot;, &quot;doordash&quot;, &quot;doordash&quot;, &quot;teleperform…
+## $ company.name       &lt;chr&gt; &quot;GlossGenius&quot;, &quot;DoorDash&quot;, &quot;DoorDash&quot;, &quot;Teleperform…</code></pre>
+<pre class="r"><code># optional you can also go one by one and change list columns to single cols
+# this will depend on your goal for the data analysis
+# it depends on your subsequent step
+
+cincy_jobs_df2 = cincy_jobs_df |&gt; 
+  tidyr::unnest(
+    cols = c(&#39;locations&#39;), names_repair = &quot;unique&quot;
+  )</code></pre>
+<pre><code>## New names:
+## • `name` -&gt; `name...2`
+## • `name` -&gt; `name...8`</code></pre>
+<p>Note that the unnesting can impact the number of rows for your
+data.</p>
+</div>
+
+<div id="rmd-source-code">LS0tDQp0aXRsZTogJ0NsYXNzIDAzOiBSZWFkaW5nIERhdGEgaW4gUicNCmF1dGhvcjogIkZhZGVsIE1lZ2FoZWQiDQpkYXRlOiAiYHIgU3lzLkRhdGUoKWAiDQpvdXRwdXQ6IA0KICBodG1sX2RvY3VtZW50Og0KICAgIHRvYzogdHJ1ZQ0KICAgIHRvY19mbG9hdDogdHJ1ZQ0KICAgIG51bWJlcl9zZWN0aW9uczogdHJ1ZQ0KICAgIGNvZGVfZG93bmxvYWQ6IHRydWUNCiAgICBjb2RlX2ZvbGRpbmc6IHNob3cNCi0tLQ0KDQpgYGB7ciBzZXR1cCwgaW5jbHVkZT1GQUxTRX0NCmtuaXRyOjpvcHRzX2NodW5rJHNldChlY2hvID0gVFJVRSkNCmBgYA0KDQojIFJlYWRpbmcgRGF0YSBmcm9tIENTVnMNCg0KIyMgTG9jYWxseTogRnJvbSBNeSBQQw0KDQpJbiBSLCB0aGVyZSBhcmUgc29tZSBkaWZmZXJlbmNlcyBmcm9tIGhvdyBydW5uaW5nIGNvZGUgYW5kIFJNYXJrZG93biBiZWhhdmUgaW4gdGVybXMgb2YgaG93IHRoZXkgY29uc2lkZXIgcGF0aHMgZm9yIGZpbGVzLiAgDQoNCiAgLSAqKlIgTWFya2Rvd246KiogVGhlIHJlbGF0aXZlIHBhdGggaXMgYmFzZWQgb24gdGhlIGxvY2F0aW9uIG9mIHRoZSBSTWFya2Rvd24gZmlsZS4gKipUaGlzIGlzIHRydWUgZm9yIHdoZW4geW91IGtuaXQgdGhlIGZpbGUuKiogIA0KICAtICoqUnVuIENvZGUgTGluZS1CeS1MaW5lOioqIFRoZSBwYXRoIGlzIGJhc2VkIG9uIHRoZSBwcm9qZWN0IGRpcmVjdG9yeSAoYXNzdW1pbmcgdGhhdCB5b3UgYXJlIHdvcmtpbmcgaW4gYSBwcm9qZWN0KS4NCiAgDQpUbyBhbGxldmlhdGUgYW55IGlzc3Vlcywgd2hlbiB3ZSBhcmUgd29ya2luZyBmcm9tIGEgUk1hcmtkb3duLCB3ZSB3aWxsIGFsc28gc2V0IHRoZSB3b3JraW5nIGRpcmVjdG9yeSB0byB0aGUgbWFya2Rvd24gZmlsZSBsb2NhdGlvbi9mb2xkZXIuIA0KDQpgYGB7ciBsb2NhbF9yZWFkfQ0KZGYgPSByZWFkcjo6cmVhZF9jc3YoIi4uL2RhdGEvVVMwMDAuY3N2IikNCg0KYGBgDQoNCg0KIyMgRnJvbSBGUkVEDQoNCmBgYHtyIGZyZWR9DQp1bnJhdGUgPSByZWFkcjo6cmVhZF9jc3YoImh0dHBzOi8vZnJlZC5zdGxvdWlzZmVkLm9yZy9ncmFwaC9mcmVkZ3JhcGguY3N2P2JnY29sb3I9JTIzZWJmM2ZiJmNoYXJ0X3R5cGU9bGluZSZkcnA9MCZmbz1vcGVuJTIwc2FucyZncmFwaF9iZ2NvbG9yPSUyM2ZmZmZmZiZoZWlnaHQ9NDUwJm1vZGU9ZnJlZCZyZWNlc3Npb25fYmFycz1vbiZ0eHRjb2xvcj0lMjM0NDQ0NDQmdHM9MTImdHRzPTEyJndpZHRoPTEzMjAmbnQ9MCZ0aHU9MCZ0cmM9MCZzaG93X2xlZ2VuZD15ZXMmc2hvd19heGlzX3RpdGxlcz15ZXMmc2hvd190b29sdGlwPXllcyZpZD1VTlJBVEUmc2NhbGU9bGVmdCZjb3NkPTE5NDgtMDEtMDEmY29lZD0yMDI1LTEyLTAxJmxpbmVfY29sb3I9JTIzMDA3M2U2JmxpbmtfdmFsdWVzPWZhbHNlJmxpbmVfc3R5bGU9c29saWQmbWFya190eXBlPW5vbmUmbXc9MyZsdz0zJm9zdD0tOTk5OTkmb2V0PTk5OTk5Jm1tYT0wJmZtbD1hJmZxPU1vbnRobHkmZmFtPWF2ZyZmZ3N0PWxpbiZmZ3NuZD0yMDIwLTAyLTAxJmxpbmVfaW5kZXg9MSZ0cmFuc2Zvcm1hdGlvbj1saW4mdmludGFnZV9kYXRlPTIwMjYtMDItMDQmcmV2aXNpb25fZGF0ZT0yMDI2LTAyLTA0Jm5kPTE5NDgtMDEtMDEiKQ0KDQp1bnJhdGVfcmVhZF9kb3RfY3N2ID0gcmVhZC5jc3YoImh0dHBzOi8vZnJlZC5zdGxvdWlzZmVkLm9yZy9ncmFwaC9mcmVkZ3JhcGguY3N2P2JnY29sb3I9JTIzZWJmM2ZiJmNoYXJ0X3R5cGU9bGluZSZkcnA9MCZmbz1vcGVuJTIwc2FucyZncmFwaF9iZ2NvbG9yPSUyM2ZmZmZmZiZoZWlnaHQ9NDUwJm1vZGU9ZnJlZCZyZWNlc3Npb25fYmFycz1vbiZ0eHRjb2xvcj0lMjM0NDQ0NDQmdHM9MTImdHRzPTEyJndpZHRoPTEzMjAmbnQ9MCZ0aHU9MCZ0cmM9MCZzaG93X2xlZ2VuZD15ZXMmc2hvd19heGlzX3RpdGxlcz15ZXMmc2hvd190b29sdGlwPXllcyZpZD1VTlJBVEUmc2NhbGU9bGVmdCZjb3NkPTE5NDgtMDEtMDEmY29lZD0yMDI1LTEyLTAxJmxpbmVfY29sb3I9JTIzMDA3M2U2JmxpbmtfdmFsdWVzPWZhbHNlJmxpbmVfc3R5bGU9c29saWQmbWFya190eXBlPW5vbmUmbXc9MyZsdz0zJm9zdD0tOTk5OTkmb2V0PTk5OTk5Jm1tYT0wJmZtbD1hJmZxPU1vbnRobHkmZmFtPWF2ZyZmZ3N0PWxpbiZmZ3NuZD0yMDIwLTAyLTAxJmxpbmVfaW5kZXg9MSZ0cmFuc2Zvcm1hdGlvbj1saW4mdmludGFnZV9kYXRlPTIwMjYtMDItMDQmcmV2aXNpb25fZGF0ZT0yMDI2LTAyLTA0Jm5kPTE5NDgtMDEtMDEiKQ0KDQpkcGx5cjo6Z2xpbXBzZSh1bnJhdGVfcmVhZF9kb3RfY3N2KSAjIHRoaXMgaXMgd2h5IEkgcHJlZmVyIHJlYWRyDQoNCmBgYA0KDQoNCiMjIEZyb20gR2l0SHViDQoNCk1ha2Ugc3VyZSB5b3UgZ2V0IHRoZSByYXcgbGluayBzaW5jZSB0aGUgb3RoZXIgcGFnZSBpcyBjb25zaWRlcmVkIGFuIEhUTUwuDQoNCmBgYHtyIHN1cGVyX2Jvd2x9DQpzdXBlcl9ib3dsID0gcmVhZHI6OnJlYWRfY3N2KCJodHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vcmZvcmRhdGFzY2llbmNlL3RpZHl0dWVzZGF5LzJlOWJkNWE2N2UwOWIxNGQwMWY2MTZiMDBmN2Y3ZTA5MzE1MTVkMjQvZGF0YS8yMDIxLzIwMjEtMDMtMDIveW91dHViZS5jc3YiKQ0KYGBgDQoNCg0KIyBKU09OIERhdGENCg0KV2UgYXJlIHVzaW5nIHRoZSAqKmpzb25saXRlKiogcGFja2FnZSB0byByZWFkIGpzb24gZGF0YS4gDQoNCmBgYHtyIGNpbmN5X2pvYnN9DQpjaW5jeV9qb2JzID0ganNvbmxpdGU6OmZyb21KU09OKA0KICB0eHQgPSAnaHR0cHM6Ly93d3cudGhlbXVzZS5jb20vYXBpL3B1YmxpYy9qb2JzP3BhZ2U9MSZsb2NhdGlvbj1DaW5jaW5uYXRpJTJDJTIwT0gnLA0KICBmbGF0dGVuID0gVA0KKQ0KDQpuYW1lcyhjaW5jeV9qb2JzKQ0KDQojIHRvIHB1bGwgdGhlIHJlc3VsdHMgZGF0YS5mcmFtZSAoYnkgdmlld2luZyB0aGUgbGlzdCBpbiB0aGUgR2xvYmFsIGVudikNCiMgd2UgY2FuIGVpdGhlciB1c2UgW1sncmVzdWx0cyddXSBvciBbWzddXSAkcmVzdWx0cw0KDQpjaW5jeV9qb2JzX2RmID0gY2luY3lfam9ic1tbJ3Jlc3VsdHMnXV0NCiAgDQpkcGx5cjo6Z2xpbXBzZShjaW5jeV9qb2JzX2RmKQ0KDQojIG9wdGlvbmFsIHlvdSBjYW4gYWxzbyBnbyBvbmUgYnkgb25lIGFuZCBjaGFuZ2UgbGlzdCBjb2x1bW5zIHRvIHNpbmdsZSBjb2xzDQojIHRoaXMgd2lsbCBkZXBlbmQgb24geW91ciBnb2FsIGZvciB0aGUgZGF0YSBhbmFseXNpcw0KIyBpdCBkZXBlbmRzIG9uIHlvdXIgc3Vic2VxdWVudCBzdGVwDQoNCmNpbmN5X2pvYnNfZGYyID0gY2luY3lfam9ic19kZiB8PiANCiAgdGlkeXI6OnVubmVzdCgNCiAgICBjb2xzID0gYygnbG9jYXRpb25zJyksIG5hbWVzX3JlcGFpciA9ICJ1bmlxdWUiDQogICkNCg0KYGBgDQoNCk5vdGUgdGhhdCB0aGUgdW5uZXN0aW5nIGNhbiBpbXBhY3QgdGhlIG51bWJlciBvZiByb3dzIGZvciB5b3VyIGRhdGEuDQo=</div>
 
 
 </div>

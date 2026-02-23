@@ -1,0 +1,686 @@
+---
+title: "ISA 401: Business Intelligence & Data Visualization"
+subtitle: '13: Lab — Power BI'
+author: '<br>Fadel M. Megahed, PhD <br><br>Raymond E. Gloss Professor in Business <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("linkedin"), fill = "white")` @Fadel Megahed](https://www.linkedin.com/in/fadel-megahed-289046b4) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
+date: "Spring 2026"
+output:
+  xaringan::moon_reader:
+    self_contained: true
+    css: [default, "../../style_files/fonts.css", "../../style_files/my-theme.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: magula
+      highlightLines: true
+      highlightLanguage: ["r"]
+      countIncrementalSlides: false
+      ratio: "16:9"
+header-includes:
+  - "../../style_files/header.html"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache = FALSE,
+                      echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE,
+                      progress = FALSE,
+                      verbose = FALSE,
+                      dev = 'png',
+                      fig.height = 2.5,
+                      dpi = 300,
+                      fig.align = 'center')
+
+options(htmltools.dir.version = FALSE)
+
+miamired = '#C3142D'
+
+if(require(pacman)==FALSE) install.packages("pacman")
+if(require(devtools)==FALSE) install.packages("devtools")
+
+if(require(countdown)==FALSE) devtools::install_github("gadenbuie/countdown")
+if(require(xaringanExtra)==FALSE) devtools::install_github("gadenbuie/xaringanExtra")
+
+
+pacman::p_load(tidyverse, magrittr, # data analysis pkgs
+               fontawesome, RefManageR, xaringanExtra, countdown) # for slides
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+if(require(xaringanthemer) == FALSE) install.packages("xaringanthemer")
+library(xaringanthemer)
+
+xaringanthemer::style_mono_accent(base_color = "#84d6d3",
+                  base_font_size = "20px")
+
+xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "tachyons", "panelset", "search", "fit_screen", "editable",
+                                    "clipable"))
+```
+
+
+## Quick Refresher from Last Week
+
+`r emo::ji("check")` Imported and prepared data in Tableau.
+
+`r emo::ji("check")` Created bar, scatter, box, and map charts.
+
+`r emo::ji("check")` Built interactive filters, parameters, and cross-filtering.
+
+`r emo::ji("check")` Constructed a multi-view Job Market Explorer dashboard.
+
+**Today:** We rebuild the same dashboard in **Power BI Desktop** and compare the two tools.
+
+
+---
+
+# Tableau vs. Power BI: Quick Comparison
+
+.font80[
+| Dimension | Tableau | Power BI |
+|-----------|---------|----------|
+| **Vendor** | Salesforce | Microsoft |
+| **Strength** | Visual exploration, ad-hoc analysis | Integration with Microsoft ecosystem |
+| **Data modeling** | Joins in Data Source pane | Full relational model + DAX |
+| **Calculated fields** | Tableau calculations | DAX measures & calculated columns |
+| **Pricing** | Higher per-user cost | Included with many Microsoft 365 plans |
+| **Publishing** | Tableau Server / Public | Power BI Service / Embedded |
+| **Learning curve** | Drag-and-drop, intuitive | Steeper for DAX; easier if you know Excel |
+| **Market share** | Strong in analytics-first orgs | Dominant in Microsoft-centric orgs |
+]
+
+.font130[**Bottom line:** Know both = more opportunities.]
+
+
+---
+
+# Learning Objectives for Today's Lab
+
+- **LO1:** Import data and create relationships in Power BI
+
+- **LO2:** Build visualizations and add slicers
+
+- **LO3:** Write basic DAX measures
+
+- **LO4:** Compare Tableau and Power BI strengths
+
+
+---
+class: inverse, center, middle
+
+# Step 1: Import Data into Power BI
+
+
+---
+
+# Step 1a: Launch Power BI and Load the CSV
+
+1. Open **Power BI Desktop**.
+
+2. On the Home ribbon, click **Get Data** > **Text/CSV**.
+
+3. Navigate to your **`job_market.csv`** file and click **Open**.
+
+4. A preview window appears. Verify:
+   - Column headers are detected correctly.
+   - Data types look reasonable (Power BI auto-detects).
+
+5. Click **Transform Data** to open **Power Query Editor** (we will verify types there).
+
+`[Screenshot: Power BI Get Data dialog with Text/CSV selected]`
+
+
+---
+
+# Step 1b: Verify in Power Query Editor
+
+.font80[
+In the Power Query Editor:
+
+1. Check the **data type icon** next to each column header:
+   - **ABC** = Text
+   - **1.2** = Decimal Number
+   - **123** = Whole Number
+   - **Calendar** = Date
+
+2. **Fix any incorrect types:** Click the icon > select the correct type.
+
+| Column | Expected Type |
+|--------|--------------|
+| `job_title` | Text |
+| `salary_min` / `salary_max` | Decimal Number |
+| `state` | Text |
+| `date_posted` | Date |
+| `skills_count` | Whole Number |
+| `job_category` | Text |
+
+3. Click **Close & Apply** on the Home ribbon to load the data into the model.
+]
+
+`[Screenshot: Power Query Editor with column types verified]`
+
+
+---
+class: inverse, center, middle
+
+# Step 2: Data Types and Relationships
+
+
+---
+
+# Step 2a: Review the Data Model
+
+1. In the left sidebar, click the **Model** view icon (three connected boxes).
+
+2. You will see your `job_market` table. With a single table, there are no relationships to create yet.
+
+3. **Why this matters:** In real projects, you will have multiple tables (e.g., `jobs`, `companies`, `skills`) and need to define **relationships** (joins) between them.
+
+4. **Key concepts:**
+   - **Primary key:** A column with unique values in one table.
+   - **Foreign key:** A column in another table that references the primary key.
+   - **Cardinality:** One-to-many, many-to-many, etc.
+
+`[Screenshot: Power BI Model view showing the job_market table]`
+
+
+---
+
+# Step 2b: Set Data Categories
+
+Power BI can enhance visuals if you assign **data categories** to geographic columns:
+
+1. Switch to **Data** view (table icon in the left sidebar).
+
+2. Click the **`state`** column header.
+
+3. In the **Column tools** ribbon, find **Data Category** > select **State or Province**.
+
+4. This enables Power BI to auto-generate maps for the `state` column.
+
+5. **Optional:** If you have a `city` column, set its category to **City**.
+
+`[Screenshot: Column tools ribbon with Data Category dropdown set to State or Province]`
+
+
+---
+class: inverse, center, middle
+
+# Step 3: Recreate Charts from Tableau
+
+
+---
+
+# Step 3a: Bar Chart — Jobs by State
+
+1. Switch to **Report** view (chart icon in the left sidebar).
+
+2. In the **Visualizations** pane, click the **Clustered Bar Chart** icon.
+
+3. Drag **`state`** to the **Y-axis** field.
+
+4. Drag **`job_title`** to the **X-axis** field -- Power BI will auto-aggregate as **Count**.
+
+5. **Sort:** Click the three-dot menu (**...**) on the chart > **Sort axis** > **Count of job_title** > **Descending**.
+
+6. **Top-N filter:** In the **Filters** pane, expand the `state` filter > select **Top N** > set to **Top 15** by **Count of job_title** > click **Apply filter**.
+
+`[Screenshot: Clustered bar chart of top 15 states by job count]`
+
+
+---
+
+# Step 3b: Format the Bar Chart
+
+1. Click the chart to select it.
+
+2. In the **Format** pane (paint roller icon):
+   - **Data colors:** Set all bars to a single color (e.g., `#C3142D`).
+   - **Data labels:** Toggle **On** to show counts on each bar.
+   - **Title:** Change to **"Job Postings by State"**.
+   - **Gridlines:** Toggle off Y-axis gridlines for a cleaner look.
+
+3. **Resize** the chart by dragging its handles on the canvas.
+
+
+---
+
+# Step 3c: Scatter Plot — Salary vs. Skills
+
+1. Click an empty area on the canvas.
+
+2. Select the **Scatter Chart** visual from the Visualizations pane.
+
+3. Assign fields:
+   - **X-axis:** `skills_count`
+   - **Y-axis:** `salary_max` (it will auto-aggregate as Sum -- change to **Average** or drag individual values)
+   - **Legend:** `job_category`
+   - **Size:** Leave blank (or use `Count of job_title`)
+
+4. **Add a trend line:** Click the **Analytics** icon (magnifying glass) in the Visualizations pane > **Trend line** > toggle **On**.
+
+5. **Title:** Change to **"Salary vs. Skills Count"**.
+
+`[Screenshot: Scatter chart with trend line, colored by job category]`
+
+
+---
+
+# Step 3d: Map — Job Locations
+
+1. Click an empty area on the canvas.
+
+2. Select the **Filled Map** (choropleth) visual.
+
+3. Assign fields:
+   - **Location:** `state`
+   - **Color saturation:** `Count of job_title`
+
+4. Power BI uses the **data category** you set earlier to map states correctly.
+
+5. **Format:**
+   - Choose a **sequential** color scale (e.g., light-to-dark blue).
+   - **Title:** Change to **"Job Postings by State (Map)"**.
+
+`[Screenshot: Filled map of the U.S. with states colored by job count]`
+
+
+---
+
+# Step 3e: Box Plot — Salary by Category
+
+Power BI does not have a native box plot in the default visuals, so we need a workaround:
+
+**Option A: Use a custom visual**
+
+1. In the Visualizations pane, click the three dots (**...**) > **Get more visuals**.
+
+2. Search for **"Box and Whisker"** in the AppSource marketplace.
+
+3. Click **Add** to install it.
+
+4. Select the new Box and Whisker visual and assign:
+   - **Category:** `job_category`
+   - **Values:** `salary_max`
+
+**Option B: Use a Violin Plot or a table with percentiles (if the custom visual is unavailable)**
+
+5. **Title:** Change to **"Salary Distribution by Category"**.
+
+`[Screenshot: Box and Whisker chart from AppSource showing salary distributions]`
+
+
+---
+
+# Step 3f: Arrange the Four Charts
+
+1. **Resize and position** the four charts on the canvas in a 2x2 grid layout:
+
+| Top-Left | Top-Right |
+|----------|-----------|
+| Bar Chart | Scatter Plot |
+| **Bottom-Left** | **Bottom-Right** |
+| Box Plot | Map |
+
+2. **Align charts:** Select multiple charts (Ctrl+Click) > **Format** ribbon > **Align** > **Distribute Horizontally** / **Vertically**.
+
+3. **Add a title:** Insert a **Text Box** from the **Insert** ribbon > type **"Job Market Explorer Dashboard"** > format with a larger font.
+
+
+---
+class: inverse, center, middle
+
+# Step 4: Slicers and Cross-Filtering
+
+
+---
+
+# Step 4a: Add a Job Category Slicer
+
+**Slicers** in Power BI are the equivalent of Tableau's filters:
+
+1. Click an empty area on the canvas.
+
+2. Select the **Slicer** visual from the Visualizations pane.
+
+3. Drag **`job_category`** into the **Field** well.
+
+4. **Slicer style:** Click the dropdown on the slicer > choose **Dropdown** (to save space) or **List** (for visibility).
+
+5. Place the slicer at the **top of the dashboard** above the charts.
+
+`[Screenshot: Slicer showing job categories as a dropdown above the dashboard]`
+
+
+---
+
+# Step 4b: Add a Salary Range Slicer
+
+1. Add another **Slicer** visual.
+
+2. Drag **`salary_max`** into the Field well.
+
+3. Power BI automatically creates a **range slider** for numeric fields.
+
+4. Users can drag the handles to set a minimum and maximum salary range.
+
+5. Place this slicer next to the job category slicer at the top.
+
+`[Screenshot: Numeric range slicer for salary_max next to the category slicer]`
+
+
+---
+
+# Step 4c: Cross-Filtering Behavior
+
+Power BI enables **cross-filtering by default**:
+
+- **Click** a bar in the bar chart -- all other visuals update to reflect that state.
+
+- **Click** a category in the scatter plot legend -- the bar chart and map filter accordingly.
+
+**To customize interactions:**
+
+1. Click a chart to select it.
+
+2. Go to the **Format** ribbon > **Edit Interactions**.
+
+3. Icons appear on every other chart:
+   - **Filter** (funnel): the target chart filters when you click the source.
+   - **Highlight** (highlight icon): the target chart highlights matching data.
+   - **None** (circle with line): no interaction.
+
+4. Choose the interaction type for each pair of charts.
+
+
+---
+class: inverse, center, middle
+
+# Step 5: Introduction to DAX
+
+
+---
+
+# Step 5a: What Is DAX?
+
+**DAX** (Data Analysis Expressions) is Power BI's formula language:
+
+- Similar to Excel formulas but designed for **relational data models**.
+
+- Used to create **measures** (dynamic calculations) and **calculated columns** (static, row-level).
+
+- **Measures** are computed at query time and respond to filters/slicers.
+
+| Concept | Excel Equivalent | DAX Example |
+|---------|-----------------|-------------|
+| Sum a column | `=SUM(A:A)` | `SUMX(Jobs, Jobs[Salary])` |
+| Count rows | `=COUNTA(A:A)` | `COUNTROWS(Jobs)` |
+| Average | `=AVERAGE(A:A)` | `AVERAGE(Jobs[Salary])` |
+| Conditional | `=SUMIFS(...)` | `CALCULATE(SUM(...), Filter)` |
+
+
+---
+
+# Step 5b: Create Your First Measure — avg_salary
+
+1. In the **Data** pane, right-click the `job_market` table > **New Measure**.
+
+2. In the formula bar, type:
+
+```
+avg_salary = AVERAGE(job_market[salary_max])
+```
+
+3. Press **Enter**. The measure appears in the Data pane with a calculator icon.
+
+4. **Format the measure:** Select `avg_salary` > in the **Measure tools** ribbon > **Format** > **Currency** (or **Decimal Number**).
+
+5. **Use it:** Drag `avg_salary` into a **Card** visual to display the overall average salary on your dashboard.
+
+`[Screenshot: Card visual showing avg_salary formatted as currency]`
+
+
+---
+
+# Step 5c: Create job_count Measure
+
+1. Right-click the table > **New Measure**.
+
+2. Type:
+
+```
+job_count = COUNTROWS(job_market)
+```
+
+3. Press **Enter**.
+
+4. Drag `job_count` into another **Card** visual.
+
+5. This card dynamically updates when slicers or cross-filters are applied -- showing the count of jobs **in the current filter context**.
+
+
+---
+
+# Step 5d: Create salary_premium Measure
+
+This measure calculates how much each category's average salary exceeds the overall average:
+
+1. Right-click the table > **New Measure**.
+
+2. Type:
+
+```
+salary_premium =
+    AVERAGE(job_market[salary_max])
+    - CALCULATE(AVERAGE(job_market[salary_max]), ALL(job_market[job_category]))
+```
+
+3. Press **Enter**.
+
+4. **How it works:**
+   - `AVERAGE(job_market[salary_max])` computes the average salary **in the current filter context** (e.g., for "Data Scientist").
+   - `CALCULATE(... ALL(job_category))` computes the **overall** average, ignoring the category filter.
+   - The difference is the **premium** (or deficit) for that category.
+
+5. **Use it:** Create a **Clustered Bar Chart** with `job_category` on the axis and `salary_premium` as the value.
+
+`[Screenshot: Bar chart showing salary premium by job category, some positive, some negative]`
+
+
+---
+class: inverse, center, middle
+
+# Step 6: Dashboard Layout and Formatting
+
+
+---
+
+# Step 6a: Apply a Consistent Theme
+
+1. Go to the **View** ribbon > **Themes**.
+
+2. Choose a built-in theme or click **Browse for Themes** to import a custom `.json` theme file.
+
+3. **Recommended:** Use a simple theme with a white background and a single accent color.
+
+4. **Consistency checklist:**
+   - Same font family across all visuals.
+   - Same accent color for data bars and points.
+   - Chart titles in the same size and weight.
+   - Slicer styling matches the overall theme.
+
+
+---
+
+# Step 6b: Final Layout and Polish
+
+1. **Arrange visuals** in a clean grid with consistent spacing.
+
+2. **Add KPI cards** at the top: `avg_salary`, `job_count`, and optionally `salary_premium`.
+
+3. **Remove visual headers** if they add clutter: Format pane > **General** > **Header icons** > toggle off.
+
+4. **Bookmarks (optional):** Use **View** > **Bookmarks** to save specific filter states (e.g., "Data Science Jobs Only").
+
+5. **Mobile layout (optional):** Go to **View** > **Mobile Layout** to arrange visuals for phone viewing.
+
+`[Screenshot: Final polished dashboard with cards at top, slicers below, four charts in a grid]`
+
+
+---
+
+# Activity: Build the Job Market Dashboard in Power BI
+
+`r countdown(minutes = 20, seconds = 0, top = 0, font_size = "2em")`
+
+.panelset[
+
+.panel[.panel-name[Instructions]
+
+> Recreate the **Job Market Explorer** dashboard in Power BI with:
+
+1. A **bar chart** of top 15 states by job count
+2. A **scatter plot** of salary vs. skills count
+3. A **map** of job locations
+4. A **box plot** (custom visual) of salary by category
+5. **Slicers** for job category and salary range
+6. **DAX measures:** `avg_salary`, `job_count`, `salary_premium`
+7. **Card visuals** displaying the DAX measures
+
+**Save** your file as `job_market_dashboard.pbix`.
+
+]
+
+.panel[.panel-name[Checklist]
+
+.can-edit.key-activity04[
+
+- [ ] Imported CSV and verified data types
+- [ ] Set state to Geographic data category
+- [ ] Bar chart with Top-N filter
+- [ ] Scatter plot with trend line
+- [ ] Filled map with sequential color
+- [ ] Box plot (custom visual)
+- [ ] Job category slicer
+- [ ] Salary range slicer
+- [ ] avg_salary measure + Card
+- [ ] job_count measure + Card
+- [ ] salary_premium measure + Bar chart
+- [ ] Consistent theme applied
+- [ ] Saved as .pbix
+
+]
+
+]
+
+.panel[.panel-name[Troubleshooting]
+
+**Common issues:**
+
+- **Map not showing:** Ensure `state` has the Data Category set to "State or Province."
+- **DAX error:** Check that table and column names in your formula exactly match the Data pane (case-sensitive).
+- **Measure shows blank:** Measures need a visual context -- drag them into a visual, not just onto the canvas.
+- **Custom visual not available:** Check your organization's admin settings or try an alternative AppSource visual.
+- **Slicer not filtering a chart:** Use Edit Interactions to verify the interaction type is set to Filter.
+
+]
+
+]
+
+
+---
+class: inverse, center, middle
+
+# Comparison Discussion
+
+
+---
+
+# Structured Comparison: Tableau vs. Power BI
+
+Based on your hands-on experience over the last two labs:
+
+| Task | Easier in Tableau? | Easier in Power BI? | About the Same? |
+|------|-------------------|---------------------|-----------------|
+| Connecting to CSV | | | |
+| Creating a bar chart | | | |
+| Creating a scatter plot | | | |
+| Creating a map | | | |
+| Creating a box plot | | | |
+| Adding filters/slicers | | | |
+| Custom calculations | | | |
+| Dashboard layout | | | |
+| Cross-filtering | | | |
+| Publishing/sharing | | | |
+
+
+---
+
+# Discussion: When to Choose Which Tool
+
+.pull-left[
+
+**Choose Tableau when:**
+
+- You need fast, **ad-hoc exploration** of large datasets.
+
+- The audience expects **polished, interactive** dashboards.
+
+- Your organization is **analytics-first** (not tied to Microsoft).
+
+- You need advanced **spatial** or **statistical** visualizations.
+
+]
+
+.pull-right[
+
+**Choose Power BI when:**
+
+- Your organization uses **Microsoft 365** / Azure / SharePoint.
+
+- You need **data modeling** with multiple related tables.
+
+- **DAX** provides the calculation power you need.
+
+- **Cost** is a concern -- Power BI Pro is often bundled with existing licenses.
+
+- You want tight **Excel integration**.
+
+]
+
+.font130[**In practice:** Many organizations use both. Knowing both makes you a stronger candidate.]
+
+
+---
+class: inverse, center, middle
+
+# Wrap-Up
+
+
+---
+
+# Summary of What We Built
+
+Today you recreated the Job Market Explorer dashboard in Power BI:
+
+`r emo::ji("check")` **LO1:** Imported data, set data categories, and explored the model view.
+
+`r emo::ji("check")` **LO2:** Built bar, scatter, map, and box plot visuals with slicers.
+
+`r emo::ji("check")` **LO3:** Wrote DAX measures: `avg_salary`, `job_count`, `salary_premium`.
+
+`r emo::ji("check")` **LO4:** Compared Tableau and Power BI across multiple dimensions.
+
+
+---
+
+# Next Steps
+
+1. **Submit** your `job_market_dashboard.pbix` file on Canvas.
+
+2. **Reflect** on the comparison: Write a short paragraph (3-5 sentences) about which tool you preferred and why. Submit this on Canvas as part of the assignment.
+
+3. **For next class:** We will explore **Flourish and Datawrapper** -- lightweight, web-based tools for quick visualizations and data storytelling.
+
+4. **Portfolio tip:** Having dashboards in **both Tableau and Power BI** demonstrates versatility. Consider publishing both to your online portfolio.
+
+.font130[**Microsoft shops = Power BI. Know both = more opportunities.**]

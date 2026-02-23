@@ -1,0 +1,1105 @@
+---
+title: "ISA 401: Business Intelligence & Data Visualization"
+subtitle: '17: Visualizing Text Data in `r icons::icon_style(icons::fontawesome("r-project"), fill = "white")`'
+author: '<br>Fadel M. Megahed, PhD <br><br>Raymond E. Gloss Professor in Business <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("linkedin"), fill = "white")` @Fadel Megahed](https://www.linkedin.com/in/fadel-megahed-289046b4) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
+date: "Spring 2026"
+output:
+  xaringan::moon_reader:
+    self_contained: true
+    css: [default, "../../style_files/fonts.css", "../../style_files/my-theme.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: magula
+      highlightLines: true
+      highlightLanguage: ["r"]
+      countIncrementalSlides: false
+      ratio: "16:9"
+header-includes:
+  - "../../style_files/header.html"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache = FALSE,
+                      echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE,
+                      progress = FALSE,
+                      verbose = FALSE,
+                      dev = 'png',
+                      fig.height = 2.5,
+                      dpi = 300,
+                      fig.align = 'center')
+
+options(htmltools.dir.version = FALSE)
+
+miamired = '#C3142D'
+
+if(require(pacman)==FALSE) install.packages("pacman")
+if(require(devtools)==FALSE) install.packages("devtools")
+
+if(require(countdown)==FALSE) devtools::install_github("gadenbuie/countdown")
+if(require(xaringanExtra)==FALSE) devtools::install_github("gadenbuie/xaringanExtra")
+
+
+pacman::p_load(tidyverse, magrittr, lubridate, janitor, # data analysis pkgs
+               tidytext, wordcloud2, igraph, ggraph, textdata, # for text visualization
+               fontawesome, RefManageR, xaringanExtra, countdown) # for slides
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+if(require(xaringanthemer) == FALSE) install.packages("xaringanthemer")
+library(xaringanthemer)
+
+xaringanthemer::style_mono_accent(base_color = "#84d6d3",
+                  base_font_size = "20px")
+
+xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "tachyons", "panelset", "search", "fit_screen", "editable",
+                                    "clipable"))
+```
+
+
+## Quick Refresher from Last Week
+
+
+`r emo::ji("check")` Differentiate between choropleth, dot/bubble, and flow maps.
+
+`r emo::ji("check")` Create choropleth and proportional symbol maps with ggplot2.
+
+`r emo::ji("check")` Build interactive maps with Leaflet.
+
+`r emo::ji("check")` Combine spatial and temporal dimensions in visualizations.
+
+---
+
+## Kahoot/Quiz Review: Spatial Data Visualization
+
+.pull-left[
+
+**Q1.** A choropleth map encodes data using:
+A. Point sizes
+B. Arrow thickness
+C. Area shading/color
+D. Animation speed
+
+**Q2.** Which R function initializes a Leaflet interactive map?
+A. `ggplot()`
+B. `leaflet()`
+C. `map_data()`
+D. `plot_geo()`
+
+**Q3.** What does `addCircleMarkers()` allow that `addMarkers()` does not?
+A. Click events
+B. Custom popups
+C. Size and color encoding
+D. Base map tiles
+
+]
+
+.pull-right[
+
+**Q4.** To show the same map at different time points, the best static approach is:
+A. Animation
+B. Faceted maps using `facet_wrap()`
+C. A single map with a time slider
+D. Separate image files
+
+**Q5.** Why should choropleths show rates instead of raw counts?
+A. Rates are easier to calculate
+B. Larger regions naturally have larger counts
+C. Raw counts require more colors
+D. Rates look better visually
+
+]
+
+
+`r countdown(minutes = 3, warn_when = 60, color_background = miamired, color_text = "white", font_size = "1.5em", top = 0, right = 0)`
+
+
+---
+
+# Learning Objectives for Today's Class
+
+- **LO1:** Create word clouds and term frequency charts
+
+- **LO2:** Visualize word co-occurrence networks
+
+- **LO3:** Plot sentiment trends over time
+
+
+---
+class: inverse, center, middle
+
+# Word Clouds and Term Frequency Charts
+
+---
+
+## Text Data Is Everywhere
+
+.pull-left[
+
+- **Job descriptions** tell you what skills employers want.
+
+- **Customer reviews** reveal product strengths and weaknesses.
+
+- **Survey responses** capture qualitative feedback at scale.
+
+- **Social media posts** track public opinion in real time.
+
+- The challenge: text is **unstructured**. We need tools to quantify and visualize it.
+
+- Today's toolkit: `tidytext` for tokenization, `wordcloud2` for word clouds, `ggplot2` for bar charts, `igraph` + `ggraph` for networks.
+
+]
+
+.pull-right[
+
+```{r text-examples, echo=FALSE}
+text_sources <- tibble::tribble(
+  ~source, ~volume, ~structure,
+  "Job descriptions", "Millions/year", "Semi-structured",
+  "Product reviews", "Billions/year", "Unstructured",
+  "Survey responses", "Thousands/study", "Unstructured",
+  "Social media", "500M tweets/day", "Unstructured",
+  "News articles", "Thousands/day", "Semi-structured"
+)
+
+knitr::kable(text_sources, format = "html",
+             caption = "Common text data sources")
+```
+
+]
+
+
+---
+
+## Sample Data: Job Description Skills
+
+We create a sample dataset of skills extracted from data analyst job descriptions.
+
+```{r skills-data}
+job_skills <- tibble::tribble(
+  ~skill, ~count,
+  "SQL", 245, "Python", 210, "Excel", 195, "Tableau", 180,
+  "R", 150, "Power BI", 135, "Statistics", 120, "Machine Learning", 95,
+  "Communication", 90, "Data Modeling", 85, "AWS", 75, "ETL", 70,
+  "Spark", 60, "Git", 55, "Agile", 50, "Hadoop", 45,
+  "SAS", 40, "Looker", 38, "dbt", 35, "Snowflake", 32,
+  "Azure", 30, "GCP", 28, "Presentation", 65, "Leadership", 42,
+  "Problem Solving", 88
+)
+```
+
+
+---
+
+## Word Cloud: The Popular (but Flawed) Choice
+
+.panelset[
+
+.panel[.panel-name[Code]
+
+```{r wordcloud-code, eval=FALSE}
+# wordcloud2 expects a data frame with 'word' and 'freq' columns
+wc_data <- job_skills |>
+  dplyr::select(word = skill, freq = count)
+
+wordcloud2::wordcloud2(wc_data, size = 0.8, color = "random-dark",
+           backgroundColor = "white",
+           shape = "circle")
+```
+
+]
+
+.panel[.panel-name[Output]
+
+```{r wordcloud-output, echo=FALSE, fig.height=4}
+wc_data <- job_skills |>
+  dplyr::select(word = skill, freq = count)
+
+wordcloud2::wordcloud2(wc_data, size = 0.8, color = "random-dark",
+           backgroundColor = "white",
+           shape = "circle")
+```
+
+]
+
+.panel[.panel-name[The Problem]
+
+**Why word clouds lie** (or at least mislead):
+
+1. **Font size is hard to compare** -- is "Python" really 1.4x bigger than "Tableau"? Hard to tell.
+
+2. **Position is random** -- it implies no relationship, yet readers assume spatial meaning.
+
+3. **Long words appear larger** -- "Machine Learning" takes up more space than "SQL" even at similar importance.
+
+4. **No axis or scale** -- there is no reference point for comparison.
+
+5. Word clouds are great for **engagement** but poor for **precision**.
+
+]
+
+]
+
+
+---
+
+## The Better Alternative: Bar Chart of Top Skills
+
+.panelset[
+
+.panel[.panel-name[Code]
+
+```{r bar-skills-code, eval=FALSE}
+job_skills |>
+  dplyr::slice_max(count, n = 20) |>
+  dplyr::mutate(skill = forcats::fct_reorder(skill, count)) |>
+  ggplot2::ggplot(ggplot2::aes(x = count, y = skill)) +
+  ggplot2::geom_col(fill = miamired, alpha = 0.85) +
+  ggplot2::geom_text(ggplot2::aes(label = count), hjust = -0.2, size = 3) +
+  ggplot2::labs(title = "Top 20 Skills in Data Analyst Job Descriptions",
+       subtitle = "Based on frequency of mention across 500 postings",
+       x = "Number of Mentions", y = NULL) +
+  ggplot2::theme_minimal() +
+  ggplot2::theme(plot.title = ggplot2::element_text(face = "bold", size = 13))
+```
+
+]
+
+.panel[.panel-name[Output]
+
+```{r bar-skills-output, echo=FALSE, fig.height=4.5, fig.width=8}
+job_skills |>
+  dplyr::slice_max(count, n = 20) |>
+  dplyr::mutate(skill = forcats::fct_reorder(skill, count)) |>
+  ggplot2::ggplot(ggplot2::aes(x = count, y = skill)) +
+  ggplot2::geom_col(fill = miamired, alpha = 0.85) +
+  ggplot2::geom_text(ggplot2::aes(label = count), hjust = -0.2, size = 3) +
+  ggplot2::labs(title = "Top 20 Skills in Data Analyst Job Descriptions",
+       subtitle = "Based on frequency of mention across 500 postings",
+       x = "Number of Mentions", y = NULL) +
+  ggplot2::theme_minimal() +
+  ggplot2::theme(plot.title = ggplot2::element_text(face = "bold", size = 13)) +
+  ggplot2::xlim(0, 280)
+```
+
+]
+
+.panel[.panel-name[Discussion]
+
+The bar chart gives us what the word cloud cannot:
+
+- **Precise comparison** -- SQL (245) vs. Python (210) is immediately clear.
+
+- **Rank order** -- skills are sorted from most to least common.
+
+- **A reference axis** -- readers can estimate values without labels.
+
+- **Honest representation** -- no visual tricks with font size or position.
+
+**Rule of thumb:** Use word clouds for **engagement** (presentations, dashboards). Use bar charts for **analysis** (reports, decision-making).
+
+]
+
+]
+
+
+---
+
+## Lollipop Chart: A Clean Alternative
+
+```{r lollipop-chart, fig.height=4, fig.width=8}
+job_skills |>
+  dplyr::slice_max(count, n = 15) |>
+  dplyr::mutate(skill = forcats::fct_reorder(skill, count)) |>
+  ggplot2::ggplot(ggplot2::aes(x = count, y = skill)) +
+  ggplot2::geom_segment(ggplot2::aes(x = 0, xend = count, y = skill, yend = skill),
+               color = "grey60") +
+  ggplot2::geom_point(size = 3, color = miamired) +
+  ggplot2::labs(title = "Top 15 Skills in Data Analyst Job Descriptions",
+       x = "Number of Mentions", y = NULL) +
+  ggplot2::theme_minimal() +
+  ggplot2::theme(plot.title = ggplot2::element_text(face = "bold"))
+```
+
+
+---
+
+## Tokenizing Raw Text with tidytext
+
+When you have **raw text** (not pre-counted skills), use `tidytext` to tokenize and count.
+
+.panelset[
+
+.panel[.panel-name[Code]
+
+```{r tokenize-code, eval=FALSE}
+# Sample raw job description text
+job_desc <- tibble::tibble(
+  doc_id = 1,
+  text = "We are seeking a Data Analyst with strong SQL and Python skills.
+          Experience with Tableau, Power BI, or similar visualization tools required.
+          Must have excellent communication and problem solving abilities.
+          Knowledge of statistics, machine learning, and data modeling preferred.
+          Experience with cloud platforms such as AWS or Azure is a plus."
+)
+
+# Tokenize, remove stop words, and count
+job_desc |>
+  tidytext::unnest_tokens(word, text) |>
+  dplyr::anti_join(tidytext::stop_words, by = "word") |>
+  dplyr::count(word, sort = TRUE)
+```
+
+]
+
+.panel[.panel-name[Output]
+
+```{r tokenize-output, echo=FALSE}
+job_desc <- tibble::tibble(
+  doc_id = 1,
+  text = "We are seeking a Data Analyst with strong SQL and Python skills.
+          Experience with Tableau, Power BI, or similar visualization tools required.
+          Must have excellent communication and problem solving abilities.
+          Knowledge of statistics, machine learning, and data modeling preferred.
+          Experience with cloud platforms such as AWS or Azure is a plus."
+)
+
+job_desc |>
+  tidytext::unnest_tokens(word, text) |>
+  dplyr::anti_join(tidytext::stop_words, by = "word") |>
+  dplyr::count(word, sort = TRUE) |>
+  head(12) |>
+  knitr::kable(format = "html")
+```
+
+]
+
+.panel[.panel-name[Key Steps]
+
+| Step | Function | Purpose |
+|------|----------|---------|
+| 1 | `unnest_tokens(word, text)` | Split text into one word per row |
+| 2 | `anti_join(stop_words)` | Remove common words (the, a, is, ...) |
+| 3 | `count(word, sort = TRUE)` | Count and sort by frequency |
+
+- The `stop_words` dataset in `tidytext` contains ~1,149 common English words.
+
+- You can add **domain-specific** stop words (e.g., "experience", "required", "must") for cleaner results.
+
+]
+
+]
+
+
+---
+
+## Activity: Word Cloud vs. Bar Chart
+
+Using the `job_skills` data, create **both** a word cloud and a bar chart of the top 15 skills. Then answer: **Which visualization is more honest and why?**
+
+.can-edit.key-activity01[
+```{r activity-wc-bar, eval=FALSE}
+# Word cloud
+wc_data <- job_skills |> dplyr::select(word = skill, freq = count)
+wordcloud2::wordcloud2(wc_data, size = 0.8)
+
+# Bar chart
+job_skills |>
+  dplyr::slice_max(count, n = 15) |>
+  dplyr::mutate(skill = forcats::fct_reorder(skill, count)) |>
+  ggplot2::ggplot(ggplot2::aes(x = count, y = skill)) +
+  ggplot2::geom_col(fill = miamired) +
+  ggplot2::labs(title = "____", x = "____", y = NULL) +
+  ggplot2::theme_minimal()
+
+# Which is more honest? Write your answer below:
+# ________________________________________
+```
+]
+
+`r countdown(minutes = 5, seconds = 0, top = 0, font_size = "2em")`
+
+
+---
+
+## LO1 Check-In
+
+`r emo::ji("check")` You can now create word clouds and term frequency charts:
+
+- Build word clouds with `wordcloud2` (engaging but imprecise)
+
+- Create bar charts and lollipop charts for **honest** frequency comparison
+
+- Tokenize raw text with `tidytext::unnest_tokens()` and remove stop words
+
+- Understand the tradeoffs between visual appeal and analytical precision
+
+
+---
+class: inverse, center, middle
+
+# Word Co-Occurrence Networks
+
+---
+
+## Why Co-Occurrence Matters
+
+- Counting individual words tells us **what** skills are mentioned.
+
+- Co-occurrence tells us **which skills go together** -- a much richer picture.
+
+- If "Python" and "Machine Learning" frequently co-occur, it suggests they form a **skill cluster**.
+
+- This is valuable for: resume building, curriculum design, and understanding job role archetypes.
+
+
+---
+
+## Computing Co-Occurrence from Raw Text
+
+When starting from raw job descriptions (not pre-counted pairs), use `widyr::pairwise_count()`:
+
+```{r pairwise-concept, eval=FALSE}
+library(widyr)
+
+# Start with tokenized skills per document
+skills_per_doc <- tibble::tibble(
+  doc_id = c(1, 1, 1, 2, 2, 2, 3, 3),
+  skill = c("SQL", "Python", "Tableau", "SQL", "R", "Statistics",
+            "Python", "SQL")
+)
+
+# Count how often each pair co-occurs within the same document
+skill_cooccurrence <- skills_per_doc |>
+  widyr::pairwise_count(skill, doc_id, sort = TRUE)
+
+skill_cooccurrence
+# # A tibble: 12 x 3
+#    item1      item2        n
+#    <chr>      <chr>    <dbl>
+#  1 SQL        Python       2
+#  2 Python     SQL          2
+#  3 ...
+```
+
+- Each row is a pair of skills that appeared in the same document, with their co-occurrence count.
+
+- This output feeds directly into `graph_from_data_frame()` for network visualization.
+
+
+---
+
+## Sample Data: Skill Co-Occurrence
+
+```{r cooccurrence-data}
+# Simulated pairwise co-occurrence counts from job descriptions
+skill_pairs <- tibble::tribble(
+  ~skill1, ~skill2, ~cooccurrence,
+  "SQL", "Python", 120,
+  "SQL", "Excel", 100,
+  "SQL", "Tableau", 95,
+  "Python", "Machine Learning", 85,
+  "Python", "Statistics", 80,
+  "Python", "R", 70,
+  "Tableau", "Power BI", 65,
+  "Tableau", "Excel", 60,
+  "Excel", "Power BI", 55,
+  "Machine Learning", "Statistics", 50,
+  "AWS", "Python", 45,
+  "SQL", "Data Modeling", 42,
+  "R", "Statistics", 40,
+  "Communication", "Presentation", 38,
+  "Python", "Spark", 35,
+  "SQL", "ETL", 33,
+  "AWS", "Spark", 30,
+  "Git", "Python", 28,
+  "Agile", "Communication", 25,
+  "Data Modeling", "ETL", 22
+)
+```
+
+
+---
+
+## Building a Network Graph
+
+.panelset[
+
+.panel[.panel-name[Code]
+
+```{r network-code, eval=FALSE}
+# Create an igraph object from the edge list
+skill_graph <- igraph::graph_from_data_frame(
+  skill_pairs |> dplyr::select(skill1, skill2, weight = cooccurrence),
+  directed = FALSE
+)
+
+# Calculate node degree for sizing
+igraph::V(skill_graph)$degree <- igraph::degree(skill_graph)
+
+# Plot with ggraph
+ggraph::ggraph(skill_graph, layout = "fr") +
+  ggraph::geom_edge_link(ggplot2::aes(width = weight, alpha = weight),
+                 color = "grey50", show.legend = FALSE) +
+  ggraph::geom_node_point(ggplot2::aes(size = degree), color = miamired, alpha = 0.8) +
+  ggraph::geom_node_text(ggplot2::aes(label = name), repel = TRUE, size = 3.5,
+                 fontface = "bold") +
+  ggraph::scale_edge_width(range = c(0.5, 3)) +
+  ggplot2::scale_size_continuous(range = c(3, 10)) +
+  ggplot2::labs(title = "Skill Co-Occurrence Network from Job Descriptions",
+       subtitle = "Edge width = co-occurrence frequency; node size = connections") +
+  ggplot2::theme_void() +
+  ggplot2::theme(plot.title = ggplot2::element_text(face = "bold", size = 13),
+        legend.position = "none")
+```
+
+]
+
+.panel[.panel-name[Output]
+
+```{r network-output, echo=FALSE, fig.height=4.5, fig.width=8}
+skill_graph <- igraph::graph_from_data_frame(
+  skill_pairs |> dplyr::select(skill1, skill2, weight = cooccurrence),
+  directed = FALSE
+)
+
+igraph::V(skill_graph)$degree <- igraph::degree(skill_graph)
+
+set.seed(42)
+ggraph::ggraph(skill_graph, layout = "fr") +
+  ggraph::geom_edge_link(ggplot2::aes(width = weight, alpha = weight),
+                 color = "grey50", show.legend = FALSE) +
+  ggraph::geom_node_point(ggplot2::aes(size = degree), color = miamired, alpha = 0.8) +
+  ggraph::geom_node_text(ggplot2::aes(label = name), repel = TRUE, size = 3.5,
+                 fontface = "bold") +
+  ggraph::scale_edge_width(range = c(0.5, 3)) +
+  ggplot2::scale_size_continuous(range = c(3, 10)) +
+  ggplot2::labs(title = "Skill Co-Occurrence Network from Job Descriptions",
+       subtitle = "Edge width = co-occurrence frequency; node size = connections") +
+  ggplot2::theme_void() +
+  ggplot2::theme(plot.title = ggplot2::element_text(face = "bold", size = 13),
+        legend.position = "none")
+```
+
+]
+
+.panel[.panel-name[Interpretation]
+
+Key patterns visible in the network:
+
+- **SQL and Python** are the most connected nodes -- they appear with many other skills.
+
+- A **data engineering cluster** emerges: SQL -- ETL -- Data Modeling.
+
+- A **data science cluster** emerges: Python -- Machine Learning -- Statistics -- R.
+
+- A **visualization cluster** emerges: Tableau -- Power BI -- Excel.
+
+- **Soft skills** (Communication, Presentation, Agile) form their own cluster.
+
+]
+
+]
+
+
+---
+
+## Co-Occurrence Heatmap: An Alternative View
+
+.panelset[
+
+.panel[.panel-name[Code]
+
+```{r heatmap-code, eval=FALSE}
+# Create a symmetric matrix for the heatmap
+top_skills <- c("SQL", "Python", "Excel", "Tableau", "R",
+                "Power BI", "Statistics", "Machine Learning")
+
+heat_data <- skill_pairs |>
+  dplyr::filter(skill1 %in% top_skills & skill2 %in% top_skills) |>
+  dplyr::bind_rows(                    # Make it symmetric
+    skill_pairs |>
+      dplyr::filter(skill1 %in% top_skills & skill2 %in% top_skills) |>
+      dplyr::rename(skill1 = skill2, skill2 = skill1)
+  )
+
+ggplot2::ggplot(heat_data, ggplot2::aes(x = skill1, y = skill2, fill = cooccurrence)) +
+  ggplot2::geom_tile(color = "white", linewidth = 0.5) +
+  ggplot2::geom_text(ggplot2::aes(label = cooccurrence), color = "white", fontface = "bold") +
+  viridis::scale_fill_viridis(option = "inferno", name = "Co-occurrence\nCount") +
+  ggplot2::labs(title = "Skill Co-Occurrence Heatmap",
+       x = NULL, y = NULL) +
+  ggplot2::theme_minimal() +
+  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1),
+        plot.title = ggplot2::element_text(face = "bold"))
+```
+
+]
+
+.panel[.panel-name[Output]
+
+```{r heatmap-output, echo=FALSE, fig.height=4, fig.width=7}
+top_skills <- c("SQL", "Python", "Excel", "Tableau", "R",
+                "Power BI", "Statistics", "Machine Learning")
+
+heat_data <- skill_pairs |>
+  dplyr::filter(skill1 %in% top_skills & skill2 %in% top_skills) |>
+  dplyr::bind_rows(
+    skill_pairs |>
+      dplyr::filter(skill1 %in% top_skills & skill2 %in% top_skills) |>
+      dplyr::rename(skill1 = skill2, skill2 = skill1)
+  )
+
+ggplot2::ggplot(heat_data, ggplot2::aes(x = skill1, y = skill2, fill = cooccurrence)) +
+  ggplot2::geom_tile(color = "white", linewidth = 0.5) +
+  ggplot2::geom_text(ggplot2::aes(label = cooccurrence), color = "white", fontface = "bold") +
+  viridis::scale_fill_viridis(option = "inferno", name = "Co-occurrence\nCount") +
+  ggplot2::labs(title = "Skill Co-Occurrence Heatmap",
+       x = NULL, y = NULL) +
+  ggplot2::theme_minimal() +
+  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1),
+        plot.title = ggplot2::element_text(face = "bold"))
+```
+
+]
+
+.panel[.panel-name[When to Use Which]
+
+| Visualization | Best for |
+|--------------|----------|
+| **Network graph** | Seeing clusters and the overall structure of relationships |
+| **Heatmap** | Precise pairwise comparisons between a smaller set of items |
+
+- Use networks when you have **many nodes** and want to see **community structure**.
+
+- Use heatmaps when you have a **smaller set** and want **exact values**.
+
+]
+
+]
+
+
+---
+
+## Activity: Interpret the Network
+
+Look at the co-occurrence network and answer these questions:
+
+1. If you were building a resume for a **data analyst** role, which 4-5 skills form the tightest cluster?
+
+2. If you wanted to transition into **data engineering**, which additional skills would you add based on the network?
+
+3. Which skill acts as a **bridge** between the technical and soft-skill clusters?
+
+.can-edit.key-activity02[
+```
+1. Tightest data analyst cluster: ______________________________
+
+2. Data engineering additions: ______________________________
+
+3. Bridge skill: ______________________________
+```
+]
+
+`r countdown(minutes = 4, seconds = 0, top = 0, font_size = "2em")`
+
+
+---
+
+## LO2 Check-In
+
+`r emo::ji("check")` You can now visualize word co-occurrence patterns:
+
+- Build network graphs with `igraph` and `ggraph` from pairwise data
+
+- Create co-occurrence heatmaps with `geom_tile()`
+
+- Identify skill clusters and bridge nodes in the network
+
+- Choose between networks (structure) and heatmaps (precision)
+
+
+---
+class: inverse, center, middle
+
+# Sentiment Analysis Visualization
+
+---
+
+## What Is Sentiment Analysis?
+
+- **Sentiment analysis** assigns positive, negative, or neutral scores to text.
+
+- It uses **lexicons** -- dictionaries that map words to sentiment scores.
+
+- Three popular lexicons available in `tidytext`:
+
+| Lexicon | Scale | Description |
+|---------|-------|-------------|
+| **AFINN** | -5 to +5 | Integer scores per word |
+| **Bing** | positive/negative | Binary classification |
+| **NRC** | 8 emotions + pos/neg | Categorical emotions (joy, anger, etc.) |
+
+- Use case: Are job descriptions in tech more **positive** than in finance? How has tone changed over time?
+
+
+---
+
+## Sample Data: Job Descriptions by Industry
+
+.font70[
+```{r sentiment-data}
+job_descriptions <- tibble::tribble(
+  ~doc_id, ~industry, ~year, ~text,
+  1, "Tech", 2022, "We are an innovative, fast-paced team seeking a passionate data analyst. You will work on exciting projects with cutting-edge tools. We offer excellent benefits, flexible work, and great growth opportunities. Join our amazing collaborative culture.",
+  2, "Tech", 2023, "Looking for a creative and driven analyst to solve complex problems. Our team values curiosity, innovation, and continuous learning. Competitive salary and outstanding perks. Remote-friendly and supportive environment.",
+  3, "Tech", 2024, "Seeking a talented data professional passionate about AI and automation. Exciting challenges in a dynamic startup. Great compensation, equity, and unlimited PTO. Collaborative and empowering workplace.",
+  4, "Finance", 2022, "Required: 5 years minimum experience in financial data analysis. Must demonstrate strict compliance with regulatory standards. Demanding deadlines and rigorous accuracy required. Mandatory overtime during quarterly reporting.",
+  5, "Finance", 2023, "Seeking an experienced analyst for risk assessment and compliance reporting. Strong attention to detail mandatory. High-pressure environment with strict deadlines. Competitive compensation for qualified candidates.",
+  6, "Finance", 2024, "Data analyst needed for regulatory reporting and audit support. Must handle complex requirements under tight deadlines. Rigorous quality standards enforced. Good benefits package for experienced professionals.",
+  7, "Healthcare", 2022, "Compassionate data analyst needed to support patient care initiatives. Meaningful work improving health outcomes. Collaborative team dedicated to community wellness. Comprehensive benefits and stable career.",
+  8, "Healthcare", 2023, "Join our mission-driven team analyzing health data to save lives. Rewarding work with direct patient impact. Supportive environment valuing work-life balance. Excellent medical benefits.",
+  9, "Healthcare", 2024, "Seeking an analyst passionate about healthcare innovation. Help transform patient outcomes through data. Fulfilling career with purpose and stability. Generous benefits and professional development."
+)
+```
+]
+
+---
+
+## Sentiment Analysis with Bing Lexicon
+
+.panelset[
+
+.panel[.panel-name[Code]
+
+```{r sentiment-bing-code, eval=FALSE}
+# Tokenize and join with Bing lexicon
+sentiment_by_industry <- job_descriptions |>
+  tidytext::unnest_tokens(word, text) |>
+  dplyr::anti_join(tidytext::stop_words, by = "word") |>
+  dplyr::inner_join(tidytext::get_sentiments("bing"), by = "word") |>
+  dplyr::count(industry, sentiment) |>
+  tidyr::pivot_wider(names_from = sentiment, values_from = n, values_fill = 0) |>
+  dplyr::mutate(net_sentiment = positive - negative,
+         total = positive + negative,
+         pct_positive = positive / total * 100)
+
+# Visualize
+ggplot2::ggplot(sentiment_by_industry,
+       ggplot2::aes(x = forcats::fct_reorder(industry, net_sentiment), y = net_sentiment,
+           fill = net_sentiment > 0)) +
+  ggplot2::geom_col(show.legend = FALSE) +
+  ggplot2::geom_text(ggplot2::aes(label = net_sentiment), hjust = -0.2, fontface = "bold") +
+  ggplot2::scale_fill_manual(values = c("TRUE" = "#2E7D32", "FALSE" = miamired)) +
+  ggplot2::coord_flip() +
+  ggplot2::labs(title = "Net Sentiment in Job Descriptions by Industry",
+       subtitle = "Positive - Negative word count (Bing lexicon)",
+       x = NULL, y = "Net Sentiment Score") +
+  ggplot2::theme_minimal() +
+  ggplot2::theme(plot.title = ggplot2::element_text(face = "bold"))
+```
+
+]
+
+.panel[.panel-name[Output]
+
+```{r sentiment-bing-output, echo=FALSE, fig.height=3, fig.width=7}
+sentiment_by_industry <- job_descriptions |>
+  tidytext::unnest_tokens(word, text) |>
+  dplyr::anti_join(tidytext::stop_words, by = "word") |>
+  dplyr::inner_join(tidytext::get_sentiments("bing"), by = "word") |>
+  dplyr::count(industry, sentiment) |>
+  tidyr::pivot_wider(names_from = sentiment, values_from = n, values_fill = 0) |>
+  dplyr::mutate(net_sentiment = positive - negative,
+         total = positive + negative,
+         pct_positive = positive / total * 100)
+
+ggplot2::ggplot(sentiment_by_industry,
+       ggplot2::aes(x = forcats::fct_reorder(industry, net_sentiment), y = net_sentiment,
+           fill = net_sentiment > 0)) +
+  ggplot2::geom_col(show.legend = FALSE) +
+  ggplot2::geom_text(ggplot2::aes(label = net_sentiment), hjust = -0.2, fontface = "bold") +
+  ggplot2::scale_fill_manual(values = c("TRUE" = "#2E7D32", "FALSE" = miamired)) +
+  ggplot2::coord_flip() +
+  ggplot2::labs(title = "Net Sentiment in Job Descriptions by Industry",
+       subtitle = "Positive - Negative word count (Bing lexicon)",
+       x = NULL, y = "Net Sentiment Score") +
+  ggplot2::theme_minimal() +
+  ggplot2::theme(plot.title = ggplot2::element_text(face = "bold"))
+```
+
+]
+
+.panel[.panel-name[Interpretation]
+
+- **Tech** job descriptions use the most positive language (innovative, exciting, great, amazing).
+
+- **Healthcare** descriptions are also positive (compassionate, meaningful, rewarding).
+
+- **Finance** descriptions lean more negative/neutral (strict, demanding, rigorous, mandatory).
+
+- This does not mean finance jobs are worse -- it reflects **communication style** differences across industries.
+
+]
+
+]
+
+
+---
+
+## Sentiment Trends Over Time
+
+.panelset[
+
+.panel[.panel-name[Code]
+
+```{r sentiment-time-code, eval=FALSE}
+# Calculate sentiment per document, then aggregate by industry and year
+sentiment_over_time <- job_descriptions |>
+  tidytext::unnest_tokens(word, text) |>
+  dplyr::anti_join(tidytext::stop_words, by = "word") |>
+  dplyr::inner_join(tidytext::get_sentiments("afinn"), by = "word") |>
+  dplyr::group_by(doc_id, industry, year) |>
+  dplyr::summarise(avg_sentiment = mean(value), .groups = "drop")
+
+ggplot2::ggplot(sentiment_over_time,
+       ggplot2::aes(x = year, y = avg_sentiment, color = industry, group = industry)) +
+  ggplot2::geom_line(linewidth = 1.2) +
+  ggplot2::geom_point(size = 3) +
+  ggplot2::scale_color_manual(values = c("Tech" = "#1976D2",
+                                "Finance" = miamired,
+                                "Healthcare" = "#2E7D32")) +
+  ggplot2::labs(title = "Sentiment Trend in Job Descriptions (2022-2024)",
+       subtitle = "Average AFINN sentiment score per industry per year",
+       x = "Year", y = "Average Sentiment Score",
+       color = "Industry") +
+  ggplot2::theme_minimal() +
+  ggplot2::theme(plot.title = ggplot2::element_text(face = "bold"))
+```
+
+]
+
+.panel[.panel-name[Output]
+
+```{r sentiment-time-output, echo=FALSE, fig.height=3.5, fig.width=7}
+sentiment_over_time <- job_descriptions |>
+  tidytext::unnest_tokens(word, text) |>
+  dplyr::anti_join(tidytext::stop_words, by = "word") |>
+  dplyr::inner_join(tidytext::get_sentiments("afinn"), by = "word") |>
+  dplyr::group_by(doc_id, industry, year) |>
+  dplyr::summarise(avg_sentiment = mean(value), .groups = "drop")
+
+ggplot2::ggplot(sentiment_over_time,
+       ggplot2::aes(x = year, y = avg_sentiment, color = industry, group = industry)) +
+  ggplot2::geom_line(linewidth = 1.2) +
+  ggplot2::geom_point(size = 3) +
+  ggplot2::scale_color_manual(values = c("Tech" = "#1976D2",
+                                "Finance" = miamired,
+                                "Healthcare" = "#2E7D32")) +
+  ggplot2::labs(title = "Sentiment Trend in Job Descriptions (2022-2024)",
+       subtitle = "Average AFINN sentiment score per industry per year",
+       x = "Year", y = "Average Sentiment Score",
+       color = "Industry") +
+  ggplot2::theme_minimal() +
+  ggplot2::theme(plot.title = ggplot2::element_text(face = "bold"))
+```
+
+]
+
+.panel[.panel-name[Discussion]
+
+- The AFINN lexicon gives us a **numeric scale** (-5 to +5), enabling trend analysis.
+
+- With more data points, you could detect shifts in hiring tone over time.
+
+- **Caution:** Small sample sizes (like our demo) can produce noisy trends. Real analysis needs hundreds of descriptions per data point.
+
+]
+
+]
+
+
+---
+
+## Word-Level Sentiment: What Drives the Score?
+
+```{r word-sentiment, fig.height=3.5, fig.width=8}
+# Which words contribute most to each industry's sentiment?
+word_contributions <- job_descriptions |>
+  tidytext::unnest_tokens(word, text) |>
+  dplyr::anti_join(tidytext::stop_words, by = "word") |>
+  dplyr::inner_join(tidytext::get_sentiments("bing"), by = "word") |>
+  dplyr::count(industry, word, sentiment, sort = TRUE) |>
+  dplyr::group_by(industry) |>
+  dplyr::slice_max(n, n = 5) |>
+  dplyr::ungroup() |>
+  dplyr::mutate(contribution = ifelse(sentiment == "positive", n, -n))
+
+ggplot2::ggplot(word_contributions,
+       ggplot2::aes(x = contribution, y = tidytext::reorder_within(word, contribution, industry),
+           fill = sentiment)) +
+  ggplot2::geom_col(show.legend = FALSE) +
+  tidytext::scale_y_reordered() +
+  ggplot2::scale_fill_manual(values = c("positive" = "#2E7D32", "negative" = miamired)) +
+  ggplot2::facet_wrap(~industry, scales = "free_y") +
+  ggplot2::labs(title = "Top Sentiment-Driving Words by Industry",
+       x = "Contribution (positive/negative)", y = NULL) +
+  ggplot2::theme_minimal() +
+  ggplot2::theme(plot.title = ggplot2::element_text(face = "bold"))
+```
+
+
+---
+
+## Sentiment Analysis Caveats
+
+Important limitations to keep in mind:
+
+1. **Negation is ignored** -- "not good" is scored as positive ("good" = +3).
+
+2. **Context is lost** -- "demanding role" is negative in a lexicon, but might be appealing to ambitious candidates.
+
+3. **Domain-specific meanings** -- "critical" in healthcare means essential/important, not negative.
+
+4. **Sarcasm and irony** -- lexicon-based methods cannot detect these.
+
+5. **Sample size matters** -- robust conclusions need hundreds or thousands of documents.
+
+**Best practice:** Always validate sentiment results by reading a sample of the original texts. Lexicon-based analysis is a **starting point**, not a final answer.
+
+
+---
+
+## Comparing Lexicons: Which One Should You Use?
+
+| Criterion | AFINN | Bing | NRC |
+|-----------|-------|------|-----|
+| **Output type** | Numeric (-5 to +5) | Binary (pos/neg) | Categorical (8 emotions) |
+| **Best for** | Trend analysis, averages | Simple counts, comparisons | Emotion profiling |
+| **Granularity** | High (continuous score) | Low (two categories) | Medium (10 categories) |
+| **Vocabulary size** | ~2,477 words | ~6,786 words | ~13,901 words |
+
+```{r lexicon-compare, eval=FALSE}
+# Quick comparison: how does the word "complex" score?
+tidytext::get_sentiments("bing") |> dplyr::filter(word == "complex")    # negative
+tidytext::get_sentiments("afinn") |> dplyr::filter(word == "complex")   # -2
+tidytext::get_sentiments("nrc") |> dplyr::filter(word == "complex")     # may not appear
+```
+
+- **Recommendation:** Start with **Bing** for a quick overview. Use **AFINN** when you need numeric trends. Use **NRC** for emotion profiling (e.g., "Which emotions dominate our customer reviews?").
+
+
+---
+
+## Activity: Analyze Your Own Text
+
+Write or paste a short paragraph (3-5 sentences) describing your ideal job. Then analyze its sentiment.
+
+.can-edit.key-activity03[
+```{r activity-sentiment, eval=FALSE}
+my_text <- tibble::tibble(
+  text = "YOUR TEXT HERE: Describe your ideal job in 3-5 sentences."
+)
+
+# Tokenize and score
+my_sentiment <- my_text |>
+  tidytext::unnest_tokens(word, text) |>
+  dplyr::anti_join(tidytext::stop_words, by = "word") |>
+  dplyr::inner_join(tidytext::get_sentiments("afinn"), by = "word")
+
+# View the scored words
+print(my_sentiment)
+
+# Overall score
+my_sentiment |> dplyr::summarise(
+  total_score = sum(value),
+  avg_score = mean(value),
+  n_scored_words = dplyr::n()
+)
+```
+]
+
+`r countdown(minutes = 5, seconds = 0, top = 0, font_size = "2em")`
+
+
+---
+
+## LO3 Check-In
+
+`r emo::ji("check")` You can now visualize sentiment in text data:
+
+- Use `tidytext` with **Bing** (binary) or **AFINN** (numeric) lexicons
+
+- Create **bar charts** of net sentiment by category
+
+- Plot **sentiment trends** over time
+
+- Identify **which words drive** the sentiment score
+
+- Understand the **limitations** of lexicon-based sentiment analysis
+
+
+---
+class: inverse, center, middle
+
+# Recap
+
+---
+
+## Summary of Main Points
+
+By now, you should be able to do the following:
+
+`r emo::ji("check")` **LO1:** Create word clouds with `wordcloud2` and honest frequency charts with `ggplot2` -- and know when to use each
+
+`r emo::ji("check")` **LO2:** Build word co-occurrence networks with `igraph` + `ggraph` and co-occurrence heatmaps
+
+`r emo::ji("check")` **LO3:** Perform sentiment analysis with `tidytext` lexicons and visualize sentiment trends over time
+
+.content-box-blue[
+**The big picture:** Text data is everywhere -- reviews, surveys, social media, job descriptions. The tools you learned today let you turn unstructured text into structured, visual insights.
+]
+
+
+---
+
+## Key Functions Reference
+
+| Function | Package | Purpose |
+|----------|---------|---------|
+| `unnest_tokens()` | tidytext | Split text into one-word-per-row format |
+| `anti_join(stop_words)` | tidytext + dplyr | Remove common English words |
+| `get_sentiments()` | tidytext | Load a sentiment lexicon (afinn, bing, nrc) |
+| `wordcloud2()` | wordcloud2 | Create an interactive word cloud |
+| `graph_from_data_frame()` | igraph | Create a network from edge list |
+| `ggraph()` + `geom_edge_link()` | ggraph | Visualize network graphs |
+| `geom_tile()` | ggplot2 | Create heatmaps |
+| `reorder_within()` + `scale_y_reordered()` | tidytext | Reorder within facets |
+
+
+---
+
+## Readings and Resources
+
+- [Silge, J. & Robinson, D. (2017). Text Mining with R.](https://www.tidytextmining.com/) -- The definitive guide to `tidytext`, freely available online.
+
+- [wordcloud2 documentation](https://cran.r-project.org/web/packages/wordcloud2/vignettes/wordcloud.html) -- Creating interactive word clouds in R.
+
+- [ggraph documentation](https://ggraph.data-imaginist.com/) -- Comprehensive guide to network visualization with ggraph.
+
+- [Healy, K. (2018). Data Visualization, Ch. 6.](https://socviz.co/modeling.html) -- Practical visualization of model and text outputs.
+
+
+---
+
+## Things to Do to Prepare for Next Class
+
+- **Read:** [Text Mining with R, Chapters 1-3](https://www.tidytextmining.com/)
+
+- **Install:** Run `install.packages(c("tidytext", "wordcloud2", "igraph", "ggraph", "textdata"))` if you have not already.
+
+- **Explore:** Visit our [Text Viz Explorer Shiny app](https://huggingface.co/spaces/fmegahed/text_viz_explorer) to paste in text and see visualizations.
+
+- **Next class:** Visualizing High-Dimensional Data -- PCA, parallel coordinates, and heatmaps for multivariate analysis.
