@@ -1,0 +1,16 @@
+id,name,host_id,host_name,neighbourhood_cleansed,latitude,longitude,room_type,price,number_of_reviews,review_scores_rating,property_type,bedrooms,bathrooms_text,accommodates,price_clean,city_label
+699893435812202605,Chicago Gold Coast Luxury Private Mansion,68285226,Tonya,Near North Side,41.90223,-87.62671,Entire home/apt,"$5,923.50",35,5.0,Entire home,6,6.5 baths,10,5923.5,chicago
+1450736437633486574,Front Row to the Lake & Skyline: Epic 60th Flr 3BR,248760412,⁨Cloud9⁩,Loop,41.8699406,-87.6243403,Entire home/apt,"$4,645.00",41,5.0,Entire rental unit,3,2 baths,7,4645,chicago
+942839181511659384,Luxury Downtown 4BR | Exclusive Design PH,248760412,⁨Cloud9⁩,Loop,41.88375,-87.62613,Entire home/apt,"$3,494.00",40,4.98,Entire rental unit,4,3.5 baths,9,3494,chicago
+33940403,Lincoln Park Joyful Home for 10,113257336,Beth,Lincoln Park,41.9144,-87.6463,Entire home/apt,"$3,371.50",33,5.0,Entire home,6,3.5 baths,10,3371.5,chicago
+50112403,Urban Mansion! Rooftop | City Views | BBall Court!,395103303,Matthew,West Town,41.89574,-87.66864,Entire home/apt,"$3,021.50",29,5.0,Entire home,5,4 baths,12,3021.5,chicago
+53422918,Cozy Fireplace Updated Village Home,120455802,Norma,Near South,39.94105,-82.98837,Entire home/apt,"$5,751.67",32,4.94,Entire home,2,1.5 baths,6,5751.67,columbus
+53449406,"Capital University, Bexley Safe and Clean",120455802,Norma,Eastmoor/Walnut Ridge,39.95792,-82.91875,Entire home/apt,"$3,543.45",11,4.82,Entire rental unit,2,1 bath,4,3543.45,columbus
+660002934194974558,"The Werner House w/ Gym, Spa & Speakeasy",466733258,Adellina,Near East,39.9675222,-82.95717119999999,Entire home/apt,"$3,062.00",15,4.87,Entire villa,5,10 baths,15,3062,columbus
+37357516,"Glenmont Inn-Whole House! Outdoor oasis-Pool,Fire",281456685,Pete,Clintonville,40.04479,-83.01173,Entire home/apt,"$1,724.28",138,4.96,Entire home,5,4.5 baths,13,1724.28,columbus
+711700590232870995,Luxury New Build w/ Theater Room & Rooftop Terrace,107290958,Joel,Near North/University,39.98374,-83.01832,Entire home/apt,"$1,516.00",228,4.99,Entire home,5,4 baths,15,1516,columbus
+49463437,Home on Hazeltine National Golf Course,398919826,Lee,Carver,44.83108,-93.57989,Entire home/apt,"$11,412.00",14,5.0,Entire home,6,3.5 baths,12,11412,twin_cities
+728278466184587169,"Portland Haus, Sunny 1901 Victorian",97025076,Victor,Hennepin,44.9423,-93.26697,Entire home/apt,"$5,190.18",26,4.88,Entire home,3,1 bath,1,5190.18,twin_cities
+28696598,Large Retreat Minutes From Both Downtowns,67272828,Sarah,Dakota,44.87616,-93.14428,Entire home/apt,"$3,583.50",36,4.89,Entire home,5,3.5 baths,14,3583.5,twin_cities
+1274021994272918266,The LUXE on Minnetonka | Private Waterfront,398920139,Donna & Peter,Hennepin,44.939729364466615,-93.61461371408537,Entire home/apt,"$2,758.25",10,5.0,Entire home,4,4.5 baths,8,2758.25,twin_cities
+1553884283085640668,Luxury Lakefront Retreat | Hot Tub | Sleeps 10,26443221,Ally,Ramsey,45.10856,-93.13457,Entire home/apt,"$2,540.00",15,5.0,Entire home,4,3.5 baths,10,2540,twin_cities

@@ -1,0 +1,7 @@
+Job Title,SOC Code,BLS Occupation Title,Median Salary ($),25th Percentile ($),75th Percentile ($),Note
+Data Analyst,15-2051,Data Scientists,112590,82630,155810,BLS groups data analysts under 15-2051 Data Scientists
+Business Analyst,13-1111,Management Analysts,101190,76770,133140,Closest SOC for business/management analysts
+Data Scientist,15-2051,Data Scientists,112590,82630,155810,Direct SOC match
+Data Engineer,15-1243,Database Architects,135980,107900,169480,Closest SOC for data infrastructure/pipeline roles
+ML Engineer,15-1221,Computer and Information Research Scientists,140910,102710,181210,Closest SOC for ML/AI research engineering roles
+BI Developer,15-1252,Software Developers,133080,103050,169000,BI tools development falls under software development

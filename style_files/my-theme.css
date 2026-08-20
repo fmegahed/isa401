@@ -130,14 +130,50 @@ blockquote {
   padding-left: 1em;
   background: #f9f9f9;
 }
-table {
+/* Default table look: red header, zebra rows, soft shadow, rounded corners.
+   Matches the hand-styled "Data Source Mapping" table. Scoped to tables
+   WITHOUT an inline style attribute so custom-styled HTML tables keep their
+   own design. !important is needed to beat xaringanthemer's injected CSS. */
+.remark-slide table:not([style]) {
   margin: auto;
-  border-top: 1px solid #666;
-  border-bottom: 1px solid #666;
+  border-collapse: collapse !important;
+  border-top: none !important;
+  border-bottom: none !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
 }
-table thead th { border-bottom: 1px solid #ddd; }
-th, td { padding: 5px; }
-thead, tfoot, tr:nth-child(even) { background: #eee }
+.remark-slide table:not([style]) thead {
+  background: transparent !important;
+}
+.remark-slide table:not([style]) thead th {
+  background: #c3142d !important;
+  color: #FFFFFF;
+  padding: 9px 14px;
+  border-bottom: none !important;
+}
+.remark-slide table:not([style]) th,
+.remark-slide table:not([style]) td {
+  padding: 8px 14px;
+}
+.remark-slide table:not([style]) tbody tr {
+  background: #FFFFFF !important;
+}
+.remark-slide table:not([style]) tbody tr:nth-child(even) {
+  background: #f9fafb !important;
+}
+.remark-slide table:not([style]) tbody td {
+  border-bottom: 1px solid #e5e7eb;
+}
+/* Add `class: table80` to a slide to shrink its (non-inline-styled) tables */
+.table80 table:not([style]) { font-size: 80%; }
+.table80 table:not([style]) th,
+.table80 table:not([style]) td { padding: 6px 10px; }
+
+.remark-slide table:not([style]) thead th:first-child { border-radius: 8px 0 0 0; }
+.remark-slide table:not([style]) thead th:last-child { border-radius: 0 8px 0 0; }
+.remark-slide table:not([style]) tbody tr:last-child td { border-bottom: none; }
+.remark-slide table:not([style]) tbody tr:last-child td:first-child { border-radius: 0 0 0 8px; }
+.remark-slide table:not([style]) tbody tr:last-child td:last-child { border-radius: 0 0 8px 0; }
 
 @page { margin: 0; }
 
