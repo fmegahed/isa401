@@ -1,0 +1,1945 @@
+---
+title: "ISA 401: Business Intelligence & Data Visualization"
+subtitle: '02: `r paste0("<span role=\"img\" aria-label=\"R\">", fontawesome::fa("r-project", fill = "white"), "</span>")` Foundations + Reproducibility'
+author: '<br>Fadel M. Megahed, PhD <br><br>Raymond E. Glos Professor in Business <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("linkedin"), fill = "white")` @Fadel Megahed](https://www.linkedin.com/in/fadel-megahed-289046b4) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
+date: "Fall 2026"
+output:
+  xaringan::moon_reader:
+    self_contained: true
+    css: [default, "../../style_files/fonts.css", "../../style_files/my-theme.css", "../../style_files/code-tomorrow-night-bright.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: magula
+      highlightLines: true
+      highlightLanguage: ["r"]
+      countIncrementalSlides: false
+      ratio: "16:9"
+header-includes:
+  - "../../style_files/header.html"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache = FALSE,
+                      echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE,
+                      progress = FALSE,
+                      verbose = FALSE,
+                      dev = 'png',
+                      fig.height = 3,
+                      dpi = 300,
+                      fig.align = 'center')
+
+options(htmltools.dir.version = FALSE)
+
+miamired = '#C3142D'
+
+if(require(pacman)==FALSE) install.packages("pacman")
+if(require(devtools)==FALSE) install.packages("devtools")
+if(require(countdown)==FALSE) devtools::install_github("gadenbuie/countdown")
+if(require(xaringanExtra)==FALSE) devtools::install_github("gadenbuie/xaringanExtra")
+if(require(emo)==FALSE) devtools::install_github("hadley/emo")
+
+pacman::p_load(tidyverse, magrittr, lubridate, janitor, # data analysis pkgs
+               scales, # for the comma function
+               fontawesome, emo, xaringanExtra, countdown) # for slides
+
+ggplot2::theme_set(ggplot2::theme_bw(base_size = 12))
+
+# Code styling shared by all ISA 401 decks: hl_r() + knitr source hook (see style_files/hl_r.R)
+source("../../style_files/hl_r.R")
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+if(require(xaringanthemer) == FALSE) install.packages("xaringanthemer")
+library(xaringanthemer)
+
+style_mono_accent(base_color = "#84d6d3",
+                  base_font_size = "20px")
+
+xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "tachyons", "panelset", "broadcast", "share_again", "search", "fit_screen", "editable", "clipboard"))
+
+xaringanExtra::use_extra_styles(
+  hover_code_line = TRUE,
+  mute_unhighlighted_code = TRUE
+)
+```
+
+<style>
+.code-sm .rcode { font-size: 78% !important; } .code-md .rcode { font-size: 90% !important; }
+</style>
+
+
+# Before We Start
+
+`r countdown(minutes = 4, seconds = 0, top = 0, font_size = "2em")`
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:16px;">
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">1 &nbsp; Join today's Zoom</div>
+    <div style="padding:12px 14px; font-size:14px; line-height:1.5;">
+      Use the Zoom link in the <a href="https://miamioh.instructure.com/courses/258169/modules/981092" target="_blank"><b>Week 0 Module</b></a> on Canvas. <b>Mute</b> your mic and <b>turn off</b> your video.<br>
+      <span style="color:#585E60;">Please log in from the <span style="background:#ffe58f; padding:0 5px; border-radius:4px; font-weight:600;">lab's computer</span> so you have the option to <span style="background:#ffe58f; padding:0 5px; border-radius:4px; font-weight:600;">share your screen</span> if you need help debugging an error.</span>
+    </div>
+  </div>
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">2 &nbsp; Install GitHub Desktop</div>
+    <div style="padding:12px 14px; font-size:14px; line-height:1.5;">
+      Run the <b>GitHub Desktop</b> installer: it is on the lab computer's <span style="background:#ffe58f; padding:0 5px; border-radius:4px; font-weight:600;">Desktop</span>, or type <i>GitHub Desktop</i> in the <span style="background:#ffe58f; padding:0 5px; border-radius:4px; font-weight:600;">Windows search bar</span>.<br>
+      <span style="color:#585E60;">It installs in about a minute and opens by itself.</span>
+    </div>
+  </div>
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">3 &nbsp; Sign in</div>
+    <div style="padding:12px 14px; font-size:14px; line-height:1.5;">
+      <b>Sign in to GitHub.com</b> with the account you created in <b>Assignment 0</b>.<br>
+      <span style="color:#585E60;">Your browser opens, you authorize, and it hands you back to Desktop.</span>
+    </div>
+  </div>
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">4 &nbsp; Configure Git</div>
+    <div style="padding:12px 14px; font-size:14px; line-height:1.5;">
+      When asked, keep the <b>name</b> and <b>email</b> you use on GitHub, then click <b>Finish</b>.<br>
+      <span style="color:#585E60;">This is what stamps your name on every snapshot you save.</span>
+    </div>
+  </div>
+</div>
+
+<div style="text-align:center; margin-top:18px; font-size:14px; color:#585E60;">Done early? <b style="color:#c3142d;">Help the person next to you.</b> Stuck? <b style="color:#c3142d;">Share your screen on Zoom</b> and we fix it together. Nobody sinks in this class; <b style="color:#c3142d;">everyone swims.</b></div>
+
+???
+
+Get this started before anything else so sign-in and any lab-machine hiccups are resolved by the time we reach the Git section. Walk the room once during the timer.
+
+
+---
+
+# Quick Refresher from Last Class
+
+<div style="display:flex; gap:14px; margin-top:18px; align-items:stretch;">
+  <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#f9dbdb; color:#c3142d; font-weight:700; font-size:15px; padding:8px 14px; text-transform:uppercase;">The Analytics Journey</div>
+    <div style="padding:12px 14px; font-size:14px; line-height:1.7;">
+      <div><span style="display:inline-block; background:#e5e7eb; border-radius:10px; padding:1px 10px; font-size:12px; font-weight:700;">Pre-analytics</span> &nbsp;get and clean the data</div>
+      <div><span style="display:inline-block; background:#e5e7eb; border-radius:10px; padding:1px 10px; font-size:12px; font-weight:700;">Descriptive</span> &nbsp;what happened?</div>
+      <div><span style="display:inline-block; background:#e5e7eb; border-radius:10px; padding:1px 10px; font-size:12px; font-weight:700;">Predictive</span> &nbsp;what will happen?</div>
+      <div><span style="display:inline-block; background:#e5e7eb; border-radius:10px; padding:1px 10px; font-size:12px; font-weight:700;">Prescriptive</span> &nbsp;what should we do?</div>
+      <div style="margin-top:8px; color:#585E60;"><b>BI</b> lives in the first two, and feeds the rest.</div>
+    </div>
+  </div>
+  <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#f9dbdb; color:#c3142d; font-weight:700; font-size:15px; padding:8px 14px; text-transform:uppercase;">One Job Ad, Three Shapes</div>
+    <div style="padding:12px 14px; font-size:14px; line-height:1.7;">
+      <div><span style="display:inline-block; background:#e2e2f9; color:#3d3d80; border-radius:10px; padding:1px 10px; font-size:12px; font-weight:700;">Unstructured</span> &nbsp;the ad text</div>
+      <div><span style="display:inline-block; background:#fef5c4; color:#7a6210; border-radius:10px; padding:1px 10px; font-size:12px; font-weight:700;">Semi-structured</span> &nbsp;the skills JSON</div>
+      <div><span style="display:inline-block; background:#d9edc2; color:#3d5c14; border-radius:10px; padding:1px 10px; font-size:12px; font-weight:700;">Structured</span> &nbsp;the database row</div>
+      <div style="margin-top:8px; color:#585E60;">Most of this course moves data from top to bottom.</div>
+    </div>
+  </div>
+  <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#f9dbdb; color:#c3142d; font-weight:700; font-size:15px; padding:8px 14px; text-transform:uppercase;">Habits We Practiced</div>
+    <div style="padding:12px 14px; font-size:14px; line-height:1.7;">
+      <div><b>Unit of analysis:</b> rows &ne; crashes</div>
+      <div><b>Counts vs. rates:</b> a busy weekday is not a risky one</div>
+      <div><b>Provenance:</b> who collected this, and how?</div>
+      <div><b>Encodings:</b> position, length, color, shape</div>
+      <div style="margin-top:8px; color:#585E60;">Today we start doing all of this in code.</div>
+    </div>
+  </div>
+</div>
+
+???
+
+Ask two or three quick recall questions from the cards (order of the journey, which shape is JSON, one row is one what). If the answers come fast, this is a 30-second slide.
+
+
+---
+
+# Learning Objectives for Today's Class
+
+- **Explain** why scripted languages enable **reproducible analysis**.
+
+- **Use** R **syntax, data structures, and functions**.
+
+- **Set up** an R **project** with a proper workflow.
+
+- **Initialize and use Git** for version control.
+
+<div style="display:flex; gap:0; margin-top:34px; align-items:stretch; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+  <div style="flex:1; padding:10px 14px; background:#fcfcfc; border-right:1px solid #d1d5db;">
+    <div style="font-size:11px; color:#585E60; text-transform:uppercase; font-weight:700;">Part 1</div>
+    <div style="font-weight:700; font-size:15px; color:#c3142d;">Why scripts?</div>
+    <div style="font-size:12px; color:#585E60;">Spreadsheets that broke, and code that re-runs</div>
+  </div>
+  <div style="flex:1; padding:10px 14px; background:#fcfcfc; border-right:1px solid #d1d5db;">
+    <div style="font-size:11px; color:#585E60; text-transform:uppercase; font-weight:700;">Part 2</div>
+    <div style="font-weight:700; font-size:15px; color:#c3142d;">Git + GitHub</div>
+    <div style="font-size:12px; color:#585E60;">Snapshots, commits, and your first repo</div>
+  </div>
+  <div style="flex:1; padding:10px 14px; background:#fcfcfc; border-right:1px solid #d1d5db;">
+    <div style="font-size:11px; color:#585E60; text-transform:uppercase; font-weight:700;">Part 3</div>
+    <div style="font-weight:700; font-size:15px; color:#c3142d;">Your R project</div>
+    <div style="font-size:12px; color:#585E60;">RStudio inside your repo, relative paths, first push</div>
+  </div>
+  <div style="flex:1; padding:10px 14px; background:#fcfcfc;">
+    <div style="font-size:11px; color:#585E60; text-transform:uppercase; font-weight:700;">Part 4</div>
+    <div style="font-weight:700; font-size:15px; color:#c3142d;">R 101</div>
+    <div style="font-size:12px; color:#585E60;">Objects, vectors, data frames, functions</div>
+  </div>
+</div>
+
+<div style="text-align:center; margin-top:14px; font-size:13px; color:#585E60;">The first half is setup-heavy on purpose: every script you write from Part 4 onward lives in the repo you create in Part 2.</div>
+
+
+---
+class: inverse, center, middle
+
+# Why Scripts?
+
+
+---
+
+# Spreadsheets That Made the News
+
+<div style="display:flex; gap:14px; align-items:stretch; margin-top:6px;">
+  <div id="ssnet" style="flex:11; height:380px; box-sizing:border-box; position:relative; background:#ffffff; border:1px solid #d1d5db; border-radius:8px; box-shadow:0 1px 3px rgba(0,0,0,0.1);"></div>
+  <div id="ssstory" style="flex:9; height:380px; box-sizing:border-box; background:#ffffff; border:1px solid #d1d5db; border-radius:8px; box-shadow:0 1px 3px rgba(0,0,0,0.1); padding:14px 18px; overflow-y:auto;">
+    <div style="color:#585E60; font-size:15px; line-height:1.5;">Click a year on the left.<br><br>Each write-up ends with a link to the primary source (a company report, a journal article, or the original news coverage), so you can verify every claim.</div>
+  </div>
+</div>
+
+<script>
+(function () {
+  // Every url below was verified to load and to support the claim (Aug 2026). Colors: ColorBrewer Dark2.
+  var sectors = {
+    Finance:    "#1b9e77",
+    Academia:   "#d95f02",
+    Health:     "#7570b3",
+    Science:    "#e7298a",
+    Government: "#66a61e"
+  };
+  var events = [
+    { year: 2003, sector: "Finance", label: "Fannie Mae",
+      head: "Fannie Mae restates $1.2 billion in unrealized gains",
+      story: "The mortgage giant blamed <b>&ldquo;honest mistakes&rdquo;</b> in a spreadsheet used to implement a new accounting rule. The formula logic was wrong, and nothing in the workbook flagged it.",
+      step: "A formula's logic that no one else could read or re-run.",
+      src: "The Guardian (2024)", url: "https://www.theguardian.com/technology/2024/oct/28/microsoft-excels-bloopers-reel-40-years-of-spreadsheet-errors" },
+    { year: 2012, sector: "Finance", label: "JP Morgan",
+      head: "JP Morgan loses about $6 billion; its risk model lived in Excel",
+      story: "The bank's own task force found the value-at-risk model &ldquo;operated through a series of Excel spreadsheets, which had to be completed manually, by a process of copying and pasting data from one spreadsheet to another.&rdquo; One cell <b>divided by a sum instead of an average</b>, muting reported risk by about half.",
+      step: "Copy-and-paste between workbooks, and one wrong denominator.",
+      src: "JPMorgan Chase Management Task Force report (Jan 2013), pp. 124 and 128", url: "https://ypfsresourcelibrary.blob.core.windows.net/fcic/YPFS/JPMorgan%20Management%20Task%20Force%20Regarding%202012%20CIO%20Losses%201-16-13.pdf" },
+    { year: 2013, sector: "Academia", label: "Reinhart-Rogoff",
+      head: "The austerity paper's key average skipped five countries",
+      story: "A 2010 paper cited by policymakers worldwide claimed growth turns negative once debt passes 90% of GDP. Replicators found the Excel average <b>left out five countries</b>; with them, average growth in that group went from <b>-0.1% to +2.2%</b>.",
+      step: "A cell range that stopped before the last rows.",
+      src: "Herndon, Ash and Pollin, Cambridge Journal of Economics (2014)", url: "https://doi.org/10.1093/cje/bet075" },
+    { year: 2020, sector: "Health", label: "Public Health England",
+      head: "15,841 positive COVID tests silently dropped",
+      story: "Labs sent results as CSV files, which were pasted into an Excel workbook saved in the old <b>.xls format, capped at 65,536 rows</b>. Once a file was full, new cases fell off the bottom without any warning. Contact tracing for those cases was delayed by up to a week.",
+      step: "A file format limit that nobody was told about.",
+      src: "BBC News (Oct 2020)", url: "https://www.bbc.com/news/technology-54423988" },
+    { year: 2020, sector: "Science", label: "HGNC",
+      head: "27 human genes renamed so Excel stops turning them into dates",
+      story: "Open a gene list in Excel and <b>MARCH1 becomes 1-Mar</b> and SEPT1 becomes 1-Sep. After years of corrupted supplementary files, the committee that names human genes gave up and renamed them (MARCHF1, SEPTIN1).",
+      step: "An automatic conversion applied on open, with no record of it.",
+      src: "HGNC, Nucleic Acids Research (2021)", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC7779007" },
+    { year: 2026, sector: "Government", label: "California",
+      head: "Eleven California counties received each other's education money",
+      story: "In January 2026 the State Controller's Office sent the wrong payments to 11 counties. Sutter County alone returned <b>$80 million</b> plus about $200,000 in interest. The county auditor's explanation: &ldquo;They accidentally <b>added an additional row</b> to the Excel file.&rdquo;",
+      step: "One extra row, which shifted every county below it.",
+      src: "CBS News Sacramento (Mar 2026)", url: "https://www.cbsnews.com/sacramento/news/sutter-county-returns-80-million-extra-education-funds/" }
+  ];
+
+  // remark clones slides, so: build into EVERY copy of the panel, and handle clicks by delegation on the document.
+  function build(el) {
+    var W = 640, H = 460, padL = 44, padR = 44;
+    var svg = d3.select(el).append("svg").attr("width", "100%").attr("height", "100%")
+      .attr("viewBox", "0 0 " + W + " " + H).attr("preserveAspectRatio", "xMidYMid meet");
+    var x = d3.scaleLinear().domain([2001, 2028]).range([padL, W - padR]);
+    var axisY = 320;
+    svg.append("line").attr("x1", x(2001)).attr("x2", x(2028)).attr("y1", axisY).attr("y2", axisY)
+      .attr("stroke", "#9ca3af").attr("stroke-width", 1.5);
+    [2005, 2010, 2015, 2020, 2025].forEach(function (t) {
+      svg.append("line").attr("x1", x(t)).attr("x2", x(t)).attr("y1", axisY - 5).attr("y2", axisY + 5).attr("stroke", "#9ca3af");
+      svg.append("text").attr("x", x(t)).attr("y", axisY + 22).attr("text-anchor", "middle")
+        .attr("font-size", 11).attr("fill", "#585E60").attr("font-family", "Lato, sans-serif").text(t);
+    });
+    var offsets = { "Fannie Mae": -80, "JP Morgan": -80, "Reinhart-Rogoff": -170, "Public Health England": -80, "HGNC": -170, "California": -80 };
+    svg.append("g").selectAll("line").data(events).join("line")
+      .attr("x1", function (d) { return x(d.year); }).attr("x2", function (d) { return x(d.year); })
+      .attr("y1", function (d) { return axisY + offsets[d.label] + 15; }).attr("y2", axisY)
+      .attr("stroke", function (d) { return sectors[d.sector]; }).attr("stroke-width", 1.2).attr("stroke-dasharray", "3,3");
+    var g = svg.append("g").selectAll("g").data(events).join("g")
+      .attr("data-idx", function (d, i) { return i; })
+      .attr("transform", function (d) { return "translate(" + x(d.year) + "," + (axisY + offsets[d.label]) + ")"; })
+      .style("cursor", "pointer");
+    g.append("circle").attr("r", 15).attr("fill", function (d) { return sectors[d.sector]; }).attr("stroke", "#ffffff").attr("stroke-width", 2);
+    g.append("text").text(function (d) { return d.year; }).attr("text-anchor", "middle").attr("dy", -23)
+      .attr("font-size", 12).attr("font-weight", 700).attr("fill", "#1b1b1b").attr("font-family", "Lato, sans-serif");
+    g.append("text").text(function (d) { return d.label; }).attr("text-anchor", "middle").attr("dy", -37)
+      .attr("font-size", 10.5).attr("fill", function (d) { return sectors[d.sector]; }).attr("font-family", "Lato, sans-serif");
+    var leg = svg.append("g").attr("transform", "translate(" + padL + ", " + (H - 50) + ")");
+    Object.keys(sectors).forEach(function (k, i) {
+      var gx = [0, 120, 240][i % 3], gy = i > 2 ? 22 : 0;
+      leg.append("circle").attr("cx", gx + 6).attr("cy", gy).attr("r", 6).attr("fill", sectors[k]);
+      leg.append("text").attr("x", gx + 18).attr("y", gy + 4).attr("font-size", 11).attr("fill", "#585E60")
+        .attr("font-family", "Lato, sans-serif").text(k);
+    });
+  }
+  function buildAll() {
+    document.querySelectorAll("#ssnet").forEach(function (el) { if (!el.querySelector("svg")) { build(el); } });
+  }
+  function show(idx) {
+    var d = events[idx];
+    document.querySelectorAll("#ssnet g[data-idx] circle").forEach(function (c) {
+      var sel = c.parentNode.getAttribute("data-idx") === String(idx);
+      c.setAttribute("stroke", sel ? "#1b1b1b" : "#ffffff"); c.setAttribute("stroke-width", sel ? 3 : 2);
+    });
+    document.querySelectorAll("#ssstory").forEach(function (story) {
+      story.innerHTML =
+        "<div style='font-size:11px; text-transform:uppercase; font-weight:700; color:" + sectors[d.sector] + ";'>" + d.year + " &middot; " + d.sector + "</div>" +
+        "<div style='font-weight:700; font-size:17px; line-height:1.3; margin:4px 0 8px 0; color:#1b1b1b;'>" + d.head + "</div>" +
+        "<div style='font-size:13.5px; line-height:1.5; color:#1b1b1b;'>" + d.story + "</div>" +
+        "<div style='margin-top:10px; font-size:13px; color:#c3142d;'><b>The invisible step:</b> <i>" + d.step + "</i></div>" +
+        "<div style='margin-top:10px; font-size:12px;'><a href='" + d.url + "' target='_blank' style='color:#1a66c9;'>Open the source: " + d.src + " &nearr;</a></div>";
+    });
+  }
+  if (!window.ssnetDelegated) {
+    window.ssnetDelegated = true;
+    document.addEventListener("click", function (ev) {
+      var t = ev.target;
+      var g = t.closest ? t.closest("#ssnet g[data-idx]") : null;
+      if (g) { show(parseInt(g.getAttribute("data-idx"), 10)); }
+    });
+    if (window.slideshow) { window.slideshow.on("afterShowSlide", function () { if (window.d3) { buildAll(); } }); }
+  }
+  if (window.d3) { buildAll(); return; }
+  var s = document.createElement("script");
+  s.src = "https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js";
+  s.integrity = "sha384-CjloA8y00+1SDAUkjs099PVfnY2KmDC2BZnws9kh8D/lX1s46w6EPhpXdqMfjK6i";
+  s.crossOrigin = "anonymous";
+  s.onload = buildAll;
+  document.head.appendChild(s);
+})();
+</script>
+
+.footnote[
+<html>
+<hr>
+</html>
+- **There is always more:** a 2024 review of 35 years of studies reports that **94% of the business spreadsheets audited in those studies contained errors** ([Poon et al. (2024), *Frontiers of Computer Science*](https://link.springer.com/article/10.1007/s11704-023-2384-6)).
+- The Guardian keeps a running [bloopers reel](https://www.theguardian.com/technology/2024/oct/28/microsoft-excels-bloopers-reel-40-years-of-spreadsheet-errors) of spreadsheet errors going back to 1985.
+]
+
+???
+
+Click two or three of these (California first, it is five months old; then JP Morgan). Ask: what do these have in common? Land the line: none was a math mistake. Each was a step nobody could see afterwards or run again. That is what the rest of today is about.
+
+
+---
+
+# The Same Chart in a Spreadsheet and in R
+
+<div style="font-size:16px; color:#1b1b1b; margin:2px 0 16px 0;">The crashes-by-weekday chart from Class 01, built twice from the same CSV. The chart is identical. The <b>record of how it was made</b> is not.</div>
+
+```{r two_ways_code, eval=FALSE, include=FALSE}
+crashes = readr::read_csv("data/cincy_2025_crashes.csv") |>
+  dplyr::mutate(
+    datetime = lubridate::ymd_hms(crashdate),
+    weekday  = lubridate::wday(datetime, label = TRUE)
+  ) |>
+  dplyr::distinct(instanceid, .keep_all = TRUE)
+
+crashes |>
+  dplyr::count(group = weekday) |>
+  ggplot2::ggplot(
+    ggplot2::aes(x = n, y = forcats::fct_rev(group))
+  ) +
+  ggplot2::geom_col(fill = "#C3142D") +
+  ggplot2::labs(x = "Crashes", y = NULL,
+                title = "Cincinnati crashes in 2025")
+```
+
+<div style="display:flex; gap:16px; align-items:flex-start;">
+<div style="flex:0 0 40%; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+  <div style="background:#e5e7eb; color:#374151; font-weight:700; font-size:14px; padding:7px 14px; text-transform:uppercase;">In a spreadsheet</div>
+  <div style="padding:10px 14px; font-size:13.5px; line-height:1.55;">
+    <div><b>1.</b> Download the crash CSV from the open-data portal</div>
+    <div><b>2.</b> Open it in Excel</div>
+    <div><b>3.</b> One crash spans several rows: Data &rarr; Remove Duplicates on <code>instanceid</code></div>
+    <div><b>4.</b> Add a weekday column with <code>=TEXT(B2,"ddd")</code>, drag it down</div>
+    <div><b>5.</b> Insert a pivot table; count rows by weekday</div>
+    <div><b>6.</b> Insert a bar chart; paste it into PowerPoint</div>
+    <div style="margin-top:10px; color:#c3142d; font-weight:700;">Now do it by month instead of weekday. Which of these steps do you redo?</div>
+  </div>
+</div>
+<div style="flex:1; min-width:0;">
+<div style="background:#e5e7eb; color:#374151; font-weight:700; font-size:14px; padding:7px 14px; text-transform:uppercase; border-radius:8px 8px 0 0;">In R</div>
+`r hl_r(knitr::knit_code$get("two_ways_code"), "60%")`
+</div>
+</div>
+
+???
+
+The left column is what most of us actually do. Nothing is wrong with it until someone asks you to do it again, or asks what you did. Step 3 is the one that quietly turns 30,125 rows into far fewer crashes, and it leaves no trace in the final chart. On the right, the same six steps are the first six lines; the comments are not even needed because the function names say what happened.
+
+
+---
+
+# Changes to Unit of Analysis are Easier in R
+
+```{r crashes_load, include=FALSE, cache=TRUE}
+crashes = readr::read_csv("../../data/cincy_2025_crashes.csv") |>
+  dplyr::mutate(datetime = lubridate::ymd_hms(crashdate),
+                weekday  = lubridate::wday(datetime, label = TRUE, week_start = 1),
+                month    = lubridate::month(datetime, label = TRUE)) |>
+  dplyr::filter(!is.na(datetime)) |>
+  dplyr::distinct(instanceid, .keep_all = TRUE)
+```
+
+.panelset[
+
+.panel[.panel-name[By weekday]
+
+.pull-left[
+`r hl_r(knitr::knit_code$get("rerun_weekday"), "53%")`
+]
+
+.pull-right[
+```{r rerun_weekday, echo=FALSE, fig.height=3.4, fig.width=5}
+crashes |>
+  dplyr::count(group = weekday) |> #<<
+  ggplot2::ggplot(
+    ggplot2::aes(x = n, y = forcats::fct_rev(group))
+  ) +
+  ggplot2::geom_col(fill = "#C3142D") +
+  ggplot2::geom_text(
+    ggplot2::aes(label = scales::comma(n)),
+    hjust = -0.15, size = 3
+  ) +
+  ggplot2::scale_x_continuous(
+    expand = ggplot2::expansion(mult = c(0, 0.18))
+  ) +
+  ggplot2::labs(x = "Crashes", y = NULL,
+                title = "Cincinnati crashes in 2025")
+```
+]
+
+]
+
+.panel[.panel-name[By month]
+
+.pull-left[
+`r hl_r(knitr::knit_code$get("rerun_month"), "53%")`
+]
+
+.pull-right[
+```{r rerun_month, echo=FALSE, fig.height=3.4, fig.width=5}
+crashes |>
+  dplyr::count(group = month) |> #<<
+  ggplot2::ggplot(
+    ggplot2::aes(x = n, y = forcats::fct_rev(group))
+  ) +
+  ggplot2::geom_col(fill = "#C3142D") +
+  ggplot2::geom_text(
+    ggplot2::aes(label = scales::comma(n)),
+    hjust = -0.15, size = 3
+  ) +
+  ggplot2::scale_x_continuous(
+    expand = ggplot2::expansion(mult = c(0, 0.18))
+  ) +
+  ggplot2::labs(x = "Crashes", y = NULL,
+                title = "Cincinnati crashes in 2025")
+```
+]
+
+]
+
+]
+
+???
+
+Before switching tabs, ask: which line would you change to get crashes by month? Then switch. One highlighted line changed, everything downstream (dedupe, chart, labels) re-ran unchanged. This is what "reproducible" means in practice: the analysis is a recipe, not a memory.
+
+
+---
+
+# Code Is Just Text
+
+<div style="font-size:17px; margin-top:2px; color:#1b1b1b;">Programming languages are <b>languages</b>. Code is <b>just text</b>, which hands you two extremely powerful techniques:</div>
+
+<div style="display:flex; gap:40px; justify-content:center; align-items:center; margin:44px 0 44px 0;">
+  <div style="font-size:34px; font-weight:700; color:#c3142d;"><kbd style="border:1px solid #9ca3af; border-radius:6px; padding:2px 12px; background:#f9fafb;">Ctrl</kbd> + <kbd style="border:1px solid #9ca3af; border-radius:6px; padding:2px 12px; background:#f9fafb;">C</kbd></div>
+  <div style="font-size:34px; font-weight:700; color:#c3142d;"><kbd style="border:1px solid #9ca3af; border-radius:6px; padding:2px 12px; background:#f9fafb;">Ctrl</kbd> + <kbd style="border:1px solid #9ca3af; border-radius:6px; padding:2px 12px; background:#f9fafb;">V</kbd></div>
+</div>
+
+<div style="display:flex; gap:12px; align-items:stretch;">
+  <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="font-weight:700; font-size:16px; color:#374151;">Readable</div>
+    <div style="font-size:13px; color:#585E60; margin-top:4px;">You can read what someone did, top to bottom. Try that with a pivot table.</div>
+  </div>
+  <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="font-weight:700; font-size:16px; color:#374151;">Open</div>
+    <div style="font-size:13px; color:#585E60; margin-top:4px;">An error message is text too: search it, or paste it into <a href="https://chatisa.fsb.miamioh.edu/" target="_blank">ChatISA</a>.</div>
+  </div>
+  <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="font-weight:700; font-size:16px; color:#374151;">Reusable</div>
+    <div style="font-size:13px; color:#585E60; margin-top:4px;">New month, new file: change one line and re-run. Someone else gets the same result.</div>
+  </div>
+  <div style="flex:1; border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="font-weight:700; font-size:16px; color:#c3142d;">Diffable</div>
+    <div style="font-size:13px; color:#585E60; margin-top:4px;">Text can be compared line by line, so a tool can show you exactly what changed, and when. That tool is next.</div>
+  </div>
+</div>
+
+.footnote[
+<html>
+<hr>
+</html>
+**Source:** Based on [Hadley Wickham's You Can't Do Data Science in a GUI](https://speakerdeck.com/hadley/you-cant-do-data-science-in-a-gui?slide=14), slides 14 to 17.
+]
+
+
+---
+class: inverse, center, middle
+
+# Git + GitHub
+
+---
+class: table80
+
+# Git in Currently Open ISA Jobs
+
+```{r scout_git, echo=FALSE, fig.height=2.2, fig.width=11, out.width="100%", message=FALSE, warning=FALSE}
+con = DBI::dbConnect(RSQLite::SQLite(), "../../data/scout.db")
+scout = DBI::dbGetQuery(con, "SELECT title, company, location_city, location_state, apply_url, description, skills_json, posted_at FROM scout_postings")
+DBI::dbDisconnect(con)
+
+scout = scout |>
+  dplyr::mutate(
+    skills   = purrr::map(skills_json, \(s) jsonlite::fromJSON(s)$skillId),
+    has_git  = purrr::map_lgl(skills, \(s) "version_control" %in% s) |
+               stringr::str_detect(description, stringr::regex("\\b(git|github|gitlab|bitbucket)\\b", ignore_case = TRUE)),
+    asks_r   = purrr::map_lgl(skills, \(s) "r" %in% s),
+    asks_pyr = purrr::map_lgl(skills, \(s) any(c("python", "r") %in% s)),
+    is_de    = stringr::str_detect(title, stringr::regex("(data|analytics)\\s+engineer", ignore_case = TRUE))
+  )
+
+git_rates = dplyr::bind_rows(
+  scout |> dplyr::summarise(group = "All postings", n = dplyr::n(), pct = mean(has_git)),
+  scout |> dplyr::filter(asks_pyr) |> dplyr::summarise(group = "Postings asking for Python or R", n = dplyr::n(), pct = mean(has_git)),
+  scout |> dplyr::filter(is_de) |> dplyr::summarise(group = "Data / analytics engineer postings", n = dplyr::n(), pct = mean(has_git))
+) |>
+  dplyr::mutate(group = forcats::fct_rev(forcats::as_factor(group)),
+                label = paste0(scales::percent(pct, accuracy = 1), "  (n = ", scales::comma(n), ")"))
+
+ggplot(git_rates, aes(x = pct, y = group)) +
+  geom_col(fill = miamired, width = 0.62) +
+  geom_text(aes(label = label), hjust = -0.08, size = 3.8) +
+  scale_x_continuous(labels = scales::percent, limits = c(0, 0.62), expand = expansion(mult = c(0, 0))) +
+  theme_bw(base_size = 13) +
+  theme(panel.grid.minor = element_blank(), panel.grid.major.y = element_blank()) +
+  labs(x = "Share of postings that mention Git", y = NULL)
+```
+
+```{r scout_jobs, echo=FALSE, results="asis"}
+# Four current postings (links checked Aug 25, 2026) that ask for BOTH R and Git, at employers students will recognize
+picks = c(
+  "https://jobs.apple.com/en-us/details/200677976",
+  "https://jobs.smartrecruiters.com/CapTechConsulting/744000144138659-data-analyst",
+  "https://bah.wd1.myworkdayjobs.com/BAH_Jobs/job/San-Diego-CA/Data-Engineer_R0246048",
+  "https://recruiting.paylocity.com/Recruiting/Jobs/Details/4442922"
+)
+
+scout |>
+  dplyr::filter(apply_url %in% picks, asks_r, has_git) |>
+  dplyr::distinct(apply_url, .keep_all = TRUE) |>
+  dplyr::transmute(
+    Employer = company |> stringr::str_replace(" Holdings, Inc[.]", "") |> stringr::str_replace("UNITED STATES SOCCER FEDERATION.*", "U.S. Soccer Federation"),
+    Role     = sprintf('<a href="%s" target="_blank">%s</a>', apply_url,
+                       title |> stringr::str_remove("^Student \\| ") |> stringr::str_replace_all("[[:space:]]*[–—][[:space:]]*", ", ") |> stringr::str_trunc(52)),
+    Location = paste(location_city, location_state),
+    Posted   = format(as.Date(posted_at), "%b %d")
+  ) |>
+  dplyr::arrange(Employer) |>
+  knitr::kable(format = "html", escape = FALSE)
+```
+
+.footnote[
+<html>
+<hr>
+</html>
+- **Chart:** every posting collected by [ChatISA Job Scout](https://chatisa.fsb.miamioh.edu/) from `r format(min(as.Date(scout$posted_at)), "%b %d")` to `r format(max(as.Date(scout$posted_at)), "%b %d, %Y")` (`r scales::comma(nrow(scout))` postings). A posting "mentions Git" if its skills tag includes version control or its text names git, GitHub, GitLab, or Bitbucket.
+- **Table:** four of the `r sum(scout$asks_r & scout$has_git)` open postings that ask for **both R and Git** (links checked Aug 25, 2026). Chart and table are computed from the database by code inside this deck.
+]
+
+???
+
+The point is not the 8%. It is the gradient: the more a role builds things in code, the more it assumes Git. The table is there so nobody thinks this is abstract: these are real postings, this month, at employers you know, and every one of them names both R and Git.
+
+
+---
+
+# Git is Heavily Used by AI Harnesses
+
+<div style="font-size:15px; color:#1b1b1b; margin:0 0 10px 0;">What an AI coding agent does when you hand it a task, as the vendors themselves describe it (sources below). The terminal is a simplified mock-up; the six steps loop. <span id="aiPauseHint" style="color:#585E60; font-size:13px;">Click the animation to pause it.</span></div>
+
+<div id="aiSteps" style="display:flex; gap:0; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+  <div class="ai-step" style="flex:1; padding:7px 10px; border-right:1px solid #d1d5db; transition:background .3s;"><div style="font-size:10px; text-transform:uppercase; color:#585E60; font-weight:700;">1 &middot; You</div><div style="font-weight:700; font-size:13px;">Describe the task</div></div>
+  <div class="ai-step" style="flex:1; padding:7px 10px; border-right:1px solid #d1d5db; transition:background .3s;"><div style="font-size:10px; text-transform:uppercase; color:#585E60; font-weight:700;">2 &middot; Agent</div><div style="font-weight:700; font-size:13px;">Creates a branch</div></div>
+  <div class="ai-step" style="flex:1; padding:7px 10px; border-right:1px solid #d1d5db; transition:background .3s;"><div style="font-size:10px; text-transform:uppercase; color:#585E60; font-weight:700;">3 &middot; Agent</div><div style="font-weight:700; font-size:13px;">Edits the code</div></div>
+  <div class="ai-step" style="flex:1; padding:7px 10px; border-right:1px solid #d1d5db; transition:background .3s;"><div style="font-size:10px; text-transform:uppercase; color:#585E60; font-weight:700;">4 &middot; Agent</div><div style="font-weight:700; font-size:13px;">Commits a snapshot</div></div>
+  <div class="ai-step" style="flex:1; padding:7px 10px; border-right:1px solid #d1d5db; transition:background .3s;"><div style="font-size:10px; text-transform:uppercase; color:#585E60; font-weight:700;">5 &middot; Agent</div><div style="font-weight:700; font-size:13px;">Pushes and opens a PR</div></div>
+  <div class="ai-step" style="flex:1; padding:7px 10px; transition:background .3s;"><div style="font-size:10px; text-transform:uppercase; color:#c3142d; font-weight:700;">6 &middot; You</div><div style="font-weight:700; font-size:13px; color:#c3142d;">Review, then merge</div></div>
+</div>
+
+<div style="display:flex; gap:14px; margin-top:12px; align-items:stretch;">
+  <div id="aiTerm" style="flex:11; height:290px; box-sizing:border-box; background:#1e1e1e; color:#d4d4d4; border-radius:8px; padding:12px 14px; font-family:'Source Code Pro', Consolas, monospace; font-size:12px; line-height:1.55; overflow:hidden; white-space:pre-wrap;"></div>
+  <div id="aiGraph" style="flex:9; height:290px; box-sizing:border-box; border:1px solid #d1d5db; border-radius:8px; background:#ffffff;"></div>
+</div>
+
+<script>
+(function () {
+  if (window.aiHarnessTimer) { return; }
+  var steps = [
+    { who: "you",   cmd: "Add a monthly crash chart to the report.", out: [] },
+    { who: "agent", cmd: "git switch -c add-monthly-chart", out: ["Switched to a new branch 'add-monthly-chart'"] },
+    { who: "agent", cmd: "edit analysis.R", out: ["+  dplyr::count(group = month) |>", "+  ggplot2::ggplot(ggplot2::aes(x = n, y = group)) +", "+  ggplot2::geom_col()", "3 lines added, 0 removed"] },
+    { who: "agent", cmd: "git commit -am \"Add monthly crash chart\"", out: ["[add-monthly-chart 3f2a9c1] Add monthly crash chart", " 1 file changed, 3 insertions(+)"] },
+    { who: "agent", cmd: "git push -u origin add-monthly-chart; gh pr create", out: ["Pull request #12 opened: Add monthly crash chart", "Waiting for your review"] },
+    { who: "you",   cmd: "Read the diff on GitHub. Approve. Merge.", out: ["Merged #12 into main"] }
+  ];
+  var NS = "http://www.w3.org/2000/svg";
+  var font = "Lato, sans-serif";
+  var order = [null, "branch", "edit", "commit", "pr", "merge"];
+
+  // remark clones slides, so every tick updates EVERY copy of the terminal, graph, and step strip.
+  function buildGraph(host) {
+    var old = host.querySelector("svg");
+    if (old) { host.removeChild(old); }
+    var svg = document.createElementNS(NS, "svg");
+    svg.setAttribute("viewBox", "0 0 360 290"); svg.setAttribute("width", "100%"); svg.setAttribute("height", "100%");
+    host.appendChild(svg);
+    function mk(tag, attrs, text) {
+      var e = document.createElementNS(NS, tag);
+      Object.keys(attrs).forEach(function (k) { e.setAttribute(k, attrs[k]); });
+      if (text) { e.textContent = text; }
+      e.style.transition = "opacity .4s"; svg.appendChild(e); return e;
+    }
+    mk("line", { x1: 30, y1: 215, x2: 330, y2: 215, stroke: "#9ca3af", "stroke-width": 3 });
+    mk("circle", { cx: 70, cy: 215, r: 8, fill: "#9ca3af" });
+    mk("circle", { cx: 120, cy: 215, r: 8, fill: "#9ca3af" });
+    mk("text", { x: 30, y: 245, "font-size": 12, fill: "#585E60", "font-family": font }, "main");
+    var parts = {};
+    parts.branch = [ mk("path", { d: "M120,215 C140,215 150,120 180,120 L 300,120", stroke: "#c3142d", "stroke-width": 3, fill: "none" }),
+                     mk("text", { x: 185, y: 105, "font-size": 12, fill: "#c3142d", "font-family": font, "font-weight": 700 }, "add-monthly-chart") ];
+    parts.edit   = [ mk("circle", { cx: 220, cy: 120, r: 9, fill: "#ffffff", stroke: "#c3142d", "stroke-width": 2, "stroke-dasharray": "3,3" }),
+                     mk("text", { x: 220, y: 148, "font-size": 11, fill: "#585E60", "font-family": font, "text-anchor": "middle" }, "analysis.R edited") ];
+    parts.commit = [ mk("circle", { cx: 220, cy: 120, r: 9, fill: "#c3142d" }),
+                     mk("text", { x: 220, y: 148, "font-size": 11, fill: "#585E60", "font-family": font, "text-anchor": "middle" }, "commit 3f2a9c1") ];
+    parts.pr     = [ mk("rect", { x: 200, y: 30, width: 140, height: 40, rx: 8, fill: "#fdf2f2", stroke: "#c3142d", "stroke-width": 1.5 }),
+                     mk("text", { x: 270, y: 47, "font-size": 12, fill: "#c3142d", "font-family": font, "font-weight": 700, "text-anchor": "middle" }, "Pull request #12"),
+                     mk("text", { x: 270, y: 62, "font-size": 10.5, fill: "#585E60", "font-family": font, "text-anchor": "middle" }, "diff + discussion"),
+                     mk("line", { x1: 270, y1: 70, x2: 270, y2: 108, stroke: "#c3142d", "stroke-width": 1.5, "stroke-dasharray": "3,3" }) ];
+    parts.merge  = [ mk("path", { d: "M300,120 C320,120 320,215 330,215", stroke: "#c3142d", "stroke-width": 3, fill: "none" }),
+                     mk("circle", { cx: 330, cy: 215, r: 9, fill: "#c3142d" }),
+                     mk("text", { x: 330, y: 245, "font-size": 12, fill: "#c3142d", "font-family": font, "font-weight": 700, "text-anchor": "middle" }, "merged") ];
+    host.aiParts = parts;
+  }
+  function setVis(parts, name, on) { parts[name].forEach(function (e) { e.style.opacity = on ? 1 : 0; }); }
+
+  function render(k) {
+    var html = "";
+    for (var i = 0; i <= k; i++) {
+      if (i >= steps.length) { break; }
+      var s = steps[i];
+      var tag = s.who === "you" ? "<span style='color:#f5c542; font-weight:700;'>you &rsaquo;</span> " : "<span style='color:#f28b82; font-weight:700;'>agent &rsaquo;</span> ";
+      html += tag + "<span style='color:#ffffff;'>" + s.cmd + "</span>\n";
+      s.out.forEach(function (o) { html += "<span style='color:#9ca3af;'>" + o + "</span>\n"; });
+    }
+    document.querySelectorAll("#aiTerm").forEach(function (t) { t.innerHTML = html; });
+    document.querySelectorAll("#aiGraph").forEach(function (host) {
+      if (!host.aiParts) { buildGraph(host); }
+      var parts = host.aiParts;
+      Object.keys(parts).forEach(function (name) { setVis(parts, name, false); });
+      for (var j = 1; j <= k; j++) {
+        if (j >= order.length) { break; }
+        if (order[j] === "commit") { setVis(parts, "edit", false); }
+        setVis(parts, order[j], true);
+      }
+    });
+    document.querySelectorAll("#aiSteps").forEach(function (strip) {
+      Array.prototype.forEach.call(strip.children, function (e, idx) {
+        e.style.background = idx === k ? "#ffe58f" : (idx < k ? "#fcfcfc" : "#ffffff");
+      });
+    });
+  }
+  var k = 0;
+  render(0);
+  window.aiHarnessPaused = false;
+  document.addEventListener("click", function (ev) {
+    var t = ev.target;
+    if (t.closest && (t.closest("#aiTerm") || t.closest("#aiGraph") || t.closest("#aiSteps"))) {
+      window.aiHarnessPaused = !window.aiHarnessPaused;
+      document.querySelectorAll("#aiPauseHint").forEach(function (h) { h.textContent = window.aiHarnessPaused ? "Paused. Click the animation to resume." : "Click the animation to pause it."; });
+    }
+  });
+  window.aiHarnessTimer = setInterval(function () { if (window.aiHarnessPaused) { return; } k = k + 1; if (k > steps.length + 1) { k = 0; } render(Math.min(k, steps.length - 1)); }, 1800);
+})();
+</script>
+
+.footnote[
+<html>
+<hr>
+</html>
+- **Claude Code:** a mention of `@claude` on GitHub can "implement changes, and push commits" and "turn issues into pull requests" ([Anthropic docs](https://code.claude.com/docs/en/github-actions)).
+- **Codex:** works in an isolated copy of your repository, then lets you "open a pull request when the work is ready" ([OpenAI docs](https://learn.chatgpt.com/docs/cloud)).
+- **GitHub Copilot coding agent:** makes "code changes on a branch" and opens a pull request for a person to review ([GitHub docs](https://docs.github.com/en/copilot/concepts/agents/coding-agent/about-coding-agent)).
+]
+
+???
+
+Branch, commit, push, pull request, merge: five of the six Git words you will learn in the next section. You do not need to write the code to supervise an agent that does, but you do need to read what it changed, and the pull request is where you do that.
+
+
+---
+
+# Git vs GitHub
+
+<div style="display:flex; gap:18px; align-items:stretch; margin-top:10px;">
+  <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:18px; padding:10px 16px;">Git</div>
+    <div style="padding:14px 16px; font-size:15px; line-height:1.6;">
+      <div>A <b>program on your computer</b> that keeps <b>snapshots of a folder</b>.</div>
+      <div style="margin-top:8px;">Created in <b>2005</b> by Linus Torvalds to manage the Linux kernel's source code. Free and open source.</div>
+      <div style="margin-top:8px; color:#585E60;">Works with no internet connection. GitHub Desktop, RStudio, and VS Code are all just buttons on top of it.</div>
+    </div>
+  </div>
+  <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#1b1b1b; color:#fff; font-weight:700; font-size:18px; padding:10px 16px;">GitHub</div>
+    <div style="padding:14px 16px; font-size:15px; line-height:1.6;">
+      <div>A <b>website</b> that <b>hosts Git folders</b> so people can share, review, and publish them.</div>
+      <div style="margin-top:8px;">Owned by Microsoft since <b>2018</b>. More than <b>180 million users</b>. Free for what we do.</div>
+      <div style="margin-top:8px; color:#585E60;">Your <code>business_intelligence</code> repo from Assignment 0 lives here. Employers look here.</div>
+    </div>
+  </div>
+</div>
+
+<div style="display:flex; gap:18px; margin-top:22px;">
+  <div style="flex:1; text-align:center; font-size:16px; color:#1b1b1b;"><b style="color:#c3142d;">Git</b> is the tool. It runs on your machine and works offline.</div>
+  <div style="flex:1; text-align:center; font-size:16px; color:#1b1b1b;"><b>GitHub</b> is the place. Copies live there so they can be shared, reviewed, and published.</div>
+</div>
+<div style="text-align:center; margin-top:8px; font-size:14px; color:#585E60;">You can use Git without GitHub. You cannot use GitHub without Git.</div>
+
+.footnote[
+<html>
+<hr>
+</html>
+- **Git's origin:** the official Git book, [A Short History of Git](https://git-scm.com/book/en/v2/Getting-Started-A-Short-History-of-Git).
+- **Ownership:** [Microsoft completes GitHub acquisition](https://blogs.microsoft.com/blog/2018/10/26/microsoft-completes-github-acquisition/), Oct 26, 2018.
+- **Users:** [GitHub Octoverse 2025](https://github.blog/news-insights/octoverse/octoverse-a-new-developer-joins-github-every-second-as-ai-leads-typescript-to-1/), "180 million-plus developers."
+]
+
+???
+
+Git is local and works offline; GitHub is the shared copy. When something "is not on GitHub yet," that means it was committed but not pushed. That distinction drives the Undo vs Revert slide later.
+
+
+---
+class: table80
+
+# Git's Terminology
+
+.pull-left[
+
+| Word | Means |
+|:--|:--|
+| **repository** (repo) | a folder Git watches |
+| **commit** | a named snapshot of that folder |
+| **push** / **pull** | upload / download snapshots to or from GitHub |
+| **branch** | a parallel copy for work in progress |
+| **pull request** | "please merge my branch," plus discussion |
+| **merge** | accept it into `main` |
+
+
+]
+
+.pull-right[
+<svg viewBox="0 0 360 310" width="100%" style="max-height:440px;">
+  <line x1="30" y1="215" x2="330" y2="215" stroke="#9ca3af" stroke-width="3"/>
+  <circle cx="55" cy="215" r="9" fill="#9ca3af" stroke="#585E60" stroke-width="1.5"/>
+  <circle cx="120" cy="215" r="9" fill="#9ca3af" stroke="#585E60" stroke-width="1.5"/>
+  <text x="55" y="240" font-size="10.5" fill="#585E60" font-family="Lato, sans-serif" text-anchor="middle" font-weight="700">commit 1</text>
+  <text x="120" y="240" font-size="10.5" fill="#585E60" font-family="Lato, sans-serif" text-anchor="middle" font-weight="700">commit 2</text>
+  <text x="330" y="262" font-size="12" fill="#585E60" font-family="Lato, sans-serif" text-anchor="end" font-weight="700">main</text>
+  <path d="M120,215 C140,215 150,120 180,120 L 300,120" stroke="#c3142d" stroke-width="3" fill="none"/>
+  <text x="182" y="108" font-size="12" fill="#c3142d" font-family="Lato, sans-serif" font-weight="700">branch</text>
+  <circle cx="220" cy="120" r="9" fill="#c3142d" stroke="#8a0e20" stroke-width="1.5"/>
+  <text x="220" y="146" font-size="10.5" fill="#c3142d" font-family="Lato, sans-serif" text-anchor="middle" font-weight="700">commit 3</text>
+  <rect x="200" y="30" width="140" height="40" rx="8" fill="#fdf2f2" stroke="#c3142d" stroke-width="1.5"/>
+  <text x="270" y="47" font-size="12" fill="#c3142d" font-family="Lato, sans-serif" font-weight="700" text-anchor="middle">pull request</text>
+  <text x="270" y="62" font-size="10.5" fill="#585E60" font-family="Lato, sans-serif" text-anchor="middle">diff + discussion</text>
+  <line x1="270" y1="70" x2="270" y2="108" stroke="#c3142d" stroke-width="1.5" stroke-dasharray="3,3"/>
+  <path d="M300,120 C320,120 320,215 330,215" stroke="#c3142d" stroke-width="3" fill="none"/>
+  <circle cx="330" cy="215" r="9" fill="#ffffff" stroke="#c3142d" stroke-width="3"/>
+  <text x="318" y="195" font-size="12" fill="#c3142d" font-family="Lato, sans-serif" font-weight="700" text-anchor="end">merge</text>
+  <text x="330" y="240" font-size="10.5" fill="#c3142d" font-family="Lato, sans-serif" text-anchor="middle" font-weight="700">commit 4</text>
+  <path d="M40,30 L40,72" stroke="#1a66c9" stroke-width="2" fill="none"/>
+  <path d="M34,64 L40,72 L46,64" stroke="#1a66c9" stroke-width="2" fill="none"/>
+  <path d="M34,38 L40,30 L46,38" stroke="#1a66c9" stroke-width="2" fill="none"/>
+  <text x="50" y="45" font-size="11" fill="#1a66c9" font-family="Lato, sans-serif">push: commits go up</text>
+  <text x="50" y="62" font-size="11" fill="#1a66c9" font-family="Lato, sans-serif">pull: commits come down</text>
+  <circle cx="36" cy="285" r="6" fill="#9ca3af" stroke="#585E60" stroke-width="1"/>
+  <text x="48" y="289" font-size="10.5" fill="#585E60" font-family="Lato, sans-serif">commit on main</text>
+  <circle cx="146" cy="285" r="6" fill="#c3142d"/>
+  <text x="158" y="289" font-size="10.5" fill="#585E60" font-family="Lato, sans-serif">commit on the branch</text>
+  <circle cx="276" cy="285" r="6" fill="#ffffff" stroke="#c3142d" stroke-width="2"/>
+  <text x="288" y="289" font-size="10.5" fill="#585E60" font-family="Lato, sans-serif">merge commit</text>
+</svg>
+]
+
+???
+
+Read the table top to bottom, then point at the picture: repository is the whole thing, commits 1 to 4 are the dots (gray on main, red on the branch, hollow where they rejoin), the red line is a branch, the box is the pull request. Push and pull are the only two words that involve the internet.
+
+
+---
+
+# What You Did in Assignment 0
+
+<div style="font-size:16px; color:#1b1b1b; margin:2px 0 14px 0;">On github.com, in your browser, you did three things. Each one has a Git word:</div>
+
+<div style="display:flex; gap:14px; align-items:stretch;">
+  <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#e5e7eb; color:#374151; font-weight:700; font-size:14px; padding:8px 14px;">1 &nbsp; New repository</div>
+    <div style="padding:12px 14px; font-size:14px; line-height:1.55;">You named it <code>business_intelligence</code> and made it public.<div style="margin-top:6px; color:#585E60;">That created a <b>repository</b>: a folder GitHub watches.</div></div>
+  </div>
+  <div style="align-self:center; color:#c3142d; font-size:24px; font-weight:700;">&rarr;</div>
+  <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#e5e7eb; color:#374151; font-weight:700; font-size:14px; padding:8px 14px;">2 &nbsp; Add README.md</div>
+    <div style="padding:12px 14px; font-size:14px; line-height:1.55;">You wrote your name and the course topics into the file.<div style="margin-top:6px; color:#585E60;">Git does not know about a file until it is committed.</div></div>
+  </div>
+  <div style="align-self:center; color:#c3142d; font-size:24px; font-weight:700;">&rarr;</div>
+  <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#e5e7eb; color:#374151; font-weight:700; font-size:14px; padding:8px 14px;">3 &nbsp; Commit changes</div>
+    <div style="padding:12px 14px; font-size:14px; line-height:1.55;">The green button at the bottom of the editor.<div style="margin-top:6px; color:#585E60;">That was your first <b>commit</b>: a named snapshot. GitHub made it for you, on its servers.</div></div>
+  </div>
+</div>
+
+<div style="margin-top:26px; border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:12px 18px; background:#fdf2f2; font-size:16px; line-height:1.5;">
+So far the repo exists in <b>one place: GitHub</b>. No computer has a copy, and every edit went through a web page. Real work (R scripts, data, plots) happens on a computer, so the next step is to bring the repo <b>down</b> to this one: <b style="color:#c3142d;">clone</b>. After that, three new verbs: <b>change, commit, push</b>.
+</div>
+
+???
+
+Quick show of hands: who remembers the green "Commit changes" button? Then the bridge: the website did the committing for them; from now on their computer does it, and that is the whole point of the next ten minutes.
+
+
+---
+
+# Live Demo: Clone, Change, Commit and Push
+
+<div style="font-size:15px; color:#1b1b1b; margin:0 0 10px 0;">Follow along on your lab computer. I do each step on the screen first, then you do it.</div>
+
+.panelset[
+
+.panel[.panel-name[Steps]
+
+<div style="display:flex; gap:14px; align-items:flex-start;">
+<div style="flex:1; font-size:13.5px; line-height:1.5;">
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:9px 14px; margin-bottom:7px; background:#fcfcfc;"><b style="color:#c3142d;">1 &nbsp; Clone.</b> GitHub Desktop &rarr; <b>File &rarr; Clone repository</b> &rarr; pick <code>YOUR-USERNAME/business_intelligence</code>. Set <b>Local path</b> to <code>M:\isa401\</code> (your M: drive follows you to any lab computer; we open this folder in RStudio next). Click <b>Clone</b>.</div>
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:9px 14px; margin-bottom:7px; background:#fcfcfc;"><b style="color:#c3142d;">2 &nbsp; Change.</b> <b>Repository &rarr; Show in Explorer</b>. Open <code>README.md</code> in Notepad. Under <i>About Me</i> add one line, then save:<div style="font-family:'Source Code Pro', monospace; font-size:12.5px; background:#f5f5f5; padding:4px 8px; margin-top:4px; border-radius:4px;">- &#42;&#42;Tools this semester:&#42;&#42; R, RStudio, Git</div></div>
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:9px 14px; margin-bottom:7px; background:#fcfcfc;"><b style="color:#c3142d;">3 &nbsp; Commit.</b> Back in Desktop, <b>look at the diff</b>: your new line is green, and the checkbox next to <code>README.md</code> is ticked. Summary: <code>Add tools line</code>. Click <b>Commit to main</b>.</div>
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:9px 14px; margin-bottom:7px; background:#fcfcfc;"><b style="color:#c3142d;">4 &nbsp; Push.</b> Click <b>Push origin</b>.</div>
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:9px 14px; background:#fcfcfc;"><b style="color:#c3142d;">5 &nbsp; Verify.</b> <b>Repository &rarr; View on GitHub</b>. Refresh. Your line is there and the repo now shows <b>2 commits</b>.</div>
+</div>
+<div style="flex:0 0 34%; border:1px solid #e7c547; border-radius:8px; padding:12px 14px; background:#ffe58f; font-size:13px; line-height:1.5; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+<div style="font-weight:700; color:#374151; text-transform:uppercase; font-size:11px;">If you fall behind</div>
+<div style="margin-top:6px;">Say so, or <b style="color:#c3142d;">share your screen on Zoom</b>. Nobody moves on until everyone has pushed.</div>
+<div style="margin-top:8px; font-weight:700;">The usual issues:</div>
+<ul style="margin:4px 0 0 0; padding-left:18px;">
+<li>Desktop is signed in to the wrong account: <b>File &rarr; Options &rarr; Accounts</b></li>
+<li>Notepad saved the file as <code>README.md.txt</code>: turn on file extensions in Explorer</li>
+<li>Repo not listed under Clone: paste the URL <code>https://github.com/YOUR-USERNAME/business_intelligence</code></li>
+</ul>
+</div>
+</div>
+
+]
+
+.panel[.panel-name[Checkpoint]
+
+<div style="font-size:14.5px; line-height:1.6;">
+<div style="margin-bottom:6px;"><b>After step 1:</b> Desktop's title bar says <code>business_intelligence</code>, and <code>M:\isa401\business_intelligence\README.md</code> exists in Explorer.</div>
+<div style="margin-bottom:6px;"><b>After step 2:</b> Desktop's left pane lists <code>README.md</code> under <i>1 changed file</i> with its checkbox ticked; the right pane shows your line highlighted in <span style="background:#d9edc2; padding:0 4px;">green</span> with a <code>+</code> in front of it. Nothing is red, because you only added.</div>
+<div style="margin-bottom:6px;"><b>After step 3:</b> the left pane says <i>0 changed files</i>, and the <b>History</b> tab lists two commits: yours on top, the one you made on the website below.</div>
+<div style="margin-bottom:6px;"><b>After step 4:</b> the top bar changes from <i>Push origin, 1</i> to <i>Fetch origin</i>. The commit has left this computer.</div>
+<div><b>After step 5:</b> on GitHub, the README shows the line, and the commit counter near the top of the file list reads <b>2 commits</b>. Click it to see both snapshots.</div>
+</div>
+
+]
+
+.panel[.panel-name[Discussion]
+
+- .can-edit.key-git-demo-discussion[Notes from our class discussion (Use Chrome as your browser to edit this part of the page)]
+
+]
+
+]
+
+???
+
+Do each step on the projector, then wait for the room. The diff in step 3 is the teaching moment: first time most of them see a line-by-line diff, and it is the "diffable" promise from the Code Is Just Text slide made concrete. Point at the ticked checkbox: that tick is the staging step, and it comes back on the recap slide.
+
+
+---
+
+# Publish a Career Portfolio with ChatISA
+
+.panelset[
+
+.panel[.panel-name[Steps]
+
+<div style="display:flex; gap:12px; align-items:stretch;">
+  <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:14px; padding:8px 14px;">1 &nbsp; Sign in</div>
+    <div style="padding:12px 14px; font-size:13.5px; line-height:1.55;">Go to <a href="https://chatisa.fsb.miamioh.edu/portfolio" target="_blank"><b>chatisa.fsb.miamioh.edu/portfolio</b></a> and <b>Sign in with GitHub</b>, authorizing ChatISA to act on your account.</div>
+  </div>
+  <div style="align-self:center; color:#c3142d; font-size:22px; font-weight:700;">&rarr;</div>
+  <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:14px; padding:8px 14px;">2 &nbsp; Fill in the builder</div>
+    <div style="padding:12px 14px; font-size:13.5px; line-height:1.55;">Your <b>name</b>, a <b>headline</b>, a <b>photo</b>, and <b>2 to 3 projects</b>. Click <b>Generate</b>.<div style="margin-top:6px; color:#585E60;">ChatISA drafts the page text with AI, creates a repository named <code>portfolio</code> on your GitHub, and publishes it.</div></div>
+  </div>
+  <div style="align-self:center; color:#c3142d; font-size:22px; font-weight:700;">&rarr;</div>
+  <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:14px; padding:8px 14px;">3 &nbsp; Open it</div>
+    <div style="padding:12px 14px; font-size:13.5px; line-height:1.55;">On your phone: <code>https://YOUR-USERNAME.github.io/portfolio/</code> (allow about a minute).<div style="margin-top:6px; color:#585E60;">A website with your name on it, hosted by GitHub, from a repo you now own.</div></div>
+  </div>
+</div>
+
+<div style="margin-top:12px; border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:10px 16px; background:#fdf2f2; font-size:14px; line-height:1.55;">
+<b>What you have now is a first draft.</b> In <b>Assignment 02</b> you make it yours, one commit at a time: read every AI-generated sentence and edit it so it is accurate and sounds like you, add your contact links, keep only the projects you would defend in an interview, and reorder the sections (it is your name on the page, and recruiters will read it).
+</div>
+
+<div style="margin-top:8px; font-size:13px; color:#585E60;">Then answer the poll on the next tab: <b>which Git verbs did ChatISA just run on your behalf?</b> Full walkthrough of the builder: <a href="https://youtu.be/I85EeVFfkEo" target="_blank">youtu.be/I85EeVFfkEo</a>.</div>
+
+]
+
+.panel[.panel-name[Poll]
+
+<div style="height:430px; margin:0; padding:0; overflow:hidden;">
+  <iframe
+    src="https://www.mentimeter.com/app/presentation/alnn4fxsr5nb3kd7r6ezqd8y4j71ocx2/embed"
+    frameborder="0"
+    allowfullscreen
+    sandbox="allow-scripts allow-same-origin allow-presentation"
+    style="width:100%; height:100%; border:0;">
+  </iframe>
+</div>
+
+]
+
+.panel[.panel-name[Discussion]
+
+- .can-edit.key-portfolio-discussion[Notes from our class discussion (Use Chrome as your browser to edit this part of the page)]
+
+]
+
+]
+
+???
+
+Menti (select all that apply): clone, commit, push, branch, pull request, merge, create a repository. Answer: create a repository, commit, push. ChatISA does all three through the GitHub API with the authorization from the sign-in, so there is no local copy and nothing to push from a laptop; GitHub Pages then serves the files as a website. Say that out loud after the poll; the mapping slide was dropped. Stress the first-draft point: the AI text is a starting point, not the finished portfolio.
+
+---
+
+# Text Files vs Binary Files
+
+<div style="display:flex; gap:14px; align-items:stretch; margin-top:4px;">
+  <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#dbeafe; color:#1e3a8a; font-weight:700; font-size:14px; padding:8px 14px; text-transform:uppercase;">Text</div>
+    <div style="padding:10px 14px; font-size:13.5px; line-height:1.55;">
+      <div><b>Code, CSV, Markdown, .R, .Rmd, .qmd, HTML</b></div>
+      <div style="margin-top:6px;">Git stores the <b>lines</b>. Desktop shows a red/green diff. The history is readable years later. Two people can merge, line by line.</div>
+    </div>
+  </div>
+  <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#e5e7eb; color:#374151; font-weight:700; font-size:14px; padding:8px 14px; text-transform:uppercase;">Binary</div>
+    <div style="padding:10px 14px; font-size:13.5px; line-height:1.55;">
+      <div><b>.xlsx, .pptx, .docx, .png, .pdf</b></div>
+      <div style="margin-top:6px;">Git stores the <b>whole file</b>, every commit. Desktop says "Binary file not shown." No line-by-line merge: someone loses. The repo gets heavy, fast.</div>
+    </div>
+  </div>
+</div>
+
+<div style="display:flex; gap:0; margin-top:14px; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-family:'Source Code Pro', Consolas, monospace; font-size:12.5px;">
+  <div style="flex:0 0 240px; border-right:1px solid #d1d5db; background:#fcfcfc;">
+    <div style="padding:6px 12px; font-family:Lato, sans-serif; font-size:11px; color:#585E60; text-transform:uppercase; font-weight:700; border-bottom:1px solid #e5e7eb;">2 changed files</div>
+    <div style="padding:7px 12px; background:#eef2ff;">data/cincy_2025_crashes.csv <span style="color:#1f7a1f;">+2</span> <span style="color:#b42318;">&minus;1</span></div>
+    <div style="padding:7px 12px; background:#e5e7eb;">report.pptx <span style="color:#585E60;">binary</span></div>
+  </div>
+  <div style="flex:1;">
+    <div style="padding:6px 12px; font-family:Lato, sans-serif; font-size:11px; color:#585E60; font-weight:700; border-bottom:1px solid #e5e7eb;">data/cincy_2025_crashes.csv</div>
+    <div style="padding:2px 12px; color:#585E60;">@@ -8,3 +8,4 @@ instanceid,crashdate,weather</div>
+    <div style="padding:2px 12px;">&nbsp;C7450B16,2025-01-01T00:15,4 - RAIN</div>
+    <div style="padding:2px 12px; background:#fde2e2; color:#7a1a1a;">-B956B8CC,2025-01-01T00:01,99 - OTHER/UNKNOWN</div>
+    <div style="padding:2px 12px; background:#d9edc2; color:#3d5c14;">+B956B8CC,2025-01-01T00:01,1 - CLEAR</div>
+    <div style="padding:2px 12px; background:#d9edc2; color:#3d5c14;">+A1D3F0E7,2025-01-01T00:40,2 - CLOUDY</div>
+    <div style="padding:6px 12px; font-family:Lato, sans-serif; font-size:11px; color:#585E60; font-weight:700; border-top:1px solid #e5e7eb; border-bottom:1px solid #e5e7eb;">report.pptx</div>
+    <div style="padding:6px 12px; color:#585E60; font-style:italic;">Binary file not shown.</div>
+  </div>
+</div>
+
+<div style="margin-top:12px; font-size:14px; color:#1b1b1b;"><b>Rule of thumb:</b> data as CSV, code and notebooks as text, and keep the big binaries out of the repo (share them from Google Drive and link to them).</div>
+
+???
+
+The mock-up is what Desktop shows: Git can tell you what changed inside the CSV, down to the weather code on one crash; for the deck it can only tell you that it changed. This is the payoff of "diffable" from Part 1 and the reason every homework in this course is submitted as text.
+
+
+---
+
+# Fixing Mistakes
+
+.pull-left[
+<div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1); margin-top:8px;">
+  <div style="background:#e5e7eb; color:#374151; font-weight:700; font-size:15px; padding:9px 14px;">Before you push: <span style="color:#c3142d;">Undo</span></div>
+  <div style="padding:12px 14px; font-size:14.5px; line-height:1.6;">
+    <div>A commit you have not pushed is still <b>private to this computer</b>. GitHub has never seen it.</div>
+    <div style="margin-top:8px;">In Desktop, under the commit button: click <b>Undo</b>. The commit disappears and the changes come back to the left pane, so you can fix them and commit again.</div>
+    <div style="margin-top:8px; color:#585E60;">Typo in the message? Committed the wrong file? Undo.</div>
+  </div>
+</div>
+]
+
+--
+
+.pull-right[
+<div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1); margin-top:8px;">
+  <div style="background:#e5e7eb; color:#374151; font-weight:700; font-size:15px; padding:9px 14px;">After you push: <span style="color:#c3142d;">Revert</span></div>
+  <div style="padding:12px 14px; font-size:14.5px; line-height:1.6;">
+    <div>Once pushed, the commit is on GitHub, and possibly on a teammate's machine. <b>Git never deletes history.</b></div>
+    <div style="margin-top:8px;">In Desktop's <b>History</b> tab: right-click the commit &rarr; <b>Revert changes in commit</b> &rarr; Push origin. Revert is a <b>new commit that flips the old one</b>. Both stay in the log.</div>
+    <div style="margin-top:8px; color:#585E60;">Deleted a section by accident and already pushed? Revert.</div>
+  </div>
+</div>
+]
+
+--
+
+<br>
+
+<div style="clear:both; margin-top:40px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:14px 20px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:18px; line-height:1.55; color:#1b1b1b;">
+<b style="color:#c3142d;">Git is a time machine.</b> Nothing you commit is ever really lost. That is exactly why you should <b>commit early and commit often</b>, and stop keeping <code>final_v3_REALLY_final.xlsx</code> on your desktop. The filename was doing this job, badly.
+</div>
+
+???
+
+Three clicks: Undo card, Revert card, then the time-machine line. Live demo if time allows: on your own repo, make a bad edit, commit, click Undo; then commit, push, and revert from History so they see the second commit appear. Two minutes, and it removes the fear of "breaking" the repo, which is the main reason students stop committing.
+
+
+---
+class: inverse, center, middle
+
+# Your R Project
+
+---
+
+# The RStudio Interface
+
+<div style="text-align:center; margin-top:2px;"><img src="`r knitr::image_uri('../../figures/rstudio-interface-2026-annotated.png')`" alt="RStudio with six numbered callouts: Source, Console, Environment and Git, Files, project name, Run" style="width:86%; border:1px solid #d1d5db; border-radius:6px;"></div>
+
+<div style="display:flex; justify-content:center; gap:18px; margin-top:8px; font-size:12.5px; color:#585E60; flex-wrap:wrap;">
+  <span><b style="color:#c3142d;">1</b> Source: scripts</span>
+  <span><b style="color:#c3142d;">2</b> Console: R runs here</span>
+  <span><b style="color:#c3142d;">3</b> Environment (and the Git tab)</span>
+  <span><b style="color:#c3142d;">4</b> Files, Plots, Packages, Help, Viewer</span>
+  <span><b style="color:#c3142d;">5</b> Project name</span>
+  <span><b style="color:#c3142d;">6</b> Run</span>
+</div>
+
+???
+
+Point at 5 and at the highlighted working-directory line in 2: they say the same thing. RStudio is "inside" a folder, and every path in your code is measured from that folder. That is the whole idea of the next three slides. Write in Source, run in Console, look at Environment to see what exists, use Files to see what is on disk.
+
+
+---
+
+# Set Up RStudio Once
+
+.panelset[
+
+.panel[.panel-name[1 R version]
+
+<div style="display:flex; gap:16px; align-items:flex-start;"><div style="flex:0 0 52%;"><img src="`r knitr::image_uri('../../figures/rstudio-setup-1-rversion.png')`" alt="RStudio Global Options, 1 R version" style="width:100%; border:1px solid #d1d5db; border-radius:6px;"></div><div style="flex:1; font-size:14px; line-height:1.55;"><div style="border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1);"><div style="font-weight:700; color:#c3142d; font-size:15px;">General &rarr; R version</div><div style="margin-top:8px;">Should read <b>4.6.0 or newer</b>. This one is 4.6.1.</div></div><div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:12px 14px; background:#fdf2f2; margin-top:12px;"><b>Why it matters:</b> if a computer has more than one R installed, RStudio may be pointed at an old one. Click <b>Change...</b> and pick the newest, or your packages and results will quietly differ from mine.</div></div></div>
+
+]
+
+.panel[.panel-name[2 Workspace]
+
+<div style="display:flex; gap:16px; align-items:flex-start;"><div style="flex:0 0 52%;"><img src="`r knitr::image_uri('../../figures/rstudio-setup-2-workspace.png')`" alt="RStudio Global Options, 2 Workspace" style="width:100%; border:1px solid #d1d5db; border-radius:6px;"></div><div style="flex:1; font-size:14px; line-height:1.55;"><div style="border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1);"><div style="font-weight:700; color:#c3142d; font-size:15px;">General &rarr; Workspace</div><div style="margin-top:8px;"><b>Restore .RData into workspace at startup:</b> unchecked.</div><div style="margin-top:4px;"><b>Save workspace to .RData on exit:</b> Never.</div></div><div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:12px 14px; background:#fdf2f2; margin-top:12px;"><b>Why:</b> every session starts with an empty Environment. Anything you need has to come from a script you can re-run, which is the promise from Part 1. The alternative is an invisible <code>.RData</code> file that quietly carries yesterday's objects into today.</div></div></div>
+
+]
+
+.panel[.panel-name[3 Pipe]
+
+<div style="display:flex; gap:16px; align-items:flex-start;"><div style="flex:0 0 52%;"><img src="`r knitr::image_uri('../../figures/rstudio-setup-3-pipe.png')`" alt="RStudio Global Options, 3 Pipe" style="width:100%; border:1px solid #d1d5db; border-radius:6px;"></div><div style="flex:1; font-size:14px; line-height:1.55;"><div style="border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1);"><div style="font-weight:700; color:#c3142d; font-size:15px;">Code &rarr; Editing</div><div style="margin-top:8px;"><b>Use native pipe operator, <code>|&gt;</code>:</b> checked.</div><div style="margin-top:4px; color:#585E60;">Ctrl + Shift + M then types <code>|&gt;</code>.</div></div><div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:12px 14px; background:#fdf2f2; margin-top:12px;"><b>Why:</b> every pipeline in this course is written with <code>|&gt;</code> (you saw it on the crash-data slides). The older <code>%&gt;%</code> still works, but we will not use it.</div></div></div>
+
+]
+
+.panel[.panel-name[4 Highlighting]
+
+<div style="display:flex; gap:16px; align-items:flex-start;"><div style="flex:0 0 52%;"><img src="`r knitr::image_uri('../../figures/rstudio-setup-4-highlight.png')`" alt="RStudio Global Options, 4 Highlighting" style="width:100%; border:1px solid #d1d5db; border-radius:6px;"></div><div style="flex:1; font-size:14px; line-height:1.55;"><div style="border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1);"><div style="font-weight:700; color:#c3142d; font-size:15px;">Code &rarr; Display</div><div style="margin-top:8px;"><b>Highlight R function calls:</b> checked.</div><div style="margin-top:4px;"><b>Use rainbow parentheses:</b> checked.</div></div><div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:12px 14px; background:#fdf2f2; margin-top:12px;"><b>Optional, but helpful:</b> function names get their own color (that is how the code on these slides is colored), and each nesting level of parentheses gets its own color, so a missing <code>)</code> is easy to spot.</div></div></div>
+
+]
+
+.panel[.panel-name[5 Appearance]
+
+<div style="display:flex; gap:16px; align-items:flex-start;"><div style="flex:0 0 52%;"><img src="`r knitr::image_uri('../../figures/rstudio-setup-5-appearance.png')`" alt="RStudio Global Options, 5 Appearance" style="width:100%; border:1px solid #d1d5db; border-radius:6px;"></div><div style="flex:1; font-size:14px; line-height:1.55;"><div style="border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1);"><div style="font-weight:700; color:#c3142d; font-size:15px;">Appearance</div><div style="margin-top:8px;"><b>Editor font size:</b> 16, bigger than the default.</div><div style="margin-top:4px;"><b>Editor theme:</b> Tomorrow Night Bright, if you want it.</div></div><div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:12px 14px; background:#fdf2f2; margin-top:12px;"><b>Optional:</b> the theme gives you the same colors as my screen for functions, packages, and parentheses, which makes following along easier. The font size is for your eyes and your neighbor's.</div></div></div>
+
+]
+
+]
+
+???
+
+Tools, Global Options. Five settings, once per computer, including their laptop tonight. Tabs 1 and 2 are the ones I check when someone's code "works on my machine": wrong R version, or an object that only exists because of a stale .RData. Tabs 3 to 5 are quality of life. Have them do all five now; it takes two minutes.
+
+---
+
+# What Is a Project?
+
+<div style="display:flex; gap:16px; align-items:flex-start; margin-top:2px;">
+  <div style="flex:1;">
+    <div style="border:1px solid #d1d5db; border-radius:8px; padding:11px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); margin-bottom:10px;">
+      <div style="font-weight:700; font-size:15px; color:#c3142d;">A self-contained folder</div>
+      <div style="font-size:13.5px; margin-top:4px; line-height:1.5;">Data, scripts, and output for one piece of work live together in one folder. Your <code>business_intelligence</code> repo is that folder.</div>
+    </div>
+    <div style="border:1px solid #d1d5db; border-radius:8px; padding:11px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); margin-bottom:10px;">
+      <div style="font-weight:700; font-size:15px; color:#c3142d;">The <code>.Rproj</code> file marks the root</div>
+      <div style="font-size:13.5px; margin-top:4px; line-height:1.5;">Open it and RStudio sets the <b>working directory</b> to that folder, every time, on any computer. No <code>setwd()</code>, ever.</div>
+    </div>
+    <div style="border:1px solid #d1d5db; border-radius:8px; padding:11px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+      <div style="font-weight:700; font-size:15px; color:#c3142d;">Paths are relative to the root</div>
+      <div style="font-size:13.5px; margin-top:4px; line-height:1.5;">Write <code>"data/crashes.csv"</code>, never <code>"C:/Users/you/Desktop/crashes.csv"</code>. The first works after a clone on any machine, including mine when I grade.</div>
+    </div>
+  </div>
+  <div style="flex:0 0 42%;">
+    <div style="background:#e5e7eb; color:#374151; font-weight:700; font-size:13px; padding:8px 14px; text-transform:uppercase; border-radius:8px 8px 0 0;">Your repo by the end of today</div>
+    <div style="border:1px solid #d1d5db; border-top:0; border-radius:0 0 8px 8px; padding:12px 16px; font-family:'Source Code Pro', Consolas, monospace; font-size:13.5px; line-height:1.8; background:#fcfcfc;">
+      <div><b>business_intelligence/</b> <span style="color:#585E60; font-family:Lato, sans-serif; font-size:12px;">the repo, the project, the folder</span></div>
+      <div>&nbsp;&nbsp;README.md <span style="color:#585E60; font-family:Lato, sans-serif; font-size:12px;">from Assignment 0</span></div>
+      <div>&nbsp;&nbsp;<span style="color:#c3142d;">business_intelligence.Rproj</span> <span style="color:#585E60; font-family:Lato, sans-serif; font-size:12px;">RStudio adds this</span></div>
+      <div>&nbsp;&nbsp;<span style="color:#c3142d;">.gitignore</span> <span style="color:#585E60; font-family:Lato, sans-serif; font-size:12px;">and this: files Git should skip</span></div>
+      <div>&nbsp;&nbsp;<span style="color:#c3142d;">scripts/</span></div>
+      <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#c3142d;">class02.R</span> <span style="color:#585E60; font-family:Lato, sans-serif; font-size:12px;">your first script</span></div>
+      <div>&nbsp;&nbsp;data/ <span style="color:#585E60; font-family:Lato, sans-serif; font-size:12px;">next class</span></div>
+    </div>
+    <div style="font-size:12.5px; color:#585E60; margin-top:8px;">Same structure as the course repo you saw in Class 01, just smaller.</div>
+  </div>
+</div>
+
+???
+
+The three cards are one idea said three ways: the folder is the unit. The tree on the right is the target for the next slide; the red items are what we add in the demo. Point out .gitignore: RStudio creates it so its own scratch files (.Rproj.user) never get committed.
+
+
+---
+
+# Live Demo: From Repo to RStudio Project
+
+.panelset[
+
+.panel[.panel-name[Steps]
+
+<div style="display:flex; gap:14px; align-items:flex-start;">
+<div style="flex:1; font-size:13px; line-height:1.45;">
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:7px 12px; margin-bottom:6px; background:#fcfcfc;"><b style="color:#c3142d;">1 &nbsp; Make it a project.</b> RStudio &rarr; <b>File &rarr; New Project &rarr; Existing Directory</b> &rarr; Browse to <code>M:\isa401\business_intelligence</code> &rarr; <b>Create Project</b>. RStudio restarts inside the folder; the project name appears top right.</div>
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:7px 12px; margin-bottom:6px; background:#fcfcfc;"><b style="color:#c3142d;">2 &nbsp; Write a script.</b> <b>File &rarr; New File &rarr; R Script</b>. Type the two lines below, then press <b>Ctrl + Enter</b> on each one and watch the Console and the Environment.<div style="font-family:'Source Code Pro', monospace; font-size:12.5px; background:#f5f5f5; padding:4px 8px; margin-top:4px; border-radius:4px;">crashes_per_day = 30125 / 365<br>crashes_per_day</div></div>
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:7px 12px; margin-bottom:6px; background:#fcfcfc;"><b style="color:#c3142d;">3 &nbsp; Save it inside the project.</b> <b>Ctrl + S</b>. In the dialog, click <b>New Folder</b>, name it <code>scripts</code>, open it, and save the file as <code>class02.R</code>.</div>
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:7px 12px; margin-bottom:6px; background:#fcfcfc;"><b style="color:#c3142d;">4 &nbsp; Commit and push in GitHub Desktop.</b> Three new items are listed and ticked: <code>business_intelligence.Rproj</code>, <code>.gitignore</code>, <code>scripts/class02.R</code>. Summary: <code>Add RStudio project and first script</code> &rarr; <b>Commit to main</b> &rarr; <b>Push origin</b>.</div>
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:7px 12px; background:#fcfcfc;"><b style="color:#c3142d;">5 &nbsp; Verify.</b> On GitHub: <b>3 commits</b>, a <code>scripts</code> folder, and your script readable in the browser.</div>
+</div>
+<div style="flex:0 0 32%; border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#ffffff; font-size:13px; line-height:1.5; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+<div style="font-weight:700; color:#374151; text-transform:uppercase; font-size:11px;">If you fall behind</div>
+<div style="margin-top:6px;">Say so, or <b style="color:#c3142d;">share your screen on Zoom</b>.</div>
+<div style="margin-top:6px;">No <b>Existing Directory</b> option? You are already inside a project: <b>File &rarr; Close Project</b> first.</div>
+<div style="margin-top:6px;">Desktop lists <code>.Rproj.user/</code>? It should not; that folder is in <code>.gitignore</code>. Untick it if it appears.</div>
+<div style="margin-top:6px;">Console says <code>Error: object 'crashes_per_day' not found</code>? Run line 1 before line 2, or re-run both.</div>
+</div>
+</div>
+
+]
+
+.panel[.panel-name[Checkpoint]
+
+<div style="font-size:14.5px; line-height:1.6;">
+<div style="margin-bottom:6px;"><b>After step 1:</b> top right of RStudio says <code>business_intelligence</code>; the Files pane shows <code>README.md</code> and <code>business_intelligence.Rproj</code>; the Console's working-directory line ends in <code>business_intelligence/</code>.</div>
+<div style="margin-bottom:6px;"><b>After step 2:</b> the Console prints <code>[1] 82.53425</code> and the Environment pane lists <code>crashes_per_day</code> with that value.</div>
+<div style="margin-bottom:6px;"><b>After step 3:</b> the tab is named <code>class02.R</code> (not <i>Untitled1</i>) and the Files pane shows a <code>scripts</code> folder.</div>
+<div style="margin-bottom:6px;"><b>After step 4:</b> GitHub Desktop says <i>0 changed files</i>; History shows three commits, newest on top.</div>
+<div><b>After step 5:</b> GitHub shows the <code>scripts</code> folder; clicking <code>class02.R</code> shows your two lines, in a browser, on any device.</div>
+</div>
+
+]
+
+.panel[.panel-name[Discussion]
+
+- .can-edit.key-project-demo-discussion[Notes from our class discussion (Use Chrome as your browser to edit this part of the page)]
+
+]
+
+]
+
+???
+
+Same rhythm as the Git demo: do each step on the projector, then wait for the room. Step 2 is deliberately tiny: the point is the loop (type, Ctrl+Enter, look at Console and Environment), not the arithmetic. 30,125 is the row count of the crash CSV, so the number is not random. Step 4 is the payoff of Part 2: they already know what those three buttons do.
+
+
+---
+
+# Every Class From Here
+
+<div style="display:flex; gap:14px; align-items:stretch; margin-top:14px;">
+  <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:9px 14px;">1 &nbsp; Open the project</div>
+    <div style="padding:14px; font-size:14.5px; line-height:1.55;">Double-click <code>business_intelligence.Rproj</code>, or in RStudio use <b>File &rarr; Open Project</b>.<div style="margin-top:6px; color:#585E60;">Check the top right corner before you type anything.</div></div>
+  </div>
+  <div style="align-self:center; color:#c3142d; font-size:24px; font-weight:700;">&rarr;</div>
+  <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:9px 14px;">2 &nbsp; Work in a script</div>
+    <div style="padding:14px; font-size:14.5px; line-height:1.55;">One script per class, saved under <code>scripts/</code>. Relative paths only.<div style="margin-top:6px; color:#585E60;">The Console is for trying things; the script is the record.</div></div>
+  </div>
+  <div style="align-self:center; color:#c3142d; font-size:24px; font-weight:700;">&rarr;</div>
+  <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:9px 14px;">3 &nbsp; Commit and push before you leave</div>
+    <div style="padding:14px; font-size:14.5px; line-height:1.55;">GitHub Desktop: tick, summary, <b>Commit to main</b>, <b>Push origin</b>.<div style="margin-top:6px; color:#585E60;">Your laptop at home clones or pulls the same repo, and the work is there.</div></div>
+  </div>
+</div>
+
+<br>
+
+<div style="margin-top:14px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:14px 20px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:18px; line-height:1.55; color:#1b1b1b;">
+<b style="color:#c3142d;">If it is not pushed, it is not done.</b> Your M: drive keeps the files. GitHub keeps every version of them, puts them on any computer you sit at, and is where I look when I grade.
+</div>
+
+???
+
+This is the ritual. Open the project, work in a script, push before you leave. Repeat it every class until it is boring; boring is the goal. Lab machines wipe local files, which makes the third step non-negotiable.
+
+
+---
+class: inverse, center, middle
+
+# R 101
+
+---
+
+# Objects and Assignment
+
+.left55[
+
+```{r assign, hl.size="72%", results="hold"}
+# = stores the value under a name
+crashes_per_day = 30125 / 365
+
+# typing the name shows it
+crashes_per_day
+
+# <- does exactly the same thing as =
+crashes_per_day <- 30125 / 365
+
+# -> also works, pointing the other way
+30125 / 365 -> crashes_per_day
+```
+
+]
+
+.right43[
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.6;">
+<div style="font-weight:700; color:#c3142d; font-size:15px;">Three parts</div>
+<div style="margin-top:6px;"><b>Name</b> on the left: <code>crashes_per_day</code>. Letters, digits, <code>_</code> and <code>.</code>; no spaces; case matters.</div>
+<div style="margin-top:4px;"><b>Assignment</b> in the middle: <code>=</code>, <code>&lt;-</code>, or <code>-&gt;</code>. We write <code>=</code>. You will see <code>&lt;-</code> in most R code online and in my editor, and <code>-&gt;</code> mostly at the end of a pipeline. All three do the same job.</div>
+<div style="margin-top:4px;"><b>Value</b> on the right: whatever the expression works out to.</div>
+</div>
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.6; margin-top:12px;">
+<div style="font-weight:700; color:#374151; font-size:15px;">Where did it go?</div>
+<div style="margin-top:6px;">Look at the <b>Environment</b> pane (callout 3 on the RStudio slide): <code>crashes_per_day</code> is listed with its value. That pane is the list of names R currently knows.</div>
+</div>
+]
+
+<div style="clear:both;"></div>
+
+???
+
+Run it live in the podium RStudio while the slide is up so they see the Environment pane fill in. The point of showing both = and <- is to stop the question before it is asked; pick = in this course because it is one keystroke and matches every other language they will meet.
+
+
+---
+
+# Object 'object_name' not found
+
+.pull-left[
+<div style="font-weight:700; color:#c3142d; font-size:14px; margin-bottom:4px;">1 &nbsp; Case</div>
+
+```{r err_case, error=TRUE, hl.size="76%"}
+Crashes_per_day
+```
+
+<div style="font-weight:700; color:#c3142d; font-size:14px; margin:10px 0 4px 0;">2 &nbsp; Typo</div>
+
+```{r err_typo, error=TRUE, hl.size="76%"}
+crashes_per_dya
+```
+
+]
+
+--
+
+.pull-right[
+<div style="font-weight:700; color:#c3142d; font-size:14px; margin-bottom:4px;">3 &nbsp; Never ran</div>
+
+```{r err_notrun, error=TRUE, hl.size="76%"}
+# pretend line 1 was never run:
+rm(crashes_per_day)
+crashes_per_day
+```
+
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:10px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13.5px; line-height:1.55; margin-top:10px;">
+<b>The same message, three causes.</b> The name on that line is not in the Environment pane. Check, in order:
+<ul style="margin:6px 0 0 0; padding-left:18px;">
+<li>capitalization</li>
+<li>spelling</li>
+<li>whether you pressed <b>Ctrl + Enter</b> (runs the line) or just <b>Enter</b> (adds a new line in the script and runs nothing)</li>
+</ul>
+</div>
+]
+
+???
+
+Three clicks. Before each reveal, ask which cause it is. Number 3 is the one that costs the most time in office hours: the script looks right, nothing was ever sent to the Console. Point at the Environment pane again: if it is not there, R does not know it.
+
+
+---
+
+# R Is a Vector Language
+
+.left55[
+
+```{r vectors, hl.size="58%"}
+crashes_by_day = c(2020, 2241, 2327, 2285,
+                   2380, 1866, 1664)
+names(crashes_by_day) = c("Mon", "Tue", "Wed", "Thu",
+                          "Fri", "Sat", "Sun")
+crashes_by_day
+crashes_by_day > 2000        # seven answers
+sum(crashes_by_day > 2000)   # days above 2,000
+mean(crashes_by_day)
+```
+
+]
+
+.right43[
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.6;">
+<div style="font-weight:700; color:#c3142d; font-size:15px;">The same seven numbers as the chart</div>
+<div style="margin-top:6px;"><code>c()</code> <b>combines</b> values into a <b>vector</b>: one type, in order, optionally with names.</div>
+<div style="margin-top:4px;">An operation on a vector runs on <b>every element</b>: <code>&gt; 2000</code> returned seven answers, not one.</div>
+<div style="margin-top:4px;"><code>sum()</code> of seven TRUE/FALSE values counts the TRUEs.</div>
+</div>
+<div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:12px 14px; background:#fdf2f2; font-size:14px; line-height:1.6; margin-top:12px;">
+<b>There are no scalars in R.</b> <code>mean(crashes_by_day)</code> returned a vector of length 1. Even <code>82.5</code> on the last slide was a vector of length 1. A column of a data frame is a vector; that is why this matters.
+</div>
+]
+
+<div style="clear:both;"></div>
+
+???
+
+The numbers are the seven bars from the crashes chart, so nothing here is abstract. Emphasize the middle line: one comparison, seven answers. That is the mental model that makes dplyr feel natural next week.
+
+
+---
+
+# Six Types of Atomic Vectors
+
+<div style="font-size:14.5px; color:#1b1b1b; margin:0 0 6px 0;">Every vector has exactly one of six types. The first four are the most common in practice.</div>
+
+<svg viewBox="0 0 1000 300" width="100%" style="max-height:400px;">
+  <rect x="380" y="10" width="240" height="44" rx="8" fill="#1b1b1b"/>
+  <text x="500" y="38" text-anchor="middle" font-size="18" font-weight="700" fill="#ffffff" font-family="Lato, sans-serif">atomic vector</text>
+  <line x1="500" y1="54" x2="110" y2="100" stroke="#9ca3af" stroke-width="2"/>
+  <line x1="500" y1="54" x2="270" y2="100" stroke="#9ca3af" stroke-width="2"/>
+  <line x1="500" y1="54" x2="430" y2="100" stroke="#9ca3af" stroke-width="2"/>
+  <line x1="500" y1="54" x2="590" y2="100" stroke="#9ca3af" stroke-width="2"/>
+  <line x1="500" y1="54" x2="750" y2="100" stroke="#d1d5db" stroke-width="2" stroke-dasharray="4,4"/>
+  <line x1="500" y1="54" x2="910" y2="100" stroke="#d1d5db" stroke-width="2" stroke-dasharray="4,4"/>
+  <g font-family="Lato, sans-serif">
+    <rect x="40" y="100" width="140" height="40" rx="8" fill="#c3142d"/><text x="110" y="126" text-anchor="middle" font-size="17" font-weight="700" fill="#ffffff">logical</text>
+    <rect x="200" y="100" width="140" height="40" rx="8" fill="#c3142d"/><text x="270" y="126" text-anchor="middle" font-size="17" font-weight="700" fill="#ffffff">integer</text>
+    <rect x="360" y="100" width="140" height="40" rx="8" fill="#c3142d"/><text x="430" y="126" text-anchor="middle" font-size="17" font-weight="700" fill="#ffffff">double</text>
+    <rect x="520" y="100" width="140" height="40" rx="8" fill="#c3142d"/><text x="590" y="126" text-anchor="middle" font-size="17" font-weight="700" fill="#ffffff">character</text>
+    <rect x="680" y="100" width="140" height="40" rx="8" fill="#e5e7eb"/><text x="750" y="126" text-anchor="middle" font-size="17" font-weight="700" fill="#585E60">complex</text>
+    <rect x="840" y="100" width="140" height="40" rx="8" fill="#e5e7eb"/><text x="910" y="126" text-anchor="middle" font-size="17" font-weight="700" fill="#585E60">raw</text>
+    <text x="110" y="168" text-anchor="middle" font-size="13.5" fill="#1b1b1b">TRUE or FALSE</text>
+    <text x="110" y="190" text-anchor="middle" font-size="13" fill="#585E60">the answer to a comparison</text>
+    <text x="110" y="222" text-anchor="middle" font-size="13.5" font-family="Source Code Pro, monospace" fill="#c3142d">crashes_by_day &gt; 2000</text>
+    <text x="270" y="168" text-anchor="middle" font-size="13.5" fill="#1b1b1b">whole numbers</text>
+    <text x="270" y="190" text-anchor="middle" font-size="13" fill="#585E60">written with an L</text>
+    <text x="270" y="222" text-anchor="middle" font-size="13.5" font-family="Source Code Pro, monospace" fill="#c3142d">2020L</text>
+    <text x="430" y="168" text-anchor="middle" font-size="13.5" fill="#1b1b1b">any number</text>
+    <text x="430" y="190" text-anchor="middle" font-size="13" fill="#585E60">decimals; dates too</text>
+    <text x="430" y="222" text-anchor="middle" font-size="13.5" font-family="Source Code Pro, monospace" fill="#c3142d">82.5   30125 / 365</text>
+    <text x="590" y="168" text-anchor="middle" font-size="13.5" fill="#1b1b1b">text</text>
+    <text x="590" y="190" text-anchor="middle" font-size="13" fill="#585E60">anything in quotes</text>
+    <text x="590" y="222" text-anchor="middle" font-size="13.5" font-family="Source Code Pro, monospace" fill="#c3142d">"Mon"   "2020"</text>
+    <text x="750" y="168" text-anchor="middle" font-size="13.5" fill="#585E60">imaginary numbers</text>
+    <text x="750" y="222" text-anchor="middle" font-size="13.5" font-family="Source Code Pro, monospace" fill="#9ca3af">3 + 2i</text>
+    <text x="910" y="168" text-anchor="middle" font-size="13.5" fill="#585E60">bytes</text>
+    <text x="910" y="222" text-anchor="middle" font-size="13.5" font-family="Source Code Pro, monospace" fill="#9ca3af">as.raw(255)</text>
+    <text x="500" y="280" text-anchor="middle" font-size="14" fill="#585E60">Red: the four you will meet in practice. Gray: valid types you are unlikely to need.</text>
+  </g>
+</svg>
+
+.footnote[
+<html>
+<hr>
+</html>
+**Source:** the six types follow [Advanced R, chapter 3 (Vectors)](https://adv-r.hadley.nz/vectors-chap.html#atomic-vectors) by Hadley Wickham.
+]
+
+???
+
+Read left to right. Logical is the answer to any comparison; integer versus double only matters when you care about the L; character is anything in quotes, which is the trap on the next slides. Complex and raw exist so nobody is surprised by typeof() one day.
+
+
+---
+
+# Four Data Types in Lego
+
+<div style="text-align:center; margin-top:0;"><img src="`r knitr::image_uri('../../figures/legos-jbryan-types-web.jpg')`" alt="Lego bricks arranged in rows: logical, factor, integer and double" style="width:50%; border-radius:6px;"></div>
+
+.vcenter[
+
+.left55[
+
+```{r types, hl.size="70%", results="hold"}
+typeof(TRUE)     # logical
+typeof(2020L)    # integer: the L
+typeof(82.5)     # double: no L
+typeof("Mon")    # character: quotes
+```
+
+]
+
+.right43[
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.6; margin-top:4px;">
+<div style="font-weight:700; color:#c3142d; font-size:15px;">One vector, one type</div>
+<div style="margin-top:6px;">Every brick in a row is the same color: a vector holds <b>one type</b>. Mix a number into a character vector and R quietly turns everything into character.</div>
+<div style="margin-top:6px;"><code>typeof()</code> tells you which one you have. The <i>factor</i> row (categories with fixed levels) is Monday's topic.</div>
+</div>
+]
+
+]
+
+<div style="clear:both;"></div>
+
+.footnote[
+<html>
+<hr>
+</html>
+**Image:** Jenny Bryan, [lego-rstats](https://github.com/jennybc/lego-rstats#readme).
+]
+
+???
+
+Same four types, now as bricks: a row is a vector, a color is a type. Run typeof() on the four literals and point at the matching row.
+
+---
+
+# A Self-Assessment for Type Checking
+
+`r countdown(minutes = 2, seconds = 0, top = 0, font_size = "2em")`
+
+```{r crashes_raw, include=FALSE, cache=TRUE}
+crashes_raw = readr::read_csv("../../data/cincy_2025_crashes.csv", show_col_types = FALSE)
+six = dplyr::select(crashes_raw, instanceid, crashdate, dayofweek, age, latitude_x, injuries)
+age_text  = six$age[!is.na(six$age)]
+age_codes = unique(age_text[is.na(suppressWarnings(as.numeric(age_text)))])
+```
+
+.panelset[
+
+.panel[.panel-name[Game]
+
+<div style="font-size:14.5px; margin:0 0 8px 0;">Six columns from the Cincinnati crash file, seven rows drawn at random. For every column: <b>logical, integer, double, or character?</b> Connect them on the next tab.</div>
+
+<div style="font-size:66%;">
+
+```{r six_preview, echo=FALSE, results="asis"}
+set.seed(401)
+code_row   = six |> dplyr::filter(age %in% age_codes) |> dplyr::slice_sample(n = 1)
+other_rows = six |> dplyr::filter(!(age %in% age_codes)) |> dplyr::slice_sample(n = 6)
+dplyr::bind_rows(other_rows, code_row) |>
+  dplyr::slice_sample(n = 7) |>
+  dplyr::mutate(dplyr::across(dplyr::everything(), as.character)) |>
+  dplyr::mutate(instanceid = substr(instanceid, 1, 8)) |>
+  knitr::kable(format = "html")
+```
+
+</div>
+
+<div style="font-size:12.5px; color:#585E60; margin-top:6px;"><code>instanceid</code> is shortened to its first 8 characters to fit. <code>NA</code> means the value is missing.</div>
+
+]
+
+.panel[.panel-name[Connect]
+
+<div style="font-size:14px; color:#585E60; margin:0 0 6px 0;">Drag from a column on the left to a type on the right (or click one, then the other). Each column gets exactly one type. Then press <b>Check</b>.</div>
+
+<div class="typematch" style="height:400px; margin:0; padding:0; overflow:hidden; user-select:none;"></div>
+
+<script>
+(function () {
+  var cols = [
+    { id: "instanceid", ex: "B956B8CC-23BE-45F6-95…", ans: "character", why: "Letters and hyphens: character." },
+    { id: "crashdate",  ex: "2025-01-01 00:01:00",     ans: "double",    why: "R stores a date-time as a number of seconds; typeof() reports the storage, so double." },
+    { id: "dayofweek",  ex: "WED",                     ans: "character", why: "Text codes: character." },
+    { id: "age",        ex: "47, (blank), BB",         ans: "character", why: "One row in the table has a letter code (BB, NN or NB) instead of a number, and 79 rows in the file do. One text value makes the whole column character." },
+    { id: "latitude_x", ex: "39.1",                    ans: "double",    why: "A decimal number: double." },
+    { id: "injuries",   ex: "5 - NO INJURY",           ans: "character", why: "A number followed by words is text: character." }
+  ];
+  var types = ["logical", "integer", "double", "character"];
+  var NS = "http://www.w3.org/2000/svg";
+  var W = 780, H = 300, LX = 16, LW = 292, RX = 560, RW = 200, NH = 40;
+
+  function el(tag, attrs, parent) {
+    var e = document.createElementNS(NS, tag);
+    Object.keys(attrs).forEach(function (k) { e.setAttribute(k, attrs[k]); });
+    if (parent) { parent.appendChild(e); }
+    return e;
+  }
+  var LY = [8, 56, 104, 152, 200, 248], RY = [18, 86, 154, 222];
+  function leftY(i) { return LY[i]; }
+  function rightY(j) { return RY[j]; }
+
+  function build(box) {
+    if (box.getAttribute("data-built")) { return; }
+    box.setAttribute("data-built", "1");
+    var links = {};          // column id -> type
+    var pending = null;      // column id being connected
+    var checked = false;
+
+    var svg = el("svg", { viewBox: "0 0 " + W + " " + H, width: "100%", height: H, style: "display:block;" }, null);
+    box.appendChild(svg);
+    var edgeLayer = el("g", { "pointer-events": "none" }, svg);
+    var rubber = el("line", { stroke: "#9ca3af", "stroke-width": 3, "stroke-dasharray": "6 5", visibility: "hidden", "pointer-events": "none" }, svg);
+
+    var leftNodes = {}, rightNodes = {};
+    cols.forEach(function (c, i) {
+      var g = el("g", { "data-col": c.id, style: "cursor:pointer;" }, svg);
+      el("rect", { x: LX, y: leftY(i), width: LW, height: NH, rx: 8, fill: "#fcfcfc", stroke: "#d1d5db", "stroke-width": 1.5 }, g);
+      var t1 = el("text", { x: LX + 12, y: leftY(i) + 16, "font-size": 13.5, "font-weight": 700, fill: "#1b1b1b", "font-family": "Source Code Pro, monospace" }, g);
+      t1.textContent = c.id;
+      var t2 = el("text", { x: LX + 12, y: leftY(i) + 32, "font-size": 11.5, fill: "#585E60", "font-family": "Source Code Pro, monospace" }, g);
+      t2.textContent = c.ex;
+      el("circle", { cx: LX + LW, cy: leftY(i) + NH / 2, r: 6, fill: "#c3142d" }, g);
+      leftNodes[c.id] = g;
+    });
+    types.forEach(function (tp, j) {
+      var g = el("g", { "data-type": tp, style: "cursor:pointer;" }, svg);
+      el("rect", { x: RX, y: rightY(j), width: RW, height: NH, rx: 8, fill: "#fcfcfc", stroke: "#d1d5db", "stroke-width": 1.5 }, g);
+      var t = el("text", { x: RX + RW / 2, y: rightY(j) + 26, "font-size": 16, "font-weight": 700, fill: "#1b1b1b", "text-anchor": "middle", "font-family": "Source Code Pro, monospace" }, g);
+      t.textContent = tp;
+      el("circle", { cx: RX, cy: rightY(j) + NH / 2, r: 6, fill: "#585E60" }, g);
+      rightNodes[tp] = g;
+    });
+
+    var bar = document.createElement("div");
+    bar.setAttribute("style", "display:flex; gap:10px; align-items:center; margin-top:6px; font-size:14px;");
+    var btnCheck = document.createElement("button");
+    btnCheck.textContent = "Check";
+    btnCheck.setAttribute("style", "background:#c3142d; color:#fff; border:0; border-radius:6px; padding:6px 16px; font-weight:700; font-size:14px; cursor:pointer;");
+    var btnReset = document.createElement("button");
+    btnReset.textContent = "Start over";
+    btnReset.setAttribute("style", "background:#ffffff; color:#374151; border:1px solid #d1d5db; border-radius:6px; padding:6px 14px; font-size:14px; cursor:pointer;");
+    var status = document.createElement("span");
+    status.setAttribute("style", "color:#585E60;");
+    var why = document.createElement("div");
+    why.setAttribute("style", "font-size:12.5px; color:#1b1b1b; line-height:1.4; margin-top:4px; min-height:0;");
+    bar.appendChild(btnCheck); bar.appendChild(btnReset); bar.appendChild(status);
+    box.appendChild(bar); box.appendChild(why);
+
+    function edgeEnds(cid, tp) {
+      var i = cols.map(function (c) { return c.id; }).indexOf(cid);
+      var j = types.indexOf(tp);
+      return { x1: LX + LW, y1: leftY(i) + NH / 2, x2: RX, y2: rightY(j) + NH / 2 };
+    }
+    function drawEdges() {
+      while (edgeLayer.firstChild) { edgeLayer.removeChild(edgeLayer.firstChild); }
+      Object.keys(links).forEach(function (cid) {
+        var p = edgeEnds(cid, links[cid]);
+        var color = "#9ca3af";
+        if (checked) { color = (links[cid] === colById(cid).ans) ? "#1b9e77" : "#c3142d"; }
+        var mx = (p.x1 + p.x2) / 2;
+        el("path", { d: "M" + p.x1 + "," + p.y1 + " C" + mx + "," + p.y1 + " " + mx + "," + p.y2 + " " + p.x2 + "," + p.y2,
+                     fill: "none", stroke: color, "stroke-width": 3.5 }, edgeLayer);
+      });
+      cols.forEach(function (c) {
+        var r = leftNodes[c.id].querySelector("rect");
+        var on = (pending === c.id);
+        r.setAttribute("stroke", on ? "#c3142d" : (links[c.id] ? "#9ca3af" : "#d1d5db"));
+        r.setAttribute("stroke-width", on ? 3 : 1.5);
+      });
+      var n = Object.keys(links).length;
+      if (!checked) { status.textContent = n + " of " + cols.length + " connected"; }
+    }
+    function colById(cid) { return cols.filter(function (c) { return c.id === cid; })[0]; }
+
+    function svgPoint(ev) {
+      var pt = svg.createSVGPoint(); pt.x = ev.clientX; pt.y = ev.clientY;
+      return pt.matrixTransform(svg.getScreenCTM().inverse());
+    }
+    function startFrom(cid) {
+      pending = cid; checked = false; why.textContent = "";
+      var p = edgeEnds(cid, types[0]);
+      rubber.setAttribute("x1", p.x1); rubber.setAttribute("y1", p.y1);
+      rubber.setAttribute("x2", p.x1); rubber.setAttribute("y2", p.y1);
+      drawEdges();
+    }
+    function connect(tp) {
+      if (pending === null) { return; }
+      links[pending] = tp; pending = null;
+      rubber.setAttribute("visibility", "hidden");
+      drawEdges();
+    }
+
+    svg.addEventListener("pointerdown", function (ev) {
+      var g = ev.target.closest ? ev.target.closest("g[data-col]") : null;
+      if (g) { startFrom(g.getAttribute("data-col")); rubber.setAttribute("visibility", "visible"); ev.preventDefault(); return; }
+      var r = ev.target.closest ? ev.target.closest("g[data-type]") : null;
+      if (r) { connect(r.getAttribute("data-type")); }
+    });
+    svg.addEventListener("pointermove", function (ev) {
+      if (pending === null) { return; }
+      if (rubber.getAttribute("visibility") === "hidden") { return; }
+      var p = svgPoint(ev);
+      rubber.setAttribute("x2", p.x); rubber.setAttribute("y2", p.y);
+    });
+    svg.addEventListener("pointerup", function (ev) {
+      if (pending === null) { return; }
+      var t = document.elementFromPoint(ev.clientX, ev.clientY);
+      var r = (t !== null) ? (t.closest ? t.closest("g[data-type]") : null) : null;
+      if (r) { connect(r.getAttribute("data-type")); return; }
+      rubber.setAttribute("visibility", "hidden");   // released elsewhere: stay in click mode
+      drawEdges();
+    });
+
+    btnCheck.addEventListener("click", function () {
+      var n = Object.keys(links).length;
+      if (n !== cols.length) { status.textContent = "Connect all " + cols.length + " columns first (" + n + " done)."; return; }
+      checked = true; pending = null;
+      var right = cols.filter(function (c) { return links[c.id] === c.ans; }).length;
+      drawEdges();
+      status.textContent = right + " of " + cols.length + " correct";
+      var misses = cols.filter(function (c) { return links[c.id] !== c.ans; });
+      var msgs = misses.map(function (c) { return "<b style='color:#c3142d;'>" + c.id + "</b> is " + c.ans + ". " + c.why; });
+      if (misses.length === 0) { msgs = ["All six. Note that integer and logical were never the answer: read_csv() reads whole numbers as double, and the preview has no TRUE/FALSE column."]; }
+      why.innerHTML = msgs.join("<br>");
+    });
+    btnReset.addEventListener("click", function () {
+      links = {}; pending = null; checked = false; why.textContent = "";
+      rubber.setAttribute("visibility", "hidden");
+      drawEdges();
+    });
+    drawEdges();
+  }
+
+  function buildAll() { document.querySelectorAll(".typematch").forEach(build); }
+  buildAll();
+  if (window.slideshow) { if (!window.typematchHooked) { window.typematchHooked = true; window.slideshow.on("afterShowSlide", buildAll); } }
+})();
+</script>
+
+]
+
+.panel[.panel-name[Answer]
+
+<details style="margin-top:4px;"><summary style="cursor:pointer; font-weight:700; color:#c3142d; font-size:16px;">Click to reveal the types</summary>
+
+.left55[
+
+```{r six_types, hl.size="68%"}
+tibble::enframe(sapply(six, typeof),
+                name = "column", value = "type")
+```
+
+]
+
+.right43[
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13.5px; line-height:1.55;">
+<div style="font-weight:700; color:#c3142d; font-size:15px;">Two gotchas</div>
+<div style="margin-top:6px;"><b><code>crashdate</code> is a double.</b> readr recognized the date-time and stores it as seconds since 1970 with a date-time label on top. Dates are numbers in a costume, which is why you can subtract them.</div>
+<div style="margin-top:6px;"><b><code>age</code> is character.</b> Besides blanks, the column contains the codes `r paste0("<code>", age_codes, "</code>", collapse = ", ")`. One text value anywhere in a column turns the whole column into character, and every number in it stops being a number. Cleaning that is a Class 03 job.</div>
+</div>
+]
+
+<div style="clear:both;"></div>
+
+</details>
+
+]
+
+.panel[.panel-name[Discussion]
+
+- .can-edit.key-types-discussion[Notes from our class discussion (Use Chrome as your browser to edit this part of the page)]
+
+]
+
+]
+
+???
+
+Connect tab: drag each column to a type on the projector (or let a student drive), then Check. Expected misses: crashdate (most say character), age (most say integer). Both misses are the lesson: what a column looks like and what R stored are different things, and typeof() is how you check.
+
+
+---
+
+# From Vectors to a Data Frame
+
+.left55[
+
+```{r tibble_build, hl.size="70%"}
+fsb = tibble::tibble(
+  day     = names(crashes_by_day),
+  crashes = crashes_by_day,
+  busy    = crashes_by_day > 2000
+)
+fsb
+```
+
+]
+
+.right43[
+<div style="display:flex; gap:12px; align-items:flex-start;">
+<img src="`r knitr::image_uri('../../figures/legos-jbryan-dataframe-web.jpg')`" alt="Lego bricks: four columns of single-colored rows side by side, labeled data.frame / tibble" style="width:44%; border-radius:6px;">
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:10px 12px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13px; line-height:1.55;">
+<div style="font-weight:700; color:#c3142d; font-size:14px;">Vectors standing side by side</div>
+<div style="margin-top:4px;">Each <b>column</b> is one vector with one type (<code>&lt;chr&gt;</code>, <code>&lt;dbl&gt;</code>, <code>&lt;lgl&gt;</code> in the header). All columns have the <b>same length</b>, so every row lines up.</div>
+</div>
+</div>
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:10px 12px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13px; line-height:1.55; margin-top:10px;">
+The crash file is the same thing with 30,125 rows and 13 columns. <code>tibble</code> is the tidyverse's data frame: same object, tidier printing. <b>Monday:</b> taking these apart (pick a column, pick rows, and lists).
+</div>
+]
+
+<div style="clear:both;"></div>
+
+.footnote[
+<html>
+<hr>
+</html>
+**Image:** Jenny Bryan, [lego-rstats](https://github.com/jennybc/lego-rstats#readme).
+]
+
+???
+
+Read the printed header aloud: chr, dbl, lgl. That is the four-types slide showing up in a real object. Do not go into subsetting; say the word "Monday" and move on.
+
+
+---
+
+# Functions: Name and Arguments
+
+.left55[
+
+```{r fun_args, hl.size="68%", results="hold"}
+mean(x = crashes_by_day)              # by name
+mean(crashes_by_day, 0.2)             # by position
+mean(x = crashes_by_day, trim = 0.2)  # both
+```
+
+<div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:10px 14px; background:#fdf2f2; font-size:13.5px; line-height:1.55; margin-top:10px;">
+<b>House rule:</b> name every argument. <code>mean(x = crashes_by_day, trim = 0.2)</code> reads the same in six months and never depends on remembering the order.
+</div>
+]
+
+.right43[
+
+`r countdown(minutes = 2, seconds = 0, top = 0, font_size = "2em")`
+
+.panelset[
+
+.panel[.panel-name[Help page]
+
+<div style="font-size:12.5px; line-height:1.5;">
+In the Console, run <code>?mean</code>. The Help pane opens. Answer:
+<div style="margin-top:6px;"><b>1.</b> In <i>Usage</i>, which arguments have a default value?</div>
+<div><b>2.</b> In <i>Arguments</i>, what does <code>trim = 0.2</code> remove?</div>
+<div><b>3.</b> Try <code>mean(c(1, 2, NA))</code>, then <code>mean(c(1, 2, NA), na.rm = TRUE)</code>. What did <code>na.rm</code> change?</div>
+</div>
+
+]
+
+.panel[.panel-name[Discussion]
+
+- .can-edit.key-help-discussion[Notes from our class discussion (Use Chrome as your browser to edit this part of the page)]
+
+]
+
+]
+
+]
+
+???
+
+Two minutes, then debrief: defaults are trim = 0 and na.rm = FALSE; trim = 0.2 drops 20% from each end before averaging (here the lowest and highest day); na.rm = TRUE ignores missing values, otherwise the mean of anything containing NA is NA. The help page is the habit; ChatISA is the fallback.
+
+
+---
+
+# Functions from Packages
+
+<div style="font-size:14.5px; color:#1b1b1b; margin:0 0 10px 0;">Base R ships with <code>mean()</code>, <code>sum()</code>, <code>c()</code>. Almost everything else comes in a <b>package</b>, and a package has to make two trips before you can use it.</div>
+
+<div style="display:flex; gap:0; align-items:stretch; margin-top:4px;">
+  <div style="flex:1; border:1px solid #d1d5db; border-radius:10px; padding:14px 16px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="font-size:11px; color:#585E60; text-transform:uppercase; font-weight:700;">1 &middot; CRAN, on the internet</div>
+    <div style="font-weight:700; font-size:17px; color:#1b1b1b; margin-top:4px;">The app store for R</div>
+    <div style="font-size:13.5px; color:#585E60; margin-top:6px; line-height:1.5;">24,780 packages, free, reviewed, one download away. <code>dplyr</code>, <code>ggplot2</code>, <code>readr</code> live here.</div>
+  </div>
+  <div style="flex:0 0 172px; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0 6px;">
+    <div style="font-family:'Source Code Pro', monospace; font-size:11.5px; color:#c3142d; font-weight:700; text-align:center;">install.packages("dplyr")</div>
+    <div style="color:#c3142d; font-size:30px; line-height:1;">&rarr;</div>
+    <div style="font-size:11.5px; color:#585E60; text-align:center;">once per computer,<br>in the Console</div>
+  </div>
+  <div style="flex:1; border:1px solid #d1d5db; border-radius:10px; padding:14px 16px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="font-size:11px; color:#585E60; text-transform:uppercase; font-weight:700;">2 &middot; Your computer</div>
+    <div style="font-weight:700; font-size:17px; color:#1b1b1b; margin-top:4px;">The library folder</div>
+    <div style="font-size:13.5px; color:#585E60; margin-top:6px; line-height:1.5;">Installed means downloaded to this machine. It sits on disk, not in R. Your laptop needs its own copy.</div>
+  </div>
+  <div style="flex:0 0 172px; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0 6px;">
+    <div style="font-family:'Source Code Pro', monospace; font-size:12px; color:#c3142d; font-weight:700; text-align:center;">dplyr::count()</div>
+    <div style="font-size:11.5px; color:#585E60;">or</div>
+    <div style="font-family:'Source Code Pro', monospace; font-size:12px; color:#c3142d; font-weight:700; text-align:center;">library(dplyr)</div>
+    <div style="color:#c3142d; font-size:30px; line-height:1;">&rarr;</div>
+    <div style="font-size:11.5px; color:#585E60; text-align:center;">every session,<br>at the top of the script</div>
+  </div>
+  <div style="flex:1; border:1px solid #c3142d; border-radius:10px; padding:14px 16px; background:#fdf2f2; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="font-size:11px; color:#c3142d; text-transform:uppercase; font-weight:700;">3 &middot; Your R session</div>
+    <div style="font-weight:700; font-size:17px; color:#1b1b1b; margin-top:4px;">Ready to use</div>
+    <div style="font-size:13.5px; color:#585E60; margin-top:6px; line-height:1.5;">A fresh session knows nothing until you say which package a function comes from. <code>count()</code> alone: error. <code>dplyr::count()</code>: works.</div>
+  </div>
+</div>
+
+<div style="margin-top:18px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:12px 18px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:15px; line-height:1.55; color:#1b1b1b;">
+<b style="color:#c3142d;">Why we write <code>pkg::fun()</code> in this course.</b> It reads like a citation: anyone can see where <code>count()</code> came from. Two packages with the same function name cannot collide. And it works even when you forgot <code>library()</code>.
+</div>
+
+.footnote[
+<html>
+<hr>
+</html>
+**Package count:** [CRAN, Contributed Packages](https://cran.r-project.org/web/packages/), checked Aug 25, 2026.
+]
+
+???
+
+Two trips: internet to disk (install, once), disk to session (library or ::, every time). The most common error in week 2 is "could not find function": the package is installed but not loaded, or not installed on this particular computer. The pkg:: habit makes both cases obvious.
+
+---
+class: inverse, center, middle
+
+# Recap
+
+
+---
+
+# Summary of Main Points
+
+By now, you should be able to do the following:
+
+- **Explain** why a script beats a spreadsheet for **reproducible analysis**: the steps are written down, run in order, and run again on new data after changing one line.
+
+- **Use** the Git verbs **clone, commit, push**, and say what a **repository** is and what **GitHub** adds to Git.
+
+- **Set up** an **RStudio project** inside a repository so every path is relative to it.
+
+- **Read and write** basic R: **objects** and assignment, **vectors** and their **types**, **data frames**, **functions** with named arguments, and **`pkg::fun()`**.
+
+**Skills you practiced along the way:** reading an error message (`object 'x' not found`), reading a **diff**, telling **text files** from binary files, and checking `typeof()` before trusting a column.
+
+???
+
+Tie each bullet back to the part of the deck: Part 1 spreadsheets, Part 2 Git, Part 3 project, Part 4 R 101. The skills line is what the assignment and Monday's class lean on.
+
+---
+
+# Before You Go
+
+<div style="font-size:15px; color:#585E60; margin-bottom:8px;">Which concept from today still needs clarification? Vote, and we go through the top answers before you leave.</div>
+
+<div style="height:400px; margin:0; padding:0; overflow:hidden;">
+  <iframe
+    src="https://www.mentimeter.com/app/presentation/alnn4fxsr5nb3kd7r6ezqd8y4j71ocx2/embed"
+    frameborder="0"
+    allowfullscreen
+    sandbox="allow-scripts allow-same-origin allow-presentation"
+    style="width:100%; height:100%; border:0;">
+  </iframe>
+</div>
+
+???
+
+Same Menti presentation as the portfolio poll; advance it to the second question (which concept needs clarification). Answer the top two or three on the spot; carry the rest into Monday's opening.
+
+---
+
+# 📝 Review and Clarification 📝
+
+.pull-left[
+
+1. **Class Notes**: Take some time to revisit your class notes for key insights/concepts.
+
+2. **Zoom Recording**: The recording of today's class will be made available on Canvas approximately 3-4 hours after the session ends.
+
+3. **AI Recaps:** make your own with Gemini's NotebookLM, as I did for Class 01 (see the right).
+
+4. **Questions**: Do not let confusion pile up.
+
+]
+
+.pull-right[
+
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:14px 18px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:16px; line-height:1.55; margin-top:6px;">
+<div style="font-weight:700; color:#c3142d; font-size:18px;">Make your own recap in NotebookLM</div>
+<ol style="margin:10px 0 0 0; padding-left:22px;">
+<li style="margin-bottom:6px;">Go to <a href="https://notebooklm.google.com" target="_blank">notebooklm.google.com</a> and sign in with your Miami Google account.</li>
+<li style="margin-bottom:6px;">Add today's slide deck as a source: paste the deck's address from Canvas as a <b>Website</b> source.</li>
+<li>Click <b>Audio Overview</b> for a podcast, or <b>Video Overview</b> for a narrated video. Both take a few minutes to generate.</li>
+</ol>
+<div style="margin-top:12px; color:#585E60; font-size:15px;">What it looks like: the Class 01 <a href="https://www.youtube.com/watch?v=sys7WBk0iew" target="_blank">video</a> and <a href="https://drive.google.com/file/d/1lt6hqrMuW8JOy9ilvkT5NVlPABowj7SE/view" target="_blank">podcast</a>. Treat them as a study aid, not a substitute for the slides: the AI summarizes what is on the page and can misstate details.</div>
+</div>
+
+]
+
+???
+
+Point at the Class 01 examples so they know what they get. The last line is the caveat: NotebookLM paraphrases and occasionally invents, so the recap is for review, not for learning something the first time.
+
+---
+
+# 🎯 Assignments 🎯
+
+- **[Assignment 02](https://miamioh.instructure.com/courses/258169/assignments/3600723/): Make the Portfolio Yours.** Clone the `portfolio` repository ChatISA created for you, make it an RStudio project, push one mechanical commit, then edit every sentence you would not say to a recruiter, add your contact links, and reorder the sections. Submit the address of the live site.
+
+- **[Assignment 03](https://miamioh.instructure.com/courses/258169/assignments/3600724/): Git, RStudio, and Your Portfolio.** A short Canvas quiz on what you just did. Take it after your portfolio edits are pushed; GitHub Desktop's History tab answers half of it.
+
+<div style="margin-top:22px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:12px 18px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:15px; line-height:1.55; color:#1b1b1b;">
+<b style="color:#c3142d;">Do not regenerate the site on ChatISA.</b> Generating again overwrites the repository and erases your edits. From here on, the repository is yours: edit, commit, push.
+</div>
+
+???
+
+Due dates are on Canvas. The quiz is deliberately after the portfolio work; students who take it first will guess at the History questions.

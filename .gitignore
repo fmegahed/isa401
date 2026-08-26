@@ -95,3 +95,6 @@ tmpclaude-af2f-cwd
 /dashboards
 /dashboards
 /apps
+
+# Instructor speaker notes (local only)
+speaker_notes/
