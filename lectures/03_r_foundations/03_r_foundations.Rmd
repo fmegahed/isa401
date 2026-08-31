@@ -1,0 +1,2185 @@
+---
+title: "ISA 401: Business Intelligence & Data Visualization"
+subtitle: '03: `r paste0("<span role=\"img\" aria-label=\"R\">", fontawesome::fa("r-project", fill = "white"), "</span>")` Foundations'
+author: '<br>Fadel M. Megahed, PhD <br><br>Raymond E. Glos Professor in Business <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("linkedin"), fill = "white")` @Fadel Megahed](https://www.linkedin.com/in/fadel-megahed-289046b4) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
+date: "Fall 2026"
+output:
+  xaringan::moon_reader:
+    self_contained: true
+    css: [default, "../../style_files/fonts.css", "../../style_files/my-theme.css", "../../style_files/code-tomorrow-night-bright.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: magula
+      highlightLines: true
+      highlightLanguage: ["r"]
+      countIncrementalSlides: false
+      ratio: "16:9"
+header-includes:
+  - "../../style_files/header.html"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache = FALSE,
+                      echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE,
+                      progress = FALSE,
+                      verbose = FALSE,
+                      dev = 'png',
+                      fig.height = 3,
+                      dpi = 300,
+                      fig.align = 'center')
+
+options(htmltools.dir.version = FALSE, width = 52)
+
+miamired = '#C3142D'
+
+if(require(pacman)==FALSE) install.packages("pacman")
+if(require(devtools)==FALSE) install.packages("devtools")
+if(require(countdown)==FALSE) devtools::install_github("gadenbuie/countdown")
+if(require(xaringanExtra)==FALSE) devtools::install_github("gadenbuie/xaringanExtra")
+if(require(emo)==FALSE) devtools::install_github("hadley/emo")
+
+pacman::p_load(tidyverse, magrittr, lubridate, janitor, # data analysis pkgs
+               scales, # for the comma function
+               fontawesome, emo, xaringanExtra, countdown) # for slides
+
+ggplot2::theme_set(ggplot2::theme_bw(base_size = 12))
+
+# Code styling shared by all ISA 401 decks: hl_r() + knitr source hook (see style_files/hl_r.R)
+source("../../style_files/hl_r.R")
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+if(require(xaringanthemer) == FALSE) install.packages("xaringanthemer")
+library(xaringanthemer)
+
+style_mono_accent(base_color = "#84d6d3",
+                  base_font_size = "20px")
+
+xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "tachyons", "panelset", "broadcast", "share_again", "search", "fit_screen", "editable"))
+
+xaringanExtra::use_clipboard(button_text = paste0(fontawesome::fa("clipboard", fill = "#dedede", height = "0.9em"), " Copy"), success_text = paste0(fontawesome::fa("check", fill = "#b9ca4a", height = "0.9em"), " Copied"))
+
+xaringanExtra::use_extra_styles(
+  hover_code_line = TRUE,
+  mute_unhighlighted_code = TRUE
+)
+```
+
+<style>
+.code-sm .rcode { font-size: 78% !important; } .code-md .rcode { font-size: 90% !important; }
+.rcode { position: relative; padding-top: 18px !important; }
+.rcode .xaringanextra-clipboard-button { display: block !important; opacity: 0.55; top: 0; right: 4px; padding: 2px 6px; font-size: 11px; font-family: Lato, sans-serif; color: #dedede; cursor: pointer; }
+.rcode .xaringanextra-clipboard-button:hover { opacity: 1; }
+.airy .rout { margin: 2px 0 20px 0 !important; }
+</style>
+
+
+
+# Before We Start
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:16px;">
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">1 &nbsp; Join today's Zoom</div>
+    <div style="padding:12px 14px; font-size:14px; line-height:1.5;">
+      Use the Zoom link in the <a href="https://miamioh.instructure.com/courses/258169/modules/981092" target="_blank"><b>Week 0 Module</b></a> on Canvas. <b>Mute</b> your mic and <b>turn off</b> your video.<br>
+      <span style="color:#585E60;">Log in from the <span style="background:#ffe58f; padding:0 5px; border-radius:4px; font-weight:600;">lab's computer</span> so you can <span style="background:#ffe58f; padding:0 5px; border-radius:4px; font-weight:600;">share your screen</span> if you need help with an error.</span>
+    </div>
+  </div>
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">2 &nbsp; Get your repository ready</div>
+    <div style="padding:12px 14px; font-size:14px; line-height:1.5;">
+      Open <b>GitHub Desktop</b>. If <code>business_intelligence</code> is listed, click <b>Fetch origin</b>.<br>
+      <span style="color:#585E60;">Not on this computer? <b>File &rarr; Clone repository</b> into <span style="background:#ffe58f; padding:0 5px; border-radius:4px; font-weight:600;">M:\isa401</span>, exactly like Wednesday.</span>
+    </div>
+  </div>
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">3 &nbsp; Open RStudio</div>
+    <div style="padding:12px 14px; font-size:14px; line-height:1.5;">
+      Just RStudio for now: type <i>RStudio</i> in the <span style="background:#ffe58f; padding:0 5px; border-radius:4px; font-weight:600;">Windows search bar</span>.<br>
+      <span style="color:#585E60;">RStudio is installed on the lab computers and should already be on your personal laptop from Assignment 0.</span>
+    </div>
+  </div>
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">4 &nbsp; Get ready for Kahoot</div>
+    <div style="padding:12px 14px; font-size:14px; line-height:1.5;">
+      Open <a href="https://kahoot.it/" target="_blank"><b>kahoot.it</b></a> on your phone or in a browser tab.<br>
+      <span style="color:#585E60;">The game PIN appears on the next slide: a Week 01 review with a small bonus for the winner.</span>
+    </div>
+  </div>
+</div>
+
+<div style="text-align:center; margin-top:18px; font-size:14px; color:#585E60;">Done early? <b style="color:#c3142d;">Help the person next to you.</b> Stuck? <b style="color:#c3142d;">Share your screen on Zoom</b> and we fix it together.</div>
+
+???
+
+Three minutes. The lab PCs may have wiped the clone, which is why step 2 offers the re-clone; the M: drive usually still has it. Do not let anyone open a project yet: that is the live demo in Part 1, and doing it twice confuses the Existing Directory step. Walk the room once during the timer.
+
+
+---
+
+# Week 01 Review on Kahoot
+
+<div style="display:flex; gap:16px; margin-top:14px; align-items:stretch;">
+  <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:9px 14px;">How to play</div>
+    <div style="padding:14px 16px; font-size:15px; line-height:1.7;">
+      <div><b>1.</b> Go to <a href="https://kahoot.it/" target="_blank"><b>kahoot.it</b></a> on your phone or in a browser tab.</div>
+      <div><b>2.</b> Enter the <b>game PIN</b> shown on the projector.</div>
+      <div><b>3.</b> Use your <b>first and last name</b> so the bonus can find you.</div>
+      <div><b>4.</b> <b>20 seconds</b> per question. Faster correct answers score more.</div>
+    </div>
+  </div>
+  <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#f9dbdb; color:#c3142d; font-weight:700; font-size:15px; padding:9px 14px;">What is in it</div>
+    <div style="padding:14px 16px; font-size:15px; line-height:1.7;">
+      <div><b>6 questions</b> covering Week 01:</div>
+      <div><span style="display:inline-block; background:#e5e7eb; border-radius:10px; padding:1px 10px; font-size:12px; font-weight:700;">3</span> &nbsp;Class 01: the analytics journey, the shapes of data, visual encodings</div>
+      <div><span style="display:inline-block; background:#e5e7eb; border-radius:10px; padding:1px 10px; font-size:12px; font-weight:700;">3</span> &nbsp;Class 02: commit vs push, diffs, undo vs revert</div>
+      <div style="margin-top:8px;">The winner `r fontawesome::fa(name = "trophy", fill = "#d4a017")` receives a <b>0.15 bonus</b> on Assignment 02.</div>
+    </div>
+  </div>
+</div>
+
+<div style="margin-top:16px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:12px 18px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14.5px; line-height:1.55; color:#1b1b1b;">
+The competition has <b>no effect on your grade</b> beyond the bonus. It tells you which Week 01 ideas need another look, and it tells me how to pace today.
+</div>
+
+???
+
+Question bank for the Kahoot (20 seconds each; the correct option is marked):
+
+1. (Class 01) The analytics journey has four stages. Which two does business intelligence live in? A) Descriptive and predictive. B) Pre-analytics and descriptive. [correct] C) Predictive and prescriptive. D) Pre-analytics and prescriptive.
+
+2. (Class 01) Job Scout turns a job ad into a JSON list of skills, each tagged required or preferred. That JSON is: A) Structured. B) Semi-structured. [correct] C) Unstructured. D) Binary.
+
+3. (Class 02) You edited README.md and clicked "Commit to main" in GitHub Desktop. Where is that snapshot right now? A) On GitHub.com. B) Only on this computer. [correct] C) On both. D) Nowhere until you also save the file.
+
+4. (Class 02) For which file can Git show exactly which lines changed? A) slides.pptx. B) photo.png. C) scripts/class02.R. [correct] D) report.docx.
+
+5. (Class 01) The crashes-by-weekday chart drew one bar per day. Which visual encoding carried each day's count? A) The bar's length. [correct] B) The bar's color. C) The bar's shape. D) The width of the bar.
+
+6. (Class 02) You pushed a commit with a mistake in it. The fix that keeps the history honest is: A) Undo in GitHub Desktop. B) Delete the repository and start over. C) Revert, which adds a new commit that reverses the old one. [correct] D) Edit the old commit on GitHub.com.
+
+Run it right after the setup timer so latecomers are settled. If question 3 or 6 goes badly, linger on the commit-and-push step of the Part 1 demo.
+
+
+---
+
+# Learning Objectives for Today's Class
+
+- **Set up** an **RStudio project** inside your repository and work in **scripts**.
+
+- **Use** R **syntax** to create and inspect **vectors, data frames, and lists**.
+
+- **Subset and index** those structures with `[ ]`, `[[ ]]`, and `$`.
+
+- **Write and document** a **custom function** with a default argument.
+
+- **Recognize** `if / else` and `for` as the basic **control flow** you will meet again.
+
+<div style="display:flex; gap:0; margin-top:22px; align-items:stretch; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+  <div style="flex:1; padding:9px 10px; background:#fcfcfc; border-right:1px solid #d1d5db;">
+    <div style="font-size:11px; color:#585E60; text-transform:uppercase; font-weight:700;">Part 1</div>
+    <div style="font-weight:700; font-size:14px; color:#c3142d;">Your R project</div>
+    <div style="font-size:11.5px; color:#585E60;">RStudio inside your repo</div>
+  </div>
+  <div style="flex:1; padding:9px 10px; background:#fcfcfc; border-right:1px solid #d1d5db;">
+    <div style="font-size:11px; color:#585E60; text-transform:uppercase; font-weight:700;">Part 2</div>
+    <div style="font-weight:700; font-size:14px; color:#c3142d;">Objects and vectors</div>
+    <div style="font-size:11.5px; color:#585E60;">Assignment, one vector one type</div>
+  </div>
+  <div style="flex:1; padding:9px 10px; background:#fcfcfc; border-right:1px solid #d1d5db;">
+    <div style="font-size:11px; color:#585E60; text-transform:uppercase; font-weight:700;">Part 3</div>
+    <div style="font-weight:700; font-size:14px; color:#c3142d;">Data frames and lists</div>
+    <div style="font-size:11.5px; color:#585E60;">Columns side by side, the shape of JSON</div>
+  </div>
+  <div style="flex:1; padding:9px 10px; background:#fcfcfc; border-right:1px solid #d1d5db;">
+    <div style="font-size:11px; color:#585E60; text-transform:uppercase; font-weight:700;">Part 4</div>
+    <div style="font-weight:700; font-size:14px; color:#c3142d;">Subsetting</div>
+    <div style="font-size:11.5px; color:#585E60;">Three kinds of brackets</div>
+  </div>
+  <div style="flex:1; padding:9px 10px; background:#fcfcfc; border-right:1px solid #d1d5db;">
+    <div style="font-size:11px; color:#585E60; text-transform:uppercase; font-weight:700;">Part 5</div>
+    <div style="font-weight:700; font-size:14px; color:#c3142d;">Functions</div>
+    <div style="font-size:11.5px; color:#585E60;">Named arguments, packages, your own</div>
+  </div>
+  <div style="flex:1; padding:9px 10px; background:#fcfcfc;">
+    <div style="font-size:11px; color:#585E60; text-transform:uppercase; font-weight:700;">Part 6</div>
+    <div style="font-weight:700; font-size:14px; color:#c3142d;">Control flow</div>
+    <div style="font-size:11.5px; color:#585E60;">if, else, and for: a preview</div>
+  </div>
+</div>
+
+<div style="text-align:center; margin-top:14px; font-size:13px; color:#585E60;">Part 1 is the setup we did not reach on Wednesday. After it, everything is built from three objects you type yourself: seven crash counts, a seven-row table, and one job ad. No files to download.</div>
+
+???
+
+Five objectives, six parts. Part 1 is the project setup carried over from Wednesday; Parts 2 to 5 each end with one timed activity; Part 6 is a preview with no activity. If the clock is against you, Part 6 is the part to skip: both ideas return in week 5. Say the last line out loud: nothing needs to be downloaded, so nobody has an excuse to watch instead of type.
+
+
+---
+class: inverse, center, middle
+
+# Part 1: Your R Project
+
+---
+
+# The RStudio Interface
+
+<div style="text-align:center; margin-top:2px;"><img src="`r knitr::image_uri('../../figures/rstudio-interface-2026-annotated.png')`" alt="RStudio with six numbered callouts: Source, Console, Environment and Git, Files, project name, Run" style="width:86%; border:1px solid #d1d5db; border-radius:6px;"></div>
+
+<div style="display:flex; justify-content:center; gap:18px; margin-top:8px; font-size:12.5px; color:#585E60; flex-wrap:wrap;">
+  <span><b style="color:#c3142d;">1</b> Source: scripts</span>
+  <span><b style="color:#c3142d;">2</b> Console: R runs here</span>
+  <span><b style="color:#c3142d;">3</b> Environment (and the Git tab)</span>
+  <span><b style="color:#c3142d;">4</b> Files, Plots, Packages, Help, Viewer</span>
+  <span><b style="color:#c3142d;">5</b> Project name</span>
+  <span><b style="color:#c3142d;">6</b> Run</span>
+</div>
+
+???
+
+Point at 5 and at the highlighted working-directory line in 2: they say the same thing. RStudio is "inside" a folder, and every path in your code is measured from that folder. That is the whole idea of the next three slides. Write in Source, run in Console, look at Environment to see what exists, use Files to see what is on disk.
+
+---
+
+# Set Up RStudio Once
+
+.panelset[
+
+.panel[.panel-name[1 R version]
+
+<div style="display:flex; gap:16px; align-items:flex-start;"><div style="flex:0 0 52%;"><img src="`r knitr::image_uri('../../figures/rstudio-setup-1-rversion.png')`" alt="RStudio Global Options, 1 R version" style="width:100%; border:1px solid #d1d5db; border-radius:6px;"></div><div style="flex:1; font-size:14px; line-height:1.55;"><div style="border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1);"><div style="font-weight:700; color:#c3142d; font-size:15px;">General &rarr; R version</div><div style="margin-top:8px;">Should read <b>4.6.0 or newer</b>. This one is 4.6.1.</div></div><div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:12px 14px; background:#fdf2f2; margin-top:12px;"><b>Why it matters:</b> if a computer has more than one R installed, RStudio may be pointed at an old one. Click <b>Change...</b> and pick the newest, or your packages and results will quietly differ from mine.</div></div></div>
+
+]
+
+.panel[.panel-name[2 Workspace]
+
+<div style="display:flex; gap:16px; align-items:flex-start;"><div style="flex:0 0 52%;"><img src="`r knitr::image_uri('../../figures/rstudio-setup-2-workspace-history.png')`" alt="RStudio Global Options, 2 Workspace" style="width:100%; border:1px solid #d1d5db; border-radius:6px;"></div><div style="flex:1; font-size:14px; line-height:1.55;"><div style="border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1);"><div style="font-weight:700; color:#c3142d; font-size:15px;">General &rarr; Workspace</div><div style="margin-top:8px;"><b>Restore .RData into workspace at startup:</b> unchecked.</div><div style="margin-top:4px;"><b>Save workspace to .RData on exit:</b> Never.</div><div style="margin-top:4px;"><b>History &rarr; Always save history:</b> unchecked. Make sure of it.</div></div><div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:12px 14px; background:#fdf2f2; margin-top:12px;"><b>Why:</b> every session starts with an empty Environment. Anything you need has to come from a script you can re-run, which is the promise from Wednesday's spreadsheet stories. The alternative is an invisible <code>.RData</code> file that quietly carries yesterday's objects into today.</div></div></div>
+
+]
+
+.panel[.panel-name[3 Pipe]
+
+<div style="display:flex; gap:16px; align-items:flex-start;"><div style="flex:0 0 52%;"><img src="`r knitr::image_uri('../../figures/rstudio-setup-3-pipe.png')`" alt="RStudio Global Options, 3 Pipe" style="width:100%; border:1px solid #d1d5db; border-radius:6px;"></div><div style="flex:1; font-size:14px; line-height:1.55;"><div style="border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1);"><div style="font-weight:700; color:#c3142d; font-size:15px;">Code &rarr; Editing</div><div style="margin-top:8px;"><b>Use native pipe operator, <code>|&gt;</code>:</b> checked.</div><div style="margin-top:4px; color:#585E60;">Ctrl + Shift + M then types <code>|&gt;</code>.</div></div><div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:12px 14px; background:#fdf2f2; margin-top:12px;"><b>Why:</b> every pipeline in this course is written with <code>|&gt;</code> (you saw it on the crash-data slides). The older <code>%&gt;%</code> still works, but we will not use it.</div></div></div>
+
+]
+
+.panel[.panel-name[4 Highlighting]
+
+<div style="display:flex; gap:16px; align-items:flex-start;"><div style="flex:0 0 52%;"><img src="`r knitr::image_uri('../../figures/rstudio-setup-4-highlight.png')`" alt="RStudio Global Options, 4 Highlighting" style="width:100%; border:1px solid #d1d5db; border-radius:6px;"></div><div style="flex:1; font-size:14px; line-height:1.55;"><div style="border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1);"><div style="font-weight:700; color:#c3142d; font-size:15px;">Code &rarr; Display</div><div style="margin-top:8px;"><b>Highlight R function calls:</b> checked.</div><div style="margin-top:4px;"><b>Use rainbow parentheses:</b> checked.</div></div><div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:12px 14px; background:#fdf2f2; margin-top:12px;"><b>Optional, but helpful:</b> function names get their own color (that is how the code on these slides is colored), and each nesting level of parentheses gets its own color, so a missing <code>)</code> is easy to spot.</div></div></div>
+
+]
+
+.panel[.panel-name[5 Appearance]
+
+<div style="display:flex; gap:16px; align-items:flex-start;"><div style="flex:0 0 52%;"><img src="`r knitr::image_uri('../../figures/rstudio-setup-5-appearance.png')`" alt="RStudio Global Options, 5 Appearance" style="width:100%; border:1px solid #d1d5db; border-radius:6px;"></div><div style="flex:1; font-size:14px; line-height:1.55;"><div style="border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1);"><div style="font-weight:700; color:#c3142d; font-size:15px;">Appearance</div><div style="margin-top:8px;"><b>Editor font size:</b> 16, bigger than the default.</div><div style="margin-top:4px;"><b>Editor theme:</b> Tomorrow Night Bright, if you want it.</div></div><div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:12px 14px; background:#fdf2f2; margin-top:12px;"><b>Optional:</b> the theme gives you the same colors as my screen for functions, packages, and parentheses, which makes following along easier. The font size is for your eyes and your neighbor's.</div></div></div>
+
+]
+
+]
+
+???
+
+Tools, Global Options. Five settings, once per computer, including their laptop tonight. Tabs 1 and 2 are the ones I check when someone's code "works on my machine": wrong R version, or an object that only exists because of a stale .RData. Tabs 3 to 5 are quality of life. Have them do all five now; it takes two minutes.
+
+---
+
+# What Is a Project?
+
+<div style="display:flex; gap:16px; align-items:flex-start; margin-top:2px;">
+  <div style="flex:1;">
+    <div style="border:1px solid #d1d5db; border-radius:8px; padding:11px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); margin-bottom:10px;">
+      <div style="font-weight:700; font-size:15px; color:#c3142d;">A self-contained folder</div>
+      <div style="font-size:13.5px; margin-top:4px; line-height:1.5;">Data, scripts, and output for one piece of work live together in one folder. Your <code>business_intelligence</code> repo is that folder.</div>
+    </div>
+    <div style="border:1px solid #d1d5db; border-radius:8px; padding:11px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); margin-bottom:10px;">
+      <div style="font-weight:700; font-size:15px; color:#c3142d;">The <code>.Rproj</code> file marks the root</div>
+      <div style="font-size:13.5px; margin-top:4px; line-height:1.5;">Open it and RStudio sets the <b>working directory</b> to that folder, every time, on any computer. No <code>setwd()</code>, ever.</div>
+    </div>
+    <div style="border:1px solid #d1d5db; border-radius:8px; padding:11px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+      <div style="font-weight:700; font-size:15px; color:#c3142d;">Paths are relative to the root</div>
+      <div style="font-size:13.5px; margin-top:4px; line-height:1.5;">Write <code>"data/crashes.csv"</code>, never <code>"C:/Users/you/Desktop/crashes.csv"</code>. The first works after a clone on any machine, including mine when I grade.</div>
+    </div>
+  </div>
+  <div style="flex:0 0 42%;">
+    <div style="background:#e5e7eb; color:#374151; font-weight:700; font-size:13px; padding:8px 14px; text-transform:uppercase; border-radius:8px 8px 0 0;">Your repo by the end of today</div>
+    <div style="border:1px solid #d1d5db; border-top:0; border-radius:0 0 8px 8px; padding:12px 16px; font-family:'Source Code Pro', Consolas, monospace; font-size:13.5px; line-height:1.8; background:#fcfcfc;">
+      <div><b>business_intelligence/</b> <span style="color:#585E60; font-family:Lato, sans-serif; font-size:12px;">the repo, the project, the folder</span></div>
+      <div>&nbsp;&nbsp;README.md <span style="color:#585E60; font-family:Lato, sans-serif; font-size:12px;">from Assignment 0</span></div>
+      <div>&nbsp;&nbsp;<span style="color:#c3142d;">business_intelligence.Rproj</span> <span style="color:#585E60; font-family:Lato, sans-serif; font-size:12px;">RStudio adds this</span></div>
+      <div>&nbsp;&nbsp;<span style="color:#c3142d;">.gitignore</span> <span style="color:#585E60; font-family:Lato, sans-serif; font-size:12px;">and this: files Git should skip</span></div>
+      <div>&nbsp;&nbsp;<span style="color:#c3142d;">scripts/</span></div>
+      <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#c3142d;">class03.R</span> <span style="color:#585E60; font-family:Lato, sans-serif; font-size:12px;">your first script</span></div>
+      <div>&nbsp;&nbsp;data/ <span style="color:#585E60; font-family:Lato, sans-serif; font-size:12px;">Wednesday</span></div>
+    </div>
+    <div style="font-size:12.5px; color:#585E60; margin-top:8px;">Same structure as the course repo you saw in Class 01, just smaller.</div>
+  </div>
+</div>
+
+???
+
+The three cards are one idea said three ways: the folder is the unit. The tree on the right is the target for the next slide; the red items are what we add in the demo. Point out .gitignore: RStudio creates it so its own scratch files (.Rproj.user) never get committed.
+
+---
+
+# Live Demo: From Repo to RStudio Project
+
+```{r demo_lines, eval=FALSE, include=FALSE}
+crashes_per_day = 30125 / 365
+crashes_per_day
+```
+
+.panelset[
+
+.panel[.panel-name[Steps]
+
+<div style="display:flex; gap:14px; align-items:flex-start;">
+<div style="flex:1; font-size:13px; line-height:1.45;">
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:7px 12px; margin-bottom:6px; background:#fcfcfc;"><b style="color:#c3142d;">1 &nbsp; Make it a project.</b> RStudio &rarr; <b>File &rarr; New Project &rarr; Existing Directory</b> &rarr; Browse to <code>M:\isa401\business_intelligence</code> &rarr; <b>Create Project</b>. RStudio restarts inside the folder; the project name appears top right.</div>
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:7px 12px; margin-bottom:6px; background:#fcfcfc;"><b style="color:#c3142d;">2 &nbsp; Write a script.</b> <b>File &rarr; New File &rarr; R Script</b>. Type (or copy) the two lines below, then press <b>Ctrl + Enter</b> on each one and watch the Console and the Environment.`r hl_r(knitr::knit_code$get("demo_lines"), "84%")`</div>
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:7px 12px; margin-bottom:6px; background:#fcfcfc;"><b style="color:#c3142d;">3 &nbsp; Save it inside the project.</b> <b>Ctrl + S</b>. In the dialog, click <b>New Folder</b>, name it <code>scripts</code>, open it, and save the file as <code>class03.R</code>.</div>
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:7px 12px; margin-bottom:6px; background:#fcfcfc;"><b style="color:#c3142d;">4 &nbsp; Commit and push in GitHub Desktop.</b> Three new items are listed and ticked: <code>business_intelligence.Rproj</code>, <code>.gitignore</code>, <code>scripts/class03.R</code>. Summary: <code>Add RStudio project and first script</code> &rarr; <b>Commit to main</b> &rarr; <b>Push origin</b>.</div>
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:7px 12px; background:#fcfcfc;"><b style="color:#c3142d;">5 &nbsp; Verify.</b> On GitHub: one more commit than before, a <code>scripts</code> folder, and your script readable in the browser.</div>
+</div>
+<div style="flex:0 0 32%; border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#ffffff; font-size:13px; line-height:1.5; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+<div style="font-weight:700; color:#374151; text-transform:uppercase; font-size:11px;">If you fall behind</div>
+<div style="margin-top:6px;">Say so, or <b style="color:#c3142d;">share your screen on Zoom</b>.</div>
+<div style="margin-top:6px;">No <b>Existing Directory</b> option? You are already inside a project: <b>File &rarr; Close Project</b> first.</div>
+<div style="margin-top:6px;">Desktop lists <code>.Rproj.user/</code>? It should not; that folder is in <code>.gitignore</code>. Untick it if it appears.</div>
+<div style="margin-top:6px;">Console says <code>Error: object 'crashes_per_day' not found</code>? Run line 1 before line 2, or re-run both.</div>
+</div>
+</div>
+
+]
+
+.panel[.panel-name[Checkpoint]
+
+<div style="font-size:14.5px; line-height:1.6;">
+<div style="margin-bottom:6px;"><b>After step 1:</b> top right of RStudio says <code>business_intelligence</code>; the Files pane shows <code>README.md</code> and <code>business_intelligence.Rproj</code>; the Console's working-directory line ends in <code>business_intelligence/</code>.</div>
+<div style="margin-bottom:6px;"><b>After step 2:</b> the Console prints <code>[1] 82.53425</code> and the Environment pane lists <code>crashes_per_day</code> with that value.</div>
+<div style="margin-bottom:6px;"><b>After step 3:</b> the tab is named <code>class03.R</code> (not <i>Untitled1</i>) and the Files pane shows a <code>scripts</code> folder.</div>
+<div style="margin-bottom:6px;"><b>After step 4:</b> GitHub Desktop says <i>0 changed files</i>; History shows the new commit on top.</div>
+<div><b>After step 5:</b> GitHub shows the <code>scripts</code> folder; clicking <code>class03.R</code> shows your two lines, in a browser, on any device.</div>
+</div>
+
+]
+
+.panel[.panel-name[Discussion]
+
+- .can-edit.key-project-demo-discussion[Notes from our class discussion (Use Chrome as your browser to edit this part of the page)]
+
+]
+
+]
+
+???
+
+Same rhythm as the Git demo: do each step on the projector, then wait for the room. Step 2 is deliberately tiny: the point is the loop (type, Ctrl+Enter, look at Console and Environment), not the arithmetic. 30,125 is the row count of the crash CSV, so the number is not random. Step 4 is the payoff of Wednesday's Git section: they already know what those three buttons do. Everything typed from here on goes into class03.R.
+
+---
+
+# Every Class From Here
+
+<div style="display:flex; gap:14px; align-items:stretch; margin-top:14px;">
+  <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:9px 14px;">1 &nbsp; Open the project</div>
+    <div style="padding:14px; font-size:14.5px; line-height:1.55;">Double-click <code>business_intelligence.Rproj</code>, or in RStudio use <b>File &rarr; Open Project</b>.<div style="margin-top:6px; color:#585E60;">Check the top right corner before you type anything.</div></div>
+  </div>
+  <div style="align-self:center; color:#c3142d; font-size:24px; font-weight:700;">&rarr;</div>
+  <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:9px 14px;">2 &nbsp; Work in a script</div>
+    <div style="padding:14px; font-size:14.5px; line-height:1.55;">One script per class, saved under <code>scripts/</code>. Relative paths only.<div style="margin-top:6px; color:#585E60;">The Console is for trying things; the script is the record.</div></div>
+  </div>
+  <div style="align-self:center; color:#c3142d; font-size:24px; font-weight:700;">&rarr;</div>
+  <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:9px 14px;">3 &nbsp; Commit and push before you leave</div>
+    <div style="padding:14px; font-size:14.5px; line-height:1.55;">GitHub Desktop: tick, summary, <b>Commit to main</b>, <b>Push origin</b>.<div style="margin-top:6px; color:#585E60;">On your laptop: <b>clone</b> once (first time only, into any folder you like), then <b>Pull origin</b> and the work is there. Worked at home? Push from the laptop, then Pull on the lab PC.</div></div>
+  </div>
+</div>
+
+<br>
+
+<div style="margin-top:14px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:14px 20px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:18px; line-height:1.55; color:#1b1b1b;">
+<b style="color:#c3142d;">If it is not pushed, it is not done.</b> Your <code>business_intelligence</code> repo should contain all your skills from this class.
+</div>
+
+???
+
+This is the ritual. Open the project, work in a script, push before you leave. Repeat it every class until it is boring; boring is the goal. Lab machines wipe local files, which makes the third step non-negotiable.
+
+
+---
+class: inverse, center, middle
+
+# Part 2: Objects and Vectors
+
+---
+
+# Objects and Assignment
+
+.left55[
+
+```{r assign, hl.size="72%", results="hold"}
+# = stores the value under a name
+crashes_per_day = 30125 / 365
+
+# typing the name shows it
+crashes_per_day
+
+# <- does exactly the same thing as =
+crashes_per_day <- 30125 / 365
+
+# -> also works, pointing the other way
+30125 / 365 -> crashes_per_day
+```
+
+]
+
+.right43[
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.6;">
+<div style="font-weight:700; color:#c3142d; font-size:15px;">Three parts</div>
+<div style="margin-top:6px;"><b>Name</b> on the left: <code>crashes_per_day</code>. Letters, digits, <code>_</code> and <code>.</code>; no spaces; case matters.</div>
+<div style="margin-top:4px;"><b>Assignment</b> in the middle: <code>=</code>, <code>&lt;-</code>, or <code>-&gt;</code>. We write <code>=</code>. You will see <code>&lt;-</code> in most R code online and in my editor, and <code>-&gt;</code> mostly at the end of a pipeline. All three do the same job.</div>
+<div style="margin-top:4px;"><b>Value</b> on the right: whatever the expression works out to.</div>
+</div>
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.6; margin-top:12px;">
+<div style="font-weight:700; color:#374151; font-size:15px;">Where did it go?</div>
+<div style="margin-top:6px;">Look at the <b>Environment</b> pane (callout 3 on the RStudio slide): <code>crashes_per_day</code> is listed with its value. That pane is the list of names R currently knows.</div>
+</div>
+]
+
+<div style="clear:both;"></div>
+
+???
+
+Run it live in the podium RStudio while the slide is up so they see the Environment pane fill in. The point of showing both = and <- is to stop the question before it is asked; pick = in this course because it is one keystroke and matches every other language they will meet.
+
+---
+
+# Object 'object_name' not found
+
+.pull-left[
+<div style="font-weight:700; color:#c3142d; font-size:14px; margin-bottom:4px;">1 &nbsp; Case</div>
+
+```{r err_case, error=TRUE, hl.size="76%"}
+Crashes_per_day
+```
+
+<div style="font-weight:700; color:#c3142d; font-size:14px; margin:10px 0 4px 0;">2 &nbsp; Typo</div>
+
+```{r err_typo, error=TRUE, hl.size="76%"}
+crashes_per_dya
+```
+
+]
+
+--
+
+.pull-right[
+<div style="font-weight:700; color:#c3142d; font-size:14px; margin-bottom:4px;">3 &nbsp; Never ran</div>
+
+```{r err_notrun, error=TRUE, hl.size="76%"}
+# pretend line 1 was never run:
+rm(crashes_per_day)
+crashes_per_day
+```
+
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:10px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13.5px; line-height:1.55; margin-top:10px;">
+<b>The same message, three causes.</b> The name on that line is not in the Environment pane. Check, in order:
+<ul style="margin:6px 0 0 0; padding-left:18px;">
+<li>capitalization</li>
+<li>spelling</li>
+<li>whether you pressed <b>Ctrl + Enter</b> (runs the line) or just <b>Enter</b> (adds a new line in the script and runs nothing)</li>
+</ul>
+</div>
+]
+
+???
+
+Three clicks. Before each reveal, ask which cause it is. Number 3 is the one that costs the most time in office hours: the script looks right, nothing was ever sent to the Console. Point at the Environment pane again: if it is not there, R does not know it.
+
+---
+
+# R Is a Vector Language
+
+.left55[
+
+```{r vectors, hl.size="58%"}
+crashes_by_day = c(2020, 2241, 2327, 2285,
+                   2380, 1866, 1664)
+names(crashes_by_day) = c("Mon", "Tue", "Wed", "Thu",
+                          "Fri", "Sat", "Sun")
+crashes_by_day
+crashes_by_day > 2000        # seven answers
+sum(crashes_by_day > 2000)   # days above 2,000
+mean(crashes_by_day)
+```
+
+]
+
+.right43[
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.6;">
+<div style="font-weight:700; color:#c3142d; font-size:15px;">The seven weekday counts from Wednesday's chart</div>
+<div style="margin-top:6px;"><code>c()</code> <b>combines</b> values into a <b>vector</b>: one type, in order, optionally with names.</div>
+<div style="margin-top:4px;">An operation on a vector runs on <b>every element</b>: <code>&gt; 2000</code> returned seven answers, not one.</div>
+<div style="margin-top:4px;"><code>sum()</code> of seven TRUE/FALSE values counts the TRUEs.</div>
+</div>
+<div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:12px 14px; background:#fdf2f2; font-size:14px; line-height:1.6; margin-top:12px;">
+<b>There are no scalars in R.</b> <code>mean(crashes_by_day)</code> returned a vector of length 1. Even <code>82.5</code> on the last slide was a vector of length 1. A column of a data frame is a vector; that is why this matters.
+</div>
+]
+
+<div style="clear:both;"></div>
+
+???
+
+The numbers are the seven bars from Wednesday's crashes-by-weekday chart, so nothing here is abstract. Every later slide reuses this vector, so make sure everyone has it in their Environment pane before moving on. Emphasize the middle line: one comparison, seven answers. That is the mental model that makes dplyr feel natural next week.
+
+---
+
+# Six Types of Atomic Vectors
+
+<div style="font-size:14.5px; color:#1b1b1b; margin:0 0 6px 0;">Every vector has exactly one of six types. The first four are the most common in practice.</div>
+
+<svg viewBox="0 0 1000 300" width="100%" style="max-height:400px;">
+  <rect x="380" y="10" width="240" height="44" rx="8" fill="#1b1b1b"/>
+  <text x="500" y="38" text-anchor="middle" font-size="18" font-weight="700" fill="#ffffff" font-family="Lato, sans-serif">atomic vector</text>
+  <line x1="500" y1="54" x2="110" y2="100" stroke="#9ca3af" stroke-width="2"/>
+  <line x1="500" y1="54" x2="270" y2="100" stroke="#9ca3af" stroke-width="2"/>
+  <line x1="500" y1="54" x2="430" y2="100" stroke="#9ca3af" stroke-width="2"/>
+  <line x1="500" y1="54" x2="590" y2="100" stroke="#9ca3af" stroke-width="2"/>
+  <line x1="500" y1="54" x2="750" y2="100" stroke="#d1d5db" stroke-width="2" stroke-dasharray="4,4"/>
+  <line x1="500" y1="54" x2="910" y2="100" stroke="#d1d5db" stroke-width="2" stroke-dasharray="4,4"/>
+  <g font-family="Lato, sans-serif">
+    <rect x="40" y="100" width="140" height="40" rx="8" fill="#c3142d"/><text x="110" y="126" text-anchor="middle" font-size="17" font-weight="700" fill="#ffffff">logical</text>
+    <rect x="200" y="100" width="140" height="40" rx="8" fill="#c3142d"/><text x="270" y="126" text-anchor="middle" font-size="17" font-weight="700" fill="#ffffff">integer</text>
+    <rect x="360" y="100" width="140" height="40" rx="8" fill="#c3142d"/><text x="430" y="126" text-anchor="middle" font-size="17" font-weight="700" fill="#ffffff">double</text>
+    <rect x="520" y="100" width="140" height="40" rx="8" fill="#c3142d"/><text x="590" y="126" text-anchor="middle" font-size="17" font-weight="700" fill="#ffffff">character</text>
+    <rect x="680" y="100" width="140" height="40" rx="8" fill="#e5e7eb"/><text x="750" y="126" text-anchor="middle" font-size="17" font-weight="700" fill="#585E60">complex</text>
+    <rect x="840" y="100" width="140" height="40" rx="8" fill="#e5e7eb"/><text x="910" y="126" text-anchor="middle" font-size="17" font-weight="700" fill="#585E60">raw</text>
+    <text x="110" y="168" text-anchor="middle" font-size="13.5" fill="#1b1b1b">TRUE or FALSE</text>
+    <text x="110" y="190" text-anchor="middle" font-size="13" fill="#585E60">the answer to a comparison</text>
+    <text x="110" y="222" text-anchor="middle" font-size="13.5" font-family="Source Code Pro, monospace" fill="#c3142d">crashes_by_day &gt; 2000</text>
+    <text x="270" y="168" text-anchor="middle" font-size="13.5" fill="#1b1b1b">whole numbers</text>
+    <text x="270" y="190" text-anchor="middle" font-size="13" fill="#585E60">written with an L</text>
+    <text x="270" y="222" text-anchor="middle" font-size="13.5" font-family="Source Code Pro, monospace" fill="#c3142d">2020L</text>
+    <text x="430" y="168" text-anchor="middle" font-size="13.5" fill="#1b1b1b">any number</text>
+    <text x="430" y="190" text-anchor="middle" font-size="13" fill="#585E60">decimals; dates too</text>
+    <text x="430" y="222" text-anchor="middle" font-size="13.5" font-family="Source Code Pro, monospace" fill="#c3142d">82.5   30125 / 365</text>
+    <text x="590" y="168" text-anchor="middle" font-size="13.5" fill="#1b1b1b">text</text>
+    <text x="590" y="190" text-anchor="middle" font-size="13" fill="#585E60">anything in quotes</text>
+    <text x="590" y="222" text-anchor="middle" font-size="13.5" font-family="Source Code Pro, monospace" fill="#c3142d">"Mon"   "2020"</text>
+    <text x="750" y="168" text-anchor="middle" font-size="13.5" fill="#585E60">imaginary numbers</text>
+    <text x="750" y="222" text-anchor="middle" font-size="13.5" font-family="Source Code Pro, monospace" fill="#9ca3af">3 + 2i</text>
+    <text x="910" y="168" text-anchor="middle" font-size="13.5" fill="#585E60">bytes</text>
+    <text x="910" y="222" text-anchor="middle" font-size="13.5" font-family="Source Code Pro, monospace" fill="#9ca3af">as.raw(255)</text>
+    <text x="500" y="280" text-anchor="middle" font-size="14" fill="#585E60"><tspan fill="#c3142d" font-weight="700">Red:</tspan> four data types seen in ISA 401. <tspan fill="#374151" font-weight="700">Gray:</tspan> valid types you are unlikely to need.</text>
+  </g>
+</svg>
+
+.footnote[
+<html>
+<hr>
+</html>
+**Source:** the six types follow [Advanced R, chapter 3 (Vectors)](https://adv-r.hadley.nz/vectors-chap.html#atomic-vectors) by Hadley Wickham.
+]
+
+???
+
+Read left to right. Logical is the answer to any comparison; integer versus double only matters when you care about the L; character is anything in quotes, which is the trap on the next slides. Complex and raw exist so nobody is surprised by typeof() one day.
+
+---
+
+# Four Data Types in Lego
+
+<div style="text-align:center; margin-top:0;"><img src="`r knitr::image_uri('../../figures/legos-jbryan-types-web.jpg')`" alt="Lego bricks arranged in rows: logical, factor, integer and double" style="width:50%; border-radius:6px;"></div>
+
+.vcenter[
+
+.left55[
+
+```{r types, hl.size="70%", results="hold"}
+typeof(TRUE)     # logical
+typeof(401L)     # integer: the L
+typeof(401)      # double: no L
+typeof("401")    # character: quotes
+```
+
+]
+
+.right43[
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.6; margin-top:4px;">
+<div style="font-weight:700; color:#c3142d; font-size:15px;">One vector, one type</div>
+<div style="margin-top:6px;">Every brick in a row is the same color: a vector holds <b>one type</b>. Mix a number into a character vector and R quietly turns everything into character.</div>
+<div style="margin-top:6px;"><code>typeof()</code> tells you which one you have. The <i>factor</i> row (categories with fixed levels) arrives with tidy data in week 6.</div>
+</div>
+]
+
+]
+
+<div style="clear:both;"></div>
+
+.footnote[
+<html>
+<hr>
+</html>
+**Image:** Jenny Bryan, [lego-rstats](https://github.com/jennybc/lego-rstats#readme).
+]
+
+???
+
+Same four types, now as bricks: a row is a vector, a color is a type. Run typeof() on the four literals and point at the matching row.
+
+---
+
+# A Self-Assessment for Type Checking
+
+`r countdown(minutes = 2, seconds = 0, top = 0, font_size = "2em")`
+
+```{r crashes_raw, include=FALSE, cache=TRUE}
+crashes_raw = readr::read_csv("../../data/cincy_2025_crashes.csv", show_col_types = FALSE)
+six = dplyr::select(crashes_raw, instanceid, crashdate, dayofweek, age, latitude_x, injuries)
+age_text  = six$age[!is.na(six$age)]
+age_codes = unique(age_text[is.na(suppressWarnings(as.numeric(age_text)))])
+```
+
+.panelset[
+
+.panel[.panel-name[Game]
+
+<div style="font-size:14.5px; margin:0 0 8px 0;">Six columns from the Cincinnati crash file, seven rows drawn at random. For every column: <b>logical, integer, double, or character?</b> Connect them on the next tab.</div>
+
+<div style="font-size:66%;">
+
+```{r six_preview, echo=FALSE, results="asis"}
+set.seed(401)
+code_row   = six |> dplyr::filter(age %in% age_codes) |> dplyr::slice_sample(n = 1)
+other_rows = six |> dplyr::filter(!(age %in% age_codes)) |> dplyr::slice_sample(n = 6)
+dplyr::bind_rows(other_rows, code_row) |>
+  dplyr::slice_sample(n = 7) |>
+  dplyr::mutate(dplyr::across(dplyr::everything(), as.character)) |>
+  dplyr::mutate(instanceid = substr(instanceid, 1, 8)) |>
+  knitr::kable(format = "html")
+```
+
+</div>
+
+<div style="font-size:12.5px; color:#585E60; margin-top:6px;"><code>instanceid</code> is shortened to its first 8 characters to fit. <code>NA</code> means the value is missing. <code>crashdate</code> is understood as a date when using <code>readr::read_csv()</code>.</div>
+
+]
+
+.panel[.panel-name[Connect]
+
+<div style="font-size:14px; color:#585E60; margin:0 0 6px 0;">Drag from a column on the left to a type on the right (or click one, then the other). Each column gets exactly one type. Then press <b>Check</b>.</div>
+
+<div class="typematch" style="height:400px; margin:0; padding:0; overflow:hidden; user-select:none;"></div>
+
+<script>
+(function () {
+  var cols = [
+    { id: "instanceid", ex: "B956B8CC-23BE-45F6-95…", ans: "character", why: "Letters and hyphens: character." },
+    { id: "crashdate",  ex: "2025-01-01 00:01:00",     ans: "double",    why: "R stores a date-time as a number of seconds; typeof() reports the storage, so double." },
+    { id: "dayofweek",  ex: "WED",                     ans: "character", why: "Text codes: character." },
+    { id: "age",        ex: "47, (blank), BB",         ans: "character", why: "One row in the table has a letter code (BB, NN or NB) instead of a number, and 79 rows in the file do. One text value makes the whole column character." },
+    { id: "latitude_x", ex: "39.1",                    ans: "double",    why: "A decimal number: double." },
+    { id: "injuries",   ex: "5 - NO INJURY",           ans: "character", why: "A number followed by words is text: character." }
+  ];
+  var types = ["logical", "integer", "double", "character"];
+  var NS = "http://www.w3.org/2000/svg";
+  var W = 780, H = 300, LX = 16, LW = 292, RX = 560, RW = 200, NH = 40;
+
+  function el(tag, attrs, parent) {
+    var e = document.createElementNS(NS, tag);
+    Object.keys(attrs).forEach(function (k) { e.setAttribute(k, attrs[k]); });
+    if (parent) { parent.appendChild(e); }
+    return e;
+  }
+  var LY = [8, 56, 104, 152, 200, 248], RY = [18, 86, 154, 222];
+  function leftY(i) { return LY[i]; }
+  function rightY(j) { return RY[j]; }
+
+  function build(box) {
+    if (box.getAttribute("data-built")) { return; }
+    box.setAttribute("data-built", "1");
+    var links = {};          // column id -> type
+    var pending = null;      // column id being connected
+    var checked = false;
+
+    var svg = el("svg", { viewBox: "0 0 " + W + " " + H, width: "100%", height: H, style: "display:block;" }, null);
+    box.appendChild(svg);
+    var edgeLayer = el("g", { "pointer-events": "none" }, svg);
+    var rubber = el("line", { stroke: "#9ca3af", "stroke-width": 3, "stroke-dasharray": "6 5", visibility: "hidden", "pointer-events": "none" }, svg);
+
+    var leftNodes = {}, rightNodes = {};
+    cols.forEach(function (c, i) {
+      var g = el("g", { "data-col": c.id, style: "cursor:pointer;" }, svg);
+      el("rect", { x: LX, y: leftY(i), width: LW, height: NH, rx: 8, fill: "#fcfcfc", stroke: "#d1d5db", "stroke-width": 1.5 }, g);
+      var t1 = el("text", { x: LX + 12, y: leftY(i) + 16, "font-size": 13.5, "font-weight": 700, fill: "#1b1b1b", "font-family": "Source Code Pro, monospace" }, g);
+      t1.textContent = c.id;
+      var t2 = el("text", { x: LX + 12, y: leftY(i) + 32, "font-size": 11.5, fill: "#585E60", "font-family": "Source Code Pro, monospace" }, g);
+      t2.textContent = c.ex;
+      el("circle", { cx: LX + LW, cy: leftY(i) + NH / 2, r: 6, fill: "#c3142d" }, g);
+      leftNodes[c.id] = g;
+    });
+    types.forEach(function (tp, j) {
+      var g = el("g", { "data-type": tp, style: "cursor:pointer;" }, svg);
+      el("rect", { x: RX, y: rightY(j), width: RW, height: NH, rx: 8, fill: "#fcfcfc", stroke: "#d1d5db", "stroke-width": 1.5 }, g);
+      var t = el("text", { x: RX + RW / 2, y: rightY(j) + 26, "font-size": 16, "font-weight": 700, fill: "#1b1b1b", "text-anchor": "middle", "font-family": "Source Code Pro, monospace" }, g);
+      t.textContent = tp;
+      el("circle", { cx: RX, cy: rightY(j) + NH / 2, r: 6, fill: "#585E60" }, g);
+      rightNodes[tp] = g;
+    });
+
+    var bar = document.createElement("div");
+    bar.setAttribute("style", "display:flex; gap:10px; align-items:center; margin-top:6px; font-size:14px;");
+    var btnCheck = document.createElement("button");
+    btnCheck.textContent = "Check";
+    btnCheck.setAttribute("style", "background:#c3142d; color:#fff; border:0; border-radius:6px; padding:6px 16px; font-weight:700; font-size:14px; cursor:pointer;");
+    var btnReset = document.createElement("button");
+    btnReset.textContent = "Start over";
+    btnReset.setAttribute("style", "background:#ffffff; color:#374151; border:1px solid #d1d5db; border-radius:6px; padding:6px 14px; font-size:14px; cursor:pointer;");
+    var status = document.createElement("span");
+    status.setAttribute("style", "color:#585E60;");
+    var why = document.createElement("div");
+    why.setAttribute("style", "font-size:12.5px; color:#1b1b1b; line-height:1.4; margin-top:4px; min-height:0;");
+    bar.appendChild(btnCheck); bar.appendChild(btnReset); bar.appendChild(status);
+    box.appendChild(bar); box.appendChild(why);
+
+    function edgeEnds(cid, tp) {
+      var i = cols.map(function (c) { return c.id; }).indexOf(cid);
+      var j = types.indexOf(tp);
+      return { x1: LX + LW, y1: leftY(i) + NH / 2, x2: RX, y2: rightY(j) + NH / 2 };
+    }
+    function drawEdges() {
+      while (edgeLayer.firstChild) { edgeLayer.removeChild(edgeLayer.firstChild); }
+      Object.keys(links).forEach(function (cid) {
+        var p = edgeEnds(cid, links[cid]);
+        var color = "#9ca3af";
+        if (checked) { color = (links[cid] === colById(cid).ans) ? "#1b9e77" : "#c3142d"; }
+        var mx = (p.x1 + p.x2) / 2;
+        el("path", { d: "M" + p.x1 + "," + p.y1 + " C" + mx + "," + p.y1 + " " + mx + "," + p.y2 + " " + p.x2 + "," + p.y2,
+                     fill: "none", stroke: color, "stroke-width": 3.5 }, edgeLayer);
+      });
+      cols.forEach(function (c) {
+        var r = leftNodes[c.id].querySelector("rect");
+        var on = (pending === c.id);
+        r.setAttribute("stroke", on ? "#c3142d" : (links[c.id] ? "#9ca3af" : "#d1d5db"));
+        r.setAttribute("stroke-width", on ? 3 : 1.5);
+      });
+      var n = Object.keys(links).length;
+      if (!checked) { status.textContent = n + " of " + cols.length + " connected"; }
+    }
+    function colById(cid) { return cols.filter(function (c) { return c.id === cid; })[0]; }
+
+    function svgPoint(ev) {
+      var pt = svg.createSVGPoint(); pt.x = ev.clientX; pt.y = ev.clientY;
+      return pt.matrixTransform(svg.getScreenCTM().inverse());
+    }
+    function startFrom(cid) {
+      pending = cid; checked = false; why.textContent = "";
+      var p = edgeEnds(cid, types[0]);
+      rubber.setAttribute("x1", p.x1); rubber.setAttribute("y1", p.y1);
+      rubber.setAttribute("x2", p.x1); rubber.setAttribute("y2", p.y1);
+      drawEdges();
+    }
+    function connect(tp) {
+      if (pending === null) { return; }
+      links[pending] = tp; pending = null;
+      rubber.setAttribute("visibility", "hidden");
+      drawEdges();
+    }
+
+    svg.addEventListener("pointerdown", function (ev) {
+      var g = ev.target.closest ? ev.target.closest("g[data-col]") : null;
+      if (g) { startFrom(g.getAttribute("data-col")); rubber.setAttribute("visibility", "visible"); ev.preventDefault(); return; }
+      var r = ev.target.closest ? ev.target.closest("g[data-type]") : null;
+      if (r) { connect(r.getAttribute("data-type")); }
+    });
+    svg.addEventListener("pointermove", function (ev) {
+      if (pending === null) { return; }
+      if (rubber.getAttribute("visibility") === "hidden") { return; }
+      var p = svgPoint(ev);
+      rubber.setAttribute("x2", p.x); rubber.setAttribute("y2", p.y);
+    });
+    svg.addEventListener("pointerup", function (ev) {
+      if (pending === null) { return; }
+      var t = document.elementFromPoint(ev.clientX, ev.clientY);
+      var r = (t !== null) ? (t.closest ? t.closest("g[data-type]") : null) : null;
+      if (r) { connect(r.getAttribute("data-type")); return; }
+      rubber.setAttribute("visibility", "hidden");   // released elsewhere: stay in click mode
+      drawEdges();
+    });
+
+    btnCheck.addEventListener("click", function () {
+      var n = Object.keys(links).length;
+      if (n !== cols.length) { status.textContent = "Connect all " + cols.length + " columns first (" + n + " done)."; return; }
+      checked = true; pending = null;
+      var right = cols.filter(function (c) { return links[c.id] === c.ans; }).length;
+      drawEdges();
+      status.textContent = right + " of " + cols.length + " correct";
+      var misses = cols.filter(function (c) { return links[c.id] !== c.ans; });
+      var msgs = misses.map(function (c) { return "<b style='color:#c3142d;'>" + c.id + "</b> is " + c.ans + ". " + c.why; });
+      if (misses.length === 0) { msgs = ["All six. Note that integer and logical were never the answer: read_csv() reads whole numbers as double, and the preview has no TRUE/FALSE column."]; }
+      why.innerHTML = msgs.join("<br>");
+    });
+    btnReset.addEventListener("click", function () {
+      links = {}; pending = null; checked = false; why.textContent = "";
+      rubber.setAttribute("visibility", "hidden");
+      drawEdges();
+    });
+    drawEdges();
+  }
+
+  function buildAll() { document.querySelectorAll(".typematch").forEach(build); }
+  buildAll();
+  if (window.slideshow) { if (!window.typematchHooked) { window.typematchHooked = true; window.slideshow.on("afterShowSlide", buildAll); } }
+})();
+</script>
+
+]
+
+.panel[.panel-name[Answer]
+
+<details style="margin-top:4px;"><summary style="cursor:pointer; font-weight:700; color:#c3142d; font-size:16px;">Answer will be shown in class</summary>
+
+.left55[
+
+```{r six_types, hl.size="68%"}
+tibble::enframe(sapply(six, typeof),
+                name = "column", value = "type")
+```
+
+]
+
+.right43[
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13.5px; line-height:1.55;">
+<div style="font-weight:700; color:#c3142d; font-size:15px;">Two gotchas</div>
+<div style="margin-top:6px;"><b><code>crashdate</code> is a double.</b> readr recognized the date-time and stores it as seconds since 1970 with a date-time label on top. Dates are numbers in a costume, which is why you can subtract them.</div>
+<div style="margin-top:6px;"><b><code>age</code> is character.</b> Besides blanks, the column contains the codes `r paste0("<code>", age_codes, "</code>", collapse = ", ")`. One text value anywhere in a column turns the whole column into character, and every number in it stops being a number. Cleaning that is a Class 07 job (Technically Correct Data).</div>
+</div>
+]
+
+<div style="clear:both;"></div>
+
+</details>
+
+]
+
+.panel[.panel-name[Discussion]
+
+- .can-edit.key-types-discussion[Notes from our class discussion (Use Chrome as your browser to edit this part of the page)]
+
+]
+
+]
+
+???
+
+Connect tab: drag each column to a type on the projector (or let a student drive), then Check. Expected misses: crashdate (most say character), age (most say integer). Both misses are the lesson: what a column looks like and what R stored are different things, and typeof() is how you check.
+
+
+---
+class: inverse, center, middle
+
+# Part 3: Data Frames and Lists
+
+---
+
+# From Vectors to a Data Frame
+
+.left55[
+
+```{r tibble_build, hl.size="70%"}
+crashes_df = tibble::tibble(
+  day     = names(crashes_by_day),
+  crashes = crashes_by_day,
+  busy    = crashes_by_day > 2000
+)
+crashes_df
+```
+
+]
+
+.right43[
+<img src="`r knitr::image_uri('../../figures/legos-jbryan-structures-web.jpg')`" alt="Four single-colored Lego towers (four 1D atomic vectors) becoming one block with four columns (data.frame / tibble)" style="width:100%; border-radius:6px;">
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:10px 12px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13px; line-height:1.55; margin-top:10px;">
+<div style="font-weight:700; color:#c3142d; font-size:14px;">Vectors standing side by side</div>
+<div style="margin-top:4px;">Each <b>column</b> is one vector with one type (<code>&lt;chr&gt;</code>, <code>&lt;dbl&gt;</code>, <code>&lt;lgl&gt;</code> in the header). All columns have the <b>same length</b>, so every row lines up.</div>
+</div>
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:10px 12px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13px; line-height:1.55; margin-top:10px;">
+The crash file is the same thing with 30,125 rows and 13 columns. <code>tibble</code> is the tidyverse's data frame: same object, tidier printing. <b>Part 4:</b> taking these apart (pick a column, pick rows).
+</div>
+]
+
+<div style="clear:both;"></div>
+
+.footnote[
+<html>
+<hr>
+</html>
+**Image:** Jenny Bryan, [lego-rstats](https://github.com/jennybc/lego-rstats#readme).
+]
+
+???
+
+Read the printed header aloud: chr, dbl, lgl. That is the four-types slide showing up in a real object. Do not go into subsetting yet; say "Part 4" and move on.
+
+
+---
+
+# Looking at a Data Frame
+
+.left55[
+
+```{r df_look, hl.size="66%", results="hold"}
+nrow(crashes_df)             # how many rows?
+ncol(crashes_df)             # how many columns?
+names(crashes_df)            # what are they called?
+typeof(crashes_df)           # what is it, underneath?
+```
+
+```{r df_str, hl.size="58%"}
+str(crashes_df)              # one line per column
+```
+
+]
+
+.right43[
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.6;">
+<div style="font-weight:700; color:#c3142d; font-size:15px;">Four questions for any data frame</div>
+<div style="margin-top:6px;">How many rows, how many columns, what are they called, and what type is each. <code>str()</code> answers all four in one call and is the first thing to run on data you did not build yourself.</div>
+</div>
+<div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:12px 14px; background:#fdf2f2; font-size:14px; line-height:1.6; margin-top:12px;">
+<b><code>typeof(crashes_df)</code> says <code>"list"</code>.</b> A data frame is a <b>named list of vectors</b> with one extra rule: every vector has the same length. Drop that rule and you get a plain list, which is next.
+</div>
+]
+
+<div style="clear:both;"></div>
+
+???
+
+Four questions, four functions, then str does all of them at once. The typeof line is the bridge: students are surprised that a data frame is a list, and that surprise is what makes the next three slides feel necessary instead of abstract.
+
+
+---
+
+# A List Holds Anything
+
+.left55[
+
+```{r list_build, hl.size="64%"}
+example_list = list(
+  1:3,                    # integers 1, 2, 3
+  "a",                    # one piece of text
+  c(TRUE, FALSE, TRUE),   # three logicals
+  c(2.3, 5.9)             # two decimals
+)
+str(example_list)         # the x-ray view
+```
+
+]
+
+.right43[
+<img src="`r knitr::image_uri('../../figures/adv-r-list.png')`" alt="A list drawn as four boxes side by side: 1 2 3, the letter a, TRUE FALSE TRUE, and 2.3 5.9" style="width:100%; border-radius:6px;">
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.6; margin-top:12px;">
+<div style="font-weight:700; color:#c3142d; font-size:15px;">Every element its own shape</div>
+<div style="margin-top:6px;">A vector holds <b>one type, one length</b>. A list holds <b>anything</b>: vectors of different types and lengths, and even other lists.</div>
+</div>
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.6; margin-top:12px;">
+<code>str()</code> prints one line per element with its type and length. Run it on anything you do not recognize; it is the fastest way to learn what an object is made of.
+</div>
+]
+
+<div style="clear:both;"></div>
+
+.footnote[
+<html>
+<hr>
+</html>
+**Image:** Hadley Wickham, [Advanced R, chapter 3 (Lists)](https://adv-r.hadley.nz/vectors-chap.html#lists).
+]
+
+???
+
+Point at the diagram: four boxes of different sizes inside one container. Then read the str output line by line: int, chr, logi, num, each with its own length. str is the x-ray; run it on anything you do not recognize. Do not explain the double bracket yet.
+
+
+---
+
+# `[ ]` vs `[[ ]]` on a List
+
+.left55[
+
+.airy[
+
+```{r list_brackets, hl.size="58%"}
+str(example_list[1])     # [ ]  the shaker: a list of 1
+str(example_list[[1]])   # [[ ]] the packet: the element
+example_list[[1]][[1]]   # the pepper: first value in it
+example_list[[4]][2]     # element 4, then its 2nd value
+```
+
+]
+
+]
+
+.right43[
+<img src="`r knitr::image_uri('../../figures/pepper-web.jpg')`" alt="A pepper shaker labeled x, the same shaker with one packet labeled x[1], one packet labeled x[[1]], and loose pepper labeled x[[1]][[1]]" style="width:100%; border-radius:6px;">
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.6; margin-top:12px;">
+<div style="font-weight:700; color:#c3142d; font-size:15px;">The pepper shaker rule</div>
+<div style="margin-top:6px;"><code>x</code> is the shaker. <code>x[1]</code> is a shaker with one packet: <b>still a list</b>. <code>x[[1]]</code> is the packet itself. <code>x[[1]][[1]]</code> is the pepper.</div>
+<div style="margin-top:4px;">When the list has <b>names</b>, <code>x$name</code> is <code>x[["name"]]</code> with less typing. Next slide.</div>
+</div>
+]
+
+<div style="clear:both;"></div>
+
+.footnote[
+<html>
+<hr>
+</html>
+**Image:** Hadley Wickham, [indexing lists in R](https://twitter.com/hadleywickham/status/643381054758363136).
+]
+
+???
+
+The photo does the teaching. Single bracket keeps the container: example_list with one bracket and a 1 is still a list, a list of one. Double bracket opens it and hands you the element, the integer vector 1 2 3. A third level, double bracket 1 again, is the first number inside. Each line's result sits right under it: List of 1, then int 1 2 3, then 1, then 5.9. The last line mixes both: element four, then its second value.
+
+
+---
+
+# Examine a Job Ad
+
+`r countdown(minutes = 3, seconds = 0, top = 0, font_size = "2em")`
+
+.panelset[
+
+.panel[.panel-name[Task]
+
+.left55[
+
+```{r job_list, hl.size="66%"}
+job = list(
+  title   = "Research Data Scientist, Magic Eye",
+  company = "Google",
+  salary  = list(min = 147000, max = 210000)
+)
+str(job)
+```
+
+]
+
+.right43[
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.6;">
+<div style="font-weight:700; color:#c3142d; font-size:15px;">Write one expression to extract each of</div>
+<div style="margin-top:6px;"><b>1.</b> The company name.</div>
+<div><b>2.</b> The maximum salary.</div>
+<div><b>3.</b> The maximum salary again, using only <code>[[ ]]</code>.</div>
+<div><b>4.</b> The names of the elements in <code>job</code>.</div>
+<div style="margin-top:8px; color:#585E60;">Type them in your script and run each line. The ad is the Google posting from Class 01.</div>
+</div>
+]
+
+<div style="clear:both;"></div>
+
+]
+
+.panel[.panel-name[Answer]
+
+<details style="margin-top:4px;"><summary style="cursor:pointer; font-weight:700; color:#c3142d; font-size:16px;">Answer will be shown in class</summary>
+
+.left55[
+
+```{r job_answers, hl.size="66%", results="hold"}
+job$company                   # 1
+job$salary$max                # 2: a list inside a list
+job[["salary"]][["max"]]      # 3: the same path, by name
+names(job)                    # 4
+```
+
+]
+
+.right43[
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.6;">
+<div style="font-weight:700; color:#c3142d; font-size:15px;">Reading a path</div>
+<div style="margin-top:6px;">Each <code>$</code> or <code>[[ ]]</code> steps one level down. <code>job$salary$max</code> reads: in <code>job</code>, take <code>salary</code>, then take <code>max</code>.</div>
+<div style="margin-top:6px;">Also correct: <code>job[["company"]]</code>, <code>job$salary[["max"]]</code>, <code>job[[3]]$max</code>.</div>
+</div>
+]
+
+<div style="clear:both;"></div>
+
+</details>
+
+]
+
+.panel[.panel-name[Discussion]
+
+- .can-edit.key-job-discussion[Notes from our class discussion (Use Chrome as your browser to edit this part of the page)]
+
+]
+
+]
+
+???
+
+Three minutes. Number 2 needs two dollar signs because salary is a list inside a list; number 3 is the same path with double brackets and quotes. Debrief from the Answer tab by reading the path out loud, one step per symbol. If someone ran str on job dollar salary before answering, praise it; that is exactly the habit.
+
+
+---
+class: inverse, center, middle
+
+# Part 4: Subsetting and Indexing
+
+
+---
+
+# Subsetting a Vector
+
+.left55[
+
+```{r vec_subset, hl.size="58%"}
+crashes_by_day = c(2020, 2241, 2327, 2285, 2380, 1866, 1664)
+names(crashes_by_day) = c("Mon", "Tue", "Wed", "Thu",
+                          "Fri", "Sat", "Sun")
+crashes_by_day[2]                      # one position
+crashes_by_day["Fri"]                  # by name
+crashes_by_day[crashes_by_day > 2300]  # by condition
+```
+
+]
+
+.right43[
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.6;">
+<div style="font-weight:700; color:#c3142d; font-size:15px;">Three things that can go inside [ ]</div>
+<div style="margin-top:6px;"><b>One position</b>, counting from 1, not 0.</div>
+<div style="margin-top:4px;"><b>A name</b>, when the vector has names.</div>
+<div style="margin-top:4px;"><b>A condition</b>: a TRUE/FALSE vector as long as the original keeps the positions where it is TRUE.</div>
+</div>
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.6; margin-top:12px;">
+The first two lines rebuild <code>crashes_by_day</code> so this slide stands on its own. Several positions go in with <code>c()</code>, as in <code>[c(1, 7)]</code>; a negative position such as <code>[-1]</code> drops instead of keeps.
+</div>
+]
+
+<div style="clear:both;"></div>
+
+???
+
+Run all three in the podium RStudio. Position counting from 1 trips up anyone who has seen Python. Spend the time on the last line: the comparison is a logical vector and the brackets keep the TRUE positions. That is what filtering rows by a condition means underneath.
+
+
+---
+
+# Subsetting a Data Frame
+
+.left55[
+
+```{r df_subset, hl.size="56%"}
+crashes_df = tibble::tibble(day = names(crashes_by_day),
+  crashes = crashes_by_day, busy = crashes_by_day > 2000)
+crashes_df$crashes                     # one column, as a vector
+crashes_df[["crashes"]]                # the same vector, by name
+crashes_df[1:2, c("day", "crashes")]   # rows 1 to 2, two columns
+```
+
+]
+
+.right43[
+
+<svg viewBox="0 0 200 178" width="46%" style="display:block; margin:0 auto;">
+  <g font-family="Lato, sans-serif">
+    <g transform="translate(40,20)">
+    <text x="60" y="-8" text-anchor="middle" font-family="Source Code Pro, monospace" font-size="10.5" fill="#c3142d" font-weight="700">crashes_df$crashes</text>
+    <rect x="0" y="0" width="120" height="18" fill="#e5e7eb" stroke="#9ca3af"/>
+    <text x="20" y="13" text-anchor="middle" font-size="9" fill="#374151">day</text>
+    <text x="60" y="13" text-anchor="middle" font-size="9" fill="#374151">crashes</text>
+    <text x="100" y="13" text-anchor="middle" font-size="9" fill="#374151">busy</text>
+    <rect x="0" y="18" width="120" height="112" fill="#ffffff" stroke="#9ca3af"/>
+    <rect x="40" y="18" width="40" height="112" fill="#c3142d"/>
+    <line x1="40" y1="18" x2="40" y2="130" stroke="#9ca3af"/>
+    <line x1="80" y1="18" x2="80" y2="130" stroke="#9ca3af"/>
+    <line x1="0" y1="34" x2="120" y2="34" stroke="#9ca3af"/>
+    <line x1="0" y1="50" x2="120" y2="50" stroke="#9ca3af"/>
+    <line x1="0" y1="66" x2="120" y2="66" stroke="#9ca3af"/>
+    <line x1="0" y1="82" x2="120" y2="82" stroke="#9ca3af"/>
+    <line x1="0" y1="98" x2="120" y2="98" stroke="#9ca3af"/>
+    <line x1="0" y1="114" x2="120" y2="114" stroke="#9ca3af"/>
+    <text x="60" y="146" text-anchor="middle" font-size="10" fill="#585E60">a vector (7)</text>
+    </g>
+  </g>
+</svg>
+
+<div style="height:104px;"></div>
+
+<svg viewBox="0 0 200 178" width="46%" style="display:block; margin:0 auto;">
+  <g font-family="Lato, sans-serif">
+    <g transform="translate(40,20)">
+    <text x="60" y="-8" text-anchor="middle" font-family="Source Code Pro, monospace" font-size="10.5" fill="#c3142d" font-weight="700">crashes_df[1:2, c(...)]</text>
+    <rect x="0" y="0" width="120" height="18" fill="#e5e7eb" stroke="#9ca3af"/>
+    <text x="20" y="13" text-anchor="middle" font-size="9" fill="#374151">day</text>
+    <text x="60" y="13" text-anchor="middle" font-size="9" fill="#374151">crashes</text>
+    <text x="100" y="13" text-anchor="middle" font-size="9" fill="#374151">busy</text>
+    <rect x="0" y="18" width="120" height="112" fill="#ffffff" stroke="#9ca3af"/>
+    <rect x="0" y="18" width="80" height="32" fill="#c3142d"/>
+    <line x1="40" y1="18" x2="40" y2="130" stroke="#9ca3af"/>
+    <line x1="80" y1="18" x2="80" y2="130" stroke="#9ca3af"/>
+    <line x1="0" y1="34" x2="120" y2="34" stroke="#9ca3af"/>
+    <line x1="0" y1="50" x2="120" y2="50" stroke="#9ca3af"/>
+    <line x1="0" y1="66" x2="120" y2="66" stroke="#9ca3af"/>
+    <line x1="0" y1="82" x2="120" y2="82" stroke="#9ca3af"/>
+    <line x1="0" y1="98" x2="120" y2="98" stroke="#9ca3af"/>
+    <line x1="0" y1="114" x2="120" y2="114" stroke="#9ca3af"/>
+    <text x="60" y="146" text-anchor="middle" font-size="10" fill="#585E60">a tibble (2 x 2)</text>
+    </g>
+  </g>
+</svg>
+
+
+]
+
+<div style="clear:both;"></div>
+
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:8px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13px; line-height:1.5; margin-top:10px;">
+<code>$</code> and <code>[[ ]]</code> open one column into a vector. <code>[rows, columns]</code> hands back a smaller tibble; leave a side of the comma empty to keep all of it.
+</div>
+
+???
+
+The first two lines rebuild the data frame so the slide stands on its own; it is the same seven-row tibble from Part 3. Two ideas. First, a column is a vector, and the dollar sign or the double bracket pulls it out; that is why Part 2 mattered. Second, single brackets on a data frame take two positions separated by a comma, rows then columns, and an empty side means all. Point at the two grids while the output scrolls: a red column is a vector, a red block is a smaller tibble.
+
+
+---
+class: table80
+
+# One Table for Three Brackets
+
+<div style="font-size:14.5px; color:#1b1b1b; margin:0 0 10px 0;">What comes back depends on the object and on the bracket. Read across a row for one object, down a column for one bracket.</div>
+
+| Object | <span style="color:#fff; font-family:'Source Code Pro', monospace;">[ ]</span> | <span style="color:#fff; font-family:'Source Code Pro', monospace;">[[ ]]</span> | <span style="color:#fff; font-family:'Source Code Pro', monospace;">$</span> |
+|:--|:--|:--|:--|
+| **Vector** `crashes_by_day` | a shorter **vector** | one element (rarely needed) | not allowed |
+| **List** `example_list`, `job` | a shorter **list** | one element, whatever it is | one **named** element, same as `[["name"]]` |
+| **Data frame** `crashes_df` | a smaller **data frame** `[rows, columns]` | one column as a **vector** | one column as a **vector** |
+
+<div style="margin-top:18px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:12px 18px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:15.5px; line-height:1.55; color:#1b1b1b;">
+<b style="color:#c3142d;">Rule of thumb.</b> <code>[ ]</code> <b>keeps the container</b> and gives you a smaller one of the same kind. <code>[[ ]]</code> and <code>$</code> <b>open the container</b> and give you what is inside. The pepper shaker again: one bracket is still a shaker, two brackets is the packet.
+</div>
+
+???
+
+This is the reference slide; they will come back to it. Read the middle column: single bracket on a list is still a list, on a data frame still a data frame. Then the last two columns: opening the container. The one surprise is that the dollar sign does not work on a plain vector.
+
+
+---
+
+# Predict the Output
+
+`r countdown(minutes = 4, seconds = 0, top = 0, font_size = "2em")`
+
+.panelset[
+
+.panel[.panel-name[crashes_by_day]
+
+```{r predict_vec, hl.size="66%"}
+crashes_by_day = c(2020, 2241, 2327, 2285, 2380, 1866, 1664)
+names(crashes_by_day) = c("Mon", "Tue", "Wed", "Thu",
+                          "Fri", "Sat", "Sun")
+crashes_by_day
+```
+
+]
+
+.panel[.panel-name[crashes_df]
+
+```{r predict_df, hl.size="66%"}
+crashes_df = tibble::tibble(day = names(crashes_by_day),
+  crashes = crashes_by_day, busy = crashes_by_day > 2000)
+crashes_df
+```
+
+]
+
+.panel[.panel-name[job]
+
+```{r predict_job, hl.size="66%"}
+job = list(
+  title   = "Research Data Scientist, Magic Eye",
+  company = "Google",
+  salary  = list(min = 147000, max = 210000)
+)
+str(job)
+```
+
+]
+
+.panel[.panel-name[Predict]
+
+<div style="font-size:13.5px; color:#585E60; margin:0 0 6px 0;">Six expressions on the three objects in the tabs to the left. Pick what R prints <b>before</b> running anything, press <b>Check</b>, then run all six in your script to confirm.</div>
+
+<div class="predictout" style="margin:0; padding:0; user-select:none;"></div>
+
+<script>
+(function () {
+  var items = [
+    { code: "crashes_by_day[c(2, 4)]", ans: 0,
+      opts: ["Tue 2241, Thu 2285", "Tue Wed Thu: 2241 2327 2285", "2241", "Mon 2020, Wed 2327"],
+      why: "c(2, 4) asks for positions 2 and 4, names included. c(2, 4) is not a range; 2:4 would be." },
+    { code: "crashes_by_day[Sat]", ans: 3,
+      opts: ["Sat 1866", "6", "1866 with no name", "Error: object 'Sat' not found"],
+      why: "Without quotes, Sat is an object name, and no object called Sat exists. crashes_by_day[\"Sat\"] returns Sat 1866." },
+    { code: "sum(crashes_by_day > 2300)", ans: 1,
+      opts: ["4707", "2", "TRUE", "FALSE FALSE TRUE FALSE TRUE FALSE FALSE"],
+      why: "The comparison gives seven TRUE/FALSE values; sum() counts the TRUEs: Wed (2327) and Fri (2380)." },
+    { code: "crashes_df$day[crashes_df$crashes < 2000]", ans: 2,
+      opts: ["1866 1664", "a two-row tibble", "\"Sat\" \"Sun\"", "FALSE FALSE FALSE FALSE FALSE TRUE TRUE"],
+      why: "crashes_df$day is a character vector; the logical vector inside [ ] keeps the two days under 2,000. The result is a vector, not a tibble." },
+    { code: "crashes_df[[\"busy\"]][3]", ans: 0,
+      opts: ["TRUE", "\"Wed\"", "2327", "a 1 x 1 tibble"],
+      why: "[[\"busy\"]] opens the column into a logical vector; [3] takes its third element, Wednesday, which is above 2,000." },
+    { code: "job[\"salary\"]$max", ans: 2,
+      opts: ["210000", "a list of 2: min and max", "NULL", "Error: $ operator is invalid"],
+      why: "job[\"salary\"] is still a list of one (the shaker with one packet), and that outer list has no element named max, so $ finds nothing and returns NULL. job$salary$max and job[[\"salary\"]]$max give 210000." }
+  ];
+  var letters = ["A", "B", "C", "D"];
+
+  function build(box) {
+    if (box.getAttribute("data-built")) { return; }
+    box.setAttribute("data-built", "1");
+    var picks = [];
+    var i, j;
+    for (i = 0; i !== items.length; i = i + 1) { picks.push(-1); }
+    var rows = [];
+
+    function mk(tag, style, parent) {
+      var e = document.createElement(tag);
+      if (style) { e.setAttribute("style", style); }
+      if (parent) { parent.appendChild(e); }
+      return e;
+    }
+
+    var table = mk("div", "display:flex; flex-direction:column; gap:4px;", box);
+    items.forEach(function (it, idx) {
+      var row = mk("div", "display:flex; align-items:center; gap:8px; border:1px solid #d1d5db; border-radius:8px; padding:3px 10px; background:#fcfcfc;", table);
+      var num = mk("span", "font-weight:700; color:#c3142d; font-size:13px; width:16px;", row);
+      num.textContent = String(idx + 1);
+      var code = mk("code", "font-family:'Source Code Pro', monospace; font-size:11px; line-height:1.35; color:#1b1b1b; background:#ffffff; border:1px solid #e5e7eb; border-radius:4px; padding:3px 8px; width:238px; white-space:normal; word-break:break-all;", row);
+      code.textContent = it.code;
+      var optBox = mk("div", "display:flex; gap:6px; flex:1;", row);
+      var btns = [];
+      it.opts.forEach(function (o, k) {
+        var b = mk("button", "flex:1; text-align:left; font-size:11.5px; line-height:1.3; border:1px solid #d1d5db; border-radius:6px; background:#ffffff; color:#1b1b1b; padding:4px 7px; cursor:pointer; font-family:'Source Code Pro', monospace;", optBox);
+        b.textContent = letters[k] + ". " + o;
+        b.addEventListener("click", function () {
+          picks[idx] = k;
+          btns.forEach(function (bb, kk) {
+            bb.style.background = (kk === k) ? "#fdf2f2" : "#ffffff";
+            bb.style.borderColor = (kk === k) ? "#c3142d" : "#d1d5db";
+            bb.style.borderWidth = (kk === k) ? "2px" : "1px";
+          });
+          status.textContent = countPicked() + " of " + items.length + " answered";
+        });
+        btns.push(b);
+      });
+      rows.push({ btns: btns, row: row });
+    });
+
+    function countPicked() {
+      var n = 0;
+      for (var q = 0; q !== picks.length; q = q + 1) { if (picks[q] !== -1) { n = n + 1; } }
+      return n;
+    }
+
+    var bar = mk("div", "display:flex; gap:10px; align-items:center; margin-top:6px; font-size:14px;", box);
+    var btnCheck = mk("button", "background:#c3142d; color:#fff; border:0; border-radius:6px; padding:6px 16px; font-weight:700; font-size:14px; cursor:pointer;", bar);
+    btnCheck.textContent = "Check";
+    var btnReset = mk("button", "background:#ffffff; color:#374151; border:1px solid #d1d5db; border-radius:6px; padding:6px 14px; font-size:14px; cursor:pointer;", bar);
+    btnReset.textContent = "Start over";
+    var status = mk("span", "color:#585E60;", bar);
+    var why = mk("div", "font-size:12px; color:#1b1b1b; line-height:1.4; margin-top:4px; max-height:64px; overflow-y:auto;", box);
+    status.textContent = "0 of " + items.length + " answered";
+
+    btnCheck.addEventListener("click", function () {
+      var n = countPicked();
+      if (n !== items.length) { status.textContent = "Answer all " + items.length + " first (" + n + " done)."; return; }
+      var right = 0;
+      var msgs = [];
+      items.forEach(function (it, idx) {
+        var ok = (picks[idx] === it.ans);
+        if (ok) { right = right + 1; }
+        rows[idx].btns.forEach(function (bb, kk) {
+          if (kk === it.ans) { bb.style.background = "#e6f4ea"; bb.style.borderColor = "#1b9e77"; bb.style.borderWidth = "2px"; }
+          else if (kk === picks[idx]) { bb.style.background = "#fdf2f2"; bb.style.borderColor = "#c3142d"; bb.style.borderWidth = "2px"; }
+          else { bb.style.background = "#ffffff"; bb.style.borderColor = "#d1d5db"; bb.style.borderWidth = "1px"; }
+        });
+        if (!ok) { msgs.push("<b style='color:#c3142d;'>" + String(idx + 1) + ".</b> " + letters[it.ans] + ". " + it.why); }
+      });
+      status.textContent = right + " of " + items.length + " correct";
+      if (msgs.length === 0) { msgs = ["All six. Now run them in your script and watch the Console agree with you."]; }
+      why.innerHTML = msgs.join("<br>");
+    });
+    btnReset.addEventListener("click", function () {
+      for (var q = 0; q !== picks.length; q = q + 1) { picks[q] = -1; }
+      rows.forEach(function (r) { r.btns.forEach(function (bb) { bb.style.background = "#ffffff"; bb.style.borderColor = "#d1d5db"; bb.style.borderWidth = "1px"; }); });
+      why.textContent = "";
+      status.textContent = "0 of " + items.length + " answered";
+    });
+  }
+
+  function buildAll() { document.querySelectorAll(".predictout").forEach(build); }
+  buildAll();
+  if (window.slideshow) { if (!window.predictoutHooked) { window.predictoutHooked = true; window.slideshow.on("afterShowSlide", buildAll); } }
+})();
+</script>
+
+]
+
+.panel[.panel-name[Discussion]
+
+- .can-edit.key-predict-discussion[Notes from our class discussion (Use Chrome as your browser to edit this part of the page)]
+
+]
+
+]
+
+???
+
+Four minutes: predict first, Check, then run. The three tabs before Predict rebuild the objects so nobody has to scroll back. Expected misses: number 2 (the missing quotes) and number 6 (single bracket then dollar sign gives NULL). Both are the lesson: R errors on a missing object but silently returns NULL from a list that lacks the name. When someone asks why NULL is not an error, that is the best question of the day.
+
+
+---
+class: inverse, center, middle
+
+# Part 5: Functions
+
+---
+
+# Functions: Name and Arguments
+
+.left55[
+
+```{r fun_args, hl.size="68%", results="hold"}
+mean(x = crashes_by_day)              # by name
+mean(crashes_by_day, 0.2)             # by position
+mean(x = crashes_by_day, trim = 0.2)  # both
+```
+
+<div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:10px 14px; background:#fdf2f2; font-size:13.5px; line-height:1.55; margin-top:10px;">
+<b>House rule:</b> name every argument. <code>mean(x = crashes_by_day, trim = 0.2)</code> reads the same in six months and never depends on remembering the order.
+</div>
+]
+
+.right43[
+
+.panelset[
+
+.panel[.panel-name[Help page]
+
+<div style="font-size:12.5px; line-height:1.5;">
+Watch the projector, then try it: run <code>?mean</code> in the Console and the Help pane opens. Find:
+<div style="margin-top:6px;"><b>1.</b> In <i>Usage</i>, which arguments have a default value?</div>
+<div><b>2.</b> In <i>Arguments</i>, what does <code>trim = 0.2</code> remove?</div>
+<div><b>3.</b> Try <code>mean(c(1, 2, NA))</code>, then <code>mean(c(1, 2, NA), na.rm = TRUE)</code>. What did <code>na.rm</code> change?</div>
+</div>
+
+]
+
+.panel[.panel-name[Discussion]
+
+- .can-edit.key-help-discussion[Notes from our class discussion (Use Chrome as your browser to edit this part of the page)]
+
+]
+
+]
+
+]
+
+???
+
+One minute at the podium, no timer, then the answers: defaults are trim = 0 and na.rm = FALSE; trim = 0.2 drops 20% from each end before averaging (here the lowest and highest day); na.rm = TRUE ignores missing values, otherwise the mean of anything containing NA is NA. The help page is the habit; ChatISA is the fallback.
+
+---
+
+# Functions from Packages
+
+<div style="font-size:14.5px; color:#1b1b1b; margin:0 0 10px 0;">Base R ships with <code>mean()</code>, <code>sum()</code>, <code>c()</code>. Almost everything else comes in a <b>package</b>, and a package has to make two trips before you can use it.</div>
+
+<div style="display:flex; gap:0; align-items:stretch; margin-top:4px;">
+  <div style="flex:1; border:1px solid #d1d5db; border-radius:10px; padding:14px 16px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="font-size:11px; color:#585E60; text-transform:uppercase; font-weight:700;">1 &middot; CRAN, on the internet</div>
+    <div style="font-weight:700; font-size:17px; color:#1b1b1b; margin-top:4px;">The app store for R</div>
+    <div style="font-size:13.5px; color:#585E60; margin-top:6px; line-height:1.5;">24,780 packages, free, reviewed, one download away. <code>dplyr</code>, <code>ggplot2</code>, <code>readr</code> live here.</div>
+  </div>
+  <div style="flex:0 0 172px; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0 6px;">
+    <div style="font-family:'Source Code Pro', monospace; font-size:11.5px; color:#c3142d; font-weight:700; text-align:center;">install.packages("dplyr")</div>
+    <div style="color:#c3142d; font-size:30px; line-height:1;">&rarr;</div>
+    <div style="font-size:11.5px; color:#585E60; text-align:center;">once per computer,<br>in the Console</div>
+  </div>
+  <div style="flex:1; border:1px solid #d1d5db; border-radius:10px; padding:14px 16px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="font-size:11px; color:#585E60; text-transform:uppercase; font-weight:700;">2 &middot; Your computer</div>
+    <div style="font-weight:700; font-size:17px; color:#1b1b1b; margin-top:4px;">The library folder</div>
+    <div style="font-size:13.5px; color:#585E60; margin-top:6px; line-height:1.5;">Installed means downloaded to this machine. It sits on disk, not in R. Your laptop needs its own copy.</div>
+  </div>
+  <div style="flex:0 0 172px; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0 6px;">
+    <div style="font-family:'Source Code Pro', monospace; font-size:12px; color:#c3142d; font-weight:700; text-align:center;">dplyr::count()</div>
+    <div style="font-size:11.5px; color:#585E60;">or</div>
+    <div style="font-family:'Source Code Pro', monospace; font-size:12px; color:#c3142d; font-weight:700; text-align:center;">library(dplyr)</div>
+    <div style="color:#c3142d; font-size:30px; line-height:1;">&rarr;</div>
+    <div style="font-size:11.5px; color:#585E60; text-align:center;">every session,<br>at the top of the script</div>
+  </div>
+  <div style="flex:1; border:1px solid #c3142d; border-radius:10px; padding:14px 16px; background:#fdf2f2; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="font-size:11px; color:#c3142d; text-transform:uppercase; font-weight:700;">3 &middot; Your R session</div>
+    <div style="font-weight:700; font-size:17px; color:#1b1b1b; margin-top:4px;">Ready to use</div>
+    <div style="font-size:13.5px; color:#585E60; margin-top:6px; line-height:1.5;">A fresh session knows nothing until you say which package a function comes from. <code>count()</code> alone: error. <code>dplyr::count()</code>: works.</div>
+  </div>
+</div>
+
+<div style="margin-top:18px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:12px 18px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:15px; line-height:1.55; color:#1b1b1b;">
+<b style="color:#c3142d;">Why we write <code>pkg::fun()</code> in this course.</b> It reads like a citation: anyone can see where <code>count()</code> came from. Two packages with the same function name cannot collide. And it works even when you forgot <code>library()</code>.
+</div>
+
+.footnote[
+<html>
+<hr>
+</html>
+**Package count:** [CRAN, Contributed Packages](https://cran.r-project.org/web/packages/), checked Aug 25, 2026.
+]
+
+???
+
+Two trips: internet to disk (install, once), disk to session (library or ::, every time). The most common error in week 2 is "could not find function": the package is installed but not loaded, or not installed on this particular computer. The pkg:: habit makes both cases obvious.
+
+
+---
+
+# Write Your Own Function
+
+.left55[
+
+```{r own_fun, hl.size="64%", results="hold"}
+crash_share = function(x) {
+  share = x / sum(x) * 100
+  return(share)
+}
+crash_share(crashes_by_day)
+round(crash_share(crashes_by_day), 1)
+```
+
+]
+
+.right43[
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+  <div style="border:1px solid #d1d5db; border-radius:8px; padding:10px 12px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13px; line-height:1.5;">
+    <div style="font-size:11px; color:#585E60; text-transform:uppercase; font-weight:700;">1 &middot; Name</div>
+    <div style="margin-top:3px;"><code>crash_share</code>: a verb or a noun in <code>snake_case</code>, stored with <code>=</code> like any object.</div>
+  </div>
+  <div style="border:1px solid #d1d5db; border-radius:8px; padding:10px 12px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13px; line-height:1.5;">
+    <div style="font-size:11px; color:#585E60; text-transform:uppercase; font-weight:700;">2 &middot; Arguments</div>
+    <div style="margin-top:3px;"><code>function(x)</code>: the blanks. <code>x</code> is whatever the caller passes in.</div>
+  </div>
+  <div style="border:1px solid #d1d5db; border-radius:8px; padding:10px 12px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13px; line-height:1.5;">
+    <div style="font-size:11px; color:#585E60; text-transform:uppercase; font-weight:700;">3 &middot; Body</div>
+    <div style="margin-top:3px;">Between <code>{ }</code>. Runs with <code>x</code> replaced by the value passed in.</div>
+  </div>
+  <div style="border:1px solid #c3142d; border-radius:8px; padding:10px 12px; background:#fdf2f2; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13px; line-height:1.5;">
+    <div style="font-size:11px; color:#c3142d; text-transform:uppercase; font-weight:700;">4 &middot; Value</div>
+    <div style="margin-top:3px;"><code>return(share)</code> hands the value back. R would also return the last line on its own, but not if that line is an assignment, so we always write <code>return()</code>.</div>
+  </div>
+</div>
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.6; margin-top:12px;">
+A function is a <b>recipe with blanks</b>. Defining it writes the recipe; calling it fills the blanks. Nothing runs until you call it, so watch the Environment pane: <code>crash_share</code> appears under <i>Functions</i>.
+</div>
+]
+
+<div style="clear:both;"></div>
+
+???
+
+Type it live. Point out that defining the function produces no output; it only adds crash_share to the Environment pane under Functions. Then call it. The four cards map to the four pieces of the definition. On return: R would hand back the last line by itself, but an assignment as the last line returns invisibly, so we write return() every time and never think about it.
+
+
+---
+
+# Defaults and Documentation
+
+.left55[
+
+```{r fun_defaults, hl.size="60%", results="hold"}
+# Names of the days whose count beats a threshold.
+#   x         : a named numeric vector
+#   threshold : the count to beat (default 2000)
+# Returns a character vector of names.
+busy_days = function(x, threshold = 2000) {
+  above = names(x)[x > threshold]
+  return(above)
+}
+busy_days(crashes_by_day)
+busy_days(crashes_by_day, threshold = 2300)
+```
+
+]
+
+.right43[
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.6;">
+<div style="font-weight:700; color:#c3142d; font-size:15px;">Defaults</div>
+<div style="margin-top:6px;"><code>threshold = 2000</code> in the definition makes the argument <b>optional</b>. The caller can leave it out or override it by name, exactly like <code>na.rm = TRUE</code> in <code>mean()</code>.</div>
+</div>
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.6; margin-top:12px;">
+<div style="font-weight:700; color:#c3142d; font-size:15px;">Documentation, a recommendation</div>
+<div style="margin-top:6px;">Four comment lines above a function: what it does, one line per argument, what it returns. Not a rule, but it makes the function clear to the next reader, who is usually you in six months.</div>
+</div>
+<div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:12px 14px; background:#fdf2f2; font-size:14px; line-height:1.6; margin-top:12px;">
+<b>When to write one:</b> the moment you have copied and pasted the same block of code more than twice.
+</div>
+]
+
+<div style="clear:both;"></div>
+
+.footnote[
+<html>
+<hr>
+</html>
+**Rule of thumb:** [R for Data Science (2e), chapter 25 (Functions)](https://r4ds.hadley.nz/functions.html).
+]
+
+???
+
+The body reuses the vector-subsetting line from Part 4: names of x where x beats the threshold. Show the call without the argument, then with it. Then the comment header: four lines, recommended rather than required, because the next reader is usually you. The activity asks for it so they try it once.
+
+
+---
+
+# Your First Function
+
+`r countdown(minutes = 5, seconds = 0, top = 0, font_size = "2em")`
+
+.panelset[
+
+.panel[.panel-name[Task]
+
+.pull-left[
+
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.6;">
+<div style="font-weight:700; color:#c3142d; font-size:15px;">In pairs, in your script</div>
+<div style="margin-top:6px;">Write <code>above(x, threshold = 2000)</code> that <code>return()</code>s <b>how many</b> elements of <code>x</code> exceed <code>threshold</code>.</div>
+<div style="margin-top:6px;">Add the four-line comment header above it.</div>
+</div>
+
+]
+
+.pull-right[
+
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.6;">
+<div style="font-weight:700; color:#c3142d; font-size:15px;">Tests it must pass</div>
+<div style="margin-top:6px;"><code>above(crashes_by_day)</code> gives <b>5</b>.</div>
+<div><code>above(crashes_by_day, threshold = 2300)</code> gives <b>2</b>.</div>
+<div style="margin-top:8px; color:#585E60;"><b>Stretch:</b> write <code>share_above()</code> that returns the <i>percent</i> of days above the threshold instead of the count.</div>
+</div>
+
+]
+
+<div style="clear:both;"></div>
+
+<div style="margin-top:12px; font-size:13.5px; color:#585E60; text-align:center;">Hint: Part 2 showed that <code>sum()</code> of a logical vector counts the TRUEs.</div>
+
+]
+
+.panel[.panel-name[One Solution]
+
+<details style="margin-top:4px;"><summary style="cursor:pointer; font-weight:700; color:#c3142d; font-size:16px;">Click to reveal one version</summary>
+
+.left55[
+
+```{r fun_solution, hl.size="62%", results="hold"}
+# Count how many values in x exceed a threshold.
+#   x         : a numeric vector
+#   threshold : the cutoff (default 2000)
+# Returns a single number.
+above = function(x, threshold = 2000) {
+  n_above = sum(x > threshold)
+  return(n_above)
+}
+above(crashes_by_day)
+above(crashes_by_day, threshold = 2300)
+```
+
+]
+
+.right43[
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.6;">
+<div style="font-weight:700; color:#c3142d; font-size:15px;">Other correct bodies</div>
+<div style="margin-top:6px;"><code>length(x[x &gt; threshold])</code></div>
+<div><code>length(busy_days(x, threshold))</code>: a function calling a function.</div>
+<div style="margin-top:8px;"><b>Stretch:</b> <code>sum(x &gt; threshold) / length(x) * 100</code>.</div>
+</div>
+]
+
+<div style="clear:both;"></div>
+
+</details>
+
+]
+
+.panel[.panel-name[Discussion]
+
+- .can-edit.key-function-discussion[Notes from our class discussion (Use Chrome as your browser to edit this part of the page)]
+
+]
+
+]
+
+???
+
+Five minutes in pairs. The two tests are on the slide so pairs can check themselves. Walk the room; the usual failures are a missing default, a body that returns the logical vector instead of its sum, and a header that was skipped. Debrief by putting two or three versions on the projector and asking which is easiest to read, not which is shortest.
+
+
+---
+class: inverse, center, middle
+
+# Part 6: Control Flow Preview
+
+
+---
+
+# if / else
+
+.left55[
+
+<div class="ifelse" style="margin:0; padding:0;"></div>
+
+```{r if_else_col, hl.size="66%"}
+ifelse(crashes_df$crashes > 2000, "busy", "quiet")
+```
+
+]
+
+.right43[
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.6;">
+<div style="font-weight:700; color:#c3142d; font-size:15px;">One decision, one value</div>
+<div style="margin-top:6px;"><code>if</code> looks at a condition that is <b>one</b> TRUE or FALSE and runs one of the two branches. Use it for a single decision in a script or inside a function.</div>
+</div>
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.6; margin-top:12px;">
+<div style="font-weight:700; color:#c3142d; font-size:15px;">One decision per row</div>
+<div style="margin-top:6px;"><code>ifelse(condition, yes, no)</code> answers for <b>every element</b> at once: seven inputs, seven answers. This is the one you use on columns; run it below the animation.</div>
+</div>
+<div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:12px 14px; background:#fdf2f2; font-size:14px; line-height:1.6; margin-top:12px;">
+Handing a whole vector to <code>if</code> is an error in current R. If your condition has more than one answer, you want <code>ifelse()</code>.
+</div>
+]
+
+<div style="clear:both;"></div>
+
+<script>
+(function () {
+  var Q = String.fromCharCode(34);
+  var GT = String.fromCharCode(62);
+  var codeLines = [
+    "crashes_per_day = 30125 / 365",
+    "if (crashes_per_day " + GT + " 80) {",
+    "  " + Q + "a busy year" + Q,
+    "} else {",
+    "  " + Q + "a quiet year" + Q,
+    "}"
+  ];
+
+  function build(box) {
+    if (box.getAttribute("data-built")) { return; }
+    box.setAttribute("data-built", "1");
+    function mk(tag, style, parent) {
+      var e = document.createElement(tag);
+      if (style) { e.setAttribute("style", style); }
+      if (parent) { parent.appendChild(e); }
+      return e;
+    }
+    var wrap = mk("div", "border:1px solid #d1d5db; border-radius:8px; padding:10px 12px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13px; line-height:1.5; margin-bottom:10px;", box);
+    var head = mk("div", "display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;", wrap);
+    var title = mk("div", "font-weight:700; color:#c3142d; font-size:14px;", head);
+    title.textContent = "Watch the decision, one line at a time";
+    var bCopy = mk("button", "background:#ffffff; color:#374151; border:1px solid #d1d5db; border-radius:6px; padding:2px 10px; font-size:11.5px; cursor:pointer;", head);
+    bCopy.textContent = "Copy code";
+    bCopy.addEventListener("click", function () {
+      if (navigator.clipboard) { navigator.clipboard.writeText(codeLines.join(String.fromCharCode(10))); bCopy.textContent = "Copied"; }
+    });
+
+    var code = mk("div", "background:#222222; border-radius:6px; padding:8px 10px; font-family:'Source Code Pro', monospace; font-size:12.5px; line-height:1.55; color:#dedede; white-space:pre;", wrap);
+    var lineEls = [];
+    codeLines.forEach(function (t) {
+      var l = mk("div", "padding:0 6px; border-radius:4px; border-left:3px solid transparent;", code);
+      l.textContent = t;
+      lineEls.push(l);
+    });
+
+    var state = mk("div", "font-family:'Source Code Pro', monospace; font-size:12px; color:#c3142d; min-height:18px; margin-top:6px;", wrap);
+    var out = mk("div", "background:#222222; color:#dedede; border-radius:6px; padding:6px 10px; font-family:'Source Code Pro', monospace; font-size:11.5px; line-height:1.45; min-height:24px; margin-top:6px; white-space:pre;", wrap);
+    var bar = mk("div", "display:flex; gap:8px; margin-top:8px; align-items:center;", wrap);
+    var bStep = mk("button", "background:#c3142d; color:#fff; border:0; border-radius:6px; padding:5px 14px; font-weight:700; font-size:13px; cursor:pointer;", bar);
+    bStep.textContent = "Step";
+    var bPlay = mk("button", "background:#ffffff; color:#374151; border:1px solid #d1d5db; border-radius:6px; padding:5px 12px; font-size:13px; cursor:pointer;", bar);
+    bPlay.textContent = "Play";
+    var bReset = mk("button", "background:#ffffff; color:#374151; border:1px solid #d1d5db; border-radius:6px; padding:5px 12px; font-size:13px; cursor:pointer;", bar);
+    bReset.textContent = "Reset";
+    var hint = mk("span", "color:#585E60; font-size:12px;", bar);
+
+    var k = 0;
+    var timer = null;
+    function clearLines() {
+      lineEls.forEach(function (l) {
+        l.style.background = "transparent";
+        l.style.borderLeftColor = "transparent";
+        l.style.opacity = "1";
+      });
+    }
+    function hiLine(idx, gray) {
+      lineEls[idx].style.background = gray ? "rgba(150, 152, 150, 0.25)" : "rgba(231, 197, 71, 0.22)";
+      lineEls[idx].style.borderLeftColor = gray ? "#969896" : "#e7c547";
+    }
+    function stop() {
+      if (timer !== null) { clearInterval(timer); timer = null; }
+      bPlay.textContent = "Play";
+    }
+    function reset() {
+      stop(); k = 0; out.textContent = "";
+      clearLines();
+      state.textContent = "";
+      hint.textContent = "Step = one line";
+    }
+    function step() {
+      if (k === 4) { return; }
+      k = k + 1;
+      clearLines();
+      if (k === 1) {
+        hiLine(0, false);
+        state.textContent = "crashes_per_day = 82.53";
+        hint.textContent = "store the value";
+      }
+      if (k === 2) {
+        hiLine(1, false);
+        state.textContent = "is 82.53 " + GT + " 80 ?  TRUE: one answer, so if works";
+        hint.textContent = "check the condition";
+      }
+      if (k === 3) {
+        hiLine(2, false);
+        out.textContent = "[1] " + Q + "a busy year" + Q;
+        state.textContent = "TRUE picks the first branch";
+        hint.textContent = "its value is the result";
+      }
+      if (k === 4) {
+        hiLine(3, true); hiLine(4, true); hiLine(5, true);
+        state.textContent = "the else branch never runs this time";
+        hint.textContent = "done";
+        stop();
+      }
+    }
+    bStep.addEventListener("click", function () { stop(); step(); });
+    bPlay.addEventListener("click", function () {
+      if (timer !== null) { stop(); return; }
+      if (k === 4) { reset(); }
+      timer = setInterval(step, 900);
+      bPlay.textContent = "Pause";
+    });
+    bReset.addEventListener("click", reset);
+    reset();
+  }
+
+  function buildAll() { document.querySelectorAll(".ifelse").forEach(build); }
+  buildAll();
+  if (window.slideshow) { if (!window.ifelseHooked) { window.ifelseHooked = true; window.slideshow.on("afterShowSlide", buildAll); } }
+})();
+</script>
+
+???
+
+Same pattern as the for-loop animation two slides later: press Step and read the highlighted line. Store 82.53, check the condition, TRUE picks the first branch and its value is the result, and the else branch grays out because it never runs. Then run the ifelse() line below the animation: seven inputs, seven answers, the version for columns. The red card prevents the most common control-flow error in this course: handing a whole column to if, which is an error in current R.
+
+
+---
+
+# for Loops
+
+.left55[
+
+<div class="forloop" style="margin:0; padding:0;"></div>
+
+<script>
+(function () {
+  var days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  var counts = [2020, 2241, 2327, 2285, 2380, 1866, 1664];
+  var BS = String.fromCharCode(92);
+  var Q = String.fromCharCode(34);
+  var codeLines = [
+    "for (day in names(crashes_by_day)) {",
+    "  cat(day, " + Q + "had" + Q + ", crashes_by_day[day], " + Q + "crashes." + BS + "n" + Q + ")",
+    "}"
+  ];
+
+  function build(box) {
+    if (box.getAttribute("data-built")) { return; }
+    box.setAttribute("data-built", "1");
+    function mk(tag, style, parent) {
+      var e = document.createElement(tag);
+      if (style) { e.setAttribute("style", style); }
+      if (parent) { parent.appendChild(e); }
+      return e;
+    }
+    var wrap = mk("div", "border:1px solid #d1d5db; border-radius:8px; padding:10px 12px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13px; line-height:1.5;", box);
+    var head = mk("div", "display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;", wrap);
+    var title = mk("div", "font-weight:700; color:#c3142d; font-size:14px;", head);
+    title.textContent = "Watch the loop run, one line at a time";
+    var bCopy = mk("button", "background:#ffffff; color:#374151; border:1px solid #d1d5db; border-radius:6px; padding:2px 10px; font-size:11.5px; cursor:pointer;", head);
+    bCopy.textContent = "Copy code";
+    bCopy.addEventListener("click", function () {
+      if (navigator.clipboard) { navigator.clipboard.writeText(codeLines.join(String.fromCharCode(10))); bCopy.textContent = "Copied"; }
+    });
+
+    var code = mk("div", "background:#222222; border-radius:6px; padding:8px 10px; font-family:'Source Code Pro', monospace; font-size:12.5px; line-height:1.6; color:#dedede; white-space:pre;", wrap);
+    var lineEls = [];
+    codeLines.forEach(function (t) {
+      var l = mk("div", "padding:0 6px; border-radius:4px; border-left:3px solid transparent;", code);
+      l.textContent = t;
+      lineEls.push(l);
+    });
+
+    var row = mk("div", "display:flex; gap:4px; margin:8px 0 6px 0;", wrap);
+    var cells = [];
+    days.forEach(function (d) {
+      var c = mk("div", "flex:1; text-align:center; border:1px solid #d1d5db; border-radius:6px; padding:2px 0; font-family:'Source Code Pro', monospace; font-size:11.5px; background:#ffffff; color:#1b1b1b;", row);
+      c.textContent = d;
+      cells.push(c);
+    });
+    var state1 = mk("div", "font-family:'Source Code Pro', monospace; font-size:12px; color:#c3142d; min-height:18px;", wrap);
+    var state2 = mk("div", "font-family:'Source Code Pro', monospace; font-size:12px; color:#1b1b1b; min-height:18px;", wrap);
+    var out = mk("div", "background:#222222; color:#dedede; border-radius:6px; padding:6px 10px; font-family:'Source Code Pro', monospace; font-size:11.5px; line-height:1.45; min-height:112px; margin-top:6px; white-space:pre;", wrap);
+    var bar = mk("div", "display:flex; gap:8px; margin-top:8px; align-items:center;", wrap);
+    var bStep = mk("button", "background:#c3142d; color:#fff; border:0; border-radius:6px; padding:5px 14px; font-weight:700; font-size:13px; cursor:pointer;", bar);
+    bStep.textContent = "Step";
+    var bPlay = mk("button", "background:#ffffff; color:#374151; border:1px solid #d1d5db; border-radius:6px; padding:5px 12px; font-size:13px; cursor:pointer;", bar);
+    bPlay.textContent = "Play";
+    var bReset = mk("button", "background:#ffffff; color:#374151; border:1px solid #d1d5db; border-radius:6px; padding:5px 12px; font-size:13px; cursor:pointer;", bar);
+    bReset.textContent = "Reset";
+    var hint = mk("span", "color:#585E60; font-size:12px;", bar);
+
+    var k = 0;            // 0 = not started; then 1..14 alternate: pick a name, run the body; 15 = loop ends
+    var timer = null;
+    function hiLine(idx) {
+      lineEls.forEach(function (l, j) {
+        var on = (j === idx);
+        l.style.background = on ? "rgba(231, 197, 71, 0.22)" : "transparent";
+        l.style.borderLeftColor = on ? "#e7c547" : "transparent";
+      });
+    }
+    function hiCell(idx) {
+      cells.forEach(function (c, j) {
+        var on = (j === idx);
+        c.style.background = on ? "#c3142d" : "#ffffff";
+        c.style.color = on ? "#ffffff" : "#1b1b1b";
+        c.style.borderColor = on ? "#c3142d" : "#d1d5db";
+      });
+    }
+    function stop() {
+      if (timer !== null) { clearInterval(timer); timer = null; }
+      bPlay.textContent = "Play";
+    }
+    function reset() {
+      stop(); k = 0; out.textContent = "";
+      hiLine(-1); hiCell(-1);
+      state1.textContent = "day = (nothing yet)";
+      state2.textContent = "";
+      hint.textContent = "Step = one line of the loop";
+    }
+    function step() {
+      if (k === 15) { return; }
+      k = k + 1;
+      if (k === 15) {
+        hiLine(2); hiCell(-1);
+        state1.textContent = "no names left: the loop ends";
+        state2.textContent = "day is still " + Q + "Sun" + Q + " afterwards";
+        hint.textContent = "done";
+        stop();
+        return;
+      }
+      var i = Math.floor((k - 1) / 2);
+      var pick = (k % 2 === 1);
+      if (pick) {
+        hiLine(0); hiCell(i);
+        state1.textContent = "day = " + Q + days[i] + Q + "   (turn " + String(i + 1) + " of 7)";
+        state2.textContent = "";
+        hint.textContent = "for takes the next name";
+      } else {
+        hiLine(1);
+        state2.textContent = "cat(" + Q + days[i] + Q + ", " + Q + "had" + Q + ", " + String(counts[i]) + ", " + Q + "crashes." + BS + "n" + Q + ")";
+        out.textContent = out.textContent + days[i] + " had " + String(counts[i]) + " crashes." + String.fromCharCode(10);
+        hint.textContent = "the body runs with those values";
+      }
+    }
+    bStep.addEventListener("click", function () { stop(); step(); });
+    bPlay.addEventListener("click", function () {
+      if (timer !== null) { stop(); return; }
+      if (k === 15) { reset(); }
+      timer = setInterval(step, 650);
+      bPlay.textContent = "Pause";
+    });
+    bReset.addEventListener("click", reset);
+    reset();
+  }
+
+  function buildAll() { document.querySelectorAll(".forloop").forEach(build); }
+  buildAll();
+  if (window.slideshow) { if (!window.forloopHooked) { window.forloopHooked = true; window.slideshow.on("afterShowSlide", buildAll); } }
+})();
+</script>
+
+]
+
+.right43[
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.6;">
+<div style="font-weight:700; color:#c3142d; font-size:15px;">Two lines, seven turns</div>
+<div style="margin-top:6px;">Line 1 takes the <b>next name</b> and stores it in <code>day</code>. Line 2 runs the body <b>with that value</b> filled in. Then back to line 1, until no names are left.</div>
+<div style="margin-top:6px;"><code>cat()</code> prints its arguments without quotes.</div>
+</div>
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.6; margin-top:12px;">
+<div style="font-weight:700; color:#c3142d; font-size:15px;">Most R loops are hidden</div>
+<div style="margin-top:6px;"><code>crashes_by_day &gt; 2000</code> already looped over seven values for you. Write a loop yourself when each turn does something bigger than arithmetic: fetching a web page, reading a file, calling an API.</div>
+<div style="margin-top:6px;"><b>Week 5:</b> scraping several pages, where <code>purrr::map()</code> replaces the loop with a function call.</div>
+</div>
+]
+
+<div style="clear:both;"></div>
+
+???
+
+No code chunk here on purpose: the code sits inside the animation. Press Step: the first press highlights line 1 and shows day taking the first name, Mon, with the Mon box lit; the second press highlights line 2 and shows the cat call with the values filled in, then the printed line appears below. Fourteen presses walk all seven turns, and one more shows the loop ending with day still holding Sun. Play does the same on its own. The Copy code button copies the three lines. Skip the slide if the clock says so.
+
+
+---
+class: inverse, center, middle
+
+# Recap
+
+---
+
+# Summary of Main Points
+
+By now, you should be able to do the following:
+
+- **Set up** an RStudio project in your repository: open it, work in `scripts/`, push before you leave.
+
+- **Build and inspect** a **vector**, a **data frame**, and a **list** with `c()`, `tibble()`, `list()`, and `str()`.
+
+- **Subset** them: `[ ]` keeps the container, `[[ ]]` and `$` open it, `[rows, columns]` on a data frame.
+
+- **Write** a function with a **default argument**, a comment header, and `return()`.
+
+- **Recognize** `if / else` for one decision, `ifelse()` for a column, and `for` for repeating a step.
+
+**Skills practiced:** reading `str()` output, checking `typeof()`, and predicting output before running it.
+
+???
+
+Tie each bullet to the part: Part 1 project, Parts 2 and 3 structures, Part 4 brackets, Part 5 functions, Part 6 control flow. The skills line is what Wednesday's import class leans on: every imported file lands as a data frame, and str() is the first thing to run on it.
+
+---
+
+# Before You Go
+
+<div style="height:495px; max-width:880px; margin:0 auto; padding:0; overflow:hidden;">
+  <iframe
+    src="https://www.mentimeter.com/app/presentation/alxoj12hfsm3z8eq9smo196xh4gnrfa2/embed"
+    scrolling="no"
+    frameborder="0"
+    allowfullscreen
+    sandbox="allow-popups allow-scripts allow-same-origin allow-presentation"
+    style="width:100%; height:100%; border:0;">
+  </iframe>
+</div>
+
+???
+
+This is the Class 03 Menti presentation. Answer the top two or three on the spot; carry the rest into Wednesday's opening.
+
+---
+
+# 📝 Review and Clarification 📝
+
+.pull-left[
+
+1. **Class Notes**: Take some time to revisit your class notes for key insights/concepts.
+
+2. **Zoom Recording**: The recording of today's class will be made available on Canvas approximately 3-4 hours after the session ends.
+
+3. **AI Recaps:** make your own with Gemini's NotebookLM, as I did for Class 01 (see the right).
+
+4. **Questions**: Do not let confusion pile up.
+
+]
+
+.pull-right[
+
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:14px 18px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:16px; line-height:1.55; margin-top:6px;">
+<div style="font-weight:700; color:#c3142d; font-size:18px;">Make your own recap in NotebookLM</div>
+<ol style="margin:10px 0 0 0; padding-left:22px;">
+<li style="margin-bottom:6px;">Go to <a href="https://notebooklm.google.com" target="_blank">notebooklm.google.com</a> and sign in with your Miami Google account.</li>
+<li style="margin-bottom:6px;">Add today's slide deck as a source: paste the deck's address from Canvas as a <b>Website</b> source.</li>
+<li>Click <b>Audio Overview</b> for a podcast, or <b>Video Overview</b> for a narrated video. Both take a few minutes to generate.</li>
+</ol>
+<div style="margin-top:12px; color:#585E60; font-size:15px;">What it looks like: the Class 01 <a href="https://www.youtube.com/watch?v=sys7WBk0iew" target="_blank">video</a> and <a href="https://drive.google.com/file/d/1lt6hqrMuW8JOy9ilvkT5NVlPABowj7SE/view" target="_blank">podcast</a>. Treat them as a study aid, not a substitute for the slides: the AI summarizes what is on the page and can misstate details.</div>
+</div>
+
+]
+
+???
+
+Same slide as Class 02. Point at the Class 01 examples so they know what they get, and repeat the caveat: NotebookLM paraphrases and occasionally invents.
+
+---
+
+# 🎯 Assignments 🎯
+
+.pull-left[
+
+<div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+  <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;"><a href="https://miamioh.instructure.com/courses/258169/assignments/3600723/" target="_blank" style="color:#fff;">Assignment 02: Make the Portfolio Yours</a></div>
+  <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;">Clone your <code>portfolio</code> repo, make it an RStudio project, then edit, commit, and push until every sentence is yours. Submit the live site's address. <span style="color:#585E60;">Due date on Canvas.</span></div>
+</div>
+
+<div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1); margin-top:12px;">
+  <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;"><a href="https://miamioh.instructure.com/courses/258169/assignments/3600724/" target="_blank" style="color:#fff;">Assignment 03: Git, RStudio, and Your Portfolio</a></div>
+  <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;">A short Canvas quiz on what you did in Assignment 02. Take it after your portfolio edits are pushed. <span style="color:#585E60;">Due date on Canvas.</span></div>
+</div>
+
+<div style="margin-top:12px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:10px 14px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13.5px; line-height:1.5; color:#1b1b1b;">
+<b style="color:#c3142d;">Before you leave:</b> commit and push <code>scripts/class03.R</code> from GitHub Desktop. If it is not pushed, it is not done.
+</div>
+
+]
+
+.pull-right[
+
+<div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+  <div style="background:#f9dbdb; color:#c3142d; font-weight:700; font-size:15px; padding:8px 14px;">Practice, not graded</div>
+  <div style="padding:10px 14px; font-size:13px; line-height:1.5;">
+    <div><b>1.</b> Make a named vector <code>injuries_by_day</code> with any seven numbers and the weekday names. Return the names of the days above its mean.</div>
+    <div style="margin-top:4px;"><b>2.</b> From <code>crashes_df</code>, get the <code>day</code> of the row with the most crashes.</div>
+    <div style="margin-top:4px;"><b>3.</b> Add a fifth element to <code>example_list</code> (any value), then confirm <code>length(example_list)</code> is 5.</div>
+    <div style="margin-top:4px;"><b>4.</b> Write <code>share(x)</code>: each element as a percent of the total, rounded to one decimal.</div>
+    <div style="margin-top:4px;"><b>5.</b> Write a <code>for</code> loop that prints the length of each element of <code>example_list</code>.</div>
+    <details style="margin-top:8px;"><summary style="cursor:pointer; font-weight:700; color:#c3142d; font-size:13px;">Answers</summary>
+      <div style="font-family:'Source Code Pro', monospace; font-size:11.5px; line-height:1.6; margin-top:4px; color:#1b1b1b;">
+        1. names(injuries_by_day)[injuries_by_day &gt; mean(injuries_by_day)]<br>
+        2. crashes_df$day[crashes_df$crashes == max(crashes_df$crashes)]<br>
+        3. example_list[[5]] = "Mon"; length(example_list)<br>
+        4. share = function(x) { return(round(x / sum(x) * 100, 1)) }<br>
+        5. for (el in example_list) print(length(el))
+      </div>
+    </details>
+  </div>
+</div>
+
+]
+
+???
+
+Nothing new is due. The practice card is five lines of R that use every structure from today; the answers are one click away so nobody gets stuck. The commit-and-push line is the ritual; say it every class until it is boring.
+
