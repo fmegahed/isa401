@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>FSB SOC: Incident INC-2026-0902</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  /* Miami University brand palette (Brand Identity Guide v.2, pp. 28-29): no tints or shades */
+  :root {
+    --red: #C41230; --white: #FFFFFF; --warm-white: #FAF9F7;
+    --light-tan: #EDECE2; --medium-tan: #CCC9B8; --dark-tan: #70685C;
+    --black: #000000; --gray: #666666; --yellow: #EFDB72;
+    --serif: "Source Serif 4", "Source Serif Pro", Georgia, serif;
+    --sans: Arial, Helvetica, sans-serif;
+    --mono: "Source Code Pro", Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--white); color: var(--black); font-family: var(--sans); line-height: 1.5; }
+  .band { background: var(--red); color: var(--white); }
+  .band .inner { max-width: 860px; margin: 0 auto; padding: 14px 22px; display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; font-size: 0.78rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; }
+  .band .live::before { content: "●"; margin-right: 6px; animation: blink 1.6s infinite; }
+  @keyframes blink { 50% { opacity: 0.25; } }
+  main { max-width: 860px; margin: 0 auto; padding: 28px 22px 56px; }
+  h1 { font-family: var(--serif); font-weight: 400; font-size: 2.1rem; line-height: 1.15; margin: 0 0 8px; }
+  .ribbon { display: inline-block; background: var(--red); color: var(--white); font-weight: 700; font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; padding: 3px 10px; vertical-align: middle; }
+  .meta { font-size: 0.9rem; color: var(--dark-tan); }
+  .meta b { color: var(--black); }
+  .ticket { margin-top: 14px; font-size: 1rem; }
+  .term { background: var(--light-tan); border-left: 4px solid var(--red); padding: 14px 16px; margin-top: 18px; font-family: var(--mono); font-size: 0.86rem; min-height: 150px; overflow-x: auto; }
+  .term .ln { white-space: pre-wrap; word-break: break-word; }
+  .term .ok { color: var(--dark-tan); }
+  .term .warn { color: var(--black); }
+  .term .alert { color: var(--red); font-weight: 600; }
+  .cursor { display: inline-block; width: 9px; height: 1.05em; background: var(--black); vertical-align: text-bottom; animation: blink 1s infinite; }
+  h2 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 3px; color: var(--red); margin: 30px 0 4px; }
+  .rules { border: 1px solid var(--medium-tan); border-top: 4px solid var(--red); background: var(--warm-white); padding: 12px 16px 4px; margin-top: 10px; }
+  .rules p { margin: 0 0 10px; font-size: 0.95rem; }
+  .step { display: flex; gap: 14px; margin-top: 14px; background: var(--white); border: 1px solid var(--medium-tan); padding: 14px 16px; }
+  .step .body { flex: 1 1 auto; min-width: 0; }
+  .n { flex: 0 0 30px; height: 30px; background: var(--red); color: var(--white); font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .step h3 { margin: 0 0 4px; font-size: 0.78rem; letter-spacing: 2px; text-transform: uppercase; color: var(--red); }
+  .step p { margin: 0 0 8px; font-size: 0.95rem; }
+  .step a { color: var(--red); font-weight: 700; }
+  pre { background: var(--light-tan); padding: 11px 13px; overflow-x: auto; font-family: var(--mono); font-size: 0.84rem; margin: 0; color: var(--black); white-space: pre; }
+  pre b { background: var(--yellow); color: var(--black); font-weight: 700; padding: 0 3px; }
+  code { font-family: var(--mono); font-size: 0.9em; }
+  .footer { margin-top: 28px; border-top: 1px solid var(--medium-tan); padding-top: 14px; color: var(--gray); font-size: 0.85rem; }
+  @media (max-width: 520px) {
+    h1 { font-size: 1.6rem; }
+    .band .inner { letter-spacing: 1px; font-size: 0.7rem; }
+    h2, .step h3 { letter-spacing: 1px; }
+    main { padding: 22px 14px 48px; }
+  }
+</style>
+</head>
+<body>
+<div class="band"><div class="inner">
+  <div>FSB Security Operations Center &nbsp;|&nbsp; ISA 401</div>
+  <div class="live">Monitoring</div>
+</div></div>
+
+<main>
+  <h1>Incident INC-2026-0902 <span class="ribbon">&nbsp;Severity: High&nbsp;</span></h1>
+  <div class="meta">After-hours VPN sign-in followed by a download burst on the <b>FSB shared drive</b> &middot; analyst on duty: <b>you</b></div>
+
+  <div class="ticket">
+    At 02:31 someone signed in to the VPN from outside the United States after a string of failed attempts,
+    then spent 27 minutes on the shared drive. We do not yet know <b>whose account</b> it was or <b>what was taken</b>.
+    Security tools export their logs as CSV and JSON files; for this exercise, those exports are served at a URL so you can practice importing them in R.
+  </div>
+
+  <div class="term" id="term"><span class="cursor" id="cur"></span></div>
+
+  <h2>Rules of engagement</h2>
+  <div class="rules">
+    <p><b>Browser first, R second.</b> Every piece of evidence below is a small file at a URL. Before you import any of them,
+    open the URL in a new browser tab and read the raw file with your own eyes. You will see the CSV or JSON exactly as R receives it,
+    and you will usually spot the answer before you write a line of code. Then import it in R to confirm.</p>
+    <p><b>Every reply is data.</b> A wrong key or code does not produce an error; it returns JSON with a hint. Open it, read it, import it.</p>
+    <p>Work in pairs, in a Rmd file.</p>
+  </div>
+
+  <h2>Evidence chain</h2>
+
+  <div class="step"><div class="n">1</div><div class="body">
+    <h3>Identify the compromised account</h3>
+    <p>Last night's VPN sign-in log, a CSV. <a href="/api/stage1" target="_blank">Open it in a new tab</a> and read it, then import it. Which account shows a password-guessing pattern: the <b>most failed attempts</b> before a successful sign-in?</p>
+    <pre>logins = readr::read_csv("https://isa401-import-heist.vercel.app/api/stage1")</pre>
+  </div></div>
+
+  <div class="step"><div class="n">2</div><div class="body">
+    <h3>Scope the damage</h3>
+    <p>That account name replaces <b>ACCOUNT</b> and unseals the account's shared-drive activity, a JSON file. <a href="/api/stage2" target="_blank">Open it in a new tab</a> (sealed until you add the key, and the reply tells you how), then import it. How many of the events in <code>log$events</code> are <b>DOWNLOAD</b>s?</p>
+    <pre>log = jsonlite::fromJSON("https://isa401-import-heist.vercel.app/api/stage2?key=<b>ACCOUNT</b>")</pre>
+  </div></div>
+
+  <div class="step"><div class="n">3</div><div class="body">
+    <h3>Close the ticket</h3>
+    <p>The download count replaces <b>NUMBER</b>. <a href="/api/finish" target="_blank">Open it in a new tab</a> with your code, then import it. On <b>CLEARED</b>, read the incident report: it links a replay of the incident. Watch it, then post your team name on the Menti wall.</p>
+    <pre>jsonlite::fromJSON("https://isa401-import-heist.vercel.app/api/finish?code=<b>NUMBER</b>")</pre>
+  </div></div>
+
+  <div class="footer">
+    A class exercise for ISA 401 at Miami University. The incident, accounts, and files are fictional.
+  </div>
+</main>
+<script>
+(function () {
+  var lines = [
+    ["02:14:07  vpn gateway ......... repeated failed sign-ins", "warn"],
+    ["02:31:22  vpn gateway ......... sign-in SUCCESS  outside US  mfa=no", "alert"],
+    ["02:35:51  shared drive ........ after-hours DOWNLOAD burst", "alert"],
+    ["02:58:03  vpn gateway ......... session ended", "ok"],
+    ["07:00:00  INC-2026-0902 escalated to analyst on duty: YOU", "ok"],
+  ];
+  var term = document.getElementById("term");
+  var cur = document.getElementById("cur");
+  var li = 0, ci = 0, span = null;
+  function tick() {
+    if (li >= lines.length) { return; }
+    if (span === null) {
+      span = document.createElement("div");
+      span.className = "ln " + lines[li][1];
+      term.insertBefore(span, cur);
+    }
+    ci = ci + 1;
+    span.textContent = lines[li][0].slice(0, ci);
+    if (ci >= lines[li][0].length) { li = li + 1; ci = 0; span = null; setTimeout(tick, 340); }
+    else { setTimeout(tick, 14); }
+  }
+  setTimeout(tick, 500);
+})();
+</script>
+</body>
+</html>

@@ -14,8 +14,8 @@ output:
       highlightLanguage: ["r"]
       countIncrementalSlides: false
       ratio: "16:9"
-header-includes:
-  - "../../style_files/header.html"
+    includes:
+      in_header: "../../style_files/header.html"
 ---
 
 

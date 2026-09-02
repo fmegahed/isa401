@@ -33,7 +33,7 @@ ISA 401 teaches the complete business intelligence pipeline: acquiring data from
 | **01** | Mon 08/24 | Introduction to BI and Data Viz | [Slides](http://fmegahed.github.io/isa401/fall2026/class01/01_introduction.html) |
 | | Wed 08/26 | Git Foundations + Reproducibility | [Slides](http://fmegahed.github.io/isa401/fall2026/class02/02_git_foundations.html) |
 | **02** | Mon 08/31 | R Foundations | [Slides](http://fmegahed.github.io/isa401/fall2026/class03/03_r_foundations.html) |
-| | Wed 09/02 | Structured Data: Import & Export | |
+| | Wed 09/02 | R Data Structures + Data Import & Export | [Slides](http://fmegahed.github.io/isa401/fall2026/class04/04_data_import_export.html) |
 | **03** | Mon 09/07 | *No Class - Labor Day* | |
 | | Wed 09/09 | Data Wrangling with dplyr | |
 | **04** | Mon 09/14 | Structured Data: APIs | |
