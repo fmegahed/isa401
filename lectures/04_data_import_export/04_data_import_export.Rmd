@@ -979,6 +979,514 @@ Show what happens without the arguments first if there is time: no skip means on
 
 ---
 
+# Same Line, Two Starting Folders
+
+<!-- WDEMO-SLIDE-START -->
+<style>
+.wdemo { font-size: 15px; line-height: 1.45; font-family: 'Noto Sans', 'Roboto', Arial, sans-serif; color: #272822; text-align: left; }
+.wdemo-top { display: flex; gap: 18px; align-items: stretch; }
+.wdemo-ide { flex: 0 0 500px; width: 500px; }
+.wdemo-tree { flex: 1 1 auto; border: 1px solid #d1d5db; border-radius: 8px; background: #fcfcfc; box-shadow: 0 1px 3px rgba(0,0,0,.08); padding: 8px 6px 2px 6px; }
+.wdemo-tree svg { display: block; width: 100%; height: auto; font-family: 'Source Code Pro', monospace; font-size: 14px; }
+.wdemo .rs { position: relative; height: 100%; display: flex; flex-direction: column; box-sizing: border-box; background: #2b2b2b; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,.25); font-size: 13px; color: #d5d5d5; }
+.wdemo .rs-menu { display: flex; gap: 8px; padding: 5px 10px; background: #353535; font-size: 12.5px; color: #cfcfcf; border-bottom: 1px solid #1e1e1e; border-radius: 8px 8px 0 0; }
+.wdemo .rs-menu span { padding: 1px 6px; border-radius: 4px; }
+.wdemo .rs-menu span.hot { background: #c3142d; color: #fff; }
+.wdemo .rs-tabs { display: flex; align-items: center; background: #333; border-bottom: 1px solid #1e1e1e; }
+.wdemo .rs-tab { padding: 6px 14px; background: #222; color: #eee; font-size: 12.5px; border-right: 1px solid #1e1e1e; }
+.wdemo .rs-btns { margin-left: auto; display: flex; gap: 8px; padding: 3px 10px; }
+.wdemo .rsb { position: relative; border: 1px solid #5a5a5a; background: #3a3a3a; color: #eee; border-radius: 5px; padding: 3px 10px; font: inherit; font-size: 12.5px; display: inline-flex; align-items: center; gap: 6px; }
+.wdemo .rsb .tri { width: 0; height: 0; border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-left: 8px solid #6fbf73; }
+.wdemo .rsb .caret { width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 5px solid #bbb; }
+.wdemo .rsb.press { animation: wdPress 1.1s ease-out 1; background: #c3142d; border-color: #c3142d; color: #fff; }
+@keyframes wdPress { 0% { box-shadow: 0 0 0 0 rgba(195,20,45,.8); } 100% { box-shadow: 0 0 0 14px rgba(195,20,45,0); } }
+.wdemo .rs-editor { background: #222; padding: 10px 0 10px 0; font-family: 'Source Code Pro', monospace; font-size: 13px; min-height: 88px; }
+.wdemo .rs-line { display: flex; white-space: nowrap; color: #dedede; line-height: 1.6; }
+.wdemo .rs-line .ln { width: 30px; flex: 0 0 30px; text-align: right; padding-right: 10px; color: #6b6b6b; }
+.wdemo .rs-line.hidden-line { display: none; }
+.wdemo .rs-line .op { color: #70c0b1; } .wdemo .rs-line .pkg { color: #e7c547; } .wdemo .rs-line .fnc { color: #7aa6da; } .wdemo .rs-line .br { color: #ed90a4; } .wdemo .rs-line .str { color: #b9ca4a; }
+.wdemo .tok { padding: 1px 1px; border-bottom: 3px solid transparent; transition: background .3s, border-color .3s, opacity .3s; }
+.wdemo .tok.on { background: rgba(255,255,255,.14); border-bottom-color: #3b6ea5; }
+.wdemo .tok.ok { border-bottom-color: #6fbf73; }
+.wdemo .tok.bad { border-bottom-color: #ff5f5f; background: rgba(255,95,95,.25); }
+.wdemo .tok.dim { opacity: .35; }
+.wdemo .seg { padding: 1px 1px; border-radius: 3px; transition: background .4s; }
+.wdemo .seg.ok { background: rgba(111,191,115,.30); }
+.wdemo .rs-panetabs { display: flex; background: #333; border-top: 1px solid #1e1e1e; border-bottom: 1px solid #1e1e1e; font-size: 12.5px; }
+.wdemo .rs-panetabs span { padding: 5px 14px; color: #aaa; }
+.wdemo .rs-panetabs span.on { background: #1b1b1b; color: #eee; }
+.wdemo .rs-console { flex: 1 1 auto; background: #1b1b1b; padding: 8px 12px; font-family: 'Source Code Pro', monospace; font-size: 12px; min-height: 112px; line-height: 1.55; white-space: pre-wrap; border-radius: 0 0 8px 8px; }
+.wdemo .cl { opacity: 0; transform: translateY(4px); transition: opacity .3s, transform .3s; }
+.wdemo .cl.on { opacity: 1; transform: none; }
+.wdemo .cl .pr { color: #70c0b1; }
+.wdemo .cl.out { color: #b0b0b0; }
+.wdemo .cl.err { color: #ff6b6b; }
+.wdemo .cl.info { color: #8fa9c9; }
+.wdemo .cl.blink { color: #70c0b1; animation: wdCaret 1s steps(1) infinite; }
+@keyframes wdCaret { 50% { opacity: .2; } }
+.wdemo .rs-dd { position: absolute; top: 27px; left: 0; background: #f4f4f4; color: #222; border: 1px solid #b9b9b9; box-shadow: 0 4px 12px rgba(0,0,0,.35); font-size: 12px; min-width: 150px; padding: 4px 0; opacity: 0; pointer-events: none; transition: opacity .25s; z-index: 5; }
+.wdemo .rs-dd.show { opacity: 1; }
+.wdemo .rs-dd div { padding: 4px 22px 4px 12px; white-space: nowrap; position: relative; }
+.wdemo .rs-dd div.sep { border-top: 1px solid #ccc; padding: 0; margin: 4px 0; }
+.wdemo .rs-dd div.hot { background: #c3142d; color: #fff; }
+.wdemo .rs-dd div.arrow:after { content: ""; position: absolute; right: 8px; top: 9px; border-top: 4px solid transparent; border-bottom: 4px solid transparent; border-left: 5px solid currentColor; }
+.wdemo .rs-dd .rs-sub { position: absolute; right: 100%; top: -5px; padding: 4px 0; background: #f4f4f4; color: #222; border: 1px solid #b9b9b9; box-shadow: 0 4px 12px rgba(0,0,0,.35); min-width: 160px; padding: 4px 0; opacity: 0; transition: opacity .25s; }
+.wdemo .rs-dd .rs-sub.show { opacity: 1; }
+.wdemo-bottom { display: flex; flex-direction: column; gap: 9px; margin-top: 12px; }
+.wdemo .phases { display: flex; flex-direction: row; gap: 8px; align-items: center; flex-wrap: nowrap; }
+.wdemo .ph { border: 1px solid #d1d5db; background: #fff; color: #585E60; border-radius: 7px; padding: 4px 10px; font: inherit; font-size: 13px; text-align: left; display: flex; align-items: center; gap: 7px; cursor: pointer; white-space: nowrap; line-height: 1.4; }
+.wdemo .ph b { display: inline-block; width: 19px; height: 19px; border-radius: 50%; border: 1px solid #c3142d; color: #c3142d; font-size: 11.5px; text-align: center; line-height: 19px; flex: 0 0 19px; }
+.wdemo .ph.active { background: #c3142d; border-color: #c3142d; color: #fff; }
+.wdemo .ph.active b { background: #fff; }
+.wdemo .ph.done b { background: #c3142d; color: #fff; }
+.wdemo .ctl { margin-left: auto; display: flex; align-items: center; gap: 6px; }
+.wdemo .cb { border: 1px solid #585E60; background: #fff; color: #272822; border-radius: 7px; padding: 4px 11px; font: inherit; font-size: 13px; cursor: pointer; min-width: 64px; line-height: 1.4; }
+.wdemo .cb.primary { background: #585E60; color: #fff; }
+.wdemo .spd { display: inline-flex; border: 1px solid #d1d5db; border-radius: 7px; overflow: hidden; margin-left: 6px; }
+.wdemo .sb { border: 0; background: #fff; color: #585E60; padding: 4px 9px; font: inherit; font-size: 12.5px; cursor: pointer; border-right: 1px solid #d1d5db; line-height: 1.4; }
+.wdemo .sb.last { border-right: 0; }
+.wdemo .sb.on { background: #585E60; color: #fff; }
+.wdemo .ph.all { color: #585E60; }
+.wdemo .caption { min-height: 70px; box-sizing: border-box; border: 1px solid #c3142d; border-left: 5px solid #c3142d; border-radius: 8px; background: #fdf2f2; padding: 9px 16px; font-size: 15.5px; line-height: 1.45; display: flex; flex-direction: column; justify-content: center; }
+.wdemo .caption .big { font-weight: 700; color: #c3142d; font-size: 16.5px; opacity: 0; transition: opacity .35s; }
+.wdemo .caption .small { color: #272822; margin-top: 3px; opacity: 0; transition: opacity .35s; min-height: 22px; }
+.wdemo .caption .big.on, .wdemo .caption .small.on { opacity: 1; }
+.wdemo .caption code { font-family: 'Source Code Pro', monospace; font-size: 14px; background: rgba(0,0,0,.05); padding: 0 4px; border-radius: 3px; color: #272822; }
+.wdemo .t-nm { fill: #272822; }
+.wdemo .t-an { fill: #8a9096; font-family: 'Noto Sans', 'Roboto', Arial, sans-serif; font-size: 12.5px; }
+.wdemo .t-ln { stroke: #cfd4da; stroke-width: 1.5; fill: none; }
+.wdemo .t-fo { fill: #f3d27a; stroke: #b8952c; stroke-width: 1; }
+.wdemo .t-dr { fill: #cfd8e3; stroke: #7d8da3; stroke-width: 1; }
+.wdemo .t-fi { fill: #fff; stroke: #8a9096; stroke-width: 1.2; }
+.wdemo .node.ok .t-nm { fill: #2e8b57; font-weight: 600; }
+.wdemo .node.ok .t-fo { fill: #bfe3c9; stroke: #2e8b57; }
+.wdemo .node.ok .t-fi { stroke: #2e8b57; fill: #e8f5ec; }
+.wdemo .walker { fill: rgba(59,110,165,.10); stroke: #3b6ea5; stroke-width: 1.6; opacity: 0; transition: transform .6s cubic-bezier(.4,0,.2,1), opacity .3s, stroke .3s, fill .3s; }
+.wdemo .walker.show { opacity: 1; }
+.wdemo .walker.ok { stroke: #2e8b57; fill: rgba(46,139,87,.10); }
+.wdemo .walker.bad { stroke: #c3142d; fill: rgba(195,20,45,.08); stroke-dasharray: 5 4; }
+.wdemo .chip { opacity: 0; transition: transform .6s cubic-bezier(.4,0,.2,1), opacity .3s; }
+.wdemo .chip.show { opacity: 1; }
+.wdemo .chip rect { fill: #3b6ea5; }
+.wdemo .chip text { fill: #fff; font-size: 11.5px; font-weight: 600; text-anchor: middle; }
+.wdemo .chip.ok rect { fill: #2e8b57; }
+.wdemo .chip.bad rect { fill: #c3142d; }
+.wdemo .hop { stroke: #3b6ea5; stroke-width: 2; fill: none; opacity: 0; transition: stroke-dashoffset .55s ease-out, opacity .2s; }
+.wdemo .hop.show { opacity: 1; }
+.wdemo .pin { opacity: 0; transition: transform .7s cubic-bezier(.4,0,.2,1), opacity .3s; }
+.wdemo .pin.show { opacity: 1; }
+.wdemo .pin path { fill: #c3142d; }
+.wdemo .pin text { fill: #fff; font-family: 'Noto Sans', 'Roboto', Arial, sans-serif; font-size: 12px; font-weight: 700; }
+.wdemo .ghost { opacity: 0; transition: opacity .35s; }
+.wdemo .ghost.show { opacity: 1; }
+.wdemo .ghost .t-fo { fill: none; stroke: #c3142d; stroke-dasharray: 3 3; }
+.wdemo .ghost .t-nm { fill: #c3142d; }
+.wdemo .ghost .t-an { fill: #c3142d; }
+.wdemo .t-legend { fill: #8a9096; font-family: 'Noto Sans', 'Roboto', Arial, sans-serif; font-size: 12px; }
+</style>
+<div class="wdemo" id="wdemo">
+<div class="wdemo-top">
+<div class="wdemo-ide">
+<div class="rs">
+<div class="rs-menu"><span>File</span><span>Edit</span><span>Code</span><span>View</span><span id="m-session">Session</span><span>Build</span><span>Tools</span><span>Help</span></div>
+<div class="rs-tabs">
+<span class="rs-tab">class04.Rmd</span>
+<div class="rs-btns">
+<button class="rsb" id="btn-knit">Knit <i class="caret"></i></button>
+<button class="rsb" id="btn-run"><i class="tri"></i>Run</button>
+</div>
+</div>
+<div class="rs-editor">
+<div class="rs-line"><span class="ln">1</span><span>fastest <span class="op">=</span> <span class="pkg">readxl</span><span class="op">::</span><span class="fnc">read_excel</span><span class="br">(</span><span class="str">"<span class="seg" id="seg1"><span class="tok" id="tk-up">..</span>/<span class="tok" id="tk-data">data</span>/</span><span class="tok" id="tk-file">occupation.xlsx</span>"</span><span class="br">)</span></span></div>
+<div class="rs-line hidden-line" id="line2"><span class="ln">2</span><span>postings <span class="op">=</span> <span class="pkg">readr</span><span class="op">::</span><span class="fnc">read_csv</span><span class="br">(</span><span class="str">"<span class="seg" id="seg2">../data/</span>ohio_job_postings.csv"</span><span class="br">)</span></span></div>
+<div class="rs-line hidden-line" id="line3"><span class="ln">3</span><span>crashes <span class="op">=</span> <span class="pkg">readr</span><span class="op">::</span><span class="fnc">read_csv</span><span class="br">(</span><span class="str">"<span class="seg" id="seg3">../data/</span>crashes_by_day.csv"</span><span class="br">)</span></span></div>
+</div>
+<div class="rs-panetabs"><span id="pt-console" class="on">Console</span><span id="pt-rmd">R Markdown</span></div>
+<div class="rs-console" id="console"></div>
+<div class="rs-dd" id="dd">
+<div>Restart R</div>
+<div>Terminate R...</div>
+<div class="sep"></div>
+<div class="arrow" id="dd-swd">Set Working Directory
+<div class="rs-sub" id="sub">
+<div id="sub-src">To Source File Location</div>
+<div>To Files Pane Location</div>
+<div>To Project Directory</div>
+<div>Choose Directory...</div>
+</div>
+</div>
+<div>Load Workspace...</div>
+<div>Save Workspace As...</div>
+</div>
+</div>
+</div>
+<div class="wdemo-tree">
+<svg viewBox="0 0 580 366" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="wd-ah" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 L8 4 L0 8 z" fill="#3b6ea5"></path></marker>
+</defs>
+<rect class="walker" id="walker" x="126" y="-16" width="450" height="32" rx="8" style="transform: translateY(94px);"></rect>
+<path class="hop" id="hop" d="M100 94 V94" marker-end="url(#wd-ah)"></path>
+<path class="t-ln" d="M139 38 V60 H154"></path>
+<path class="t-ln" d="M167 72 V94 H182"></path>
+<path class="t-ln" d="M195 106 V298 M195 128 H210 M195 162 H210 M195 298 H210"></path>
+<path class="t-ln" d="M223 174 V264 M223 196 H238 M223 230 H238 M223 264 H238"></path>
+<path class="t-ln" d="M223 310 V332 H238"></path>
+<g class="node" transform="translate(130,26)">
+<rect class="t-dr" x="0" y="-6" width="18" height="12" rx="2"></rect><circle cx="14" cy="0" r="1.6" fill="#7d8da3"></circle>
+<text class="t-nm" x="26" y="5">M:\</text>
+</g>
+<g class="node" transform="translate(158,60)">
+<path class="t-fo" d="M0 -7 h6 l2 2 h10 v12 h-18 z"></path>
+<text class="t-nm" x="26" y="5">isa401</text>
+</g>
+<g class="node" transform="translate(186,94)">
+<path class="t-fo" d="M0 -7 h6 l2 2 h10 v12 h-18 z"></path>
+<text class="t-nm" x="26" y="5">business_intelligence</text>
+</g>
+<g class="node" transform="translate(214,128)">
+<path class="t-fi" d="M0 -8 h9 l5 5 v12 h-14 z M9 -8 v5 h5"></path>
+<text class="t-nm" x="26" y="5">business_intelligence.Rproj</text>
+</g>
+<g class="node" transform="translate(214,162)">
+<path class="t-fo" d="M0 -7 h6 l2 2 h10 v12 h-18 z"></path>
+<text class="t-nm" x="26" y="5">data</text>
+</g>
+<g class="node" transform="translate(242,196)">
+<path class="t-fi" d="M0 -8 h9 l5 5 v12 h-14 z M9 -8 v5 h5"></path>
+<text class="t-nm" x="26" y="5">occupation.xlsx</text>
+</g>
+<g class="node" transform="translate(242,230)">
+<path class="t-fi" d="M0 -8 h9 l5 5 v12 h-14 z M9 -8 v5 h5"></path>
+<text class="t-nm" x="26" y="5">ohio_job_postings.csv</text>
+</g>
+<g class="node" transform="translate(242,264)">
+<path class="t-fi" d="M0 -8 h9 l5 5 v12 h-14 z M9 -8 v5 h5"></path>
+<text class="t-nm" x="26" y="5">crashes_by_day.csv</text>
+</g>
+<g class="node" transform="translate(214,298)">
+<path class="t-fo" d="M0 -7 h6 l2 2 h10 v12 h-18 z"></path>
+<text class="t-nm" x="26" y="5">markdowns</text>
+</g>
+<g class="node" transform="translate(242,332)">
+<path class="t-fi" d="M0 -8 h9 l5 5 v12 h-14 z M9 -8 v5 h5"></path>
+<text class="t-nm" x="26" y="5">class04.Rmd</text>
+<text class="t-an" x="130" y="5">the file you are editing</text>
+</g>
+<g class="ghost" id="ghost" transform="translate(270,60)">
+<path class="t-fo" d="M0 -7 h6 l2 2 h10 v12 h-18 z"></path>
+<text class="t-nm" x="26" y="5">data</text>
+<text class="t-an" x="70" y="5">no such folder in isa401</text>
+</g>
+<g class="chip" id="chip" style="transform: translate(60px, 94px);">
+<rect x="-56" y="-12" width="112" height="24" rx="12"></rect>
+<text x="0" y="4" id="chip-text">..</text>
+</g>
+<g class="pin" id="pin" style="transform: translate(405px, 94px);">
+<path d="M0 0 L9 -11 H108 Q114 -11 114 -5 V5 Q114 11 108 11 H9 Z"></path>
+<text x="17" y="4">R starts here</text>
+</g>
+<text class="t-legend" x="130" y="360">Red flag: the folder R starts from. Blue chip: the piece of the path being read.</text>
+</svg>
+</div>
+</div>
+<div class="wdemo-bottom">
+<div class="phases">
+<button class="ph" data-ph="1"><b>1</b>Knit</button>
+<button class="ph" data-ph="2"><b>2</b>Run line</button>
+<button class="ph" data-ph="3"><b>3</b>The fix</button>
+<button class="ph" data-ph="4"><b>4</b>Any local file</button>
+<button class="ph all" data-ph="all">Replay all</button>
+<span class="ctl">
+<button class="cb primary" id="c-pause">Pause</button>
+<button class="cb" id="c-step">Step</button>
+<span class="spd"><button class="sb" data-spd="0.5">0.5x</button><button class="sb on" data-spd="1">1x</button><button class="sb last" data-spd="2">2x</button></span>
+</span>
+</div>
+<div class="caption"><div class="big" id="cap-big"></div><div class="small" id="cap-small"></div></div>
+</div>
+</div>
+<script>
+(function () {
+var root = document.getElementById("wdemo");
+if (!root) { return; }
+if (root.getAttribute("data-built")) { return; }
+root.setAttribute("data-built", "1");
+var walker = document.getElementById("walker");
+var chip = document.getElementById("chip");
+var chipText = document.getElementById("chip-text");
+var hop = document.getElementById("hop");
+var pin = document.getElementById("pin");
+var ghost = document.getElementById("ghost");
+var con = document.getElementById("console");
+var capBig = document.getElementById("cap-big");
+var capSmall = document.getElementById("cap-small");
+var ptConsole = document.getElementById("pt-console");
+var ptRmd = document.getElementById("pt-rmd");
+var btnKnit = document.getElementById("btn-knit");
+var btnRun = document.getElementById("btn-run");
+var mSession = document.getElementById("m-session");
+var dd = document.getElementById("dd");
+var ddSwd = document.getElementById("dd-swd");
+var sub = document.getElementById("sub");
+var subSrc = document.getElementById("sub-src");
+var cPause = document.getElementById("c-pause");
+var cStep = document.getElementById("c-step");
+var nodes = root.querySelectorAll(".node");
+var phBtns = root.querySelectorAll(".ph");
+var spdBtns = root.querySelectorAll(".sb");
+var rowY = [26, 60, 94, 128, 162, 196, 230, 264, 298, 332];
+var PIN_X = "405px";
+var CHIP_X = "60px";
+function el(id) { return document.getElementById(id); }
+function setTok(id, cls) { el(id).className = "tok" + (cls ? " " + cls : ""); }
+function svgClass(node, base, cls) { node.setAttribute("class", base + (cls ? " " + cls : "")); }
+function reset() {
+var i;
+setTok("tk-up", ""); setTok("tk-data", ""); setTok("tk-file", "");
+el("seg1").className = "seg"; el("seg2").className = "seg"; el("seg3").className = "seg";
+el("line2").className = "rs-line hidden-line"; el("line3").className = "rs-line hidden-line";
+for (i = 0; i !== nodes.length; i = i + 1) { svgClass(nodes[i], "node", ""); }
+svgClass(walker, "walker", ""); svgClass(chip, "chip", ""); svgClass(hop, "hop", ""); svgClass(pin, "pin", ""); svgClass(ghost, "ghost", "");
+con.innerHTML = "";
+ptConsole.className = "on"; ptRmd.className = "";
+btnKnit.className = "rsb"; btnRun.className = "rsb";
+mSession.className = ""; dd.className = "rs-dd"; ddSwd.className = "arrow"; sub.className = "rs-sub"; subSrc.className = "";
+capBig.className = "big"; capSmall.className = "small";
+}
+function caption(big, small) {
+capBig.className = "big"; capSmall.className = "small";
+setTimeout(function () {
+capBig.innerHTML = big; capSmall.innerHTML = small || "";
+capBig.className = "big on"; capSmall.className = "small on";
+}, 250);
+}
+function conLine(kind, text) {
+var d = document.createElement("div");
+d.className = "cl " + kind;
+if (kind === "cmd") {
+var p = document.createElement("span"); p.className = "pr"; p.textContent = "> "; d.appendChild(p);
+d.appendChild(document.createTextNode(text));
+} else { d.textContent = text; }
+var old = con.querySelector(".blink"); if (old) { con.removeChild(old); }
+con.appendChild(d);
+setTimeout(function () { d.className = d.className + " on"; }, 20);
+}
+function conPrompt() {
+var d = document.createElement("div"); d.className = "cl blink"; d.textContent = "> ";
+con.appendChild(d);
+setTimeout(function () { d.className = d.className + " on"; }, 20);
+}
+function press(btn) { btn.className = "rsb"; setTimeout(function () { btn.className = "rsb press"; }, 20); }
+function showPin(row) { pin.style.transform = "translate(" + PIN_X + ", " + rowY[row] + "px)"; svgClass(pin, "pin", "show"); }
+function walkerTo(row, cls) { walker.style.transform = "translateY(" + rowY[row] + "px)"; svgClass(walker, "walker", "show" + (cls ? " " + cls : "")); }
+function chipTo(row, text, cls) {
+chipText.textContent = text;
+chip.style.transform = "translate(" + CHIP_X + ", " + rowY[row] + "px)";
+svgClass(chip, "chip", "show" + (cls ? " " + cls : ""));
+}
+function hopArrow(fromRow, toRow) {
+var y1 = rowY[fromRow], y2 = rowY[toRow], len;
+if (y1 > y2) { y1 = y1 - 16; y2 = y2 + 16; } else { y1 = y1 + 16; y2 = y2 - 16; }
+len = Math.abs(y2 - y1);
+hop.setAttribute("d", "M100 " + y1 + " V" + y2);
+hop.style.transition = "none";
+hop.style.strokeDasharray = len + " " + len;
+hop.style.strokeDashoffset = len;
+svgClass(hop, "hop", "show");
+setTimeout(function () { hop.style.transition = "stroke-dashoffset .55s ease-out, opacity .2s"; hop.style.strokeDashoffset = 0; }, 30);
+setTimeout(function () { svgClass(hop, "hop", ""); }, 1400);
+}
+function nodeOk(i) { svgClass(nodes[i], "node", "ok"); }
+function setPhase(ph) {
+var i, v, cls;
+for (i = 0; i !== phBtns.length; i = i + 1) {
+v = phBtns[i].getAttribute("data-ph");
+cls = "ph";
+if (v === "all") { cls = cls + " all"; }
+else if (v === String(ph)) { cls = cls + " active"; }
+else if (Number(v) + 1 <= ph) { cls = cls + " done"; }
+phBtns[i].className = cls;
+}
+}
+var READ = 'fastest = readxl::read_excel("../data/occupation.xlsx")';
+// Each phase: list of [time in ms, action]. Times are relative to the phase start.
+function phase1Steps() {
+return [
+[0, function () {
+reset(); setPhase(1); showPin(8);
+caption("Knit starts from the folder that holds <code>class04.Rmd</code>.", "That folder is <code>markdowns</code>. Watch the path get read from there, one piece at a time.");
+press(btnKnit); ptConsole.className = ""; ptRmd.className = "on";
+}],
+[700, function () { conLine("info", "processing file: class04.Rmd"); }],
+[1400, function () { setTok("tk-up", "on"); walkerTo(8, ""); chipTo(8, "..", ""); }],
+[1900, function () { hopArrow(8, 2); walkerTo(2, ""); chipTo(2, "..", ""); }],
+[3100, function () { setTok("tk-up", "ok"); setTok("tk-data", "on"); walkerTo(4, ""); chipTo(4, "data", ""); nodeOk(4); }],
+[4300, function () { setTok("tk-data", "ok"); setTok("tk-file", "on"); walkerTo(5, "ok"); chipTo(5, "occupation.xlsx", "ok"); nodeOk(5); }],
+[5300, function () {
+setTok("tk-file", "ok"); conLine("info", "Output created: class04.html");
+caption("Found.", "From <code>markdowns</code>, <code>..</code> means <code>business_intelligence</code>, and <code>data</code> is right there.");
+}]
+];
+}
+function phase2Steps() {
+return [
+[0, function () {
+reset(); setPhase(2); showPin(2);
+caption("Run line (or <kbd>Ctrl+Enter</kbd>) starts from the folder that holds the <code>.Rproj</code>.", "That is <code>business_intelligence</code>: one level higher than Knit. Same line, different starting folder.");
+conLine("cmd", "getwd()");
+}],
+[600, function () { conLine("out", '[1] "M:/isa401/business_intelligence"'); }],
+[1400, function () { press(btnRun); conLine("cmd", READ); setTok("tk-up", "on"); walkerTo(2, ""); chipTo(2, "..", ""); }],
+[1900, function () { hopArrow(2, 1); walkerTo(1, ""); chipTo(1, "..", ""); }],
+[3100, function () { setTok("tk-up", "ok"); setTok("tk-data", "on bad"); chipTo(1, "data", "bad"); walkerTo(1, "bad"); svgClass(ghost, "ghost", "show"); }],
+[4100, function () {
+setTok("tk-file", "dim");
+conLine("err", "Error: \u0060path\u0060 does not exist: '../data/occupation.xlsx'");
+conPrompt();
+caption("Not found.", "From <code>business_intelligence</code>, <code>..</code> means <code>isa401</code>, and there is no <code>data</code> folder in <code>isa401</code>.");
+}]
+];
+}
+function phase3Steps() {
+return [
+[0, function () {
+reset(); setPhase(3); showPin(2);
+caption("The fix: move R's starting folder to where the <code>.Rmd</code> is.", "RStudio menu: <b>Session</b>, then <b>Set Working Directory</b>, then <b>To Source File Location</b>.");
+mSession.className = "hot";
+dd.style.left = (mSession.offsetLeft - 6) + "px";
+}],
+[700, function () { dd.className = "rs-dd show"; }],
+[1400, function () { ddSwd.className = "arrow hot"; }],
+[2000, function () { sub.className = "rs-sub show"; }],
+[2600, function () { subSrc.className = "hot"; }],
+[3500, function () {
+dd.className = "rs-dd"; sub.className = "rs-sub"; mSession.className = "";
+conLine("cmd", 'setwd("M:/isa401/business_intelligence/markdowns")');
+showPin(8);
+}],
+[4500, function () { conLine("cmd", "getwd()"); }],
+[4800, function () { conLine("out", '[1] "M:/isa401/business_intelligence/markdowns"'); }],
+[5600, function () { press(btnRun); conLine("cmd", READ); setTok("tk-up", "on"); walkerTo(8, ""); chipTo(8, "..", ""); }],
+[6100, function () { hopArrow(8, 2); walkerTo(2, ""); chipTo(2, "..", ""); }],
+[7100, function () { setTok("tk-up", "ok"); setTok("tk-data", "on"); walkerTo(4, ""); chipTo(4, "data", ""); nodeOk(4); }],
+[8000, function () { setTok("tk-data", "ok"); setTok("tk-file", "on"); walkerTo(5, "ok"); chipTo(5, "occupation.xlsx", "ok"); nodeOk(5); }],
+[8800, function () {
+setTok("tk-file", "ok"); conPrompt();
+caption("Now Run line starts where Knit starts.", "No error, and Knit still works. Do this once per RStudio session, after opening the project.");
+}]
+];
+}
+function phase4Steps() {
+return [
+[0, function () {
+reset(); setPhase(4); showPin(8);
+el("line2").className = "rs-line"; el("line3").className = "rs-line";
+caption("This is about the folder, not the file type.", "Every local file you read or write follows the same rule: <code>../data/</code> then the file name.");
+}],
+[800, function () { el("seg1").className = "seg ok"; nodeOk(5); walkerTo(5, "ok"); }],
+[1600, function () { el("seg2").className = "seg ok"; nodeOk(6); walkerTo(6, "ok"); }],
+[2400, function () { el("seg3").className = "seg ok"; nodeOk(7); walkerTo(7, "ok"); }],
+[3200, function () { nodeOk(4); }]
+];
+}
+function allSteps() {
+var parts = [phase1Steps(), phase2Steps(), phase3Steps(), phase4Steps()];
+var gaps = [1600, 1600, 1900, 0];
+var list = [], off = 0, p, i, last;
+for (p = 0; p !== parts.length; p = p + 1) {
+last = 0;
+for (i = 0; i !== parts[p].length; i = i + 1) {
+list.push([parts[p][i][0] + off, parts[p][i][1]]);
+last = parts[p][i][0];
+}
+off = off + last + gaps[p];
+}
+return list;
+}
+// Player: play, pause, step, speed.
+var seq = [], idx = 0, timer = null, paused = false, speed = 1;
+function clearTimer() { if (timer !== null) { clearTimeout(timer); timer = null; } }
+function updateButtons() {
+var finished = (idx === seq.length);
+cPause.textContent = (paused || finished) ? "Play" : "Pause";
+cPause.className = (paused || finished) ? "cb primary" : "cb";
+}
+function scheduleNext() {
+clearTimer();
+if (paused) { updateButtons(); return; }
+if (idx === seq.length) { updateButtons(); return; }
+var gap = seq[idx][0] - seq[idx - 1][0];
+timer = setTimeout(runNext, gap / speed);
+updateButtons();
+}
+function runNext() {
+timer = null;
+if (idx === seq.length) { updateButtons(); return; }
+seq[idx][1]();
+idx = idx + 1;
+scheduleNext();
+}
+function start(list) { clearTimer(); seq = list; idx = 0; runNext(); }
+function stopAll() { clearTimer(); paused = true; updateButtons(); }
+function togglePause() {
+if (idx === seq.length) { paused = false; start(seq.length ? seq : allSteps()); return; }
+paused = !paused;
+if (paused) { clearTimer(); updateButtons(); } else { scheduleNext(); }
+}
+function stepOnce() {
+paused = true; clearTimer();
+if (idx === seq.length) { updateButtons(); return; }
+seq[idx][1]();
+idx = idx + 1;
+updateButtons();
+}
+function setSpeed(v) {
+var i;
+speed = Number(v);
+for (i = 0; i !== spdBtns.length; i = i + 1) {
+spdBtns[i].className = "sb" + (spdBtns[i].getAttribute("data-spd") === v ? " on" : "") + (i === spdBtns.length - 1 ? " last" : "");
+}
+if (timer !== null) { scheduleNext(); }
+}
+function playPhase(which) {
+paused = false;
+if (which === "1") { start(phase1Steps()); }
+else if (which === "2") { start(phase2Steps()); }
+else if (which === "3") { start(phase3Steps()); }
+else if (which === "4") { start(phase4Steps()); }
+else { start(allSteps()); }
+}
+var i;
+for (i = 0; i !== phBtns.length; i = i + 1) {
+phBtns[i].addEventListener("click", function (e) { playPhase(e.currentTarget.getAttribute("data-ph")); });
+}
+for (i = 0; i !== spdBtns.length; i = i + 1) {
+spdBtns[i].addEventListener("click", function (e) { setSpeed(e.currentTarget.getAttribute("data-spd")); });
+}
+cPause.addEventListener("click", togglePause);
+cStep.addEventListener("click", stepOnce);
+reset();
+updateButtons();
+// Standalone: autoplay on load. Inside xaringan: autoplay when the slide is shown, stop when it is hidden.
+function slideHasDemo() { return document.querySelector(".remark-visible #wdemo") !== null; }
+if (window.slideshow) {
+window.slideshow.on("afterShowSlide", function () { if (slideHasDemo()) { setTimeout(function () { playPhase("all"); }, 400); } });
+window.slideshow.on("hideSlide", function () { stopAll(); });
+if (slideHasDemo()) { setTimeout(function () { playPhase("all"); }, 600); }
+} else {
+setTimeout(function () { playPhase("all"); }, 600);
+}
+})();
+</script>
+<!-- WDEMO-SLIDE-END -->
+
+???
+
+Let the animation run once on its own; it takes about thirty seconds at 1x. Phase 1 is Knit: the red flag sits on markdowns because knitr always starts from the folder that holds the Rmd. Phase 2 is the trap: Run line or Ctrl+Enter sends the code to the Console, and the Console starts from the folder that holds the .Rproj, one level higher, so .. climbs into isa401 where there is no data folder. The error text is the real readxl message they will see. Phase 3 is the fix they should do once per session: Session, Set Working Directory, To Source File Location; the console echoes setwd() and the flag moves down to markdowns, so both routes now start in the same place. Phase 4 makes the point that this is about folders, not Excel: the csv lines follow the same rule. Use Step and 0.5x if the room needs it slower, or Pause on the error in Phase 2 and ask them to predict what .. points to before continuing.
+
+---
+
 # A Web-Served JSON File
 
 .left55[

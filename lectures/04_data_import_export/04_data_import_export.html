@@ -4494,7 +4494,7 @@ margin-left: 0;
   })
 })()
 </script>
-    <script type="application/json" id="xaringanExtra-editable-docid">{"id":"x06062db8c2746748753d7953094e761","expires":14}</script>
+    <script type="application/json" id="xaringanExtra-editable-docid">{"id":"x96edb5e9b5c4f4ca0db8adb38dc947c","expires":14}</script>
     <script>(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.himalaya = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
@@ -8070,7 +8070,7 @@ The photo does the teaching. Single bracket keeps the container: example_list wi
 
 # Examine a Job Ad
 
-<countdown-timer class="countdown" id="timer_4e9892cc" minutes="3" seconds="0" update-every="1" tabindex="0" style="top:0;right:0;--countdown-font-size:2em;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_18f9593c" minutes="3" seconds="0" update-every="1" tabindex="0" style="top:0;right:0;--countdown-font-size:2em;"></countdown-timer>
 
 .panelset[
 
@@ -8318,7 +8318,7 @@ This is the reference slide; they will come back to it. Read the middle column: 
 
 # Predict the Output
 
-<countdown-timer class="countdown" id="timer_44de8a33" minutes="2" seconds="30" update-every="1" tabindex="0" style="top:0;right:0;--countdown-font-size:2em;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_518a8e28" minutes="2" seconds="30" update-every="1" tabindex="0" style="top:0;right:0;--countdown-font-size:2em;"></countdown-timer>
 
 .panelset[
 
@@ -8699,6 +8699,514 @@ Show what happens without the arguments first if there is time: no skip means on
 
 ---
 
+# Same Line, Two Starting Folders
+
+&lt;!-- WDEMO-SLIDE-START --&gt;
+&lt;style&gt;
+.wdemo { font-size: 15px; line-height: 1.45; font-family: &#39;Noto Sans&#39;, &#39;Roboto&#39;, Arial, sans-serif; color: #272822; text-align: left; }
+.wdemo-top { display: flex; gap: 18px; align-items: stretch; }
+.wdemo-ide { flex: 0 0 500px; width: 500px; }
+.wdemo-tree { flex: 1 1 auto; border: 1px solid #d1d5db; border-radius: 8px; background: #fcfcfc; box-shadow: 0 1px 3px rgba(0,0,0,.08); padding: 8px 6px 2px 6px; }
+.wdemo-tree svg { display: block; width: 100%; height: auto; font-family: &#39;Source Code Pro&#39;, monospace; font-size: 14px; }
+.wdemo .rs { position: relative; height: 100%; display: flex; flex-direction: column; box-sizing: border-box; background: #2b2b2b; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,.25); font-size: 13px; color: #d5d5d5; }
+.wdemo .rs-menu { display: flex; gap: 8px; padding: 5px 10px; background: #353535; font-size: 12.5px; color: #cfcfcf; border-bottom: 1px solid #1e1e1e; border-radius: 8px 8px 0 0; }
+.wdemo .rs-menu span { padding: 1px 6px; border-radius: 4px; }
+.wdemo .rs-menu span.hot { background: #c3142d; color: #fff; }
+.wdemo .rs-tabs { display: flex; align-items: center; background: #333; border-bottom: 1px solid #1e1e1e; }
+.wdemo .rs-tab { padding: 6px 14px; background: #222; color: #eee; font-size: 12.5px; border-right: 1px solid #1e1e1e; }
+.wdemo .rs-btns { margin-left: auto; display: flex; gap: 8px; padding: 3px 10px; }
+.wdemo .rsb { position: relative; border: 1px solid #5a5a5a; background: #3a3a3a; color: #eee; border-radius: 5px; padding: 3px 10px; font: inherit; font-size: 12.5px; display: inline-flex; align-items: center; gap: 6px; }
+.wdemo .rsb .tri { width: 0; height: 0; border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-left: 8px solid #6fbf73; }
+.wdemo .rsb .caret { width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 5px solid #bbb; }
+.wdemo .rsb.press { animation: wdPress 1.1s ease-out 1; background: #c3142d; border-color: #c3142d; color: #fff; }
+@keyframes wdPress { 0% { box-shadow: 0 0 0 0 rgba(195,20,45,.8); } 100% { box-shadow: 0 0 0 14px rgba(195,20,45,0); } }
+.wdemo .rs-editor { background: #222; padding: 10px 0 10px 0; font-family: &#39;Source Code Pro&#39;, monospace; font-size: 13px; min-height: 88px; }
+.wdemo .rs-line { display: flex; white-space: nowrap; color: #dedede; line-height: 1.6; }
+.wdemo .rs-line .ln { width: 30px; flex: 0 0 30px; text-align: right; padding-right: 10px; color: #6b6b6b; }
+.wdemo .rs-line.hidden-line { display: none; }
+.wdemo .rs-line .op { color: #70c0b1; } .wdemo .rs-line .pkg { color: #e7c547; } .wdemo .rs-line .fnc { color: #7aa6da; } .wdemo .rs-line .br { color: #ed90a4; } .wdemo .rs-line .str { color: #b9ca4a; }
+.wdemo .tok { padding: 1px 1px; border-bottom: 3px solid transparent; transition: background .3s, border-color .3s, opacity .3s; }
+.wdemo .tok.on { background: rgba(255,255,255,.14); border-bottom-color: #3b6ea5; }
+.wdemo .tok.ok { border-bottom-color: #6fbf73; }
+.wdemo .tok.bad { border-bottom-color: #ff5f5f; background: rgba(255,95,95,.25); }
+.wdemo .tok.dim { opacity: .35; }
+.wdemo .seg { padding: 1px 1px; border-radius: 3px; transition: background .4s; }
+.wdemo .seg.ok { background: rgba(111,191,115,.30); }
+.wdemo .rs-panetabs { display: flex; background: #333; border-top: 1px solid #1e1e1e; border-bottom: 1px solid #1e1e1e; font-size: 12.5px; }
+.wdemo .rs-panetabs span { padding: 5px 14px; color: #aaa; }
+.wdemo .rs-panetabs span.on { background: #1b1b1b; color: #eee; }
+.wdemo .rs-console { flex: 1 1 auto; background: #1b1b1b; padding: 8px 12px; font-family: &#39;Source Code Pro&#39;, monospace; font-size: 12px; min-height: 112px; line-height: 1.55; white-space: pre-wrap; border-radius: 0 0 8px 8px; }
+.wdemo .cl { opacity: 0; transform: translateY(4px); transition: opacity .3s, transform .3s; }
+.wdemo .cl.on { opacity: 1; transform: none; }
+.wdemo .cl .pr { color: #70c0b1; }
+.wdemo .cl.out { color: #b0b0b0; }
+.wdemo .cl.err { color: #ff6b6b; }
+.wdemo .cl.info { color: #8fa9c9; }
+.wdemo .cl.blink { color: #70c0b1; animation: wdCaret 1s steps(1) infinite; }
+@keyframes wdCaret { 50% { opacity: .2; } }
+.wdemo .rs-dd { position: absolute; top: 27px; left: 0; background: #f4f4f4; color: #222; border: 1px solid #b9b9b9; box-shadow: 0 4px 12px rgba(0,0,0,.35); font-size: 12px; min-width: 150px; padding: 4px 0; opacity: 0; pointer-events: none; transition: opacity .25s; z-index: 5; }
+.wdemo .rs-dd.show { opacity: 1; }
+.wdemo .rs-dd div { padding: 4px 22px 4px 12px; white-space: nowrap; position: relative; }
+.wdemo .rs-dd div.sep { border-top: 1px solid #ccc; padding: 0; margin: 4px 0; }
+.wdemo .rs-dd div.hot { background: #c3142d; color: #fff; }
+.wdemo .rs-dd div.arrow:after { content: &quot;&quot;; position: absolute; right: 8px; top: 9px; border-top: 4px solid transparent; border-bottom: 4px solid transparent; border-left: 5px solid currentColor; }
+.wdemo .rs-dd .rs-sub { position: absolute; right: 100%; top: -5px; padding: 4px 0; background: #f4f4f4; color: #222; border: 1px solid #b9b9b9; box-shadow: 0 4px 12px rgba(0,0,0,.35); min-width: 160px; padding: 4px 0; opacity: 0; transition: opacity .25s; }
+.wdemo .rs-dd .rs-sub.show { opacity: 1; }
+.wdemo-bottom { display: flex; flex-direction: column; gap: 9px; margin-top: 12px; }
+.wdemo .phases { display: flex; flex-direction: row; gap: 8px; align-items: center; flex-wrap: nowrap; }
+.wdemo .ph { border: 1px solid #d1d5db; background: #fff; color: #585E60; border-radius: 7px; padding: 4px 10px; font: inherit; font-size: 13px; text-align: left; display: flex; align-items: center; gap: 7px; cursor: pointer; white-space: nowrap; line-height: 1.4; }
+.wdemo .ph b { display: inline-block; width: 19px; height: 19px; border-radius: 50%; border: 1px solid #c3142d; color: #c3142d; font-size: 11.5px; text-align: center; line-height: 19px; flex: 0 0 19px; }
+.wdemo .ph.active { background: #c3142d; border-color: #c3142d; color: #fff; }
+.wdemo .ph.active b { background: #fff; }
+.wdemo .ph.done b { background: #c3142d; color: #fff; }
+.wdemo .ctl { margin-left: auto; display: flex; align-items: center; gap: 6px; }
+.wdemo .cb { border: 1px solid #585E60; background: #fff; color: #272822; border-radius: 7px; padding: 4px 11px; font: inherit; font-size: 13px; cursor: pointer; min-width: 64px; line-height: 1.4; }
+.wdemo .cb.primary { background: #585E60; color: #fff; }
+.wdemo .spd { display: inline-flex; border: 1px solid #d1d5db; border-radius: 7px; overflow: hidden; margin-left: 6px; }
+.wdemo .sb { border: 0; background: #fff; color: #585E60; padding: 4px 9px; font: inherit; font-size: 12.5px; cursor: pointer; border-right: 1px solid #d1d5db; line-height: 1.4; }
+.wdemo .sb.last { border-right: 0; }
+.wdemo .sb.on { background: #585E60; color: #fff; }
+.wdemo .ph.all { color: #585E60; }
+.wdemo .caption { min-height: 70px; box-sizing: border-box; border: 1px solid #c3142d; border-left: 5px solid #c3142d; border-radius: 8px; background: #fdf2f2; padding: 9px 16px; font-size: 15.5px; line-height: 1.45; display: flex; flex-direction: column; justify-content: center; }
+.wdemo .caption .big { font-weight: 700; color: #c3142d; font-size: 16.5px; opacity: 0; transition: opacity .35s; }
+.wdemo .caption .small { color: #272822; margin-top: 3px; opacity: 0; transition: opacity .35s; min-height: 22px; }
+.wdemo .caption .big.on, .wdemo .caption .small.on { opacity: 1; }
+.wdemo .caption code { font-family: &#39;Source Code Pro&#39;, monospace; font-size: 14px; background: rgba(0,0,0,.05); padding: 0 4px; border-radius: 3px; color: #272822; }
+.wdemo .t-nm { fill: #272822; }
+.wdemo .t-an { fill: #8a9096; font-family: &#39;Noto Sans&#39;, &#39;Roboto&#39;, Arial, sans-serif; font-size: 12.5px; }
+.wdemo .t-ln { stroke: #cfd4da; stroke-width: 1.5; fill: none; }
+.wdemo .t-fo { fill: #f3d27a; stroke: #b8952c; stroke-width: 1; }
+.wdemo .t-dr { fill: #cfd8e3; stroke: #7d8da3; stroke-width: 1; }
+.wdemo .t-fi { fill: #fff; stroke: #8a9096; stroke-width: 1.2; }
+.wdemo .node.ok .t-nm { fill: #2e8b57; font-weight: 600; }
+.wdemo .node.ok .t-fo { fill: #bfe3c9; stroke: #2e8b57; }
+.wdemo .node.ok .t-fi { stroke: #2e8b57; fill: #e8f5ec; }
+.wdemo .walker { fill: rgba(59,110,165,.10); stroke: #3b6ea5; stroke-width: 1.6; opacity: 0; transition: transform .6s cubic-bezier(.4,0,.2,1), opacity .3s, stroke .3s, fill .3s; }
+.wdemo .walker.show { opacity: 1; }
+.wdemo .walker.ok { stroke: #2e8b57; fill: rgba(46,139,87,.10); }
+.wdemo .walker.bad { stroke: #c3142d; fill: rgba(195,20,45,.08); stroke-dasharray: 5 4; }
+.wdemo .chip { opacity: 0; transition: transform .6s cubic-bezier(.4,0,.2,1), opacity .3s; }
+.wdemo .chip.show { opacity: 1; }
+.wdemo .chip rect { fill: #3b6ea5; }
+.wdemo .chip text { fill: #fff; font-size: 11.5px; font-weight: 600; text-anchor: middle; }
+.wdemo .chip.ok rect { fill: #2e8b57; }
+.wdemo .chip.bad rect { fill: #c3142d; }
+.wdemo .hop { stroke: #3b6ea5; stroke-width: 2; fill: none; opacity: 0; transition: stroke-dashoffset .55s ease-out, opacity .2s; }
+.wdemo .hop.show { opacity: 1; }
+.wdemo .pin { opacity: 0; transition: transform .7s cubic-bezier(.4,0,.2,1), opacity .3s; }
+.wdemo .pin.show { opacity: 1; }
+.wdemo .pin path { fill: #c3142d; }
+.wdemo .pin text { fill: #fff; font-family: &#39;Noto Sans&#39;, &#39;Roboto&#39;, Arial, sans-serif; font-size: 12px; font-weight: 700; }
+.wdemo .ghost { opacity: 0; transition: opacity .35s; }
+.wdemo .ghost.show { opacity: 1; }
+.wdemo .ghost .t-fo { fill: none; stroke: #c3142d; stroke-dasharray: 3 3; }
+.wdemo .ghost .t-nm { fill: #c3142d; }
+.wdemo .ghost .t-an { fill: #c3142d; }
+.wdemo .t-legend { fill: #8a9096; font-family: &#39;Noto Sans&#39;, &#39;Roboto&#39;, Arial, sans-serif; font-size: 12px; }
+&lt;/style&gt;
+&lt;div class=&quot;wdemo&quot; id=&quot;wdemo&quot;&gt;
+&lt;div class=&quot;wdemo-top&quot;&gt;
+&lt;div class=&quot;wdemo-ide&quot;&gt;
+&lt;div class=&quot;rs&quot;&gt;
+&lt;div class=&quot;rs-menu&quot;&gt;&lt;span&gt;File&lt;/span&gt;&lt;span&gt;Edit&lt;/span&gt;&lt;span&gt;Code&lt;/span&gt;&lt;span&gt;View&lt;/span&gt;&lt;span id=&quot;m-session&quot;&gt;Session&lt;/span&gt;&lt;span&gt;Build&lt;/span&gt;&lt;span&gt;Tools&lt;/span&gt;&lt;span&gt;Help&lt;/span&gt;&lt;/div&gt;
+&lt;div class=&quot;rs-tabs&quot;&gt;
+&lt;span class=&quot;rs-tab&quot;&gt;class04.Rmd&lt;/span&gt;
+&lt;div class=&quot;rs-btns&quot;&gt;
+&lt;button class=&quot;rsb&quot; id=&quot;btn-knit&quot;&gt;Knit &lt;i class=&quot;caret&quot;&gt;&lt;/i&gt;&lt;/button&gt;
+&lt;button class=&quot;rsb&quot; id=&quot;btn-run&quot;&gt;&lt;i class=&quot;tri&quot;&gt;&lt;/i&gt;Run&lt;/button&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;rs-editor&quot;&gt;
+&lt;div class=&quot;rs-line&quot;&gt;&lt;span class=&quot;ln&quot;&gt;1&lt;/span&gt;&lt;span&gt;fastest &lt;span class=&quot;op&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;pkg&quot;&gt;readxl&lt;/span&gt;&lt;span class=&quot;op&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;fnc&quot;&gt;read_excel&lt;/span&gt;&lt;span class=&quot;br&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;str&quot;&gt;&quot;&lt;span class=&quot;seg&quot; id=&quot;seg1&quot;&gt;&lt;span class=&quot;tok&quot; id=&quot;tk-up&quot;&gt;..&lt;/span&gt;/&lt;span class=&quot;tok&quot; id=&quot;tk-data&quot;&gt;data&lt;/span&gt;/&lt;/span&gt;&lt;span class=&quot;tok&quot; id=&quot;tk-file&quot;&gt;occupation.xlsx&lt;/span&gt;&quot;&lt;/span&gt;&lt;span class=&quot;br&quot;&gt;)&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;
+&lt;div class=&quot;rs-line hidden-line&quot; id=&quot;line2&quot;&gt;&lt;span class=&quot;ln&quot;&gt;2&lt;/span&gt;&lt;span&gt;postings &lt;span class=&quot;op&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;pkg&quot;&gt;readr&lt;/span&gt;&lt;span class=&quot;op&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;fnc&quot;&gt;read_csv&lt;/span&gt;&lt;span class=&quot;br&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;str&quot;&gt;&quot;&lt;span class=&quot;seg&quot; id=&quot;seg2&quot;&gt;../data/&lt;/span&gt;ohio_job_postings.csv&quot;&lt;/span&gt;&lt;span class=&quot;br&quot;&gt;)&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;
+&lt;div class=&quot;rs-line hidden-line&quot; id=&quot;line3&quot;&gt;&lt;span class=&quot;ln&quot;&gt;3&lt;/span&gt;&lt;span&gt;crashes &lt;span class=&quot;op&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;pkg&quot;&gt;readr&lt;/span&gt;&lt;span class=&quot;op&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;fnc&quot;&gt;read_csv&lt;/span&gt;&lt;span class=&quot;br&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;str&quot;&gt;&quot;&lt;span class=&quot;seg&quot; id=&quot;seg3&quot;&gt;../data/&lt;/span&gt;crashes_by_day.csv&quot;&lt;/span&gt;&lt;span class=&quot;br&quot;&gt;)&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;rs-panetabs&quot;&gt;&lt;span id=&quot;pt-console&quot; class=&quot;on&quot;&gt;Console&lt;/span&gt;&lt;span id=&quot;pt-rmd&quot;&gt;R Markdown&lt;/span&gt;&lt;/div&gt;
+&lt;div class=&quot;rs-console&quot; id=&quot;console&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;rs-dd&quot; id=&quot;dd&quot;&gt;
+&lt;div&gt;Restart R&lt;/div&gt;
+&lt;div&gt;Terminate R...&lt;/div&gt;
+&lt;div class=&quot;sep&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;arrow&quot; id=&quot;dd-swd&quot;&gt;Set Working Directory
+&lt;div class=&quot;rs-sub&quot; id=&quot;sub&quot;&gt;
+&lt;div id=&quot;sub-src&quot;&gt;To Source File Location&lt;/div&gt;
+&lt;div&gt;To Files Pane Location&lt;/div&gt;
+&lt;div&gt;To Project Directory&lt;/div&gt;
+&lt;div&gt;Choose Directory...&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div&gt;Load Workspace...&lt;/div&gt;
+&lt;div&gt;Save Workspace As...&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;wdemo-tree&quot;&gt;
+&lt;svg viewBox=&quot;0 0 580 366&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;
+&lt;defs&gt;
+&lt;marker id=&quot;wd-ah&quot; markerWidth=&quot;8&quot; markerHeight=&quot;8&quot; refX=&quot;6&quot; refY=&quot;4&quot; orient=&quot;auto&quot; markerUnits=&quot;userSpaceOnUse&quot;&gt;&lt;path d=&quot;M0 0 L8 4 L0 8 z&quot; fill=&quot;#3b6ea5&quot;&gt;&lt;/path&gt;&lt;/marker&gt;
+&lt;/defs&gt;
+&lt;rect class=&quot;walker&quot; id=&quot;walker&quot; x=&quot;126&quot; y=&quot;-16&quot; width=&quot;450&quot; height=&quot;32&quot; rx=&quot;8&quot; style=&quot;transform: translateY(94px);&quot;&gt;&lt;/rect&gt;
+&lt;path class=&quot;hop&quot; id=&quot;hop&quot; d=&quot;M100 94 V94&quot; marker-end=&quot;url(#wd-ah)&quot;&gt;&lt;/path&gt;
+&lt;path class=&quot;t-ln&quot; d=&quot;M139 38 V60 H154&quot;&gt;&lt;/path&gt;
+&lt;path class=&quot;t-ln&quot; d=&quot;M167 72 V94 H182&quot;&gt;&lt;/path&gt;
+&lt;path class=&quot;t-ln&quot; d=&quot;M195 106 V298 M195 128 H210 M195 162 H210 M195 298 H210&quot;&gt;&lt;/path&gt;
+&lt;path class=&quot;t-ln&quot; d=&quot;M223 174 V264 M223 196 H238 M223 230 H238 M223 264 H238&quot;&gt;&lt;/path&gt;
+&lt;path class=&quot;t-ln&quot; d=&quot;M223 310 V332 H238&quot;&gt;&lt;/path&gt;
+&lt;g class=&quot;node&quot; transform=&quot;translate(130,26)&quot;&gt;
+&lt;rect class=&quot;t-dr&quot; x=&quot;0&quot; y=&quot;-6&quot; width=&quot;18&quot; height=&quot;12&quot; rx=&quot;2&quot;&gt;&lt;/rect&gt;&lt;circle cx=&quot;14&quot; cy=&quot;0&quot; r=&quot;1.6&quot; fill=&quot;#7d8da3&quot;&gt;&lt;/circle&gt;
+&lt;text class=&quot;t-nm&quot; x=&quot;26&quot; y=&quot;5&quot;&gt;M:\&lt;/text&gt;
+&lt;/g&gt;
+&lt;g class=&quot;node&quot; transform=&quot;translate(158,60)&quot;&gt;
+&lt;path class=&quot;t-fo&quot; d=&quot;M0 -7 h6 l2 2 h10 v12 h-18 z&quot;&gt;&lt;/path&gt;
+&lt;text class=&quot;t-nm&quot; x=&quot;26&quot; y=&quot;5&quot;&gt;isa401&lt;/text&gt;
+&lt;/g&gt;
+&lt;g class=&quot;node&quot; transform=&quot;translate(186,94)&quot;&gt;
+&lt;path class=&quot;t-fo&quot; d=&quot;M0 -7 h6 l2 2 h10 v12 h-18 z&quot;&gt;&lt;/path&gt;
+&lt;text class=&quot;t-nm&quot; x=&quot;26&quot; y=&quot;5&quot;&gt;business_intelligence&lt;/text&gt;
+&lt;/g&gt;
+&lt;g class=&quot;node&quot; transform=&quot;translate(214,128)&quot;&gt;
+&lt;path class=&quot;t-fi&quot; d=&quot;M0 -8 h9 l5 5 v12 h-14 z M9 -8 v5 h5&quot;&gt;&lt;/path&gt;
+&lt;text class=&quot;t-nm&quot; x=&quot;26&quot; y=&quot;5&quot;&gt;business_intelligence.Rproj&lt;/text&gt;
+&lt;/g&gt;
+&lt;g class=&quot;node&quot; transform=&quot;translate(214,162)&quot;&gt;
+&lt;path class=&quot;t-fo&quot; d=&quot;M0 -7 h6 l2 2 h10 v12 h-18 z&quot;&gt;&lt;/path&gt;
+&lt;text class=&quot;t-nm&quot; x=&quot;26&quot; y=&quot;5&quot;&gt;data&lt;/text&gt;
+&lt;/g&gt;
+&lt;g class=&quot;node&quot; transform=&quot;translate(242,196)&quot;&gt;
+&lt;path class=&quot;t-fi&quot; d=&quot;M0 -8 h9 l5 5 v12 h-14 z M9 -8 v5 h5&quot;&gt;&lt;/path&gt;
+&lt;text class=&quot;t-nm&quot; x=&quot;26&quot; y=&quot;5&quot;&gt;occupation.xlsx&lt;/text&gt;
+&lt;/g&gt;
+&lt;g class=&quot;node&quot; transform=&quot;translate(242,230)&quot;&gt;
+&lt;path class=&quot;t-fi&quot; d=&quot;M0 -8 h9 l5 5 v12 h-14 z M9 -8 v5 h5&quot;&gt;&lt;/path&gt;
+&lt;text class=&quot;t-nm&quot; x=&quot;26&quot; y=&quot;5&quot;&gt;ohio_job_postings.csv&lt;/text&gt;
+&lt;/g&gt;
+&lt;g class=&quot;node&quot; transform=&quot;translate(242,264)&quot;&gt;
+&lt;path class=&quot;t-fi&quot; d=&quot;M0 -8 h9 l5 5 v12 h-14 z M9 -8 v5 h5&quot;&gt;&lt;/path&gt;
+&lt;text class=&quot;t-nm&quot; x=&quot;26&quot; y=&quot;5&quot;&gt;crashes_by_day.csv&lt;/text&gt;
+&lt;/g&gt;
+&lt;g class=&quot;node&quot; transform=&quot;translate(214,298)&quot;&gt;
+&lt;path class=&quot;t-fo&quot; d=&quot;M0 -7 h6 l2 2 h10 v12 h-18 z&quot;&gt;&lt;/path&gt;
+&lt;text class=&quot;t-nm&quot; x=&quot;26&quot; y=&quot;5&quot;&gt;markdowns&lt;/text&gt;
+&lt;/g&gt;
+&lt;g class=&quot;node&quot; transform=&quot;translate(242,332)&quot;&gt;
+&lt;path class=&quot;t-fi&quot; d=&quot;M0 -8 h9 l5 5 v12 h-14 z M9 -8 v5 h5&quot;&gt;&lt;/path&gt;
+&lt;text class=&quot;t-nm&quot; x=&quot;26&quot; y=&quot;5&quot;&gt;class04.Rmd&lt;/text&gt;
+&lt;text class=&quot;t-an&quot; x=&quot;130&quot; y=&quot;5&quot;&gt;the file you are editing&lt;/text&gt;
+&lt;/g&gt;
+&lt;g class=&quot;ghost&quot; id=&quot;ghost&quot; transform=&quot;translate(270,60)&quot;&gt;
+&lt;path class=&quot;t-fo&quot; d=&quot;M0 -7 h6 l2 2 h10 v12 h-18 z&quot;&gt;&lt;/path&gt;
+&lt;text class=&quot;t-nm&quot; x=&quot;26&quot; y=&quot;5&quot;&gt;data&lt;/text&gt;
+&lt;text class=&quot;t-an&quot; x=&quot;70&quot; y=&quot;5&quot;&gt;no such folder in isa401&lt;/text&gt;
+&lt;/g&gt;
+&lt;g class=&quot;chip&quot; id=&quot;chip&quot; style=&quot;transform: translate(60px, 94px);&quot;&gt;
+&lt;rect x=&quot;-56&quot; y=&quot;-12&quot; width=&quot;112&quot; height=&quot;24&quot; rx=&quot;12&quot;&gt;&lt;/rect&gt;
+&lt;text x=&quot;0&quot; y=&quot;4&quot; id=&quot;chip-text&quot;&gt;..&lt;/text&gt;
+&lt;/g&gt;
+&lt;g class=&quot;pin&quot; id=&quot;pin&quot; style=&quot;transform: translate(405px, 94px);&quot;&gt;
+&lt;path d=&quot;M0 0 L9 -11 H108 Q114 -11 114 -5 V5 Q114 11 108 11 H9 Z&quot;&gt;&lt;/path&gt;
+&lt;text x=&quot;17&quot; y=&quot;4&quot;&gt;R starts here&lt;/text&gt;
+&lt;/g&gt;
+&lt;text class=&quot;t-legend&quot; x=&quot;130&quot; y=&quot;360&quot;&gt;Red flag: the folder R starts from. Blue chip: the piece of the path being read.&lt;/text&gt;
+&lt;/svg&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;wdemo-bottom&quot;&gt;
+&lt;div class=&quot;phases&quot;&gt;
+&lt;button class=&quot;ph&quot; data-ph=&quot;1&quot;&gt;&lt;b&gt;1&lt;/b&gt;Knit&lt;/button&gt;
+&lt;button class=&quot;ph&quot; data-ph=&quot;2&quot;&gt;&lt;b&gt;2&lt;/b&gt;Run line&lt;/button&gt;
+&lt;button class=&quot;ph&quot; data-ph=&quot;3&quot;&gt;&lt;b&gt;3&lt;/b&gt;The fix&lt;/button&gt;
+&lt;button class=&quot;ph&quot; data-ph=&quot;4&quot;&gt;&lt;b&gt;4&lt;/b&gt;Any local file&lt;/button&gt;
+&lt;button class=&quot;ph all&quot; data-ph=&quot;all&quot;&gt;Replay all&lt;/button&gt;
+&lt;span class=&quot;ctl&quot;&gt;
+&lt;button class=&quot;cb primary&quot; id=&quot;c-pause&quot;&gt;Pause&lt;/button&gt;
+&lt;button class=&quot;cb&quot; id=&quot;c-step&quot;&gt;Step&lt;/button&gt;
+&lt;span class=&quot;spd&quot;&gt;&lt;button class=&quot;sb&quot; data-spd=&quot;0.5&quot;&gt;0.5x&lt;/button&gt;&lt;button class=&quot;sb on&quot; data-spd=&quot;1&quot;&gt;1x&lt;/button&gt;&lt;button class=&quot;sb last&quot; data-spd=&quot;2&quot;&gt;2x&lt;/button&gt;&lt;/span&gt;
+&lt;/span&gt;
+&lt;/div&gt;
+&lt;div class=&quot;caption&quot;&gt;&lt;div class=&quot;big&quot; id=&quot;cap-big&quot;&gt;&lt;/div&gt;&lt;div class=&quot;small&quot; id=&quot;cap-small&quot;&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script&gt;
+(function () {
+var root = document.getElementById(&quot;wdemo&quot;);
+if (!root) { return; }
+if (root.getAttribute(&quot;data-built&quot;)) { return; }
+root.setAttribute(&quot;data-built&quot;, &quot;1&quot;);
+var walker = document.getElementById(&quot;walker&quot;);
+var chip = document.getElementById(&quot;chip&quot;);
+var chipText = document.getElementById(&quot;chip-text&quot;);
+var hop = document.getElementById(&quot;hop&quot;);
+var pin = document.getElementById(&quot;pin&quot;);
+var ghost = document.getElementById(&quot;ghost&quot;);
+var con = document.getElementById(&quot;console&quot;);
+var capBig = document.getElementById(&quot;cap-big&quot;);
+var capSmall = document.getElementById(&quot;cap-small&quot;);
+var ptConsole = document.getElementById(&quot;pt-console&quot;);
+var ptRmd = document.getElementById(&quot;pt-rmd&quot;);
+var btnKnit = document.getElementById(&quot;btn-knit&quot;);
+var btnRun = document.getElementById(&quot;btn-run&quot;);
+var mSession = document.getElementById(&quot;m-session&quot;);
+var dd = document.getElementById(&quot;dd&quot;);
+var ddSwd = document.getElementById(&quot;dd-swd&quot;);
+var sub = document.getElementById(&quot;sub&quot;);
+var subSrc = document.getElementById(&quot;sub-src&quot;);
+var cPause = document.getElementById(&quot;c-pause&quot;);
+var cStep = document.getElementById(&quot;c-step&quot;);
+var nodes = root.querySelectorAll(&quot;.node&quot;);
+var phBtns = root.querySelectorAll(&quot;.ph&quot;);
+var spdBtns = root.querySelectorAll(&quot;.sb&quot;);
+var rowY = [26, 60, 94, 128, 162, 196, 230, 264, 298, 332];
+var PIN_X = &quot;405px&quot;;
+var CHIP_X = &quot;60px&quot;;
+function el(id) { return document.getElementById(id); }
+function setTok(id, cls) { el(id).className = &quot;tok&quot; + (cls ? &quot; &quot; + cls : &quot;&quot;); }
+function svgClass(node, base, cls) { node.setAttribute(&quot;class&quot;, base + (cls ? &quot; &quot; + cls : &quot;&quot;)); }
+function reset() {
+var i;
+setTok(&quot;tk-up&quot;, &quot;&quot;); setTok(&quot;tk-data&quot;, &quot;&quot;); setTok(&quot;tk-file&quot;, &quot;&quot;);
+el(&quot;seg1&quot;).className = &quot;seg&quot;; el(&quot;seg2&quot;).className = &quot;seg&quot;; el(&quot;seg3&quot;).className = &quot;seg&quot;;
+el(&quot;line2&quot;).className = &quot;rs-line hidden-line&quot;; el(&quot;line3&quot;).className = &quot;rs-line hidden-line&quot;;
+for (i = 0; i !== nodes.length; i = i + 1) { svgClass(nodes[i], &quot;node&quot;, &quot;&quot;); }
+svgClass(walker, &quot;walker&quot;, &quot;&quot;); svgClass(chip, &quot;chip&quot;, &quot;&quot;); svgClass(hop, &quot;hop&quot;, &quot;&quot;); svgClass(pin, &quot;pin&quot;, &quot;&quot;); svgClass(ghost, &quot;ghost&quot;, &quot;&quot;);
+con.innerHTML = &quot;&quot;;
+ptConsole.className = &quot;on&quot;; ptRmd.className = &quot;&quot;;
+btnKnit.className = &quot;rsb&quot;; btnRun.className = &quot;rsb&quot;;
+mSession.className = &quot;&quot;; dd.className = &quot;rs-dd&quot;; ddSwd.className = &quot;arrow&quot;; sub.className = &quot;rs-sub&quot;; subSrc.className = &quot;&quot;;
+capBig.className = &quot;big&quot;; capSmall.className = &quot;small&quot;;
+}
+function caption(big, small) {
+capBig.className = &quot;big&quot;; capSmall.className = &quot;small&quot;;
+setTimeout(function () {
+capBig.innerHTML = big; capSmall.innerHTML = small || &quot;&quot;;
+capBig.className = &quot;big on&quot;; capSmall.className = &quot;small on&quot;;
+}, 250);
+}
+function conLine(kind, text) {
+var d = document.createElement(&quot;div&quot;);
+d.className = &quot;cl &quot; + kind;
+if (kind === &quot;cmd&quot;) {
+var p = document.createElement(&quot;span&quot;); p.className = &quot;pr&quot;; p.textContent = &quot;&gt; &quot;; d.appendChild(p);
+d.appendChild(document.createTextNode(text));
+} else { d.textContent = text; }
+var old = con.querySelector(&quot;.blink&quot;); if (old) { con.removeChild(old); }
+con.appendChild(d);
+setTimeout(function () { d.className = d.className + &quot; on&quot;; }, 20);
+}
+function conPrompt() {
+var d = document.createElement(&quot;div&quot;); d.className = &quot;cl blink&quot;; d.textContent = &quot;&gt; &quot;;
+con.appendChild(d);
+setTimeout(function () { d.className = d.className + &quot; on&quot;; }, 20);
+}
+function press(btn) { btn.className = &quot;rsb&quot;; setTimeout(function () { btn.className = &quot;rsb press&quot;; }, 20); }
+function showPin(row) { pin.style.transform = &quot;translate(&quot; + PIN_X + &quot;, &quot; + rowY[row] + &quot;px)&quot;; svgClass(pin, &quot;pin&quot;, &quot;show&quot;); }
+function walkerTo(row, cls) { walker.style.transform = &quot;translateY(&quot; + rowY[row] + &quot;px)&quot;; svgClass(walker, &quot;walker&quot;, &quot;show&quot; + (cls ? &quot; &quot; + cls : &quot;&quot;)); }
+function chipTo(row, text, cls) {
+chipText.textContent = text;
+chip.style.transform = &quot;translate(&quot; + CHIP_X + &quot;, &quot; + rowY[row] + &quot;px)&quot;;
+svgClass(chip, &quot;chip&quot;, &quot;show&quot; + (cls ? &quot; &quot; + cls : &quot;&quot;));
+}
+function hopArrow(fromRow, toRow) {
+var y1 = rowY[fromRow], y2 = rowY[toRow], len;
+if (y1 &gt; y2) { y1 = y1 - 16; y2 = y2 + 16; } else { y1 = y1 + 16; y2 = y2 - 16; }
+len = Math.abs(y2 - y1);
+hop.setAttribute(&quot;d&quot;, &quot;M100 &quot; + y1 + &quot; V&quot; + y2);
+hop.style.transition = &quot;none&quot;;
+hop.style.strokeDasharray = len + &quot; &quot; + len;
+hop.style.strokeDashoffset = len;
+svgClass(hop, &quot;hop&quot;, &quot;show&quot;);
+setTimeout(function () { hop.style.transition = &quot;stroke-dashoffset .55s ease-out, opacity .2s&quot;; hop.style.strokeDashoffset = 0; }, 30);
+setTimeout(function () { svgClass(hop, &quot;hop&quot;, &quot;&quot;); }, 1400);
+}
+function nodeOk(i) { svgClass(nodes[i], &quot;node&quot;, &quot;ok&quot;); }
+function setPhase(ph) {
+var i, v, cls;
+for (i = 0; i !== phBtns.length; i = i + 1) {
+v = phBtns[i].getAttribute(&quot;data-ph&quot;);
+cls = &quot;ph&quot;;
+if (v === &quot;all&quot;) { cls = cls + &quot; all&quot;; }
+else if (v === String(ph)) { cls = cls + &quot; active&quot;; }
+else if (Number(v) + 1 &lt;= ph) { cls = cls + &quot; done&quot;; }
+phBtns[i].className = cls;
+}
+}
+var READ = &#39;fastest = readxl::read_excel(&quot;../data/occupation.xlsx&quot;)&#39;;
+// Each phase: list of [time in ms, action]. Times are relative to the phase start.
+function phase1Steps() {
+return [
+[0, function () {
+reset(); setPhase(1); showPin(8);
+caption(&quot;Knit starts from the folder that holds &lt;code&gt;class04.Rmd&lt;/code&gt;.&quot;, &quot;That folder is &lt;code&gt;markdowns&lt;/code&gt;. Watch the path get read from there, one piece at a time.&quot;);
+press(btnKnit); ptConsole.className = &quot;&quot;; ptRmd.className = &quot;on&quot;;
+}],
+[700, function () { conLine(&quot;info&quot;, &quot;processing file: class04.Rmd&quot;); }],
+[1400, function () { setTok(&quot;tk-up&quot;, &quot;on&quot;); walkerTo(8, &quot;&quot;); chipTo(8, &quot;..&quot;, &quot;&quot;); }],
+[1900, function () { hopArrow(8, 2); walkerTo(2, &quot;&quot;); chipTo(2, &quot;..&quot;, &quot;&quot;); }],
+[3100, function () { setTok(&quot;tk-up&quot;, &quot;ok&quot;); setTok(&quot;tk-data&quot;, &quot;on&quot;); walkerTo(4, &quot;&quot;); chipTo(4, &quot;data&quot;, &quot;&quot;); nodeOk(4); }],
+[4300, function () { setTok(&quot;tk-data&quot;, &quot;ok&quot;); setTok(&quot;tk-file&quot;, &quot;on&quot;); walkerTo(5, &quot;ok&quot;); chipTo(5, &quot;occupation.xlsx&quot;, &quot;ok&quot;); nodeOk(5); }],
+[5300, function () {
+setTok(&quot;tk-file&quot;, &quot;ok&quot;); conLine(&quot;info&quot;, &quot;Output created: class04.html&quot;);
+caption(&quot;Found.&quot;, &quot;From &lt;code&gt;markdowns&lt;/code&gt;, &lt;code&gt;..&lt;/code&gt; means &lt;code&gt;business_intelligence&lt;/code&gt;, and &lt;code&gt;data&lt;/code&gt; is right there.&quot;);
+}]
+];
+}
+function phase2Steps() {
+return [
+[0, function () {
+reset(); setPhase(2); showPin(2);
+caption(&quot;Run line (or &lt;kbd&gt;Ctrl+Enter&lt;/kbd&gt;) starts from the folder that holds the &lt;code&gt;.Rproj&lt;/code&gt;.&quot;, &quot;That is &lt;code&gt;business_intelligence&lt;/code&gt;: one level higher than Knit. Same line, different starting folder.&quot;);
+conLine(&quot;cmd&quot;, &quot;getwd()&quot;);
+}],
+[600, function () { conLine(&quot;out&quot;, &#39;[1] &quot;M:/isa401/business_intelligence&quot;&#39;); }],
+[1400, function () { press(btnRun); conLine(&quot;cmd&quot;, READ); setTok(&quot;tk-up&quot;, &quot;on&quot;); walkerTo(2, &quot;&quot;); chipTo(2, &quot;..&quot;, &quot;&quot;); }],
+[1900, function () { hopArrow(2, 1); walkerTo(1, &quot;&quot;); chipTo(1, &quot;..&quot;, &quot;&quot;); }],
+[3100, function () { setTok(&quot;tk-up&quot;, &quot;ok&quot;); setTok(&quot;tk-data&quot;, &quot;on bad&quot;); chipTo(1, &quot;data&quot;, &quot;bad&quot;); walkerTo(1, &quot;bad&quot;); svgClass(ghost, &quot;ghost&quot;, &quot;show&quot;); }],
+[4100, function () {
+setTok(&quot;tk-file&quot;, &quot;dim&quot;);
+conLine(&quot;err&quot;, &quot;Error: \u0060path\u0060 does not exist: &#39;../data/occupation.xlsx&#39;&quot;);
+conPrompt();
+caption(&quot;Not found.&quot;, &quot;From &lt;code&gt;business_intelligence&lt;/code&gt;, &lt;code&gt;..&lt;/code&gt; means &lt;code&gt;isa401&lt;/code&gt;, and there is no &lt;code&gt;data&lt;/code&gt; folder in &lt;code&gt;isa401&lt;/code&gt;.&quot;);
+}]
+];
+}
+function phase3Steps() {
+return [
+[0, function () {
+reset(); setPhase(3); showPin(2);
+caption(&quot;The fix: move R&#39;s starting folder to where the &lt;code&gt;.Rmd&lt;/code&gt; is.&quot;, &quot;RStudio menu: &lt;b&gt;Session&lt;/b&gt;, then &lt;b&gt;Set Working Directory&lt;/b&gt;, then &lt;b&gt;To Source File Location&lt;/b&gt;.&quot;);
+mSession.className = &quot;hot&quot;;
+dd.style.left = (mSession.offsetLeft - 6) + &quot;px&quot;;
+}],
+[700, function () { dd.className = &quot;rs-dd show&quot;; }],
+[1400, function () { ddSwd.className = &quot;arrow hot&quot;; }],
+[2000, function () { sub.className = &quot;rs-sub show&quot;; }],
+[2600, function () { subSrc.className = &quot;hot&quot;; }],
+[3500, function () {
+dd.className = &quot;rs-dd&quot;; sub.className = &quot;rs-sub&quot;; mSession.className = &quot;&quot;;
+conLine(&quot;cmd&quot;, &#39;setwd(&quot;M:/isa401/business_intelligence/markdowns&quot;)&#39;);
+showPin(8);
+}],
+[4500, function () { conLine(&quot;cmd&quot;, &quot;getwd()&quot;); }],
+[4800, function () { conLine(&quot;out&quot;, &#39;[1] &quot;M:/isa401/business_intelligence/markdowns&quot;&#39;); }],
+[5600, function () { press(btnRun); conLine(&quot;cmd&quot;, READ); setTok(&quot;tk-up&quot;, &quot;on&quot;); walkerTo(8, &quot;&quot;); chipTo(8, &quot;..&quot;, &quot;&quot;); }],
+[6100, function () { hopArrow(8, 2); walkerTo(2, &quot;&quot;); chipTo(2, &quot;..&quot;, &quot;&quot;); }],
+[7100, function () { setTok(&quot;tk-up&quot;, &quot;ok&quot;); setTok(&quot;tk-data&quot;, &quot;on&quot;); walkerTo(4, &quot;&quot;); chipTo(4, &quot;data&quot;, &quot;&quot;); nodeOk(4); }],
+[8000, function () { setTok(&quot;tk-data&quot;, &quot;ok&quot;); setTok(&quot;tk-file&quot;, &quot;on&quot;); walkerTo(5, &quot;ok&quot;); chipTo(5, &quot;occupation.xlsx&quot;, &quot;ok&quot;); nodeOk(5); }],
+[8800, function () {
+setTok(&quot;tk-file&quot;, &quot;ok&quot;); conPrompt();
+caption(&quot;Now Run line starts where Knit starts.&quot;, &quot;No error, and Knit still works. Do this once per RStudio session, after opening the project.&quot;);
+}]
+];
+}
+function phase4Steps() {
+return [
+[0, function () {
+reset(); setPhase(4); showPin(8);
+el(&quot;line2&quot;).className = &quot;rs-line&quot;; el(&quot;line3&quot;).className = &quot;rs-line&quot;;
+caption(&quot;This is about the folder, not the file type.&quot;, &quot;Every local file you read or write follows the same rule: &lt;code&gt;../data/&lt;/code&gt; then the file name.&quot;);
+}],
+[800, function () { el(&quot;seg1&quot;).className = &quot;seg ok&quot;; nodeOk(5); walkerTo(5, &quot;ok&quot;); }],
+[1600, function () { el(&quot;seg2&quot;).className = &quot;seg ok&quot;; nodeOk(6); walkerTo(6, &quot;ok&quot;); }],
+[2400, function () { el(&quot;seg3&quot;).className = &quot;seg ok&quot;; nodeOk(7); walkerTo(7, &quot;ok&quot;); }],
+[3200, function () { nodeOk(4); }]
+];
+}
+function allSteps() {
+var parts = [phase1Steps(), phase2Steps(), phase3Steps(), phase4Steps()];
+var gaps = [1600, 1600, 1900, 0];
+var list = [], off = 0, p, i, last;
+for (p = 0; p !== parts.length; p = p + 1) {
+last = 0;
+for (i = 0; i !== parts[p].length; i = i + 1) {
+list.push([parts[p][i][0] + off, parts[p][i][1]]);
+last = parts[p][i][0];
+}
+off = off + last + gaps[p];
+}
+return list;
+}
+// Player: play, pause, step, speed.
+var seq = [], idx = 0, timer = null, paused = false, speed = 1;
+function clearTimer() { if (timer !== null) { clearTimeout(timer); timer = null; } }
+function updateButtons() {
+var finished = (idx === seq.length);
+cPause.textContent = (paused || finished) ? &quot;Play&quot; : &quot;Pause&quot;;
+cPause.className = (paused || finished) ? &quot;cb primary&quot; : &quot;cb&quot;;
+}
+function scheduleNext() {
+clearTimer();
+if (paused) { updateButtons(); return; }
+if (idx === seq.length) { updateButtons(); return; }
+var gap = seq[idx][0] - seq[idx - 1][0];
+timer = setTimeout(runNext, gap / speed);
+updateButtons();
+}
+function runNext() {
+timer = null;
+if (idx === seq.length) { updateButtons(); return; }
+seq[idx][1]();
+idx = idx + 1;
+scheduleNext();
+}
+function start(list) { clearTimer(); seq = list; idx = 0; runNext(); }
+function stopAll() { clearTimer(); paused = true; updateButtons(); }
+function togglePause() {
+if (idx === seq.length) { paused = false; start(seq.length ? seq : allSteps()); return; }
+paused = !paused;
+if (paused) { clearTimer(); updateButtons(); } else { scheduleNext(); }
+}
+function stepOnce() {
+paused = true; clearTimer();
+if (idx === seq.length) { updateButtons(); return; }
+seq[idx][1]();
+idx = idx + 1;
+updateButtons();
+}
+function setSpeed(v) {
+var i;
+speed = Number(v);
+for (i = 0; i !== spdBtns.length; i = i + 1) {
+spdBtns[i].className = &quot;sb&quot; + (spdBtns[i].getAttribute(&quot;data-spd&quot;) === v ? &quot; on&quot; : &quot;&quot;) + (i === spdBtns.length - 1 ? &quot; last&quot; : &quot;&quot;);
+}
+if (timer !== null) { scheduleNext(); }
+}
+function playPhase(which) {
+paused = false;
+if (which === &quot;1&quot;) { start(phase1Steps()); }
+else if (which === &quot;2&quot;) { start(phase2Steps()); }
+else if (which === &quot;3&quot;) { start(phase3Steps()); }
+else if (which === &quot;4&quot;) { start(phase4Steps()); }
+else { start(allSteps()); }
+}
+var i;
+for (i = 0; i !== phBtns.length; i = i + 1) {
+phBtns[i].addEventListener(&quot;click&quot;, function (e) { playPhase(e.currentTarget.getAttribute(&quot;data-ph&quot;)); });
+}
+for (i = 0; i !== spdBtns.length; i = i + 1) {
+spdBtns[i].addEventListener(&quot;click&quot;, function (e) { setSpeed(e.currentTarget.getAttribute(&quot;data-spd&quot;)); });
+}
+cPause.addEventListener(&quot;click&quot;, togglePause);
+cStep.addEventListener(&quot;click&quot;, stepOnce);
+reset();
+updateButtons();
+// Standalone: autoplay on load. Inside xaringan: autoplay when the slide is shown, stop when it is hidden.
+function slideHasDemo() { return document.querySelector(&quot;.remark-visible #wdemo&quot;) !== null; }
+if (window.slideshow) {
+window.slideshow.on(&quot;afterShowSlide&quot;, function () { if (slideHasDemo()) { setTimeout(function () { playPhase(&quot;all&quot;); }, 400); } });
+window.slideshow.on(&quot;hideSlide&quot;, function () { stopAll(); });
+if (slideHasDemo()) { setTimeout(function () { playPhase(&quot;all&quot;); }, 600); }
+} else {
+setTimeout(function () { playPhase(&quot;all&quot;); }, 600);
+}
+})();
+&lt;/script&gt;
+&lt;!-- WDEMO-SLIDE-END --&gt;
+
+???
+
+Let the animation run once on its own; it takes about thirty seconds at 1x. Phase 1 is Knit: the red flag sits on markdowns because knitr always starts from the folder that holds the Rmd. Phase 2 is the trap: Run line or Ctrl+Enter sends the code to the Console, and the Console starts from the folder that holds the .Rproj, one level higher, so .. climbs into isa401 where there is no data folder. The error text is the real readxl message they will see. Phase 3 is the fix they should do once per session: Session, Set Working Directory, To Source File Location; the console echoes setwd() and the flag moves down to markdowns, so both routes now start in the same place. Phase 4 makes the point that this is about folders, not Excel: the csv lines follow the same rule. Use Step and 0.5x if the room needs it slower, or Pause on the error in Phase 2 and ask them to predict what .. points to before continuing.
+
+---
+
 # A Web-Served JSON File
 
 .left55[
@@ -8744,7 +9252,7 @@ Close the loop out loud: Monday&#39;s seven typed numbers, the 30,125-row CSV th
 
 # Data Import for Cybersecurity Game
 
-<countdown-timer class="countdown" id="timer_378a884f" minutes="6" seconds="0" update-every="1" tabindex="0" style="top:0;right:0;--countdown-font-size:2em;"></countdown-timer>
+<countdown-timer class="countdown" id="timer_97081d31" minutes="6" seconds="0" update-every="1" tabindex="0" style="top:0;right:0;--countdown-font-size:2em;"></countdown-timer>
 
 .panelset[
 
