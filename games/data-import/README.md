@@ -272,6 +272,7 @@ games/data-import/
   api/stage1.js    VPN sign-in log (CSV)
   api/stage2.js    shared-drive activity for ?key=ACCOUNT (JSON), alibis, hints
   api/finish.js    verdict, report, containment, replay link for ?code=NUMBER (JSON), hints
+  api/_report.js   best-effort POST to the Find Your Seat board (not a function: Vercel skips _ files)
   make_map.py      regenerates the coastline path inside replay.html (a helper, not part of the game)
   README.md        this file
 ```
@@ -294,6 +295,65 @@ and arc endpoints in the SVG (`viewBox 0 0 500 200`). Run
 `python make_map.py land-110m.json map_path.txt` and paste the output into
 the `d` attribute of the `<path clip-path="url(#mapclip)" ...>` element to
 regenerate it; there are no external assets at run time.
+
+## Seat board integration
+
+Since Class 05 the Heist shares its identity with the Find Your Seat opener
+(`games/find-your-seat`, spec in
+`docs/superpowers/specs/2026-09-02-find-your-seat-design.md`): a pair is the
+seat it sits in, and the projector board for the section lights that seat up
+as the pair clears each stage.
+
+**On the board.** In Heist mode the board counts over the seats that tapped
+in during the opener (its "present set"), so a present seat that has not yet
+fetched stage 1 shows as "here, not started"; tables glow when every present
+seat at them has cleared; the evidence chain under the plan keeps the deck's
+`ACCOUNT` and `NUMBER` placeholders, so the projector never shows the answers.
+See `games/find-your-seat/README.md`.
+
+**On the ticket page.** A "Your seat" card near the top holds a section
+toggle (A or B; `?section=B` in the page URL preselects B, otherwise A) and
+the plan of FSB 2050 (`games/find-your-seat/plan.svg`, inlined; regenerate it
+with `make_plan.py` and paste it in again if the plan changes). Tapping a seat
+stores `{section, seat}` in localStorage under `isa401-seat`, the key the
+opener uses, so a seat picked in the opener is already selected here. Once a
+seat is picked, every stage URL on the page (the three code lines and the
+"Open it in a new tab" links) carries `seat=L2-3&s=A`, so pairs copy
+personalized addresses. Without a seat the page and the URLs are exactly as
+before.
+
+**In the functions.** `api/stage1.js`, `api/stage2.js`, and `api/finish.js`
+accept two optional query parameters:
+
+| Param | Valid values | Meaning |
+|---|---|---|
+| `seat` | `L1-1` to `R3-7` (`/^[LR][1-3]-[1-7]$/`, case-insensitive: side of the aisle, row, position) | the pair's seat |
+| `s` | `A` or `B` | the section, which picks the board |
+
+Both must be present and valid or the request is treated as if they were
+absent; nothing is ever rejected because of them, and every response body is
+the same with or without them. When they are valid and the stage is genuinely
+reached, the function posts progress to the board:
+
+| Endpoint | Reports when | Level |
+|---|---|---|
+| `/api/stage1` | any fetch | 1 |
+| `/api/stage2` | the key is correct (`UNLOCKED`) | 2 |
+| `/api/finish` | the code is correct (`CLEARED`) | 4 (CLEARED) |
+
+The report is `POST https://isa401-find-your-seat.vercel.app/api/progress`
+with the JSON body `{section, seat, track: "heist", level, key}`, where
+`key` is the **`PROGRESS_KEY`** environment variable. Set the same value on
+both Vercel projects (`isa401-import-heist` and `isa401-find-your-seat`), for
+example with `npx vercel env add PROGRESS_KEY production` in each folder, then
+redeploy; the board rejects reports whose key does not match.
+
+**Best effort.** The helper in `api/_report.js` fires the POST, hands it to
+the runtime's `waitUntil` when one is available, and never awaits it: it
+cannot delay or fail a stage response. The request is abandoned after two
+seconds, malformed params are ignored silently, and every error is swallowed.
+If `PROGRESS_KEY` is unset the POST still goes out with an empty key and the
+board ignores it, so the game keeps working with no board at all.
 
 ## Deployment and maintenance
 

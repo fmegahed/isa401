@@ -35,15 +35,15 @@ ISA 401 teaches the complete business intelligence pipeline: acquiring data from
 | **02** | Mon 08/31 | R Foundations | [Slides](http://fmegahed.github.io/isa401/fall2026/class03/03_r_foundations.html) |
 | | Wed 09/02 | R Data Structures + Data Import & Export | [Slides](http://fmegahed.github.io/isa401/fall2026/class04/04_data_import_export.html) |
 | **03** | Mon 09/07 | *No Class - Labor Day* | |
-| | Wed 09/09 | Data Wrangling with dplyr | |
-| **04** | Mon 09/14 | Structured Data: APIs | |
-| | Wed 09/16 | Semi-Structured Data: Web Scraping I | |
-| **05** | Mon 09/21 | Semi-Structured Data: Web Scraping II | |
-| | Wed 09/23 | Semi-Structured Data: Web Scraping III | |
-| **06** | Mon 09/28 | Unstructured Data: LLM Text Extraction | |
-| | Wed 09/30 | Transformation: Tidy Data | |
-| **07** | Mon 10/05 | Technically Correct & Consistent Data | |
-| | Wed 10/07 | End-to-End Data Pipeline Example | |
+| | Wed 09/09 | Data Import II: Excel, JSON, SQLite, and Your First Deployed App | [Slides](http://fmegahed.github.io/isa401/fall2026/class05/05_data_import_apps.html) |
+| **04** | Mon 09/14 | Data Wrangling with dplyr | |
+| | Wed 09/16 | Structured Data: APIs | |
+| **05** | Mon 09/21 | Semi-Structured Data: Web Scraping I | |
+| | Wed 09/23 | Semi-Structured Data: Web Scraping II | |
+| **06** | Mon 09/28 | Semi-Structured Data: Web Scraping III | |
+| | Wed 09/30 | Unstructured Data: LLM Text Extraction | |
+| **07** | Mon 10/05 | Transformation: Tidy Data | |
+| | Wed 10/07 | Technically Correct & Consistent Data | |
 | **08** | Mon 10/12 | **Exam 01: Data Acquisition & Transformation** | |
 
 ### Phase II: Data Visualization & Communication

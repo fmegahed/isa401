@@ -1,0 +1,434 @@
+{
+  "briefing": "You are holding Miami University's campus as one R object: this briefing plus five very different places, so it is a named list, not a data frame. One of the places is the business school. Inside it, floors is a named list of four floors (\"0\" to \"3\", the first digit of every FSB room number). Each floor's rooms element is a data frame: one row per FSB room that hosts a Fall 2026 section, with isa_sections (ISA sections, from Miami's course export dated 2026-09-02) and all_sections (every subject, from Miami's course list). Three questions: (1) the business school's code, (2) the total number of Fall 2026 sections (sections field) on the floor that holds room 2050, (3) the number of Fall 2026 ISA sections meeting in FSB 2050. Answer them at https://isa401-find-your-seat.vercel.app/?section=A or ?section=B.",
+  "Yager": {
+    "name": "Yager Stadium",
+    "full_name": "Fred C. Yager Stadium",
+    "sport": "Football",
+    "opened": 1983,
+    "seating_capacity": 24286,
+    "source": {
+      "url": "https://miamiredhawks.com/facilities/yager-stadium/20",
+      "accessed": "2026-09-02"
+    }
+  },
+  "Millett": {
+    "name": "Millett Hall",
+    "full_name": "John D. Millett Hall",
+    "sports": [
+      "Men's basketball",
+      "Women's basketball",
+      "Volleyball"
+    ],
+    "opened": "December 2, 1968",
+    "seating_capacity": 9200,
+    "basketball_configuration_capacity": 6400,
+    "source": {
+      "url": "https://miamiredhawks.com/facilities/millett-hall/15",
+      "accessed": "2026-09-02"
+    }
+  },
+  "Upham": {
+    "name": "Upham Hall",
+    "what_it_is": "Academic building at the center of campus that houses the College of Arts and Science (the College's address is 143 Upham Hall).",
+    "arch_tradition": "Miami legend holds that if you kiss your true love under the Upham Hall Arch, you will marry and the bond will never be broken.",
+    "arch_source": {
+      "url": "https://miamioh.edu/about-miami/history-traditions/traditions/",
+      "accessed": "2026-09-02"
+    }
+  },
+  "Farmer": {
+    "name": "Farmer School of Business",
+    "code": "MUFSB",
+    "address": "800 East High Street, Oxford, OH 45056",
+    "opened": 2009,
+    "source": {
+      "url": "https://miamioh.edu/fsb/about/index.html",
+      "accessed": "2026-09-02"
+    },
+    "photo_credit": "Jay Murdock, Farmer School of Business",
+    "rooms_source": "isa_sections: Miami University course export of Fall 2026 ISA sections (term 202710), file dated 2026-09-02. all_sections and all_subjects: Miami course list (https://www.apps.miamioh.edu/courselist/), 2026-09-02 22:27:54 to 22:32:48 EDT (America/New_York).",
+    "floors": {
+      "0": {
+        "level": "0",
+        "feature": "FSB 0025, the largest reservable room on the ground level (capacity 153)",
+        "rooms": [
+          {
+            "room": "0003",
+            "isa_sections": 13,
+            "all_sections": 13,
+            "all_subjects": 1
+          },
+          {
+            "room": "0005",
+            "isa_sections": 1,
+            "all_sections": 12,
+            "all_subjects": 3
+          },
+          {
+            "room": "0012",
+            "isa_sections": 0,
+            "all_sections": 12,
+            "all_subjects": 2
+          },
+          {
+            "room": "0013",
+            "isa_sections": 0,
+            "all_sections": 13,
+            "all_subjects": 2
+          },
+          {
+            "room": "0014",
+            "isa_sections": 0,
+            "all_sections": 12,
+            "all_subjects": 2
+          },
+          {
+            "room": "0019",
+            "isa_sections": 0,
+            "all_sections": 18,
+            "all_subjects": 3
+          },
+          {
+            "room": "0021",
+            "isa_sections": 0,
+            "all_sections": 12,
+            "all_subjects": 1
+          },
+          {
+            "room": "0024",
+            "isa_sections": 0,
+            "all_sections": 14,
+            "all_subjects": 1
+          },
+          {
+            "room": "0025",
+            "isa_sections": 0,
+            "all_sections": 20,
+            "all_subjects": 4
+          },
+          {
+            "room": "0026",
+            "isa_sections": 0,
+            "all_sections": 11,
+            "all_subjects": 3
+          },
+          {
+            "room": "0027",
+            "isa_sections": 0,
+            "all_sections": 12,
+            "all_subjects": 2
+          },
+          {
+            "room": "0028",
+            "isa_sections": 0,
+            "all_sections": 16,
+            "all_subjects": 2
+          },
+          {
+            "room": "0031",
+            "isa_sections": 16,
+            "all_sections": 16,
+            "all_subjects": 1
+          },
+          {
+            "room": "0032",
+            "isa_sections": 0,
+            "all_sections": 21,
+            "all_subjects": 3
+          },
+          {
+            "room": "0033",
+            "isa_sections": 0,
+            "all_sections": 14,
+            "all_subjects": 1
+          },
+          {
+            "room": "0038",
+            "isa_sections": 0,
+            "all_sections": 14,
+            "all_subjects": 2
+          }
+        ],
+        "sections": 230
+      },
+      "1": {
+        "level": "1",
+        "feature": "Taylor Auditorium (FSB 1000), the building's 500-seat auditorium",
+        "rooms": [
+          {
+            "room": "1000",
+            "isa_sections": 0,
+            "all_sections": 12,
+            "all_subjects": 5
+          },
+          {
+            "room": "1006",
+            "isa_sections": 0,
+            "all_sections": 12,
+            "all_subjects": 1
+          },
+          {
+            "room": "1013",
+            "isa_sections": 0,
+            "all_sections": 13,
+            "all_subjects": 1
+          },
+          {
+            "room": "1014",
+            "isa_sections": 2,
+            "all_sections": 2,
+            "all_subjects": 1
+          },
+          {
+            "room": "1023",
+            "isa_sections": 5,
+            "all_sections": 15,
+            "all_subjects": 4
+          },
+          {
+            "room": "1035",
+            "isa_sections": 0,
+            "all_sections": 15,
+            "all_subjects": 2
+          }
+        ],
+        "sections": 69
+      },
+      "2": {
+        "level": "2",
+        "feature": "The two instructional computer labs, rooms 2037 and 2050 (plus the FSB IT office in 2036)",
+        "rooms": [
+          {
+            "room": "2037",
+            "isa_sections": 10,
+            "all_sections": 12,
+            "all_subjects": 2
+          },
+          {
+            "room": "2040",
+            "isa_sections": 0,
+            "all_sections": 12,
+            "all_subjects": 1
+          },
+          {
+            "room": "2041",
+            "isa_sections": 0,
+            "all_sections": 13,
+            "all_subjects": 2
+          },
+          {
+            "room": "2046",
+            "isa_sections": 0,
+            "all_sections": 16,
+            "all_subjects": 2
+          },
+          {
+            "room": "2049",
+            "isa_sections": 0,
+            "all_sections": 16,
+            "all_subjects": 3
+          },
+          {
+            "room": "2050",
+            "isa_sections": 11,
+            "all_sections": 11,
+            "all_subjects": 1
+          }
+        ],
+        "sections": 80,
+        "classes": [
+          {
+            "course": "ISA 303",
+            "section": "A",
+            "title": "Enterprise Systems",
+            "days": "TR",
+            "times": "11:40am-1:00pm",
+            "room": "2037"
+          },
+          {
+            "course": "ISA 444",
+            "section": "A",
+            "title": "Business Forecasting",
+            "days": "TR",
+            "times": "2:50pm-4:10pm",
+            "room": "2037"
+          },
+          {
+            "course": "ISA 491",
+            "section": "A",
+            "title": "Data Mining in Business",
+            "days": "TR",
+            "times": "1:15pm-2:35pm",
+            "room": "2037"
+          },
+          {
+            "course": "ISA 514",
+            "section": "A",
+            "title": "Managing Big Data",
+            "days": "MW",
+            "times": "11:40am-1:00pm",
+            "room": "2037"
+          },
+          {
+            "course": "ISA 514",
+            "section": "B",
+            "title": "Managing Big Data",
+            "days": "MW",
+            "times": "1:15pm-2:35pm",
+            "room": "2037"
+          },
+          {
+            "course": "ISA 544",
+            "section": "A",
+            "title": "Business Forecasting",
+            "days": "TR",
+            "times": "2:50pm-4:10pm",
+            "room": "2037"
+          },
+          {
+            "course": "ISA 591",
+            "section": "A",
+            "title": "Data Mining in Business",
+            "days": "MW",
+            "times": "8:30am-9:50am",
+            "room": "2037"
+          },
+          {
+            "course": "ISA 591",
+            "section": "B",
+            "title": "Data Mining in Business",
+            "days": "MW",
+            "times": "10:05am-11:25am",
+            "room": "2037"
+          },
+          {
+            "course": "ISA 612",
+            "section": "A",
+            "title": "Advanced Business Intelligence",
+            "days": "TR",
+            "times": "8:30am-9:50am",
+            "room": "2037"
+          },
+          {
+            "course": "ISA 612",
+            "section": "B",
+            "title": "Advanced Business Intelligence",
+            "days": "TR",
+            "times": "10:05am-11:25am",
+            "room": "2037"
+          },
+          {
+            "course": "ISA 321",
+            "section": "B",
+            "title": "Optimization in Bus. Analytics",
+            "days": "TR",
+            "times": "8:30am-9:50am",
+            "room": "2050"
+          },
+          {
+            "course": "ISA 345",
+            "section": "A",
+            "title": "Database Systems",
+            "days": "TR",
+            "times": "1:15pm-2:35pm",
+            "room": "2050"
+          },
+          {
+            "course": "ISA 345",
+            "section": "B",
+            "title": "Database Systems",
+            "days": "TR",
+            "times": "2:50pm-4:10pm",
+            "room": "2050"
+          },
+          {
+            "course": "ISA 381",
+            "section": "B",
+            "title": "Business Programming",
+            "days": "MW",
+            "times": "2:50pm-4:10pm",
+            "room": "2050"
+          },
+          {
+            "course": "ISA 381",
+            "section": "C",
+            "title": "Business Programming",
+            "days": "MW",
+            "times": "4:25pm-5:45pm",
+            "room": "2050"
+          },
+          {
+            "course": "ISA 401",
+            "section": "A",
+            "title": "BI & Data Visualization",
+            "days": "MW",
+            "times": "8:30am-9:50am",
+            "room": "2050"
+          },
+          {
+            "course": "ISA 401",
+            "section": "B",
+            "title": "BI & Data Visualization",
+            "days": "MW",
+            "times": "10:05am-11:25am",
+            "room": "2050"
+          },
+          {
+            "course": "ISA 414",
+            "section": "A",
+            "title": "Managing Big Data",
+            "days": "MW",
+            "times": "11:40am-1:00pm",
+            "room": "2050"
+          },
+          {
+            "course": "ISA 414",
+            "section": "C",
+            "title": "Managing Big Data",
+            "days": "MW",
+            "times": "1:15pm-2:35pm",
+            "room": "2050"
+          },
+          {
+            "course": "ISA 634",
+            "section": "A",
+            "title": "Modeling & Optimization",
+            "days": "TR",
+            "times": "10:05am-11:25am",
+            "room": "2050"
+          },
+          {
+            "course": "ISA 634",
+            "section": "B",
+            "title": "Modeling & Optimization",
+            "days": "TR",
+            "times": "11:40am-1:00pm",
+            "room": "2050"
+          }
+        ]
+      },
+      "3": {
+        "level": "3",
+        "feature": "The Dean's office, Suite 3075",
+        "rooms": [
+          {
+            "room": "3061",
+            "isa_sections": 0,
+            "all_sections": 9,
+            "all_subjects": 2
+          }
+        ],
+        "sections": 9
+      }
+    }
+  },
+  "King": {
+    "name": "King Library",
+    "what_it_is": "The flagship of the Miami University Libraries and the scholarly hub of Oxford campus life.",
+    "street_address": "151 S. Campus Ave, Oxford, OH 45056",
+    "source": {
+      "url": "https://www.lib.miamioh.edu/about/locations/king-library/",
+      "accessed": "2026-09-02"
+    }
+  }
+}

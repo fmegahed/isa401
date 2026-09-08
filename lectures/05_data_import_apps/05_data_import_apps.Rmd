@@ -1,0 +1,1718 @@
+---
+title: "ISA 401: Business Intelligence & Data Visualization"
+subtitle: "05: Data Import II, SQLite, and Your First Deployed App"
+author: '<br>Fadel M. Megahed, PhD <br><br> Raymond E. Glos Professor in Business <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("linkedin"), fill = "white")` @Fadel Megahed](https://www.linkedin.com/in/fadel-megahed-289046b4) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
+date: "Fall 2026"
+output:
+  xaringan::moon_reader:
+    self_contained: true
+    css: [default, "../../style_files/fonts.css", "../../style_files/my-theme.css", "../../style_files/code-tomorrow-night-bright.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: magula
+      highlightLines: true
+      highlightLanguage: ["r"]
+      countIncrementalSlides: false
+      ratio: "16:9"
+    includes:
+      in_header: "../../style_files/header.html"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache = FALSE,
+                      echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE,
+                      progress = FALSE,
+                      verbose = FALSE,
+                      dev = 'png',
+                      fig.height = 3,
+                      dpi = 300,
+                      fig.align = 'center')
+
+options(htmltools.dir.version = FALSE, width = 52)
+
+miamired = '#C3142D'
+
+if(require(pacman)==FALSE) install.packages("pacman")
+if(require(devtools)==FALSE) install.packages("devtools")
+if(require(countdown)==FALSE) devtools::install_github("gadenbuie/countdown")
+if(require(xaringanExtra)==FALSE) devtools::install_github("gadenbuie/xaringanExtra")
+if(require(emo)==FALSE) devtools::install_github("hadley/emo")
+
+pacman::p_load(tidyverse, magrittr, lubridate, janitor, # data analysis pkgs
+               readxl, writexl, jsonlite, DBI, RSQLite, # import and export pkgs
+               scales, # for the comma function
+               fontawesome, emo, xaringanExtra, countdown) # for slides
+
+ggplot2::theme_set(ggplot2::theme_bw(base_size = 12))
+
+# Code styling shared by all ISA 401 decks: hl_r() + knitr source hook (see style_files/hl_r.R)
+source("../../style_files/hl_r.R")
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+if(require(xaringanthemer) == FALSE) install.packages("xaringanthemer")
+library(xaringanthemer)
+
+style_mono_accent(base_color = "#84d6d3",
+                  base_font_size = "20px")
+
+xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "tachyons", "panelset", "broadcast", "share_again", "search", "fit_screen", "editable"))
+
+xaringanExtra::use_clipboard(button_text = paste0(fontawesome::fa("clipboard", fill = "#dedede", height = "0.9em"), " Copy"), success_text = paste0(fontawesome::fa("check", fill = "#b9ca4a", height = "0.9em"), " Copied"))
+
+xaringanExtra::use_extra_styles(
+  hover_code_line = TRUE,
+  mute_unhighlighted_code = TRUE
+)
+```
+
+<style>
+.code-sm .rcode { font-size: 78% !important; } .code-md .rcode { font-size: 90% !important; }
+.rcode { position: relative; padding-top: 18px !important; }
+.rcode .xaringanextra-clipboard-button { display: block !important; opacity: 0.55; top: 0; right: 4px; padding: 2px 6px; font-size: 11px; font-family: Lato, sans-serif; color: #dedede; cursor: pointer; }
+.rcode .xaringanextra-clipboard-button:hover { opacity: 1; }
+.airy .rout { margin: 2px 0 20px 0 !important; }
+</style>
+
+
+
+# Before We Start
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:16px;">
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">1 &nbsp; Join today's Zoom</div>
+    <div style="padding:12px 14px; font-size:14px; line-height:1.5;">
+      Use the Zoom link in the <a href="https://miamioh.instructure.com/courses/258169/modules/981092" target="_blank"><b>Week 0 Module</b></a> on Canvas. <b>Mute</b> your mic and <b>turn off</b> your video.<br>
+      <span style="color:#585E60;">Log in from the <span style="background:#ffe58f; padding:0 5px; border-radius:4px; font-weight:600;">lab's computer</span> so you can <span style="background:#ffe58f; padding:0 5px; border-radius:4px; font-weight:600;">share your screen</span> if you need help with an error.</span>
+    </div>
+  </div>
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">2 &nbsp; Open the project</div>
+    <div style="padding:12px 14px; font-size:14px; line-height:1.5;">
+      <b>GitHub Desktop</b> &rarr; <code>business_intelligence</code> &rarr; <b>Fetch origin</b>. Then double-click <span style="background:#ffe58f; padding:0 5px; border-radius:4px; font-weight:600;">business_intelligence.Rproj</span>.<br>
+      <span style="color:#585E60;">Top right corner of RStudio must say <code>business_intelligence</code> before you type anything.</span>
+    </div>
+  </div>
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">3 &nbsp; Start today's markdown</div>
+    <div style="padding:12px 14px; font-size:14px; line-height:1.5;">
+      <b>File &rarr; New File &rarr; R Markdown...</b>, title <i>Class 05</i>, <b>OK</b>. Delete everything below the setup chunk, then save as <span style="background:#ffe58f; padding:0 5px; border-radius:4px; font-weight:600;">markdowns/class05.Rmd</span>.<br>
+      <span style="color:#585E60;">Same as last Wednesday. Your <code>class04.Rmd</code> stays as it is.</span>
+    </div>
+  </div>
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">4 &nbsp; Pick your seat</div>
+    <div style="padding:12px 14px; font-size:14px; line-height:1.5;">
+      Open your section's page (link on the Game 1 slide) and <b>tap the seat you are in</b>. Your seat will be used to represent you in two games in today's class.<br>
+      <span style="color:#585E60;">You play on your own; helping a neighbor is allowed and encouraged.</span>
+    </div>
+  </div>
+</div>
+
+<div style="text-align:center; margin-top:18px; font-size:14px; color:#585E60;">Done early? <b style="color:#c3142d;">Help the person next to you.</b> Stuck? <b style="color:#c3142d;">Share your screen on Zoom</b> and we fix it together.</div>
+
+???
+
+Three to four minutes. Card 2 is the ritual's first step; anyone who opened plain RStudio instead of the project will hit path errors in Part 2, so walk the room and check top right corners. Card 3 is the third time they create a class markdown, so expect it to go quickly; the trip-up is still saving outside markdowns/. Card 4: have the board open on the projector already, so seats start lighting up while they settle; that sells the game before it is explained.
+
+---
+
+# Learning Objectives for Today's Class
+
+- **Import** data from an **Excel workbook**, a **web-served JSON file**, and a **SQLite database file**; run `dplyr::glimpse()` on each.
+
+- **Export** results with `write_csv()` and `write_xlsx()`, then **knit and push** code, data, and output together.
+
+- **Build** a `querychat` app on the Job Scout data and **deploy** it to **Hugging Face Spaces**.
+
+- **Explain** what a **data dictionary** adds to an app that turns questions into SQL.
+
+<div style="display:flex; gap:0; margin-top:22px; align-items:stretch; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+  <div style="flex:1; padding:9px 10px; background:#fcfcfc; border-right:1px solid #d1d5db;">
+    <div style="font-size:11px; color:#585E60; text-transform:uppercase; font-weight:700;">Part 1</div>
+    <div style="font-weight:700; font-size:14px; color:#c3142d;">Find Your Seat</div>
+    <div style="font-size:11.5px; color:#585E60;">Subsetting, live on the board</div>
+  </div>
+  <div style="flex:1; padding:9px 10px; background:#fcfcfc; border-right:1px solid #d1d5db;">
+    <div style="font-size:11px; color:#585E60; text-transform:uppercase; font-weight:700;">Part 2</div>
+    <div style="font-weight:700; font-size:14px; color:#c3142d;">Files on disk</div>
+    <div style="font-size:11.5px; color:#585E60;">CSV, Excel, JSON, the Heist</div>
+  </div>
+  <div style="flex:1; padding:9px 10px; background:#fcfcfc; border-right:1px solid #d1d5db;">
+    <div style="font-size:11px; color:#585E60; text-transform:uppercase; font-weight:700;">Part 3</div>
+    <div style="font-weight:700; font-size:14px; color:#c3142d;">A database file</div>
+    <div style="font-size:11.5px; color:#585E60;">scout.db, 1,891 postings</div>
+  </div>
+  <div style="flex:1; padding:9px 10px; background:#fcfcfc; border-right:1px solid #d1d5db;">
+    <div style="font-size:11px; color:#585E60; text-transform:uppercase; font-weight:700;">Part 4</div>
+    <div style="font-weight:700; font-size:14px; color:#c3142d;">Export</div>
+    <div style="font-size:11.5px; color:#585E60;">Snapshots you can share</div>
+  </div>
+  <div style="flex:1; padding:9px 10px; background:#fcfcfc;">
+    <div style="font-size:11px; color:#585E60; text-transform:uppercase; font-weight:700;">Part 5</div>
+    <div style="font-weight:700; font-size:14px; color:#c3142d;">Your first app</div>
+    <div style="font-size:11.5px; color:#585E60;">querychat on Hugging Face</div>
+  </div>
+</div>
+
+???
+
+Four objectives, five parts. Parts 2 and 4 are last Wednesday's slides, reordered so the file-path animation comes before the read_excel() code; anyone who read ahead has seen them. Part 3 is new and short. Part 5 is the payoff and needs forty minutes; if Part 2 runs long, cut the Heist debrief rather than the deploy.
+
+---
+
+class: inverse, center, middle
+
+# Part 1: Find Your Seat
+
+---
+
+# Game 1: Find Your Seat
+
+`r countdown(minutes = 5, seconds = 0, top = 0, font_size = "2em")`
+
+.left55[
+
+<div style="display:flex; gap:14px; align-items:stretch;">
+  <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1); text-align:center;">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">Section A</div>
+    <div style="padding:18px 10px;"><a href="https://isa401-find-your-seat.vercel.app/?section=A" target="_blank" style="font-family:'Source Code Pro', monospace; font-size:14px; font-weight:700; color:#c3142d; white-space:nowrap;">isa401-find-your-seat.vercel.app<br>/?section=A</a><div style="font-size:12px; color:#585E60; margin-top:8px;">Open it in your browser on this computer.</div></div>
+  </div>
+  <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1); text-align:center;">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">Section B</div>
+    <div style="padding:18px 10px;"><a href="https://isa401-find-your-seat.vercel.app/?section=B" target="_blank" style="font-family:'Source Code Pro', monospace; font-size:14px; font-weight:700; color:#c3142d; white-space:nowrap;">isa401-find-your-seat.vercel.app<br>/?section=B</a><div style="font-size:12px; color:#585E60; margin-top:8px;">Open it in your browser on this computer.</div></div>
+  </div>
+</div>
+
+```{r fys_line, eval=FALSE, hl.size="60%"}
+campus = jsonlite::fromJSON(
+  "https://isa401-find-your-seat.vercel.app/campus.json")
+```
+
+]
+
+.right43[
+<div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+  <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">One object, four brackets, your seat</div>
+  <div style="padding:10px 14px; font-size:13.5px; line-height:1.6;">
+    <div><b>0.</b> Tap the seat you are in.</div>
+    <div><b>1.</b> One element of <code>campus</code> is the business school. Its <code>code</code> field.</div>
+    <div><b>2.</b> On the floor that holds room 2050, how many Fall 2026 sections meet? Its <code>sections</code> field.</div>
+    <div><b>3.</b> How many Fall 2026 ISA sections meet in 2050?</div>
+    <div style="margin-top:6px; color:#585E60;">Every answer is one subsetting line on <code>campus</code>. Wrong answers get a hint.</div>
+  </div>
+</div>
+<div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:10px 14px; background:#fdf2f2; font-size:13.5px; line-height:1.55; margin-top:12px;">
+<b>Look up.</b> The projector shows this room. Your seat brightens as you clear each level and turns red when you arrive, with your finish rank.
+</div>
+]
+
+<div style="clear:both;"></div>
+
+???
+
+Five minutes, individually, in class05.Rmd; the finish sequence and the replay are the debrief, so the clock is tight on purpose. Before class: open the board in a second browser window on the projector: https://isa401-find-your-seat.vercel.app/board?section=A&mode=opener&key=fall2026 (section=B for the second section). Click Start a new run twice to reset that section, click Sound on once, press F for fullscreen, then put the board on screen while they settle: until the first tap it shows the section's QR code and the fromJSON line. Amber halos mark seats stuck on a level for 75 seconds or more; go to them. The projector cuts to a full-screen photo for four seconds each time the room's median clears a level. The section matters: A and B keep separate boards, and the reset only clears one. The board counts only seats that tapped in, so absences do not matter; tables glow when everyone present at them has arrived (no table ranking), the photo and the code chain under the plan follow the room's median level, and the finish sequence fires by itself when every present seat has arrived (or press Celebrate). Replay run shows the five minutes at 30x for the debrief.
+
+What the levels drill, in order: level 1 is double versus single brackets on a list (the hint for NULL says single bracket keeps the shaker); level 2 is name versus position on a named list (the answer is the floor's sections total; typing floor "1"'s total gets the trap hint: floors[[2]] is floor "1" because "0" comes first, and typing 2 gets told that is the floor's name, not its sections field); level 3 is the data-frame bracket, with hints for nrow, the floor sum, and the other room's count. The finish page shows the bracket chain next to its dplyr twin and the classes data frame, which has both ISA 401 sections in it.
+
+Watch the board rather than the room: seats stuck at "FSB found" are students who typed floors[[2]]. When most seats are red, or at five minutes, move to the next slide and read the middle column of the table out loud. Early finishers: ask them to find their own class in campus$Farmer$floors[["2"]]$classes. The building's element is named Farmer on purpose, so listing the element names does not hand them the code.
+
+---
+
+class: table80
+
+# One Table for Three Brackets
+
+<div style="font-size:14.5px; color:#1b1b1b; margin:0 0 10px 0;">What comes back depends on the object and on the bracket. Read across a row for one object, down a column for one bracket.</div>
+
+| Object | <span style="color:#fff; font-family:'Source Code Pro', monospace;">[ ]</span> | <span style="color:#fff; font-family:'Source Code Pro', monospace;">[[ ]]</span> | <span style="color:#fff; font-family:'Source Code Pro', monospace;">$</span> |
+|:--|:--|:--|:--|
+| **Vector** `crashes_by_day` | a shorter **vector** | one element (rarely needed) | not allowed |
+| **List** `example_list`, `job` | a shorter **list** | one element, whatever it is | one **named** element, same as `[["name"]]` |
+| **Data frame** `crashes_df` | a smaller **data frame** `[rows, columns]` | one column as a **vector** | one column as a **vector** |
+
+<div style="margin-top:18px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:12px 18px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:15.5px; line-height:1.6; color:#1b1b1b;">
+<b style="color:#c3142d;">The Pepper Shaker rule</b>
+<ul style="margin:6px 0 0 0; padding-left:22px;">
+<li><code>[ ]</code> <b>keeps the container</b>: a smaller vector, list, or data frame of the same kind.</li>
+<li><code>[[ ]]</code> and <code>$</code> <b>open the container</b>: you get what is inside.</li>
+<li>One bracket is still a shaker, two brackets is the packet. Say it that way and you will not forget it.</li>
+</ul>
+</div>
+
+???
+
+This is the reference slide; they will come back to it. Read the middle column: single bracket on a list is still a list, on a data frame still a data frame. Then the last two columns: opening the container. The one surprise is that the dollar sign does not work on a plain vector.
+
+---
+
+class: inverse, center, middle
+
+# Part 2: Files on Disk
+
+---
+
+```{r fred_setup, include=FALSE}
+fred_url = paste0(
+  "https://fred.stlouisfed.org/graph/fredgraph.csv",
+  "?id=IHLIDXUSOH&cosd=2021-08-21&coed=2026-08-21")
+if (!file.exists("../../data/fredgraph.csv")) download.file(fred_url, "../../data/fredgraph.csv", mode = "wb")
+from_web  = readr::read_csv(fred_url, show_col_types = FALSE)
+from_disk = readr::read_csv("../../data/fredgraph.csv", show_col_types = FALSE)
+ohio_postings = from_disk
+```
+# Excel: Download First, Then Read
+
+.left55[
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:9px 14px; margin-bottom:8px; background:#fcfcfc; font-size:13.5px; line-height:1.5;"><b style="color:#c3142d;">1 &nbsp; Find the table in your browser.</b> BLS Employment Projections &rarr; <a href="https://www.bls.gov/emp/tables/fastest-growing-occupations.htm" target="_blank"><b>Fastest growing occupations</b></a> &rarr; the <b>Other available formats: (XLSX)</b> link at the top.</div>
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:9px 14px; margin-bottom:8px; background:#fcfcfc; font-size:13.5px; line-height:1.5;"><b style="color:#c3142d;">2 &nbsp; Save it into your project.</b> The file is <code>occupation.xlsx</code>. In the save dialog, browse to the <b>top level of your repo</b> (next to <code>markdowns</code>, not inside it), click <b>New Folder</b>, name it <code>data</code>, and save inside it.</div>
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:9px 14px; background:#fcfcfc; font-size:13.5px; line-height:1.5;"><b style="color:#c3142d;">3 &nbsp; Read it with a relative path.</b> <code>readxl::read_excel("../data/occupation.xlsx")</code>: from your markdown, up one level (<code>..</code>), then into <code>data/</code>. The next slide shows why that path works from Knit but not from the Console, then we read the file. The same line works on the lab PC, your laptop, and my machine when I grade.</div>
+]
+
+.right43[
+<div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:12px 14px; background:#fdf2f2; font-size:14px; line-height:1.6;">
+<div style="font-weight:700; color:#c3142d; font-size:15px;">Why the download this time?</div>
+<div style="margin-top:6px;"><code>read_excel()</code> <b>cannot read a URL</b>: a workbook has to be a file on disk.</div>
+<div style="margin-top:4px;">And BLS <b>turns away scripted downloads</b>: a browser gets the file, a script gets a 403 error page.</div>
+</div>
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.6; margin-top:12px;">
+<div style="font-weight:700; color:#c3142d; font-size:15px;">This is the project paying off</div>
+<div style="margin-top:6px;">The file lives in <code>data/</code>, the code in <code>markdowns/</code>, both in the repo, both pushed. Whoever clones it can re-run everything with no path edits.</div>
+</div>
+]
+
+<div style="clear:both;"></div>
+
+???
+
+Do the download live on the projector; it is fifteen seconds. The two reasons in the red card are honest and worth saying plainly: readxl has no URL support by design, and BLS blocks non-browser clients, so the browser-then-data-folder route is the real workflow, not a classroom simplification. This is where the data/ folder gets made if it does not exist yet; walk the room on the New Folder step.
+
+---
+
+# File Paths: Two Potential Starting Folders
+
+<!-- WDEMO-SLIDE-START -->
+<style>
+.wdemo { font-size: 15px; line-height: 1.45; font-family: 'Noto Sans', 'Roboto', Arial, sans-serif; color: #272822; text-align: left; }
+.wdemo-top { display: flex; gap: 18px; align-items: stretch; }
+.wdemo-ide { flex: 0 0 500px; width: 500px; }
+.wdemo-tree { flex: 1 1 auto; border: 1px solid #d1d5db; border-radius: 8px; background: #fcfcfc; box-shadow: 0 1px 3px rgba(0,0,0,.08); padding: 8px 6px 2px 6px; }
+.wdemo-tree svg { display: block; width: 100%; height: auto; font-family: 'Source Code Pro', monospace; font-size: 14px; }
+.wdemo .rs { position: relative; height: 100%; display: flex; flex-direction: column; box-sizing: border-box; background: #2b2b2b; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,.25); font-size: 13px; color: #d5d5d5; }
+.wdemo .rs-menu { display: flex; gap: 8px; padding: 5px 10px; background: #353535; font-size: 12.5px; color: #cfcfcf; border-bottom: 1px solid #1e1e1e; border-radius: 8px 8px 0 0; }
+.wdemo .rs-menu span { padding: 1px 6px; border-radius: 4px; }
+.wdemo .rs-menu span.hot { background: #c3142d; color: #fff; }
+.wdemo .rs-tabs { display: flex; align-items: center; background: #333; border-bottom: 1px solid #1e1e1e; }
+.wdemo .rs-tab { padding: 6px 14px; background: #222; color: #eee; font-size: 12.5px; border-right: 1px solid #1e1e1e; }
+.wdemo .rs-btns { margin-left: auto; display: flex; gap: 8px; padding: 3px 10px; }
+.wdemo .rsb { position: relative; border: 1px solid #5a5a5a; background: #3a3a3a; color: #eee; border-radius: 5px; padding: 3px 10px; font: inherit; font-size: 12.5px; display: inline-flex; align-items: center; gap: 6px; }
+.wdemo .rsb .tri { width: 0; height: 0; border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-left: 8px solid #6fbf73; }
+.wdemo .rsb .caret { width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 5px solid #bbb; }
+.wdemo .rsb.press { animation: wdPress 1.1s ease-out 1; background: #c3142d; border-color: #c3142d; color: #fff; }
+@keyframes wdPress { 0% { box-shadow: 0 0 0 0 rgba(195,20,45,.8); } 100% { box-shadow: 0 0 0 14px rgba(195,20,45,0); } }
+.wdemo .rs-editor { background: #222; padding: 10px 0 10px 0; font-family: 'Source Code Pro', monospace; font-size: 13px; min-height: 88px; }
+.wdemo .rs-line { display: flex; white-space: nowrap; color: #dedede; line-height: 1.6; }
+.wdemo .rs-line .ln { width: 30px; flex: 0 0 30px; text-align: right; padding-right: 10px; color: #6b6b6b; }
+.wdemo .rs-line.hidden-line { display: none; }
+.wdemo .rs-line .op { color: #70c0b1; } .wdemo .rs-line .pkg { color: #e7c547; } .wdemo .rs-line .fnc { color: #7aa6da; } .wdemo .rs-line .br { color: #ed90a4; } .wdemo .rs-line .str { color: #b9ca4a; }
+.wdemo .tok { padding: 1px 1px; border-bottom: 3px solid transparent; transition: background .3s, border-color .3s, opacity .3s; }
+.wdemo .tok.on { background: rgba(255,255,255,.14); border-bottom-color: #3b6ea5; }
+.wdemo .tok.ok { border-bottom-color: #6fbf73; }
+.wdemo .tok.bad { border-bottom-color: #ff5f5f; background: rgba(255,95,95,.25); }
+.wdemo .tok.dim { opacity: .35; }
+.wdemo .seg { padding: 1px 1px; border-radius: 3px; transition: background .4s; }
+.wdemo .seg.ok { background: rgba(111,191,115,.30); }
+.wdemo .rs-panetabs { display: flex; background: #333; border-top: 1px solid #1e1e1e; border-bottom: 1px solid #1e1e1e; font-size: 12.5px; }
+.wdemo .rs-panetabs span { padding: 5px 14px; color: #aaa; }
+.wdemo .rs-panetabs span.on { background: #1b1b1b; color: #eee; }
+.wdemo .rs-console { flex: 1 1 auto; background: #1b1b1b; padding: 8px 12px; font-family: 'Source Code Pro', monospace; font-size: 12px; min-height: 112px; line-height: 1.55; white-space: pre-wrap; border-radius: 0 0 8px 8px; }
+.wdemo .cl { opacity: 0; transform: translateY(4px); transition: opacity .3s, transform .3s; }
+.wdemo .cl.on { opacity: 1; transform: none; }
+.wdemo .cl .pr { color: #70c0b1; }
+.wdemo .cl.out { color: #b0b0b0; }
+.wdemo .cl.err { color: #ff6b6b; }
+.wdemo .cl.info { color: #8fa9c9; }
+.wdemo .cl.blink { color: #70c0b1; animation: wdCaret 1s steps(1) infinite; }
+@keyframes wdCaret { 50% { opacity: .2; } }
+.wdemo .rs-dd { position: absolute; top: 27px; left: 0; background: #f4f4f4; color: #222; border: 1px solid #b9b9b9; box-shadow: 0 4px 12px rgba(0,0,0,.35); font-size: 12px; min-width: 150px; padding: 4px 0; opacity: 0; pointer-events: none; transition: opacity .25s; z-index: 5; }
+.wdemo .rs-dd.show { opacity: 1; }
+.wdemo .rs-dd div { padding: 4px 22px 4px 12px; white-space: nowrap; position: relative; }
+.wdemo .rs-dd div.sep { border-top: 1px solid #ccc; padding: 0; margin: 4px 0; }
+.wdemo .rs-dd div.hot { background: #c3142d; color: #fff; }
+.wdemo .rs-dd div.arrow:after { content: ""; position: absolute; right: 8px; top: 9px; border-top: 4px solid transparent; border-bottom: 4px solid transparent; border-left: 5px solid currentColor; }
+.wdemo .rs-dd .rs-sub { position: absolute; right: 100%; top: -5px; padding: 4px 0; background: #f4f4f4; color: #222; border: 1px solid #b9b9b9; box-shadow: 0 4px 12px rgba(0,0,0,.35); min-width: 160px; padding: 4px 0; opacity: 0; transition: opacity .25s; }
+.wdemo .rs-dd .rs-sub.show { opacity: 1; }
+.wdemo-bottom { display: flex; flex-direction: column; gap: 9px; margin-top: 12px; }
+.wdemo .phases { display: flex; flex-direction: row; gap: 8px; align-items: center; flex-wrap: nowrap; }
+.wdemo .ph { border: 1px solid #d1d5db; background: #fff; color: #585E60; border-radius: 7px; padding: 4px 10px; font: inherit; font-size: 13px; text-align: left; display: flex; align-items: center; gap: 7px; cursor: pointer; white-space: nowrap; line-height: 1.4; }
+.wdemo .ph b { display: inline-block; width: 19px; height: 19px; border-radius: 50%; border: 1px solid #c3142d; color: #c3142d; font-size: 11.5px; text-align: center; line-height: 19px; flex: 0 0 19px; }
+.wdemo .ph.active { background: #c3142d; border-color: #c3142d; color: #fff; }
+.wdemo .ph.active b { background: #fff; }
+.wdemo .ph.done b { background: #c3142d; color: #fff; }
+.wdemo .ctl { margin-left: auto; display: flex; align-items: center; gap: 6px; }
+.wdemo .cb { border: 1px solid #585E60; background: #fff; color: #272822; border-radius: 7px; padding: 4px 11px; font: inherit; font-size: 13px; cursor: pointer; min-width: 64px; line-height: 1.4; }
+.wdemo .cb.primary { background: #585E60; color: #fff; }
+.wdemo .spd { display: inline-flex; border: 1px solid #d1d5db; border-radius: 7px; overflow: hidden; margin-left: 6px; }
+.wdemo .sb { border: 0; background: #fff; color: #585E60; padding: 4px 9px; font: inherit; font-size: 12.5px; cursor: pointer; border-right: 1px solid #d1d5db; line-height: 1.4; }
+.wdemo .sb.last { border-right: 0; }
+.wdemo .sb.on { background: #585E60; color: #fff; }
+.wdemo .ph.all { color: #585E60; }
+.wdemo .caption { min-height: 70px; box-sizing: border-box; border: 1px solid #c3142d; border-left: 5px solid #c3142d; border-radius: 8px; background: #fdf2f2; padding: 9px 16px; font-size: 15.5px; line-height: 1.45; display: flex; flex-direction: column; justify-content: center; }
+.wdemo .caption .big { font-weight: 700; color: #c3142d; font-size: 16.5px; opacity: 0; transition: opacity .35s; }
+.wdemo .caption .small { color: #272822; margin-top: 3px; opacity: 0; transition: opacity .35s; min-height: 22px; }
+.wdemo .caption .big.on, .wdemo .caption .small.on { opacity: 1; }
+.wdemo .caption code { font-family: 'Source Code Pro', monospace; font-size: 14px; background: rgba(0,0,0,.05); padding: 0 4px; border-radius: 3px; color: #272822; }
+.wdemo .t-nm { fill: #272822; }
+.wdemo .t-an { fill: #8a9096; font-family: 'Noto Sans', 'Roboto', Arial, sans-serif; font-size: 12.5px; }
+.wdemo .t-ln { stroke: #cfd4da; stroke-width: 1.5; fill: none; }
+.wdemo .t-fo { fill: #f3d27a; stroke: #b8952c; stroke-width: 1; }
+.wdemo .t-dr { fill: #cfd8e3; stroke: #7d8da3; stroke-width: 1; }
+.wdemo .t-fi { fill: #fff; stroke: #8a9096; stroke-width: 1.2; }
+.wdemo .node.ok .t-nm { fill: #2e8b57; font-weight: 600; }
+.wdemo .node.ok .t-fo { fill: #bfe3c9; stroke: #2e8b57; }
+.wdemo .node.ok .t-fi { stroke: #2e8b57; fill: #e8f5ec; }
+.wdemo .walker { fill: rgba(59,110,165,.10); stroke: #3b6ea5; stroke-width: 1.6; opacity: 0; transition: transform .6s cubic-bezier(.4,0,.2,1), opacity .3s, stroke .3s, fill .3s; }
+.wdemo .walker.show { opacity: 1; }
+.wdemo .walker.ok { stroke: #2e8b57; fill: rgba(46,139,87,.10); }
+.wdemo .walker.bad { stroke: #c3142d; fill: rgba(195,20,45,.08); stroke-dasharray: 5 4; }
+.wdemo .chip { opacity: 0; transition: transform .6s cubic-bezier(.4,0,.2,1), opacity .3s; }
+.wdemo .chip.show { opacity: 1; }
+.wdemo .chip rect { fill: #3b6ea5; }
+.wdemo .chip text { fill: #fff; font-size: 11.5px; font-weight: 600; text-anchor: middle; }
+.wdemo .chip.ok rect { fill: #2e8b57; }
+.wdemo .chip.bad rect { fill: #c3142d; }
+.wdemo .hop { stroke: #3b6ea5; stroke-width: 2; fill: none; opacity: 0; transition: stroke-dashoffset .55s ease-out, opacity .2s; }
+.wdemo .hop.show { opacity: 1; }
+.wdemo .pin { opacity: 0; transition: transform .7s cubic-bezier(.4,0,.2,1), opacity .3s; }
+.wdemo .pin.show { opacity: 1; }
+.wdemo .pin path { fill: #c3142d; }
+.wdemo .pin text { fill: #fff; font-family: 'Noto Sans', 'Roboto', Arial, sans-serif; font-size: 12px; font-weight: 700; }
+.wdemo .ghost { opacity: 0; transition: opacity .35s; }
+.wdemo .ghost.show { opacity: 1; }
+.wdemo .ghost .t-fo { fill: none; stroke: #c3142d; stroke-dasharray: 3 3; }
+.wdemo .ghost .t-nm { fill: #c3142d; }
+.wdemo .ghost .t-an { fill: #c3142d; }
+.wdemo .t-legend { fill: #8a9096; font-family: 'Noto Sans', 'Roboto', Arial, sans-serif; font-size: 12px; }
+</style>
+<div class="wdemo" id="wdemo">
+<div class="wdemo-top">
+<div class="wdemo-ide">
+<div class="rs">
+<div class="rs-menu"><span>File</span><span>Edit</span><span>Code</span><span>View</span><span id="m-session">Session</span><span>Build</span><span>Tools</span><span>Help</span></div>
+<div class="rs-tabs">
+<span class="rs-tab">class05.Rmd</span>
+<div class="rs-btns">
+<button class="rsb" id="btn-knit">Knit <i class="caret"></i></button>
+<button class="rsb" id="btn-run"><i class="tri"></i>Run</button>
+</div>
+</div>
+<div class="rs-editor">
+<div class="rs-line"><span class="ln">1</span><span>fastest <span class="op">=</span> <span class="pkg">readxl</span><span class="op">::</span><span class="fnc">read_excel</span><span class="br">(</span><span class="str">"<span class="seg" id="seg1"><span class="tok" id="tk-up">..</span>/<span class="tok" id="tk-data">data</span>/</span><span class="tok" id="tk-file">occupation.xlsx</span>"</span><span class="br">)</span></span></div>
+<div class="rs-line hidden-line" id="line2"><span class="ln">2</span><span>postings <span class="op">=</span> <span class="pkg">readr</span><span class="op">::</span><span class="fnc">read_csv</span><span class="br">(</span><span class="str">"<span class="seg" id="seg2">../data/</span>ohio_job_postings.csv"</span><span class="br">)</span></span></div>
+<div class="rs-line hidden-line" id="line3"><span class="ln">3</span><span>crashes <span class="op">=</span> <span class="pkg">readr</span><span class="op">::</span><span class="fnc">read_csv</span><span class="br">(</span><span class="str">"<span class="seg" id="seg3">../data/</span>crashes_by_day.csv"</span><span class="br">)</span></span></div>
+</div>
+<div class="rs-panetabs"><span id="pt-console" class="on">Console</span><span id="pt-rmd">R Markdown</span></div>
+<div class="rs-console" id="console"></div>
+<div class="rs-dd" id="dd">
+<div>Restart R</div>
+<div>Terminate R...</div>
+<div class="sep"></div>
+<div class="arrow" id="dd-swd">Set Working Directory
+<div class="rs-sub" id="sub">
+<div id="sub-src">To Source File Location</div>
+<div>To Files Pane Location</div>
+<div>To Project Directory</div>
+<div>Choose Directory...</div>
+</div>
+</div>
+<div>Load Workspace...</div>
+<div>Save Workspace As...</div>
+</div>
+</div>
+</div>
+<div class="wdemo-tree">
+<svg viewBox="0 0 580 366" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="wd-ah" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 L8 4 L0 8 z" fill="#3b6ea5"></path></marker>
+</defs>
+<rect class="walker" id="walker" x="126" y="-16" width="450" height="32" rx="8" style="transform: translateY(94px);"></rect>
+<path class="hop" id="hop" d="M100 94 V94" marker-end="url(#wd-ah)"></path>
+<path class="t-ln" d="M139 38 V60 H154"></path>
+<path class="t-ln" d="M167 72 V94 H182"></path>
+<path class="t-ln" d="M195 106 V298 M195 128 H210 M195 162 H210 M195 298 H210"></path>
+<path class="t-ln" d="M223 174 V264 M223 196 H238 M223 230 H238 M223 264 H238"></path>
+<path class="t-ln" d="M223 310 V332 H238"></path>
+<g class="node" transform="translate(130,26)">
+<rect class="t-dr" x="0" y="-6" width="18" height="12" rx="2"></rect><circle cx="14" cy="0" r="1.6" fill="#7d8da3"></circle>
+<text class="t-nm" x="26" y="5">M:\</text>
+</g>
+<g class="node" transform="translate(158,60)">
+<path class="t-fo" d="M0 -7 h6 l2 2 h10 v12 h-18 z"></path>
+<text class="t-nm" x="26" y="5">isa401</text>
+</g>
+<g class="node" transform="translate(186,94)">
+<path class="t-fo" d="M0 -7 h6 l2 2 h10 v12 h-18 z"></path>
+<text class="t-nm" x="26" y="5">business_intelligence</text>
+</g>
+<g class="node" transform="translate(214,128)">
+<path class="t-fi" d="M0 -8 h9 l5 5 v12 h-14 z M9 -8 v5 h5"></path>
+<text class="t-nm" x="26" y="5">business_intelligence.Rproj</text>
+</g>
+<g class="node" transform="translate(214,162)">
+<path class="t-fo" d="M0 -7 h6 l2 2 h10 v12 h-18 z"></path>
+<text class="t-nm" x="26" y="5">data</text>
+</g>
+<g class="node" transform="translate(242,196)">
+<path class="t-fi" d="M0 -8 h9 l5 5 v12 h-14 z M9 -8 v5 h5"></path>
+<text class="t-nm" x="26" y="5">occupation.xlsx</text>
+</g>
+<g class="node" transform="translate(242,230)">
+<path class="t-fi" d="M0 -8 h9 l5 5 v12 h-14 z M9 -8 v5 h5"></path>
+<text class="t-nm" x="26" y="5">ohio_job_postings.csv</text>
+</g>
+<g class="node" transform="translate(242,264)">
+<path class="t-fi" d="M0 -8 h9 l5 5 v12 h-14 z M9 -8 v5 h5"></path>
+<text class="t-nm" x="26" y="5">crashes_by_day.csv</text>
+</g>
+<g class="node" transform="translate(214,298)">
+<path class="t-fo" d="M0 -7 h6 l2 2 h10 v12 h-18 z"></path>
+<text class="t-nm" x="26" y="5">markdowns</text>
+</g>
+<g class="node" transform="translate(242,332)">
+<path class="t-fi" d="M0 -8 h9 l5 5 v12 h-14 z M9 -8 v5 h5"></path>
+<text class="t-nm" x="26" y="5">class05.Rmd</text>
+<text class="t-an" x="130" y="5">the file you are editing</text>
+</g>
+<g class="ghost" id="ghost" transform="translate(270,60)">
+<path class="t-fo" d="M0 -7 h6 l2 2 h10 v12 h-18 z"></path>
+<text class="t-nm" x="26" y="5">data</text>
+<text class="t-an" x="70" y="5">no such folder in isa401</text>
+</g>
+<g class="chip" id="chip" style="transform: translate(60px, 94px);">
+<rect x="-56" y="-12" width="112" height="24" rx="12"></rect>
+<text x="0" y="4" id="chip-text">..</text>
+</g>
+<g class="pin" id="pin" style="transform: translate(405px, 94px);">
+<path d="M0 0 L9 -11 H108 Q114 -11 114 -5 V5 Q114 11 108 11 H9 Z"></path>
+<text x="17" y="4">R starts here</text>
+</g>
+<text class="t-legend" x="130" y="360">Red flag: the folder R starts from. Blue chip: the piece of the path being read.</text>
+</svg>
+</div>
+</div>
+<div class="wdemo-bottom">
+<div class="phases">
+<button class="ph" data-ph="1"><b>1</b>Knit</button>
+<button class="ph" data-ph="2"><b>2</b>Run line</button>
+<button class="ph" data-ph="3"><b>3</b>The fix</button>
+<button class="ph" data-ph="4"><b>4</b>Any local file</button>
+<button class="ph all" data-ph="all">Replay all</button>
+<span class="ctl">
+<button class="cb primary" id="c-pause">Pause</button>
+<button class="cb" id="c-step">Step</button>
+<span class="spd"><button class="sb" data-spd="0.5">0.5x</button><button class="sb on" data-spd="1">1x</button><button class="sb last" data-spd="2">2x</button></span>
+</span>
+</div>
+<div class="caption"><div class="big" id="cap-big"></div><div class="small" id="cap-small"></div></div>
+</div>
+</div>
+<script>
+(function () {
+var root = document.getElementById("wdemo");
+if (!root) { return; }
+if (root.getAttribute("data-built")) { return; }
+root.setAttribute("data-built", "1");
+var walker = document.getElementById("walker");
+var chip = document.getElementById("chip");
+var chipText = document.getElementById("chip-text");
+var hop = document.getElementById("hop");
+var pin = document.getElementById("pin");
+var ghost = document.getElementById("ghost");
+var con = document.getElementById("console");
+var capBig = document.getElementById("cap-big");
+var capSmall = document.getElementById("cap-small");
+var ptConsole = document.getElementById("pt-console");
+var ptRmd = document.getElementById("pt-rmd");
+var btnKnit = document.getElementById("btn-knit");
+var btnRun = document.getElementById("btn-run");
+var mSession = document.getElementById("m-session");
+var dd = document.getElementById("dd");
+var ddSwd = document.getElementById("dd-swd");
+var sub = document.getElementById("sub");
+var subSrc = document.getElementById("sub-src");
+var cPause = document.getElementById("c-pause");
+var cStep = document.getElementById("c-step");
+var nodes = root.querySelectorAll(".node");
+var phBtns = root.querySelectorAll(".ph");
+var spdBtns = root.querySelectorAll(".sb");
+var rowY = [26, 60, 94, 128, 162, 196, 230, 264, 298, 332];
+var PIN_X = "405px";
+var CHIP_X = "60px";
+function el(id) { return document.getElementById(id); }
+function setTok(id, cls) { el(id).className = "tok" + (cls ? " " + cls : ""); }
+function svgClass(node, base, cls) { node.setAttribute("class", base + (cls ? " " + cls : "")); }
+function reset() {
+var i;
+setTok("tk-up", ""); setTok("tk-data", ""); setTok("tk-file", "");
+el("seg1").className = "seg"; el("seg2").className = "seg"; el("seg3").className = "seg";
+el("line2").className = "rs-line hidden-line"; el("line3").className = "rs-line hidden-line";
+for (i = 0; i !== nodes.length; i = i + 1) { svgClass(nodes[i], "node", ""); }
+svgClass(walker, "walker", ""); svgClass(chip, "chip", ""); svgClass(hop, "hop", ""); svgClass(pin, "pin", ""); svgClass(ghost, "ghost", "");
+con.innerHTML = "";
+ptConsole.className = "on"; ptRmd.className = "";
+btnKnit.className = "rsb"; btnRun.className = "rsb";
+mSession.className = ""; dd.className = "rs-dd"; ddSwd.className = "arrow"; sub.className = "rs-sub"; subSrc.className = "";
+capBig.className = "big"; capSmall.className = "small";
+}
+function caption(big, small) {
+capBig.className = "big"; capSmall.className = "small";
+setTimeout(function () {
+capBig.innerHTML = big; capSmall.innerHTML = small || "";
+capBig.className = "big on"; capSmall.className = "small on";
+}, 250);
+}
+function conLine(kind, text) {
+var d = document.createElement("div");
+d.className = "cl " + kind;
+if (kind === "cmd") {
+var p = document.createElement("span"); p.className = "pr"; p.textContent = "> "; d.appendChild(p);
+d.appendChild(document.createTextNode(text));
+} else { d.textContent = text; }
+var old = con.querySelector(".blink"); if (old) { con.removeChild(old); }
+con.appendChild(d);
+setTimeout(function () { d.className = d.className + " on"; }, 20);
+}
+function conPrompt() {
+var d = document.createElement("div"); d.className = "cl blink"; d.textContent = "> ";
+con.appendChild(d);
+setTimeout(function () { d.className = d.className + " on"; }, 20);
+}
+function press(btn) { btn.className = "rsb"; setTimeout(function () { btn.className = "rsb press"; }, 20); }
+function showPin(row) { pin.style.transform = "translate(" + PIN_X + ", " + rowY[row] + "px)"; svgClass(pin, "pin", "show"); }
+function walkerTo(row, cls) { walker.style.transform = "translateY(" + rowY[row] + "px)"; svgClass(walker, "walker", "show" + (cls ? " " + cls : "")); }
+function chipTo(row, text, cls) {
+chipText.textContent = text;
+chip.style.transform = "translate(" + CHIP_X + ", " + rowY[row] + "px)";
+svgClass(chip, "chip", "show" + (cls ? " " + cls : ""));
+}
+function hopArrow(fromRow, toRow) {
+var y1 = rowY[fromRow], y2 = rowY[toRow], len;
+if (y1 > y2) { y1 = y1 - 16; y2 = y2 + 16; } else { y1 = y1 + 16; y2 = y2 - 16; }
+len = Math.abs(y2 - y1);
+hop.setAttribute("d", "M100 " + y1 + " V" + y2);
+hop.style.transition = "none";
+hop.style.strokeDasharray = len + " " + len;
+hop.style.strokeDashoffset = len;
+svgClass(hop, "hop", "show");
+setTimeout(function () { hop.style.transition = "stroke-dashoffset .55s ease-out, opacity .2s"; hop.style.strokeDashoffset = 0; }, 30);
+setTimeout(function () { svgClass(hop, "hop", ""); }, 1400);
+}
+function nodeOk(i) { svgClass(nodes[i], "node", "ok"); }
+function setPhase(ph) {
+var i, v, cls;
+for (i = 0; i !== phBtns.length; i = i + 1) {
+v = phBtns[i].getAttribute("data-ph");
+cls = "ph";
+if (v === "all") { cls = cls + " all"; }
+else if (v === String(ph)) { cls = cls + " active"; }
+else if (Number(v) + 1 <= ph) { cls = cls + " done"; }
+phBtns[i].className = cls;
+}
+}
+var READ = 'fastest = readxl::read_excel("../data/occupation.xlsx")';
+// Each phase: list of [time in ms, action]. Times are relative to the phase start.
+function phase1Steps() {
+return [
+[0, function () {
+reset(); setPhase(1); showPin(8);
+caption("Knit starts from the folder that holds <code>class05.Rmd</code>.", "That folder is <code>markdowns</code>. Watch the path get read from there, one piece at a time.");
+press(btnKnit); ptConsole.className = ""; ptRmd.className = "on";
+}],
+[700, function () { conLine("info", "processing file: class05.Rmd"); }],
+[1400, function () { setTok("tk-up", "on"); walkerTo(8, ""); chipTo(8, "..", ""); }],
+[1900, function () { hopArrow(8, 2); walkerTo(2, ""); chipTo(2, "..", ""); }],
+[3100, function () { setTok("tk-up", "ok"); setTok("tk-data", "on"); walkerTo(4, ""); chipTo(4, "data", ""); nodeOk(4); }],
+[4300, function () { setTok("tk-data", "ok"); setTok("tk-file", "on"); walkerTo(5, "ok"); chipTo(5, "occupation.xlsx", "ok"); nodeOk(5); }],
+[5300, function () {
+setTok("tk-file", "ok"); conLine("info", "Output created: class05.html");
+caption("Found.", "From <code>markdowns</code>, <code>..</code> means <code>business_intelligence</code>, and <code>data</code> is right there.");
+}]
+];
+}
+function phase2Steps() {
+return [
+[0, function () {
+reset(); setPhase(2); showPin(2);
+caption("Run line (or <kbd>Ctrl+Enter</kbd>) starts from the folder that holds the <code>.Rproj</code>.", "That is <code>business_intelligence</code>: one level higher than Knit. Same line, different starting folder.");
+conLine("cmd", "getwd()");
+}],
+[600, function () { conLine("out", '[1] "M:/isa401/business_intelligence"'); }],
+[1400, function () { press(btnRun); conLine("cmd", READ); setTok("tk-up", "on"); walkerTo(2, ""); chipTo(2, "..", ""); }],
+[1900, function () { hopArrow(2, 1); walkerTo(1, ""); chipTo(1, "..", ""); }],
+[3100, function () { setTok("tk-up", "ok"); setTok("tk-data", "on bad"); chipTo(1, "data", "bad"); walkerTo(1, "bad"); svgClass(ghost, "ghost", "show"); }],
+[4100, function () {
+setTok("tk-file", "dim");
+conLine("err", "Error: \u0060path\u0060 does not exist: '../data/occupation.xlsx'");
+conPrompt();
+caption("Not found.", "From <code>business_intelligence</code>, <code>..</code> means <code>isa401</code>, and there is no <code>data</code> folder in <code>isa401</code>.");
+}]
+];
+}
+function phase3Steps() {
+return [
+[0, function () {
+reset(); setPhase(3); showPin(2);
+caption("The fix: move R's starting folder to where the <code>.Rmd</code> is.", "RStudio menu: <b>Session</b>, then <b>Set Working Directory</b>, then <b>To Source File Location</b>.");
+mSession.className = "hot";
+dd.style.left = (mSession.offsetLeft - 6) + "px";
+}],
+[700, function () { dd.className = "rs-dd show"; }],
+[1400, function () { ddSwd.className = "arrow hot"; }],
+[2000, function () { sub.className = "rs-sub show"; }],
+[2600, function () { subSrc.className = "hot"; }],
+[3500, function () {
+dd.className = "rs-dd"; sub.className = "rs-sub"; mSession.className = "";
+conLine("cmd", 'setwd("M:/isa401/business_intelligence/markdowns")');
+showPin(8);
+}],
+[4500, function () { conLine("cmd", "getwd()"); }],
+[4800, function () { conLine("out", '[1] "M:/isa401/business_intelligence/markdowns"'); }],
+[5600, function () { press(btnRun); conLine("cmd", READ); setTok("tk-up", "on"); walkerTo(8, ""); chipTo(8, "..", ""); }],
+[6100, function () { hopArrow(8, 2); walkerTo(2, ""); chipTo(2, "..", ""); }],
+[7100, function () { setTok("tk-up", "ok"); setTok("tk-data", "on"); walkerTo(4, ""); chipTo(4, "data", ""); nodeOk(4); }],
+[8000, function () { setTok("tk-data", "ok"); setTok("tk-file", "on"); walkerTo(5, "ok"); chipTo(5, "occupation.xlsx", "ok"); nodeOk(5); }],
+[8800, function () {
+setTok("tk-file", "ok"); conPrompt();
+caption("Now Run line starts where Knit starts.", "No error, and Knit still works. Do this once per RStudio session, after opening the project.");
+}]
+];
+}
+function phase4Steps() {
+return [
+[0, function () {
+reset(); setPhase(4); showPin(8);
+el("line2").className = "rs-line"; el("line3").className = "rs-line";
+caption("This is about the folder, not the file type.", "Every local file you read or write follows the same rule: <code>../data/</code> then the file name.");
+}],
+[800, function () { el("seg1").className = "seg ok"; nodeOk(5); walkerTo(5, "ok"); }],
+[1600, function () { el("seg2").className = "seg ok"; nodeOk(6); walkerTo(6, "ok"); }],
+[2400, function () { el("seg3").className = "seg ok"; nodeOk(7); walkerTo(7, "ok"); }],
+[3200, function () { nodeOk(4); }]
+];
+}
+function allSteps() {
+var parts = [phase1Steps(), phase2Steps(), phase3Steps(), phase4Steps()];
+var gaps = [1600, 1600, 1900, 0];
+var list = [], off = 0, p, i, last;
+for (p = 0; p !== parts.length; p = p + 1) {
+last = 0;
+for (i = 0; i !== parts[p].length; i = i + 1) {
+list.push([parts[p][i][0] + off, parts[p][i][1]]);
+last = parts[p][i][0];
+}
+off = off + last + gaps[p];
+}
+return list;
+}
+// Player: play, pause, step, speed.
+var seq = [], idx = 0, timer = null, paused = false, speed = 1;
+function clearTimer() { if (timer !== null) { clearTimeout(timer); timer = null; } }
+function updateButtons() {
+var finished = (idx === seq.length);
+cPause.textContent = (paused || finished) ? "Play" : "Pause";
+cPause.className = (paused || finished) ? "cb primary" : "cb";
+}
+function scheduleNext() {
+clearTimer();
+if (paused) { updateButtons(); return; }
+if (idx === seq.length) { updateButtons(); return; }
+var gap = seq[idx][0] - seq[idx - 1][0];
+timer = setTimeout(runNext, gap / speed);
+updateButtons();
+}
+function runNext() {
+timer = null;
+if (idx === seq.length) { updateButtons(); return; }
+seq[idx][1]();
+idx = idx + 1;
+scheduleNext();
+}
+function start(list) { clearTimer(); seq = list; idx = 0; runNext(); }
+function stopAll() { clearTimer(); paused = true; updateButtons(); }
+function togglePause() {
+if (idx === seq.length) { paused = false; start(seq.length ? seq : allSteps()); return; }
+paused = !paused;
+if (paused) { clearTimer(); updateButtons(); } else { scheduleNext(); }
+}
+function stepOnce() {
+paused = true; clearTimer();
+if (idx === seq.length) { updateButtons(); return; }
+seq[idx][1]();
+idx = idx + 1;
+updateButtons();
+}
+function setSpeed(v) {
+var i;
+speed = Number(v);
+for (i = 0; i !== spdBtns.length; i = i + 1) {
+spdBtns[i].className = "sb" + (spdBtns[i].getAttribute("data-spd") === v ? " on" : "") + (i === spdBtns.length - 1 ? " last" : "");
+}
+if (timer !== null) { scheduleNext(); }
+}
+function playPhase(which) {
+paused = false;
+if (which === "1") { start(phase1Steps()); }
+else if (which === "2") { start(phase2Steps()); }
+else if (which === "3") { start(phase3Steps()); }
+else if (which === "4") { start(phase4Steps()); }
+else { start(allSteps()); }
+}
+var i;
+for (i = 0; i !== phBtns.length; i = i + 1) {
+phBtns[i].addEventListener("click", function (e) { playPhase(e.currentTarget.getAttribute("data-ph")); });
+}
+for (i = 0; i !== spdBtns.length; i = i + 1) {
+spdBtns[i].addEventListener("click", function (e) { setSpeed(e.currentTarget.getAttribute("data-spd")); });
+}
+cPause.addEventListener("click", togglePause);
+cStep.addEventListener("click", stepOnce);
+reset();
+updateButtons();
+// Standalone: autoplay on load. Inside xaringan: autoplay when the slide is shown, stop when it is hidden.
+function slideHasDemo() { return document.querySelector(".remark-visible #wdemo") !== null; }
+if (window.slideshow) {
+window.slideshow.on("afterShowSlide", function () { if (slideHasDemo()) { setTimeout(function () { playPhase("all"); }, 400); } });
+window.slideshow.on("hideSlide", function () { stopAll(); });
+if (slideHasDemo()) { setTimeout(function () { playPhase("all"); }, 600); }
+} else {
+setTimeout(function () { playPhase("all"); }, 600);
+}
+})();
+</script>
+<!-- WDEMO-SLIDE-END -->
+
+???
+
+Let the animation run once on its own; it takes about thirty seconds at 1x. Phase 1 is Knit: the red flag sits on markdowns because knitr always starts from the folder that holds the Rmd. Phase 2 is the trap: Run line or Ctrl+Enter sends the code to the Console, and the Console starts from the folder that holds the .Rproj, one level higher, so .. climbs into isa401 where there is no data folder. The error text is the real readxl message they will see. Phase 3 is the fix they should do once per session: Session, Set Working Directory, To Source File Location; the console echoes setwd() and the flag moves down to markdowns, so both routes now start in the same place. Phase 4 makes the point that this is about folders, not Excel: the csv lines follow the same rule. Use Step and 0.5x if the room needs it slower, or Pause on the error in Phase 2 and ask them to predict what .. points to before continuing.
+
+---
+
+# Reading an Excel File
+
+.left55[
+
+```{r bls_read_shown, eval=FALSE, hl.size="58%"}
+fastest = readxl::read_excel(
+  "../data/occupation.xlsx",
+  sheet = "Table 1.3",  # one of 12 sheets
+  skip  = 1,            # title row above the header
+  n_max = 31)           # stop before the footnotes
+dplyr::glimpse(fastest)
+```
+
+```{r bls_read, echo=FALSE, hl.size="58%"}
+fastest = readxl::read_excel(
+  "../../data/occupation.xlsx",
+  sheet = "Table 1.3", skip = 1, n_max = 31)
+dplyr::glimpse(fastest)
+```
+
+<div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:10px 14px; background:#fdf2f2; font-size:13.5px; line-height:1.55; margin-top:10px;">
+<b>Paths in this course are always <code>"../data/SOMETHING"</code>:</b> your markdown lives in <code>markdowns/</code>, your data in <code>data/</code>, so every local file you read is up one level, then into <code>data</code>.
+</div>
+
+]
+
+.right43[
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13.5px; line-height:1.55;">
+<div style="font-weight:700; color:#c3142d; font-size:15px;">Real workbooks are messy on purpose</div>
+<div style="margin-top:6px;"><b><code>sheet</code>:</b> this workbook has 12 sheets; we want Table 1.3, the fastest growing occupations.</div>
+<div style="margin-top:4px;"><b><code>skip = 1</code>:</b> row 1 is a title for humans, not a header.</div>
+<div style="margin-top:4px;"><b><code>n_max = 31</code>:</b> below the data sit three footnote rows that would otherwise pollute every column.</div>
+</div>
+<div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:12px 14px; background:#fdf2f2; font-size:13.5px; line-height:1.55; margin-top:12px;">
+<b>Data scientists</b> are the third fastest growing occupation in the country: <b>+34.6%</b> by 2035, median wage <b>$120,230</b>. You are in the right room.
+</div>
+<div style="margin-top:10px; font-size:12.5px; color:#585E60; line-height:1.5;"><b>No package called readxl?</b> It comes with tidyverse on the lab PCs but not on every laptop. Run <code>install.packages("readxl")</code> once in the Console, then re-run the chunk.</div>
+]
+
+<div style="clear:both;"></div>
+
+.footnote[
+<html>
+<hr>
+</html>
+**Source:** [Table 1.3, Fastest growing occupations, 2025 and projected 2035](https://www.bls.gov/emp/tables/fastest-growing-occupations.htm), U.S. Bureau of Labor Statistics, Employment Projections (modified Aug 27, 2026).
+]
+
+???
+
+The animation just showed why the path starts with ..; now the line runs. If anyone gets "there is no package called 'readxl'", install.packages("readxl") in the Console and re-run; it happens on personal laptops where tidyverse was installed without its suggested packages. Show what happens without the arguments first if there is time: no skip means one giant column name and everything character. Then the three arguments, one at a time; they exist because this workbook was formatted for people, and nearly every workbook you meet at work will be. How would you know the numbers, 1 and 31? Open the file in Excel once and look, or read_excel with no arguments and inspect the damage with glimpse. The path box states the course convention: markdown in markdowns/, data in data/, so every local read is "../data/SOMETHING". The red card is the motivational beat of the day; give it a moment.
+
+---
+
+# A Web-Served JSON File
+
+.left55[
+
+```{r cincy_json, hl.size="58%"}
+json_url = paste0(
+  "https://data.cincinnati-oh.gov/",
+  "resource/rvmt-pkmq.json?$limit=100")
+crashes_json = jsonlite::fromJSON(json_url)
+dplyr::glimpse(
+  crashes_json[, c("crashdate", "dayofweek",
+                   "crashseverity", "age")])
+```
+
+]
+
+.right43[
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13.5px; line-height:1.55;">
+<div style="font-weight:700; color:#c3142d; font-size:15px;">JSON is the shape of a list</div>
+<div style="margin-top:6px;">The file holds an <b>array of records</b>, like <code>job</code> from Part 1, repeated 100 times. <code>fromJSON()</code> lines the records up: names become columns, records become rows, and the result is a data frame. A <code>.json</code> file on disk reads exactly the same way.</div>
+<div style="margin-top:6px;">This one is served at a web address, so it is <b>current the moment you run the line</b>: the query after the <code>?</code> asks the city for the 100 most recent reports.</div>
+</div>
+<div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:12px 14px; background:#fdf2f2; font-size:13.5px; line-height:1.55; margin-top:12px;">
+<b>Every column is character</b>, even the dates and ages: this file quotes every value. Monday's lesson applies: what a column looks like and what R stored are different things, and <code>glimpse()</code> is how you check. Cleaning types is a week 4 job.
+</div>
+]
+
+<div style="clear:both;"></div>
+
+.footnote[
+<html>
+<hr>
+</html>
+**Source:** [Traffic Crash Reports (CPD)](https://data.cincinnati-oh.gov/safety/Traffic-Crash-Reports-CPD-/rvmt-pkmq), City of Cincinnati Open Data, served as JSON.
+]
+
+???
+
+Close the loop out loud: Monday's seven typed numbers, the 30,125-row CSV they summarize, and now the web-served file underneath both; the query in the URL asked the city for the 100 most recent reports, and running the same line tomorrow returns different rows. The dollar-limit parameter is the city's page-size control. The red card is the second big habit lesson: the file is current but every value is stored as text, so glimpse before you trust. No key, no login; a lot of open government data is served exactly like this.
+
+---
+
+# Data Import for Cybersecurity Game
+
+`r countdown(minutes = 6, seconds = 0, top = 0, font_size = "2em")`
+
+
+.panelset[
+
+.panel[.panel-name[The Case]
+
+.left60[
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:9px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13px; line-height:1.5;">
+<div style="font-weight:700; color:#c3142d; font-size:14.5px;">INC-2026-0902: a 02:31 VPN sign-in from abroad.</div>
+<div style="margin-top:4px;">Whose account? What was taken? The logs are <b>files at a URL</b>, and you are the analyst on duty. On your own, in a Rmd file:</div>
+</div>
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:6px 10px; margin-top:6px; background:#fcfcfc; font-size:13px; line-height:1.5;"><b style="color:#c3142d;">1</b> &nbsp; <b>Identify the account.</b> Import the VPN sign-in log. Which account has the <b>most failed attempts</b> before a successful sign-in?<pre class='rcode' style='font-size:10.5px; margin:4px 0 0 0; padding:18px 4px 5px 6px; white-space:pre-wrap; word-break:break-all;'><span class='rl' style='padding:0;'>logins <span class='rop'>=</span> <span class='rpkg'>readr</span>::<span class='rfun'>read_csv</span><span style='color:#ed90a4'>(</span><span class='rstr'>"https://isa401-import-heist.vercel.app/api/stage1"</span><span style='color:#ed90a4'>)</span></span></pre></div>
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:6px 10px; margin-top:6px; background:#fcfcfc; font-size:13px; line-height:1.5;"><b>2</b> &nbsp; <b>Scope the damage.</b> That account replaces <b style="background:#EFDB72; padding:0 3px;">ACCOUNT</b> below. How many of the events in <code>log$events</code> are <b>DOWNLOAD</b>s?<pre class='rcode' style='font-size:10.5px; margin:4px 0 0 0; padding:18px 4px 5px 6px; white-space:pre-wrap; word-break:break-all;'><span class='rl' style='padding:0;'>log <span class='rop'>=</span> <span class='rpkg'>jsonlite</span>::<span class='rfun'>fromJSON</span><span style='color:#ed90a4'>(</span><span class='rstr'>"https://isa401-import-heist.vercel.app/api/stage2?key=<b style="background:#EFDB72; color:#000; padding:0 2px; white-space:nowrap;">ACCOUNT</b>"</span><span style='color:#ed90a4'>)</span></span></pre></div>
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:6px 10px; margin-top:6px; background:#fcfcfc; font-size:13px; line-height:1.5;"><b>3</b> &nbsp; <b>Close the ticket.</b> The count replaces <b style="background:#EFDB72; padding:0 3px;">NUMBER</b> below. On <b>CLEARED</b>, read the report and post your team name on the <b>Menti wall</b>.<pre class='rcode' style='font-size:10.5px; margin:4px 0 0 0; padding:18px 4px 5px 6px; white-space:pre-wrap; word-break:break-all;'><span class='rl' style='padding:0;'><span class='rpkg'>jsonlite</span>::<span class='rfun'>fromJSON</span><span style='color:#ed90a4'>(</span><span class='rstr'>"https://isa401-import-heist.vercel.app/api/finish?code=<b style="background:#EFDB72; color:#000; padding:0 2px; white-space:nowrap;">NUMBER</b>"</span><span style='color:#ed90a4'>)</span></span></pre></div>
+]
+
+.right38[
+<div style="border:1px solid #d9c24d; border-left:4px solid #EFDB72; border-radius:8px; padding:10px 14px; background:#EFDB72; font-size:13.5px; line-height:1.55;">
+<div style="font-weight:700; color:#000; font-size:15px;">Rules of engagement</div>
+<div style="margin-top:4px; display:grid; grid-template-columns:18px 1fr; row-gap:3px;">
+<b>1</b><div><b>Open each URL in a browser tab first</b> and read the raw file. The evidence is small.</div>
+<b>2</b><div>Then import it in R and <code>glimpse()</code> it. Use <code>[ ]</code>, <code>[[ ]]</code>, and <code>$</code> (Part 2) to pull the ACCOUNT out of stage 1 and the NUMBER out of stage 2.</div>
+<b>3</b><div>Wrong key or code? <b>The system answers with a hint.</b> Read what comes back; it is data too.</div>
+</div>
+</div>
+<div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:10px 14px; background:#fdf2f2; font-size:13.5px; line-height:1.55; margin-top:10px;">
+<div style="font-weight:700; color:#c3142d; font-size:15px;">The incident ticket</div>
+<div style="margin-top:4px;">Briefing page: <a href="https://isa401-import-heist.vercel.app" target="_blank" style="font-family:'Source Code Pro', monospace; font-size:12.5px; word-break:break-all;">isa401-import-heist.vercel.app</a></div>
+<div style="margin-top:6px;">Stage 1 is a CSV, so <code>read_csv()</code>. Stages 2 and 3 are JSON, so <code>fromJSON()</code>. Copy the calls on the left; only the <b style="background:#EFDB72; padding:0 3px;">highlighted</b> parts change.</div>
+</div>
+]
+
+<div style="clear:both;"></div>
+
+]
+
+.panel[.panel-name[Answer]
+
+<details class="answer-gate" style="margin-top:4px;"><summary style="cursor:pointer; font-weight:700; color:#c3142d; font-size:16px;">Answer will be shown in class</summary>
+
+.left55[
+
+```{r heist_answer, hl.size="54%"}
+heist = "https://isa401-import-heist.vercel.app"
+logins = readr::read_csv(paste0(heist, "/api/stage1"),
+  show_col_types = FALSE)
+logins$account[logins$failed_attempts ==
+  max(logins$failed_attempts)]
+log = jsonlite::fromJSON(paste0(heist, "/api/stage2?key=smithj31"))
+sum(log$events$action == "DOWNLOAD")
+jsonlite::fromJSON(paste0(heist, "/api/finish?code=6"))$status
+```
+
+]
+
+.right43[
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13.5px; line-height:1.55;">
+<div style="font-weight:700; color:#c3142d; font-size:15px;">Why this is the whole class in one game</div>
+<div style="margin-top:6px;">Stage 1 is subsetting by a condition on a column (and every column agrees: 02:31, Romania, 17 attempts, no MFA). Stage 2 is a logical vector and <code>sum()</code> on records extracted from JSON, the shape of a list.</div>
+<div style="margin-top:6px;">The key in the URL is the same move as FRED's <code>?id=</code>: a query parameter telling a server what you want. And the flow (identify, scope, close) is how a real SOC works a ticket.</div>
+</div>
+]
+
+<div style="clear:both;"></div>
+
+</details>
+
+<script>
+(function () {
+  // Password gate for the "Answer will be shown in class" details boxes (class answer-gate).
+  // Light gate only: the password is stored as a 32-bit FNV-1a hash so it is not readable in
+  // the page source, but anyone determined can open the box from DevTools. sessionStorage
+  // remembers an unlock for the rest of the browser session, so one password opens every box.
+  var HASH = "806d8122";
+  var KEY = "isa401_gate_05";
+  function fnv(str) {
+    var x = 0x811c9dc5;
+    for (var i = 0; i !== str.length; i = i + 1) { x ^= str.charCodeAt(i); x = Math.imul(x, 16777619) >>> 0; }
+    return ("0000000" + x.toString(16)).slice(-8);
+  }
+  function unlocked() { try { return sessionStorage.getItem(KEY) === "1"; } catch (e) { return false; } }
+  function remember() { try { sessionStorage.setItem(KEY, "1"); } catch (e) {} }
+
+  function arm(d) {
+    if (d.getAttribute("data-gated")) { return; }
+    d.setAttribute("data-gated", "1");
+    var prompt = null;
+    d.addEventListener("toggle", function () {
+      if (!d.open) { return; }   // closing (including our own d.open = false below) needs nothing
+      if (unlocked()) { if (prompt) { prompt.remove(); prompt = null; } return; }
+      d.open = false;
+      if (prompt) { prompt.querySelector("input").focus(); return; }
+      prompt = document.createElement("div");
+      prompt.setAttribute("style", "display:flex; align-items:center; gap:8px; margin:6px 0 0 0; font-size:13px;");
+      prompt.innerHTML = "<span style='color:#585E60;'>Password</span>" +
+        "<input type='password' autocomplete='off' style='font-family:Source Code Pro, monospace; font-size:13px; padding:4px 8px; border:1px solid #d1d5db; border-radius:6px; width:140px;'>" +
+        "<button type='button' style='background:#c3142d; color:#fff; border:0; border-radius:6px; padding:5px 14px; font-weight:700; font-size:13px; cursor:pointer;'>Unlock</button>" +
+        "<span class='gate-msg' style='color:#c3142d;'></span>";
+      d.parentNode.insertBefore(prompt, d.nextSibling);
+      var input = prompt.querySelector("input");
+      var msg = prompt.querySelector(".gate-msg");
+      // keep remark's keyboard shortcuts (f, p, digits) from firing while typing: same
+      // pause/resume pattern xaringanExtra uses for its editable fields
+      ["keydown", "keypress", "keyup"].forEach(function (t) { input.addEventListener(t, function (e) { e.stopPropagation(); }); });
+      input.addEventListener("focus", function () { if (window.slideshow) { window.slideshow.pause(); } });
+      input.addEventListener("blur", function () { if (window.slideshow) { window.slideshow.resume(); } });
+      function tryIt() {
+        if (fnv(input.value.trim()) === HASH) { remember(); prompt.remove(); prompt = null; d.open = true; }
+        else { msg.textContent = "Not it."; input.select(); }
+      }
+      prompt.querySelector("button").addEventListener("click", tryIt);
+      input.addEventListener("keydown", function (e) { if (e.key === "Enter") { tryIt(); } });
+      input.focus();
+    });
+  }
+  function armAll() { document.querySelectorAll("details.answer-gate").forEach(arm); }
+  armAll();
+  if (window.slideshow) { if (!window.answerGateHooked) { window.answerGateHooked = true; window.slideshow.on("afterShowSlide", armAll); } }
+})();
+</script>
+
+]
+
+.panel[.panel-name[Discussion]
+
+- .can-edit.key-heist-discussion[Notes from our class discussion (Use Chrome as your browser to edit this part of the page)]
+
+]
+
+]
+
+???
+
+Six minutes, individually. Switch the projector board to Heist mode (same section) before you start; seats from this morning show as "here, not started" until they fetch stage 1, and the chain under the plan keeps ACCOUNT and NUMBER hidden; it shows stages and finish order live, so the Menti wall is not needed. Put the ticket page on the other half of the screen. The storyline is a real incident-response flow: identify the compromised account, scope the damage, close the ticket. Stage 1 is a 7-row VPN sign-in CSV; the compromised account is smithj31 (17 failed attempts, 02:31, Romania, no MFA, and every column agrees). Stage 2 is that account's shared-drive activity as JSON: 16 events, 6 of them DOWNLOADs (28.1 MB, including payroll and a PII export) and one OVERWRITE of README.txt at 02:57. Stage 3 with code 6 returns CLEARED plus an incident report, containment actions, and a replay link (isa401-import-heist.vercel.app/replay): an animated replay of the incident (about 70 seconds; a speed control and Pause sit under the stage) built from the two files they imported, ending with the analyst's R code (native pipe, pkg::fun) and a Git recovery of the overwritten README (shown, not typed: version history as the reason we commit); the page asks for a seat or name first; their seat is already lit on the board. Every file is small enough to read in a browser tab, so insist that they open each URL in the browser FIRST and read it, then import (the ticket page's rules of engagement say the same). Wrong keys return the benign account's alibi plus the R recipe; wrong codes get too-high/too-low hints in R terms, so students self-correct; resist helping for the first three minutes. Debrief from the Answer tab: the query parameter is the same mechanic as FRED's id, and both stages were Part 2 brackets on imported data. The game lives in games/data-import (Vercel project isa401-import-heist); it is stateless, so it can run cold in any future semester.
+
+---
+
+class: inverse, center, middle
+
+# Part 3: A Database File
+
+---
+
+# scout.db: 1,891 Postings in One File
+
+<div class="left55">
+
+```{r scout_shown, eval=FALSE, hl.size="58%"}
+con = DBI::dbConnect(RSQLite::SQLite(),
+                     "../data/scout.db")
+DBI::dbListTables(con)
+postings = DBI::dbReadTable(con, "scout_postings")
+DBI::dbDisconnect(con)
+dplyr::glimpse(postings[, c("title", "company",
+  "location_state", "remote", "skills_json")])
+```
+
+```{r scout_read, echo=FALSE, hl.size="58%"}
+con = DBI::dbConnect(RSQLite::SQLite(), "../../data/scout.db")
+DBI::dbListTables(con)
+postings = DBI::dbReadTable(con, "scout_postings")
+DBI::dbDisconnect(con)
+dplyr::glimpse(postings[, c("title", "company", "location_state", "remote", "skills_json")])
+```
+
+</div>
+
+<div class="right43">
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:11px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13.5px; line-height:1.55;">
+<div style="font-weight:700; color:#c3142d; font-size:15px;">The fourth format: a database in a file</div>
+<div style="margin-top:6px;"><b>SQLite</b> packs whole tables into one <code>.db</code> file. This one is the database behind <a href="https://chatisa.fsb.miamioh.edu" target="_blank">ChatISA</a>'s Job Scout: two tables, <code>scout_postings</code> (one row per ad) and <code>scout_runs</code> (one row per harvest).</div>
+<div style="margin-top:6px;"><b>Three steps, always:</b> connect, read the table you want into a data frame, disconnect. From here on it is a data frame like any other.</div>
+</div>
+<div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:11px 14px; background:#fdf2f2; font-size:13.5px; line-height:1.55; margin-top:12px;">
+Download <code>scout.db</code> from the <a href="https://miamioh.instructure.com/courses/258169/modules/981092" target="_blank"><b>Week 0 module</b></a> into <code>data/</code>. Assignment 04 does the same three steps on a second database file: Midwest Airbnb listings.
+</div>
+</div>
+
+<div style="clear:both;"></div>
+
+???
+
+New material, ten minutes. Say what a database file is before typing: Excel keeps sheets, SQLite keeps tables, and the whole thing is one file you can email. The three-step rhythm (connect, read, disconnect) is the habit; dbReadTable hands back an ordinary data frame, so everything from Part 1 applies. Point at skills_json in the glimpse output: a column whose cells are JSON text, which is the next slide. The Canvas link is a placeholder until the file is uploaded to the Week 03 module.
+
+---
+
+# JSON Inside a Cell
+
+<div class="left55">
+
+```{r skills_cell, hl.size="58%"}
+cat(strtrim(postings$skills_json[1], 60))  # first 60 chars
+skills = jsonlite::fromJSON(postings$skills_json[1])
+skills
+```
+
+</div>
+
+<div class="right43">
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:11px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13.5px; line-height:1.55;">
+<div style="font-weight:700; color:#c3142d; font-size:15px;">A list hiding in a data frame</div>
+<div style="margin-top:6px;">Each cell of <code>skills_json</code> is a JSON <b>array of records</b>, exactly the shape from last week's list slides. <code>fromJSON()</code> on one cell returns a small data frame: one row per skill, tagged required or preferred.</div>
+<div style="margin-top:6px;">A table with 1,891 of these is <b>semi-structured</b> in a structured wrapper. Flattening all of them into one long table is a Week 7 job (tidy data).</div>
+</div>
+<div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:11px 14px; background:#fdf2f2; font-size:13.5px; line-height:1.55; margin-top:12px;">
+This is why <code>[[ ]]</code> and <code>$</code> mattered: <code>postings$skills_json[1]</code> is <b>vector, then element</b>; <code>fromJSON()</code> then turns text into structure.
+</div>
+</div>
+
+<div style="clear:both;"></div>
+
+???
+
+Two minutes. Print the first 60 characters of the raw cell so they see it is text (the whole cell is 300 characters); then fromJSON turns it into a data frame with skillId and importance. Tie it back: the data type tour from Class 01 said structured tables can carry semi-structured cells, and this is one. Do not try to unnest all 1,891 rows today.
+
+---
+
+class: inverse, center, middle
+
+# Part 4: Data Export
+
+---
+
+# Writing Data Out
+
+.left55[
+
+```{r export_shown, eval=FALSE, hl.size="62%"}
+readr::write_csv(ohio_postings,
+  "../data/ohio_job_postings.csv")
+writexl::write_xlsx(ohio_postings,
+  "../data/ohio_job_postings.xlsx")
+```
+
+```{r export_out, include=FALSE}
+readr::write_csv(ohio_postings, "../../data/ohio_job_postings.csv")
+writexl::write_xlsx(ohio_postings, "../../data/ohio_job_postings.xlsx")
+```
+
+<div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:10px 14px; background:#fdf2f2; font-size:13.5px; line-height:1.55; margin-top:10px;">
+Writing mirrors reading: the same <code>"../data/SOMETHING"</code> path, in the other direction.
+</div>
+
+]
+
+.right43[
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.6;">
+<div style="font-weight:700; color:#c3142d; font-size:15px;">Why export at all?</div>
+<div style="margin-top:6px;"><b>Freeze a snapshot.</b> The web-served files answer differently tomorrow; the file in <code>data/</code> is what you saw today.</div>
+<div style="margin-top:4px;"><b>Hand it off.</b> Most of your teammates live in Excel; <code>write_xlsx()</code> meets them there.</div>
+</div>
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:12px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.6; margin-top:12px;">
+Watch the <b>Files pane</b> as the chunk runs: <code>data/</code> now holds the downloaded workbook plus the two files you just wrote, all inside the project, all about to be committed.
+</div>
+]
+
+<div style="clear:both;"></div>
+
+???
+
+Mirror image of import: write_csv and write_xlsx take the object and a relative path, and the files appear in the Files pane as the chunk runs. The snapshot reason is the deeper one; connect it to reproducibility from Class 02: the analysis that made today's numbers should still run on today's numbers next month. That is also why the data folder gets committed in this course rather than gitignored.
+
+---
+
+class: inverse, center, middle
+
+# Part 5: Your First Deployed App
+
+---
+
+# What querychat Does
+
+<div style="display:flex; gap:10px; align-items:stretch; margin-top:18px;">
+  <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:9px 14px;">1 &nbsp; You ask</div>
+    <div style="padding:14px; font-size:14px; line-height:1.55;">A plain-English question in a chat box: <i>"Which companies posted the most remote jobs?"</i></div>
+  </div>
+  <div style="align-self:center; color:#c3142d; font-size:24px; font-weight:700;">&rarr;</div>
+  <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:9px 14px;">2 &nbsp; The model writes SQL</div>
+    <div style="padding:14px; font-size:14px; line-height:1.55;">An OpenAI model sees the table's <b>schema</b> (column names, types, sample values) and your question, and writes a <code>SELECT</code> query. It never sees your whole table.</div>
+  </div>
+  <div style="align-self:center; color:#c3142d; font-size:24px; font-weight:700;">&rarr;</div>
+  <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:9px 14px;">3 &nbsp; SQLite runs it</div>
+    <div style="padding:14px; font-size:14px; line-height:1.55;">The query runs against <code>scout.db</code> on the server. Only <code>SELECT</code> is allowed; anything that would change data is refused.</div>
+  </div>
+  <div style="align-self:center; color:#c3142d; font-size:24px; font-weight:700;">&rarr;</div>
+  <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:9px 14px;">4 &nbsp; You get both back</div>
+    <div style="padding:14px; font-size:14px; line-height:1.55;">The filtered table <b>and the SQL that made it</b>, so every answer can be checked. The SQL is the part you can trust; read it.</div>
+  </div>
+</div>
+
+<div style="margin-top:18px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:12px 18px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14.5px; line-height:1.6; color:#1b1b1b;">
+<b style="color:#c3142d;">What it costs.</b> Step 2 is the only paid part: each question is one call to OpenAI on a class key I hand out today. Everything else is free: <a href="https://posit-dev.github.io/querychat/" target="_blank"><code>querychat</code></a> is an open-source R package, and <a href="https://huggingface.co/spaces" target="_blank">Hugging Face Spaces</a> hosts small apps for free.
+</div>
+
+???
+
+Two minutes, no code. The one idea: the model writes SQL, it does not answer from memory, and you can read the SQL. That is the difference between a chatbot and a data tool. Mention the key handling before the next slide: the class key is shared and capped, it goes in an environment variable, and it is rotated after the assignment closes.
+
+---
+
+# A Dozen Lines of app.R
+
+.left55[
+
+```{r app_r, eval=FALSE, hl.size="58%"}
+# apps/job_scout_chat/app.R
+library(querychat)
+
+con = DBI::dbConnect(RSQLite::SQLite(), "data/scout.db")
+
+client = ellmer::chat_openai(
+  model  = "gpt-5.6-luna",
+  params = ellmer::params(reasoning_effort = "none")
+)
+
+qc = querychat(
+  con, "scout_postings",
+  client   = client,
+  greeting = "Ask me about the 1,891 job postings
+              ChatISA Job Scout collected."
+)
+
+qc$app_obj()
+```
+
+<div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:9px 14px; background:#fdf2f2; font-size:13px; line-height:1.55; margin-top:8px;">
+The path is <code>"data/scout.db"</code>, not <code>"../data/"</code>: an app runs from <b>its own folder</b>, so the app gets its own copy of the data.
+</div>
+
+]
+
+.right43[
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:11px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13.5px; line-height:1.55;">
+<div style="font-weight:700; color:#c3142d; font-size:15px;">Run it on this computer</div>
+<div style="margin-top:6px;"><b>1.</b> Unzip <a href="https://miamioh.instructure.com/courses/258169/modules/981092" target="_blank"><code>job_scout_chat.zip</code></a> from Canvas into your repo as <code>apps/job_scout_chat/</code>. It holds <code>app.R</code>, the <code>Dockerfile</code>, <code>README.md</code>, and <code>data/scout.db</code>.</div>
+<div style="margin-top:4px;"><b>2.</b> Open <code>app.R</code> from that folder. It is the code on the left; type it yourself if you prefer.</div>
+<div style="margin-top:4px;"><b>3.</b> In the Console: <code>usethis::edit_r_environ()</code>, add the line <code>OPENAI_API_KEY=</code> followed by the class key, save, then <b>Session &rarr; Restart R</b>.</div>
+<div style="margin-top:4px;"><b>4.</b> Click <b>Run App</b> at the top of <code>app.R</code>.</div>
+</div>
+<div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:11px 14px; background:#fdf2f2; font-size:13.5px; line-height:1.55; margin-top:12px;">
+<b>The key never goes in a file you commit.</b> <code>.Renviron</code> from step 3 lives in your home folder, outside the repo, so it cannot be pushed by accident.
+</div>
+]
+
+<div style="clear:both;"></div>
+
+???
+
+Type it live. Four things to say while typing: querychat takes a connection and a table name, the client is an ellmer chat object naming the model (reasoning off keeps answers fast and cheap), and app_obj() hands back a complete Shiny app with the chat on the left and the table on the right. Step 3 is where the room slows down: walk it once on the projector, including the Restart R. The .Renviron file is user-level, so it survives across projects on that machine but is not in the repo. When the app opens, ask one question and let them see the SQL card.
+
+---
+
+# Deploy to Hugging Face
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px;">
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:8px 14px;">1 &nbsp; Account and Space</div>
+    <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;">Sign up at <a href="https://huggingface.co/join" target="_blank"><b>huggingface.co</b></a> (any email). Then <b>New &rarr; Space</b>: name <code>job_scout_chat</code>, license <b>MIT</b>, SDK <b>Docker</b> &rarr; <b>Blank</b>, visibility <b>Public</b>, <b>Create Space</b>.</div>
+  </div>
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:8px 14px;">2 &nbsp; Upload four things</div>
+    <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;"><b>Files &rarr; Add file &rarr; Upload files</b>. Drag in <code>app.R</code>, the <code>Dockerfile</code> and <code>README.md</code> from <a href="https://miamioh.instructure.com/courses/258169/modules/981092" target="_blank"><code>job_scout_chat.zip</code></a> on Canvas, and the whole <code>data/</code> folder. <b>Commit changes to main</b>.</div>
+  </div>
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:8px 14px;">3 &nbsp; Add the secret</div>
+    <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;"><b>Settings &rarr; Variables and secrets &rarr; New secret</b>. Name <code>OPENAI_API_KEY</code>, value the class key. A secret is encrypted and never shown in the file list; a variable is public. Use <b>secret</b>.</div>
+  </div>
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:8px 14px;">4 &nbsp; Watch it build</div>
+    <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;">The badge at the top goes <b>Building</b> for about ten minutes while the Dockerfile installs R and the packages, then <b>Running</b>. Click <b>Logs</b> if it goes red; the last lines say why.</div>
+  </div>
+</div>
+
+<div style="margin-top:12px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:10px 16px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.55; color:#1b1b1b;">
+<b style="color:#c3142d;">What the Dockerfile is.</b> A recipe that builds a fresh Linux computer with the same R version as this lab, installs the packages from a dated snapshot, copies your app in, and starts it. You do not run Docker; Hugging Face does. The recipe is read line by line in <a href="#appendix-a1">Appendix A1</a>.
+</div>
+
+???
+
+The deploy is the forty-minute block; start it early enough that builds finish before the end of class. Do step 1 on the projector, then let the room catch up before step 2. Folder drag-and-drop works in the upload dialog; if someone uploads scout.db at the top level instead of inside data/, the app will start and immediately fail to find the file, which the Logs show. Step 3 secret versus variable is the security beat of the day. While builds run, move to the next slide and let early finishers try the queries.
+
+---
+
+# Try It
+
+.left55[
+
+<div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+  <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:9px 14px;">Three questions for your Space</div>
+  <div style="padding:12px 16px; font-size:14px; line-height:1.7;">
+    <div><b>1.</b> Which ten companies posted the most jobs?</div>
+    <div><b>2.</b> Show the remote postings in Ohio.</div>
+    <div><b>3.</b> How many postings mention SQL in their skills?</div>
+  </div>
+</div>
+
+<div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1); margin-top:12px;">
+  <div style="background:#f9dbdb; color:#c3142d; font-weight:700; font-size:15px; padding:9px 14px;">Then read the SQL, not just the table</div>
+  <div style="padding:12px 16px; font-size:13.5px; line-height:1.6;">
+    <div>Did question 2 filter on <code>location_state = 'OH'</code> or on the word <i>Ohio</i> somewhere?</div>
+    <div style="margin-top:4px;">Did question 3 search <code>skills_json</code> or <code>description</code>? Both are defensible; only one is what you meant.</div>
+    <div style="margin-top:4px;">Ask the same question twice. Same SQL?</div>
+  </div>
+</div>
+
+]
+
+.right43[
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:11px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13.5px; line-height:1.55;">
+<div style="font-weight:700; color:#c3142d; font-size:15px;">Still building?</div>
+<div style="margin-top:6px;">Use the reference Space while you wait: <a href="https://huggingface.co/spaces/fmegahed/job_scout_chat" target="_blank"><b>fmegahed/job_scout_chat</b></a>. Same app, same data.</div>
+</div>
+<div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:11px 14px; background:#fdf2f2; font-size:13.5px; line-height:1.55; margin-top:12px;">
+<b>The model does not know what a column means.</b> It guesses from names and sample values. Telling it, in a <b>data dictionary</b>, is <a href="#appendix-a2">Appendix A2</a> and most of Assignment 05.
+</div>
+</div>
+]
+
+<div style="clear:both;"></div>
+
+???
+
+The three questions are chosen to expose the model's guesses: 2 depends on whether the model matches the state code, 3 on which column it searches. That sets up the data dictionary argument without a lecture. The reference Space is fmegahed/job_scout_chat on Hugging Face. Collect one surprising SQL from the room for the Menti.
+
+---
+
+# Our Class Git + GitHub Ritual
+
+<div style="display:flex; gap:14px; align-items:stretch; margin-top:14px;">
+  <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:9px 14px;">1 &nbsp; Knit</div>
+    <div style="padding:14px; font-size:14.5px; line-height:1.55;">Click <b>Knit</b>. <code>class05.html</code> re-runs every chunk top to bottom and saves the page next to your markdown.<div style="margin-top:6px; color:#585E60;">If the knit fails, a chunk depends on something you only ran in the Console. Fix the markdown, not the Console.</div></div>
+  </div>
+  <div style="align-self:center; color:#c3142d; font-size:24px; font-weight:700;">&rarr;</div>
+  <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:9px 14px;">2 &nbsp; Commit</div>
+    <div style="padding:14px; font-size:14.5px; line-height:1.55;">GitHub Desktop lists today's work: <code>markdowns/class05.Rmd</code>, <code>class05.html</code>, the <code>data/</code> files, and <code>apps/job_scout_chat/</code>.<div style="margin-top:6px; color:#585E60;">Summary: <code>Add class 05 markdown, data, and the job scout app</code>.</div></div>
+  </div>
+  <div style="align-self:center; color:#c3142d; font-size:24px; font-weight:700;">&rarr;</div>
+  <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:9px 14px;">3 &nbsp; Push and verify</div>
+    <div style="padding:14px; font-size:14.5px; line-height:1.55;"><b>Push origin</b>, then check the repo on GitHub: <code>markdowns/</code> and <code>data/</code> both there, readable from any device.<div style="margin-top:6px; color:#585E60;">That is code, data, and output, together.</div></div>
+  </div>
+</div>
+
+<br>
+
+<div style="margin-top:14px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:14px 20px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:18px; line-height:1.55; color:#1b1b1b;">
+<b style="color:#c3142d;">If it is not pushed, it is not done.</b> Your repo now carries code, data, and output that anyone, including future you, can re-run.
+</div>
+
+???
+
+Same ritual as last Wednesday with one more addition: the app folder from Part 5 rides along with the data folder, which is why this slide now sits after the deploy. The knit card's gray text is the most common Wednesday failure mode: an object created in the Console but never in a chunk, so the knit dies on line one. That error is a feature; it proves the markdown is the record.
+
+---
+
+class: inverse, center, middle
+
+# Recap
+
+---
+
+# Summary of Main Points
+
+By now, you should be able to do the following:
+
+- **Import** an **Excel sheet** (`sheet`, `skip`, `n_max`), a **web-served JSON file**, and a **SQLite table** (`dbConnect()`, `dbReadTable()`, `dbDisconnect()`).
+
+- **Export** with `write_csv()` and `write_xlsx()`, then knit and push code, data, and output.
+
+- **Build and deploy** a `querychat` app: a dozen lines of R, a Dockerfile you did not write, one secret, one public address.
+
+**Skills practiced:** the three brackets on a campus object and on real postings, `glimpse()` on every import, reading generated SQL before trusting the table.
+
+**Reading for Assignment 05:** [A1 the Dockerfile](#appendix-a1), [A2 the data dictionary](#appendix-a2), [A3 polishing with bslib](#appendix-a3), [A4 deploying with git](#appendix-a4). **Next class (Mon, Sep 14):** dplyr, readable pipelines built from today's subsetting.
+
+???
+
+Tie each bullet to its part, then point forward: everything dplyr does Monday (filter, select, mutate) is a friendlier spelling of the brackets from Find Your Seat, running on data frames imported exactly as today. Monday's first data frame is this section's own run: read_csv("https://isa401-find-your-seat.vercel.app/api/export?section=A") has one row per seat per level, both tracks, so filter(track == "heist") and the level the room got stuck on are the warm-up. The appendices are the reading for Assignment 05; say so.
+
+---
+
+# Before You Go
+
+<div style="height:495px; max-width:880px; margin:0 auto; padding:0; overflow:hidden;">
+  <iframe
+    src="https://www.mentimeter.com/app/presentation/alkim66z8wex2hguaep3uv4bke15kac4/embed"
+    scrolling="no"
+    frameborder="0"
+    allowfullscreen
+    sandbox="allow-popups allow-scripts allow-same-origin allow-presentation"
+    style="width:100%; height:100%; border:0;">
+  </iframe>
+</div>
+
+???
+
+The Class 05 Menti presentation is embedded here; advance it to the clarification question before this slide comes up. answer the top two or three on the spot and carry the rest into Monday's opening.
+
+---
+
+# 📝 Review and Clarification 📝
+
+.pull-left[
+
+1. **Class Notes**: Take some time to revisit your class notes for key insights/concepts.
+
+2. **Zoom Recording**: The recording of today's class will be made available on Canvas approximately 3-4 hours after the session ends.
+
+3. **AI Recaps:** make your own with Gemini's NotebookLM, as I did for Class 01 (see the right).
+
+4. **Questions**: Do not let confusion pile up.
+
+]
+
+.pull-right[
+
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:14px 18px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:16px; line-height:1.55; margin-top:6px;">
+<div style="font-weight:700; color:#c3142d; font-size:18px;">Make your own recap in NotebookLM</div>
+<ol style="margin:10px 0 0 0; padding-left:22px;">
+<li style="margin-bottom:6px;">Go to <a href="https://notebooklm.google.com" target="_blank">notebooklm.google.com</a> and sign in with your Miami Google account.</li>
+<li style="margin-bottom:6px;">Add today's slide deck as a source: paste the deck's address from Canvas as a <b>Website</b> source.</li>
+<li>Click <b>Audio Overview</b> for a podcast, or <b>Video Overview</b> for a narrated video. Both take a few minutes to generate.</li>
+</ol>
+<div style="margin-top:12px; color:#585E60; font-size:15px;">What it looks like: the Class 01 <a href="https://www.youtube.com/watch?v=sys7WBk0iew" target="_blank">video</a> and <a href="https://drive.google.com/file/d/1lt6hqrMuW8JOy9ilvkT5NVlPABowj7SE/view" target="_blank">podcast</a>. Treat them as a study aid, not a substitute for the slides: the AI summarizes what is on the page and can misstate details.</div>
+</div>
+
+]
+
+???
+
+Same slide as the last two classes. Point at the Class 01 examples so they know what they get, and repeat the caveat: NotebookLM paraphrases and occasionally invents.
+
+---
+
+# 🎯 Assignments 🎯
+
+.pull-left[
+
+<div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+  <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;"><a href="https://miamioh.instructure.com/courses/258169/assignments/3606958/" target="_blank" style="color:#fff;">Assignment 04: Subsetting and Import</a></div>
+  <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;">A Canvas quiz. Six answers come from subsetting <code>midwest_airbnb.db</code> in R, 14,887 Inside Airbnb listings from Chicago, Columbus, and the Twin Cities; four are about how today's imports work. Auto-graded, 10 points. <span style="color:#585E60;">Due date on Canvas.</span></div>
+</div>
+
+<div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1); margin-top:12px;">
+  <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;"><a href="https://miamioh.instructure.com/courses/258169/assignments/3606964" target="_blank" style="color:#fff;">Assignment 05: Deploy Your Midwest Airbnb Chat</a></div>
+  <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;">Today's recipe on the Midwest Airbnb listings: same Dockerfile, new data, a full data dictionary, extra instructions, your own theme and About section. Submit the Space's address. Appendices A1 to A3 are the reading. <span style="color:#585E60;">Due date on Canvas.</span></div>
+</div>
+
+<div style="margin-top:12px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:10px 14px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13.5px; line-height:1.5; color:#1b1b1b;">
+<b style="color:#c3142d;">Before you leave:</b> knit, then commit and push <code>markdowns/class05.Rmd</code>, <code>class05.html</code>, <code>data/</code>, and <code>apps/job_scout_chat/</code>. If it is not pushed, it is not done.
+</div>
+
+]
+
+.pull-right[
+
+<div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+  <div style="background:#f9dbdb; color:#c3142d; font-weight:700; font-size:15px; padding:8px 14px;">Ungraded Practice Questions</div>
+  <div style="padding:10px 14px; font-size:13px; line-height:1.5;">
+    <div><b>1.</b> From <code>postings</code>, keep the rows where <code>remote</code> is 1 and only the <code>title</code> and <code>company</code> columns. How many rows?</div>
+    <div style="margin-top:4px;"><b>2.</b> Read the second table, <code>scout_runs</code>, from <code>scout.db</code> and <code>glimpse()</code> it. How many harvests are recorded?</div>
+    <div style="margin-top:4px;"><b>3.</b> Parse <code>skills_json</code> for row 50. How many skills are required?</div>
+    <div style="margin-top:4px;"><b>4.</b> Export the remote postings from question 1 to <code>../data/remote_postings.csv</code>.</div>
+    <div style="margin-top:4px;"><b>5.</b> Ask your Space the question from 1. Does its SQL match your brackets?</div>
+    <details style="margin-top:8px;"><summary style="cursor:pointer; font-weight:700; color:#c3142d; font-size:13px;">Answers</summary>
+      <div style="font-family:'Source Code Pro', monospace; font-size:11.5px; line-height:1.6; margin-top:4px; color:#1b1b1b;">
+        1. postings[postings$remote == 1, c("title", "company")]: 127 rows<br>
+        2. DBI::dbReadTable(con, "scout_runs"): 5 rows<br>
+        3. s = jsonlite::fromJSON(postings$skills_json[50]); sum(s$importance == "required")<br>
+        4. readr::write_csv(postings[postings$remote == 1, c("title", "company")], "../data/remote_postings.csv")<br>
+        5. Look for WHERE remote = 1 in the SQL card
+      </div>
+    </details>
+  </div>
+</div>
+
+]
+
+???
+
+Two graded items this time, both tied to today: the quiz repeats the scout.db three-step read on the Airbnb file, and the deploy repeats this afternoon's Space on the Airbnb file. Both files are on Canvas. The practice card reuses every import from today; the answers are one click away. Say the before-you-leave line out loud while pointing at GitHub Desktop.
+
+---
+
+class: inverse, center, middle
+
+# Appendices
+
+<div style="font-size:18px; color:#dedede; margin-top:10px;">Not covered live. The reading for Assignment 05.</div>
+
+---
+
+name: appendix-a1
+
+# A1: The Dockerfile, Line by Line
+
+.left55[
+
+```{r dockerfile, eval=FALSE, hl.size="48%"}
+FROM rocker/shiny:4.6.0
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libcurl4-openssl-dev libssl-dev libxml2-dev libuv1t64 \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN echo 'options(repos = c(CRAN =
+  "https://p3m.dev/cran/__linux__/noble/2026-09-01"))' \
+    >> /usr/local/lib/R/etc/Rprofile.site
+
+RUN R -q -e "install.packages(c('shiny', 'bslib', 'DBI', 'RSQLite',
+  'ellmer', 'shinychat', 'querychat', 'DT'))"
+
+RUN R -q -e "stopifnot(requireNamespace('querychat'),
+  requireNamespace('RSQLite'), requireNamespace('DT'),
+  requireNamespace('fs'))"
+
+WORKDIR /app
+COPY app.R app.R
+COPY data/ data/
+
+EXPOSE 7860
+CMD ["R", "-q", "-e",
+  "shiny::runApp('/app', host = '0.0.0.0', port = 7860)"]
+```
+
+]
+
+.right43[
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:11px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13px; line-height:1.55;">
+<div><b><code>FROM</code></b>: start from a ready-made Linux image with <b>R 4.6.0</b> and Shiny Server, the same R as this lab. Change this number and the packages below may no longer match.</div>
+<div style="margin-top:5px;"><b><code>apt-get</code></b>: system libraries that <code>ellmer</code> (web requests) and <code>RSQLite</code> need, plus <code>libuv1t64</code>, which this rocker image forgot to ship and Shiny's file helpers need. Found by building the image, not by reading about it.</div>
+<div style="margin-top:5px;"><b><code>options(repos = ...)</code></b>: install every package from <b>one dated snapshot</b> of CRAN. A build in December installs the same versions as today. Last year's version of this file pinned versions from a repository that only keeps the latest build, and it broke the week a package updated.</div>
+<div style="margin-top:5px;"><b><code>install.packages(...)</code></b> lists <code>DT</code> too: querychat only suggests it, but the app cannot draw its table without it.</div>
+<div style="margin-top:5px;"><b><code>stopifnot(...)</code></b>: fail the build now, with a readable log, rather than at the first visitor.</div>
+<div style="margin-top:5px;"><b><code>COPY</code>, <code>EXPOSE</code>, <code>CMD</code></b>: copy your app and data in, open port 7860 (Hugging Face's default), start Shiny.</div>
+</div>
+]
+
+<div style="clear:both;"></div>
+
+.footnote[
+<html>
+<hr>
+</html>
+**Sources:** [Rocker images](https://rocker-project.org/images/versioned/shiny.html); [Posit Package Manager snapshots](https://p3m.dev/client/#/repos/cran/setup); [Hugging Face Docker Spaces](https://huggingface.co/docs/hub/spaces-sdks-docker).
+]
+
+???
+
+Appendix, not live. The one lesson is the dated snapshot: reproducibility for software is the same idea as the snapshot in data/ for data.
+
+---
+
+name: appendix-a2
+
+# A2: Teaching the App About Your Data
+
+.left55[
+
+```{r app_dict, eval=FALSE, hl.size="62%"}
+qc = querychat(
+  con, "scout_postings",
+  client             = client,   # same ellmer client as app.R
+  greeting           = "Ask me about the postings.",
+  data_description   = "data/data_desc.md",
+  extra_instructions = "data/extra_instructions.md"
+)
+```
+
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:10px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13px; line-height:1.55; margin-top:8px;">
+<div style="font-weight:700; color:#c3142d; font-size:14px;">data_desc.md: the data dictionary</div>
+<div style="margin-top:4px;">What the table is, where it came from, and <b>one row per column</b>: name, meaning, units, allowed values. Example: <code>remote</code> is 1 for remote-eligible, 0 otherwise; <code>location_state</code> is a two-letter code; <code>category</code> is one of <code>fulltime</code>, <code>federal</code>, <code>internship</code>.</div>
+</div>
+
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:10px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13px; line-height:1.55; margin-top:8px;">
+<div style="font-weight:700; color:#c3142d; font-size:14px;">extra_instructions.md: house rules</div>
+<div style="margin-top:4px;">Short rules for the model: <i>"Match states by their two-letter code."</i> <i>"Skills live in <code>skills_json</code>; search it, not <code>description</code>."</i> <i>"Return at most 50 rows unless asked."</i></div>
+</div>
+
+]
+
+.right43[
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:11px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13.5px; line-height:1.55;">
+<div style="font-weight:700; color:#c3142d; font-size:15px;">Before and after</div>
+<div style="margin-top:6px;"><b>Question:</b> <i>Show the remote postings in Ohio.</i></div>
+<div style="margin-top:6px;"><b>Without a dictionary:</b> <code>WHERE location_state LIKE '%Ohio%' AND remote = 1</code>. Zero rows: the column holds <code>OH</code>.</div>
+<div style="margin-top:6px;"><b>With it:</b> <code>WHERE location_state = 'OH' AND remote = 1</code>. The rows you meant.</div>
+</div>
+<div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:11px 14px; background:#fdf2f2; font-size:13.5px; line-height:1.55; margin-top:12px;">
+Both files go in the model's <b>system prompt</b>, once, at startup. Writing them is the same work as documenting a dataset for a colleague, which is why the data dictionary is a deliverable in Assignment 05 and in every project this semester.
+</div>
+<div style="font-size:12.5px; color:#585E60; margin-top:10px;">Starter files with the first six columns documented are in the <code>data/</code> folder of <a href="https://miamioh.instructure.com/courses/258169/modules/981092" target="_blank"><code>job_scout_chat.zip</code></a> on Canvas.</div>
+]
+
+<div style="clear:both;"></div>
+
+.footnote[
+<html>
+<hr>
+</html>
+**Source:** [querychat: Provide Context](https://posit-dev.github.io/querychat/r/reference/context.html), the `data_description` and `extra_instructions` arguments.
+]
+
+???
+
+Appendix. The before/after is illustrative of a typical failure, not a transcript; models vary run to run, which is itself the argument for the dictionary.
+
+---
+
+name: appendix-a3
+
+# A3: Polishing With bslib
+
+.left55[
+
+```{r app_bslib, eval=FALSE, hl.size="50%"}
+library(shiny)
+library(bslib)
+
+ui = page_sidebar(
+  title   = "Job Scout Chat",
+  theme   = bs_theme(primary = "#C3142D",
+                     base_font = font_google("Lato")),
+  sidebar = qc$sidebar(width = 350),
+  card(card_header(textOutput("title")),
+       DT::DTOutput("table")),
+  accordion(open = FALSE,
+    accordion_panel("SQL", verbatimTextOutput("sql")))
+)
+
+server = function(input, output, session) {
+  vals = qc$server()
+  output$title = renderText(vals$title() %||% "All postings")
+  output$table = DT::renderDT(vals$df(),
+                              options = list(pageLength = 10))
+  output$sql   = renderText(vals$sql() %||%
+                              "SELECT * FROM scout_postings")
+}
+
+shinyApp(ui, server)
+```
+
+]
+
+.right43[
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:11px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13.5px; line-height:1.55;">
+<div style="font-weight:700; color:#c3142d; font-size:15px;">Replace <code>qc$app_obj()</code> with your own layout</div>
+<div style="margin-top:6px;"><b><code>qc$sidebar()</code></b> is the chat; <b><code>qc$server()</code></b> returns three reactives: <code>df()</code>, <code>sql()</code>, <code>title()</code>. Everything else is ordinary Shiny.</div>
+<div style="margin-top:6px;"><b><code>bs_theme()</code></b> sets colors and fonts in one place. <b><code>card()</code></b>, <b><code>accordion()</code></b>, and <b><code>value_box()</code></b> are the building blocks; <b><code>page_navbar()</code></b> adds tabs for a Home or About page.</div>
+</div>
+<div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:11px 14px; background:#fdf2f2; font-size:13.5px; line-height:1.55; margin-top:12px;">
+<b>A finished example</b> to read, not copy: the <a href="https://huggingface.co/spaces/fmegahed/querychat_demo" target="_blank">OEWS Jobs Explorer</a> Space (Home tab, value boxes, About card, SQL panel), source in its <b>Files</b> tab. <code>DT</code> is already in the Dockerfile; add <code>bsicons</code> to its <code>install.packages()</code> line if you use icons.
+</div>
+]
+
+<div style="clear:both;"></div>
+
+.footnote[
+<html>
+<hr>
+</html>
+**Sources:** [bslib: Get Started](https://rstudio.github.io/bslib/articles/dashboards/index.html); [querychat: Build an App](https://posit-dev.github.io/querychat/r/reference/build.html).
+]
+
+???
+
+Appendix. The point for Assignment 05: the class app is a starting point, the OEWS demo is what a finished one looks like, and everything between is standard Shiny and bslib.
+
+---
+
+name: appendix-a4
+
+# A4: Deploying With Git Instead of Uploads
+
+.left55[
+
+<div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+  <div style="background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:8px 14px;">A Space is a git repository</div>
+  <div style="padding:10px 14px; font-size:13.5px; line-height:1.55;">
+    <div><b>1.</b> On huggingface.co: <b>Settings &rarr; Access Tokens &rarr; New token</b>, type <b>Write</b>. Copy it once; it is your git password for Hugging Face.</div>
+    <div style="margin-top:4px;"><b>2.</b> GitHub Desktop: <b>File &rarr; Clone repository &rarr; URL</b>, paste the Space address, local path <code>M:\isa401</code> (a sibling of <code>business_intelligence</code>, never inside it). Username: your HF username. Password: the token.</div>
+    <div style="margin-top:4px;"><b>3.</b> Copy the app files into the clone, <b>Commit to main</b>, <b>Push origin</b>. The Space rebuilds on every push; the commit history is on its Files tab.</div>
+    <div style="margin-top:4px;"><b>4.</b> Each improvement is its own commit. Assignment 05 asks for at least three.</div>
+  </div>
+</div>
+
+]
+
+.right43[
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:11px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13.5px; line-height:1.55;">
+<div style="font-weight:700; color:#c3142d; font-size:15px;">The .gitattributes file in the zip</div>
+<div style="margin-top:6px;"><code>*.db filter=lfs diff=lfs merge=lfs -text</code>: Hugging Face refuses plain pushes of files over 10 MB, so database files travel through Git LFS, which GitHub Desktop already bundles.</div>
+<div style="margin-top:4px;"><code>Dockerfile text eol=lf</code> (and <code>*.R</code>, <code>*.md</code>): a Windows editor can turn line endings into CRLF, and a carriage return after a trailing backslash breaks the Dockerfile on Linux. This line keeps them LF on every machine.</div>
+</div>
+<div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:11px 14px; background:#fdf2f2; font-size:13.5px; line-height:1.55; margin-top:12px;">
+<b>Windows and Mac</b> run the same GitHub Desktop dialogs. On a lab PC, remove the huggingface.co entry from Windows Credential Manager when you are done, or the next person inherits your token.
+</div>
+]
+
+<div style="clear:both;"></div>
+
+.footnote[
+<html>
+<hr>
+</html>
+**Sources:** [Hugging Face: user access tokens](https://huggingface.co/docs/hub/security-tokens); [Hugging Face: repositories, git and LFS](https://huggingface.co/docs/hub/repositories-getting-started); [GitHub Desktop: cloning a repository](https://docs.github.com/en/desktop/adding-and-cloning-repositories/cloning-a-repository-from-github-to-github-desktop).
+]
+
+???
+
+Appendix. In class the upload route keeps forty minutes honest; Assignment 05 requires this route so every improvement is a commit and the grader can count them. The two traps are the token as password and the nested-repo mistake; the .gitattributes lines are the third, invisible one.

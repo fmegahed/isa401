@@ -98,3 +98,6 @@ tmpclaude-af2f-cwd
 
 # Instructor speaker notes (local only)
 speaker_notes/
+/games/videos
+/games/find-your-seat/.agents
+/games/find-your-seat/.claude

@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Find Your Seat: board</title>
+<link rel="icon" href="favicon.png">
+<style>
+  :root { --red: #C3142D; --red-dark: #8B0E20; --yellow: #EFDB72; --ink: #1b1b1b; --muted: #585E60; --line: #d1d5db; --paper: #fcfcfc; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; font-family: "Segoe UI", Helvetica, Arial, sans-serif; color: var(--ink); background: #111; overflow: hidden; }
+
+  /* full-bleed stage behind everything */
+  #stage { position: fixed; inset: 0; background: #111; overflow: hidden; }
+  .scene { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transition: opacity 1.4s ease; }
+  .scene.on { opacity: 1; animation: burns 30s ease-in-out infinite alternate; }
+  @keyframes burns { from { transform: scale(1); } to { transform: scale(1.07); } }
+  .scene .credit { position: absolute; left: 14px; bottom: 10px; font-size: 11px; color: #fff; background: rgba(0,0,0,.5); padding: 3px 8px; border-radius: 4px; }
+  #stage.heist { background: radial-gradient(ellipse at 30% 20%, #3a0b12 0%, #111 55%, #0a0a0a 100%); }
+  #stage.heist::before { content: ""; position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px); background-size: 48px 48px; }
+  #stage::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.35) 0%, rgba(0,0,0,.05) 30%, rgba(0,0,0,.45) 100%); pointer-events: none; }
+
+  #ui { position: relative; z-index: 2; height: 100%; display: flex; flex-direction: column; }
+
+  /* top bar */
+  #top { display: flex; align-items: center; gap: 12px; padding: 8px 16px; background: rgba(252,252,252,.94); border-bottom: 1px solid var(--line); box-shadow: 0 1px 3px rgba(0,0,0,.2); flex: none; }
+  #top .brand { font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: var(--red); font-size: 15px; margin-right: 6px; }
+  .chip { border: 1.5px solid var(--line); border-radius: 999px; padding: 4px 12px; font-size: 13px; background: #fff; cursor: pointer; user-select: none; }
+  .chip.on { border-color: var(--red); color: var(--red); font-weight: 700; }
+  .lbl { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-left: 6px; }
+  #tools { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+  button.tool { font: inherit; font-size: 13px; padding: 5px 12px; border: 1.5px solid var(--line); border-radius: 8px; background: #fff; color: var(--ink); cursor: pointer; }
+  button.tool.on { border-color: var(--red); color: var(--red); font-weight: 700; }
+  button.tool.hot { background: var(--red); color: #fff; border-color: var(--red); font-weight: 700; }
+  #run { font-size: 12px; color: var(--muted); }
+
+  /* breadcrumb strip: where the room is */
+  #crumbs { display: flex; flex: none; background: rgba(252,252,252,.86); border-bottom: 1px solid var(--line); }
+  #crumbs .pin { flex: 1; padding: 6px 14px; display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 13.5px; border-right: 1px solid var(--line); transition: all .4s; }
+  #crumbs .pin:last-child { border-right: 0; }
+  #crumbs .pin .dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid #9ca3af; background: #fff; flex: none; transition: all .4s; }
+  #crumbs .pin.now { color: var(--ink); font-weight: 700; background: rgba(195,20,45,.06); }
+  #crumbs .pin.now .dot { border-color: var(--red); box-shadow: 0 0 0 4px rgba(195,20,45,.18); animation: pulse 1.6s ease-in-out infinite; }
+  @keyframes pulse { 50% { box-shadow: 0 0 0 7px rgba(195,20,45,.08); } }
+  #crumbs .pin.done .dot { background: var(--red); border-color: var(--red); }
+  #crumbs .pin.done { color: var(--ink); }
+  #crumbs .pin small { color: var(--muted); font-weight: 400; margin-left: auto; font-size: 12px; }
+
+  /* main grid */
+  #main { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 12px; padding: 12px 16px 12px; }
+  #left { display: flex; flex-direction: column; gap: 10px; min-height: 0; }
+  #planwrap { flex: 1; min-height: 0; background: rgba(255,255,255,.96); border: 1px solid var(--line); border-radius: 12px; padding: 6px; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 30px rgba(0,0,0,.35); position: relative; }
+  #plan { height: 100%; aspect-ratio: 900 / 640; max-width: 100%; }
+  #planwrap svg { width: 100%; height: 100%; display: block; }
+  #planwrap .seat { cursor: default; }
+  #planwrap .seat.pop .chair { animation: pop .7s cubic-bezier(.2,1.4,.4,1); transform-box: fill-box; transform-origin: center; }
+  @keyframes pop { 0% { transform: scale(1); } 40% { transform: scale(1.55); } 100% { transform: scale(1); } }
+  #planwrap .table.lit { animation: glow 1.6s ease-in-out infinite alternate; }
+  @keyframes glow { from { filter: drop-shadow(0 0 2px rgba(195,20,45,.4)); } to { filter: drop-shadow(0 0 9px rgba(195,20,45,.9)); } }
+  #badge { position: absolute; top: 10px; left: 12px; background: #111; color: #fff; font-weight: 800; font-size: 13px; letter-spacing: .08em; padding: 4px 10px; border-radius: 6px; display: none; }
+  #badge.on { display: block; animation: blink 1.2s steps(2) infinite; }
+  #planwrap .seat.stuck { animation: halo 1.4s ease-in-out infinite alternate; }
+  @keyframes halo { from { filter: drop-shadow(0 0 2px rgba(245,158,11,.5)); } to { filter: drop-shadow(0 0 10px rgba(245,158,11,1)); } }
+  .legend .ks::before { background: #fff; border-color: #f59e0b; border-width: 3px; }
+
+  /* toasts over the plan */
+  #toasts { position: absolute; left: 14px; bottom: 14px; display: flex; flex-direction: column; gap: 6px; pointer-events: none; z-index: 3; }
+  .toast { background: rgba(17,17,17,.92); color: #fff; padding: 8px 14px; border-radius: 8px; font-size: 14.5px; box-shadow: 0 6px 20px rgba(0,0,0,.35); animation: toastin .4s cubic-bezier(.2,1,.3,1); border-left: 4px solid var(--red); }
+  .toast b { color: var(--yellow); }
+  .toast.gold { border-left-color: var(--yellow); background: rgba(139,14,32,.94); }
+  .toast.out { animation: toastout .4s ease forwards; }
+  @keyframes toastin { from { transform: translateX(-30px); opacity: 0; } }
+  @keyframes toastout { to { transform: translateY(10px); opacity: 0; } }
+
+  /* attract mode: nobody has tapped in yet */
+  #attract { position: absolute; inset: 6px; border-radius: 10px; background: rgba(255,255,255,.94); display: none; align-items: center; justify-content: center; gap: 44px; z-index: 2; }
+  #attract.on { display: flex; animation: fadein .8s ease; }
+  #attract .t .url { font-family: "Source Code Pro", Consolas, monospace; font-size: 30px; font-weight: 700; color: var(--ink); margin-top: 6px; letter-spacing: -.01em; }
+  #attract img { width: 200px; height: 200px; border: 1px solid var(--line); border-radius: 12px; background: #fff; padding: 10px; }
+  #attract .t h2 { margin: 0; font-size: 46px; color: var(--red); letter-spacing: -.01em; }
+  #attract .t p { font-size: 18px; color: var(--muted); margin: 8px 0 0; max-width: 540px; line-height: 1.5; }
+  #attract .t code { display: block; margin-top: 14px; background: #222; color: #dedede; padding: 10px 14px; border-radius: 8px; font-family: "Source Code Pro", Consolas, monospace; font-size: 15px; white-space: pre; }
+  #attract .t code .s { color: #b9ca4a; } #attract .t code .f { color: #7aa6da; } #attract .t code .p { color: #e7c547; }
+
+  /* scene cut: the whole projector for three seconds when the room advances */
+  #cut { position: fixed; inset: 0; z-index: 7; background: #111 center / cover no-repeat; opacity: 0; pointer-events: none; transition: opacity .7s ease; display: flex; align-items: flex-end; }
+  #cut.on { opacity: 1; }
+  #cut .shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.1) 0%, rgba(0,0,0,.2) 50%, rgba(0,0,0,.8) 100%); }
+  #cut.heist { background-image: radial-gradient(ellipse at 30% 20%, #4a0e17 0%, #111 60%) !important; }
+  #cut .txt { position: relative; padding: 0 6vw 9vh; color: #fff; }
+  #cut .kicker { font-size: 16px; letter-spacing: .3em; text-transform: uppercase; opacity: .85; }
+  #cut h1 { margin: 6px 0 14px; font-size: 78px; line-height: 1; letter-spacing: -.02em; text-shadow: 0 4px 30px rgba(0,0,0,.6); }
+  #cut code { font-family: "Source Code Pro", Consolas, monospace; font-size: 26px; background: rgba(0,0,0,.6); padding: 8px 16px; border-radius: 8px; color: var(--yellow); }
+  #cut.on .txt { animation: slideup .8s cubic-bezier(.2,1,.3,1); }
+  @keyframes slideup { from { transform: translateY(40px); opacity: 0; } to { transform: none; opacity: 1; } }
+  @keyframes blink { 50% { opacity: .55; } }
+
+  /* the code chain */
+  #chain { flex: none; background: #222; color: #dedede; border-radius: 12px; padding: 10px 14px 8px; font-family: "Source Code Pro", Consolas, monospace; font-size: 15px; line-height: 1.75; box-shadow: 0 8px 30px rgba(0,0,0,.35); }
+  #chain .t { font-family: "Segoe UI", Helvetica, Arial, sans-serif; font-size: 11px; text-transform: uppercase; letter-spacing: .1em; color: #969896; margin-bottom: 2px; display: flex; gap: 10px; align-items: center; cursor: pointer; user-select: none; }
+  #chain .t .caret { display: inline-block; width: 0; height: 0; border-left: 7px solid #fff; border-top: 5px solid transparent; border-bottom: 5px solid transparent; transition: transform .25s; margin-right: 2px; }
+  #chain.open .t .caret { transform: rotate(90deg); }
+  #chain .t .hint { margin-left: auto; letter-spacing: .04em; text-transform: none; }
+  #chain:not(.open) #chain-lines { display: none; }
+  #chain:not(.open) { padding-bottom: 10px; }
+  #chain .t b { color: #fff; }
+  #chain .ln { white-space: pre; overflow: hidden; text-overflow: ellipsis; opacity: .38; padding-left: 10px; border-left: 3px solid transparent; transition: opacity .5s, border-color .5s; }
+  #chain .ln.done { opacity: 1; }
+  #chain .ln.now { opacity: 1; border-left-color: var(--red); background: rgba(195,20,45,.12); }
+  #chain .s { color: #b9ca4a; } #chain .f { color: #7aa6da; } #chain .p { color: #e7c547; } #chain .c { color: #969896; font-style: italic; }
+  #chain .q { display: inline-block; background: var(--yellow); color: #000; border-radius: 4px; padding: 0 7px; font-weight: 700; min-width: 1.6em; text-align: center; }
+  #chain .q.rev { background: transparent; color: #b9ca4a; padding: 0; animation: reveal .8s ease; }
+  @keyframes reveal { 0% { background: var(--yellow); color: #000; } 100% { background: transparent; color: #b9ca4a; } }
+  #chain .ok { color: #7ee2a8; }
+
+  /* right column */
+  #side { display: flex; flex-direction: column; gap: 10px; min-height: 0; overflow: hidden; }
+  .card { background: rgba(252,252,252,.96); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; box-shadow: 0 8px 30px rgba(0,0,0,.3); flex: none; }
+  .card .hd { background: var(--red); color: #fff; font-weight: 700; font-size: 13.5px; padding: 7px 12px; display: flex; align-items: center; gap: 8px; }
+  .card .hd.soft { background: #f9dbdb; color: var(--red); }
+  .card .hd small { margin-left: auto; font-weight: 400; opacity: .9; font-size: 12px; }
+  .card .bd { padding: 10px 12px; font-size: 14px; }
+  #goal .big { font-size: 40px; font-weight: 800; line-height: 1; color: var(--red); letter-spacing: -.02em; }
+  #goal .big small { font-size: 16px; color: var(--muted); font-weight: 600; letter-spacing: 0; }
+  #goal .sub { color: var(--muted); font-size: 13px; margin-top: 4px; }
+  #bar { height: 14px; background: #eceff1; border-radius: 999px; margin-top: 10px; overflow: hidden; border: 1px solid var(--line); }
+  #bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--yellow), var(--red)); transition: width .8s cubic-bezier(.2,.9,.3,1); }
+  #bar.full i { background: linear-gradient(90deg, var(--red), #000); }
+  #goal .row { display: flex; gap: 14px; margin-top: 8px; font-size: 12.5px; color: var(--muted); }
+  #goal .row b { color: var(--ink); }
+  #arr { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  #arr .bd { flex: 1; min-height: 0; overflow: auto; }
+  ol#fin { margin: 0; padding-left: 26px; line-height: 1.6; }
+  ol#fin li b { color: var(--red); }
+  ol#fin li span { color: var(--muted); font-size: 12.5px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 12px; font-size: 12px; color: var(--muted); }
+  .legend span::before { content: ""; display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 5px; vertical-align: -1px; border: 1.5px solid #9ca3af; background: #fff; }
+  .legend .k0::before { background: #f3f4f6; border-style: dashed; }
+  .legend .k1::before { background: #EFDB72; border-color: #b9a53d; } .legend .k2::before { background: #EFDB72; border-color: #C41230; border-width: 2.5px; } .legend .k3::before { background: #C41230; border-color: #8B0E20; } .legend .k5::before { background: #000; border-color: #000; }
+  .legend .kt::before { border-radius: 3px; background: #EFDB72; border-color: #C41230; width: 18px; }
+  button.reset { font: inherit; font-weight: 700; padding: 8px 12px; border: 0; border-radius: 8px; background: var(--red); color: #fff; cursor: pointer; width: 100%; }
+  button.reset.arm { background: #111; }
+  #err { color: var(--red); font-size: 12.5px; margin-top: 4px; }
+
+  /* celebration overlay */
+  #confetti { position: fixed; inset: 0; z-index: 8; pointer-events: none; }
+  #party { position: fixed; inset: 0; z-index: 9; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,.55); }
+  #party.on { display: flex; animation: fadein .6s ease; }
+  @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
+  #party .box { background: #fff; border-radius: 16px; width: min(900px, 92vw); box-shadow: 0 30px 80px rgba(0,0,0,.6); overflow: hidden; animation: rise .7s cubic-bezier(.2,1.2,.4,1); }
+  @keyframes rise { from { transform: translateY(40px) scale(.96); } to { transform: none; } }
+  #party .hd { background: var(--red); color: #fff; padding: 18px 26px; }
+  #party h1 { margin: 0; font-size: 40px; letter-spacing: -.01em; }
+  #party .hd .sub { opacity: .92; font-size: 16px; margin-top: 4px; }
+  #party .bd { padding: 18px 26px 22px; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  #party .stat { border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; }
+  #party .stat .k { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+  #party .stat .v { font-size: 30px; font-weight: 800; color: var(--red); line-height: 1.15; }
+  #party .stat .v small { font-size: 14px; color: var(--muted); font-weight: 600; }
+  #party pre { grid-column: 1 / -1; margin: 0; background: #222; color: #dedede; border-radius: 10px; padding: 12px 14px; font-family: "Source Code Pro", Consolas, monospace; font-size: 14px; line-height: 1.6; overflow-x: auto; }
+  #party pre .s { color: #b9ca4a; } #party pre .f { color: #7aa6da; } #party pre .p { color: #e7c547; } #party pre .c { color: #969896; font-style: italic; }
+  #party .foot { grid-column: 1 / -1; display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: 13.5px; }
+  #party .foot button { margin-left: auto; }
+  @media (max-width: 1000px) { #main { grid-template-columns: 1fr; overflow: auto; } html, body { overflow: auto; } #plan { height: auto; width: 100%; } }
+</style>
+</head>
+<body>
+
+<div id="stage">
+  <div class="scene" id="sc0" style="background-image:url(images/campus.jpg)"><span class="credit">Miami University, Oxford, from above. Photo: Jay Murdock, Farmer School of Business</span></div>
+  <div class="scene" id="sc1" style="background-image:url(images/fsb.jpg)"><span class="credit">Farmer School of Business. Photo: Jay Murdock</span></div>
+  <div class="scene" id="sc2" style="background-image:url(images/atrium.jpg)"><span class="credit">FSB atrium, second floor. Photo: Jay Murdock</span></div>
+  <div class="scene" id="sc3" style="background-image:url(images/hallway.jpg)"><span class="credit">The hallway to FSB 2050. Photo: Jay Murdock</span></div>
+</div>
+
+<div id="ui">
+  <div id="top">
+    <div class="brand">Find Your Seat</div>
+    <span class="lbl">Section</span>
+    <span class="chip secchip" data-sec="A">A</span><span class="chip secchip" data-sec="B">B</span>
+    <span class="lbl">Mode</span>
+    <span class="chip modechip" data-mode="opener">Opener</span><span class="chip modechip" data-mode="heist">Heist</span>
+    <div id="tools">
+      <span id="run"></span>
+      <button class="tool" id="snd" title="Chime on every arrival">Sound off</button>
+      <button class="tool" id="replay" title="Replay this run at 30x">Replay run</button>
+      <button class="tool" id="party-btn" title="Play the finish sequence now">Celebrate</button>
+      <button class="tool" id="fs" title="Fullscreen (F)">&#x26F6;</button>
+    </div>
+  </div>
+  <div id="crumbs"></div>
+  <div id="main">
+    <div id="left">
+      <div id="planwrap"><div id="badge">REPLAY 30x</div><div id="plan"></div><div id="toasts"></div>
+        <div id="attract"><img id="qr" alt="QR code for this section" src=""><div class="t"><h2 id="attract-h2">Section A</h2><div class="url" id="attract-url"></div><p>Open the address on your computer, tap the seat you are in, and this room lights up as you subset your way to it. The code is for phones.</p><code><span class="p">campus</span> = <span class="p">jsonlite</span>::<span class="f">fromJSON</span>(
+  <span class="s">"https://isa401-find-your-seat.vercel.app/campus.json"</span>)</code></div></div>
+      </div>
+      <div id="chain"><div class="t" id="chain-toggle" title="Show or hide the code (T)"><span class="caret"></span><b id="chain-title"></b><span id="chain-sub"></span><span class="hint" id="chain-hint">click to show the code</span></div><div id="chain-lines"></div></div>
+    </div>
+    <div id="side">
+      <div class="card" id="goal"><div class="hd" id="goal-hd">The room <small id="clock"></small></div><div class="bd">
+        <div class="big"><span id="n-done">0</span> <small>of <span id="n-present">0</span> <span id="goal-word">arrived</span></small></div>
+        <div class="sub" id="goal-sub">Seats that tapped in count. Nobody else.</div>
+        <div id="bar"><i></i></div>
+        <div class="row"><div>Tables complete <b id="n-tables">0</b> / <span id="n-tables-all">0</span></div><div id="started-wrap" hidden>Started <b id="n-started">0</b></div></div>
+      </div></div>
+      <div class="card" id="arr"><div class="hd">Arrivals <small id="arr-sub"></small></div><div class="bd"><ol id="fin"></ol><div id="none" style="color:#585E60;">Nobody yet.</div></div></div>
+      <div class="card"><div class="hd soft">Legend</div><div class="bd"><div class="legend" id="legend"></div></div></div>
+      <div class="card" id="admin" hidden><div class="hd">Section reset</div><div class="bd"><button class="reset" id="reset">Start a new run for this section</button><div id="err"></div><div style="color:#585E60; font-size:12px; margin-top:6px;">Two clicks. Clears every seat for this section, both modes.</div></div></div>
+    </div>
+  </div>
+</div>
+
+<div id="cut"><div class="shade"></div><div class="txt"><div class="kicker" id="cut-kicker"></div><h1 id="cut-h1"></h1><code id="cut-code"></code></div></div>
+<canvas id="confetti"></canvas>
+<div id="party"><div class="box">
+  <div class="hd"><h1 id="party-h1">Everyone is here.</h1><div class="sub" id="party-sub"></div></div>
+  <div class="bd">
+    <div class="stat"><div class="k">First to arrive</div><div class="v" id="st-first">–</div></div>
+    <div class="stat"><div class="k">Median arrival</div><div class="v" id="st-median">–</div></div>
+    <div class="stat"><div class="k">The room spent longest on</div><div class="v" id="st-longest">–</div></div>
+    <div class="stat"><div class="k">Tables complete</div><div class="v" id="st-tables">–</div></div>
+    <pre id="party-code"></pre>
+    <div class="foot"><span id="party-foot"></span><button class="tool" id="party-close">Back to the board</button></div>
+  </div>
+</div></div>
+
+<script>
+(async function () {
+  const $ = (id) => document.getElementById(id);
+  const qs = new URLSearchParams(location.search);
+  let section = (qs.get("section") || "A").toUpperCase(); if (!/^[AB]$/.test(section)) section = "A";
+  let mode = qs.get("mode") === "heist" ? "heist" : "opener";
+  const key = qs.get("key") || "";
+  const TOP = { opener: 3, heist: 4 };
+  const LEGEND = {
+    opener: [["k1", "seat picked"], ["k2", "FSB found"], ["k3", "floor 2"], ["k5", "arrived (rank)"], ["kt", "table complete"], ["ks", "needs a hand"]],
+    heist:  [["k0", "here, not started"], ["k2", "stage 1 read"], ["k3", "stage 2 key"], ["k5", "cleared (rank)"], ["kt", "table complete"], ["ks", "needs a hand"]],
+  };
+  const CRUMBS = {
+    opener: [["Campus", "campus"], ["Farmer", "[[ ]]"], ["Floor 2", "by name"], ["Room 2050", "one row"]],
+    heist:  [["Stage 1", "CSV"], ["Stage 2", "JSON, key"], ["Cleared", "JSON, code"]],
+  };
+  // level reached by a crumb index (heist levels are 1, 2, 4)
+  const CRUMB_LEVEL = { opener: [0, 1, 2, 3], heist: [1, 2, 4] };
+  const LEVEL_NAME = { opener: { 1: "Level 1, the business school", 2: "Level 2, the floor", 3: "Level 3, the room" }, heist: { 1: "Stage 1, the sign-in log", 2: "Stage 2, the drive log", 4: "Stage 3, the ticket" } };
+  const H = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+  // the code chain: segments are strings or {q: text, lv: reveal level}; a segment
+  // with lv null is a placeholder that never reveals (the Heist answers)
+  const CHAIN = {
+    opener: {
+      title: "The trip, in brackets", sub: "fills in as the room clears each level",
+      lines: [
+        { lv: 0, seg: [{ p: "campus" }, " = ", { p: "jsonlite" }, "::", { f: "fromJSON" }, "(", { s: '"https://isa401-find-your-seat.vercel.app/campus.json"' }, ")"] },
+        { lv: 1, seg: ["campus[[", { q: '"Farmer"', lv: 1 }, "]]$code", { c: "                          # the business school" }] },
+        { lv: 2, seg: ["campus$", { q: "Farmer", lv: 1 }, "$floors[[", { q: '"2"', lv: 2 }, "]]$sections", { c: "        # by name, not position" }] },
+        { lv: 3, seg: ["r = campus$", { q: "Farmer", lv: 1 }, "$floors[[", { q: '"2"', lv: 2 }, "]]$rooms;  r$isa_sections[r$room == ", { q: '"2050"', lv: 3 }, "]"] },
+      ],
+    },
+    heist: {
+      title: "The evidence chain", sub: "one file unlocks the next",
+      lines: [
+        { lv: 1, seg: [{ p: "logins" }, " = ", { p: "readr" }, "::", { f: "read_csv" }, "(", { s: '"https://isa401-import-heist.vercel.app/api/stage1"' }, ")"] },
+        { lv: 2, seg: [{ p: "log" }, " = ", { p: "jsonlite" }, "::", { f: "fromJSON" }, "(", { s: '"https://isa401-import-heist.vercel.app/api/stage2?key=' }, { q: "ACCOUNT", lv: null }, { s: '"' }, ")"] },
+        { lv: 4, seg: [{ p: "jsonlite" }, "::", { f: "fromJSON" }, "(", { s: '"https://isa401-import-heist.vercel.app/api/finish?code=' }, { q: "NUMBER", lv: null }, { s: '"' }, ")"] },
+      ],
+    },
+  };
+
+  // ---------- chrome ----------
+  function paintChips() {
+    document.querySelectorAll(".secchip").forEach(c => c.classList.toggle("on", c.dataset.sec === section));
+    document.querySelectorAll(".modechip").forEach(c => c.classList.toggle("on", c.dataset.mode === mode));
+    $("legend").innerHTML = LEGEND[mode].map(([k, t]) => `<span class="${k}">${t}</span>`).join("");
+    $("crumbs").innerHTML = CRUMBS[mode].map(([t, s], i) => `<div class="pin" id="crumb${i}"><span class="dot"></span>${t}<small>${s}</small></div>`).join("");
+    $("goal-word").textContent = mode === "heist" ? "cleared" : "arrived";
+    $("goal-sub").textContent = mode === "heist" ? "Seats that tapped in this morning count. Nobody else." : "Seats that tapped in count. Nobody else.";
+    $("started-wrap").hidden = mode !== "heist";
+    $("stage").classList.toggle("heist", mode === "heist");
+    $("chain-title").textContent = CHAIN[mode].title; $("chain-sub").textContent = CHAIN[mode].sub;
+    const u = new URL(location); u.searchParams.set("section", section); u.searchParams.set("mode", mode); history.replaceState(null, "", u);
+    if (mode === "heist") scenes.forEach((id) => $(id).classList.remove("on"));
+    $("qr").src = "images/qr_" + section + ".png"; $("attract-h2").textContent = "Section " + section; $("attract-url").textContent = "isa401-find-your-seat.vercel.app/?section=" + section;
+    seenRun = null; lastState = null; lastCi = null;
+  }
+  document.querySelectorAll(".secchip").forEach(c => c.addEventListener("click", () => { section = c.dataset.sec; paintChips(); poll(); }));
+  document.querySelectorAll(".modechip").forEach(c => c.addEventListener("click", () => { mode = c.dataset.mode; paintChips(); poll(); }));
+
+  $("plan").innerHTML = await fetch("plan.svg").then(r => r.text());
+  const seats = {}; $("plan").querySelectorAll(".seat").forEach(g => seats[g.dataset.seat] = g);
+  const tables = {}; $("plan").querySelectorAll(".table").forEach(t => tables[t.dataset.table] = t);
+  if (key) { $("admin").hidden = false; }
+
+  // ---------- sound (WebAudio, synthesized) ----------
+  let audio = null, soundOn = false;
+  try { soundOn = localStorage.getItem("fys-sound") === "1"; } catch (e) {}
+  function tone(freq, t0, dur, gain, type) {
+    const o = audio.createOscillator(), g = audio.createGain();
+    o.type = type || "sine"; o.frequency.value = freq;
+    g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(gain, t0 + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    o.connect(g).connect(audio.destination); o.start(t0); o.stop(t0 + dur + 0.05);
+  }
+  function play(kind) {
+    if (!soundOn) return;
+    try {
+      audio = audio || new (window.AudioContext || window.webkitAudioContext)();
+      if (audio.state === "suspended") audio.resume();
+      const t = audio.currentTime;
+      if (kind === "arrive") { tone(880, t, 0.5, 0.18); tone(1320, t + 0.08, 0.6, 0.12); }
+      if (kind === "table") { [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => tone(f, t + i * 0.07, 0.9, 0.16, "triangle")); }
+      if (kind === "party") { [523.25, 659.25, 783.99, 1046.5, 783.99, 1046.5, 1318.5].forEach((f, i) => tone(f, t + i * 0.14, 0.7, 0.18, "triangle")); tone(261.63, t + 0.9, 1.6, 0.14, "sine"); }
+    } catch (e) {}
+  }
+  function paintSound() { $("snd").textContent = soundOn ? "Sound on" : "Sound off"; $("snd").classList.toggle("on", soundOn); }
+  $("snd").addEventListener("click", () => { soundOn = !soundOn; try { localStorage.setItem("fys-sound", soundOn ? "1" : "0"); } catch (e) {} paintSound(); if (soundOn) play("arrive"); });
+  paintSound();
+
+  // ---------- scenes (opener only) ----------
+  const scenes = ["sc0", "sc1", "sc2", "sc3"]; let scene = -1;
+  function showScene(i) {
+    if (mode === "heist") { scene = -1; return; }
+    if (i === scene) return;
+    scenes.forEach((id, k) => $(id).classList.toggle("on", k === i));
+    scene = i;
+  }
+
+  // ---------- state ----------
+  // A "state" is what the plan shows at one instant: per seat {level, rank, t}
+  // over the present set. Built from the live poll, or from a time cutoff in replay.
+  function build(j, cutoff) {
+    const top = j.top, present = j.present.slice();
+    const st = {}; let ranks = [];
+    for (const seat of present) {
+      const v = j.seats[seat]; let level = -1, tt = {};
+      if (v) {
+        for (const [lv, ms] of Object.entries(v.t || {})) if (cutoff == null || ms <= cutoff) { tt[lv] = ms; level = Math.max(level, Number(lv)); }
+        if (cutoff == null) { if (v.rank != null) ranks.push([v.rank, seat]); }
+        else if (tt[top] != null) ranks.push([tt[top], seat]);
+      }
+      st[seat] = { level, t: tt, rank: null };
+    }
+    ranks.sort((a, b) => a[0] - b[0]).forEach(([, seat], i) => st[seat].rank = i + 1);
+    return { top, present, seats: st };
+  }
+  function median(arr) { if (!arr.length) return -1; const a = arr.slice().sort((x, y) => x - y); const m = a.length >> 1; return a.length % 2 ? a[m] : Math.min(a[m - 1], a[m]); }
+  function cls(level, top) {
+    if (level >= top) return "done";
+    if (level < 0) return "here";
+    if (mode === "opener") return level === 2 ? "l2" : level === 1 ? "l1" : "picked";
+    return level >= 2 ? "l2" : level === 1 ? "l1" : "picked";
+  }
+  function fmt(ms) { const s = Math.max(0, Math.round(ms / 1000)); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); }
+  // toasts at the bottom of the plan
+  function toast(html, gold) {
+    const el = document.createElement("div"); el.className = "toast" + (gold ? " gold" : ""); el.innerHTML = html; $("toasts").appendChild(el);
+    while ($("toasts").children.length > 4) $("toasts").firstChild.remove();
+    setTimeout(() => { el.classList.add("out"); setTimeout(() => el.remove(), 450); }, 4800);
+  }
+  // scene cut when the room's median advances
+  const CUTS = {
+    opener: [["Miami University", "campus"], ["Farmer School of Business", 'campus[["Farmer"]]'], ["The second floor", 'campus$Farmer$floors[["2"]]'], ["FSB 2050", 'r$isa_sections[r$room == "2050"]']],
+    heist:  [["Sign-in log read", 'readr::read_csv(".../api/stage1")'], ["Account identified", 'jsonlite::fromJSON(".../api/stage2?key=ACCOUNT")'], ["Ticket closed", 'jsonlite::fromJSON(".../api/finish?code=NUMBER")']],
+  };
+  let cutTimer = null, lastCi = null;
+  function cut(i) {
+    const [title, code] = CUTS[mode][i]; const el = $("cut");
+    el.classList.toggle("heist", mode === "heist");
+    el.style.backgroundImage = mode === "opener" ? getComputedStyle($("sc" + i)).backgroundImage : "";
+    $("cut-kicker").textContent = mode === "opener" ? "The room has reached" : "The room has cleared";
+    $("cut-h1").textContent = title; $("cut-code").textContent = code;
+    el.classList.add("on"); clearTimeout(cutTimer); cutTimer = setTimeout(() => el.classList.remove("on"), 4500);
+  }
+  window.fysCut = cut;   // console hook: fysCut(2) previews a scene cut
+  function crumbIndex(level) { const L = CRUMB_LEVEL[mode]; let k = -1; L.forEach((lv, i) => { if (level >= lv) k = i; }); return k; }
+
+  // the code chain, rendered for a median level
+  function renderChain(med, into) {
+    const c = CHAIN[mode]; const html = [];
+    const sig = mode + ":" + med; if (into.dataset.sig === sig) return; into.dataset.sig = sig;   // re-render only on change, so the reveal animation plays once
+    let firstOpen = true;
+    for (const ln of c.lines) {
+      const done = med >= ln.lv; let state = done ? "done" : (firstOpen ? "now" : ""); if (!done) firstOpen = false;
+      const parts = ln.seg.map(sg => {
+        if (typeof sg === "string") return H(sg);
+        if (sg.q !== undefined) { const rev = sg.lv != null && med >= sg.lv; return `<span class="q${rev ? " rev" : ""}">${rev ? H(sg.q) : (sg.lv == null ? H(sg.q) : "?")}</span>`; }
+        const k = Object.keys(sg)[0]; return `<span class="${k}">${H(sg[k])}</span>`;
+      });
+      html.push(`<div class="ln ${state}">${parts.join("")}${done && mode === "heist" ? ' <span class="ok">✓</span>' : ""}</div>`);
+    }
+    into.innerHTML = html.join("");
+  }
+
+  let lastState = null, seenRun = null, celebrated = {}, liveJ = null;
+  function paint(S, j, opts) {
+    opts = opts || {};
+    const top = S.top; let done = 0, started = 0; const tableSeats = {}; const fresh = [];
+    const base = opts.base != null ? opts.base : (j.firstStart || j.now);
+    for (const [id, g] of Object.entries(seats)) {
+      g.classList.remove("picked", "l1", "l2", "l3", "done", "here"); const rk = g.querySelector(".rank"); if (rk) rk.remove();
+      g.querySelector(".id").style.opacity = 1;
+      const s = S.seats[id]; if (!s) continue;
+      const tb = id.slice(0, 2); (tableSeats[tb] = tableSeats[tb] || []).push(s);
+      g.classList.add(cls(s.level, top));
+      if (s.level >= 1) started++;
+      if (s.rank != null) {
+        done++;
+        const idt = g.querySelector(".id"); const t = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        t.setAttribute("class", "rank"); t.setAttribute("x", idt.getAttribute("x")); t.setAttribute("y", Number(idt.getAttribute("y")) + 1); t.textContent = "#" + s.rank; idt.style.opacity = 0; g.appendChild(t);
+        if (lastState && lastState.seats[id] && lastState.seats[id].rank == null) { g.classList.remove("pop"); void g.offsetWidth; g.classList.add("pop"); if (!opts.quiet) play("arrive"); fresh.push(id); }
+      }
+    }
+    // tables: lit when every present seat at the table has reached the top
+    let lit = 0, litNew = false;
+    for (const [tb, rect] of Object.entries(tables)) {
+      const ss = tableSeats[tb] || []; const isLit = ss.length > 0 && ss.every(s => s.rank != null);
+      if (isLit && !rect.classList.contains("lit")) { litNew = true; if (lastState && !opts.replay) toast(`Table <b>${tb}</b> is complete`, true); }
+      rect.classList.toggle("lit", isLit); if (isLit) lit++;
+    }
+    if (litNew && lastState && !opts.quiet) play("table");
+    const present = S.present.length;
+    if (!opts.replay && lastState) {
+      const prevDone = Object.values(lastState.seats).filter(s => s.rank != null).length;
+      fresh.sort((a, b) => S.seats[a].rank - S.seats[b].rank).forEach(id => toast(`<b>${id}</b> ${mode === "heist" ? "cleared" : "arrived"} &middot; #${S.seats[id].rank} &middot; ${fmt((S.seats[id].t[top] || base) - base)}`));
+      if (prevDone === 0 && done >= 1) toast(`First in: <b>${fresh[0] || ""}</b>`, true);
+      if (present >= 6 && prevDone < present / 2 && done >= present / 2 && done < present) toast(`Half the room has ${mode === "heist" ? "cleared" : "arrived"}`, true);
+    }
+    // needs a hand: stuck on a level for twice the room's median step, at least 75 seconds
+    if (!opts.replay) {
+      const now = j.now || Date.now(); const steps = [];
+      S.present.forEach(id => { const t = S.seats[id].t; const ks = Object.keys(t).map(Number).sort((a, b) => a - b); for (let k = 1; k < ks.length; k++) steps.push(t[ks[k]] - t[ks[k - 1]]); });
+      const thr = Math.max(75000, 2 * (steps.length >= 5 ? median(steps) : 75000));
+      for (const id of S.present) { const s = S.seats[id]; const ts = Object.values(s.t).map(Number); const last = ts.length ? Math.max(...ts) : null; seats[id].classList.toggle("stuck", last != null && s.level >= 0 && s.level < top && now - last > thr); }
+    } else { Object.values(seats).forEach(g => g.classList.remove("stuck")); }
+    $("attract").classList.toggle("on", present === 0 && !opts.replay);
+    $("n-done").textContent = done; $("n-present").textContent = present; $("n-started").textContent = started;
+    $("n-tables").textContent = lit; $("n-tables-all").textContent = Object.keys(tableSeats).length;
+    const frac = present ? done / present : 0;
+    $("bar").querySelector("i").style.width = (frac * 100) + "%"; $("bar").classList.toggle("full", present > 0 && done === present);
+    // where the room is: the median level over the present set
+    const levels = S.present.map(id => Math.max(0, S.seats[id].level));
+    const med = present ? median(levels) : -1;
+    const ci = crumbIndex(med);
+    CRUMBS[mode].forEach((_, i) => { const p = $("crumb" + i); p.classList.toggle("done", i <= ci); p.classList.toggle("now", i === ci + 1 || (ci < 0 && i === 0)); });
+    showScene(Math.max(0, Math.min(3, ci)));
+    if (!opts.replay && lastCi != null && ci > lastCi && (mode === "heist" || ci >= 1)) cut(ci);
+    if (!opts.replay) lastCi = ci;
+    renderChain(present ? med : -1, $("chain-lines"));
+    // arrivals
+    const fins = S.present.filter(id => S.seats[id].rank != null).sort((a, b) => S.seats[a].rank - S.seats[b].rank);
+    $("fin").innerHTML = fins.map(id => `<li><b>${id}</b> <span>${fmt((S.seats[id].t[top] || base) - base)}</span></li>`).join("");
+    $("none").style.display = fins.length ? "none" : "block";
+    $("arr-sub").textContent = fins.length ? fins.length + (mode === "heist" ? " cleared" : " arrived") : "";
+    lastState = S;
+    return { done, present, lit, med, fins };
+  }
+
+  // ---------- live polling ----------
+  let replaying = false, clockBase = null;
+  async function poll() {
+    if (replaying) return;
+    try {
+      const j = await fetch(`/api/board?section=${section}&track=${mode}`, { cache: "no-store" }).then(r => r.json());
+      if (j.error) { $("err").textContent = j.error; return; }
+      liveJ = j; $("run").textContent = "Run " + j.runId;
+      if (seenRun !== j.runId) { lastState = null; seenRun = j.runId; lastCi = null; $("toasts").innerHTML = ""; }
+      clockBase = j.firstStart;
+      const r = paint(build(j, null), j, {});
+      const tag = section + ":" + mode + ":" + j.runId;
+      if (r.present >= 10 && r.done === r.present && !celebrated[tag]) { celebrated[tag] = true; celebrate(j); }
+    } catch (e) { $("err").textContent = "Board offline: " + e; }
+  }
+  setInterval(() => { if (clockBase && !replaying) $("clock").textContent = fmt(Date.now() - clockBase); }, 1000);
+
+  // ---------- replay at 30x ----------
+  const RATE = 30;
+  $("replay").addEventListener("click", async () => {
+    if (replaying || !liveJ) return;
+    const j = liveJ; const times = Object.values(j.seats).flatMap(v => Object.values(v.t || {})).map(Number);
+    if (!times.length) return;
+    const t0 = Math.min(...times), t1 = Math.max(...times) + 2000;
+    replaying = true; $("replay").classList.add("hot"); $("badge").classList.add("on"); lastState = null;
+    const start = performance.now();
+    await new Promise(resolve => {
+      (function step() {
+        const vt = t0 + (performance.now() - start) * RATE;
+        paint(build(j, Math.min(vt, t1)), j, { base: t0, quiet: !soundOn, replay: true });
+        $("clock").textContent = fmt(Math.min(vt, t1) - t0);
+        if (vt < t1) requestAnimationFrame(step); else setTimeout(resolve, 1500);
+      })();
+    });
+    replaying = false; $("replay").classList.remove("hot"); $("badge").classList.remove("on"); lastState = null; poll();
+  });
+
+  // ---------- the finish sequence ----------
+  function celebrate(j) {
+    const S = build(j, null); const top = S.top;
+    const present = S.present.length; const fins = S.present.filter(id => S.seats[id].rank != null).sort((a, b) => S.seats[a].rank - S.seats[b].rank);
+    const base = j.firstStart || Math.min(...S.present.map(id => Math.min(...Object.values(S.seats[id].t).map(Number))).filter(Number.isFinite));
+    const arrTimes = fins.map(id => S.seats[id].t[top] - base).filter(x => x >= 0);
+    // which level took the room longest: median per-seat duration between consecutive reached levels
+    const steps = mode === "opener" ? [[0, 1], [1, 2], [2, 3]] : [[1, 2], [2, 4]];
+    let longest = null, longestMs = -1;
+    for (const [a, b] of steps) {
+      const d = S.present.map(id => S.seats[id].t).filter(t => t[a] != null && t[b] != null).map(t => t[b] - t[a]);
+      const m = median(d); if (d.length && m > longestMs) { longestMs = m; longest = b; }
+    }
+    $("party-h1").textContent = fins.length === present ? "Everyone is here." : (mode === "heist" ? "Ticket closed." : "Look who found the room.");
+    $("party-sub").textContent = `Section ${section}: ${fins.length} of ${present} seats ${mode === "heist" ? "cleared INC-2026-0902" : "subset their way from the campus to FSB 2050"}.`;
+    $("st-first").innerHTML = fins.length ? `${fins[0]} <small>${fmt(arrTimes[0])}</small>` : "–";
+    $("st-median").innerHTML = arrTimes.length ? `${fmt(median(arrTimes))} <small>per seat</small>` : "–";
+    $("st-longest").innerHTML = longest != null ? `${LEVEL_NAME[mode][longest]} <small>${fmt(longestMs)} median</small>` : "–";
+    const lit = Object.values(tables).filter(t => t.classList.contains("lit")).length;
+    $("st-tables").innerHTML = `${lit} <small>of ${Object.keys(tables).filter(tb => S.present.some(id => id.startsWith(tb))).length} with someone in them</small>`;
+    const tmp = document.createElement("div"); renderChain(top, tmp); $("party-code").innerHTML = tmp.innerHTML.replace(/class="ln[^"]*"/g, 'class="ln done"');
+    $("party-foot").textContent = mode === "heist" ? "Every stage was a file at a URL, imported and subset in R. The replay of the incident is on your phone." : "Four brackets, one seat. Monday: the same trip in dplyr.";
+    $("party").classList.add("on"); play("party"); confetti();
+  }
+  $("party-btn").addEventListener("click", () => { if (liveJ) celebrate(liveJ); });
+  $("party-close").addEventListener("click", () => $("party").classList.remove("on"));
+  $("party").addEventListener("click", (e) => { if (e.target === $("party")) $("party").classList.remove("on"); });
+
+  function confetti() {
+    const cv = $("confetti"), ctx = cv.getContext("2d"); cv.width = innerWidth; cv.height = innerHeight;
+    const cols = ["#C3142D", "#EFDB72", "#ffffff", "#8B0E20", "#111111"]; const P = [];
+    for (let i = 0; i < 260; i++) P.push({ x: Math.random() * cv.width, y: -20 - Math.random() * cv.height * 0.6, w: 6 + Math.random() * 8, h: 8 + Math.random() * 10, c: cols[i % cols.length], vy: 2.5 + Math.random() * 3.5, vx: -1.2 + Math.random() * 2.4, r: Math.random() * Math.PI, vr: -0.15 + Math.random() * 0.3 });
+    const t0 = performance.now();
+    (function frame(now) {
+      ctx.clearRect(0, 0, cv.width, cv.height); let alive = false;
+      for (const p of P) { p.x += p.vx; p.y += p.vy; p.r += p.vr; if (p.y < cv.height + 20) alive = true; ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r); ctx.fillStyle = p.c; ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h); ctx.restore(); }
+      if (alive && now - t0 < 9000) requestAnimationFrame(frame); else ctx.clearRect(0, 0, cv.width, cv.height);
+    })(t0);
+  }
+
+  // ---------- reset (admin) ----------
+  let armed = false;
+  $("reset").addEventListener("click", async () => {
+    if (!armed) { armed = true; $("reset").textContent = "Click again to confirm the reset of section " + section; $("reset").classList.add("arm"); setTimeout(() => { armed = false; $("reset").textContent = "Start a new run for this section"; $("reset").classList.remove("arm"); }, 4000); return; }
+    armed = false; $("reset").textContent = "Start a new run for this section"; $("reset").classList.remove("arm");
+    const r = await fetch(`/api/reset?section=${section}&key=${encodeURIComponent(key)}`, { method: "POST" }); const jj = await r.json();
+    $("err").textContent = jj.ok ? "" : ("Reset failed: " + (jj.error || r.status)); lastState = null; poll();
+  });
+
+  // the code chain is hidden until the instructor opens it (click the header or press T); the choice is remembered
+  let chainOpen = false; try { chainOpen = localStorage.getItem("fys-chain") === "1"; } catch (e) {}
+  function paintChain() { $("chain").classList.toggle("open", chainOpen); $("chain-hint").textContent = chainOpen ? "click to hide" : "click to show the code"; }
+  $("chain-toggle").addEventListener("click", () => { chainOpen = !chainOpen; try { localStorage.setItem("fys-chain", chainOpen ? "1" : "0"); } catch (e) {} paintChain(); });
+  paintChain();
+
+  // projector: fullscreen and keys (S sound, R replay, C celebrate, F fullscreen, T code, Esc closes the overlay)
+  function fullscreen() { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen().catch(() => {}); }
+  $("fs").addEventListener("click", fullscreen);
+  document.addEventListener("keydown", (e) => {
+    if (e.target && /INPUT|TEXTAREA/.test(e.target.tagName)) return;
+    const k = e.key.toLowerCase();
+    if (k === "s") $("snd").click(); else if (k === "t") $("chain-toggle").click(); else if (k === "r") $("replay").click(); else if (k === "c") $("party-btn").click(); else if (k === "f") fullscreen(); else if (k === "escape") $("party").classList.remove("on");
+  });
+
+  paintChips(); showScene(0); poll(); setInterval(poll, 2000);
+})();
+</script>
+</body>
+</html>

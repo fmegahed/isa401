@@ -4,6 +4,8 @@
 // before a successful sign-in (also after hours, from abroad, without MFA).
 // Source addresses come from the RFC 5737 documentation ranges (192.0.2.0/24,
 // 203.0.113.0/24), which are reserved for examples and never route anywhere.
+const { report } = require("./_report");
+
 const ROWS = [
   ["account", "sign_in_time", "country", "source_ip", "failed_attempts", "mfa"],
   ["hallm7", "2026-09-01 08:14:00", "United States", "192.0.2.41", 0, "yes"],
@@ -16,6 +18,7 @@ const ROWS = [
 ];
 
 module.exports = (req, res) => {
+  report(req.query, 1); // ?seat=L2-3&s=A: any fetch of the log is heist level 1
   const csv = ROWS.map((r) => r.join(",")).join("\n");
   res.setHeader("Content-Type", "text/csv; charset=utf-8");
   res.setHeader("Cache-Control", "public, max-age=300");

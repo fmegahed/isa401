@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Find Your Seat</title>
+<link rel="icon" href="favicon.png">
+<style>
+  :root { --red: #C3142D; --red-dark: #8B0E20; --ink: #1b1b1b; --muted: #585E60; --line: #d1d5db; --paper: #fcfcfc; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; font-family: "Segoe UI", Helvetica, Arial, sans-serif; color: var(--ink); background: #111; }
+  #stage { position: fixed; inset: 0; overflow: hidden; background: #111; }
+  .scene { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transition: opacity 1.2s ease, transform 1.4s ease; transform: scale(1); }
+  .scene.on { opacity: 1; animation: burns 24s ease-in-out infinite alternate; }
+  .scene.out { opacity: 0; transform: scale(1.35); }
+  @keyframes burns { from { transform: scale(1); } to { transform: scale(1.08); } }
+  .scene .credit { position: absolute; right: 12px; bottom: 10px; font-size: 11px; color: #fff; background: rgba(0,0,0,.45); padding: 3px 8px; border-radius: 4px; letter-spacing: .02em; }
+  #stage::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(0,0,0,.05) 0%, rgba(0,0,0,.0) 45%, rgba(0,0,0,.35) 100%); pointer-events: none; }
+
+  /* progress strip */
+  #strip { position: fixed; top: 0; left: 0; right: 0; z-index: 5; display: flex; gap: 0; background: rgba(252,252,252,.94); border-bottom: 1px solid var(--line); box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+  #strip .brand { padding: 10px 16px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: var(--red); font-size: 13px; display: flex; align-items: center; gap: 10px; border-right: 1px solid var(--line); }
+  #strip .brand .sec { background: var(--red); color: #fff; border-radius: 4px; padding: 1px 7px; font-size: 12px; }
+  #strip .pin { flex: 1; padding: 8px 12px; display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 13px; border-right: 1px solid var(--line); }
+  #strip .pin .dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid #9ca3af; background: #fff; flex: none; transition: all .4s; }
+  #strip .pin.now { color: var(--ink); font-weight: 700; }
+  #strip .pin.now .dot { border-color: var(--red); box-shadow: 0 0 0 4px rgba(195,20,45,.18); }
+  #strip .pin.done .dot { background: var(--red); border-color: var(--red); }
+  #strip .pin.done { color: var(--ink); }
+  #strip .pin:last-child { border-right: 0; }
+
+  /* card column */
+  #col { position: fixed; top: 58px; right: 0; bottom: 0; width: min(560px, 100%); z-index: 4; overflow-y: auto; padding: 18px 18px 30px; }
+  .card { background: var(--paper); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 6px 24px rgba(0,0,0,.25); margin-bottom: 14px; overflow: hidden; }
+  .card .hd { background: var(--red); color: #fff; font-weight: 700; font-size: 14px; padding: 9px 14px; letter-spacing: .01em; }
+  .card .hd.soft { background: #f9dbdb; color: var(--red); }
+  .card .bd { padding: 12px 14px; font-size: 14.5px; line-height: 1.55; }
+  code, pre { font-family: "Source Code Pro", Consolas, monospace; }
+  code { background: #eef0f2; padding: 1px 5px; border-radius: 4px; font-size: 13px; }
+  pre.r { background: #222; color: #dedede; border-radius: 8px; padding: 10px 12px; font-size: 12.5px; line-height: 1.5; margin: 8px 0 0; overflow-x: auto; white-space: pre; }
+  pre.r .s { color: #b9ca4a; } pre.r .f { color: #7aa6da; } pre.r .p { color: #e7c547; } pre.r .n { color: #e78c45; } pre.r .c { color: #969896; font-style: italic; }
+  .row { display: flex; gap: 8px; margin-top: 10px; }
+  input.ans { flex: 1; font: inherit; font-size: 16px; padding: 9px 11px; border: 1.5px solid var(--line); border-radius: 8px; }
+  input.ans:focus { outline: none; border-color: var(--red); box-shadow: 0 0 0 3px rgba(195,20,45,.15); }
+  button.go { font: inherit; font-weight: 700; padding: 9px 16px; border: 0; border-radius: 8px; background: var(--red); color: #fff; cursor: pointer; }
+  button.go:hover { background: var(--red-dark); }
+  button.ghost { font: inherit; padding: 6px 12px; border: 1.5px solid var(--line); border-radius: 8px; background: #fff; color: var(--ink); cursor: pointer; }
+  button.ghost.on { border-color: var(--red); color: var(--red); font-weight: 700; }
+  .hint { margin-top: 10px; border-left: 4px solid var(--red); background: #fdf2f2; padding: 9px 12px; border-radius: 6px; font-size: 13.5px; line-height: 1.5; display: none; }
+  .hint.show { display: block; }
+  .ok { margin-top: 10px; border-left: 4px solid #2f855a; background: #eefaf2; padding: 9px 12px; border-radius: 6px; font-size: 13.5px; display: none; }
+  .ok.show { display: block; }
+  .muted { color: var(--muted); font-size: 13px; }
+  .plan svg { width: 100%; height: auto; display: block; }
+  #seatbox .plan { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 6px; }
+  .big { font-size: 22px; font-weight: 800; color: var(--red); }
+  .phone-only { display: none; } @media (max-width: 640px) { .phone-only { display: inline; } }
+
+  /* finish overlay */
+  #finish { position: fixed; inset: 0; z-index: 6; background: #fff; display: none; overflow: auto; }
+  #finish.on { display: block; animation: fadein 1.2s ease; }
+  @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
+  #finish .wrap { max-width: 1180px; margin: 0 auto; padding: 22px 24px 40px; display: grid; grid-template-columns: 1.15fr 1fr; gap: 22px; }
+  #finish h1 { margin: 0 0 6px; font-size: 30px; color: var(--red); letter-spacing: .02em; }
+  #finish .sub { color: var(--muted); font-size: 15px; margin-bottom: 14px; }
+  #finish .planwrap { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 8px; position: relative; }
+  #finish .planwrap .seat { pointer-events: none; }
+  #finish .planwrap .seat .chair, #finish .planwrap .table, #finish .planwrap .wall { opacity: 0; animation: draw .6s ease forwards; }
+  #finish .planwrap .wall { animation-delay: 0s; }
+  #finish .planwrap .table { animation-delay: .4s; }
+  @keyframes draw { to { opacity: 1; } }
+  #pin { position: absolute; width: 34px; height: 46px; margin-left: -17px; margin-top: -46px; opacity: 0; transform: translateY(-140px); transition: transform .55s cubic-bezier(.2,1.2,.4,1), opacity .2s; pointer-events: none; }
+  #pin.drop { opacity: 1; transform: translateY(0); }
+  .twin { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 900px) {
+    html, body { height: auto; min-height: 100%; }
+    #col { position: relative; z-index: 4; width: 100%; padding-top: 70px; }   /* relative, not static: a static column paints under the fixed photo stage */
+    #stage { position: fixed; }
+    #finish .wrap { grid-template-columns: 1fr; } .twin { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    #strip .brand { font-size: 11px; padding: 8px 10px; } #strip .pin { padding: 8px 8px; font-size: 0; gap: 0; } #strip .pin.now { font-size: 12px; gap: 6px; }
+    #seatbox .plan { overflow-x: auto; -webkit-overflow-scrolling: touch; } #seatbox .plan svg { min-width: 560px; }   /* seats stay tappable; the plan scrolls sideways */
+  }
+</style>
+</head>
+<body>
+
+<div id="stage">
+  <div class="scene" id="sc-campus" style="background-image:url(images/campus.jpg)"><span class="credit">Miami University, Oxford, from above. Photo: Jay Murdock, Farmer School of Business</span></div>
+  <div class="scene" id="sc-fsb" style="background-image:url(images/fsb.jpg)"><span class="credit">Farmer School of Business. Photo: Jay Murdock, Farmer School of Business</span></div>
+  <div class="scene" id="sc-atrium" style="background-image:url(images/atrium.jpg)"><span class="credit">FSB atrium, second floor. Photo: Jay Murdock, Farmer School of Business</span></div>
+  <div class="scene" id="sc-hall" style="background-image:url(images/hallway.jpg)"><span class="credit">The hallway to FSB 2050. Photo: Jay Murdock, Farmer School of Business</span></div>
+</div>
+
+<div id="strip">
+  <div class="brand">Find Your Seat <span class="sec" id="secbadge">A</span></div>
+  <div class="pin" id="pin0"><span class="dot"></span>Campus</div>
+  <div class="pin" id="pin1"><span class="dot"></span>FSB</div>
+  <div class="pin" id="pin2"><span class="dot"></span>Floor 2</div>
+  <div class="pin" id="pin3"><span class="dot"></span>Room 2050</div>
+</div>
+
+<div id="col">
+
+  <div class="card" id="intro">
+    <div class="hd">How this works</div>
+    <div class="bd">
+      <div><b>1.</b> In RStudio, open <code>markdowns/class05.Rmd</code>, add a code chunk, and run this line once. It creates an object called <code>campus</code>:</div>
+<pre class="r"><span class="p">campus</span> = <span class="p">jsonlite</span>::<span class="f">fromJSON</span>(
+  <span class="s">"https://isa401-find-your-seat.vercel.app/campus.json"</span>)</pre>
+      <div style="margin-top:8px;"><b>2.</b> Tap your seat on the plan below (Level 0).</div>
+      <div style="margin-top:4px;"><b>3.</b> Answer Levels 1, 2, and 3 in order. Each answer is one value you pull out of <code>campus</code> with brackets in R. Type the value in the box and press <b>Check</b>. A wrong answer shows a hint; nothing locks.</div>
+      <div style="margin-top:4px;"><b>4.</b> Look at the projector: your seat changes color each time you clear a level.</div>
+      <div class="muted" style="margin-top:8px;">Stuck at the start? Run <code>campus$briefing</code> and read it. <a href="#" id="restart" style="color:#C3142D;">Start over on this device</a></div>
+    </div>
+  </div>
+
+  <div class="card" id="seatbox">
+    <div class="hd">Level 0 &nbsp; Where are you sitting?</div>
+    <div class="bd">
+      <div class="row" style="margin:0 0 10px; align-items:center;">
+        <span class="muted">Section</span>
+        <button class="ghost secbtn" data-sec="A">A</button>
+        <button class="ghost secbtn" data-sec="B">B</button>
+        <span class="muted" style="margin-left:auto;">Front of the room (screens) is at the top.</span>
+      </div>
+      <div class="muted" style="margin-bottom:6px;">Tap the circle for the computer you are at. <span class="phone-only">On a phone, scroll the plan sideways to reach the right half.</span> <b>L</b> is left of the aisle, <b>R</b> is right; the row number is 1 at the front; seats count 1 to 7 from left to right. Tap another circle to change it.</div>
+      <div class="plan" id="plan0"></div>
+      <div class="ok" id="ok0"></div>
+    </div>
+  </div>
+
+  <div class="card" id="lv1" hidden>
+    <div class="hd">Level 1 &nbsp; The business school</div>
+    <div class="bd">
+      <div><b>What to find:</b> <code>campus</code> is a named list: a briefing and five very different places. One of the places is the business school. Its element holds a field called <code>code</code>. <b>Type that code.</b></div>
+      <div class="muted" style="margin-top:6px;"><b>Hint:</b> look at what <code>campus</code> holds before you reach into it (<code>str()</code> with <code>max.level = 1</code> keeps it short). Then remember the Pepper Shaker rule when you open the element you want. The code is capital letters, no spaces.</div>
+      <div class="row"><input class="ans" id="in1" placeholder="type the code, e.g. ABCDE" autocomplete="off"><button class="go" data-lv="1">Check</button></div>
+      <div class="hint" id="h1"></div>
+      <div class="ok" id="ok1"></div>
+    </div>
+  </div>
+
+  <div class="card" id="lv2" hidden>
+    <div class="hd">Level 2 &nbsp; The floor</div>
+    <div class="bd">
+      <div><b>What to find:</b> inside the business school's element, <code>floors</code> is a named list with one element per floor. Room 2050 is on one of them. That floor has a field called <code>sections</code>, the number of Fall 2026 sections meeting on the whole floor. <b>Type that number.</b></div>
+      <div class="muted" style="margin-top:6px;"><b>Hint:</b> a room number tells you its floor. Reach into the business school, then into its floors, and pick the floor <b>by name</b>. On a named list, the second element and the element named "2" are not the same thing.</div>
+      <div class="row"><input class="ans" id="in2" placeholder="type a whole number" autocomplete="off" inputmode="numeric"><button class="go" data-lv="2">Check</button></div>
+      <div class="hint" id="h2"></div>
+      <div class="ok" id="ok2"></div>
+    </div>
+  </div>
+
+  <div class="card" id="lv3" hidden>
+    <div class="hd">Level 3 &nbsp; The room</div>
+    <div class="bd">
+      <div><b>What to find:</b> the same floor has a <code>rooms</code> element, a data frame with one row per room and a column <code>isa_sections</code>. <b>Type the <code>isa_sections</code> value on the row where <code>room</code> is "2050".</b></div>
+      <div class="muted" style="margin-top:6px;"><b>Hint:</b> it is a data frame, so the Class 04 row rule applies: a logical test on one column picks the row, then read the column you want. Saving the data frame to a short name first makes the line easier to type. The <code>room</code> column is text.</div>
+      <div class="row"><input class="ans" id="in3" placeholder="type a whole number" autocomplete="off" inputmode="numeric"><button class="go" data-lv="3">Check</button></div>
+      <div class="hint" id="h3"></div>
+    </div>
+  </div>
+
+  <div class="card" id="shaker">
+    <div class="hd soft">The Pepper Shaker rule</div>
+    <div class="bd" style="font-size:13.5px;">
+      One bracket keeps the shaker: <code>x["a"]</code> is still a list, so <code>x["a"]$field</code> gives NULL. Two brackets open it: <code>x[["a"]]</code> is the thing inside, and <code>x[["a"]]$field</code> works. On a named list, <code>x[[2]]</code> and <code>x[["2"]]</code> can be different elements.
+    </div>
+  </div>
+
+</div>
+
+<div id="finish">
+  <div class="wrap">
+    <div>
+      <h1>You are here.</h1>
+      <div class="sub" id="finsub"></div>
+      <div id="roomline" style="font-size:17px; font-weight:700; color:#C3142D; margin:-6px 0 10px;"></div>
+      <div class="planwrap" id="planfin">
+        <div id="planF"></div>
+        <svg id="pin" viewBox="0 0 34 46"><path d="M17 45 C17 45 3 26 3 16 A14 14 0 0 1 31 16 C31 26 17 45 17 45 Z" fill="#C3142D" stroke="#8B0E20" stroke-width="1.5"/><circle cx="17" cy="16" r="6" fill="#fff"/></svg>
+      </div>
+      <div class="muted" style="margin-top:8px;">Plan of FSB 2050 from Fadel Megahed's description of the room. Photos: Jay Murdock, Farmer School of Business. Section counts: Miami University course export of Fall 2026 ISA sections. Built with Claude Fable 5.1 from four photographs, one spreadsheet, and one conversation.</div>
+    </div>
+    <div>
+      <div class="card">
+        <div class="hd">The trip you just made, in brackets</div>
+        <div class="bd">
+<pre class="r"><span class="p">campus</span> = <span class="p">jsonlite</span>::<span class="f">fromJSON</span>(
+  <span class="s">"https://isa401-find-your-seat.vercel.app/campus.json"</span>)
+campus[[<span class="s">"Farmer"</span>]]$code                      <span class="c"># "MUFSB"</span>
+campus$Farmer$floors[[<span class="s">"2"</span>]]$sections        <span class="c"># <span id="n2fin">N</span></span>
+r = campus$Farmer$floors[[<span class="s">"2"</span>]]$rooms
+r$isa_sections[r$room == <span class="s">"2050"</span>]             <span class="c"># <span id="nfin">N</span></span></pre>
+        </div>
+      </div>
+      <div class="card">
+        <div class="hd soft">Monday: the same trip in dplyr</div>
+        <div class="bd">
+<pre class="r">campus$Farmer$floors[[<span class="s">"2"</span>]]$rooms |&gt;
+  <span class="f">filter</span>(room == <span class="s">"2050"</span>) |&gt;
+  <span class="f">pull</span>(isa_sections)                                 <span class="c"># <span id="nfin2">N</span></span></pre>
+          <div class="muted" style="margin-top:8px;">Same question, no brackets. <code>filter()</code> is the row rule, <code>pull()</code> opens the column.</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="hd">One more thing</div>
+        <div class="bd">
+          <div class="big" id="rankline"></div>
+          <div id="leftline" style="margin-top:4px; font-weight:600; color:#8B0E20;"></div>
+          <div style="margin-top:6px;">Look at <code>campus$Farmer$floors[["2"]]$classes</code>: one row per ISA section on this floor. Two of them are this course.</div>
+          <div style="margin-top:8px;">You just found this room with four brackets. Later today you deploy an app that answers questions like these from one sentence, on 1,891 job postings.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(async function () {
+  const $ = (id) => document.getElementById(id);
+  const qs = new URLSearchParams(location.search);
+  const state = JSON.parse(localStorage.getItem("isa401-seat") || "{}");
+  let section = (qs.get("section") || state.section || "A").toUpperCase();
+  if (!/^[AB]$/.test(section)) section = "A";
+  let seat = state.seat && state.section === section ? state.seat : null;
+  let level = seat ? Math.max(0, state.level || 0) : -1;   // highest cleared level
+  let answers = null;
+  let planSVG = null;
+
+  let runId = state.runId || null;   // the run this device's progress belongs to
+  function save() { localStorage.setItem("isa401-seat", JSON.stringify({ section, seat, level, runId })); }
+  // A reset on the board starts a new run. If this device remembers an older run, start over.
+  async function checkRun() {
+    try {
+      const j = await fetch("/api/board?section=" + section, { cache: "no-store" }).then(r => r.json());
+      if (j.runId && runId && j.runId !== runId) { localStorage.removeItem("isa401-seat"); location.href = location.pathname + "?section=" + section; return true; }
+      if (j.runId && !runId) { runId = j.runId; save(); }
+    } catch (e) {}
+    return false;
+  }
+  function setSection(s) { section = s; $("secbadge").textContent = s; document.querySelectorAll(".secbtn").forEach(b => b.classList.toggle("on", b.dataset.sec === s)); save(); }
+  async function sha(s) { const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s.trim().toUpperCase())); return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, "0")).join(""); }
+  async function report(lv) {
+    try {
+      const r = await fetch("/api/progress", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ section, seat, track: "opener", level: lv }) });
+      const j = await r.json(); if (j && j.runId) { runId = j.runId; save(); }
+      return j;
+    } catch (e) { return {}; }
+  }
+
+  // scenes
+  const scenes = ["sc-campus", "sc-fsb", "sc-atrium", "sc-hall"];
+  let current = -1;
+  function showScene(i) {
+    if (i === current) return;
+    scenes.forEach((id, k) => { const el = $(id); el.classList.remove("on", "out"); if (k === current) el.classList.add("out"); if (k === i) el.classList.add("on"); });
+    current = i;
+  }
+  function paintStrip() {
+    for (let k = 0; k <= 3; k++) { const p = $("pin" + k); p.classList.toggle("done", level >= k); p.classList.toggle("now", level === k - 1); }
+  }
+  function render() {
+    $("lv1").hidden = level < 0; $("lv2").hidden = level < 1; $("lv3").hidden = level < 2;
+    if (seat) { $("ok0").textContent = "Seat " + seat + ", section " + section + ". The board has you. Now answer Level 1 below."; $("ok0").classList.add("show"); }
+    showScene(Math.min(Math.max(level, 0), 3));
+    paintStrip();
+    const target = level < 0 ? "seatbox" : level === 0 ? "lv1" : level === 1 ? "lv2" : "lv3";
+    const el = $(target); if (el && !el.hidden) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    const inp = $("in" + (level + 1)); if (inp) setTimeout(() => inp.focus(), 400);
+  }
+
+  $("restart").addEventListener("click", (e) => { e.preventDefault(); localStorage.removeItem("isa401-seat"); location.href = location.pathname + "?section=" + section; });
+
+  // load answers and the plan
+  if (seat && await checkRun()) return;
+  [answers, planSVG] = await Promise.all([
+    fetch("answers.json").then(r => r.json()),
+    fetch("plan.svg").then(r => r.text()),
+  ]);
+  $("plan0").innerHTML = planSVG;
+  $("plan0").querySelectorAll(".seat").forEach(g => {
+    g.addEventListener("click", async () => {
+      seat = g.dataset.seat; level = Math.max(level, 0);
+      $("plan0").querySelectorAll(".seat").forEach(x => x.classList.remove("picked", "mine"));
+      g.classList.add("picked", "mine");
+      save(); render(); report(0);
+    });
+  });
+  if (seat) { const g = $("plan0").querySelector(`.seat[data-seat="${seat}"]`); if (g) g.classList.add("picked", "mine"); }
+  document.querySelectorAll(".secbtn").forEach(b => b.addEventListener("click", () => { setSection(b.dataset.sec); if (seat) report(Math.max(level, 0)); }));
+  setSection(section);
+
+  // hints
+  function hint(lv, raw) {
+    const a = raw.trim(); const up = a.toUpperCase(); const n = Number(a);
+    if (lv === 1) {
+      if (!a) return "Type the value of the code field. Recipe: campus[[\"Farmer\"]]$code, or campus$Farmer$code. Read campus$briefing first if you are lost.";
+      if (up === "NULL") return "NULL means you kept the pepper shaker: campus[\"Farmer\"] is a list holding one element, so $code finds nothing. Open it with two brackets: campus[[\"Farmer\"]]$code.";
+      if (up.includes("FARMER") || up.includes("SCHOOL")) return "That is the name. The question asks for the code field, a short string.";
+      return "Not the code. Find the business school among the elements and look at its code field. The value is short.";
+    }
+    if (lv === 2) {
+      const h2 = answers.hints2; const tot = h2.totals;
+      if (!a) return "Recipe: room numbers in FSB start with the floor, so 2050 is on the floor named \"2\". Open it by name, campus$Farmer$floors[[\"2\"]], and read its sections field.";
+      if (a === h2.floor_name) return "That is the floor's name. The question asks for its sections field: campus$Farmer$floors[[\"2\"]]$sections.";
+      if (n === tot["1"]) return "That is the position trap. campus$Farmer$floors[[2]] is the second element, and the ground floor \"0\" comes first, so position 2 is floor \"1\". Use the name: campus$Farmer$floors[[\"2\"]]$sections.";
+      if (n === tot["0"]) return "That is floor \"0\", the ground level (rooms 0xxx). Room 2050 starts with a 2.";
+      if (n === tot["3"]) return "That is floor \"3\" (rooms 3xxx). Room 2050 starts with a 2.";
+      if (Number.isNaN(n)) return "A number: the sections field of the floor that holds 2050. Open the floor by name, campus$Farmer$floors[[\"2\"]], not by position.";
+      return "Not that floor's total. Open the floor by name, campus$Farmer$floors[[\"2\"]], and read $sections. If you counted rows of the rooms data frame, that is nrow, not sections.";
+    }
+    if (lv === 3) {
+      const h3 = answers.hints3;
+      if (!a || Number.isNaN(n)) return "A number. Recipe: r = campus$Farmer$floors[[\"2\"]]$rooms, then r$isa_sections[r$room == \"2050\"]. Note that room is text, so compare with \"2050\" in quotes.";
+      if (n === h3.nrow) return "That is nrow(r), the number of rooms on the floor, not the number of sections in 2050. Pick the row where r$room == \"2050\" and read its isa_sections.";
+      if (n === h3.sum) return "That is sum(r$isa_sections), every section on the whole floor. You want one row: r$isa_sections[r$room == \"2050\"].";
+      if (n === h3.classes_nrow) return "That is nrow of the classes data frame, every ISA section on the floor. The rooms data frame has the count for 2050 in one cell.";
+      for (const [rm, cnt] of Object.entries(h3.rooms)) if (n === cnt) return "That is room " + rm + "'s count. Check the room column: r$room == \"2050\".";
+      return n > Number(answers.answer3 || 0) && answers.answer3 ? "Too high. The rooms data frame has one row per room; read the isa_sections value on the 2050 row." : "Not the count on the 2050 row. r$isa_sections[r$room == \"2050\"] gives exactly one number.";
+    }
+  }
+
+  async function check(lv) {
+    const inp = $("in" + lv); const raw = inp.value;
+    const ok = (await sha(raw)) === answers.hashes[String(lv)];
+    const hbox = $("h" + lv);
+    if (!ok) { hbox.textContent = hint(lv, raw); hbox.classList.add("show"); inp.select(); return; }
+    hbox.classList.remove("show");
+    level = Math.max(level, lv); save();
+    const resp = await report(lv);
+    if (lv < 3) {
+      const okb = $("ok" + lv); okb.textContent = lv === 1 ? "Correct. Two brackets opened the pepper shaker. Zooming in to the building. Now Level 2." : "Correct. Floor \"2\" is third in position, which is why you opened it by name. Now Level 3: one row of a data frame."; okb.classList.add("show");
+      render();
+    } else {
+      finish(resp);
+    }
+  }
+  document.querySelectorAll("button.go").forEach(b => b.addEventListener("click", () => check(Number(b.dataset.lv))));
+  document.querySelectorAll("input.ans").forEach(i => i.addEventListener("keydown", e => { if (e.key === "Enter") check(Number(i.id.slice(2))); }));
+
+  function finish(resp) {
+    // dive through the doorway, then the plan draws and the pin drops on the seat
+    $("sc-hall").classList.add("out");
+    setTimeout(() => {
+      $("planF").innerHTML = planSVG;
+      const n = answers.answer3 || ""; $("nfin").textContent = n; $("nfin2").textContent = n; $("n2fin").textContent = answers.hints2.totals["2"];
+      $("finsub").textContent = "FSB 2050, seat " + seat + ", section " + section + ". The room you are sitting in is the value you just subset out of a data frame.";
+      const rank = resp && resp.rank; const left = resp && resp.present ? Math.max(0, resp.present - (resp.arrived || 0)) : null;
+      $("rankline").textContent = rank ? "Number " + rank + " to arrive in section " + section + "." : "You arrived.";
+      $("leftline").textContent = left == null ? "" : left === 0 ? "Every seat that tapped in has arrived. Look up." : left === 1 ? "One seat still on the way. Help them." : left + " seats still on the way. Help a neighbor; the board celebrates when the whole room is here.";
+      $("finish").classList.add("on");
+      const rows = [...$("planF").querySelectorAll(".seat")];
+      rows.forEach((g, i) => { g.querySelector(".chair").style.animationDelay = (0.6 + i * 0.02) + "s"; g.querySelector(".id").style.opacity = 0; setTimeout(() => g.querySelector(".id").style.opacity = 1, 900 + i * 20); });
+      const mine = $("planF").querySelector(`.seat[data-seat="${seat}"]`);
+      if (mine) {
+        mine.classList.add("done");
+        setTimeout(() => {
+          const svg = $("planF").querySelector("svg"); const c = mine.querySelector(".chair");
+          const r = c.getBoundingClientRect(), w = $("planfin").getBoundingClientRect();
+          const pin = $("pin"); pin.style.left = (r.left - w.left + r.width / 2) + "px"; pin.style.top = (r.top - w.top + r.height / 2) + "px";
+          pin.classList.add("drop");
+        }, 1800);
+      }
+      // the room, live: everyone else lights up on your plan as they arrive
+      async function room() {
+        try {
+          const j = await fetch(`/api/board?section=${section}&track=opener`, { cache: "no-store" }).then(r => r.json());
+          const present = j.present || []; let done = 0;
+          $("planF").querySelectorAll(".seat").forEach(g => {
+            const id = g.dataset.seat; if (id === seat) return;
+            g.classList.remove("picked", "l1", "l2", "done"); const s = j.seats[id]; if (!s) return;
+            if (s.rank != null) { done++; g.classList.add("done"); } else g.classList.add(s.level >= 2 ? "l2" : s.level === 1 ? "l1" : "picked");
+          });
+          const tables = {}; present.forEach(id => { const tb = id.slice(0, 2); (tables[tb] = tables[tb] || []).push(j.seats[id]); });
+          $("planF").querySelectorAll(".table").forEach(t => { const ss = tables[t.dataset.table] || []; t.classList.toggle("lit", ss.length > 0 && ss.every(x => x && x.rank != null)); });
+          const total = done + (j.seats[seat] && j.seats[seat].rank != null ? 1 : 0);
+          $("roomline").textContent = present.length ? total + " of " + present.length + " seats have arrived. " + (total >= present.length ? "Everyone is here. Look up." : "Help a neighbor.") : "";
+        } catch (e) {}
+      }
+      setTimeout(() => { room(); setInterval(room, 3000); }, 2500);
+    }, 1100);
+  }
+
+  // the answer for the finish line is not in answers.json as plain text unless the build put it there
+  render();
+  if (level >= 3) { $("lv3").hidden = false; }
+})();
+</script>
+</body>
+</html>

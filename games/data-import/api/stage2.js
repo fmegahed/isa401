@@ -1,6 +1,8 @@
 // Stage 2: shared-drive activity for the compromised account, served as JSON.
 // Students: jsonlite::fromJSON("https://<app>/api/stage2?key=ACCOUNT")
 // The right account is the one with the most failed_attempts in stage 1.
+const { report } = require("./_report");
+
 const KEY = "smithj31";
 
 // Why every other stage-1 account looks benign (used in the LOCKED hint).
@@ -68,6 +70,7 @@ module.exports = (req, res) => {
     sendJSON(res, { status: "LOCKED", hint: hint });
     return;
   }
+  report(req.query, 2); // ?seat=L2-3&s=A: the right key is heist level 2
   sendJSON(res, {
     status: "UNLOCKED",
     account: KEY,

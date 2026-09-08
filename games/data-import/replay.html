@@ -170,8 +170,8 @@
         <p class="kicker">Incident INC-2026-0902 &middot; closed</p>
         <h1 class="hd">Replay the incident you just solved</h1>
         <p>A little over a minute. No sound. You can change the speed or pause while it plays.</p>
-        <label for="teamname">Your team name</label>
-        <input id="teamname" maxlength="40" placeholder="e.g. The Null Pointers">
+        <label for="teamname">Your seat (from the opener), or a team name</label>
+        <input id="teamname" maxlength="40" placeholder="e.g. L2-3 or The Null Pointers">
         <button class="btn" type="submit">Play the replay</button>
       </form>
     </div>
@@ -282,7 +282,7 @@
             <li>Block the source address, review foreign sign-ins</li>
             <li>Restore README.txt from version history</li>
           </ul>
-          <div class="signoff fade" id="signoff">Closed by <span class="team"></span><small>Post your team name on the Menti wall to claim your spot on the board.</small></div>
+          <div class="signoff fade" id="signoff">Closed by <span class="team"></span><small>Your seat is lit on the projector board.</small></div>
           <div class="fade" id="endbtns">
             <button class="btn" type="button" id="again">Replay</button>
             <a class="btn ghost" href="/">Back to the ticket</a>
@@ -618,6 +618,11 @@
     play();
   });
   $("again").addEventListener("click", function () { play(); });
+  // Prefill with the seat picked on the ticket page or in the Find Your Seat opener.
+  try {
+    var seat = JSON.parse(localStorage.getItem("isa401-seat") || "null");
+    if (seat && /^[LR][1-3]-[1-7]$/.test(String(seat.seat))) { $("teamname").value = "Seat " + seat.seat; }
+  } catch (e) {}
   $("teamname").focus();
 })();
 </script>

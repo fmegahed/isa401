@@ -1,5 +1,7 @@
 // Finish line: jsonlite::fromJSON("https://<app>/api/finish?code=NUMBER")
 // NUMBER is the count of DOWNLOAD events in the stage-2 log.
+const { report } = require("./_report");
+
 const CODE = 6;
 
 function sendJSON(res, obj) {
@@ -29,6 +31,7 @@ module.exports = (req, res) => {
     });
     return;
   }
+  report(req.query, 4); // ?seat=L2-3&s=A: the right code is heist level 4, CLEARED
   sendJSON(res, {
     status: "CLEARED",
     verdict:
@@ -58,6 +61,6 @@ module.exports = (req, res) => {
     replay: "https://isa401-import-heist.vercel.app/replay",
     message:
       "Incident closed. Open the replay address above in your browser to watch the incident unfold from the two files you imported, " +
-      "then post your team name on the Menti wall to claim your spot on the board.",
+      "then look up: your seat is lit red on the projector board.",
   });
 };
