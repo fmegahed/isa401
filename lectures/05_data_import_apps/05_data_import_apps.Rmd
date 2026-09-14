@@ -1,6 +1,7 @@
+
 ---
 title: "ISA 401: Business Intelligence & Data Visualization"
-subtitle: "05: Data Import II, SQLite, and Your First Deployed App"
+subtitle: "05: Data Import II: Excel, JSON, and Export"
 author: '<br>Fadel M. Megahed, PhD <br><br> Raymond E. Glos Professor in Business <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("linkedin"), fill = "white")` @Fadel Megahed](https://www.linkedin.com/in/fadel-megahed-289046b4) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
 date: "Fall 2026"
 output:
@@ -122,13 +123,11 @@ Three to four minutes. Card 2 is the ritual's first step; anyone who opened plai
 
 # Learning Objectives for Today's Class
 
-- **Import** data from an **Excel workbook**, a **web-served JSON file**, and a **SQLite database file**; run `dplyr::glimpse()` on each.
+- **Import** data from an **Excel workbook** and a **web-served JSON file**; run `dplyr::glimpse()` on each.
+
+- **Read local files** with the `"../data/SOMETHING"` path and pull values out of imported data with the **three brackets**.
 
 - **Export** results with `write_csv()` and `write_xlsx()`, then **knit and push** code, data, and output together.
-
-- **Build** a `querychat` app on the Job Scout data and **deploy** it to **Hugging Face Spaces**.
-
-- **Explain** what a **data dictionary** adds to an app that turns questions into SQL.
 
 <div style="display:flex; gap:0; margin-top:22px; align-items:stretch; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
   <div style="flex:1; padding:9px 10px; background:#fcfcfc; border-right:1px solid #d1d5db;">
@@ -141,26 +140,16 @@ Three to four minutes. Card 2 is the ritual's first step; anyone who opened plai
     <div style="font-weight:700; font-size:14px; color:#c3142d;">Files on disk</div>
     <div style="font-size:11.5px; color:#585E60;">CSV, Excel, JSON, the Heist</div>
   </div>
-  <div style="flex:1; padding:9px 10px; background:#fcfcfc; border-right:1px solid #d1d5db;">
+  <div style="flex:1; padding:9px 10px; background:#fcfcfc; ">
     <div style="font-size:11px; color:#585E60; text-transform:uppercase; font-weight:700;">Part 3</div>
-    <div style="font-weight:700; font-size:14px; color:#c3142d;">A database file</div>
-    <div style="font-size:11.5px; color:#585E60;">scout.db, 1,891 postings</div>
-  </div>
-  <div style="flex:1; padding:9px 10px; background:#fcfcfc; border-right:1px solid #d1d5db;">
-    <div style="font-size:11px; color:#585E60; text-transform:uppercase; font-weight:700;">Part 4</div>
     <div style="font-weight:700; font-size:14px; color:#c3142d;">Export</div>
     <div style="font-size:11.5px; color:#585E60;">Snapshots you can share</div>
-  </div>
-  <div style="flex:1; padding:9px 10px; background:#fcfcfc;">
-    <div style="font-size:11px; color:#585E60; text-transform:uppercase; font-weight:700;">Part 5</div>
-    <div style="font-weight:700; font-size:14px; color:#c3142d;">Your first app</div>
-    <div style="font-size:11.5px; color:#585E60;">querychat on Hugging Face</div>
   </div>
 </div>
 
 ???
 
-Four objectives, five parts. Parts 2 and 4 are last Wednesday's slides, reordered so the file-path animation comes before the read_excel() code; anyone who read ahead has seen them. Part 3 is new and short. Part 5 is the payoff and needs forty minutes; if Part 2 runs long, cut the Heist debrief rather than the deploy.
+Three objectives, three parts. Parts 2 and 3 are last Wednesday's slides, reordered so the file-path animation comes before the read_excel() code; anyone who read ahead has seen them. The two games carry the bracket practice.
 
 ---
 
@@ -1038,87 +1027,7 @@ Six minutes, individually. Switch the projector board to Heist mode (same sectio
 
 class: inverse, center, middle
 
-# Part 3: A Database File
-
----
-
-# scout.db: 1,891 Postings in One File
-
-<div class="left55">
-
-```{r scout_shown, eval=FALSE, hl.size="58%"}
-con = DBI::dbConnect(RSQLite::SQLite(),
-                     "../data/scout.db")
-DBI::dbListTables(con)
-postings = DBI::dbReadTable(con, "scout_postings")
-DBI::dbDisconnect(con)
-dplyr::glimpse(postings[, c("title", "company",
-  "location_state", "remote", "skills_json")])
-```
-
-```{r scout_read, echo=FALSE, hl.size="58%"}
-con = DBI::dbConnect(RSQLite::SQLite(), "../../data/scout.db")
-DBI::dbListTables(con)
-postings = DBI::dbReadTable(con, "scout_postings")
-DBI::dbDisconnect(con)
-dplyr::glimpse(postings[, c("title", "company", "location_state", "remote", "skills_json")])
-```
-
-</div>
-
-<div class="right43">
-<div style="border:1px solid #d1d5db; border-radius:8px; padding:11px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13.5px; line-height:1.55;">
-<div style="font-weight:700; color:#c3142d; font-size:15px;">The fourth format: a database in a file</div>
-<div style="margin-top:6px;"><b>SQLite</b> packs whole tables into one <code>.db</code> file. This one is the database behind <a href="https://chatisa.fsb.miamioh.edu" target="_blank">ChatISA</a>'s Job Scout: two tables, <code>scout_postings</code> (one row per ad) and <code>scout_runs</code> (one row per harvest).</div>
-<div style="margin-top:6px;"><b>Three steps, always:</b> connect, read the table you want into a data frame, disconnect. From here on it is a data frame like any other.</div>
-</div>
-<div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:11px 14px; background:#fdf2f2; font-size:13.5px; line-height:1.55; margin-top:12px;">
-Download <code>scout.db</code> from the <a href="https://miamioh.instructure.com/courses/258169/modules/981092" target="_blank"><b>Week 0 module</b></a> into <code>data/</code>. Assignment 04 does the same three steps on a second database file: Midwest Airbnb listings.
-</div>
-</div>
-
-<div style="clear:both;"></div>
-
-???
-
-New material, ten minutes. Say what a database file is before typing: Excel keeps sheets, SQLite keeps tables, and the whole thing is one file you can email. The three-step rhythm (connect, read, disconnect) is the habit; dbReadTable hands back an ordinary data frame, so everything from Part 1 applies. Point at skills_json in the glimpse output: a column whose cells are JSON text, which is the next slide. The Canvas link is a placeholder until the file is uploaded to the Week 03 module.
-
----
-
-# JSON Inside a Cell
-
-<div class="left55">
-
-```{r skills_cell, hl.size="58%"}
-cat(strtrim(postings$skills_json[1], 60))  # first 60 chars
-skills = jsonlite::fromJSON(postings$skills_json[1])
-skills
-```
-
-</div>
-
-<div class="right43">
-<div style="border:1px solid #d1d5db; border-radius:8px; padding:11px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13.5px; line-height:1.55;">
-<div style="font-weight:700; color:#c3142d; font-size:15px;">A list hiding in a data frame</div>
-<div style="margin-top:6px;">Each cell of <code>skills_json</code> is a JSON <b>array of records</b>, exactly the shape from last week's list slides. <code>fromJSON()</code> on one cell returns a small data frame: one row per skill, tagged required or preferred.</div>
-<div style="margin-top:6px;">A table with 1,891 of these is <b>semi-structured</b> in a structured wrapper. Flattening all of them into one long table is a Week 7 job (tidy data).</div>
-</div>
-<div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:11px 14px; background:#fdf2f2; font-size:13.5px; line-height:1.55; margin-top:12px;">
-This is why <code>[[ ]]</code> and <code>$</code> mattered: <code>postings$skills_json[1]</code> is <b>vector, then element</b>; <code>fromJSON()</code> then turns text into structure.
-</div>
-</div>
-
-<div style="clear:both;"></div>
-
-???
-
-Two minutes. Print the first 60 characters of the raw cell so they see it is text (the whole cell is 300 characters); then fromJSON turns it into a data frame with skillId and importance. Tie it back: the data type tour from Class 01 said structured tables can carry semi-structured cells, and this is one. Do not try to unnest all 1,891 rows today.
-
----
-
-class: inverse, center, middle
-
-# Part 4: Data Export
+# Part 3: Data Export
 
 ---
 
@@ -1163,172 +1072,6 @@ Mirror image of import: write_csv and write_xlsx take the object and a relative 
 
 ---
 
-class: inverse, center, middle
-
-# Part 5: Your First Deployed App
-
----
-
-# What querychat Does
-
-<div style="display:flex; gap:10px; align-items:stretch; margin-top:18px;">
-  <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
-    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:9px 14px;">1 &nbsp; You ask</div>
-    <div style="padding:14px; font-size:14px; line-height:1.55;">A plain-English question in a chat box: <i>"Which companies posted the most remote jobs?"</i></div>
-  </div>
-  <div style="align-self:center; color:#c3142d; font-size:24px; font-weight:700;">&rarr;</div>
-  <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
-    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:9px 14px;">2 &nbsp; The model writes SQL</div>
-    <div style="padding:14px; font-size:14px; line-height:1.55;">An OpenAI model sees the table's <b>schema</b> (column names, types, sample values) and your question, and writes a <code>SELECT</code> query. It never sees your whole table.</div>
-  </div>
-  <div style="align-self:center; color:#c3142d; font-size:24px; font-weight:700;">&rarr;</div>
-  <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
-    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:9px 14px;">3 &nbsp; SQLite runs it</div>
-    <div style="padding:14px; font-size:14px; line-height:1.55;">The query runs against <code>scout.db</code> on the server. Only <code>SELECT</code> is allowed; anything that would change data is refused.</div>
-  </div>
-  <div style="align-self:center; color:#c3142d; font-size:24px; font-weight:700;">&rarr;</div>
-  <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
-    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:9px 14px;">4 &nbsp; You get both back</div>
-    <div style="padding:14px; font-size:14px; line-height:1.55;">The filtered table <b>and the SQL that made it</b>, so every answer can be checked. The SQL is the part you can trust; read it.</div>
-  </div>
-</div>
-
-<div style="margin-top:18px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:12px 18px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14.5px; line-height:1.6; color:#1b1b1b;">
-<b style="color:#c3142d;">What it costs.</b> Step 2 is the only paid part: each question is one call to OpenAI on a class key I hand out today. Everything else is free: <a href="https://posit-dev.github.io/querychat/" target="_blank"><code>querychat</code></a> is an open-source R package, and <a href="https://huggingface.co/spaces" target="_blank">Hugging Face Spaces</a> hosts small apps for free.
-</div>
-
-???
-
-Two minutes, no code. The one idea: the model writes SQL, it does not answer from memory, and you can read the SQL. That is the difference between a chatbot and a data tool. Mention the key handling before the next slide: the class key is shared and capped, it goes in an environment variable, and it is rotated after the assignment closes.
-
----
-
-# A Dozen Lines of app.R
-
-.left55[
-
-```{r app_r, eval=FALSE, hl.size="58%"}
-# apps/job_scout_chat/app.R
-library(querychat)
-
-con = DBI::dbConnect(RSQLite::SQLite(), "data/scout.db")
-
-client = ellmer::chat_openai(
-  model  = "gpt-5.6-luna",
-  params = ellmer::params(reasoning_effort = "none")
-)
-
-qc = querychat(
-  con, "scout_postings",
-  client   = client,
-  greeting = "Ask me about the 1,891 job postings
-              ChatISA Job Scout collected."
-)
-
-qc$app_obj()
-```
-
-<div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:9px 14px; background:#fdf2f2; font-size:13px; line-height:1.55; margin-top:8px;">
-The path is <code>"data/scout.db"</code>, not <code>"../data/"</code>: an app runs from <b>its own folder</b>, so the app gets its own copy of the data.
-</div>
-
-]
-
-.right43[
-<div style="border:1px solid #d1d5db; border-radius:8px; padding:11px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13.5px; line-height:1.55;">
-<div style="font-weight:700; color:#c3142d; font-size:15px;">Run it on this computer</div>
-<div style="margin-top:6px;"><b>1.</b> Unzip <a href="https://miamioh.instructure.com/courses/258169/modules/981092" target="_blank"><code>job_scout_chat.zip</code></a> from Canvas into your repo as <code>apps/job_scout_chat/</code>. It holds <code>app.R</code>, the <code>Dockerfile</code>, <code>README.md</code>, and <code>data/scout.db</code>.</div>
-<div style="margin-top:4px;"><b>2.</b> Open <code>app.R</code> from that folder. It is the code on the left; type it yourself if you prefer.</div>
-<div style="margin-top:4px;"><b>3.</b> In the Console: <code>usethis::edit_r_environ()</code>, add the line <code>OPENAI_API_KEY=</code> followed by the class key, save, then <b>Session &rarr; Restart R</b>.</div>
-<div style="margin-top:4px;"><b>4.</b> Click <b>Run App</b> at the top of <code>app.R</code>.</div>
-</div>
-<div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:11px 14px; background:#fdf2f2; font-size:13.5px; line-height:1.55; margin-top:12px;">
-<b>The key never goes in a file you commit.</b> <code>.Renviron</code> from step 3 lives in your home folder, outside the repo, so it cannot be pushed by accident.
-</div>
-]
-
-<div style="clear:both;"></div>
-
-???
-
-Type it live. Four things to say while typing: querychat takes a connection and a table name, the client is an ellmer chat object naming the model (reasoning off keeps answers fast and cheap), and app_obj() hands back a complete Shiny app with the chat on the left and the table on the right. Step 3 is where the room slows down: walk it once on the projector, including the Restart R. The .Renviron file is user-level, so it survives across projects on that machine but is not in the repo. When the app opens, ask one question and let them see the SQL card.
-
----
-
-# Deploy to Hugging Face
-
-<div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px;">
-  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
-    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:8px 14px;">1 &nbsp; Account and Space</div>
-    <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;">Sign up at <a href="https://huggingface.co/join" target="_blank"><b>huggingface.co</b></a> (any email). Then <b>New &rarr; Space</b>: name <code>job_scout_chat</code>, license <b>MIT</b>, SDK <b>Docker</b> &rarr; <b>Blank</b>, visibility <b>Public</b>, <b>Create Space</b>.</div>
-  </div>
-  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
-    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:8px 14px;">2 &nbsp; Upload four things</div>
-    <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;"><b>Files &rarr; Add file &rarr; Upload files</b>. Drag in <code>app.R</code>, the <code>Dockerfile</code> and <code>README.md</code> from <a href="https://miamioh.instructure.com/courses/258169/modules/981092" target="_blank"><code>job_scout_chat.zip</code></a> on Canvas, and the whole <code>data/</code> folder. <b>Commit changes to main</b>.</div>
-  </div>
-  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
-    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:8px 14px;">3 &nbsp; Add the secret</div>
-    <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;"><b>Settings &rarr; Variables and secrets &rarr; New secret</b>. Name <code>OPENAI_API_KEY</code>, value the class key. A secret is encrypted and never shown in the file list; a variable is public. Use <b>secret</b>.</div>
-  </div>
-  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
-    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:8px 14px;">4 &nbsp; Watch it build</div>
-    <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;">The badge at the top goes <b>Building</b> for about ten minutes while the Dockerfile installs R and the packages, then <b>Running</b>. Click <b>Logs</b> if it goes red; the last lines say why.</div>
-  </div>
-</div>
-
-<div style="margin-top:12px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:10px 16px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.55; color:#1b1b1b;">
-<b style="color:#c3142d;">What the Dockerfile is.</b> A recipe that builds a fresh Linux computer with the same R version as this lab, installs the packages from a dated snapshot, copies your app in, and starts it. You do not run Docker; Hugging Face does. The recipe is read line by line in <a href="#appendix-a1">Appendix A1</a>.
-</div>
-
-???
-
-The deploy is the forty-minute block; start it early enough that builds finish before the end of class. Do step 1 on the projector, then let the room catch up before step 2. Folder drag-and-drop works in the upload dialog; if someone uploads scout.db at the top level instead of inside data/, the app will start and immediately fail to find the file, which the Logs show. Step 3 secret versus variable is the security beat of the day. While builds run, move to the next slide and let early finishers try the queries.
-
----
-
-# Try It
-
-.left55[
-
-<div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
-  <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:9px 14px;">Three questions for your Space</div>
-  <div style="padding:12px 16px; font-size:14px; line-height:1.7;">
-    <div><b>1.</b> Which ten companies posted the most jobs?</div>
-    <div><b>2.</b> Show the remote postings in Ohio.</div>
-    <div><b>3.</b> How many postings mention SQL in their skills?</div>
-  </div>
-</div>
-
-<div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1); margin-top:12px;">
-  <div style="background:#f9dbdb; color:#c3142d; font-weight:700; font-size:15px; padding:9px 14px;">Then read the SQL, not just the table</div>
-  <div style="padding:12px 16px; font-size:13.5px; line-height:1.6;">
-    <div>Did question 2 filter on <code>location_state = 'OH'</code> or on the word <i>Ohio</i> somewhere?</div>
-    <div style="margin-top:4px;">Did question 3 search <code>skills_json</code> or <code>description</code>? Both are defensible; only one is what you meant.</div>
-    <div style="margin-top:4px;">Ask the same question twice. Same SQL?</div>
-  </div>
-</div>
-
-]
-
-.right43[
-<div style="border:1px solid #d1d5db; border-radius:8px; padding:11px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13.5px; line-height:1.55;">
-<div style="font-weight:700; color:#c3142d; font-size:15px;">Still building?</div>
-<div style="margin-top:6px;">Use the reference Space while you wait: <a href="https://huggingface.co/spaces/fmegahed/job_scout_chat" target="_blank"><b>fmegahed/job_scout_chat</b></a>. Same app, same data.</div>
-</div>
-<div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:11px 14px; background:#fdf2f2; font-size:13.5px; line-height:1.55; margin-top:12px;">
-<b>The model does not know what a column means.</b> It guesses from names and sample values. Telling it, in a <b>data dictionary</b>, is <a href="#appendix-a2">Appendix A2</a> and most of Assignment 05.
-</div>
-</div>
-]
-
-<div style="clear:both;"></div>
-
-???
-
-The three questions are chosen to expose the model's guesses: 2 depends on whether the model matches the state code, 3 on which column it searches. That sets up the data dictionary argument without a lecture. The reference Space is fmegahed/job_scout_chat on Hugging Face. Collect one surprising SQL from the room for the Menti.
-
----
-
 # Our Class Git + GitHub Ritual
 
 <div style="display:flex; gap:14px; align-items:stretch; margin-top:14px;">
@@ -1339,7 +1082,7 @@ The three questions are chosen to expose the model's guesses: 2 depends on wheth
   <div style="align-self:center; color:#c3142d; font-size:24px; font-weight:700;">&rarr;</div>
   <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
     <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:9px 14px;">2 &nbsp; Commit</div>
-    <div style="padding:14px; font-size:14.5px; line-height:1.55;">GitHub Desktop lists today's work: <code>markdowns/class05.Rmd</code>, <code>class05.html</code>, the <code>data/</code> files, and <code>apps/job_scout_chat/</code>.<div style="margin-top:6px; color:#585E60;">Summary: <code>Add class 05 markdown, data, and the job scout app</code>.</div></div>
+    <div style="padding:14px; font-size:14.5px; line-height:1.55;">GitHub Desktop lists today's work: <code>markdowns/class05.Rmd</code>, <code>class05.html</code>, and the <code>data/</code> files.<div style="margin-top:6px; color:#585E60;">Summary: <code>Add class 05 markdown and data</code>.</div></div>
   </div>
   <div style="align-self:center; color:#c3142d; font-size:24px; font-weight:700;">&rarr;</div>
   <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
@@ -1356,7 +1099,7 @@ The three questions are chosen to expose the model's guesses: 2 depends on wheth
 
 ???
 
-Same ritual as last Wednesday with one more addition: the app folder from Part 5 rides along with the data folder, which is why this slide now sits after the deploy. The knit card's gray text is the most common Wednesday failure mode: an object created in the Console but never in a chunk, so the knit dies on line one. That error is a feature; it proves the markdown is the record.
+Same ritual as last Wednesday: the data folder now rides along with the markdown. The knit card's gray text is the most common Wednesday failure mode: an object created in the Console but never in a chunk, so the knit dies on line one. That error is a feature; it proves the markdown is the record.
 
 ---
 
@@ -1370,19 +1113,19 @@ class: inverse, center, middle
 
 By now, you should be able to do the following:
 
-- **Import** an **Excel sheet** (`sheet`, `skip`, `n_max`), a **web-served JSON file**, and a **SQLite table** (`dbConnect()`, `dbReadTable()`, `dbDisconnect()`).
+- **Import** an **Excel sheet** (`sheet`, `skip`, `n_max`) after downloading it into `data/`, and a **web-served JSON file** straight from its address.
+
+- **Read** every local file as `"../data/SOMETHING"`, and use `[ ]`, `[[ ]]`, and `$` to pull one value out of what you imported.
 
 - **Export** with `write_csv()` and `write_xlsx()`, then knit and push code, data, and output.
 
-- **Build and deploy** a `querychat` app: a dozen lines of R, a Dockerfile you did not write, one secret, one public address.
+**Skills practiced:** the three brackets on a campus object and on incident logs, `glimpse()` on every import, reading the raw file in a browser before importing it.
 
-**Skills practiced:** the three brackets on a campus object and on real postings, `glimpse()` on every import, reading generated SQL before trusting the table.
-
-**Reading for Assignment 05:** [A1 the Dockerfile](#appendix-a1), [A2 the data dictionary](#appendix-a2), [A3 polishing with bslib](#appendix-a3), [A4 deploying with git](#appendix-a4). **Next class (Mon, Sep 14):** dplyr, readable pipelines built from today's subsetting.
+**Next class (Mon, Sep 14):** a database file, one SQL query, and your first deployed app.
 
 ???
 
-Tie each bullet to its part, then point forward: everything dplyr does Monday (filter, select, mutate) is a friendlier spelling of the brackets from Find Your Seat, running on data frames imported exactly as today. Monday's first data frame is this section's own run: read_csv("https://isa401-find-your-seat.vercel.app/api/export?section=A") has one row per seat per level, both tracks, so filter(track == "heist") and the level the room got stuck on are the warm-up. The appendices are the reading for Assignment 05; say so.
+Tie each bullet to its part, then point forward: Monday reads scout.db, asks it one question in SQL, and deploys the app that writes that SQL for you. Monday's Kahoot opens on this section's own run: read_csv("https://isa401-find-your-seat.vercel.app/api/export?section=A&run=13") has one row per seat per level, both tracks.
 
 ---
 
@@ -1450,11 +1193,11 @@ Same slide as the last two classes. Point at the Class 01 examples so they know 
 
 <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1); margin-top:12px;">
   <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;"><a href="https://miamioh.instructure.com/courses/258169/assignments/3606964" target="_blank" style="color:#fff;">Assignment 05: Deploy Your Midwest Airbnb Chat</a></div>
-  <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;">Today's recipe on the Midwest Airbnb listings: same Dockerfile, new data, a full data dictionary, extra instructions, your own theme and About section. Submit the Space's address. Appendices A1 to A3 are the reading. <span style="color:#585E60;">Due date on Canvas.</span></div>
+  <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;">Monday's recipe on the Midwest Airbnb listings: same Dockerfile, new data, a full data dictionary, extra instructions, your own theme and About section. Submit the Space's address. Monday's deck has the reading. <span style="color:#585E60;">Due date on Canvas.</span></div>
 </div>
 
 <div style="margin-top:12px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:10px 14px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13.5px; line-height:1.5; color:#1b1b1b;">
-<b style="color:#c3142d;">Before you leave:</b> knit, then commit and push <code>markdowns/class05.Rmd</code>, <code>class05.html</code>, <code>data/</code>, and <code>apps/job_scout_chat/</code>. If it is not pushed, it is not done.
+<b style="color:#c3142d;">Before you leave:</b> knit, then commit and push <code>markdowns/class05.Rmd</code>, <code>class05.html</code>, and <code>data/</code>. If it is not pushed, it is not done.
 </div>
 
 ]
@@ -1464,18 +1207,18 @@ Same slide as the last two classes. Point at the Class 01 examples so they know 
 <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
   <div style="background:#f9dbdb; color:#c3142d; font-weight:700; font-size:15px; padding:8px 14px;">Ungraded Practice Questions</div>
   <div style="padding:10px 14px; font-size:13px; line-height:1.5;">
-    <div><b>1.</b> From <code>postings</code>, keep the rows where <code>remote</code> is 1 and only the <code>title</code> and <code>company</code> columns. How many rows?</div>
-    <div style="margin-top:4px;"><b>2.</b> Read the second table, <code>scout_runs</code>, from <code>scout.db</code> and <code>glimpse()</code> it. How many harvests are recorded?</div>
-    <div style="margin-top:4px;"><b>3.</b> Parse <code>skills_json</code> for row 50. How many skills are required?</div>
-    <div style="margin-top:4px;"><b>4.</b> Export the remote postings from question 1 to <code>../data/remote_postings.csv</code>.</div>
-    <div style="margin-top:4px;"><b>5.</b> Ask your Space the question from 1. Does its SQL match your brackets?</div>
+    <div><b>1.</b> Read <code>Table 1.4</code> (most new jobs) from <code>occupation.xlsx</code> with the same three arguments. How many rows, and what is the first occupation listed?</div>
+    <div style="margin-top:4px;"><b>2.</b> Change <code>$limit=100</code> to <code>$limit=500</code> in the Cincinnati address. How many rows come back?</div>
+    <div style="margin-top:4px;"><b>3.</b> From the Heist's stage 1 log, what is <code>max(logins$failed_attempts)</code>?</div>
+    <div style="margin-top:4px;"><b>4.</b> Export <code>fastest</code> to <code>../data/fastest_growing.xlsx</code> and open it in Excel.</div>
+    <div style="margin-top:4px;"><b>5.</b> Download <code>midwest_airbnb.db</code> from the Week 0 module into <code>data/</code>; Assignment 04's first question shows the three lines that read it.</div>
     <details style="margin-top:8px;"><summary style="cursor:pointer; font-weight:700; color:#c3142d; font-size:13px;">Answers</summary>
       <div style="font-family:'Source Code Pro', monospace; font-size:11.5px; line-height:1.6; margin-top:4px; color:#1b1b1b;">
-        1. postings[postings$remote == 1, c("title", "company")]: 127 rows<br>
-        2. DBI::dbReadTable(con, "scout_runs"): 5 rows<br>
-        3. s = jsonlite::fromJSON(postings$skills_json[50]); sum(s$importance == "required")<br>
-        4. readr::write_csv(postings[postings$remote == 1, c("title", "company")], "../data/remote_postings.csv")<br>
-        5. Look for WHERE remote = 1 in the SQL card
+        1. readxl::read_excel("../data/occupation.xlsx", sheet = "Table 1.4", skip = 1, n_max = 31): 31 rows, first is Total, all occupations<br>
+        2. 500 rows<br>
+        3. 17<br>
+        4. writexl::write_xlsx(fastest, "../data/fastest_growing.xlsx")<br>
+        5. con = DBI::dbConnect(RSQLite::SQLite(), "../data/midwest_airbnb.db"); listings = DBI::dbReadTable(con, "listings")
       </div>
     </details>
   </div>
@@ -1485,234 +1228,4 @@ Same slide as the last two classes. Point at the Class 01 examples so they know 
 
 ???
 
-Two graded items this time, both tied to today: the quiz repeats the scout.db three-step read on the Airbnb file, and the deploy repeats this afternoon's Space on the Airbnb file. Both files are on Canvas. The practice card reuses every import from today; the answers are one click away. Say the before-you-leave line out loud while pointing at GitHub Desktop.
-
----
-
-class: inverse, center, middle
-
-# Appendices
-
-<div style="font-size:18px; color:#dedede; margin-top:10px;">Not covered live. The reading for Assignment 05.</div>
-
----
-
-name: appendix-a1
-
-# A1: The Dockerfile, Line by Line
-
-.left55[
-
-```{r dockerfile, eval=FALSE, hl.size="48%"}
-FROM rocker/shiny:4.6.0
-
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libcurl4-openssl-dev libssl-dev libxml2-dev libuv1t64 \
-    && rm -rf /var/lib/apt/lists/*
-
-RUN echo 'options(repos = c(CRAN =
-  "https://p3m.dev/cran/__linux__/noble/2026-09-01"))' \
-    >> /usr/local/lib/R/etc/Rprofile.site
-
-RUN R -q -e "install.packages(c('shiny', 'bslib', 'DBI', 'RSQLite',
-  'ellmer', 'shinychat', 'querychat', 'DT'))"
-
-RUN R -q -e "stopifnot(requireNamespace('querychat'),
-  requireNamespace('RSQLite'), requireNamespace('DT'),
-  requireNamespace('fs'))"
-
-WORKDIR /app
-COPY app.R app.R
-COPY data/ data/
-
-EXPOSE 7860
-CMD ["R", "-q", "-e",
-  "shiny::runApp('/app', host = '0.0.0.0', port = 7860)"]
-```
-
-]
-
-.right43[
-<div style="border:1px solid #d1d5db; border-radius:8px; padding:11px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13px; line-height:1.55;">
-<div><b><code>FROM</code></b>: start from a ready-made Linux image with <b>R 4.6.0</b> and Shiny Server, the same R as this lab. Change this number and the packages below may no longer match.</div>
-<div style="margin-top:5px;"><b><code>apt-get</code></b>: system libraries that <code>ellmer</code> (web requests) and <code>RSQLite</code> need, plus <code>libuv1t64</code>, which this rocker image forgot to ship and Shiny's file helpers need. Found by building the image, not by reading about it.</div>
-<div style="margin-top:5px;"><b><code>options(repos = ...)</code></b>: install every package from <b>one dated snapshot</b> of CRAN. A build in December installs the same versions as today. Last year's version of this file pinned versions from a repository that only keeps the latest build, and it broke the week a package updated.</div>
-<div style="margin-top:5px;"><b><code>install.packages(...)</code></b> lists <code>DT</code> too: querychat only suggests it, but the app cannot draw its table without it.</div>
-<div style="margin-top:5px;"><b><code>stopifnot(...)</code></b>: fail the build now, with a readable log, rather than at the first visitor.</div>
-<div style="margin-top:5px;"><b><code>COPY</code>, <code>EXPOSE</code>, <code>CMD</code></b>: copy your app and data in, open port 7860 (Hugging Face's default), start Shiny.</div>
-</div>
-]
-
-<div style="clear:both;"></div>
-
-.footnote[
-<html>
-<hr>
-</html>
-**Sources:** [Rocker images](https://rocker-project.org/images/versioned/shiny.html); [Posit Package Manager snapshots](https://p3m.dev/client/#/repos/cran/setup); [Hugging Face Docker Spaces](https://huggingface.co/docs/hub/spaces-sdks-docker).
-]
-
-???
-
-Appendix, not live. The one lesson is the dated snapshot: reproducibility for software is the same idea as the snapshot in data/ for data.
-
----
-
-name: appendix-a2
-
-# A2: Teaching the App About Your Data
-
-.left55[
-
-```{r app_dict, eval=FALSE, hl.size="62%"}
-qc = querychat(
-  con, "scout_postings",
-  client             = client,   # same ellmer client as app.R
-  greeting           = "Ask me about the postings.",
-  data_description   = "data/data_desc.md",
-  extra_instructions = "data/extra_instructions.md"
-)
-```
-
-<div style="border:1px solid #d1d5db; border-radius:8px; padding:10px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13px; line-height:1.55; margin-top:8px;">
-<div style="font-weight:700; color:#c3142d; font-size:14px;">data_desc.md: the data dictionary</div>
-<div style="margin-top:4px;">What the table is, where it came from, and <b>one row per column</b>: name, meaning, units, allowed values. Example: <code>remote</code> is 1 for remote-eligible, 0 otherwise; <code>location_state</code> is a two-letter code; <code>category</code> is one of <code>fulltime</code>, <code>federal</code>, <code>internship</code>.</div>
-</div>
-
-<div style="border:1px solid #d1d5db; border-radius:8px; padding:10px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13px; line-height:1.55; margin-top:8px;">
-<div style="font-weight:700; color:#c3142d; font-size:14px;">extra_instructions.md: house rules</div>
-<div style="margin-top:4px;">Short rules for the model: <i>"Match states by their two-letter code."</i> <i>"Skills live in <code>skills_json</code>; search it, not <code>description</code>."</i> <i>"Return at most 50 rows unless asked."</i></div>
-</div>
-
-]
-
-.right43[
-<div style="border:1px solid #d1d5db; border-radius:8px; padding:11px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13.5px; line-height:1.55;">
-<div style="font-weight:700; color:#c3142d; font-size:15px;">Before and after</div>
-<div style="margin-top:6px;"><b>Question:</b> <i>Show the remote postings in Ohio.</i></div>
-<div style="margin-top:6px;"><b>Without a dictionary:</b> <code>WHERE location_state LIKE '%Ohio%' AND remote = 1</code>. Zero rows: the column holds <code>OH</code>.</div>
-<div style="margin-top:6px;"><b>With it:</b> <code>WHERE location_state = 'OH' AND remote = 1</code>. The rows you meant.</div>
-</div>
-<div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:11px 14px; background:#fdf2f2; font-size:13.5px; line-height:1.55; margin-top:12px;">
-Both files go in the model's <b>system prompt</b>, once, at startup. Writing them is the same work as documenting a dataset for a colleague, which is why the data dictionary is a deliverable in Assignment 05 and in every project this semester.
-</div>
-<div style="font-size:12.5px; color:#585E60; margin-top:10px;">Starter files with the first six columns documented are in the <code>data/</code> folder of <a href="https://miamioh.instructure.com/courses/258169/modules/981092" target="_blank"><code>job_scout_chat.zip</code></a> on Canvas.</div>
-]
-
-<div style="clear:both;"></div>
-
-.footnote[
-<html>
-<hr>
-</html>
-**Source:** [querychat: Provide Context](https://posit-dev.github.io/querychat/r/reference/context.html), the `data_description` and `extra_instructions` arguments.
-]
-
-???
-
-Appendix. The before/after is illustrative of a typical failure, not a transcript; models vary run to run, which is itself the argument for the dictionary.
-
----
-
-name: appendix-a3
-
-# A3: Polishing With bslib
-
-.left55[
-
-```{r app_bslib, eval=FALSE, hl.size="50%"}
-library(shiny)
-library(bslib)
-
-ui = page_sidebar(
-  title   = "Job Scout Chat",
-  theme   = bs_theme(primary = "#C3142D",
-                     base_font = font_google("Lato")),
-  sidebar = qc$sidebar(width = 350),
-  card(card_header(textOutput("title")),
-       DT::DTOutput("table")),
-  accordion(open = FALSE,
-    accordion_panel("SQL", verbatimTextOutput("sql")))
-)
-
-server = function(input, output, session) {
-  vals = qc$server()
-  output$title = renderText(vals$title() %||% "All postings")
-  output$table = DT::renderDT(vals$df(),
-                              options = list(pageLength = 10))
-  output$sql   = renderText(vals$sql() %||%
-                              "SELECT * FROM scout_postings")
-}
-
-shinyApp(ui, server)
-```
-
-]
-
-.right43[
-<div style="border:1px solid #d1d5db; border-radius:8px; padding:11px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13.5px; line-height:1.55;">
-<div style="font-weight:700; color:#c3142d; font-size:15px;">Replace <code>qc$app_obj()</code> with your own layout</div>
-<div style="margin-top:6px;"><b><code>qc$sidebar()</code></b> is the chat; <b><code>qc$server()</code></b> returns three reactives: <code>df()</code>, <code>sql()</code>, <code>title()</code>. Everything else is ordinary Shiny.</div>
-<div style="margin-top:6px;"><b><code>bs_theme()</code></b> sets colors and fonts in one place. <b><code>card()</code></b>, <b><code>accordion()</code></b>, and <b><code>value_box()</code></b> are the building blocks; <b><code>page_navbar()</code></b> adds tabs for a Home or About page.</div>
-</div>
-<div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:11px 14px; background:#fdf2f2; font-size:13.5px; line-height:1.55; margin-top:12px;">
-<b>A finished example</b> to read, not copy: the <a href="https://huggingface.co/spaces/fmegahed/querychat_demo" target="_blank">OEWS Jobs Explorer</a> Space (Home tab, value boxes, About card, SQL panel), source in its <b>Files</b> tab. <code>DT</code> is already in the Dockerfile; add <code>bsicons</code> to its <code>install.packages()</code> line if you use icons.
-</div>
-]
-
-<div style="clear:both;"></div>
-
-.footnote[
-<html>
-<hr>
-</html>
-**Sources:** [bslib: Get Started](https://rstudio.github.io/bslib/articles/dashboards/index.html); [querychat: Build an App](https://posit-dev.github.io/querychat/r/reference/build.html).
-]
-
-???
-
-Appendix. The point for Assignment 05: the class app is a starting point, the OEWS demo is what a finished one looks like, and everything between is standard Shiny and bslib.
-
----
-
-name: appendix-a4
-
-# A4: Deploying With Git Instead of Uploads
-
-.left55[
-
-<div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
-  <div style="background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:8px 14px;">A Space is a git repository</div>
-  <div style="padding:10px 14px; font-size:13.5px; line-height:1.55;">
-    <div><b>1.</b> On huggingface.co: <b>Settings &rarr; Access Tokens &rarr; New token</b>, type <b>Write</b>. Copy it once; it is your git password for Hugging Face.</div>
-    <div style="margin-top:4px;"><b>2.</b> GitHub Desktop: <b>File &rarr; Clone repository &rarr; URL</b>, paste the Space address, local path <code>M:\isa401</code> (a sibling of <code>business_intelligence</code>, never inside it). Username: your HF username. Password: the token.</div>
-    <div style="margin-top:4px;"><b>3.</b> Copy the app files into the clone, <b>Commit to main</b>, <b>Push origin</b>. The Space rebuilds on every push; the commit history is on its Files tab.</div>
-    <div style="margin-top:4px;"><b>4.</b> Each improvement is its own commit. Assignment 05 asks for at least three.</div>
-  </div>
-</div>
-
-]
-
-.right43[
-<div style="border:1px solid #d1d5db; border-radius:8px; padding:11px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13.5px; line-height:1.55;">
-<div style="font-weight:700; color:#c3142d; font-size:15px;">The .gitattributes file in the zip</div>
-<div style="margin-top:6px;"><code>*.db filter=lfs diff=lfs merge=lfs -text</code>: Hugging Face refuses plain pushes of files over 10 MB, so database files travel through Git LFS, which GitHub Desktop already bundles.</div>
-<div style="margin-top:4px;"><code>Dockerfile text eol=lf</code> (and <code>*.R</code>, <code>*.md</code>): a Windows editor can turn line endings into CRLF, and a carriage return after a trailing backslash breaks the Dockerfile on Linux. This line keeps them LF on every machine.</div>
-</div>
-<div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:11px 14px; background:#fdf2f2; font-size:13.5px; line-height:1.55; margin-top:12px;">
-<b>Windows and Mac</b> run the same GitHub Desktop dialogs. On a lab PC, remove the huggingface.co entry from Windows Credential Manager when you are done, or the next person inherits your token.
-</div>
-]
-
-<div style="clear:both;"></div>
-
-.footnote[
-<html>
-<hr>
-</html>
-**Sources:** [Hugging Face: user access tokens](https://huggingface.co/docs/hub/security-tokens); [Hugging Face: repositories, git and LFS](https://huggingface.co/docs/hub/repositories-getting-started); [GitHub Desktop: cloning a repository](https://docs.github.com/en/desktop/adding-and-cloning-repositories/cloning-a-repository-from-github-to-github-desktop).
-]
-
-???
-
-Appendix. In class the upload route keeps forty minutes honest; Assignment 05 requires this route so every improvement is a commit and the grader can count them. The two traps are the token as password and the nested-repo mistake; the .gitattributes lines are the third, invisible one.
+Two graded items: the quiz's first question hands them the three DBI lines that read the Airbnb database file, and the deploy is Monday's class on the Airbnb file. Both files are on Canvas. The practice card reuses every import from today; the answers are one click away. Say the before-you-leave line out loud while pointing at GitHub Desktop.
