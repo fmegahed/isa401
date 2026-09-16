@@ -101,3 +101,6 @@ speaker_notes/
 /games/videos
 /games/find-your-seat/.agents
 /games/find-your-seat/.claude
+
+# never commit a key file dropped at the repo root
+api_key.txt

@@ -1,0 +1,1677 @@
+---
+title: "ISA 401: Business Intelligence & Data Visualization"
+subtitle: "07: Data Wrangling with dplyr"
+author: '<br>Fadel M. Megahed, PhD <br><br> Raymond E. Glos Professor in Business <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("linkedin"), fill = "white")` @Fadel Megahed](https://www.linkedin.com/in/fadel-megahed-289046b4) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
+date: "Fall 2026"
+output:
+  xaringan::moon_reader:
+    self_contained: true
+    css: [default, "../../style_files/fonts.css", "../../style_files/my-theme.css", "../../style_files/code-tomorrow-night-bright.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: magula
+      highlightLines: true
+      highlightLanguage: ["r"]
+      countIncrementalSlides: false
+      ratio: "16:9"
+    includes:
+      in_header: "../../style_files/header.html"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache = FALSE,
+                      echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE,
+                      progress = FALSE,
+                      verbose = FALSE,
+                      dev = 'png',
+                      fig.height = 3,
+                      dpi = 300,
+                      fig.align = 'center')
+
+options(htmltools.dir.version = FALSE, width = 52)
+
+miamired = '#C3142D'
+
+if(require(pacman)==FALSE) install.packages("pacman")
+if(require(devtools)==FALSE) install.packages("devtools")
+if(require(countdown)==FALSE) devtools::install_github("gadenbuie/countdown")
+if(require(xaringanExtra)==FALSE) devtools::install_github("gadenbuie/xaringanExtra")
+if(require(emo)==FALSE) devtools::install_github("hadley/emo")
+
+pacman::p_load(tidyverse, magrittr, lubridate, janitor, # data analysis pkgs
+               readxl, writexl, jsonlite, DBI, RSQLite, # import and export pkgs
+               scales, # for the comma function
+               fontawesome, emo, xaringanExtra, countdown) # for slides
+
+ggplot2::theme_set(ggplot2::theme_bw(base_size = 12))
+
+# Code styling shared by all ISA 401 decks: hl_r() + knitr source hook (see style_files/hl_r.R)
+source("../../style_files/hl_r.R")
+```
+
+```{r wr_setup, include=FALSE}
+library(dplyr)
+wr_con = DBI::dbConnect(RSQLite::SQLite(), "../../data/scout.db")
+postings = DBI::dbReadTable(wr_con, "scout_postings") |> tibble::as_tibble()
+DBI::dbDisconnect(wr_con)
+jobs = postings |> select(company, title, location_state, remote, category, posted_at, last_seen_at)
+states = tibble::tibble(location_state = state.abb, state_name = state.name, region = as.character(state.region))
+wr_con2 = DBI::dbConnect(RSQLite::SQLite(), "../../data/midwest_airbnb.db")
+listings = DBI::dbReadTable(wr_con2, "listings") |> tibble::as_tibble()
+DBI::dbDisconnect(wr_con2)
+fmt = function(x) format(x, big.mark = ",")
+options(width = 66, tibble.print_min = 3, tibble.print_max = 3, pillar.min_title_chars = 8)
+
+# mini-table diagrams: a small real data frame before and after a verb
+mt_pick = data.frame(
+  company = c("The Home Depot", "CVS Health", "OhioHealth", "The Home Depot", "Talkspace", "The Home Depot", "CVS Health", "The Home Depot"),
+  title   = c("Data Scientist - People Analytics", "Data Engineer", "Requirement Business Analyst", "Cybersecurity Analyst | PCI (Remote)", "Data Analyst", "Business Analyst", "Data Scientist (Decision Sciences Team)", "Data Scientist, Pricing (Optimization)"),
+  stringsAsFactors = FALSE)
+mt_idx = mapply(function(co, ti) which(postings$company == co & startsWith(postings$title, substr(ti, 1, 20)))[1], mt_pick$company, mt_pick$title)
+stopifnot(!anyNA(mt_idx))
+mt8 = jobs[mt_idx, ]
+stopifnot(identical(mt8$remote, c(1L, 1L, 0L, 1L, 1L, 0L, 1L, 1L)))
+mt5 = mt8[1:5, ]
+mt_esc = htmltools::htmlEscape
+mt_tab = function(df, row_cls = rep("", nrow(df)), col_cls = rep("", ncol(df)), name = NULL) {
+  d = df
+  if ("title" %in% names(d)) d$title = strtrim(d$title, 14)
+  for (cc in intersect(c("posted_at", "last_seen_at"), names(d))) d[[cc]] = substr(as.character(d[[cc]]), 1, 10)
+  th = paste0(sprintf('<th class="%s">%s</th>', col_cls, names(d)), collapse = "")
+  rows = vapply(seq_len(nrow(d)), function(i) {
+    vals = vapply(d[i, ], function(v) if (is.na(v)) "NA" else as.character(v), character(1))
+    tds = paste0(sprintf('<td class="%s">%s</td>', col_cls, mt_esc(vals)), collapse = "")
+    sprintf('<tr class="%s">%s</tr>', row_cls[i], tds)
+  }, character(1))
+  cap = if (is.null(name)) "" else sprintf('<div class="mt-name">%s</div>', name)
+  sprintf('<div class="mt-tab">%s<table><thead><tr>%s</tr></thead><tbody>%s</tbody></table></div>', cap, th, paste0(rows, collapse = ""))
+}
+mt_pair = function(before, after, verb) {
+  sprintf('<div class="mt-pair">%s<div class="mt-arrow"><div class="mt-verb">%s</div><div class="mt-arr">&rarr;</div></div>%s</div>', before, mt_esc(verb), after)
+}
+```
+
+<style>
+.mt-pair { display:flex; align-items:center; gap:10px; margin:0; }
+.mt-arrow { display:flex; flex-direction:column; align-items:center; flex:0 0 auto; padding:0 4px; }
+.mt-verb { font-family:'Source Code Pro',monospace; font-size:11px; color:#c3142d; font-weight:700; white-space:pre-line; max-width:250px; text-align:center; line-height:1.3; }
+.mt-arr { font-size:26px; color:#c3142d; line-height:1; }
+.mt-name { font-family:'Source Code Pro',monospace; font-size:11.5px; font-weight:700; color:#585E60; margin-bottom:2px; }
+.mt-tab table { border-collapse:separate; border-spacing:0; margin:0 !important; border-top:0 !important; border-bottom:0 !important; font-family:'Source Code Pro',monospace; font-size:10.5px; line-height:1.15; width:auto !important; }
+.mt-tab th { background:#1d1f21; color:#ffffff; padding:1px 6px !important; line-height:1.2 !important; text-align:left; font-weight:600; white-space:nowrap; }
+.mt-tab td { padding:1px 6px !important; line-height:1.2 !important; border-bottom:1px solid #e5e7eb; white-space:nowrap; color:#1b1b1b; background:#ffffff; }
+.mt-tab .mt-keep { background:#fdf2f2; }
+.mt-tab th.mt-keep { background:#c3142d; }
+.mt-tab .mt-x { color:#9ca3af; text-decoration:line-through; background:#fafafa; }
+.mt-tab th.mt-x { background:#585E60; color:#d1d5db; }
+.mt-tab .mt-new { background:#fff3bf; }
+.mt-tab th.mt-new { background:#b45309; }
+.mt-tab tr.mt-g1 td { background:#fdf2f2; } .mt-tab tr.mt-g1 td:first-child { box-shadow:inset 4px 0 0 #c3142d; }
+.mt-tab tr.mt-g2 td { background:#eff6ff; } .mt-tab tr.mt-g2 td:first-child { box-shadow:inset 4px 0 0 #2563eb; }
+.mt-tab tr.mt-g3 td { background:#ecfdf5; } .mt-tab tr.mt-g3 td:first-child { box-shadow:inset 4px 0 0 #059669; }
+.mt-tab tr.mt-g4 td { background:#fff7ed; } .mt-tab tr.mt-g4 td:first-child { box-shadow:inset 4px 0 0 #d97706; }
+.mt-tab .mt-na { color:#9ca3af; font-style:italic; }
+.qbar { border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:5px 14px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.4; margin:0 0 6px 0; }
+.qbar b { color:#c3142d; }
+.vcard { border:1px solid #d1d5db; border-radius:8px; padding:6px 12px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:12.5px; line-height:1.4; margin-top:6px; }
+.vcard .vh { font-weight:700; color:#c3142d; font-size:13px; display:inline; margin-right:6px; }
+.vrow { display:block; }
+.vrow .vdiag { display:flex; justify-content:center; }
+.pp .rcode .rl, .jn .rcode .rl { opacity:0.42; transition:opacity .2s, background .2s; }
+.pp .rcode .rl.done, .jn .rcode .rl.done { opacity:0.85; }
+.pp .rcode .rl.on, .jn .rcode .rl.on { opacity:1; background:rgba(231, 197, 71, 0.22); }
+</style>
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+if(require(xaringanthemer) == FALSE) install.packages("xaringanthemer")
+library(xaringanthemer)
+
+style_mono_accent(base_color = "#84d6d3",
+                  base_font_size = "20px")
+
+xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "tachyons", "panelset", "broadcast", "share_again", "search", "fit_screen", "editable"))
+
+xaringanExtra::use_clipboard(button_text = paste0(fontawesome::fa("clipboard", fill = "#dedede", height = "0.9em"), " Copy"), success_text = paste0(fontawesome::fa("check", fill = "#b9ca4a", height = "0.9em"), " Copied"))
+
+xaringanExtra::use_extra_styles(
+  hover_code_line = TRUE,
+  mute_unhighlighted_code = TRUE
+)
+```
+
+<style>
+.code-sm .rcode { font-size: 78% !important; } .code-md .rcode { font-size: 90% !important; }
+.rcode { position: relative; padding-top: 18px !important; }
+.rcode .xaringanextra-clipboard-button { display: block !important; opacity: 0.55; top: 0; right: 4px; padding: 2px 6px; font-size: 11px; font-family: Lato, sans-serif; color: #dedede; cursor: pointer; }
+.rcode .xaringanextra-clipboard-button:hover { opacity: 1; }
+.airy .rout { margin: 2px 0 20px 0 !important; }
+</style>
+<style>
+.sc-bar { display:flex; gap:6px; align-items:center; margin-top:6px; font-family:'Noto Sans','Roboto',Arial,sans-serif; }
+.sc-btn { background:#ffffff; color:#374151; border:1px solid #d1d5db; border-radius:6px; padding:4px 11px; font-size:12.5px; font-weight:600; cursor:pointer; line-height:1.2; }
+.sc-btn:disabled { opacity:0.4; cursor:default; }
+.sc-btn.sc-primary { background:#c3142d; color:#ffffff; border-color:#c3142d; }
+.sc-spds { display:inline-flex; border:1px solid #d1d5db; border-radius:6px; overflow:hidden; margin-left:4px; }
+.sc-spd { background:#ffffff; color:#374151; border:0; border-right:1px solid #d1d5db; padding:4px 8px; font-size:11.5px; cursor:pointer; }
+.sc-spd:last-child { border-right:0; }
+.sc-spd.on { background:#585E60; color:#ffffff; }
+.sc-count { margin-left:auto; color:#585E60; font-size:12px; font-variant-numeric:tabular-nums; }
+.sc-caps { position:relative; margin-top:8px; border:1px solid #d1d5db; border-left:5px solid #c3142d; border-radius:8px; background:#fdf2f2; padding:8px 12px; font-size:13.5px; line-height:1.45; color:#1b1b1b; min-height:46px; }
+.sc-cap { display:none; }
+.sc-cap.on { display:block; }
+.sc-cap b { color:#c3142d; }
+</style>
+<script>
+(function () {
+  if (window.isaStepper) { return; }
+  window.isaStepper = function (root, scene) {
+    if (root.getAttribute('data-built')) { return; }
+    root.setAttribute('data-built', '1');
+    var i = 0, timer = null, speed = 1;
+    var q = function (s) { return root.querySelector(s); };
+    var bBack = q('.sc-back'), bStep = q('.sc-step'), bPlay = q('.sc-play'), bReset = q('.sc-reset'), cnt = q('.sc-count');
+    var spd = root.querySelectorAll('.sc-spd');
+    var caps = root.querySelectorAll('.sc-cap');
+    var flagged = root.querySelectorAll('[data-from]');
+    function applyFlags(j) {
+      flagged.forEach(function (el) {
+        var f = Number(el.getAttribute('data-from'));
+        var t = el.hasAttribute('data-to') ? Number(el.getAttribute('data-to')) : 9999;
+        el.classList.toggle('on', j >= f && !(j >= t));
+      });
+      caps.forEach(function (c) { c.classList.toggle('on', Number(c.getAttribute('data-step')) === j); });
+    }
+    function paint() {
+      bBack.disabled = (i === 0);
+      bStep.disabled = (i === scene.n);
+      bPlay.textContent = (timer !== null) ? 'Pause' : 'Play';
+      cnt.textContent = i + ' / ' + scene.n;
+    }
+    function go(j, dir) { i = j; applyFlags(j); if (scene.render) { scene.render(j, dir, speed, root); } paint(); }
+    function stop() { if (timer !== null) { clearTimeout(timer); timer = null; } paint(); }
+    function tick() {
+      timer = null;
+      if (i === scene.n) { paint(); return; }
+      go(i + 1, 1);
+      if (i !== scene.n) { timer = setTimeout(tick, scene.dwell[i] / speed); }
+      paint();
+    }
+    bStep.addEventListener('click', function () { stop(); if (i !== scene.n) { go(i + 1, 1); } });
+    bBack.addEventListener('click', function () { stop(); if (i !== 0) { go(i - 1, -1); } });
+    bReset.addEventListener('click', function () { stop(); go(0, -1); });
+    bPlay.addEventListener('click', function () {
+      if (timer !== null) { stop(); return; }
+      if (i === scene.n) { go(0, -1); }
+      timer = setTimeout(tick, scene.dwell[i] / speed);
+      paint();
+    });
+    spd.forEach(function (b) {
+      b.addEventListener('click', function () {
+        speed = Number(b.getAttribute('data-spd'));
+        spd.forEach(function (o) { o.classList.toggle('on', o === b); });
+      });
+    });
+    ['keydown', 'keypress', 'keyup'].forEach(function (t) { root.addEventListener(t, function (e) { e.stopPropagation(); }); });
+    root.addEventListener('mousedown', function (e) { if (e.target.tagName === 'BUTTON') { e.preventDefault(); } });
+    root.addEventListener('focusin', function () { if (window.slideshow) { window.slideshow.pause(); } });
+    root.addEventListener('focusout', function () { if (window.slideshow) { window.slideshow.resume(); } });
+    if (window.slideshow) { window.slideshow.on('hideSlide', stop); }
+    go(0, -1);
+  };
+  window.isaTypewriter = function (el, text, msPerChar, done) {
+    var k = 0, h = null;
+    function step() {
+      k = k + 1;
+      el.textContent = text.slice(0, k);
+      if (k !== text.length) { h = setTimeout(step, msPerChar); } else { h = null; if (done) { done(); } }
+    }
+    el.textContent = '';
+    h = setTimeout(step, msPerChar);
+    return function () { if (h !== null) { clearTimeout(h); h = null; } };
+  };
+})();
+</script>
+
+# Before We Start
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:16px;">
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">1 &nbsp; Join today's Zoom</div>
+    <div style="padding:12px 14px; font-size:14px; line-height:1.5;">
+      Use the Zoom link in the <a href="https://miamioh.instructure.com/courses/258169/modules/981092" target="_blank"><b>Week 0 Module</b></a> on Canvas. <b>Mute</b> your mic and <b>turn off</b> your video.<br>
+      <span style="color:#585E60;">Log in from the <span style="background:#ffe58f; padding:0 5px; border-radius:4px; font-weight:600;">lab's computer</span> so you can <span style="background:#ffe58f; padding:0 5px; border-radius:4px; font-weight:600;">share your screen</span> if you need help with an error.</span>
+    </div>
+  </div>
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">2 &nbsp; Open the project</div>
+    <div style="padding:12px 14px; font-size:14px; line-height:1.5;">
+      <b>GitHub Desktop</b> &rarr; <code>business_intelligence</code> &rarr; <b>Fetch origin</b>. Then double-click <span style="background:#ffe58f; padding:0 5px; border-radius:4px; font-weight:600;">business_intelligence.Rproj</span>.<br>
+      <span style="color:#585E60;">Top right corner of RStudio must say <code>business_intelligence</code> before you type anything.</span>
+    </div>
+  </div>
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">3 &nbsp; Start today's markdown</div>
+    <div style="padding:12px 14px; font-size:14px; line-height:1.5;">
+      <b>File &rarr; New File &rarr; R Markdown...</b>, title <i>Class 07</i>, <b>OK</b>. Delete everything below the setup chunk, then save as <span style="background:#ffe58f; padding:0 5px; border-radius:4px; font-weight:600;">markdowns/class07.Rmd</span>.<br>
+      <span style="color:#585E60;">Same as Monday. Your <code>class06.Rmd</code> stays as it is.</span>
+    </div>
+  </div>
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">4 &nbsp; Get the app into your repo</div>
+    <div style="padding:12px 14px; font-size:14px; line-height:1.5;">
+      Download <a href="https://miamioh.instructure.com/courses/258169/modules/995631" target="_blank"><b>job_scout_chat.zip</b></a> from the Week 3 module and unzip it into your repo as <span style="background:#ffe58f; padding:0 5px; border-radius:4px; font-weight:600;">apps/job_scout_chat/</span>.<br>
+      <span style="color:#585E60;">Part 1 starts by running this app on your PC, so have the folder in place before we begin.</span>
+    </div>
+  </div>
+</div>
+
+<div style="text-align:center; margin-top:18px; font-size:14px; color:#585E60;">Done early? <b style="color:#c3142d;">Help the person next to you.</b> Stuck? <b style="color:#c3142d;">Share your screen on Zoom</b> and we fix it together.</div>
+
+???
+
+Three minutes. Card 2 is the ritual's first step; check top right corners. Card 4 is new: the zip goes into the repo now so Part 1 can start with Run App instead of a download. Anyone who already unzipped it Monday is done. Say the key news once here, briefly: the class key changed Monday night, and the next slides explain why.
+
+---
+
+# Learning Objectives for Today's Class
+
+- **Run** the `querychat` app locally and **deploy** it to Hugging Face Spaces, with the API key kept out of every commit.
+- **Manipulate** a data frame with `dplyr::select()`, `dplyr::filter()`, `dplyr::arrange()`, `dplyr::mutate()`, and `dplyr::across()`, chained with `|>`.
+- **Summarize** groups with `dplyr::group_by()` and `dplyr::summarize()`, and **count** with `dplyr::count()`.
+- **Combine** two tables with `dplyr::left_join()`, and say what `dplyr::inner_join()` and `dplyr::anti_join()` would have dropped.
+
+<div style="display:grid; grid-template-columns:1fr 2.4fr; gap:14px; margin-top:6px;">
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">Part 1 &nbsp;<span style="font-weight:400; opacity:0.85;">20 minutes</span></div>
+    <div style="padding:10px 14px; font-size:13.5px; line-height:1.45;"><b>Running and deploying the app.</b> The app on your PC, the leaked key and what it changes, why the Dockerfile exists, the deploy on the projector. Builds run while we move on.</div>
+  </div>
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">Part 2 &nbsp;<span style="font-weight:400; opacity:0.85;">50 minutes</span></div>
+    <div style="padding:10px 14px; font-size:13.5px; line-height:1.45;"><b>Data wrangling with dplyr.</b> From SQL to dplyr, the verbs one question at a time with a small data frame before and after each, selection helpers and across(), joins, then ten minutes of practice on the Airbnb listings from Assignment 04.</div>
+  </div>
+</div>
+
+???
+
+Four objectives, two parts. Part 1 is twenty minutes because Monday ran out of time before anyone ran the app; the key story is three minutes inside it and worth every second. Part 2 is the scheduled dplyr class. Keep the deploy builds running in the background and check them at Try It.
+
+---
+
+class: inverse, center, middle
+
+# Part 1: Running and Deploying the App
+
+---
+
+# Running the App Locally
+
+.left55[
+
+```{r app_r, eval=FALSE, hl.size="55%"}
+# apps/job_scout_chat/app.R
+library(querychat)
+
+con = DBI::dbConnect(RSQLite::SQLite(), "data/scout.db")
+
+client = ellmer::chat_openai(
+  model  = "gpt-5.6-luna",
+  params = ellmer::params(reasoning_effort = "none")
+)
+
+qc = querychat(
+  con, "scout_postings",
+  client   = client,
+  tools    = c("filter", "query", "visualize"),
+  greeting = "Ask me about the 1,891 job postings
+              ChatISA Job Scout collected."
+)
+
+qc$app_obj()
+```
+
+<div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:9px 14px; background:#fdf2f2; font-size:13px; line-height:1.55; margin-top:8px;">
+The path is <code>"data/scout.db"</code>, not <code>"../data/"</code>: an app runs from <b>its own folder</b>, so the app gets its own copy of the data.
+</div>
+
+]
+
+.right43[
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:11px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13.5px; line-height:1.55;">
+<div style="font-weight:700; color:#c3142d; font-size:15px;">Four steps</div>
+<div style="margin-top:6px;"><b>1.</b> You unzipped <a href="https://miamioh.instructure.com/courses/258169/modules/995631" target="_blank"><code>job_scout_chat.zip</code></a> into <code>apps/job_scout_chat/</code> before class. It holds <code>app.R</code>, the <code>Dockerfile</code>, <code>README.md</code>, and <code>data/scout.db</code>.</div>
+<div style="margin-top:4px;"><b>2.</b> Open <code>app.R</code> from that folder. It is the code on the left; type it yourself if you prefer.</div>
+<div style="margin-top:4px;"><b>3.</b> In the Console: <code>install.packages("querychat", dependencies = TRUE)</code> (pulls in <code>DT</code> and <code>ggsql</code>, which the app needs but querychat only suggests), then <code>usethis::edit_r_environ("project")</code>, add the line <code>OPENAI_API_KEY=</code> followed by the <a href="https://miamioh.instructure.com/courses/258169/files/40267121" target="_blank"><b>new class key</b></a> (Canvas; the old one is dead, next slide), save. Then <code>usethis::use_git_ignore(".Renviron")</code>, and <b>Session &rarr; Restart R</b>.</div>
+<div style="margin-top:4px;"><b>4.</b> Click <b>Run App</b> at the top of <code>app.R</code>.</div>
+</div>
+<div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:11px 14px; background:#fdf2f2; font-size:13.5px; line-height:1.55; margin-top:12px;">
+<b>The key never goes in a file you commit.</b> <code>.Renviron</code> from step 3 sits next to your <code>.Rproj</code>, so it follows your M: drive to any lab PC; the <code>use_git_ignore()</code> line keeps it out of every commit.
+</div>
+]
+
+<div style="clear:both;"></div>
+
+???
+
+Six minutes, everyone typing. Monday they saw this app run on the projector; today every PC runs it. Say the five things while they install: querychat takes a connection and a table name, the client names the model with reasoning off, tools lists what the model may do (filter, query, visualize), app_obj() returns a complete Shiny app. Step 3 is the slow one: dependencies = TRUE is what brings DT and ggsql along, and the .Renviron is project-level so the key rides on M: to any lab PC; use_git_ignore() is the line that keeps it out of GitHub, which the next slide makes concrete. Walk the room during the install; when apps open, have everyone ask one question and look at the SQL card.
+
+---
+
+# The Leaked API Key
+
+.left55[
+<div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1); background:#ffffff;">
+<img src="`r knitr::image_uri('img/key_disabled.png')`" alt="OpenAI email: API key disabled because it was leaked" style="width:100%; display:block;">
+</div>
+<div style="margin-top:6px; font-size:12px; color:#585E60; line-height:1.4;">The email that arrived Monday, Sep 14. Organization name redacted; the key is shown by its first and last characters only, which is how OpenAI refers to keys.</div>
+]
+
+.right43[
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:11px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13.5px; line-height:1.55;">
+<div style="font-weight:700; color:#c3142d; font-size:15px;">What happened</div>
+<div style="margin-top:6px;">A file containing the class key was pushed to a public GitHub repository. Automated scanners watch every public commit for strings that look like keys. OpenAI was told, and disabled the key <b>the same day</b>, before anyone could use it.</div>
+</div>
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:11px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13.5px; line-height:1.55; margin-top:10px;">
+<div style="font-weight:700; color:#c3142d; font-size:15px;">What it means</div>
+<div style="margin-top:6px;">A key in a commit is public within minutes, even if you delete the file in the next commit: the history keeps it. There is no un-leaking; the only fix is to <b>revoke</b> the key, make a new one, and replace it <b>everywhere it was used</b>.</div>
+</div>
+<div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:11px 14px; background:#fdf2f2; font-size:13.5px; line-height:1.55; margin-top:10px;">
+<b>What you do now.</b> The <a href="https://miamioh.instructure.com/courses/258169/files/40267121" target="_blank"><b>new class key</b></a> goes in your project <code>.Renviron</code>; then <b>Session &rarr; Restart R</b>. If you made a Space on Monday, replace its secret too. Nobody is in trouble: this is exactly why the <code>use_git_ignore()</code> line exists.
+</div>
+]
+
+<div style="clear:both;"></div>
+
+???
+
+Three minutes, and say it without blame; the point is the mechanism, not the person. Walk the email: the key is named, it was found leaked, it is disabled with immediate effect, and the likely cause is a commit to GitHub. Then the two lessons. First, git history is forever, so deleting the file afterwards changes nothing; the only fix is revoke and replace. Second, replace means everywhere: the project .Renviron on every machine and the secret on every Space, which is why the Deploy slide says to paste the new key. Connect it to the ritual: the .gitignore line is not a formality, it is the thing that keeps a public repo from publishing a password. If a student asks how the scanner works, GitHub secret scanning notifies providers about matching strings in public commits and OpenAI revokes automatically; do not speculate beyond that. Then move to the Dockerfile.
+
+---
+
+```{r jm_counts, include=FALSE}
+jm_con = DBI::dbConnect(RSQLite::SQLite(), "../../data/scout.db")
+jm = DBI::dbReadTable(jm_con, "scout_postings")
+jm_last = substr(max(jm$harvested_at), 1, 10)
+DBI::dbDisconnect(jm_con)
+jm_txt = paste(jm$description, jm$title)
+jm_n = function(pat) sum(grepl(pat, jm_txt, ignore.case = TRUE, perl = TRUE))
+n_total   = nrow(jm)
+n_sql     = jm_n("\\bsql\\b")
+n_python  = jm_n("\\bpython\\b")
+n_powerbi = jm_n("power ?bi")
+n_tableau = jm_n("\\btableau\\b")
+n_docker  = jm_n("\\bdocker\\b")
+n_deploy  = jm_n("\\bdeploy")
+n_cloud   = jm_n("\\baws\\b|\\bazure\\b|\\bgcp\\b|google cloud")
+n_k8s     = jm_n("\\bkubernetes\\b|\\bk8s\\b")
+pct = function(n) sprintf("%.1f%%", 100 * n / n_total)
+fmt = function(n) format(n, big.mark = ",")
+```
+
+# Why a Dockerfile? Ship the Computer
+
+<style>
+.dk { font-family:'Noto Sans','Roboto',Arial,sans-serif; color:#1b1b1b; }
+.dk-strip { display:flex; align-items:center; gap:6px; height:26px; }
+.dk-strip .dk-lab { font-weight:700; color:#c3142d; font-size:12px; width:72px; flex:0 0 72px; }
+.dk-stick { flex:1; height:22px; background:#1d1f21; color:#dedede; border-radius:4px; font-family:'Source Code Pro',monospace; font-size:8.5px; line-height:19px; padding:0 5px; white-space:nowrap; overflow:hidden; border-bottom:3px solid transparent; opacity:.5; box-sizing:border-box; transition:opacity .3s, border-color .3s; }
+.dk-stick .kw { color:#7aa6da; } .dk-stick .ar { color:#b9ca4a; }
+.dk-stick.on { opacity:1; border-bottom-color:#EFDB72; }
+.dk-stick.done { opacity:.85; border-bottom-color:#8a9096; }
+.dk-stage { position:relative; width:560px; height:340px; margin-top:6px; background:#ffffff; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1); }
+.dk-stage * { box-sizing:border-box; }
+.dk-lbl { position:absolute; top:314px; font-size:12.5px; color:#585E60; text-align:center; }
+.dk-laptop { position:absolute; left:12px; top:42px; width:168px; height:150px; background:#f3f4f6; border:2px solid #585E60; border-radius:8px; }
+.dk-base { position:absolute; left:2px; top:194px; width:188px; height:10px; background:#585E60; border-radius:0 0 6px 6px; }
+.dk-chips { position:absolute; left:12px; top:10px; width:140px; opacity:0; transition:opacity .35s; }
+.dk-chips.on { opacity:1; }
+.dk-chip { position:relative; height:22px; margin-bottom:8px; background:#ffffff; border:1px solid #d1d5db; border-radius:5px; font-family:'Source Code Pro',monospace; font-size:10.5px; line-height:20px; padding:0 8px; transition:opacity .4s; }
+.dk-chip.dk-fade.on { opacity:.4; }
+.dk-check { position:absolute; right:6px; top:3px; width:14px; height:14px; border-radius:50%; background:#6fbf73; color:#fff; font-size:10px; line-height:14px; text-align:center; opacity:0; transform:scale(.4); transition:opacity .3s, transform .3s; }
+.dk-check.on { opacity:1; transform:scale(1); }
+.dk-browser { position:absolute; left:12px; top:44px; width:144px; height:54px; background:#ffffff; border:1px solid #d1d5db; border-radius:6px; font-family:'Source Code Pro',monospace; font-size:9.5px; line-height:1.35; padding:5px 7px; color:#1b1b1b; opacity:0; transform:translateY(10px); transition:opacity .4s, transform .4s; }
+.dk-browser.on { opacity:1; transform:none; }
+.dk-box { position:absolute; left:206px; top:90px; width:164px; height:190px; border:2px dashed #8a9096; border-radius:6px; background:#ffffff; transform-origin:0 0; transition:transform .8s cubic-bezier(.4,0,.2,1), border-color .4s, background .4s; z-index:2; }
+.dk-box.on { border-style:solid; border-color:#585E60; background:repeating-linear-gradient(90deg, #f7f7f7 0 10px, #ececec 10px 20px); }
+.dk-box.dk-docked { transform:translate(206px,10px) scale(.72); }
+.dk-slab { position:absolute; left:8px; top:158px; width:144px; height:22px; background:#585E60; color:#fff; font-size:10.5px; font-weight:700; line-height:22px; text-align:center; border-radius:4px; opacity:0; transform:translateY(-120px); transition:opacity .4s, transform .6s cubic-bezier(.4,0,.2,1); }
+.dk-slab.on { opacity:1; transform:none; }
+.dk-tile { position:absolute; width:66px; height:18px; background:#e7c547; color:#1b1b1b; font-family:'Source Code Pro',monospace; font-size:9.5px; line-height:18px; text-align:center; border-radius:3px; opacity:0; transform:translateY(-130px); transition:opacity .35s, transform .55s cubic-bezier(.4,0,.2,1); }
+.dk-tile.on { opacity:1; transform:none; }
+.dk-file { position:absolute; width:66px; height:22px; background:#ffffff; border:1px solid #c3142d; color:#c3142d; font-family:'Source Code Pro',monospace; font-size:9.5px; line-height:20px; text-align:center; border-radius:4px; opacity:0; transform:translate(-190px,-60px); transition:opacity .35s, transform .7s cubic-bezier(.4,0,.2,1); }
+.dk-file.on { opacity:1; transform:none; }
+.dk-stamp { position:absolute; left:92px; top:8px; width:66px; height:20px; background:#EFDB72; color:#1b1b1b; font-family:'Source Code Pro',monospace; font-size:9.5px; line-height:20px; text-align:center; border-radius:3px; opacity:0; transform:rotate(-8deg) scale(1.5); transition:opacity .3s, transform .4s; }
+.dk-stamp.on { opacity:1; transform:rotate(-8deg) scale(1); }
+.dk-door { position:absolute; right:-16px; top:112px; width:14px; height:56px; background:#c3142d; border-radius:0 3px 3px 0; opacity:0; transition:transform .5s, opacity .3s; }
+.dk-door.on { opacity:1; transform:translateX(12px); }
+.dk-port { position:absolute; right:-30px; top:94px; font-family:'Source Code Pro',monospace; font-size:10px; color:#c3142d; font-weight:700; opacity:0; transition:opacity .3s; }
+.dk-port.on { opacity:1; }
+.dk-rack { position:absolute; left:400px; top:62px; width:148px; height:210px; background:#2b2b2b; border-radius:8px; }
+.dk-units { position:absolute; left:12px; top:12px; width:124px; transition:opacity .5s; }
+.dk-units.on { opacity:.25; }
+.dk-unit { height:36px; margin-bottom:10px; background:#3a3a3a; border-radius:4px; }
+.dk-led { position:absolute; right:20px; width:8px; height:8px; border-radius:50%; background:#555; transition:background .4s, box-shadow .4s; }
+.dk-led.on { background:#6fbf73; box-shadow:0 0 6px #6fbf73; }
+.dk-pill { position:absolute; left:400px; top:40px; width:148px; height:18px; border-radius:9px; font-size:10.5px; line-height:18px; text-align:center; font-weight:700; opacity:0; transition:opacity .3s; }
+.dk-pill.on { opacity:1; }
+.dk-pill-off { background:#e5e7eb; color:#585E60; }
+.dk-pill-on { background:#6fbf73; color:#ffffff; }
+.dk-ghost { position:absolute; left:206px; width:164px; height:80px; border:2px dashed #c3142d; border-radius:6px; background:#fdf2f2; font-size:11px; line-height:1.3; padding:8px 10px; color:#1b1b1b; opacity:0; transform:translateX(70px); transition:opacity .4s, transform .6s cubic-bezier(.4,0,.2,1); }
+.dk-ghost.on { opacity:1; transform:none; }
+.dk-ghost .dk-run { display:inline-block; margin-top:6px; background:#6fbf73; color:#fff; border-radius:8px; padding:0 8px; font-size:10px; font-weight:700; }
+.dk-legend { margin-top:5px; font-size:11.5px; color:#585E60; }
+</style>
+
+.left55[
+<div class="dk">
+<div class="dk-strip"><span class="dk-stick" data-step="1"><span class="kw">FROM</span> <span class="ar">rocker/shiny:4.6.0</span></span><span class="dk-stick" data-step="2"><span class="kw">RUN</span> install.packages()</span><span class="dk-stick" data-step="3"><span class="kw">COPY</span> app.R + data/</span><span class="dk-stick" data-step="4"><span class="kw">EXPOSE</span> 7860 <span class="kw">CMD</span> runApp</span></div>
+<div class="dk-stage">
+<div class="dk-laptop">
+<div class="dk-chips" data-from="0" data-to="5">
+<div class="dk-chip">R 4.6.0<span class="dk-check" data-from="1">&#10003;</span></div>
+<div class="dk-chip">9 packages<span class="dk-check" data-from="2">&#10003;</span></div>
+<div class="dk-chip dk-fade" data-from="3">app.R</div>
+<div class="dk-chip dk-fade" data-from="3">data/scout.db</div>
+</div>
+<div class="dk-browser" data-from="5">your browser:<br>fmegahed-job-<br>scout-chat.hf.space</div>
+</div>
+<div class="dk-base"></div>
+<div class="dk-box" data-from="1">
+<div class="dk-slab" data-from="1">Linux + R 4.6.0</div>
+<div class="dk-stamp" data-from="2">2026-09-01</div>
+<div class="dk-tile" data-from="2" style="left:8px; top:58px; transition-delay:0.00s;">shiny</div>
+<div class="dk-tile" data-from="2" style="left:86px; top:58px; transition-delay:0.05s;">bslib</div>
+<div class="dk-tile" data-from="2" style="left:8px; top:78px; transition-delay:0.10s;">DBI</div>
+<div class="dk-tile" data-from="2" style="left:86px; top:78px; transition-delay:0.15s;">RSQLite</div>
+<div class="dk-tile" data-from="2" style="left:8px; top:98px; transition-delay:0.20s;">ellmer</div>
+<div class="dk-tile" data-from="2" style="left:86px; top:98px; transition-delay:0.25s;">shinychat</div>
+<div class="dk-tile" data-from="2" style="left:8px; top:118px; transition-delay:0.30s;">querychat</div>
+<div class="dk-tile" data-from="2" style="left:86px; top:118px; transition-delay:0.35s;">DT</div>
+<div class="dk-tile" data-from="2" style="left:8px; top:138px; transition-delay:0.40s;">ggsql</div>
+<div class="dk-file" data-from="3" style="left:8px; top:32px;">app.R</div>
+<div class="dk-file" data-from="3" style="left:86px; top:32px; transition-delay:.12s;">scout.db</div>
+<div class="dk-door" data-from="4"></div>
+<div class="dk-port" data-from="4">7860</div>
+</div>
+<div class="dk-rack">
+<div class="dk-units" data-from="5"><div class="dk-unit"></div><div class="dk-unit"></div><div class="dk-unit"></div><div class="dk-unit"></div></div>
+<div class="dk-led" data-from="5" style="top:26px;"></div><div class="dk-led" data-from="5" style="top:72px;"></div><div class="dk-led" data-from="5" style="top:118px;"></div><div class="dk-led" data-from="5" style="top:164px;"></div>
+</div>
+<div class="dk-pill dk-pill-off" data-from="0" data-to="5">nothing installed</div>
+<div class="dk-pill dk-pill-on" data-from="5">Running</div>
+<div class="dk-ghost" data-from="6" style="top:100px;">a teammate's Space<br><span class="dk-run">Running</span></div>
+<div class="dk-ghost" data-from="6" style="top:196px; transition-delay:.15s;">rebuilt in December<br><span class="dk-run">Running</span></div>
+<div class="dk-lbl" style="left:12px; width:180px;">your lab PC</div>
+<div class="dk-lbl" style="left:206px; width:164px;">the box</div>
+<div class="dk-lbl" style="left:400px; width:148px;">Hugging Face server</div>
+</div>
+<div class="sc-caps">
+<div class="sc-cap on" data-step="0"><b>Before the recipe.</b> Your app runs on this PC only because R, nine packages, app.R, and scout.db all happen to be here. The server on the right has none of them.</div>
+<div class="sc-cap" data-step="1"><b>FROM.</b> Start from a ready-made Linux computer that already has R 4.6.0, the same R as this lab.</div>
+<div class="sc-cap" data-step="2"><b>RUN.</b> Install the nine packages from a snapshot of CRAN frozen on 2026-09-01, so a rebuild in December gets exactly today's versions.</div>
+<div class="sc-cap" data-step="3"><b>COPY.</b> Copy in the two things you wrote. They are the only things that leave your PC.</div>
+<div class="sc-cap" data-step="4"><b>EXPOSE and CMD.</b> Open one door, port 7860, and say what to run behind it: <code>shiny::runApp()</code>.</div>
+<div class="sc-cap" data-step="5"><b>Build and run.</b> Hugging Face reads the recipe, builds this exact computer on its server, and runs it. You just open the URL.</div>
+<div class="sc-cap" data-step="6"><b>Same recipe, same computer, anywhere.</b> A teammate's Space or a rebuild in December comes out identical.</div>
+</div>
+<div class="sc-bar"><button type="button" class="sc-btn sc-back">Back</button><button type="button" class="sc-btn sc-primary sc-step">Step</button><button type="button" class="sc-btn sc-play">Play</button><button type="button" class="sc-btn sc-reset">Reset</button><span class="sc-spds"><button type="button" class="sc-spd" data-spd="0.5">0.5x</button><button type="button" class="sc-spd on" data-spd="1">1x</button><button type="button" class="sc-spd" data-spd="2">2x</button></span><span class="sc-count">0 / 6</span></div>
+</div>
+<script>
+(function () {
+  function build(root) {
+    if (root.getAttribute('data-built')) { return; }
+    var stickers = root.querySelectorAll('.dk-stick');
+    var box = root.querySelector('.dk-box');
+    window.isaStepper(root, {
+      n: 6,
+      dwell: [2400, 2800, 3000, 2600, 2400, 3000, 0],
+      render: function (j) {
+        stickers.forEach(function (s) {
+          var k = Number(s.getAttribute('data-step'));
+          s.classList.toggle('on', k === j);
+          s.classList.toggle('done', j > k);
+        });
+        box.classList.toggle('dk-docked', j >= 5);
+      }
+    });
+  }
+  function buildAll() { document.querySelectorAll('.dk').forEach(build); }
+  buildAll();
+  if (window.slideshow && !window.dkHooked) { window.dkHooked = true; window.slideshow.on('afterShowSlide', buildAll); }
+})();
+</script>
+]
+
+.right43[
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:11px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13px; line-height:1.5;">
+<div style="font-weight:700; color:#c3142d; font-size:15px;">Why it matters to you</div>
+<div style="margin-top:6px;">In the <b>`r fmt(n_total)`</b> Job Scout postings, the description mentions:</div>
+<div style="margin-top:4px; display:grid; grid-template-columns:auto 1fr; column-gap:10px; row-gap:2px; font-variant-numeric:tabular-nums;">
+<b style="text-align:right;">`r fmt(n_deploy)`</b><div>deploy or deployment</div>
+<b style="text-align:right;">`r fmt(n_cloud)`</b><div>AWS, Azure, or Google Cloud</div>
+<b style="text-align:right;">`r fmt(n_docker)`</b><div>Docker</div>
+<b style="text-align:right;">`r fmt(n_k8s)`</b><div>Kubernetes</div>
+</div>
+<div style="margin-top:6px; color:#585E60;">Deploying is a common ask. Docker itself is named only in machine-learning and data-engineering roles: recognize it, do not fear it.</div>
+</div>
+<div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:10px 14px; background:#fdf2f2; font-size:13px; line-height:1.5; margin-top:10px;">
+<div style="font-weight:700; color:#c3142d; font-size:15px;">Industry-wide</div>
+<div style="margin-top:4px;"><b>71.1%</b> of the 24,473 developers who answered the Cloud development question in the <a href="https://survey.stackoverflow.co/2025/technology" target="_blank">Stack Overflow 2025 Developer Survey</a> use Docker. A Dockerfile is a recipe for a computer; Hugging Face reads the recipe, so nobody installs anything by hand.</div>
+</div>
+<div style="margin-top:10px; font-size:12.5px; color:#585E60; line-height:1.5;">Three words from job postings: <b>recipe</b> (Dockerfile) &rarr; <b>box</b> (image) &rarr; <b>running box</b> (container).</div>
+]
+
+<div style="clear:both;"></div>
+
+.footnote[
+<html>
+<hr>
+</html>
+**Sources:** `data/scout.db` (ChatISA Job Scout harvest through `r jm_last`; counts are case-insensitive matches in the posting text); [Stack Overflow 2025 Developer Survey, Technology, Cloud development](https://survey.stackoverflow.co/2025/technology); [Docker: What is a container](https://www.docker.com/resources/what-container/).
+]
+
+???
+
+Three minutes, and this is the slide that answers "why is there a Dockerfile in the zip". Step through it; do not press Play in class. Step 0: point at the laptop and ask what the app needs that the server does not have. Steps 1 and 2: R and the packages come from public sources (the rocker image, the CRAN snapshot), not from the laptop; the date stamp is the reproducibility idea from Class 02 applied to software. Step 3 is the sentence to say slowly: the only things that leave your PC are the two files you wrote. Step 4: a port is a door number. Step 5: Hugging Face does the building; you never run Docker. Step 6: same recipe, same computer, which is why Assignment 05 works on their laptop, on a lab PC, and on my machine when I grade. The counts on the right are computed from scout.db at knit time; Docker is rare in analyst postings and the card says so, because overselling it would be technically-true-but-misleading. Back and Reset are there if a question sends you backwards. Appendix A1 reads the actual file line by line for the curious.
+
+---
+
+# Deploy to Hugging Face
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px;">
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:8px 14px;">1 &nbsp; Account and Space</div>
+    <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;">Sign up at <a href="https://huggingface.co/join" target="_blank"><b>huggingface.co</b></a> (personal email). Then <b>New &rarr; Space</b>: name <code>job_scout_chat</code>, license <b>MIT</b>, SDK <b>Docker</b> &rarr; <b>Blank</b>, visibility <b>Public</b>, <b>Create Space</b>.</div>
+  </div>
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:8px 14px;">2 &nbsp; Upload four things</div>
+    <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;"><b>Files &rarr; Add file &rarr; Upload files</b>. Drag in <code>app.R</code>, the <code>Dockerfile</code> and <code>README.md</code> from <a href="https://miamioh.instructure.com/courses/258169/modules/995631" target="_blank"><code>job_scout_chat.zip</code></a> on Canvas, and the whole <code>data/</code> folder. <b>Commit changes to main</b>.</div>
+  </div>
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:8px 14px;">3 &nbsp; Add the secret</div>
+    <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;"><b>Settings &rarr; Variables and secrets &rarr; New secret</b>. Name <code>OPENAI_API_KEY</code>, value the <a href="https://miamioh.instructure.com/courses/258169/files/40267121" target="_blank"><b>class key</b></a> from Canvas. A secret is encrypted and never shown in the file list; a variable is public. Use <b>secret</b>. Same name as the line in your <code>.Renviron</code>: <code>app.R</code> reads <code>OPENAI_API_KEY</code> from wherever it runs, so the key is never in a file you upload.</div>
+  </div>
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:8px 14px;">4 &nbsp; Watch it build</div>
+    <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;">The badge at the top goes <b>Building</b> for a few minutes while the Dockerfile installs R and the packages, then <b>Running</b>. Click <b>Logs</b> if it goes red; the last lines say why.</div>
+  </div>
+</div>
+
+<div style="margin-top:12px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:10px 16px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.55; color:#1b1b1b;">
+<b style="color:#c3142d;">What the Dockerfile is.</b> A recipe that builds a fresh Linux computer with the same R version as this lab, installs the packages from a dated snapshot, copies your app in, and starts it. You do not run Docker; Hugging Face does. The recipe is read line by line in <a href="http://fmegahed.github.io/isa401/fall2026/class06/06_sqlite_deployed_app.html#appendix-a1" target="_blank">Appendix A1 of the Class 06 deck</a>.
+</div>
+
+???
+
+Seven minutes on the projector, then the room follows. Do steps 1 and 2 live; at step 3 paste the NEW key as the secret and say out loud that anyone who made a Space Monday must replace the secret too, because the old key is disabled. Builds take a few minutes; leave them running and move to Part 2. The Try It slide near the end is the moment to come back and check the badges. Folder drag-and-drop works in the upload dialog; scout.db uploaded at the top level instead of inside data/ is the classic failure and the Logs show it. Appendix A2 has the troubleshooting list.
+
+---
+
+class: inverse, center, middle
+
+# Part 2: Data Wrangling with dplyr
+
+---
+
+# From SQL to dplyr
+
+<div style="font-size:15px; color:#1b1b1b; margin:4px 0 10px 0;"><b style="color:#c3142d;">Which companies posted the most remote jobs?</b> Monday you typed it in SQL, then watched the app write the same SQL from English. Today you write it in R, and the answer does not change.</div>
+
+.left55[
+
+```{r bridge_sql, eval=FALSE, hl.size="56%"}
+# Monday, Part 1: SQL, typed by you
+DBI::dbGetQuery(con, "
+  SELECT company, COUNT(*) AS n
+  FROM scout_postings
+  WHERE remote = 1
+  GROUP BY company
+  ORDER BY n DESC
+  LIMIT 10")
+```
+
+```{r bridge_dplyr, eval=FALSE, hl.size="56%"}
+# Today: dplyr, on the data frame from dbReadTable()
+postings |>
+  dplyr::filter(remote == 1) |>
+  dplyr::count(company, sort = TRUE) |>
+  head(10)
+```
+
+]
+
+.right43[
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:11px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13.5px; line-height:1.55;">
+<div style="font-weight:700; color:#c3142d; font-size:15px;">Read the pipe as "then"</div>
+<div style="margin-top:6px;">Take <code>postings</code>, <b>then</b> keep the remote rows, <b>then</b> count per company, <b>then</b> the first ten. Each line takes a data frame in and hands a data frame to the next line. <code>|&gt;</code> is base R; type it with <b>Ctrl+Shift+M</b> once Tools &rarr; Global Options &rarr; Code has "native pipe" checked.</div>
+</div>
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:11px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13.5px; line-height:1.55; margin-top:10px;">
+<div style="font-weight:700; color:#c3142d; font-size:15px;">Same verbs, R spelling</div>
+<div style="margin-top:6px; display:grid; grid-template-columns:1.5fr 1fr; row-gap:4px; column-gap:8px;">
+<div><code>WHERE</code></div><div><code>dplyr::filter()</code></div>
+<div><code>GROUP BY</code> + <code>COUNT(*)</code> + <code>ORDER BY</code></div><div><code>dplyr::count(sort = TRUE)</code></div>
+<div><code>LIMIT</code></div><div><code>head()</code>, base R</div>
+</div>
+</div>
+<div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:11px 14px; background:#fdf2f2; font-size:13.5px; line-height:1.55; margin-top:10px;">
+<b>Same notation as every class:</b> <code>dplyr::verb()</code> for every dplyr function, so a reader always knows which package a verb came from. Base R functions such as <code>head()</code> and <code>as.Date()</code> stay bare.
+</div>
+]
+
+<div style="clear:both;"></div>
+
+???
+
+Two minutes, no typing yet. The question did not change since Monday; only who writes the query and in what language. Read the dplyr chain aloud with "then" at each pipe, and say the two housekeeping facts: the native pipe is base R and RStudio's shortcut inserts it once the option is set; and the dplyr:: prefix stays on every verb, as in every earlier class. Then the verb table.
+
+---
+
+# The dplyr Verbs
+
+<style>
+.vt .rcode { margin:0 !important; padding:3px 8px !important; border-radius:6px; }
+.vt .rcode .rl { padding-left:6px; }
+.vt .xaringanextra-clipboard-button { display:none !important; }
+</style>
+
+<div class="vt" style="display:grid; grid-template-columns:150px 1fr 1.15fr 150px; column-gap:12px; row-gap:0; font-size:13px; line-height:1.4; margin-top:4px; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+  <div style="background:#c3142d; color:#fff; font-weight:700; padding:6px 12px;">Verb</div>
+  <div style="background:#c3142d; color:#fff; font-weight:700; padding:6px 12px;">What it changes</div>
+  <div style="background:#c3142d; color:#fff; font-weight:700; padding:6px 12px;">Example</div>
+  <div style="background:#c3142d; color:#fff; font-weight:700; padding:6px 12px;">SQL cousin</div>
+
+  <div style="padding:6px 12px; border-top:1px solid #e5e7eb;"><code>select()</code></div>
+  <div style="padding:6px 12px; border-top:1px solid #e5e7eb;"><b>Columns.</b> Keep some, drop some, reorder.</div>
+  <div style="padding:4px 8px; border-top:1px solid #e5e7eb;">`r hl_r("dplyr::select(company, title, remote)", "66%")`</div>
+  <div style="padding:6px 12px; border-top:1px solid #e5e7eb;"><code>SELECT</code></div>
+
+  <div style="padding:6px 12px; border-top:1px solid #e5e7eb;"><code>filter()</code></div>
+  <div style="padding:6px 12px; border-top:1px solid #e5e7eb;"><b>Rows.</b> Keep the rows where a test is TRUE.</div>
+  <div style="padding:4px 8px; border-top:1px solid #e5e7eb;">`r hl_r("dplyr::filter(remote == 1, location_state == \"OH\")", "66%")`</div>
+  <div style="padding:6px 12px; border-top:1px solid #e5e7eb;"><code>WHERE</code></div>
+
+  <div style="padding:6px 12px; border-top:1px solid #e5e7eb;"><code>arrange()</code></div>
+  <div style="padding:6px 12px; border-top:1px solid #e5e7eb;"><b>Order.</b> Sort by one or more columns; <code>desc()</code> for largest first.</div>
+  <div style="padding:4px 8px; border-top:1px solid #e5e7eb;">`r hl_r("dplyr::arrange(dplyr::desc(posted_at))", "66%")`</div>
+  <div style="padding:6px 12px; border-top:1px solid #e5e7eb;"><code>ORDER BY</code></div>
+
+  <div style="padding:6px 12px; border-top:1px solid #e5e7eb;"><code>mutate()</code></div>
+  <div style="padding:6px 12px; border-top:1px solid #e5e7eb;"><b>New columns</b> computed from old ones; the row count never changes.</div>
+  <div style="padding:4px 8px; border-top:1px solid #e5e7eb;">`r hl_r("dplyr::mutate(days_open = last_seen - posted)", "66%")`</div>
+  <div style="padding:6px 12px; border-top:1px solid #e5e7eb;"><code>SELECT ... AS</code></div>
+
+  <div style="padding:6px 12px; border-top:1px solid #e5e7eb;"><code>group_by()</code> + <code>summarize()</code></div>
+  <div style="padding:6px 12px; border-top:1px solid #e5e7eb;"><b>One row per group.</b> <code>n()</code> counts, <code>mean()</code> averages; <code>count()</code> is the shortcut.</div>
+  <div style="padding:4px 8px; border-top:1px solid #e5e7eb;">`r hl_r("dplyr::group_by(company) |> dplyr::summarize(n = dplyr::n())", "66%")`</div>
+  <div style="padding:6px 12px; border-top:1px solid #e5e7eb;"><code>GROUP BY</code></div>
+
+  <div style="padding:6px 12px; border-top:1px solid #e5e7eb;"><code>left_join()</code></div>
+  <div style="padding:6px 12px; border-top:1px solid #e5e7eb;"><b>Two tables, one key.</b> Add columns from a second table where the key matches.</div>
+  <div style="padding:4px 8px; border-top:1px solid #e5e7eb;">`r hl_r("dplyr::left_join(states, by = \"location_state\")", "66%")`</div>
+  <div style="padding:6px 12px; border-top:1px solid #e5e7eb;"><code>JOIN</code></div>
+</div>
+
+<div style="margin-top:10px; border:1px solid #c3142d; border-left:6px solid #c3142d; border-radius:8px; padding:8px 14px; background:#fdf2f2; font-size:13px; line-height:1.45;">
+<b>Why the pipe works:</b> every verb takes a data frame as its first argument and returns a data frame. That is why <code>|&gt;</code> can hand one verb's result to the next, and why a chain never needs a temporary variable. The original <code>postings</code> is never modified; a verb returns a new data frame, and you keep it only if you assign it.
+</div>
+
+???
+
+Three minutes, nothing to type. Six rows, three sentences each: what changes, an example, the SQL clause they saw Monday. The bottom box is the one idea to say slowly: data frame in, data frame out, which is what lets the pipe chain them and why the original table is untouched until you assign. Then the animation shows all six on the same eight rows from Monday, and each verb gets its own slide with a small data frame before and after.
+
+---
+
+# A dplyr Pipeline, Step by Step
+
+<style>
+.pp { font-family:'Noto Sans','Roboto',Arial,sans-serif; }
+.pp-rail { display:flex; align-items:center; margin:2px 0 8px 0; }
+.pp-st { border:1px solid #d1d5db; border-radius:16px; padding:3px 12px; font-family:'Source Code Pro',monospace; font-size:12.5px; color:#585E60; background:#ffffff; transition:all .3s; white-space:nowrap; }
+.pp-st.on { background:#c3142d; color:#ffffff; border-color:#c3142d; transform:scale(1.08); box-shadow:0 2px 6px rgba(195,20,45,0.35); }
+.pp-st.done { background:#f3f4f6; color:#1b1b1b; border-color:#9ca3af; }
+.pp-seg { flex:1; height:3px; background:#d1d5db; transition:background .3s; }
+.pp-seg.done { background:#c3142d; }
+.pp-stage { position:relative; height:226px; overflow:hidden; }
+.pp-tab { position:absolute; left:0; right:0; top:0; opacity:0; transform:translateX(28px); transition:opacity .35s, transform .35s; pointer-events:none; }
+.pp-tab.on { opacity:1; transform:none; }
+.pp-cap { font-size:12.5px; color:#585E60; margin-bottom:4px; line-height:1.35; }
+.pp-cap b { color:#c3142d; }
+.pp-tab table { border-collapse:collapse; font-family:'Source Code Pro',monospace; font-size:11.5px; line-height:1.2; }
+.pp-tab th { background:#1d1f21; color:#ffffff; padding:3px 9px !important; line-height:1.25 !important; text-align:left; font-weight:600; transition:background .3s; }
+.pp-tab td { padding:2px 9px !important; line-height:1.25 !important; border-bottom:1px solid #e5e7eb; white-space:nowrap; color:#1b1b1b; transition:all .3s; }
+.pp-tab .pp-x { color:#9ca3af; text-decoration:line-through; background:#fafafa; }
+.pp-tab th.pp-x { background:#585E60; color:#d1d5db; }
+.pp-tab .pp-new { background:#fff3bf; }
+.pp-tab th.pp-new { background:#b45309; }
+.pp-tab tr.pp-g1 td { background:#fdf2f2; } .pp-tab tr.pp-g1 td:first-child { box-shadow:inset 5px 0 0 #c3142d; }
+.pp-tab tr.pp-g2 td { background:#eff6ff; } .pp-tab tr.pp-g2 td:first-child { box-shadow:inset 5px 0 0 #2563eb; }
+.pp-tab tr.pp-g3 td { background:#ecfdf5; } .pp-tab tr.pp-g3 td:first-child { box-shadow:inset 5px 0 0 #059669; }
+.pp-code { margin-top:4px; }
+.pp-code .rcode { margin:0 !important; padding-top:6px !important; }
+.pp-code .xaringanextra-clipboard-button { display:none !important; }
+.pp .sc-caps { min-height:40px; font-size:13px; padding:6px 12px; margin-top:6px; }
+</style>
+
+```{r pp_rows, include=FALSE}
+pp_pick = data.frame(
+  company = c("The Home Depot", "CVS Health", "OhioHealth", "The Home Depot", "Talkspace", "The Home Depot", "CVS Health", "The Home Depot"),
+  title   = c("Data Scientist - People Analytics", "Data Engineer", "Requirement Business Analyst", "Cybersecurity Analyst | PCI (Remote)", "Data Analyst", "Business Analyst", "Data Scientist (Decision Sciences Team)", "Data Scientist, Pricing (Optimization)"),
+  stringsAsFactors = FALSE)
+pp_idx = mapply(function(co, ti) which(postings$company == co & startsWith(postings$title, substr(ti, 1, 20)))[1], pp_pick$company, pp_pick$title)
+stopifnot(!anyNA(pp_idx))
+pp0 = jobs[pp_idx, ]
+stopifnot(identical(pp0$remote, c(1L, 1L, 0L, 1L, 1L, 0L, 1L, 1L)))
+pp_show = function(df) {
+  d = df
+  if ("title" %in% names(d)) d$title = strtrim(d$title, 24)
+  for (cc in intersect(c("posted_at", "last_seen_at"), names(d))) d[[cc]] = substr(d[[cc]], 1, 10)
+  d
+}
+pp_esc = htmltools::htmlEscape
+pp_tab = function(df, step, caption, row_cls = rep("", nrow(df)), col_cls = rep("", ncol(df))) {
+  d = pp_show(df)
+  th = paste0(sprintf('<th class="%s">%s</th>', col_cls, names(d)), collapse = "")
+  rows = vapply(seq_len(nrow(d)), function(i) {
+    vals = vapply(d[i, ], function(v) as.character(v), character(1))
+    tds = paste0(sprintf('<td class="%s">%s</td>', col_cls, pp_esc(vals)), collapse = "")
+    sprintf('<tr class="%s">%s</tr>', row_cls[i], tds)
+  }, character(1))
+  sprintf('<div class="pp-tab" data-from="%d" data-to="%d"><div class="pp-cap">%s</div><table><thead><tr>%s</tr></thead><tbody>%s</tbody></table></div>',
+          step, step + 1, caption, th, paste0(rows, collapse = ""))
+}
+pp_keep = c("company", "location_state", "remote", "posted_at", "last_seen_at")
+pp2 = pp0 |> select(all_of(pp_keep))
+pp3 = pp2 |> filter(remote == 1) |> mutate(days_open = as.numeric(as.Date(last_seen_at) - as.Date(posted_at)))
+pp4 = pp3 |> arrange(desc(days_open))
+pp_grp = c("The Home Depot" = "pp-g1", "CVS Health" = "pp-g2", "Talkspace" = "pp-g3")
+pp6 = pp4 |> group_by(company) |> summarize(n = n(), avg_days = round(mean(days_open), 2)) |> arrange(desc(n))
+pp_tables = paste0(
+  pp_tab(pp0, 0, sprintf("<b>jobs</b>: eight of the %s rows, seven columns. The same eight rows as Monday's animation.", fmt(nrow(jobs)))),
+  pp_tab(pp0, 1, "<b>dplyr::select()</b> keeps five columns; <code>title</code> and <code>category</code> drop out. Still eight rows.", col_cls = ifelse(names(pp0) %in% pp_keep, "", "pp-x")),
+  pp_tab(pp2, 2, "<b>dplyr::filter(remote == 1)</b>: two rows fail the test and drop out. Still five columns.", row_cls = ifelse(pp2$remote == 1, "", "pp-x")),
+  pp_tab(pp3, 3, "<b>dplyr::mutate()</b> adds <code>days_open</code>, computed from two old columns. Six rows in, six rows out.", col_cls = ifelse(names(pp3) == "days_open", "pp-new", "")),
+  pp_tab(pp4, 4, "<b>dplyr::arrange(dplyr::desc(days_open))</b>: the same six rows in a new order, largest first.", col_cls = ifelse(names(pp4) == "days_open", "pp-new", "")),
+  pp_tab(pp4, 5, "<b>dplyr::group_by(company)</b> moves nothing. It labels each row with its group: three groups, interleaved.", row_cls = unname(pp_grp[pp4$company])),
+  pp_tab(pp6, 6, "<b>dplyr::summarize()</b>: one row per group. <code>dplyr::n()</code> counted the rows in each group, <code>mean()</code> averaged their <code>days_open</code>.", row_cls = unname(pp_grp[pp6$company])))
+```
+
+<div class="pp">
+<div class="pp-rail"><span class="pp-st" data-k="0">jobs</span><span class="pp-seg" data-k="1"></span><span class="pp-st" data-k="1">select()</span><span class="pp-seg" data-k="2"></span><span class="pp-st" data-k="2">filter()</span><span class="pp-seg" data-k="3"></span><span class="pp-st" data-k="3">mutate()</span><span class="pp-seg" data-k="4"></span><span class="pp-st" data-k="4">arrange()</span><span class="pp-seg" data-k="5"></span><span class="pp-st" data-k="5">group_by()</span><span class="pp-seg" data-k="6"></span><span class="pp-st" data-k="6">summarize()</span></div>
+<div class="pp-stage">
+`r pp_tables`
+</div>
+<div class="pp-code">`r hl_r(c("jobs |>", "  dplyr::select(company, location_state, remote, posted_at, last_seen_at) |>", "  dplyr::filter(remote == 1) |>", "  dplyr::mutate(days_open = as.numeric(as.Date(last_seen_at) - as.Date(posted_at))) |>", "  dplyr::arrange(dplyr::desc(days_open)) |>", "  dplyr::group_by(company) |>", "  dplyr::summarize(n = dplyr::n(), avg_days = mean(days_open))"), "47%")`</div>
+<div class="sc-caps">
+<div class="sc-cap on" data-step="0"><b>Start.</b> A data frame goes in at the left. Each station is one verb; each verb hands a data frame to the next.</div>
+<div class="sc-cap" data-step="1"><b>Columns first.</b> Fewer columns makes everything after this easier to read; the rows are untouched.</div>
+<div class="sc-cap" data-step="2"><b>Rows next.</b> A test per row; TRUE stays, FALSE leaves. The struck rows are gone at the next station.</div>
+<div class="sc-cap" data-step="3"><b>A new column, never a new row.</b> Every value is computed from the same row's other cells.</div>
+<div class="sc-cap" data-step="4"><b>Order is a property of the whole table.</b> Nothing was added or removed; the ties keep their earlier order.</div>
+<div class="sc-cap" data-step="5"><b>group_by() is invisible on its own.</b> It only tells the next verb which rows belong together.</div>
+<div class="sc-cap" data-step="6"><b>Collapse.</b> Six rows became three, one per company, and only the columns you named survive. This is Monday's GROUP BY.</div>
+</div>
+<div class="sc-bar"><button type="button" class="sc-btn sc-back">Back</button><button type="button" class="sc-btn sc-primary sc-step">Step</button><button type="button" class="sc-btn sc-play">Play</button><button type="button" class="sc-btn sc-reset">Reset</button><span class="sc-spds"><button type="button" class="sc-spd" data-spd="0.5">0.5x</button><button type="button" class="sc-spd on" data-spd="1">1x</button><button type="button" class="sc-spd" data-spd="2">2x</button></span><span class="sc-count">0 / 6</span></div>
+</div>
+
+<script>
+(function () {
+  function build(root) {
+    if (root.getAttribute('data-built')) { return; }
+    var st = root.querySelectorAll('.pp-st'), seg = root.querySelectorAll('.pp-seg'), ln = root.querySelectorAll('.rcode .rl');
+    window.isaStepper(root, {
+      n: 6,
+      dwell: [2600, 2600, 2600, 2600, 2400, 2600, 0],
+      render: function (j) {
+        st.forEach(function (s) { var k = Number(s.getAttribute('data-k')); s.classList.toggle('on', k === j); s.classList.toggle('done', j > k); });
+        seg.forEach(function (s) { var k = Number(s.getAttribute('data-k')); s.classList.toggle('done', j >= k); });
+        ln.forEach(function (l, k) { l.classList.toggle('on', k === j); l.classList.toggle('done', j > k); });
+      }
+    });
+  }
+  function buildAll() { document.querySelectorAll('.pp').forEach(build); }
+  buildAll();
+  if (window.slideshow && !window.ppHooked) { window.ppHooked = true; window.slideshow.on('afterShowSlide', buildAll); }
+})();
+</script>
+
+???
+
+Six minutes, Step by Step; Play is for a replay at the end. The stations are the six verbs in the order the code runs, and the table under them is the same eight rows Monday's animation used, so the SQL memory does the work. At each step say what changed and what did not: select changes columns only, filter changes rows only, mutate adds a column and never a row, arrange changes order and nothing else, group_by changes nothing visible, summarize collapses to one row per group. The struck-through cells are the thing to point at: they show what a verb removes before it is gone. Step 6 is Monday's GROUP BY with an extra column; ask what SQL clause each station was and let the room answer. Back and Reset are there if a question sends you backwards.
+
+---
+
+# select(): Choosing Columns
+
+```{r mt_select, include=FALSE}
+mt_sel_before = mt_tab(mt5[, c("company", "title", "location_state", "remote", "category")],
+                       col_cls = c("mt-keep", "mt-x", "mt-keep", "mt-keep", "mt-x"),
+                       name = sprintf("postings: 5 of %s rows, 5 of 19 columns", fmt(nrow(postings))))
+mt_sel_after = mt_tab(mt5[, c("company", "location_state", "remote")], name = "3 columns, the same 5 rows")
+```
+
+<div class="qbar"><b>Question.</b> <code>scout_postings</code> has 19 columns. Today's questions need seven of them. How do we keep only those?</div>
+
+<div class="vrow">
+<div class="vdiag">`r mt_pair(mt_sel_before, mt_sel_after, "dplyr::select(company, location_state, remote)")`</div>
+<div class="vcard"><span class="vh">Columns only</span>Name the columns to keep, in the order you want them. Every row survives. <code>dplyr::select(-title)</code> drops instead; <code>company:remote</code> takes a range. The result is a new data frame; <code>postings</code> is unchanged unless you assign over it.</div>
+</div>
+
+--
+
+```{r sel_shown, eval=FALSE, hl.size="42%"}
+con = DBI::dbConnect(RSQLite::SQLite(), "../data/scout.db")
+postings = DBI::dbReadTable(con, "scout_postings") |> tibble::as_tibble()
+DBI::dbDisconnect(con)
+
+jobs = postings |>
+  dplyr::select(company, title, location_state, remote, category, posted_at, last_seen_at)
+jobs
+```
+
+```{r sel_run, echo=FALSE, hl.size="42%"}
+jobs
+```
+
+???
+
+Five minutes. Before the click: the question and the small table. Ask which columns survive in the picture and why the struck ones are grey. Click: the code. The three DBI lines are Monday's; as_tibble() is new and exists so printing shows a few rows and the columns that fit instead of all 1,891 rows (their console shows ten). jobs is a new object; postings is untouched. From here every slide runs on jobs.
+
+---
+
+# filter(): Choosing Rows
+
+```{r mt_filter, include=FALSE}
+mt_fil_before = mt_tab(mt5[, c("company", "location_state", "remote")],
+                       row_cls = ifelse(mt5$remote == 1, "mt-keep", "mt-x"), name = "jobs: 5 of the rows")
+mt_fil_after = mt_tab(mt5[mt5$remote == 1, c("company", "location_state", "remote")], name = "the rows where the test is TRUE")
+```
+
+<div class="qbar"><b>Question.</b> Which postings are remote? And which are remote <i>and</i> in Ohio?</div>
+
+<div class="vrow">
+<div class="vdiag">`r mt_pair(mt_fil_before, mt_fil_after, "dplyr::filter(remote == 1)")`</div>
+<div class="vcard"><span class="vh">Rows only</span>One test per row; TRUE stays, FALSE leaves; the columns are untouched. Two tests separated by a comma must both be TRUE; <code>|</code> means either; <code>%in%</code> tests membership in a set; <code>is.na()</code> tests for an empty cell. Two equals signs compare; one assigns. Text goes in quotes, column names do not.</div>
+</div>
+
+--
+
+```{r filt1, hl.size="42%"}
+c(one_test = jobs |> dplyr::filter(remote == 1) |> nrow(),
+  both     = jobs |> dplyr::filter(remote == 1, location_state == "OH") |> nrow(),
+  either   = jobs |> dplyr::filter(remote == 1 | category == "internship") |> nrow(),
+  in_set   = jobs |> dplyr::filter(location_state %in% c("OH", "IN", "KY")) |> nrow())
+```
+
+???
+
+Five minutes. Before the click, the picture: one row is struck because its test is FALSE. Ask the room to write the test for "remote and in Ohio" before revealing. After the click, four counts in one named vector: the plain test, the comma, the bar, and %in% side by side; run one of them without nrow() on the projector to show the rows themselves. Tie to Class 04: this is jobs[jobs$remote == 1, ] without repeating the table's name.
+
+---
+
+# mutate() and arrange()
+
+```{r mt_mutate, include=FALSE}
+mt_mut_before = mt_tab(mt5[, c("company", "posted_at", "last_seen_at")], name = "jobs")
+mt_mut_mid = mt5[, c("company", "posted_at", "last_seen_at")] |>
+  dplyr::mutate(days_open = as.numeric(as.Date(last_seen_at) - as.Date(posted_at))) |>
+  dplyr::arrange(dplyr::desc(days_open))
+mt_mut_after = mt_tab(mt_mut_mid, col_cls = c("", "", "", "mt-new"), name = "a new column, then sorted by it")
+```
+
+<div class="qbar"><b>Question.</b> How many days did each posting stay up, and which stayed up longest? No column says; two columns together do.</div>
+
+<div class="vrow">
+<div class="vdiag">`r mt_pair(mt_mut_before, mt_mut_after, "dplyr::mutate(days_open = ...) |>\n dplyr::arrange(dplyr::desc(days_open))")`</div>
+<div class="vcard"><span class="vh">A new column, then a new order</span><code>dplyr::mutate()</code> computes <code>new = expression</code> once per row from that row's cells; the row count never changes. <code>as.Date()</code> turns text into real dates so subtraction gives days. <code>dplyr::arrange()</code> sorts, smallest first unless wrapped in <code>dplyr::desc()</code>; a second column breaks ties.</div>
+</div>
+
+--
+
+```{r mut1, hl.size="42%"}
+jobs = jobs |>
+  dplyr::mutate(days_open = as.numeric(as.Date(last_seen_at) - as.Date(posted_at)))
+
+jobs |> dplyr::arrange(dplyr::desc(days_open)) |> dplyr::select(company, title, days_open)
+```
+
+???
+
+Five minutes. The picture shows the same five rows gaining a yellow column and changing order. Ask what the expression needs before the click: two dates and a subtraction. After the click, note the assignment: jobs = jobs |> mutate(...) keeps days_open for the rest of class. The 30-day maximum in the output is the harvest window, a data fact rather than a bug.
+
+---
+
+# Selection Helpers and across()
+
+<style>
+.hl-list { display:grid; grid-template-columns:auto 1fr; column-gap:12px; row-gap:3px; align-items:center; margin-top:4px; font-size:12px; line-height:1.35; }
+.hl-list .rcode { margin:0 !important; padding:2px 8px !important; border-radius:6px; }
+.hl-list .rcode .rl { padding-left:6px; }
+.hl-list .xaringanextra-clipboard-button { display:none !important; }
+</style>
+
+```{r mt_across, include=FALSE}
+mt_acr_before = mt_tab(mt5[, c("company", "posted_at", "last_seen_at")], col_cls = c("", "mt-keep", "mt-keep"), name = "two text columns that end in _at")
+mt_acr_after = mt_tab(mt5[, c("company", "posted_at", "last_seen_at")] |> dplyr::mutate(dplyr::across(dplyr::ends_with("_at"), as.Date)),
+                      col_cls = c("", "mt-new", "mt-new"), name = "both converted to Date")
+```
+
+<div class="qbar"><b>Question.</b> Both date columns are text. Convert both to dates without writing each name twice, and later: the median of every numeric column, per city.</div>
+
+<div class="vrow">
+<div class="vdiag">`r mt_pair(mt_acr_before, mt_acr_after, "dplyr::mutate(dplyr::across(
+ dplyr::ends_with(\"_at\"), as.Date))")`</div>
+<div class="vcard"><span class="vh">Pick columns by rule, then apply one function to all of them</span>
+<div class="hl-list">
+<div>`r hl_r("dplyr::starts_with(\"location\")", "62%")`</div><div>names that begin with the text; <code>dplyr::ends_with()</code> and <code>dplyr::contains()</code> work the same way</div>
+<div>`r hl_r("dplyr::any_of(c(\"price\", \"beds\"))", "62%")`</div><div>these names, if present; no error when one is missing</div>
+<div>`r hl_r("dplyr::where(is.numeric)", "62%")`</div><div>every column of a type; <code>dplyr::everything()</code> is all remaining columns</div>
+<div>`r hl_r("dplyr::across(dplyr::ends_with(\"_at\"), as.Date)", "62%")`</div><div>inside <code>mutate()</code> or <code>summarize()</code>: one function applied to every matching column</div>
+<div>`r hl_r("dplyr::if_any(c(title, company), is.na)", "62%")`</div><div>inside <code>filter()</code>: one test over several columns</div>
+</div>
+</div>
+
+--
+
+```{r across1, hl.size="42%"}
+jobs = jobs |> dplyr::mutate(dplyr::across(dplyr::ends_with("_at"), as.Date))    # both dates at once
+jobs |> dplyr::summarize(dplyr::across(dplyr::where(is.numeric), mean))
+```
+
+???
+
+Four minutes. The helpers pick columns by a rule instead of by name, and across() applies one function to everything they picked. Line 1 is the real use today: both date columns become dates in one line, and it is assigned. Line 2 answers "average of every numeric column" without naming any. if_any() is filter's version, one test over several columns; it is on the card, not typed. Say once that these helpers come from the tidyselect package and dplyr re-exports them, which is why the dplyr:: prefix works.
+
+---
+
+# group_by() and summarize()
+
+```{r mt_group, include=FALSE}
+mt_grp_src = mt8[c(1, 2, 3, 4, 6), c("company", "location_state", "remote")]
+mt_grp_cls = c("The Home Depot" = "mt-g1", "CVS Health" = "mt-g2", "OhioHealth" = "mt-g3")
+mt_grp_before = mt_tab(mt_grp_src, row_cls = unname(mt_grp_cls[mt_grp_src$company]), name = "jobs: 5 rows, 3 companies")
+mt_grp_res = mt_grp_src |> dplyr::group_by(company) |> dplyr::summarize(n = dplyr::n(), remote_share = round(mean(remote), 2)) |> dplyr::arrange(dplyr::desc(n))
+mt_grp_after = mt_tab(mt_grp_res, row_cls = unname(mt_grp_cls[mt_grp_res$company]), name = "one row per company")
+```
+
+<div class="qbar"><b>Question.</b> How many postings per state, and what share of them are remote? One number per state, not one per posting.</div>
+
+<div class="vrow">
+<div class="vdiag">`r mt_pair(mt_grp_before, mt_grp_after, "dplyr::group_by(company) |>\n dplyr::summarize(...)")`</div>
+<div class="vcard"><span class="vh">Label the groups, then collapse each to one row</span><code>dplyr::group_by()</code> only marks which rows belong together; <code>dplyr::summarize()</code> collapses each group to one row with the grouping column plus what you name (<code>dplyr::n()</code>, <code>mean()</code>, <code>median()</code>, <code>sum()</code>). <code>dplyr::count(company, sort = TRUE)</code> is the shortcut for a sorted count alone: Monday's query in one line.</div>
+</div>
+
+--
+
+```{r grp1, hl.size="42%"}
+jobs |>
+  dplyr::group_by(location_state) |>
+  dplyr::summarize(postings = dplyr::n(), remote_share = mean(remote)) |>
+  dplyr::arrange(dplyr::desc(postings))
+```
+
+???
+
+Six minutes. The picture uses five of the Monday rows: colors are the groups, and the right table has one row per color. remote_share works because remote is 0 or 1, so its mean is the share. After the click, the chunk is the full pair on the real table. Then type Monday's query live in one line, jobs |> dplyr::filter(remote == 1) |> dplyr::count(company, sort = TRUE), and the same ten companies come back, with ties possibly in a different order than SQLite gave.
+
+---
+
+# Demo: Remote Work in the Postings
+
+```{r demo_solution, include=FALSE}
+# Full solution for the three demo questions, typed live in class07.Rmd.
+# The knit runs from lectures/07_data_wrangling, so the path is ../../data/;
+# students in markdowns/class07.Rmd use "../data/scout.db".
+con = DBI::dbConnect(RSQLite::SQLite(), "../../data/scout.db")
+postings = DBI::dbReadTable(con, "scout_postings") |> tibble::as_tibble()
+DBI::dbDisconnect(con)
+
+jobs = postings |>
+  dplyr::select(company, title, location_state, remote, category, posted_at, last_seen_at) |>
+  dplyr::mutate(dplyr::across(dplyr::ends_with("_at"), as.Date)) |>
+  dplyr::mutate(days_open = as.numeric(last_seen_at - posted_at))
+
+# Question 1: which job category is remote-friendly?
+demo1 = jobs |>
+  dplyr::group_by(category) |>
+  dplyr::summarize(postings = dplyr::n(), remote_share = round(mean(remote), 3))
+
+# Question 2: among full-time postings, which states have the highest remote share?
+demo2 = jobs |>
+  dplyr::filter(category == "fulltime") |>
+  dplyr::group_by(location_state) |>
+  dplyr::summarize(postings = dplyr::n(), remote_share = round(mean(remote), 2)) |>
+  dplyr::filter(postings >= 40) |>
+  dplyr::arrange(dplyr::desc(remote_share))
+
+# Question 3: does the kind of role matter? (a role label read from the title)
+demo3 = jobs |>
+  dplyr::mutate(role = dplyr::case_when(
+    grepl("scientist", title, ignore.case = TRUE) ~ "Data Scientist",
+    grepl("engineer", title, ignore.case = TRUE) ~ "Data Engineer",
+    grepl("business intelligence|\bBI\b", title, ignore.case = TRUE) ~ "BI",
+    grepl("analyst", title, ignore.case = TRUE) ~ "Analyst",
+    TRUE ~ "Other")) |>
+  dplyr::group_by(role) |>
+  dplyr::summarize(postings = dplyr::n(), remote_share = round(mean(remote), 3),
+                   median_days_open = median(days_open)) |>
+  dplyr::arrange(dplyr::desc(remote_share))
+```
+
+<div class="qbar"><b>Question.</b> Which postings are remote, and does it depend on the job category, the state, or the kind of role? Typed live; you say the verb before I type it.</div>
+
+```{r demo_starter, eval=FALSE, hl.size="42%"}
+con = DBI::dbConnect(RSQLite::SQLite(), "../data/scout.db")
+postings = DBI::dbReadTable(con, "scout_postings") |> tibble::as_tibble()
+DBI::dbDisconnect(con)
+
+jobs = postings |>
+  dplyr::select(company, title, location_state, remote, category, posted_at, last_seen_at) |>
+  dplyr::mutate(dplyr::across(dplyr::ends_with("_at"), as.Date),
+                days_open = as.numeric(last_seen_at - posted_at))
+```
+
+.panelset[
+
+.panel[.panel-name[1 By category]
+
+<div class="vrow">
+<div class="vcard"><span class="vh">Which category is remote-friendly?</span>One verb pair. The federal postings come from USAJobs and are on site by policy; internships almost never; so the remote question is a full-time question.</div>
+</div>
+
+```{r demo1_out, echo=FALSE, hl.size="46%"}
+demo1
+```
+
+]
+
+.panel[.panel-name[2 By state]
+
+<div class="vrow">
+<div class="vcard"><span class="vh">Among full-time postings, which states have the highest remote share?</span>Keep one category, collapse to one row per state, keep the states with enough postings to trust a share, sort. Four verbs, one chain; each one answers a "but" from the room.</div>
+</div>
+
+```{r demo2_out, echo=FALSE, hl.size="46%"}
+demo2 |> head(6)
+```
+
+]
+
+.panel[.panel-name[3 By role]
+
+<div class="vrow">
+<div class="vcard"><span class="vh">Does the kind of role matter?</span>The title column is free text, so the first step is a new column that reads it: <code>dplyr::case_when()</code> turns a set of tests into labels, in order, first match wins. Then the same pair of verbs as tab 1, plus how long each role stays posted.</div>
+</div>
+
+```{r demo3_out, echo=FALSE, hl.size="46%"}
+demo3
+```
+
+]
+
+]
+
+???
+
+Six minutes, typed live in class07.Rmd. The starter block on the slide is the read everyone needs so they can follow along; the analysis code stays off the slide on purpose (the full solution is the demo_solution chunk in the Rmd); the tabs show only the question and the answer, so the room has to supply the verbs. Tab 1: jobs |> dplyr::group_by(category) |> dplyr::summarize(postings = dplyr::n(), remote_share = round(mean(remote), 3)). Ask why federal is exactly zero before revealing: USAJobs postings are on site by policy, so remote is a full-time question. Tab 2: jobs |> dplyr::filter(category == "fulltime") |> dplyr::group_by(location_state) |> dplyr::summarize(postings = dplyr::n(), remote_share = round(mean(remote), 2)) |> dplyr::filter(postings >= 40) |> dplyr::arrange(dplyr::desc(remote_share)). Type it one verb at a time and let the room object: "but small states will dominate" is the cue for the second filter, which is a filter on a summarized table, the same verb again. Ohio leads the large states. Tab 3: jobs |> dplyr::mutate(role = dplyr::case_when(grepl("scientist", title, ignore.case = TRUE) ~ "Data Scientist", grepl("engineer", title, ignore.case = TRUE) ~ "Data Engineer", grepl("business intelligence|\\bBI\\b", title, ignore.case = TRUE) ~ "BI", grepl("analyst", title, ignore.case = TRUE) ~ "Analyst", TRUE ~ "Other")) |> dplyr::group_by(role) |> dplyr::summarize(postings = dplyr::n(), remote_share = round(mean(remote), 3), median_days_open = median(days_open)) |> dplyr::arrange(dplyr::desc(remote_share)). case_when is new: tests in order, first TRUE wins, TRUE at the end is the catch-all. BI titles are the most remote-friendly and the rarest; say that the labels depend on the regex, which is a data-dictionary kind of decision. If time is short, skip tab 3.
+
+---
+
+# Joins
+
+<style>
+.jn { font-family:'Noto Sans','Roboto',Arial,sans-serif; }
+.jn-stage { position:relative; height:324px; overflow:hidden; }
+.jn-box { position:absolute; top:0; width:30%; }
+.jn-left { left:0; } .jn-right { right:0; width:34%; }
+.jn-title { font-family:'Source Code Pro',monospace; font-size:12.5px; font-weight:700; color:#c3142d; height:22px; line-height:22px; }
+.jn table { border-collapse:separate; border-spacing:0; margin:0 !important; border-top:0 !important; border-bottom:0 !important; font-family:'Source Code Pro',monospace; font-size:11.5px; width:100%; table-layout:auto; }
+.jn th { background:#1d1f21; color:#ffffff; padding:0 8px !important; height:24px !important; line-height:24px !important; box-sizing:border-box; text-align:left; font-weight:600; transition:background .3s; }
+.jn td { padding:0 8px !important; height:21px !important; line-height:20px !important; box-sizing:border-box; border-bottom:1px solid #e5e7eb; white-space:nowrap; color:#1b1b1b; transition:background .3s; }
+.jn .jn-key.on { background:#fff3bf; font-weight:700; }
+.jn th.jn-key.on { background:#b45309; }
+.jn .jn-na { color:#9ca3af; font-style:italic; }
+.jn-lines { position:absolute; left:0; top:0; width:100%; height:151px; pointer-events:none; }
+.jn-lines line, .jn-lines text { opacity:0; transition:opacity .35s; }
+.jn-lines .on { opacity:1; }
+.jn-res { position:absolute; left:15%; width:70%; top:166px; opacity:0; transform:translateY(12px); transition:opacity .35s, transform .35s; pointer-events:none; }
+.jn-res.on { opacity:1; transform:none; }
+.jn-res .jn-title span { color:#585E60; font-weight:400; }
+.jn-code { margin-top:4px; }
+.jn-code .rcode { margin:0 !important; padding-top:6px !important; }
+.jn-code .xaringanextra-clipboard-button { display:none !important; }
+.jn .sc-caps { min-height:40px; font-size:13px; padding:6px 12px; margin-top:6px; }
+</style>
+
+```{r jn_rows, include=FALSE}
+jn_esc = htmltools::htmlEscape
+jn_by = postings |> count(location_state, name = "postings") |>
+  filter(location_state %in% c("CA", "TX", "OH", "DC") | is.na(location_state)) |> arrange(desc(postings))
+stopifnot(identical(jn_by$location_state, c("CA", "TX", "OH", "DC", NA)))
+jn_lk = states |> filter(location_state %in% c("CA", "TX", "OH", "NY", "GA")) |>
+  arrange(match(location_state, c("CA", "TX", "OH", "NY", "GA")))
+jn_left  = jn_by |> left_join(jn_lk, by = "location_state")
+jn_inner = jn_by |> inner_join(jn_lk, by = "location_state")
+jn_anti  = jn_by |> anti_join(jn_lk, by = "location_state")
+jn_cell = function(v, key = FALSE) {
+  cls = paste(c(if (key) "jn-key", if (is.na(v)) "jn-na"), collapse = " ")
+  txt = if (is.na(v)) "NA" else jn_esc(as.character(v))
+  if (key) sprintf('<td class="%s" data-from="1">%s</td>', cls, txt) else sprintf('<td class="%s">%s</td>', cls, txt)
+}
+jn_table = function(df, key = "location_state") {
+  th = paste0(vapply(names(df), function(nm) if (nm == key) sprintf('<th class="jn-key" data-from="1">%s</th>', nm) else sprintf('<th>%s</th>', nm), character(1)), collapse = "")
+  rows = vapply(seq_len(nrow(df)), function(i) {
+    tds = paste0(vapply(names(df), function(nm) jn_cell(df[[nm]][i], key = (nm == key)), character(1)), collapse = "")
+    sprintf('<tr>%s</tr>', tds)
+  }, character(1))
+  sprintf('<table><thead><tr>%s</tr></thead><tbody>%s</tbody></table>', th, paste0(rows, collapse = ""))
+}
+jn_src = paste0(
+  '<div class="jn-box jn-left"><div class="jn-title">by_state</div>', jn_table(jn_by), '</div>',
+  '<div class="jn-box jn-right"><div class="jn-title">states</div>', jn_table(jn_lk), '</div>')
+jn_res = paste0(
+  sprintf('<div class="jn-res" data-from="2" data-to="3"><div class="jn-title">left_join() <span>%d rows: every row of by_state, matched columns filled where the key was found</span></div>%s</div>', nrow(jn_left), jn_table(jn_left)),
+  sprintf('<div class="jn-res" data-from="3" data-to="4"><div class="jn-title">inner_join() <span>%d rows: only the keys present in both tables</span></div>%s</div>', nrow(jn_inner), jn_table(jn_inner)),
+  sprintf('<div class="jn-res" data-from="4"><div class="jn-title">anti_join() <span>%d rows: the rows of by_state that found no partner</span></div>%s</div>', nrow(jn_anti), jn_table(jn_anti)))
+jn_ys = 22 + 24 + 21 * (0:4) + 10.5
+jn_svg = paste0(
+  '<svg class="jn-lines" viewBox="0 0 1000 151" preserveAspectRatio="none">',
+  paste0(sprintf('<line x1="300" y1="%.1f" x2="660" y2="%.1f" stroke="#c3142d" stroke-width="2" data-from="1"></line>', jn_ys[1:3], jn_ys[1:3]), collapse = ""),
+  paste0(sprintf('<line x1="300" y1="%.1f" x2="345" y2="%.1f" stroke="#9ca3af" stroke-width="2" stroke-dasharray="4 3" data-from="1"></line>', jn_ys[4:5], jn_ys[4:5]), collapse = ""),
+  paste0(sprintf('<text x="352" y="%.1f" fill="#9ca3af" font-size="12" font-family="Noto Sans, Arial, sans-serif" data-from="1">no match</text>', jn_ys[4:5] + 4), collapse = ""),
+  '</svg>')
+```
+
+<div class="jn">
+<div class="jn-stage">
+`r jn_src`
+`r jn_svg`
+`r jn_res`
+</div>
+<div class="jn-code">`r hl_r(c("# the key: location_state holds the same values, meaning the same thing, in both tables", "by_state |> dplyr::left_join(states, by = \"location_state\")    # keep every row on the left", "by_state |> dplyr::inner_join(states, by = \"location_state\")   # keep only the matches", "by_state |> dplyr::anti_join(states, by = \"location_state\")    # keep only the non-matches"), "47%")`</div>
+<div class="sc-caps">
+<div class="sc-cap on" data-step="0"><b>Two tables.</b> Left: postings per state, five of the 47 rows. Right: a lookup built from R's own <code>state.abb</code>, <code>state.name</code>, <code>state.region</code>. Neither knows about the other yet.</div>
+<div class="sc-cap" data-step="1"><b>The key.</b> Both tables have a <code>location_state</code> column with two-letter codes. Three of the five left rows find a partner; DC is not a state, and NA matches nothing.</div>
+<div class="sc-cap" data-step="2"><b>left_join() keeps the left table whole</b> and adds the right table's columns. Where no partner exists, the new cells are NA, which is a fact worth knowing, not an error.</div>
+<div class="sc-cap" data-step="3"><b>inner_join() keeps only matches.</b> DC's 58 postings and the 30 with no state vanish silently. Use it when you mean it.</div>
+<div class="sc-cap" data-step="4"><b>anti_join() shows what was lost.</b> Run it after every join that matters; it is the question "what did I drop" as one line of code.</div>
+</div>
+<div class="sc-bar"><button type="button" class="sc-btn sc-back">Back</button><button type="button" class="sc-btn sc-primary sc-step">Step</button><button type="button" class="sc-btn sc-play">Play</button><button type="button" class="sc-btn sc-reset">Reset</button><span class="sc-spds"><button type="button" class="sc-spd" data-spd="0.5">0.5x</button><button type="button" class="sc-spd on" data-spd="1">1x</button><button type="button" class="sc-spd" data-spd="2">2x</button></span><span class="sc-count">0 / 4</span></div>
+</div>
+
+<script>
+(function () {
+  function build(root) {
+    if (root.getAttribute('data-built')) { return; }
+    var ln = root.querySelectorAll('.rcode .rl');
+    window.isaStepper(root, {
+      n: 4,
+      dwell: [2400, 3000, 3200, 2800, 0],
+      render: function (j) {
+        ln.forEach(function (l, idx) { var k = idx + 1; l.classList.toggle('on', k === j); l.classList.toggle('done', j > k); });
+      }
+    });
+  }
+  function buildAll() { document.querySelectorAll('.jn').forEach(build); }
+  buildAll();
+  if (window.slideshow && !window.jnHooked) { window.jnHooked = true; window.slideshow.on('afterShowSlide', buildAll); }
+})();
+</script>
+
+???
+
+Five minutes, Step by Step. Step 0: the left table is a count they just learned to make; the right table costs nothing because R ships the fifty states as vectors, which is the lookup-table pattern they will meet everywhere: a code in the data, a name and a category somewhere else. Step 1 is the definition of a key, and the two unmatched rows are the point of the slide: DC is a real place that the lookup does not contain, and NA is missing data. Step 2: left_join is the default choice because it loses nothing; the NA cells tell you what the lookup could not explain. Step 3: inner_join drops 88 postings without a word, which is how analyses go wrong quietly. Step 4: anti_join is the habit to take away. Then the live slide types the same three lines on the full table.
+
+---
+
+# Joins in Practice
+
+.left55[
+
+```{r join1, hl.size="42%"}
+states = tibble::tibble(location_state = state.abb,
+                        state_name = state.name,
+                        region = as.character(state.region))
+
+jobs |>
+  dplyr::left_join(states, by = "location_state") |>
+  dplyr::group_by(region) |>
+  dplyr::summarize(postings = dplyr::n(), remote_share = mean(remote)) |>
+  dplyr::arrange(dplyr::desc(postings))
+```
+
+```{r join2, hl.size="42%"}
+jobs |> dplyr::count(location_state) |> dplyr::anti_join(states, by = "location_state")
+```
+
+]
+
+.right43[
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:11px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13.5px; line-height:1.55;">
+<div style="font-weight:700; color:#c3142d; font-size:15px;">A question the database alone cannot answer</div>
+<div style="margin-top:6px;"><code>scout.db</code> has state codes and nothing else about geography. Four lines add a region to every posting and count by it. The <code>NA</code> row is DC plus the postings with no state; a left join keeps them and says so.</div>
+</div>
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:11px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13.5px; line-height:1.55; margin-top:10px;">
+<div style="font-weight:700; color:#c3142d; font-size:15px;">The join family</div>
+<div style="margin-top:6px; display:grid; grid-template-columns:auto 1fr; column-gap:12px; row-gap:3px;">
+<code>dplyr::left_join()</code><div>all left rows; NA where no match</div>
+<code>dplyr::inner_join()</code><div>matches only</div>
+<code>dplyr::anti_join()</code><div>left rows with no match</div>
+<code>dplyr::full_join()</code><div>everything from both sides</div>
+</div>
+<div style="margin-top:6px;">When the key has different names, <code>by = c("location_state" = "abb")</code>.</div>
+</div>
+<div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:11px 14px; background:#fdf2f2; font-size:13.5px; line-height:1.55; margin-top:10px;">
+<b>After any join that matters,</b> run <code>dplyr::anti_join()</code> once. If it returns rows you did not expect, the key is wrong or the lookup is incomplete.
+</div>
+]
+
+<div style="clear:both;"></div>
+
+???
+
+Four minutes. Build the lookup first and glimpse it if the room wants to see it: fifty rows, three columns, from vectors R has shipped for decades. The region chain is the first result today that scout.db could not have produced on its own, and the NA row is the honest part. The anti_join shows the two offenders by name and count. If time is short, skip the right-hand family card and go to Try It.
+
+---
+
+# Practice: Airbnb Listings
+
+`r countdown(minutes = 5, seconds = 0, top = 0, font_size = "2em")`
+
+```{r practice_solution, include=FALSE}
+# Full solution for the four practice questions.
+# The knit runs from lectures/07_data_wrangling, so the path is ../../data/;
+# students in markdowns/class07.Rmd use "../data/midwest_airbnb.db".
+con = DBI::dbConnect(RSQLite::SQLite(), "../../data/midwest_airbnb.db")
+listings = DBI::dbReadTable(con, "listings") |> tibble::as_tibble()
+DBI::dbDisconnect(con)
+
+# Question 1: listings per city
+ta1 = listings |> dplyr::count(city)
+
+# Question 2: median price of entire homes that sleep four or more, per city
+ta2 = listings |>
+  dplyr::filter(room_type == "Entire home/apt", accommodates >= 4) |>
+  dplyr::group_by(city) |>
+  dplyr::summarize(median_price = median(price), n = dplyr::n())
+
+# Question 3: price per person, three cheapest
+ta3 = listings |>
+  dplyr::mutate(price_per_person = price / accommodates) |>
+  dplyr::arrange(price_per_person) |>
+  dplyr::select(city, name, price, accommodates, price_per_person) |>
+  head(3)
+
+# Question 4: five hosts with the most listings
+ta4 = listings |> dplyr::count(host_name, sort = TRUE) |> head(5)
+```
+
+.panelset[
+
+.panel[.panel-name[Task]
+
+.left55[
+
+```{r try_shown, eval=FALSE, hl.size="52%"}
+con = DBI::dbConnect(RSQLite::SQLite(), "../data/midwest_airbnb.db")
+listings = DBI::dbReadTable(con, "listings") |>
+  tibble::as_tibble()
+DBI::dbDisconnect(con)
+dplyr::glimpse(listings)
+```
+
+]
+
+.right43[
+<div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+  <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">Four questions on `r fmt(nrow(listings))` listings</div>
+  <div style="padding:10px 14px; font-size:13.5px; line-height:1.55;">
+    <div><b>1.</b> How many listings per <code>city</code>?</div>
+    <div style="margin-top:4px;"><b>2.</b> For entire homes (<code>room_type == "Entire home/apt"</code>) that sleep four or more, what is the <b>median price</b> in each city?</div>
+    <div style="margin-top:4px;"><b>3.</b> Add <code>price_per_person = price / accommodates</code>. Which three listings are cheapest per person? Believe them?</div>
+    <div style="margin-top:4px;"><b>4.</b> Which five <code>host_name</code>s have the most listings?</div>
+  </div>
+</div>
+]
+
+<div style="clear:both;"></div>
+
+]
+
+.panel[.panel-name[Answer]
+
+<div style="font-family:'Source Code Pro', monospace; font-size:12.5px; line-height:1.7; color:#1b1b1b; margin-top:6px;">
+<b>1.</b> `r paste(sprintf("%s %s", ta1$city, fmt(ta1$n)), collapse = "; ")`<br>
+<b>2.</b> `r paste(sprintf("%s $%s (n = %s)", ta2$city, format(ta2$median_price, nsmall = 0), fmt(ta2$n)), collapse = "; ")`<br>
+<b>3.</b> `r paste(sprintf("%s: $%s for %d people ($%.2f each)", ta3$city, format(ta3$price, nsmall = 2), ta3$accommodates, ta3$price_per_person), collapse = "; ")`<br>
+<b>4.</b> `r paste(sprintf("%s %d", ta4$host_name, ta4$n), collapse = "; ")`
+</div>
+
+<div style="margin-top:12px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:9px 14px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13.5px; line-height:1.5;">
+Question 2 is <code>dplyr::filter()</code>, then <code>dplyr::group_by()</code> + <code>dplyr::summarize(median())</code>; question 3 is <code>dplyr::mutate()</code>, <code>dplyr::arrange()</code>, <code>dplyr::select()</code>, <code>head(3)</code>; questions 1 and 4 are <code>dplyr::count()</code>, with <code>sort = TRUE</code> and <code>head(5)</code> for the hosts.
+</div>
+
+]
+
+.panel[.panel-name[Discussion]
+
+<div style="font-size:14.5px; line-height:1.6; margin-top:6px;">
+<div><b style="color:#c3142d;">Prices of a few dollars a night for a seven-person home</b> are not bargains; they are data errors. Assignment 05 asks you to document these `r ncol(listings)` columns, and a data dictionary records known problems, not only what each column means.</div>
+<div style="margin-top:8px;"><b style="color:#c3142d;">Median, not mean,</b> for question 2: nightly prices are skewed by a few luxury listings, so the mean would describe almost nobody's stay.</div>
+<div style="margin-top:8px;"><b style="color:#c3142d;">One host with `r ta4$n[1]` listings</b> is a business, not a person renting a spare room. Which of your Assignment 06 questions does that change?</div>
+</div>
+
+]
+
+]
+
+???
+
+Five minutes on the clock, Task tab up. The import block is Monday's three lines on the other database; everyone has midwest_airbnb.db from Assignment 04. Walk the room; do not name the verbs, the point is that they choose. At the bell, Answer tab, then Discussion: the per-person price errors are the data-dictionary lesson, the median is the skew lesson, and the 104-listing host is the first Assignment 06 question. While they work, check the Hugging Face badges from Part 1 on the projector; a red Space goes to Appendix A2.
+
+---
+
+# What Comes Next
+
+<div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin-top:10px;">
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">Monday: APIs</div>
+    <div style="padding:12px 14px; font-size:13.5px; line-height:1.55;">An API answers in JSON; <code>fromJSON()</code> turns it into a data frame; the verbs do the rest. The Cincinnati crash feed from Class 04 becomes <code>dplyr::count(day)</code> and <code>dplyr::arrange()</code> instead of a bracket chain.</div>
+  </div>
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">Sep 23 to 30: scraping</div>
+    <div style="padding:12px 14px; font-size:13.5px; line-height:1.55;">A scraped HTML table arrives messy: text where numbers should be, one table per page. <code>dplyr::mutate()</code> cleans, and a join or <code>dplyr::bind_rows()</code> stacks pages. Every scraping day ends in a dplyr chain.</div>
+  </div>
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">Assignment 05: the dictionary</div>
+    <div style="padding:12px 14px; font-size:13.5px; line-height:1.55;"><code>dplyr::count()</code> a column to learn its values; <code>dplyr::summarize(min(), max())</code> for its range; <code>dplyr::filter(is.na())</code> for its gaps. That is how you write the 23 missing rows of <code>data_desc.md</code>.</div>
+  </div>
+</div>
+
+<div style="margin-top:16px; border:1px solid #c3142d; border-left:6px solid #c3142d; border-radius:8px; padding:10px 14px; background:#fdf2f2; font-size:14px; line-height:1.55;">
+<b>And the app you deployed today</b> has been writing these for you all along: <code>WHERE</code> is <code>dplyr::filter()</code>, <code>GROUP BY</code> is <code>dplyr::group_by()</code> + <code>dplyr::summarize()</code>, <code>ORDER BY</code> is <code>dplyr::arrange()</code>. When you read its SQL, you are reading a dplyr chain in another spelling.
+</div>
+
+???
+
+Two minutes. Three places the verbs show up next, in date order, plus the assignment. The bottom box closes the loop with Part 1: the deployed app writes the same operations in SQL, which is why reading its query is not a new skill.
+
+---
+
+# Our Class Git + GitHub Ritual
+
+<div style="display:flex; gap:14px; align-items:stretch; margin-top:14px;">
+  <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:9px 14px;">1 &nbsp; Knit</div>
+    <div style="padding:14px; font-size:14.5px; line-height:1.55;">Click <b>Knit</b>. <code>class07.html</code> re-runs every chunk top to bottom and saves the page next to your markdown.<div style="margin-top:6px; color:#585E60;">If the knit fails, a chunk depends on something you only ran in the Console. Fix the markdown, not the Console.</div></div>
+  </div>
+  <div style="align-self:center; color:#c3142d; font-size:24px; font-weight:700;">&rarr;</div>
+  <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:9px 14px;">2 &nbsp; Commit</div>
+    <div style="padding:14px; font-size:14.5px; line-height:1.55;">GitHub Desktop lists today's work: <code>markdowns/class07.Rmd</code>, <code>class07.html</code>, <code>apps/job_scout_chat/</code>, and <code>.gitignore</code> with its new <code>.Renviron</code> line.<div style="margin-top:6px; color:#585E60;">If <code>.Renviron</code> itself is in the list, stop: uncheck it and redo the <code>use_git_ignore()</code> step. Summary: <code>Add class 07 markdown and the job scout app</code>.</div></div>
+  </div>
+  <div style="align-self:center; color:#c3142d; font-size:24px; font-weight:700;">&rarr;</div>
+  <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:9px 14px;">3 &nbsp; Push and verify</div>
+    <div style="padding:14px; font-size:14.5px; line-height:1.55;"><b>Push origin</b>, then check the repo on GitHub: <code>markdowns/</code> and <code>data/</code> both there, readable from any device.<div style="margin-top:6px; color:#585E60;">That is code, data, and output, together.</div></div>
+  </div>
+</div>
+
+<br>
+
+<div style="margin-top:14px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:14px 20px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:18px; line-height:1.55; color:#1b1b1b;">
+<b style="color:#c3142d;">If it is not pushed, it is not done.</b> Your repo now carries code, data, and output that anyone, including future you, can re-run.
+</div>
+
+???
+
+Same ritual as Monday. The app folder from Part 1 rides along, and .gitignore changed because of the .Renviron line. Look at the projector's GitHub Desktop list with them: .gitignore yes, .Renviron never. After Monday night nobody needs convincing: if .Renviron is in the list, the key goes to GitHub and OpenAI kills it the same day. Uncheck it, run use_git_ignore() again, then commit.
+
+---
+
+class: inverse, center, middle
+
+# Recap
+
+
+---
+
+# Summary of Main Points
+
+By now, you should be able to do the following:
+
+- **Run** the `querychat` app locally with a git-ignored `.Renviron` and **deploy** it with the key as a Space **secret**; a key in a commit is public within minutes.
+- **Chain verbs with `|>`**: `dplyr::select()` columns, `dplyr::filter()` rows, `dplyr::arrange()` order, `dplyr::mutate()` new columns, `dplyr::across()` for many columns at once.
+- **Collapse** with `dplyr::group_by()` + `dplyr::summarize()` or `dplyr::count()`; **join** with `dplyr::left_join()`, then `dplyr::anti_join()` for what did not match.
+
+**Reading for Assignment 05:** Class 06 appendices A1 to A4, plus today's [A2 deploy troubleshooting](#appendix-a2). **Next class (Mon, Sep 21):** APIs, where these verbs take over.
+
+???
+
+Tie each bullet to its part. The key sentence in the first bullet is the one to say twice. Then point forward: Monday's APIs hand back data frames, and everything after dbReadTable() today applies to them unchanged.
+
+
+---
+
+
+# Before You Go
+
+<div style="height:495px; max-width:880px; margin:0 auto; padding:0; overflow:hidden;">
+  <iframe
+    src="https://www.mentimeter.com/app/presentation/alkim66z8wex2hguaep3uv4bke15kac4/embed"
+    scrolling="no"
+    frameborder="0"
+    allowfullscreen
+    sandbox="allow-popups allow-scripts allow-same-origin allow-presentation"
+    style="width:100%; height:100%; border:0;">
+  </iframe>
+</div>
+
+???
+
+The Class 05 Menti presentation is reused here; reset its results in Menti before class and advance it to the clarification question before this slide comes up. Answer the top two or three on the spot and carry the rest into Wednesday's opening.
+
+
+---
+
+
+# 📝 Review and Clarification 📝
+
+.pull-left[
+
+1. **Class Notes**: Take some time to revisit your class notes for key insights/concepts.
+
+2. **Zoom Recording**: The recording of today's class will be made available on Canvas approximately 3-4 hours after the session ends.
+
+3. **AI Recaps:** make your own with Gemini's NotebookLM, as I did for Class 01 (see the right).
+
+4. **Questions**: Do not let confusion pile up.
+
+]
+
+.pull-right[
+
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:14px 18px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:16px; line-height:1.55; margin-top:6px;">
+<div style="font-weight:700; color:#c3142d; font-size:18px;">Make your own recap in NotebookLM</div>
+<ol style="margin:10px 0 0 0; padding-left:22px;">
+<li style="margin-bottom:6px;">Go to <a href="https://notebooklm.google.com" target="_blank">notebooklm.google.com</a> and sign in with your Miami Google account.</li>
+<li style="margin-bottom:6px;">Add today's slide deck as a source: paste the deck's address from Canvas as a <b>Website</b> source.</li>
+<li>Click <b>Audio Overview</b> for a podcast, or <b>Video Overview</b> for a narrated video. Both take a few minutes to generate.</li>
+</ol>
+<div style="margin-top:12px; color:#585E60; font-size:15px;">What it looks like: the Class 01 <a href="https://www.youtube.com/watch?v=sys7WBk0iew" target="_blank">video</a> and <a href="https://drive.google.com/file/d/1lt6hqrMuW8JOy9ilvkT5NVlPABowj7SE/view" target="_blank">podcast</a>. Treat them as a study aid, not a substitute for the slides: the AI summarizes what is on the page and can misstate details.</div>
+</div>
+
+]
+
+???
+
+Same slide as the last two classes. Point at the Class 01 examples so they know what they get, and repeat the caveat: NotebookLM paraphrases and occasionally invents.
+
+
+---
+
+
+# 🎯 Assignments 🎯
+
+.pull-left[
+
+<div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+  <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;"><a href="https://miamioh.instructure.com/courses/258169/assignments/3606964" target="_blank" style="color:#fff;">Assignment 05: Deploy Your Midwest Airbnb Chat</a></div>
+  <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;">Today's recipe on the Airbnb listings you just explored: same Dockerfile, new data, a full data dictionary, extra instructions, a theme and an About section of your own (the <code>page_sidebar()</code> code in <a href="http://fmegahed.github.io/isa401/fall2026/class06/06_sqlite_deployed_app.html#appendix-a3" target="_blank">Class 06, Appendix A3</a> is enough). Deploy through git, three or more commits. Submit the Space's address. <span style="color:#585E60;">Due date on Canvas.</span></div>
+</div>
+
+<div style="margin-top:12px; border:1px solid #c3142d; border-left:6px solid #c3142d; border-radius:8px; padding:10px 14px; background:#fdf2f2; font-size:13.5px; line-height:1.5;">
+<b style="color:#c3142d;">The key, one more time.</b> The secret on your Space must be the <a href="https://miamioh.instructure.com/courses/258169/files/40267121" target="_blank"><b>new class key</b></a>. A Space built on the old key shows a 401 error in its Logs and earns 0 of the running points until the secret is replaced.
+</div>
+
+<div style="margin-top:12px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:10px 14px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13.5px; line-height:1.5; color:#1b1b1b;">
+<b style="color:#c3142d;">Before you leave:</b> knit, then commit and push <code>markdowns/class07.Rmd</code>, <code>class07.html</code>, and <code>apps/job_scout_chat/</code>. If it is not pushed, it is not done.
+</div>
+
+]
+
+.pull-right[
+
+<div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+  <div style="background:#f9dbdb; color:#c3142d; font-weight:700; font-size:15px; padding:8px 14px;">Ungraded Practice Questions</div>
+  <div style="padding:10px 14px; font-size:13px; line-height:1.5;">
+    <div><b>1.</b> Which five states have the highest <b>remote share</b> among states with at least 50 postings?</div>
+    <div style="margin-top:4px;"><b>2.</b> How many postings mention "SQL" in the <code>title</code>? Hint: <code>grepl("SQL", title)</code> inside <code>filter()</code>.</div>
+    <div style="margin-top:4px;"><b>3.</b> For each <code>category</code>, the earliest and latest <code>posted_at</code>.</div>
+    <div style="margin-top:4px;"><b>4.</b> Add <code>region</code> with the join, then count remote postings per region.</div>
+    <div style="margin-top:4px;"><b>5.</b> On the Airbnb data: superhosts (<code>host_is_superhost == "t"</code>) versus the rest, median price per city.</div>
+    <details style="margin-top:8px;"><summary style="cursor:pointer; font-weight:700; color:#c3142d; font-size:13px;">Answers</summary>
+      <div style="font-family:'Source Code Pro', monospace; font-size:11.5px; line-height:1.6; margin-top:4px; color:#1b1b1b;">
+        1. jobs |&gt; dplyr::group_by(location_state) |&gt; dplyr::summarize(n = dplyr::n(), share = mean(remote)) |&gt; dplyr::filter(n &gt;= 50) |&gt; dplyr::arrange(dplyr::desc(share)) |&gt; head(5)<br>
+        2. jobs |&gt; dplyr::filter(grepl("SQL", title)) |&gt; nrow()<br>
+        3. jobs |&gt; dplyr::group_by(category) |&gt; dplyr::summarize(first = min(posted_at), last = max(posted_at))<br>
+        4. jobs |&gt; dplyr::left_join(states, by = "location_state") |&gt; dplyr::filter(remote == 1) |&gt; dplyr::count(region, sort = TRUE)<br>
+        5. listings |&gt; dplyr::group_by(city, host_is_superhost) |&gt; dplyr::summarize(median_price = median(price))
+      </div>
+    </details>
+  </div>
+</div>
+
+]
+
+???
+
+Assignment 05 is unchanged and due as posted; the red box is the only news, and it matters for grading: a Space on the old key is a broken Space. The practice questions reuse today's objects; the answers are one click away. Say the before-you-leave line while pointing at GitHub Desktop.
+
+---
+
+class: inverse, center, middle
+
+# Appendices
+
+<div style="font-size:16px; margin-top:10px; opacity:0.9;">Not covered live. A1 for the bracket-to-verb translation, A2 when a Space is red, A3 for the reading.</div>
+
+---
+
+name: appendix-a1
+
+# A1: Base R Equivalents
+
+.left55[
+
+```{r a1_brackets, eval=FALSE, hl.size="54%"}
+# Class 04 spelling                      # today's spelling
+jobs[jobs$remote == 1, ]                 # jobs |> dplyr::filter(remote == 1)
+jobs[, c("company", "title")]            # jobs |> dplyr::select(company, title)
+jobs[order(-jobs$days_open), ]           # jobs |> dplyr::arrange(dplyr::desc(days_open))
+jobs$days_open = as.numeric(             # jobs |> dplyr::mutate(days_open =
+  as.Date(jobs$last_seen_at) -           #   as.numeric(as.Date(last_seen_at) -
+  as.Date(jobs$posted_at))               #              as.Date(posted_at)))
+table(jobs$category)                     # jobs |> dplyr::count(category)
+merge(by_state, states,                  # by_state |>
+      by = "location_state",             #   dplyr::left_join(states,
+      all.x = TRUE)                      #                    by = "location_state")
+```
+
+]
+
+.right43[
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:11px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13.5px; line-height:1.55;">
+<div style="font-weight:700; color:#c3142d; font-size:15px;">What changed, and what did not</div>
+<div style="margin-top:6px;">Every bracket line names the table twice (<code>jobs[jobs$...]</code>); the verb names it once and knows the columns. The trailing comma, the <code>-</code> for descending, and <code>all.x = TRUE</code> are replaced by words.</div>
+<div style="margin-top:6px;">The results are the same data frames. Base R is not wrong; it is harder to read aloud, and reading aloud is how you check a chain.</div>
+</div>
+<div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:11px 14px; background:#fdf2f2; font-size:13.5px; line-height:1.55; margin-top:10px;">
+<b>Where brackets remain the right tool:</b> one element from a vector or a list, <code>x[[1]]</code> and <code>campus$Farmer</code>. dplyr is for tables.
+</div>
+]
+
+<div style="clear:both;"></div>
+
+???
+
+Appendix. The promise from Class 04 was that dplyr is a friendlier spelling of the brackets; this is the receipt, line by line. The last card keeps the Pepper Shaker rule alive: brackets for vectors and lists, verbs for data frames.
+
+---
+
+name: appendix-a2
+
+# A2: Deployment Troubleshooting
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:6px;">
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:7px 14px;">Logs say <code style="color:#fff;">401</code> or <code style="color:#fff;">Incorrect API key</code></div>
+    <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;">The secret is missing, misspelled, or the old class key. <b>Settings &rarr; Variables and secrets</b>: the name must be exactly <code>OPENAI_API_KEY</code>, the value the new key. Then <b>Factory rebuild</b> from the Settings page so the app restarts with it.</div>
+  </div>
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:7px 14px;">Runtime error: <code style="color:#fff;">no such file: data/scout.db</code></div>
+    <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;">The database was uploaded at the top level instead of inside <code>data/</code>. On the Files tab, the layout must match the zip: <code>app.R</code>, <code>Dockerfile</code>, <code>README.md</code>, and a <code>data/</code> folder with the <code>.db</code> and the two <code>.md</code> files.</div>
+  </div>
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:7px 14px;">Build error</div>
+    <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;">Read the last twenty lines of <b>Logs</b>. A package name in the error means the Dockerfile's <code>install.packages()</code> line was edited; restore it from the zip. A line-ending error (<code>\r</code>) means the Dockerfile was saved by a Windows editor; re-upload the original.</div>
+  </div>
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:7px 14px;">Running, but every question fails</div>
+    <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;">The app starts without a key and only fails when the model is called. Same fix as the first card. Locally, the equivalent is a <code>.Renviron</code> with the old key: replace the line, then <b>Session &rarr; Restart R</b>; R reads <code>.Renviron</code> only at startup.</div>
+  </div>
+</div>
+
+<div style="margin-top:12px; border:1px solid #c3142d; border-left:6px solid #c3142d; border-radius:8px; padding:9px 14px; background:#fdf2f2; font-size:13.5px; line-height:1.5;">
+<b>Where to look first, always:</b> the <b>Logs</b> tab on the Space page. The last lines name the file and the line that failed. Copy them into your question if you ask for help.
+</div>
+
+.footnote[
+<html>
+<hr>
+</html>
+**Sources:** [Hugging Face: Docker Spaces](https://huggingface.co/docs/hub/spaces-sdks-docker); [Hugging Face: Spaces secrets and variables](https://huggingface.co/docs/hub/spaces-overview#managing-secrets); [R startup: .Renviron](https://rstats.wtf/r-startup.html).
+]
+
+???
+
+Appendix. Four failure modes cover nearly every red badge from Monday and from Assignment 05. The first and fourth are the same problem after the key rotation, which is why they sit first.
+
+---
+
+name: appendix-a3
+
+# A3: Reading
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:8px;">
+  <div style="border:1px solid #d1d5db; border-radius:8px; padding:12px 16px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.6;">
+    <div style="font-weight:700; color:#c3142d; font-size:15px;">The two chapters that cover today</div>
+    <div style="margin-top:6px;"><a href="https://r4ds.hadley.nz/data-transform.html" target="_blank"><b>R for Data Science, Data transformation</b></a>: the six verbs on the flights data, with the same "rows, columns, groups" organization as today's verb table.</div>
+    <div style="margin-top:6px;"><a href="https://r4ds.hadley.nz/joins.html" target="_blank"><b>R for Data Science, Joins</b></a>: keys, mutating joins, filtering joins, with the diagrams that today's animation borrowed its colors from.</div>
+  </div>
+  <div style="border:1px solid #d1d5db; border-radius:8px; padding:12px 16px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.6;">
+    <div style="font-weight:700; color:#c3142d; font-size:15px;">For the desk</div>
+    <div style="margin-top:6px;"><a href="https://rstudio.github.io/cheatsheets/html/data-transformation.html" target="_blank"><b>dplyr cheatsheet</b></a>: one page, every verb, print it.</div>
+    <div style="margin-top:6px;"><a href="https://dplyr.tidyverse.org/articles/two-table.html" target="_blank"><b>dplyr: Two-table verbs</b></a>: the joins, with the <code>by =</code> spellings for keys that have different names.</div>
+    <div style="margin-top:6px;"><a href="https://dplyr.tidyverse.org/reference/index.html" target="_blank"><b>dplyr reference</b></a>: when you need the exact arguments.</div>
+  </div>
+</div>
+
+<div style="margin-top:14px; border:1px solid #c3142d; border-left:6px solid #c3142d; border-radius:8px; padding:10px 14px; background:#fdf2f2; font-size:14px; line-height:1.55;">
+<b>Not covered today, on purpose:</b> <code>pivot_longer()</code> and <code>pivot_wider()</code> (tidy data, Oct 7), string functions (<code>stringr</code>, with scraping), and window functions inside <code>mutate()</code>. Each has a class.
+</div>
+
+???
+
+Appendix. Two chapters and a cheatsheet is the whole reading; the R4DS chapters are free online and match today's vocabulary exactly.
