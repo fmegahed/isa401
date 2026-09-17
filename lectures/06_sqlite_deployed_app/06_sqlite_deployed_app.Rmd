@@ -268,7 +268,7 @@ Six minutes including the podium. If 1 goes badly, slow down on the bracket line
 
 - **Import** a table from a **SQLite database file** with `DBI`, then **ask the database a question in SQL** with `dbGetQuery()`.
 
-- **Build** a `querychat` app on the Job Scout data and **deploy** it to **Hugging Face Spaces**.
+- **Build** a `querychat` app on the Job Scout data and **deploy** it to **Render** from your GitHub repository.
 
 - **Read the SQL** an app writes for you, and **explain** what a **data dictionary** adds to an app that turns questions into SQL.
 
@@ -286,7 +286,7 @@ Six minutes including the podium. If 1 goes badly, slow down on the bracket line
   <div style="flex:1; padding:9px 10px; background:#fcfcfc; border-right:1px solid #d1d5db;">
     <div style="font-size:11px; color:#585E60; text-transform:uppercase; font-weight:700;">Part 3</div>
     <div style="font-weight:700; font-size:14px; color:#c3142d;">Deploy</div>
-    <div style="font-size:11.5px; color:#585E60;">Hugging Face Spaces</div>
+    <div style="font-size:11.5px; color:#585E60;">Render, from GitHub</div>
   </div>
   <div style="flex:1; padding:9px 10px; background:#fcfcfc;">
     <div style="font-size:11px; color:#585E60; text-transform:uppercase; font-weight:700;">Part 4</div>
@@ -576,7 +576,7 @@ ORDER BY n DESC LIMIT 10</div></div>
 <div class="qc-arr qc-arr-h" data-from="3" style="left:642px; top:60px; width:36px;"></div>
 <div class="qc-pane qc-sql"><div class="qc-head">the model wrote<span class="qc-tag">one possible query</span></div><div class="qc-line" data-t="SELECT company, COUNT(*) AS n"></div><div class="qc-line" data-t="FROM scout_postings"></div><div class="qc-line" data-from="4" data-to="5" data-t="WHERE remote = 1"></div><div class="qc-line" data-from="5" data-to="6" data-t="GROUP BY company"></div><div class="qc-line" data-from="6" data-to="7" data-t="ORDER BY n DESC"></div><div class="qc-line" data-from="6" data-to="7" data-t="LIMIT 10"></div></div>
 <div class="qc-arr qc-arr-v" data-from="4" style="left:840px; top:178px; height:24px;"></div>
-<div class="qc-pane qc-server"><div class="qc-head">Hugging Face server &middot; SQLite &middot; scout.db &middot; scout_postings, `r fmt(n_total)` rows &middot; read-only: SELECT only</div><div class="qc-drum">scout.db</div><div class="qc-tagline qc-tag-stay">the rows stay here</div><div class="qc-tagline qc-tag-nosend" data-from="2">never sent to the model</div><div class="qc-tagline qc-tag-ran" data-from="4">SQLite ran the query here</div><div class="qc-tagline qc-counter" data-from="6">8 rows in, `r qc_out` out (all `r fmt(n_total)` rows: `r qc_all_out` out)</div><div class="qc-ro">eight of the `r fmt(n_total)` rows, chosen to show every clause</div>
+<div class="qc-pane qc-server"><div class="qc-head">Render server &middot; SQLite &middot; scout.db &middot; scout_postings, `r fmt(n_total)` rows &middot; read-only: SELECT only</div><div class="qc-drum">scout.db</div><div class="qc-tagline qc-tag-stay">the rows stay here</div><div class="qc-tagline qc-tag-nosend" data-from="2">never sent to the model</div><div class="qc-tagline qc-tag-ran" data-from="4">SQLite ran the query here</div><div class="qc-tagline qc-counter" data-from="6">8 rows in, `r qc_out` out (all `r fmt(n_total)` rows: `r qc_all_out` out)</div><div class="qc-ro">eight of the `r fmt(n_total)` rows, chosen to show every clause</div>
 
 `r qc_table`
 
@@ -645,7 +645,7 @@ ORDER BY n DESC LIMIT 10</div></div>
 </script>
 
 <div style="margin-top:6px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:5px 16px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:12.5px; line-height:1.45; color:#1b1b1b;">
-<b style="color:#c3142d;">What it costs.</b> Step 3 is the only paid part: each question is one call to OpenAI on a class key I hand out today. Everything else is free: <a href="https://posit-dev.github.io/querychat/" target="_blank"><code>querychat</code></a> is an open-source R package, and <a href="https://huggingface.co/spaces" target="_blank">Hugging Face Spaces</a> hosts small apps for free.
+<b style="color:#c3142d;">What it costs.</b> Step 3 is the only paid part: each question is one call to OpenAI on a class key I hand out today. Everything else is free: <a href="https://posit-dev.github.io/querychat/" target="_blank"><code>querychat</code></a> is open source, and <a href="https://render.com/docs/free" target="_blank">Render's free tier</a> hosts a small app.
 </div>
 
 ???
@@ -658,7 +658,7 @@ Three minutes, Step by Step, no Play. The whole slide exists to separate two act
 
 .left55[
 
-```{r app_r, eval=FALSE, hl.size="58%"}
+```{r app_r, eval=FALSE, hl.size="54%"}
 # apps/job_scout_chat/app.R
 library(querychat)
 
@@ -821,7 +821,7 @@ class: inverse, center, middle
 <div class="dk-chip dk-fade" data-from="3">app.R</div>
 <div class="dk-chip dk-fade" data-from="3">data/scout.db</div>
 </div>
-<div class="dk-browser" data-from="5">your browser:<br>fmegahed-job-<br>scout-chat.hf.space</div>
+<div class="dk-browser" data-from="5">your browser:<br>job-scout-chat<br>.onrender.com</div>
 </div>
 <div class="dk-base"></div>
 <div class="dk-box" data-from="1">
@@ -846,21 +846,21 @@ class: inverse, center, middle
 <div class="dk-led" data-from="5" style="top:26px;"></div><div class="dk-led" data-from="5" style="top:72px;"></div><div class="dk-led" data-from="5" style="top:118px;"></div><div class="dk-led" data-from="5" style="top:164px;"></div>
 </div>
 <div class="dk-pill dk-pill-off" data-from="0" data-to="5">nothing installed</div>
-<div class="dk-pill dk-pill-on" data-from="5">Running</div>
-<div class="dk-ghost" data-from="6" style="top:100px;">a teammate's Space<br><span class="dk-run">Running</span></div>
-<div class="dk-ghost" data-from="6" style="top:196px; transition-delay:.15s;">rebuilt in December<br><span class="dk-run">Running</span></div>
+<div class="dk-pill dk-pill-on" data-from="5">Live</div>
+<div class="dk-ghost" data-from="6" style="top:100px;">a teammate's app<br><span class="dk-run">Live</span></div>
+<div class="dk-ghost" data-from="6" style="top:196px; transition-delay:.15s;">rebuilt in December<br><span class="dk-run">Live</span></div>
 <div class="dk-lbl" style="left:12px; width:180px;">your lab PC</div>
 <div class="dk-lbl" style="left:206px; width:164px;">the box</div>
-<div class="dk-lbl" style="left:400px; width:148px;">Hugging Face server</div>
+<div class="dk-lbl" style="left:400px; width:148px;">Render server</div>
 </div>
 <div class="sc-caps">
 <div class="sc-cap on" data-step="0"><b>Before the recipe.</b> Your app runs on this PC only because R, nine packages, app.R, and scout.db all happen to be here. The server on the right has none of them.</div>
 <div class="sc-cap" data-step="1"><b>FROM.</b> Start from a ready-made Linux computer that already has R 4.6.0, the same R as this lab.</div>
 <div class="sc-cap" data-step="2"><b>RUN.</b> Install the nine packages from a snapshot of CRAN frozen on 2026-09-01, so a rebuild in December gets exactly today's versions.</div>
 <div class="sc-cap" data-step="3"><b>COPY.</b> Copy in the two things you wrote. They are the only things that leave your PC.</div>
-<div class="sc-cap" data-step="4"><b>EXPOSE and CMD.</b> Open one door, port 7860, and say what to run behind it: <code>shiny::runApp()</code>.</div>
-<div class="sc-cap" data-step="5"><b>Build and run.</b> Hugging Face reads the recipe, builds this exact computer on its server, and runs it. You just open the URL.</div>
-<div class="sc-cap" data-step="6"><b>Same recipe, same computer, anywhere.</b> A teammate's Space or a rebuild in December comes out identical.</div>
+<div class="sc-cap" data-step="4"><b>EXPOSE and CMD.</b> Open one door, the port the host assigns (7860 by default), and say what to run behind it: <code>shiny::runApp()</code>.</div>
+<div class="sc-cap" data-step="5"><b>Build and run.</b> Render reads the recipe, builds this exact computer on its server, and runs it. You just open the URL.</div>
+<div class="sc-cap" data-step="6"><b>Same recipe, same computer, anywhere.</b> A teammate's app, a rebuild in December, or a different host comes out identical.</div>
 </div>
 <div class="sc-bar"><button type="button" class="sc-btn sc-back">Back</button><button type="button" class="sc-btn sc-primary sc-step">Step</button><button type="button" class="sc-btn sc-play">Play</button><button type="button" class="sc-btn sc-reset">Reset</button><span class="sc-spds"><button type="button" class="sc-spd" data-spd="0.5">0.5x</button><button type="button" class="sc-spd on" data-spd="1">1x</button><button type="button" class="sc-spd" data-spd="2">2x</button></span><span class="sc-count">0 / 6</span></div>
 </div>
@@ -920,38 +920,26 @@ class: inverse, center, middle
 
 ???
 
-Three minutes, and this is the slide that answers "why is there a Dockerfile in the zip". Step through it; do not press Play in class. Step 0: point at the laptop and ask what the app needs that the server does not have. Steps 1 and 2: R and the packages come from public sources (the rocker image, the CRAN snapshot), not from the laptop; the date stamp is the reproducibility idea from Class 02 applied to software. Step 3 is the sentence to say slowly: the only things that leave your PC are the two files you wrote. Step 4: a port is a door number. Step 5: Hugging Face does the building; you never run Docker. Step 6: same recipe, same computer, which is why Assignment 05 works on their laptop, on a lab PC, and on my machine when I grade. The counts on the right are computed from scout.db at knit time; Docker is rare in analyst postings and the card says so, because overselling it would be technically-true-but-misleading. Back and Reset are there if a question sends you backwards. Appendix A1 reads the actual file line by line for the curious.
+Three minutes, and this is the slide that answers "why is there a Dockerfile in the zip". Step through it; do not press Play in class. Step 0: point at the laptop and ask what the app needs that the server does not have. Steps 1 and 2: R and the packages come from public sources (the rocker image, the CRAN snapshot), not from the laptop; the date stamp is the reproducibility idea from Class 02 applied to software. Step 3 is the sentence to say slowly: the only things that leave your PC are the two files you wrote. Step 4: a port is a door number. Step 5: Render does the building; you never run Docker. The same recipe ran on Hugging Face on Monday and on Render on Wednesday, which is the portability point. Step 6: same recipe, same computer, which is why Assignment 05 works on their laptop, on a lab PC, and on my machine when I grade. The counts on the right are computed from scout.db at knit time; Docker is rare in analyst postings and the card says so, because overselling it would be technically-true-but-misleading. Back and Reset are there if a question sends you backwards. Appendix A1 reads the actual file line by line for the curious.
 
 ---
 
-# Deploy to Hugging Face
+# Deploy to Render
 
-<div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px;">
-  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
-    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:8px 14px;">1 &nbsp; Account and Space</div>
-    <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;">Sign up at <a href="https://huggingface.co/join" target="_blank"><b>huggingface.co</b></a> (personal email). Then <b>New &rarr; Space</b>: name <code>job_scout_chat</code>, license <b>MIT</b>, SDK <b>Docker</b> &rarr; <b>Blank</b>, visibility <b>Public</b>, <b>Create Space</b>.</div>
-  </div>
-  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
-    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:8px 14px;">2 &nbsp; Upload four things</div>
-    <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;"><b>Files &rarr; Add file &rarr; Upload files</b>. Drag in <code>app.R</code>, the <code>Dockerfile</code> and <code>README.md</code> from <a href="https://miamioh.instructure.com/courses/258169/modules/995631" target="_blank"><code>job_scout_chat.zip</code></a> on Canvas, and the whole <code>data/</code> folder. <b>Commit changes to main</b>.</div>
-  </div>
-  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
-    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:8px 14px;">3 &nbsp; Add the secret</div>
-    <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;"><b>Settings &rarr; Variables and secrets &rarr; New secret</b>. Name <code>OPENAI_API_KEY</code>, value the <a href="https://miamioh.instructure.com/courses/258169/files/40267121" target="_blank"><b>class key</b></a> from Canvas. A secret is encrypted and never shown in the file list; a variable is public. Use <b>secret</b>. Same name as the line in your <code>.Renviron</code>: <code>app.R</code> reads <code>OPENAI_API_KEY</code> from wherever it runs, so the key is never in a file you upload.</div>
-  </div>
-  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
-    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:8px 14px;">4 &nbsp; Watch it build</div>
-    <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;">The badge at the top goes <b>Building</b> for a few minutes while the Dockerfile installs R and the packages, then <b>Running</b>. Click <b>Logs</b> if it goes red; the last lines say why.</div>
-  </div>
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:6px;">
+<div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);"><div style="background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:8px 14px;">1 &nbsp; Account</div><div style="padding:10px 14px; font-size:13.5px; line-height:1.5;">Sign up at <a href="https://render.com" target="_blank"><b>render.com</b></a> with <b>GitHub</b>, using the account that owns <code>business_intelligence</code>. The Hobby plan is free and asks for no card. Skip the onboarding questions.</div></div>
+<div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);"><div style="background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:8px 14px;">2 &nbsp; Connect the repository</div><div style="padding:10px 14px; font-size:13.5px; line-height:1.5;"><b>New &rarr; Web Service &rarr; Git Provider &rarr; GitHub.</b> Install Render's GitHub app on <code>business_intelligence</code> (<i>Only select repositories</i>), then click the repository to connect it. Your app folder is already in it from the ritual.</div></div>
+<div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);"><div style="background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:8px 14px;">3 &nbsp; Configure</div><div style="padding:10px 14px; font-size:13.5px; line-height:1.5;">Name <code>job-scout-chat</code>. Language <b>Docker</b> (detected from the Dockerfile). Branch <code>main</code>. <b>Root Directory</b> <code>apps/job_scout_chat</code>. Instance type <b>Free</b>, $0 (the default is paid; change it). Environment variable <code>OPENAI_API_KEY</code> = the <a href="https://miamioh.instructure.com/courses/258169/files/40267121" target="_blank"><b>class key</b></a>. <b>Deploy Web Service</b>.</div></div>
+<div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);"><div style="background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:8px 14px;">4 &nbsp; Watch it build</div><div style="padding:10px 14px; font-size:13.5px; line-height:1.5;"><b>Logs</b> run the Dockerfile line by line; a few minutes the first time. Status <b>Live</b>, address <code>https://job-scout-chat-xxxx.onrender.com</code>. A free app sleeps after 15 idle minutes and wakes in about a minute; a 502 while waking is normal.</div></div>
 </div>
 
-<div style="margin-top:12px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:10px 16px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.55; color:#1b1b1b;">
-<b style="color:#c3142d;">What the Dockerfile is.</b> A recipe that builds a fresh Linux computer with the same R version as this lab, installs the packages from a dated snapshot, copies your app in, and starts it. You do not run Docker; Hugging Face does. The recipe is read line by line in <a href="#appendix-a1">Appendix A1</a>.
+<div style="margin-top:12px; border:1px solid #c3142d; border-left:6px solid #c3142d; border-radius:8px; padding:9px 14px; background:#fdf2f2; font-size:13.5px; line-height:1.5;">
+<b style="color:#c3142d;">What the Dockerfile is.</b> A recipe that builds a fresh Linux computer with the same R version as this lab, installs the packages from a dated snapshot, copies your app in, and starts it. You do not run Docker; Render does. Same variable name as the line in your <code>.Renviron</code>: <code>app.R</code> reads <code>OPENAI_API_KEY</code> from wherever it runs, so the key is never in a file you commit. The recipe is read line by line in <a href="#appendix-a1">Appendix A1</a>.
 </div>
 
 ???
 
-The deploy is the forty-minute block; start it early enough that builds finish before the end of class. Do step 1 on the projector, then let the room catch up before step 2. Folder drag-and-drop works in the upload dialog; if someone uploads scout.db at the top level instead of inside data/, the app will start and immediately fail to find the file, which the Logs show. Step 3 secret versus variable is the security beat of the day, and the line about the variable name closes the loop from Part 2: on the lab PC the project .Renviron sets OPENAI_API_KEY, on Hugging Face the secret sets it, and app.R does not know or care which; that is why the Dockerfile and the upload never contain the key. While builds run, move to the next slide and let early finishers try the queries.
+The deploy is the forty-minute block; start it early enough that builds finish before the end of class. Do steps 1 and 2 on the projector, then let the room catch up before step 3. The root directory is the step that goes wrong: without it Render looks for a Dockerfile at the top of the repository and fails. The Free instance type is not the default; point at it. Step 3's environment variable is the security beat of the day and closes the loop from Part 2: on the lab PC the project .Renviron sets OPENAI_API_KEY, on Render the environment variable sets it, and app.R does not know or care which; that is why the Dockerfile and the repository never contain the key. While builds run, move to the next slide and let early finishers try the queries. Platform note for you: this slide said Hugging Face until Sep 17, 2026, when Docker Spaces became a paid feature; the Dockerfile moved to Render with one line changed.
 
 ---
 
@@ -960,39 +948,38 @@ The deploy is the forty-minute block; start it early enough that builds finish b
 .left55[
 <div style="display:flex; gap:10px; margin-top:6px;">
   <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; padding:12px 10px; background:#fcfcfc; text-align:center; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
-    <div style="font-size:30px; font-weight:700; color:#c3142d; line-height:1.1;">3M</div>
-    <div style="font-size:12.5px; color:#585E60; margin-top:4px;">models</div>
+    <div style="font-size:30px; font-weight:700; color:#c3142d; line-height:1.1;">$0</div>
+    <div style="font-size:12.5px; color:#585E60; margin-top:4px;">a month for a free instance: 0.1 CPU, 512 MB of memory</div>
   </div>
   <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; padding:12px 10px; background:#fcfcfc; text-align:center; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
-    <div style="font-size:30px; font-weight:700; color:#c3142d; line-height:1.1;">1M</div>
-    <div style="font-size:12.5px; color:#585E60; margin-top:4px;">applications like yours</div>
+    <div style="font-size:30px; font-weight:700; color:#c3142d; line-height:1.1;">15 min</div>
+    <div style="font-size:12.5px; color:#585E60; margin-top:4px;">idle before a free app sleeps; about a minute to wake</div>
   </div>
   <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; padding:12px 10px; background:#fcfcfc; text-align:center; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
-    <div style="font-size:30px; font-weight:700; color:#c3142d; line-height:1.1;">18M</div>
-    <div style="font-size:12.5px; color:#585E60; margin-top:4px;">developers, researchers, and creators</div>
+    <div style="font-size:30px; font-weight:700; color:#c3142d; line-height:1.1;">500</div>
+    <div style="font-size:12.5px; color:#585E60; margin-top:4px;">build minutes a month, and 750 hours of free instance time</div>
   </div>
 </div>
 <div style="margin-top:14px; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
-  <div style="background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:8px 14px;">Ten days ago</div>
+  <div style="background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:8px 14px;">What changed this month</div>
   <div style="padding:10px 14px; font-size:13.5px; line-height:1.55;">
     <div style="display:grid; grid-template-columns:96px 1fr; row-gap:6px; column-gap:10px;">
-      <b style="color:#c3142d;">Sep 2, 2026</b><div>NVIDIA and Hugging Face sign a merger agreement.</div>
-      <b style="color:#c3142d;">Sep 3, 2026</b><div>NVIDIA announces it will acquire Hugging Face: about <b>$11.9 billion</b> to stockholders plus up to about <b>$1.0 billion</b> in retention equity for employees.</div>
-      <b style="color:#c3142d;">H1 2027</b><div>Expected close, subject to regulatory approval.</div>
+      <b style="color:#c3142d;">Sep 2026</b><div>Hugging Face makes Docker Spaces a paid feature: "Gradio and Docker Spaces run on compute and require a paid plan to create."</div>
+      <b style="color:#c3142d;">Sep 17</b><div>The reference app moves to Render in one afternoon: the same Dockerfile, one line changed (the port), a new URL.</div>
     </div>
   </div>
 </div>
-<div style="margin-top:10px; font-size:12.5px; color:#585E60; line-height:1.5;">Hugging Face is where models, datasets, and apps are published and found; think GitHub for AI. The Space you create today is one of the 1M applications.</div>
+<div style="margin-top:10px; font-size:12.5px; color:#585E60; line-height:1.5;">Render is a hosting company: you hand it a repository with a recipe, it builds the computer, runs it, and gives it an address. The app you deploy today is one of its free instances.</div>
 ]
 
 .right43[
 <div style="border:1px solid #d1d5db; border-radius:8px; padding:11px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13.5px; line-height:1.55;">
 <div style="font-weight:700; color:#c3142d; font-size:15px;">The business story</div>
-<div style="margin-top:6px;">NVIDIA sells the chips that models run on. It is buying the marketplace where models and apps are found and deployed.</div>
-<div style="margin-top:6px;">The stated commitment: <i>"Hugging Face will remain an open platform for the entire AI ecosystem."</i> No NVIDIA hardware is required to build on it or deploy through it.</div>
+<div style="margin-top:6px;">Render sells compute by the month: a small paid instance is $7, a Pro workspace $25 plus compute. The free tier is the top of that funnel: it costs the company real machines and earns nothing until a hobby project becomes a business.</div>
+<div style="margin-top:6px;">Free tiers change when a company's economics change, which is what Hugging Face did this month. A Dockerfile is what makes your app portable, so a platform change costs an afternoon, not a rewrite.</div>
 </div>
 <div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:11px 14px; background:#fdf2f2; font-size:13.5px; line-height:1.55; margin-top:12px;">
-<b>Question for the room.</b> What does a chip company gain from owning the app store, if it promises not to require its chips?
+<b>Question for the room.</b> Why would a company give away compute? What does it get from a student who deploys one app and never pays?
 </div>
 ]
 
@@ -1002,12 +989,12 @@ The deploy is the forty-minute block; start it early enough that builds finish b
 <html>
 <hr>
 </html>
-**Sources:** [NVIDIA to Acquire Hugging Face](https://blogs.nvidia.com/blog/nvidia-to-acquire-hugging-face/), NVIDIA blog, Sep 3, 2026 (platform figures and the open-platform commitment); [NVIDIA Form 8-K, Sep 2, 2026](https://www.sec.gov/Archives/edgar/data/0001045810/000104581026000078/nvda-20260902.htm), U.S. Securities and Exchange Commission (deal terms and expected close).
+**Sources:** [Render pricing](https://render.com/pricing) and [Render free instances](https://render.com/docs/free) (limits as shown in a Hobby workspace on Sep 17, 2026); [Hugging Face Spaces overview](https://huggingface.co/docs/hub/spaces-overview) (the paid-plan sentence, read Sep 16, 2026).
 ]
 
 ???
 
-Two minutes, before the deploy so they know whose site they are signing up for. The numbers are NVIDIA's own from the announcement, so say so. The question on the right is the point: distribution (the place developers already go), vertical integration (silicon at the bottom, the model catalog and the deployment marketplace at the top), and visibility into what gets built and deployed, which is worth a great deal to a company deciding what chips to design next. Do not speculate beyond the filing; the deal has not closed and needs regulatory approval. Then move to the deploy.
+Two minutes, before the deploy so they know whose computers they are about to use. The numbers are Render's own, from the dashboard of a free workspace. The question on the right is the point: acquisition (the place developers already know), conversion (the first app that gets traffic upgrades to a paid instance), and visibility into what gets built. The Hugging Face change is worth thirty seconds as a lesson in portability, not as a complaint: the recipe did not change, only the address. Then move to the deploy.
 
 ---
 
@@ -1022,7 +1009,7 @@ class: inverse, center, middle
 .left55[
 
 <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
-  <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:9px 14px;">Four questions for your Space</div>
+  <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:9px 14px;">Four questions for your app</div>
   <div style="padding:12px 16px; font-size:14px; line-height:1.7;">
     <div><b>1.</b> Which ten companies posted the most remote jobs?</div>
     <div><b>2.</b> Show the remote postings in Ohio.</div>
@@ -1045,8 +1032,8 @@ class: inverse, center, middle
 ]
 
 .right43[
-<div style="font-size:12.5px; color:#585E60; margin-bottom:4px;">Still building? The reference Space, live: <a href="https://huggingface.co/spaces/fmegahed/job_scout_chat" target="_blank"><b>fmegahed/job_scout_chat</b></a>. Same data and the same dozen lines, plus a bslib layout (Appendix A3 and a little more). Click <b>Explorer</b>, then the chat toggle.</div>
-<iframe src="https://fmegahed-job-scout-chat.hf.space/" loading="lazy" sandbox="allow-scripts allow-same-origin allow-forms allow-popups" style="width:100%; height:330px; border:1px solid #d1d5db; border-radius:8px; background:#ffffff;"></iframe>
+<div style="font-size:12.5px; color:#585E60; margin-bottom:4px;">Still building? The reference app, live: <a href="https://job-scout-chat.onrender.com" target="_blank"><b>job-scout-chat.onrender.com</b></a> (source: <a href="https://github.com/fmegahed/job_scout_chat" target="_blank">fmegahed/job_scout_chat</a>). Same data and the same dozen lines, plus a bslib layout (Appendix A3 and a little more). Click <b>Explorer</b>, then the chat toggle.</div>
+<iframe src="https://job-scout-chat.onrender.com/" loading="lazy" sandbox="allow-scripts allow-same-origin allow-forms allow-popups" style="width:100%; height:330px; border:1px solid #d1d5db; border-radius:8px; background:#ffffff;"></iframe>
 <div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:11px 14px; background:#fdf2f2; font-size:13.5px; line-height:1.55; margin-top:12px;">
 <b>The model does not know what a column means.</b> It sees names, types, and ranges: nothing tells it that <code>location_state</code> holds two-letter codes. Telling it, in a <b>data dictionary</b>, is <a href="#appendix-a2">Appendix A2</a> and most of Assignment 05.
 </div>
@@ -1057,7 +1044,7 @@ class: inverse, center, middle
 
 ???
 
-Question 1 is the Part 1 query, so they can check the app's SQL against their own; the other two are chosen to expose the model's guesses: 2 depends on whether the model matches the state code, 3 on which column it searches and whether it counts companies (COUNT(DISTINCT company)) or postings. That sets up the data dictionary argument without a lecture. Eight minutes, while the builds run. Question 4 has a real trap seen in testing on Sep 13: asked for the chart a second time as a horizontal bar with the longest bar on top, gpt-5.6-luna wrote ORDER BY remote_job_count ASC LIMIT 10 and drew the ten companies with the FEWEST remote jobs, all at 1; the chart looked fine and the query was wrong, which is the whole point of reading the SQL under Show Query. The reference Space is embedded live on the right; it opens on its Home tab, so click Explorer, then open the chat with the sidebar toggle, because the iframe is narrow; ask the three questions there on the projector if the room's builds are slow. Collect one surprising SQL from the room for the Menti.
+Question 1 is the Part 1 query, so they can check the app's SQL against their own; the other two are chosen to expose the model's guesses: 2 depends on whether the model matches the state code, 3 on which column it searches and whether it counts companies (COUNT(DISTINCT company)) or postings. That sets up the data dictionary argument without a lecture. Eight minutes, while the builds run. Question 4 has a real trap seen in testing on Sep 13: asked for the chart a second time as a horizontal bar with the longest bar on top, gpt-5.6-luna wrote ORDER BY remote_job_count ASC LIMIT 10 and drew the ten companies with the FEWEST remote jobs, all at 1; the chart looked fine and the query was wrong, which is the whole point of reading the SQL under Show Query. The reference app is embedded live on the right (open it a minute before class so the free instance is awake); it opens on its Home tab, so click Explorer, then open the chat with the sidebar toggle, because the iframe is narrow; ask the three questions there on the projector if the room's builds are slow. Collect one surprising SQL from the room for the Menti.
 
 ---
 # Three Ways to Ask the Same Question
@@ -1223,7 +1210,7 @@ Same slide as the last two classes. Point at the Class 01 examples so they know 
 
 <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
   <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;"><a href="https://miamioh.instructure.com/courses/258169/assignments/3606964" target="_blank" style="color:#fff;">Assignment 05: Deploy Your Midwest Airbnb Chat</a></div>
-  <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;">Today's recipe on the Midwest Airbnb listings: same Dockerfile, new data, a full data dictionary, extra instructions, a theme and an About section of your own (the A3 code is enough; no tabs or value boxes required). Submit the Space's address. Appendices A1 to A4 are the reading. <span style="color:#585E60;">Due date on Canvas.</span></div>
+  <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;">Today's recipe on the Midwest Airbnb listings: same Dockerfile, new data, a full data dictionary, extra instructions, a theme and an About section of your own (the A3 code is enough; no tabs or value boxes required). Submit the folder's GitHub address; the live Render URL goes in its README. Appendices A1 to A4 are the reading. <span style="color:#585E60;">Due date on Canvas.</span></div>
 </div>
 
 <div style="margin-top:12px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:10px 14px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13.5px; line-height:1.5; color:#1b1b1b;">
@@ -1240,8 +1227,8 @@ Same slide as the last two classes. Point at the Class 01 examples so they know 
     <div><b>1.</b> Change the Part 1 query to count postings per <code>location_state</code>, largest first, top five. Which state is first, and with how many?</div>
     <div style="margin-top:4px;"><b>2.</b> Read the second table, <code>scout_runs</code>, from <code>scout.db</code> and <code>glimpse()</code> it. How many harvests are recorded?</div>
     <div style="margin-top:4px;"><b>3.</b> Parse <code>skills_json</code> for row 50. How many skills are required?</div>
-    <div style="margin-top:4px;"><b>4.</b> Ask your Space the question from 1. Does its SQL have the same <code>GROUP BY</code> and <code>ORDER BY</code> as yours?</div>
-    <div style="margin-top:4px;"><b>5.</b> Ask your Space for the remote postings in Ohio, then read the <code>WHERE</code>. What would a data dictionary have told the model?</div>
+    <div style="margin-top:4px;"><b>4.</b> Ask your app the question from 1. Does its SQL have the same <code>GROUP BY</code> and <code>ORDER BY</code> as yours?</div>
+    <div style="margin-top:4px;"><b>5.</b> Ask your app for the remote postings in Ohio, then read the <code>WHERE</code>. What would a data dictionary have told the model?</div>
     <details style="margin-top:8px;"><summary style="cursor:pointer; font-weight:700; color:#c3142d; font-size:13px;">Answers</summary>
       <div style="font-family:'Source Code Pro', monospace; font-size:11.5px; line-height:1.6; margin-top:4px; color:#1b1b1b;">
         1. SELECT location_state, COUNT(*) AS n FROM scout_postings GROUP BY location_state ORDER BY n DESC LIMIT 5: CA first with 328<br>
@@ -1258,7 +1245,7 @@ Same slide as the last two classes. Point at the Class 01 examples so they know 
 
 ???
 
-Assignment 04 was due before class, so it is not on the slide. Assignment 05 was assigned Wednesday and keeps its due date: it repeats today's Space on the Airbnb file, which is on Canvas. The practice card reuses today's query and app; the answers are one click away. Say the before-you-leave line out loud while pointing at GitHub Desktop.
+Assignment 04 was due before class, so it is not on the slide. Assignment 05 was assigned Wednesday and keeps its due date: it repeats today's deploy on the Airbnb file, which is on Canvas. The practice card reuses today's query and app; the answers are one click away. Say the before-you-leave line out loud while pointing at GitHub Desktop.
 
 ---
 
@@ -1298,9 +1285,10 @@ WORKDIR /app
 COPY app.R app.R
 COPY data/ data/
 
+# Render sets PORT at runtime; local Docker uses 7860
 EXPOSE 7860
-CMD ["R", "-q", "-e",
-  "shiny::runApp('/app', host = '0.0.0.0', port = 7860)"]
+CMD ["R", "-q", "-e", "shiny::runApp('/app', host = '0.0.0.0',
+  port = as.integer(Sys.getenv('PORT', '7860')))"]
 ```
 
 ]
@@ -1312,7 +1300,7 @@ CMD ["R", "-q", "-e",
 <div style="margin-top:5px;"><b><code>options(repos = ...)</code></b>: install every package from <b>one dated snapshot</b> of CRAN. A build in December installs the same versions as today. Last year's version of this file pinned versions from a repository that only keeps the latest build, and it broke the week a package updated.</div>
 <div style="margin-top:5px;"><b><code>install.packages(...)</code></b> lists <code>DT</code> and <code>ggsql</code> too: querychat only suggests them, but the app cannot draw its table without DT or its charts without ggsql.</div>
 <div style="margin-top:5px;"><b><code>stopifnot(...)</code></b>: fail the build now, with a readable log, rather than at the first visitor.</div>
-<div style="margin-top:5px;"><b><code>COPY</code>, <code>EXPOSE</code>, <code>CMD</code></b>: copy your app and data in, open port 7860 (Hugging Face's default), start Shiny.</div>
+<div style="margin-top:5px;"><b><code>COPY</code>, <code>EXPOSE</code>, <code>CMD</code></b>: copy your app and data in, open a door, and start Shiny on the port the host hands the container (Render sets <code>PORT</code>; 7860 is the fallback for a laptop).</div>
 </div>
 ]
 
@@ -1322,7 +1310,7 @@ CMD ["R", "-q", "-e",
 <html>
 <hr>
 </html>
-**Sources:** [Rocker images](https://rocker-project.org/images/versioned/shiny.html); [Posit Package Manager snapshots](https://p3m.dev/client/#/repos/cran/setup); [Hugging Face Docker Spaces](https://huggingface.co/docs/hub/spaces-sdks-docker).
+**Sources:** [Rocker images](https://rocker-project.org/images/versioned/shiny.html); [Posit Package Manager snapshots](https://p3m.dev/client/#/repos/cran/setup); [Render: Docker deploys](https://render.com/docs/docker).
 ]
 
 ???
@@ -1431,7 +1419,7 @@ shinyApp(ui, server)
 <div style="margin-top:6px;"><b>This is all Assignment 05 asks for:</b> a theme and title of your own, an About section naming the data and you, and the SQL panel visible. The code on the left, with your names in it, meets all three.</div>
 </div>
 <div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:11px 14px; background:#fdf2f2; font-size:13.5px; line-height:1.55; margin-top:12px;">
-<b>Optional, not graded:</b> the reference Space <a href="https://huggingface.co/spaces/fmegahed/job_scout_chat" target="_blank">fmegahed/job_scout_chat</a> goes further, with <code>page_navbar()</code> tabs, <code>value_box()</code> counts, and icons on top of this layout; its <b>Files</b> tab has the source. Read it for ideas, not as the target. If you borrow icons, add <code>bsicons</code> to the Dockerfile's <code>install.packages()</code> line.</div>
+<b>Optional, not graded:</b> the reference app <a href="https://job-scout-chat.onrender.com" target="_blank">job-scout-chat.onrender.com</a> goes further, with <code>page_navbar()</code> tabs, <code>value_box()</code> counts, and icons on top of this layout; the source is at <a href="https://github.com/fmegahed/job_scout_chat" target="_blank">github.com/fmegahed/job_scout_chat</a>. Read it for ideas, not as the target. If you borrow icons, add <code>bsicons</code> to the Dockerfile's <code>install.packages()</code> line.</div>
 ]
 
 <div style="clear:both;"></div>
@@ -1445,23 +1433,23 @@ shinyApp(ui, server)
 
 ???
 
-Appendix. Be explicit about the bar for Assignment 05: the code on the left, with an About line, already meets the theme, About, and SQL-panel rows of the rubric; the navbar, value boxes, and icons on the reference Space are extras for the curious and earn nothing beyond the rubric. The OEWS Jobs Explorer Space (fmegahed/querychat_demo) is a second example on a different dataset.
+Appendix. Be explicit about the bar for Assignment 05: the code on the left, with an About line, already meets the theme, About, and SQL-panel rows of the rubric; the navbar, value boxes, and icons on the reference app are extras for the curious and earn nothing beyond the rubric. The OEWS Jobs Explorer Space (fmegahed/querychat_demo) is a second example on a different dataset.
 
 ---
 
 name: appendix-a4
 
-# A4: Deploying With Git Instead of Uploads
+# A4: How Render Builds From GitHub
 
 .left55[
 
 <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
-  <div style="background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:8px 14px;">A Space is a git repository</div>
+  <div style="background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:8px 14px;">Every push is a deploy</div>
   <div style="padding:10px 14px; font-size:13.5px; line-height:1.55;">
-    <div><b>1.</b> On huggingface.co: <b>Settings &rarr; Access Tokens &rarr; New token</b>, type <b>Write</b>. Copy it once; it is your git password for Hugging Face.</div>
-    <div style="margin-top:4px;"><b>2.</b> GitHub Desktop: <b>File &rarr; Clone repository &rarr; URL</b>, paste the Space address, local path <code>M:\isa401</code> (a sibling of <code>business_intelligence</code>, never inside it). Username: your HF username. Password: the token.</div>
-    <div style="margin-top:4px;"><b>3.</b> Copy the app files into the clone, <b>Commit to main</b>, <b>Push origin</b>. The Space rebuilds on every push; the commit history is on its Files tab.</div>
-    <div style="margin-top:4px;"><b>4.</b> Each improvement is its own commit. Assignment 05 asks for at least three.</div>
+    <div><b>1.</b> Render's GitHub app watches the branch you connected. A push that touches the <b>root directory</b> (<code>apps/job_scout_chat</code>) starts a build; a push elsewhere in the repository does not.</div>
+    <div style="margin-top:4px;"><b>2.</b> The build runs your Dockerfile on Render's machine: pull <code>rocker/shiny:4.6.0</code>, install the packages from the dated snapshot, copy the app in. Each build costs a few of the 500 build minutes a free workspace gets per month.</div>
+    <div style="margin-top:4px;"><b>3.</b> The new container replaces the old one and the address stays the same. The <b>Events</b> tab lists every deploy with its commit; <b>Logs</b> shows the build and the running app.</div>
+    <div style="margin-top:4px;"><b>4.</b> Assignment 05 asks for at least three commits to the app folder; each is its own deploy, and the folder's history on GitHub is what gets graded.</div>
   </div>
 </div>
 
@@ -1470,11 +1458,11 @@ name: appendix-a4
 .right43[
 <div style="border:1px solid #d1d5db; border-radius:8px; padding:11px 14px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13.5px; line-height:1.55;">
 <div style="font-weight:700; color:#c3142d; font-size:15px;">The .gitattributes file in the zip</div>
-<div style="margin-top:6px;"><code>*.db filter=lfs diff=lfs merge=lfs -text</code>: Hugging Face refuses plain pushes of files over 10 MB, so database files travel through Git LFS, which GitHub Desktop already bundles.</div>
-<div style="margin-top:4px;"><code>Dockerfile text eol=lf</code> (and <code>*.R</code>, <code>*.md</code>): a Windows editor can turn line endings into CRLF, and a carriage return after a trailing backslash breaks the Dockerfile on Linux. This line keeps them LF on every machine.</div>
+<div style="margin-top:6px;"><code>Dockerfile text eol=lf</code> (and <code>*.R</code>, <code>*.md</code>): a Windows editor can turn line endings into CRLF, and a carriage return after a trailing backslash breaks the Dockerfile on Linux. This line keeps them LF on every machine.</div>
+<div style="margin-top:6px;">No Git LFS line any more: GitHub takes files up to 100 MB as ordinary files, and both databases are far below that.</div>
 </div>
 <div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:11px 14px; background:#fdf2f2; font-size:13.5px; line-height:1.55; margin-top:12px;">
-<b>Windows and Mac</b> run the same GitHub Desktop dialogs. If the push asks for a password, paste the token, not your Hugging Face password.
+<b>If you committed the class app before Sep 17</b> with the old <code>.gitattributes</code>, <code>scout.db</code> is stored through Git LFS and Render's build may see only a pointer file. Fix: delete the <code>*.db filter=lfs</code> line, remove <code>scout.db</code> from the folder, commit, put it back, commit again.
 </div>
 ]
 
@@ -1484,9 +1472,9 @@ name: appendix-a4
 <html>
 <hr>
 </html>
-**Sources:** [Hugging Face: user access tokens](https://huggingface.co/docs/hub/security-tokens); [Hugging Face: repositories, git and LFS](https://huggingface.co/docs/hub/repositories-getting-started); [GitHub Desktop: cloning a repository](https://docs.github.com/en/desktop/adding-and-cloning-repositories/cloning-a-repository-from-github-to-github-desktop).
+**Sources:** [Render: deploys and auto-deploys](https://render.com/docs/deploys); [Render: root directories](https://render.com/docs/monorepo-support); [Render: free instances](https://render.com/docs/free); [GitHub: file size limits](https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-large-files-on-github).
 ]
 
 ???
 
-Appendix. In class the upload route keeps forty minutes honest; Assignment 05 requires this route so every improvement is a commit and the grader can count them. The two traps are the token as password and the nested-repo mistake; the .gitattributes lines are the third, invisible one. Lab PCs give each student their own Windows account, so saved credentials stay with the student.
+Appendix. Until Sep 17 this slide described cloning a Hugging Face Space with a write token; on Render the repository they already push to is the deployment source, so the token, the second clone, and the LFS rule are gone. The two traps that remain are the root directory and the CRLF line endings; the LFS note is for the students who committed the class app in the first week.

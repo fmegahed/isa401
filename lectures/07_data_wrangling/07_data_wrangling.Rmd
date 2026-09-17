@@ -278,7 +278,7 @@ Three minutes. Card 2 is the ritual's first step; check top right corners. Card 
 
 # Learning Objectives for Today's Class
 
-- **Run** the `querychat` app locally and **deploy** it to Hugging Face Spaces, with the API key kept out of every commit.
+- **Run** the `querychat` app locally and **deploy** it to Render from your GitHub repository, with the API key kept out of every commit.
 - **Manipulate** a data frame with `dplyr::select()`, `dplyr::filter()`, `dplyr::arrange()`, `dplyr::mutate()`, and `dplyr::across()`, chained with `|>`.
 - **Summarize** groups with `dplyr::group_by()` and `dplyr::summarize()`, and **count** with `dplyr::count()`.
 - **Combine** two tables with `dplyr::left_join()`, and say what `dplyr::inner_join()` and `dplyr::anti_join()` would have dropped.
@@ -378,7 +378,7 @@ Six minutes, everyone typing. Monday they saw this app run on the projector; tod
 <div style="margin-top:6px;">A key in a commit is public within minutes, even if you delete the file in the next commit: the history keeps it. There is no un-leaking; the only fix is to <b>revoke</b> the key, make a new one, and replace it <b>everywhere it was used</b>.</div>
 </div>
 <div style="border:1px solid #c3142d; border-left:4px solid #c3142d; border-radius:8px; padding:11px 14px; background:#fdf2f2; font-size:13.5px; line-height:1.55; margin-top:10px;">
-<b>What you do now.</b> The <a href="https://miamioh.instructure.com/courses/258169/files/40267121" target="_blank"><b>new class key</b></a> goes in your project <code>.Renviron</code>; then <b>Session &rarr; Restart R</b>. If you made a Space on Monday, replace its secret too. Nobody is in trouble: this is exactly why the <code>use_git_ignore()</code> line exists.
+<b>What you do now.</b> The <a href="https://miamioh.instructure.com/courses/258169/files/40267121" target="_blank"><b>new class key</b></a> goes in your project <code>.Renviron</code>; then <b>Session &rarr; Restart R</b>. If you deployed the app on Monday, replace its environment variable too. Nobody is in trouble: this is exactly why the <code>use_git_ignore()</code> line exists.
 </div>
 ]
 
@@ -386,7 +386,7 @@ Six minutes, everyone typing. Monday they saw this app run on the projector; tod
 
 ???
 
-Three minutes, and say it without blame; the point is the mechanism, not the person. Walk the email: the key is named, it was found leaked, it is disabled with immediate effect, and the likely cause is a commit to GitHub. Then the two lessons. First, git history is forever, so deleting the file afterwards changes nothing; the only fix is revoke and replace. Second, replace means everywhere: the project .Renviron on every machine and the secret on every Space, which is why the Deploy slide says to paste the new key. Connect it to the ritual: the .gitignore line is not a formality, it is the thing that keeps a public repo from publishing a password. If a student asks how the scanner works, GitHub secret scanning notifies providers about matching strings in public commits and OpenAI revokes automatically; do not speculate beyond that. Then move to the Dockerfile.
+Three minutes, and say it without blame; the point is the mechanism, not the person. Walk the email: the key is named, it was found leaked, it is disabled with immediate effect, and the likely cause is a commit to GitHub. Then the two lessons. First, git history is forever, so deleting the file afterwards changes nothing; the only fix is revoke and replace. Second, replace means everywhere: the project .Renviron on every machine and the environment variable on every deployed app, which is why the Deploy slide says to paste the new key as the environment variable. Connect it to the ritual: the .gitignore line is not a formality, it is the thing that keeps a public repo from publishing a password. If a student asks how the scanner works, GitHub secret scanning notifies providers about matching strings in public commits and OpenAI revokes automatically; do not speculate beyond that. Then move to the Dockerfile.
 
 ---
 
@@ -475,7 +475,7 @@ fmt = function(n) format(n, big.mark = ",")
 <div class="dk-chip dk-fade" data-from="3">app.R</div>
 <div class="dk-chip dk-fade" data-from="3">data/scout.db</div>
 </div>
-<div class="dk-browser" data-from="5">your browser:<br>fmegahed-job-<br>scout-chat.hf.space</div>
+<div class="dk-browser" data-from="5">your browser:<br>job-scout-chat<br>.onrender.com</div>
 </div>
 <div class="dk-base"></div>
 <div class="dk-box" data-from="1">
@@ -500,21 +500,21 @@ fmt = function(n) format(n, big.mark = ",")
 <div class="dk-led" data-from="5" style="top:26px;"></div><div class="dk-led" data-from="5" style="top:72px;"></div><div class="dk-led" data-from="5" style="top:118px;"></div><div class="dk-led" data-from="5" style="top:164px;"></div>
 </div>
 <div class="dk-pill dk-pill-off" data-from="0" data-to="5">nothing installed</div>
-<div class="dk-pill dk-pill-on" data-from="5">Running</div>
-<div class="dk-ghost" data-from="6" style="top:100px;">a teammate's Space<br><span class="dk-run">Running</span></div>
-<div class="dk-ghost" data-from="6" style="top:196px; transition-delay:.15s;">rebuilt in December<br><span class="dk-run">Running</span></div>
+<div class="dk-pill dk-pill-on" data-from="5">Live</div>
+<div class="dk-ghost" data-from="6" style="top:100px;">a teammate's app<br><span class="dk-run">Live</span></div>
+<div class="dk-ghost" data-from="6" style="top:196px; transition-delay:.15s;">rebuilt in December<br><span class="dk-run">Live</span></div>
 <div class="dk-lbl" style="left:12px; width:180px;">your lab PC</div>
 <div class="dk-lbl" style="left:206px; width:164px;">the box</div>
-<div class="dk-lbl" style="left:400px; width:148px;">Hugging Face server</div>
+<div class="dk-lbl" style="left:400px; width:148px;">Render server</div>
 </div>
 <div class="sc-caps">
 <div class="sc-cap on" data-step="0"><b>Before the recipe.</b> Your app runs on this PC only because R, nine packages, app.R, and scout.db all happen to be here. The server on the right has none of them.</div>
 <div class="sc-cap" data-step="1"><b>FROM.</b> Start from a ready-made Linux computer that already has R 4.6.0, the same R as this lab.</div>
 <div class="sc-cap" data-step="2"><b>RUN.</b> Install the nine packages from a snapshot of CRAN frozen on 2026-09-01, so a rebuild in December gets exactly today's versions.</div>
 <div class="sc-cap" data-step="3"><b>COPY.</b> Copy in the two things you wrote. They are the only things that leave your PC.</div>
-<div class="sc-cap" data-step="4"><b>EXPOSE and CMD.</b> Open one door, port 7860, and say what to run behind it: <code>shiny::runApp()</code>.</div>
-<div class="sc-cap" data-step="5"><b>Build and run.</b> Hugging Face reads the recipe, builds this exact computer on its server, and runs it. You just open the URL.</div>
-<div class="sc-cap" data-step="6"><b>Same recipe, same computer, anywhere.</b> A teammate's Space or a rebuild in December comes out identical.</div>
+<div class="sc-cap" data-step="4"><b>EXPOSE and CMD.</b> Open one door, the port the host assigns (7860 by default), and say what to run behind it: <code>shiny::runApp()</code>.</div>
+<div class="sc-cap" data-step="5"><b>Build and run.</b> Render reads the recipe, builds this exact computer on its server, and runs it. You just open the URL.</div>
+<div class="sc-cap" data-step="6"><b>Same recipe, same computer, anywhere.</b> A teammate's app, a rebuild in December, or a different host comes out identical.</div>
 </div>
 <div class="sc-bar"><button type="button" class="sc-btn sc-back">Back</button><button type="button" class="sc-btn sc-primary sc-step">Step</button><button type="button" class="sc-btn sc-play">Play</button><button type="button" class="sc-btn sc-reset">Reset</button><span class="sc-spds"><button type="button" class="sc-spd" data-spd="0.5">0.5x</button><button type="button" class="sc-spd on" data-spd="1">1x</button><button type="button" class="sc-spd" data-spd="2">2x</button></span><span class="sc-count">0 / 6</span></div>
 </div>
@@ -574,38 +574,26 @@ fmt = function(n) format(n, big.mark = ",")
 
 ???
 
-Three minutes, and this is the slide that answers "why is there a Dockerfile in the zip". Step through it; do not press Play in class. Step 0: point at the laptop and ask what the app needs that the server does not have. Steps 1 and 2: R and the packages come from public sources (the rocker image, the CRAN snapshot), not from the laptop; the date stamp is the reproducibility idea from Class 02 applied to software. Step 3 is the sentence to say slowly: the only things that leave your PC are the two files you wrote. Step 4: a port is a door number. Step 5: Hugging Face does the building; you never run Docker. Step 6: same recipe, same computer, which is why Assignment 05 works on their laptop, on a lab PC, and on my machine when I grade. The counts on the right are computed from scout.db at knit time; Docker is rare in analyst postings and the card says so, because overselling it would be technically-true-but-misleading. Back and Reset are there if a question sends you backwards. Appendix A1 reads the actual file line by line for the curious.
+Three minutes, and this is the slide that answers "why is there a Dockerfile in the zip". Step through it; do not press Play in class. Step 0: point at the laptop and ask what the app needs that the server does not have. Steps 1 and 2: R and the packages come from public sources (the rocker image, the CRAN snapshot), not from the laptop; the date stamp is the reproducibility idea from Class 02 applied to software. Step 3 is the sentence to say slowly: the only things that leave your PC are the two files you wrote. Step 4: a port is a door number. Step 5: Render does the building; you never run Docker. The same recipe ran on Hugging Face on Monday and on Render on Wednesday, which is the portability point. Step 6: same recipe, same computer, which is why Assignment 05 works on their laptop, on a lab PC, and on my machine when I grade. The counts on the right are computed from scout.db at knit time; Docker is rare in analyst postings and the card says so, because overselling it would be technically-true-but-misleading. Back and Reset are there if a question sends you backwards. Appendix A1 reads the actual file line by line for the curious.
 
 ---
 
-# Deploy to Hugging Face
+# Deploy to Render
 
-<div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px;">
-  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
-    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:8px 14px;">1 &nbsp; Account and Space</div>
-    <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;">Sign up at <a href="https://huggingface.co/join" target="_blank"><b>huggingface.co</b></a> (personal email). Then <b>New &rarr; Space</b>: name <code>job_scout_chat</code>, license <b>MIT</b>, SDK <b>Docker</b> &rarr; <b>Blank</b>, visibility <b>Public</b>, <b>Create Space</b>.</div>
-  </div>
-  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
-    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:8px 14px;">2 &nbsp; Upload four things</div>
-    <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;"><b>Files &rarr; Add file &rarr; Upload files</b>. Drag in <code>app.R</code>, the <code>Dockerfile</code> and <code>README.md</code> from <a href="https://miamioh.instructure.com/courses/258169/modules/995631" target="_blank"><code>job_scout_chat.zip</code></a> on Canvas, and the whole <code>data/</code> folder. <b>Commit changes to main</b>.</div>
-  </div>
-  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
-    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:8px 14px;">3 &nbsp; Add the secret</div>
-    <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;"><b>Settings &rarr; Variables and secrets &rarr; New secret</b>. Name <code>OPENAI_API_KEY</code>, value the <a href="https://miamioh.instructure.com/courses/258169/files/40267121" target="_blank"><b>class key</b></a> from Canvas. A secret is encrypted and never shown in the file list; a variable is public. Use <b>secret</b>. Same name as the line in your <code>.Renviron</code>: <code>app.R</code> reads <code>OPENAI_API_KEY</code> from wherever it runs, so the key is never in a file you upload.</div>
-  </div>
-  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
-    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:8px 14px;">4 &nbsp; Watch it build</div>
-    <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;">The badge at the top goes <b>Building</b> for a few minutes while the Dockerfile installs R and the packages, then <b>Running</b>. Click <b>Logs</b> if it goes red; the last lines say why.</div>
-  </div>
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:6px;">
+<div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);"><div style="background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:8px 14px;">1 &nbsp; Account</div><div style="padding:10px 14px; font-size:13.5px; line-height:1.5;">Sign up at <a href="https://render.com" target="_blank"><b>render.com</b></a> with <b>GitHub</b>, using the account that owns <code>business_intelligence</code>. The Hobby plan is free and asks for no card. Skip the onboarding questions.</div></div>
+<div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);"><div style="background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:8px 14px;">2 &nbsp; Connect the repository</div><div style="padding:10px 14px; font-size:13.5px; line-height:1.5;"><b>New &rarr; Web Service &rarr; Git Provider &rarr; GitHub.</b> Install Render's GitHub app on <code>business_intelligence</code> (<i>Only select repositories</i>), then click the repository to connect it. Your app folder is already in it from the ritual.</div></div>
+<div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);"><div style="background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:8px 14px;">3 &nbsp; Configure</div><div style="padding:10px 14px; font-size:13.5px; line-height:1.5;">Name <code>job-scout-chat</code>. Language <b>Docker</b> (detected from the Dockerfile). Branch <code>main</code>. <b>Root Directory</b> <code>apps/job_scout_chat</code>. Instance type <b>Free</b>, $0 (the default is paid; change it). Environment variable <code>OPENAI_API_KEY</code> = the <a href="https://miamioh.instructure.com/courses/258169/files/40267121" target="_blank"><b>class key</b></a>. <b>Deploy Web Service</b>.</div></div>
+<div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);"><div style="background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:8px 14px;">4 &nbsp; Watch it build</div><div style="padding:10px 14px; font-size:13.5px; line-height:1.5;"><b>Logs</b> run the Dockerfile line by line; a few minutes the first time. Status <b>Live</b>, address <code>https://job-scout-chat-xxxx.onrender.com</code>. A free app sleeps after 15 idle minutes and wakes in about a minute; a 502 while waking is normal.</div></div>
 </div>
 
-<div style="margin-top:12px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:10px 16px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.55; color:#1b1b1b;">
-<b style="color:#c3142d;">What the Dockerfile is.</b> A recipe that builds a fresh Linux computer with the same R version as this lab, installs the packages from a dated snapshot, copies your app in, and starts it. You do not run Docker; Hugging Face does. The recipe is read line by line in <a href="http://fmegahed.github.io/isa401/fall2026/class06/06_sqlite_deployed_app.html#appendix-a1" target="_blank">Appendix A1 of the Class 06 deck</a>.
+<div style="margin-top:12px; border:1px solid #c3142d; border-left:6px solid #c3142d; border-radius:8px; padding:9px 14px; background:#fdf2f2; font-size:13.5px; line-height:1.5;">
+<b style="color:#c3142d;">What the Dockerfile is.</b> A recipe that builds a fresh Linux computer with the same R version as this lab, installs the packages from a dated snapshot, copies your app in, and starts it. You do not run Docker; Render does. Same variable name as the line in your <code>.Renviron</code>: <code>app.R</code> reads <code>OPENAI_API_KEY</code> from wherever it runs, so the key is never in a file you commit. The recipe is read line by line in <a href="http://fmegahed.github.io/isa401/fall2026/class06/06_sqlite_deployed_app.html#appendix-a1" target="_blank">Appendix A1 of the Class 06 deck</a>.
 </div>
 
 ???
 
-Seven minutes on the projector, then the room follows. Do steps 1 and 2 live; at step 3 paste the NEW key as the secret and say out loud that anyone who made a Space Monday must replace the secret too, because the old key is disabled. Builds take a few minutes; leave them running and move to Part 2. The Try It slide near the end is the moment to come back and check the badges. Folder drag-and-drop works in the upload dialog; scout.db uploaded at the top level instead of inside data/ is the classic failure and the Logs show it. Appendix A2 has the troubleshooting list.
+Seven minutes on the projector, then the room follows. Do steps 1 and 2 live; at step 3 paste the NEW key as the environment variable and say out loud that anyone who deployed on Monday must replace it, because the old key is disabled. The root directory is the step that goes wrong: without it Render looks for a Dockerfile at the top of the repository and fails; the Free instance type is not the default, point at it. Builds take a few minutes; leave them running and move to Part 2, and check the Live badges at the Practice slide. Appendix A2 has the troubleshooting list. Platform note for you: this slide said Hugging Face until Sep 17, 2026, when Docker Spaces became a paid feature; the Dockerfile moved to Render with one line changed.
 
 ---
 
@@ -743,6 +731,8 @@ Three minutes, nothing to type. Six rows, three sentences each: what changes, an
 .pp-tab td { padding:2px 9px !important; line-height:1.25 !important; border-bottom:1px solid #e5e7eb; white-space:nowrap; color:#1b1b1b; transition:all .3s; }
 .pp-tab .pp-x { color:#9ca3af; text-decoration:line-through; background:#fafafa; }
 .pp-tab th.pp-x { background:#585E60; color:#d1d5db; }
+.pp-tab .pp-keep { background:#fdf2f2; }
+.pp-tab th.pp-keep { background:#c3142d; }
 .pp-tab .pp-new { background:#fff3bf; }
 .pp-tab th.pp-new { background:#b45309; }
 .pp-tab tr.pp-g1 td { background:#fdf2f2; } .pp-tab tr.pp-g1 td:first-child { box-shadow:inset 5px 0 0 #c3142d; }
@@ -782,18 +772,20 @@ pp_tab = function(df, step, caption, row_cls = rep("", nrow(df)), col_cls = rep(
           step, step + 1, caption, th, paste0(rows, collapse = ""))
 }
 pp_keep = c("company", "location_state", "remote", "posted_at", "last_seen_at")
-pp2 = pp0 |> select(all_of(pp_keep))
-pp3 = pp2 |> filter(remote == 1) |> mutate(days_open = as.numeric(as.Date(last_seen_at) - as.Date(posted_at)))
-pp4 = pp3 |> arrange(desc(days_open))
-pp_grp = c("The Home Depot" = "pp-g1", "CVS Health" = "pp-g2", "Talkspace" = "pp-g3")
-pp6 = pp4 |> group_by(company) |> summarize(n = n(), avg_days = round(mean(days_open), 2)) |> arrange(desc(n))
+pp1 = pp0 |> dplyr::select(dplyr::all_of(pp_keep))
+pp2 = pp1 |> dplyr::filter(remote == 1)
+pp3 = pp2 |> dplyr::mutate(days_open = as.numeric(as.Date(last_seen_at) - as.Date(posted_at)))
+pp4 = pp3 |> dplyr::arrange(dplyr::desc(days_open))
+pp6 = pp4 |> dplyr::group_by(company) |> dplyr::summarize(n = dplyr::n(), avg_days = round(mean(days_open), 2)) |> dplyr::arrange(dplyr::desc(n))
+pp_grp = setNames(paste0("pp-g", seq_len(nrow(pp6))), pp6$company)
+pp5 = pp4 |> dplyr::mutate(.g = match(company, pp6$company)) |> dplyr::arrange(.g) |> dplyr::select(-.g)
 pp_tables = paste0(
   pp_tab(pp0, 0, sprintf("<b>jobs</b>: eight of the %s rows, seven columns. The same eight rows as Monday's animation.", fmt(nrow(jobs)))),
-  pp_tab(pp0, 1, "<b>dplyr::select()</b> keeps five columns; <code>title</code> and <code>category</code> drop out. Still eight rows.", col_cls = ifelse(names(pp0) %in% pp_keep, "", "pp-x")),
-  pp_tab(pp2, 2, "<b>dplyr::filter(remote == 1)</b>: two rows fail the test and drop out. Still five columns.", row_cls = ifelse(pp2$remote == 1, "", "pp-x")),
-  pp_tab(pp3, 3, "<b>dplyr::mutate()</b> adds <code>days_open</code>, computed from two old columns. Six rows in, six rows out.", col_cls = ifelse(names(pp3) == "days_open", "pp-new", "")),
+  pp_tab(pp1, 1, "<b>dplyr::select()</b> kept five columns; <code>title</code> and <code>category</code> are gone. Still eight rows.", col_cls = rep("pp-keep", ncol(pp1))),
+  pp_tab(pp2, 2, "<b>dplyr::filter(remote == 1)</b> kept the six rows where the test is TRUE; the two with <code>remote == 0</code> are gone. Still five columns.", row_cls = rep("pp-keep", nrow(pp2))),
+  pp_tab(pp3, 3, "<b>dplyr::mutate()</b> added <code>days_open</code>, computed from two old columns. Six rows in, six rows out.", col_cls = ifelse(names(pp3) == "days_open", "pp-new", "")),
   pp_tab(pp4, 4, "<b>dplyr::arrange(dplyr::desc(days_open))</b>: the same six rows in a new order, largest first.", col_cls = ifelse(names(pp4) == "days_open", "pp-new", "")),
-  pp_tab(pp4, 5, "<b>dplyr::group_by(company)</b> moves nothing. It labels each row with its group: three groups, interleaved.", row_cls = unname(pp_grp[pp4$company])),
+  pp_tab(pp5, 5, "<b>dplyr::group_by(company)</b> labels each row with its company: three groups. Shown here grouped so the next step is visible; the rows themselves do not move.", row_cls = unname(pp_grp[pp5$company])),
   pp_tab(pp6, 6, "<b>dplyr::summarize()</b>: one row per group. <code>dplyr::n()</code> counted the rows in each group, <code>mean()</code> averaged their <code>days_open</code>.", row_cls = unname(pp_grp[pp6$company])))
 ```
 
@@ -805,11 +797,11 @@ pp_tables = paste0(
 <div class="pp-code">`r hl_r(c("jobs |>", "  dplyr::select(company, location_state, remote, posted_at, last_seen_at) |>", "  dplyr::filter(remote == 1) |>", "  dplyr::mutate(days_open = as.numeric(as.Date(last_seen_at) - as.Date(posted_at))) |>", "  dplyr::arrange(dplyr::desc(days_open)) |>", "  dplyr::group_by(company) |>", "  dplyr::summarize(n = dplyr::n(), avg_days = mean(days_open))"), "47%")`</div>
 <div class="sc-caps">
 <div class="sc-cap on" data-step="0"><b>Start.</b> A data frame goes in at the left. Each station is one verb; each verb hands a data frame to the next.</div>
-<div class="sc-cap" data-step="1"><b>Columns first.</b> Fewer columns makes everything after this easier to read; the rows are untouched.</div>
-<div class="sc-cap" data-step="2"><b>Rows next.</b> A test per row; TRUE stays, FALSE leaves. The struck rows are gone at the next station.</div>
+<div class="sc-cap" data-step="1"><b>Columns first.</b> select() returns only the columns you name; the rows are untouched.</div>
+<div class="sc-cap" data-step="2"><b>Rows next.</b> One test per row; TRUE stays, FALSE leaves. Eight rows became six.</div>
 <div class="sc-cap" data-step="3"><b>A new column, never a new row.</b> Every value is computed from the same row's other cells.</div>
 <div class="sc-cap" data-step="4"><b>Order is a property of the whole table.</b> Nothing was added or removed; the ties keep their earlier order.</div>
-<div class="sc-cap" data-step="5"><b>group_by() is invisible on its own.</b> It only tells the next verb which rows belong together.</div>
+<div class="sc-cap" data-step="5"><b>group_by() changes no values.</b> It only tells the next verb which rows belong together; the colors are that label.</div>
 <div class="sc-cap" data-step="6"><b>Collapse.</b> Six rows became three, one per company, and only the columns you named survive. This is Monday's GROUP BY.</div>
 </div>
 <div class="sc-bar"><button type="button" class="sc-btn sc-back">Back</button><button type="button" class="sc-btn sc-primary sc-step">Step</button><button type="button" class="sc-btn sc-play">Play</button><button type="button" class="sc-btn sc-reset">Reset</button><span class="sc-spds"><button type="button" class="sc-spd" data-spd="0.5">0.5x</button><button type="button" class="sc-spd on" data-spd="1">1x</button><button type="button" class="sc-spd" data-spd="2">2x</button></span><span class="sc-count">0 / 6</span></div>
@@ -1368,7 +1360,7 @@ Question 2 is <code>dplyr::filter()</code>, then <code>dplyr::group_by()</code> 
 
 ???
 
-Five minutes on the clock, Task tab up. The import block is Monday's three lines on the other database; everyone has midwest_airbnb.db from Assignment 04. Walk the room; do not name the verbs, the point is that they choose. At the bell, Answer tab, then Discussion: the per-person price errors are the data-dictionary lesson, the median is the skew lesson, and the 104-listing host is the first Assignment 06 question. While they work, check the Hugging Face badges from Part 1 on the projector; a red Space goes to Appendix A2.
+Five minutes on the clock, Task tab up. The import block is Monday's three lines on the other database; everyone has midwest_airbnb.db from Assignment 04. Walk the room; do not name the verbs, the point is that they choose. At the bell, Answer tab, then Discussion: the per-person price errors are the data-dictionary lesson, the median is the skew lesson, and the 104-listing host is the first Assignment 06 question. While they work, check the Render status of the Part 1 deploys on the projector; a failed deploy goes to Appendix A2.
 
 ---
 
@@ -1441,7 +1433,7 @@ class: inverse, center, middle
 
 By now, you should be able to do the following:
 
-- **Run** the `querychat` app locally with a git-ignored `.Renviron` and **deploy** it with the key as a Space **secret**; a key in a commit is public within minutes.
+- **Run** the `querychat` app locally with a git-ignored `.Renviron` and **deploy** it to Render with the key as an **environment variable**; a key in a commit is public within minutes.
 - **Chain verbs with `|>`**: `dplyr::select()` columns, `dplyr::filter()` rows, `dplyr::arrange()` order, `dplyr::mutate()` new columns, `dplyr::across()` for many columns at once.
 - **Collapse** with `dplyr::group_by()` + `dplyr::summarize()` or `dplyr::count()`; **join** with `dplyr::left_join()`, then `dplyr::anti_join()` for what did not match.
 
@@ -1518,11 +1510,11 @@ Same slide as the last two classes. Point at the Class 01 examples so they know 
 
 <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
   <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;"><a href="https://miamioh.instructure.com/courses/258169/assignments/3606964" target="_blank" style="color:#fff;">Assignment 05: Deploy Your Midwest Airbnb Chat</a></div>
-  <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;">Today's recipe on the Airbnb listings you just explored: same Dockerfile, new data, a full data dictionary, extra instructions, a theme and an About section of your own (the <code>page_sidebar()</code> code in <a href="http://fmegahed.github.io/isa401/fall2026/class06/06_sqlite_deployed_app.html#appendix-a3" target="_blank">Class 06, Appendix A3</a> is enough). Deploy through git, three or more commits. Submit the Space's address. <span style="color:#585E60;">Due date on Canvas.</span></div>
+  <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;">Today's recipe on the Airbnb listings you just explored: same Dockerfile, new data, a full data dictionary, extra instructions, a theme and an About section of your own (the <code>page_sidebar()</code> code in <a href="http://fmegahed.github.io/isa401/fall2026/class06/06_sqlite_deployed_app.html#appendix-a3" target="_blank">Class 06, Appendix A3</a> is enough). Deployed from your GitHub repository, three or more commits. Submit the folder's GitHub address; the live Render URL goes in its README. <span style="color:#585E60;">Due date on Canvas.</span></div>
 </div>
 
 <div style="margin-top:12px; border:1px solid #c3142d; border-left:6px solid #c3142d; border-radius:8px; padding:10px 14px; background:#fdf2f2; font-size:13.5px; line-height:1.5;">
-<b style="color:#c3142d;">The key, one more time.</b> The secret on your Space must be the <a href="https://miamioh.instructure.com/courses/258169/files/40267121" target="_blank"><b>new class key</b></a>. A Space built on the old key shows a 401 error in its Logs and earns 0 of the running points until the secret is replaced.
+<b style="color:#c3142d;">The key, one more time.</b> The environment variable on your Render app must be the <a href="https://miamioh.instructure.com/courses/258169/files/40267121" target="_blank"><b>new class key</b></a>. An app built on the old key shows a 401 error in its Logs and earns 0 of the live points until the variable is replaced.
 </div>
 
 <div style="margin-top:12px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:10px 14px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13.5px; line-height:1.5; color:#1b1b1b;">
@@ -1557,7 +1549,7 @@ Same slide as the last two classes. Point at the Class 01 examples so they know 
 
 ???
 
-Assignment 05 is unchanged and due as posted; the red box is the only news, and it matters for grading: a Space on the old key is a broken Space. The practice questions reuse today's objects; the answers are one click away. Say the before-you-leave line while pointing at GitHub Desktop.
+Assignment 05 is unchanged and due as posted; the red box is the only news, and it matters for grading: an app on the old key is a broken app. The practice questions reuse today's objects; the answers are one click away. Say the before-you-leave line while pointing at GitHub Desktop.
 
 ---
 
@@ -1565,7 +1557,7 @@ class: inverse, center, middle
 
 # Appendices
 
-<div style="font-size:16px; margin-top:10px; opacity:0.9;">Not covered live. A1 for the bracket-to-verb translation, A2 when a Space is red, A3 for the reading.</div>
+<div style="font-size:16px; margin-top:10px; opacity:0.9;">Not covered live. A1 for the bracket-to-verb translation, A2 when a deploy fails, A3 for the reading.</div>
 
 ---
 
@@ -1617,36 +1609,36 @@ name: appendix-a2
 <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:6px;">
   <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
     <div style="background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:7px 14px;">Logs say <code style="color:#fff;">401</code> or <code style="color:#fff;">Incorrect API key</code></div>
-    <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;">The secret is missing, misspelled, or the old class key. <b>Settings &rarr; Variables and secrets</b>: the name must be exactly <code>OPENAI_API_KEY</code>, the value the new key. Then <b>Factory rebuild</b> from the Settings page so the app restarts with it.</div>
+    <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;">The environment variable is missing, misspelled, or holds the old class key. On the service page open <b>Environment</b>: the key must be exactly <code>OPENAI_API_KEY</code>, the value the new key. Saving it redeploys the app.</div>
   </div>
   <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
-    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:7px 14px;">Runtime error: <code style="color:#fff;">no such file: data/scout.db</code></div>
-    <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;">The database was uploaded at the top level instead of inside <code>data/</code>. On the Files tab, the layout must match the zip: <code>app.R</code>, <code>Dockerfile</code>, <code>README.md</code>, and a <code>data/</code> folder with the <code>.db</code> and the two <code>.md</code> files.</div>
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:7px 14px;">Build fails at once: <code style="color:#fff;">Dockerfile not found</code></div>
+    <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;">The <b>Root Directory</b> is empty or wrong, so Render looked at the top of the repository. Settings &rarr; Build &amp; Deploy &rarr; Root Directory = <code>apps/job_scout_chat</code> (or the Assignment 05 folder), then Manual Deploy.</div>
   </div>
   <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
-    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:7px 14px;">Build error</div>
-    <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;">Read the last twenty lines of <b>Logs</b>. A package name in the error means the Dockerfile's <code>install.packages()</code> line was edited; restore it from the zip. A line-ending error (<code>\r</code>) means the Dockerfile was saved by a Windows editor; re-upload the original.</div>
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:7px 14px;">Build fails later in the log</div>
+    <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;">Read the last twenty lines of <b>Logs</b>. A package name in the error means the Dockerfile's <code>install.packages()</code> line was edited; restore it from the zip. A line-ending error (<code>\r</code>) means the Dockerfile was saved by a Windows editor without the <code>.gitattributes</code> rules; re-upload the original.</div>
   </div>
   <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
-    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:7px 14px;">Running, but every question fails</div>
-    <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;">The app starts without a key and only fails when the model is called. Same fix as the first card. Locally, the equivalent is a <code>.Renviron</code> with the old key: replace the line, then <b>Session &rarr; Restart R</b>; R reads <code>.Renviron</code> only at startup.</div>
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:7px 14px;">Live, but the page hangs or shows 502</div>
+    <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;">A free app sleeps after 15 idle minutes; the first visit wakes it in about a minute, and a 502 in between is normal. If it never answers, the Dockerfile must listen on the port Render assigns: keep the class <code>CMD</code> line with <code>Sys.getenv('PORT', '7860')</code>. Locally, a stale <code>.Renviron</code> key needs Session &rarr; Restart R.</div>
   </div>
 </div>
 
 <div style="margin-top:12px; border:1px solid #c3142d; border-left:6px solid #c3142d; border-radius:8px; padding:9px 14px; background:#fdf2f2; font-size:13.5px; line-height:1.5;">
-<b>Where to look first, always:</b> the <b>Logs</b> tab on the Space page. The last lines name the file and the line that failed. Copy them into your question if you ask for help.
+<b>Where to look first, always:</b> the <b>Logs</b> tab of the service, then <b>Events</b> for which commit deployed. The last lines name the file and the line that failed. Copy them into your question if you ask for help.
 </div>
 
 .footnote[
 <html>
 <hr>
 </html>
-**Sources:** [Hugging Face: Docker Spaces](https://huggingface.co/docs/hub/spaces-sdks-docker); [Hugging Face: Spaces secrets and variables](https://huggingface.co/docs/hub/spaces-overview#managing-secrets); [R startup: .Renviron](https://rstats.wtf/r-startup.html).
+**Sources:** [Render: troubleshooting deploys](https://render.com/docs/troubleshooting-deploys); [Render: environment variables and secrets](https://render.com/docs/configure-environment-variables); [Render: free instances](https://render.com/docs/free); [R startup: .Renviron](https://rstats.wtf/r-startup.html).
 ]
 
 ???
 
-Appendix. Four failure modes cover nearly every red badge from Monday and from Assignment 05. The first and fourth are the same problem after the key rotation, which is why they sit first.
+Appendix. Four failure modes cover nearly every failed deploy: the stale key after the rotation, the missing root directory, an edited Dockerfile, and the free-tier sleep that looks like an outage. The first two are the ones to expect in Assignment 05.
 
 ---
 
