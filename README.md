@@ -38,7 +38,7 @@ ISA 401 teaches the complete business intelligence pipeline: acquiring data from
 | | Wed 09/09 | Data Import II: Excel, JSON, and Export | [Slides](http://fmegahed.github.io/isa401/fall2026/class05/05_data_import_apps.html) |
 | **04** | Mon 09/14 | SQLite and Your First Deployed App | [Slides](http://fmegahed.github.io/isa401/fall2026/class06/06_sqlite_deployed_app.html) |
 | | Wed 09/16 | Data Wrangling with dplyr | [Slides](http://fmegahed.github.io/isa401/fall2026/class07/07_data_wrangling.html) |
-| **05** | Mon 09/21 | Structured Data: APIs | |
+| **05** | Mon 09/21 | Structured Data: APIs | [Slides](http://fmegahed.github.io/isa401/fall2026/class08/08_apis.html) |
 | | Wed 09/23 | Semi-Structured Data: Web Scraping I | |
 | **06** | Mon 09/28 | Semi-Structured Data: Web Scraping II | |
 | | Wed 09/30 | Semi-Structured Data: Web Scraping III | |

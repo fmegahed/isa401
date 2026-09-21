@@ -1,0 +1,1948 @@
+---
+title: "ISA 401: Business Intelligence & Data Visualization"
+subtitle: "08: Structured Data from APIs"
+author: '<br>Fadel M. Megahed, PhD <br><br> Raymond E. Glos Professor in Business <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("linkedin"), fill = "white")` @Fadel Megahed](https://www.linkedin.com/in/fadel-megahed-289046b4) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
+date: "Fall 2026"
+output:
+  xaringan::moon_reader:
+    self_contained: true
+    css: [default, "../../style_files/fonts.css", "../../style_files/my-theme.css", "../../style_files/code-tomorrow-night-bright.css"]
+    lib_dir: libs
+    mathjax: null
+    nature:
+      highlightStyle: magula
+      highlightLines: true
+      highlightLanguage: ["r"]
+      countIncrementalSlides: false
+      ratio: "16:9"
+    includes:
+      in_header: "../../style_files/header.html"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache = FALSE,
+                      echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE,
+                      progress = FALSE,
+                      verbose = FALSE,
+                      dev = 'png',
+                      fig.height = 3,
+                      dpi = 300,
+                      fig.align = 'center')
+
+options(htmltools.dir.version = FALSE, width = 52)
+
+miamired = '#C3142D'
+
+if(require(pacman)==FALSE) install.packages("pacman")
+if(require(devtools)==FALSE) install.packages("devtools")
+if(require(countdown)==FALSE) devtools::install_github("gadenbuie/countdown")
+if(require(xaringanExtra)==FALSE) devtools::install_github("gadenbuie/xaringanExtra")
+if(require(emo)==FALSE) devtools::install_github("hadley/emo")
+
+pacman::p_load(tidyverse, magrittr, lubridate, janitor, # data analysis pkgs
+               httr2, jsonlite, # API pkgs
+               scales, # for the comma function
+               fontawesome, emo, xaringanExtra, countdown) # for slides
+
+ggplot2::theme_set(ggplot2::theme_bw(base_size = 12))
+
+# Code styling shared by all ISA 401 decks: hl_r() + knitr source hook (see style_files/hl_r.R)
+source("../../style_files/hl_r.R")
+```
+
+```{r api_setup, include=FALSE}
+# Keys come from the repo-root .Renviron and are never printed.
+readRenviron("../../.Renviron")
+api_need = function(var) {
+  if (!nzchar(Sys.getenv(var))) stop("Knit stopped: ", var, " is missing from the repo-root .Renviron.", call. = FALSE)
+  invisible(TRUE)
+}
+api_need("USAJOBS_API_KEY"); api_need("FRED_API_KEY"); api_need("OPENAI_API_KEY")
+fmt = function(x) format(x, big.mark = ",")
+options(width = 66, tibble.print_min = 3, tibble.print_max = 3, pillar.min_title_chars = 8)
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+if(require(xaringanthemer) == FALSE) install.packages("xaringanthemer")
+library(xaringanthemer)
+
+style_mono_accent(base_color = "#84d6d3",
+                  base_font_size = "20px")
+
+xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "tachyons", "panelset", "broadcast", "share_again", "search", "fit_screen", "editable"))
+
+xaringanExtra::use_clipboard(button_text = paste0(fontawesome::fa("clipboard", fill = "#dedede", height = "0.9em"), " Copy"), success_text = paste0(fontawesome::fa("check", fill = "#b9ca4a", height = "0.9em"), " Copied"))
+
+xaringanExtra::use_extra_styles(
+  hover_code_line = TRUE,
+  mute_unhighlighted_code = TRUE
+)
+```
+
+<style>
+.code-sm .rcode { font-size: 78% !important; } .code-md .rcode { font-size: 90% !important; }
+.rcode { position: relative; padding-top: 18px !important; }
+.rcode .xaringanextra-clipboard-button { display: block !important; opacity: 0.55; top: 0; right: 4px; padding: 2px 6px; font-size: 11px; font-family: Lato, sans-serif; color: #dedede; cursor: pointer; }
+.rcode .xaringanextra-clipboard-button:hover { opacity: 1; }
+.airy .rout { margin: 2px 0 20px 0 !important; }
+</style>
+<style>
+.sc-bar { display:flex; gap:6px; align-items:center; margin-top:6px; font-family:'Noto Sans','Roboto',Arial,sans-serif; }
+.sc-btn { background:#ffffff; color:#374151; border:1px solid #d1d5db; border-radius:6px; padding:4px 11px; font-size:12.5px; font-weight:600; cursor:pointer; line-height:1.2; }
+.sc-btn:disabled { opacity:0.4; cursor:default; }
+.sc-btn.sc-primary { background:#c3142d; color:#ffffff; border-color:#c3142d; }
+.sc-spds { display:inline-flex; border:1px solid #d1d5db; border-radius:6px; overflow:hidden; margin-left:4px; }
+.sc-spd { background:#ffffff; color:#374151; border:0; border-right:1px solid #d1d5db; padding:4px 8px; font-size:11.5px; cursor:pointer; }
+.sc-spd:last-child { border-right:0; }
+.sc-spd.on { background:#585E60; color:#ffffff; }
+.sc-count { margin-left:auto; color:#585E60; font-size:12px; font-variant-numeric:tabular-nums; }
+.sc-caps { position:relative; margin-top:8px; border:1px solid #d1d5db; border-left:5px solid #c3142d; border-radius:8px; background:#fdf2f2; padding:8px 12px; font-size:13.5px; line-height:1.45; color:#1b1b1b; min-height:46px; }
+.sc-cap { display:none; }
+.sc-cap.on { display:block; }
+.sc-cap b { color:#c3142d; }
+</style>
+<script>
+(function () {
+  if (window.isaStepper) { return; }
+  window.isaStepper = function (root, scene) {
+    if (root.getAttribute('data-built')) { return; }
+    root.setAttribute('data-built', '1');
+    var i = 0, timer = null, speed = 1;
+    var q = function (s) { return root.querySelector(s); };
+    var bBack = q('.sc-back'), bStep = q('.sc-step'), bPlay = q('.sc-play'), bReset = q('.sc-reset'), cnt = q('.sc-count');
+    var spd = root.querySelectorAll('.sc-spd');
+    var caps = root.querySelectorAll('.sc-cap');
+    var flagged = root.querySelectorAll('[data-from]');
+    function applyFlags(j) {
+      flagged.forEach(function (el) {
+        var f = Number(el.getAttribute('data-from'));
+        var t = el.hasAttribute('data-to') ? Number(el.getAttribute('data-to')) : 9999;
+        el.classList.toggle('on', j >= f && !(j >= t));
+      });
+      caps.forEach(function (c) { c.classList.toggle('on', Number(c.getAttribute('data-step')) === j); });
+    }
+    function paint() {
+      bBack.disabled = (i === 0);
+      bStep.disabled = (i === scene.n);
+      bPlay.textContent = (timer !== null) ? 'Pause' : 'Play';
+      cnt.textContent = i + ' / ' + scene.n;
+    }
+    function go(j, dir) { i = j; applyFlags(j); if (scene.render) { scene.render(j, dir, speed, root); } paint(); }
+    function stop() { if (timer !== null) { clearTimeout(timer); timer = null; } paint(); }
+    function tick() {
+      timer = null;
+      if (i === scene.n) { paint(); return; }
+      go(i + 1, 1);
+      if (i !== scene.n) { timer = setTimeout(tick, scene.dwell[i] / speed); }
+      paint();
+    }
+    bStep.addEventListener('click', function () { stop(); if (i !== scene.n) { go(i + 1, 1); } });
+    bBack.addEventListener('click', function () { stop(); if (i !== 0) { go(i - 1, -1); } });
+    bReset.addEventListener('click', function () { stop(); go(0, -1); });
+    bPlay.addEventListener('click', function () {
+      if (timer !== null) { stop(); return; }
+      if (i === scene.n) { go(0, -1); }
+      timer = setTimeout(tick, scene.dwell[i] / speed);
+      paint();
+    });
+    spd.forEach(function (b) {
+      b.addEventListener('click', function () {
+        speed = Number(b.getAttribute('data-spd'));
+        spd.forEach(function (o) { o.classList.toggle('on', o === b); });
+      });
+    });
+    ['keydown', 'keypress', 'keyup'].forEach(function (t) { root.addEventListener(t, function (e) { e.stopPropagation(); }); });
+    root.addEventListener('mousedown', function (e) { if (e.target.tagName === 'BUTTON') { e.preventDefault(); } });
+    root.addEventListener('focusin', function () { if (window.slideshow) { window.slideshow.pause(); } });
+    root.addEventListener('focusout', function () { if (window.slideshow) { window.slideshow.resume(); } });
+    if (window.slideshow) { window.slideshow.on('hideSlide', stop); }
+    go(0, -1);
+  };
+  window.isaTypewriter = function (el, text, msPerChar, done) {
+    var k = 0, h = null;
+    function step() {
+      k = k + 1;
+      el.textContent = text.slice(0, k);
+      if (k !== text.length) { h = setTimeout(step, msPerChar); } else { h = null; if (done) { done(); } }
+    }
+    el.textContent = '';
+    h = setTimeout(step, msPerChar);
+    return function () { if (h !== null) { clearTimeout(h); h = null; } };
+  };
+})();
+</script>
+
+<style>
+.mt-pair { display:flex; align-items:center; gap:10px; margin:0; }
+.mt-arrow { display:flex; flex-direction:column; align-items:center; flex:0 0 auto; padding:0 4px; }
+.mt-verb { font-family:'Source Code Pro',monospace; font-size:11px; color:#c3142d; font-weight:700; white-space:pre-line; max-width:250px; text-align:center; line-height:1.3; }
+.mt-arr { font-size:26px; color:#c3142d; line-height:1; }
+.mt-name { font-family:'Source Code Pro',monospace; font-size:11.5px; font-weight:700; color:#585E60; margin-bottom:2px; }
+.mt-tab table { border-collapse:separate; border-spacing:0; margin:0 !important; border-top:0 !important; border-bottom:0 !important; font-family:'Source Code Pro',monospace; font-size:10.5px; line-height:1.15; width:auto !important; }
+.mt-tab th { background:#1d1f21; color:#ffffff; padding:1px 6px !important; line-height:1.2 !important; text-align:left; font-weight:600; white-space:nowrap; }
+.mt-tab td { padding:1px 6px !important; line-height:1.2 !important; border-bottom:1px solid #e5e7eb; white-space:nowrap; color:#1b1b1b; background:#ffffff; }
+.mt-tab .mt-keep { background:#fdf2f2; }
+.mt-tab th.mt-keep { background:#c3142d; }
+.mt-tab .mt-x { color:#9ca3af; text-decoration:line-through; background:#fafafa; }
+.mt-tab th.mt-x { background:#585E60; color:#d1d5db; }
+.mt-tab .mt-new { background:#fff3bf; }
+.mt-tab th.mt-new { background:#b45309; }
+.mt-tab tr.mt-g1 td { background:#fdf2f2; } .mt-tab tr.mt-g1 td:first-child { box-shadow:inset 4px 0 0 #c3142d; }
+.mt-tab tr.mt-g2 td { background:#eff6ff; } .mt-tab tr.mt-g2 td:first-child { box-shadow:inset 4px 0 0 #2563eb; }
+.mt-tab tr.mt-g3 td { background:#ecfdf5; } .mt-tab tr.mt-g3 td:first-child { box-shadow:inset 4px 0 0 #059669; }
+.mt-tab tr.mt-g4 td { background:#fff7ed; } .mt-tab tr.mt-g4 td:first-child { box-shadow:inset 4px 0 0 #d97706; }
+.mt-tab .mt-na { color:#9ca3af; font-style:italic; }
+.qbar { border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:5px 14px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.4; margin:0 0 6px 0; }
+.qbar b { color:#c3142d; }
+.vcard { border:1px solid #d1d5db; border-radius:8px; padding:6px 12px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:12.5px; line-height:1.4; margin-top:6px; }
+.vcard .vh { font-weight:700; color:#c3142d; font-size:13px; display:inline; margin-right:6px; }
+.vrow { display:block; }
+.vrow .vdiag { display:flex; justify-content:center; }
+</style>
+
+<style>
+/* rq: the request animation used four times in this deck (see rq_widget() in the rq_helper chunk) */
+.rq { font-family:'Noto Sans','Roboto',Arial,sans-serif; }
+.rq-url { display:flex; align-items:center; gap:10px; border:1px solid #d1d5db; border-radius:8px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); padding:7px 12px; font-family:'Source Code Pro',monospace; font-size:15.5px; line-height:1.5; }
+.rq-verb { background:#1d1f21; color:#ffffff; border-radius:5px; padding:1px 8px; font-weight:700; font-size:12px; flex:0 0 auto; }
+.rq-addr { flex:1 1 auto; min-width:0; word-break:break-all; }
+.rq-part { opacity:0.13; transition:opacity .35s, background .6s; border-radius:3px; }
+.rq-part.on { opacity:1; }
+.rq-base { color:#2563eb; } .rq-path { color:#059669; } .rq-q { color:#585E60; font-weight:700; } .rq-name { color:#b45309; } .rq-value { color:#1b1b1b; }
+.rq-pill { background:#1d1f21; color:#ffffff; border-radius:9px; padding:0 8px; font-size:11px; letter-spacing:1px; white-space:nowrap; }
+.rq-pill small { color:#e7c547; letter-spacing:0; font-size:10px; margin-left:4px; }
+.rq-extra { display:flex; gap:8px; margin-top:5px; }
+.rq-hdr, .rq-body { flex:1 1 auto; display:flex; flex-wrap:wrap; align-items:center; gap:2px 16px; border:1px dashed #9ca3af; border-radius:8px; padding:4px 10px; font-family:'Source Code Pro',monospace; font-size:12px; line-height:1.5; background:#fcfcfc; opacity:0.13; transition:opacity .35s; }
+.rq-hdr.on, .rq-body.on { opacity:1; border-style:solid; border-color:#b45309; background:#fffbeb; }
+.rq-hdr .rq-t, .rq-body .rq-t { font-family:'Noto Sans',Arial,sans-serif; font-weight:700; font-size:11px; color:#b45309; text-transform:uppercase; letter-spacing:.5px; }
+.rq-hdr .rq-hn { color:#b45309; font-weight:600; }
+.rq-grid { display:grid; grid-template-columns:1fr 1.3fr; gap:14px; margin-top:8px; align-items:stretch; }
+.rq-stage { display:grid; grid-template-columns:1fr 0.6fr 1.3fr; align-items:center; gap:0; height:100%; min-height:calc(var(--rq-box-h, 170px) + 30px); }
+.rq-box { border:1px solid #d1d5db; border-radius:10px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); height:var(--rq-box-h, 170px); padding:14px 8px; text-align:center; display:flex; flex-direction:column; justify-content:center; transition:box-shadow .3s, border-color .3s; overflow:hidden; }
+.rq-box .rq-bt { font-weight:700; font-size:13.5px; color:#1b1b1b; word-break:break-word; line-height:1.25; }
+.rq-box .rq-bs { font-size:12.5px; color:#585E60; line-height:1.4; margin-top:6px; }
+.rq-at-r .rq-client, .rq-at-r_done .rq-client, .rq-at-server .rq-server { border-color:#c3142d; box-shadow:0 0 0 3px rgba(195,20,45,0.18); }
+.rq-wire { position:relative; height:var(--rq-box-h, 170px); }
+.rq-wire:before { content:''; position:absolute; left:0; right:0; top:calc(var(--rq-box-h, 170px) / 2 - 1px); height:3px; background:#d1d5db; }
+.rq-dot { position:absolute; top:calc(var(--rq-box-h, 170px) / 2 - 10px); left:0; width:20px; height:20px; margin-left:-10px; border-radius:50%; background:#2563eb; opacity:0; transition:left 1s ease-in-out, opacity .25s, background .2s; box-shadow:0 1px 4px rgba(0,0,0,0.3); }
+.rq-at-wire_out .rq-dot { left:100%; opacity:1; }
+.rq-at-server .rq-dot { left:100%; opacity:0; }
+.rq-at-wire_back .rq-dot { left:0; opacity:1; background:#059669; }
+.rq-bad.rq-at-wire_back .rq-dot { background:#c3142d; }
+.rq-dir { position:absolute; left:0; right:0; top:calc(var(--rq-box-h, 170px) / 2 - 38px); text-align:center; font-size:11px; color:#585E60; }
+.rq-status { position:absolute; left:50%; top:calc(var(--rq-box-h, 170px) / 2 + 17px); transform:translateX(-50%); font-family:'Source Code Pro',monospace; font-weight:700; font-size:13px; color:#ffffff; border-radius:6px; padding:1px 10px; opacity:0; transition:opacity .3s; white-space:nowrap; }
+.rq-status.on { opacity:1; }
+.rq-s2 { background:#059669; } .rq-s4 { background:#c3142d; } .rq-s5 { background:#b45309; }
+.rq-reply { margin:6px 0 0 0 !important; height:var(--rq-reply-h, 138px); overflow:hidden; background:#f3f4f6; border:1px solid #d1d5db; border-radius:8px; padding:6px 10px; font-family:'Source Code Pro',monospace; font-size:11.5px; line-height:1.35; color:#1b1b1b; white-space:pre-wrap; word-break:break-word; opacity:0.35; transition:opacity .3s, border-color .3s; }
+.rq-reply.on { opacity:1; }
+.rq-bad .rq-reply.on { border-color:#c3142d; background:#fdf2f2; }
+.rq-result { display:none; margin-top:6px; height:var(--rq-reply-h, 138px); overflow:hidden; }
+.rq-result.on { display:block; }
+.rq-result.on + .rq-reply, .rq-hide-reply .rq-reply { display:none; }
+.rq-result table { border-collapse:collapse; font-family:'Source Code Pro',monospace; font-size:12px; margin:0 !important; width:auto !important; }
+.rq-result th { background:#1d1f21; color:#ffffff; padding:2px 7px !important; line-height:1.25 !important; text-align:left; font-weight:600; }
+.rq-result td { padding:1px 7px !important; line-height:1.25 !important; border-bottom:1px solid #e5e7eb; white-space:nowrap; background:#ffffff; color:#1b1b1b; }
+.rq-result .rq-rc { font-size:11px; color:#585E60; margin-bottom:3px; font-family:'Noto Sans',Arial,sans-serif; }
+.rq-code .rcode { margin:0 !important; padding-top:6px !important; }
+.rq-code .xaringanextra-clipboard-button, .rq-reply .xaringanextra-clipboard-button { display:none !important; }
+.rq .rcode .rl { opacity:0.42; transition:opacity .2s, background .2s; }
+.rq .rcode .rl.done { opacity:0.85; }
+.rq .rcode .rl.on { opacity:1; background:rgba(231, 197, 71, 0.22); }
+.rq .sc-caps { min-height:44px; font-size:13px; padding:6px 12px; margin-top:7px; }
+</style>
+
+```{r rq_helper, include=FALSE}
+# rq_widget(): one request animation. Returns a single line of HTML (no blank lines, so remark
+# leaves it alone). Step k of `steps` is shown at stepper position k - 1.
+#   url_parts: data.frame(text, kind, from)   kind: base | path | q | name | value | key
+#   headers:   data.frame(name, value, from)  value "KEY" draws the hidden-key pill
+#   body:      list(text, from)
+#   steps:     data.frame(caption, where, status, reply, line)
+#              where: r | wire_out | server | wire_back | r_done ; line: 0-based code line, -1 none
+#              optional line_to: last line of a highlighted block (defaults to line)
+#   result:    list(html, from) a small table shown in place of the reply from that step on
+rq_esc = function(x) htmltools::htmlEscape(x, attribute = TRUE)
+rq_txt = function(x) { x = gsub("&", "&amp;", x, fixed = TRUE); x = gsub("<", "&lt;", x, fixed = TRUE); x = gsub(">", "&gt;", x, fixed = TRUE); gsub("\n[ \t]*\n", "\n", x) }
+rq_pill = '<span class="rq-pill">&bull;&bull;&bull;&bull;<small>from .Renviron</small></span>'
+rq_table = function(df, caption) {
+  th = paste0(sprintf("<th>%s</th>", rq_esc(names(df))), collapse = "")
+  rows = vapply(seq_len(nrow(df)), function(i) {
+    paste0("<tr>", paste0(sprintf("<td>%s</td>", rq_esc(vapply(df[i, ], as.character, ""))), collapse = ""), "</tr>")
+  }, "")
+  sprintf('<div class="rq-rc">%s</div><table><thead><tr>%s</tr></thead><tbody>%s</tbody></table>', caption, th, paste0(rows, collapse = ""))
+}
+rq_widget = function(verb = "GET", url_parts, headers = NULL, body = NULL, steps, code, result = NULL,
+                     client = c("Your R session", "httr2 builds and sends the request"),
+                     server = c("The server", "checks the request, finds the data"),
+                     code_size = "56%", reply_h = 138, box_h = 170) {
+  parts = paste0(vapply(seq_len(nrow(url_parts)), function(i) {
+    p = url_parts[i, ]
+    inner = if (p$kind == "key") rq_pill else rq_esc(p$text)
+    sprintf('<span class="rq-part rq-%s" data-from="%d">%s</span>', if (p$kind == "key") "value" else p$kind, p$from, inner)
+  }, ""), collapse = "")
+  extra = ""
+  if (!is.null(headers) || !is.null(body)) {
+    h = ""
+    if (!is.null(headers)) {
+      rows = paste0(vapply(seq_len(nrow(headers)), function(i) {
+        v = if (headers$value[i] == "KEY") rq_pill else if (headers$value[i] == "BEARER") paste("Bearer", rq_pill) else rq_esc(headers$value[i])
+        sprintf('<div><span class="rq-hn">%s:</span> %s</div>', rq_esc(headers$name[i]), v)
+      }, ""), collapse = "")
+      h = sprintf('<div class="rq-hdr" data-from="%d"><div class="rq-t">Headers</div>%s</div>', min(headers$from), rows)
+    }
+    b = ""
+    if (!is.null(body)) b = sprintf('<div class="rq-body" data-from="%d"><div class="rq-t">Body (JSON)</div><div>%s</div></div>', body$from, rq_esc(body$text))
+    extra = sprintf('<div class="rq-extra">%s%s</div>', h, b)
+  }
+  n = nrow(steps)
+  caps = paste0(sprintf('<div class="sc-cap%s" data-step="%d">%s</div>', ifelse(seq_len(n) == 1, " on", ""), seq_len(n) - 1, steps$caption), collapse = "")
+  # reply text travels as element content (quotes inside an attribute do not survive remark)
+  if (is.null(steps$line_to)) steps$line_to = steps$line
+  meta = paste0(sprintf('<span class="rq-step" data-where="%s" data-status="%s" data-line="%d" data-lineto="%d" style="display:none;"></span><div class="rq-rsrc" style="display:none;">%s</div>',
+                        steps$where, steps$status, as.integer(steps$line), as.integer(steps$line_to), rq_txt(steps$reply)), collapse = "")
+  res = if (is.null(result)) "" else sprintf('<div class="rq-result" data-from="%d">%s</div>', result$from, result$html)
+  bar = sprintf('<div class="sc-bar"><button type="button" class="sc-btn sc-back">Back</button><button type="button" class="sc-btn sc-primary sc-step">Step</button><button type="button" class="sc-btn sc-play">Play</button><button type="button" class="sc-btn sc-reset">Reset</button><span class="sc-spds"><button type="button" class="sc-spd" data-spd="0.5">0.5x</button><button type="button" class="sc-spd on" data-spd="1">1x</button><button type="button" class="sc-spd" data-spd="2">2x</button></span><span class="sc-count">0 / %d</span></div>', n - 1)
+  paste0(sprintf('<div class="rq" style="--rq-reply-h:%dpx; --rq-box-h:%dpx;">', reply_h, box_h),
+         sprintf('<div class="rq-url"><span class="rq-verb">%s</span><span class="rq-addr">%s</span></div>', verb, parts),
+         extra,
+         '<div class="rq-grid"><div>',
+         sprintf('<div class="rq-stage"><div class="rq-box rq-client"><div class="rq-bt">%s</div><div class="rq-bs">%s</div></div><div class="rq-wire"><div class="rq-dir"></div><div class="rq-dot"></div><span class="rq-status"></span></div><div class="rq-box rq-server"><div class="rq-bt">%s</div><div class="rq-bs">%s</div></div></div>', client[1], client[2], server[1], server[2]),
+         '</div><div class="rq-code">', hl_r(code, code_size), res, '<pre class="rq-reply"></pre>', '</div></div>',
+         '<div class="sc-caps">', caps, '</div>', bar, meta, '</div>')
+}
+```
+
+<script>
+(function () {
+  function build(root) {
+    if (root.getAttribute('data-built')) { return; }
+    var steps = root.querySelectorAll('.rq-step'), rsrc = root.querySelectorAll('.rq-rsrc'), ln = root.querySelectorAll('.rq-code .rcode .rl');
+    var badge = root.querySelector('.rq-status'), reply = root.querySelector('.rq-reply'), dir = root.querySelector('.rq-dir');
+    var places = ['r', 'wire_out', 'server', 'wire_back', 'r_done'];
+    var dirs = { r: '', wire_out: 'request ' + String.fromCharCode(8594), server: '', wire_back: String.fromCharCode(8592) + ' response', r_done: '' };
+    var dwell = [];
+    for (var d = 0; d !== steps.length; d = d + 1) { dwell.push(2800); }
+    window.isaStepper(root, {
+      n: steps.length - 1,
+      dwell: dwell,
+      render: function (j) {
+        var s = steps[j], w = s.getAttribute('data-where'), st = s.getAttribute('data-status'), rp = rsrc[j].textContent;
+        places.forEach(function (p) { root.classList.toggle('rq-at-' + p, w === p); });
+        root.classList.toggle('rq-bad', st.charAt(0) === '4' || st.charAt(0) === '5');
+        badge.textContent = st;
+        badge.className = 'rq-status' + (st ? ' on rq-s' + st.charAt(0) : '');
+        dir.textContent = dirs[w];
+        reply.textContent = rp;
+        reply.classList.toggle('on', rp !== '');
+        var k = Number(s.getAttribute('data-line')), k2 = Number(s.getAttribute('data-lineto'));
+        ln.forEach(function (l, i) { l.classList.toggle('on', i >= k && !(i > k2)); l.classList.toggle('done', k > i); });
+      }
+    });
+  }
+  function buildAll() { document.querySelectorAll('.rq').forEach(build); }
+  buildAll();
+  if (window.slideshow && !window.rqHooked) { window.rqHooked = true; window.slideshow.on('afterShowSlide', buildAll); }
+})();
+</script>
+
+# Before We Start
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:16px;">
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">1 &nbsp; Join today's Zoom</div>
+    <div style="padding:12px 14px; font-size:14px; line-height:1.5;">
+      Use the Zoom link in the <a href="https://miamioh.instructure.com/courses/258169/modules/981092" target="_blank"><b>Week 0 Module</b></a> on Canvas. <b>Mute</b> your mic and <b>turn off</b> your video.<br>
+      <span style="color:#585E60;">Log in from the <span style="background:#ffe58f; padding:0 5px; border-radius:4px; font-weight:600;">lab's computer</span> so you can <span style="background:#ffe58f; padding:0 5px; border-radius:4px; font-weight:600;">share your screen</span> if you need help with an error.</span>
+    </div>
+  </div>
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">2 &nbsp; Open the project, start the markdown</div>
+    <div style="padding:12px 14px; font-size:14px; line-height:1.5;">
+      <b>GitHub Desktop</b> &rarr; <code>business_intelligence</code> &rarr; <b>Fetch origin</b>, then open <code>business_intelligence.Rproj</code>.<br>
+      <span style="color:#585E60;">New R Markdown, title <i>Class 08</i>, delete everything below the setup chunk, save as <span style="background:#ffe58f; padding:0 5px; border-radius:4px; font-weight:600;">markdowns/class08.Rmd</span>.</span>
+    </div>
+  </div>
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">3 &nbsp; Install one package</div>
+    <div style="padding:12px 14px; font-size:14px; line-height:1.5;">
+      In the <b>Console</b> (not in the markdown): <code>install.packages("httr2")</code><br>
+      <span style="color:#585E60;"><code>jsonlite</code> and <code>dplyr</code> are already installed from Classes 04 and 07.</span>
+    </div>
+  </div>
+  <div style="border:2px solid #c3142d; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">4 &nbsp; Request your USAJOBS key now</div>
+    <div style="padding:12px 14px; font-size:14px; line-height:1.5;">
+      Fill the form at <a href="https://developer.usajobs.gov/apirequest/" target="_blank"><b>developer.usajobs.gov/apirequest</b></a> with your Miami email, then <span style="background:#ffe58f; padding:0 5px; border-radius:4px; font-weight:600;">confirm the email</span> they send.<br>
+      <span style="color:#585E60;">The key arrives in a later email. We use it in Part 3, about 30 minutes from now.</span>
+    </div>
+  </div>
+</div>
+
+<div style="text-align:center; margin-top:18px; font-size:14px; color:#585E60;">Done early? <b style="color:#c3142d;">Help the person next to you.</b> Stuck? <b style="color:#c3142d;">Share your screen on Zoom</b> and we fix it together.</div>
+
+???
+
+Do this while the dplyr carryover wraps up, or in the first two minutes of the API block. Card 4 is the one that matters: USAJOBS sends a confirmation email first and the key in a later email, and nobody controls how fast that is. Parts 1 and 2, about thirty minutes, are the buffer. Anyone whose key has not arrived by Part 4 follows the demo and does the practice on the FRED data.
+
+---
+
+# Where We Left Off
+
+```{r wl_code, include=FALSE}
+wl_old = c('crashes = jsonlite::fromJSON(',
+           '  "https://data.cincinnati-oh.gov/resource/rvmt-pkmq.json?$limit=100"',
+           ')')
+wl_new = c('crashes = httr2::request("https://data.cincinnati-oh.gov/resource/rvmt-pkmq.json") |>',
+           '  httr2::req_url_query("$limit" = 100) |>',
+           '  httr2::req_perform() |>',
+           '  httr2::resp_body_string() |>',
+           '  jsonlite::fromJSON()')
+```
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:10px;">
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#585E60; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">Class 04: "a web-served JSON file"</div>
+    <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;">
+`r hl_r(wl_old, "58%")`
+      <div style="margin-top:8px;">We pasted an address and got 100 rows. We did not discuss the <code>?$limit=100</code> at the end of it.</div>
+    </div>
+  </div>
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">Today: the same address is an API</div>
+    <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;">
+`r hl_r(wl_new, "58%")`
+      <div style="margin-top:8px;">Everything after the <code>?</code> is a set of query parameters. Today you write them yourself.</div>
+    </div>
+  </div>
+</div>
+
+<div style="margin-top:16px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:12px 18px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:16px; line-height:1.55;">
+<b style="color:#c3142d;">Both return the same 100 rows.</b> We use the <code>httr2</code> version today because it can also send a key, send headers, and report the status code. <code>jsonlite::fromJSON()</code> on an address cannot.
+</div>
+
+???
+
+One minute. They have already used an API without the word; Class 04 deliberately called it a web-served JSON file. Read the two blocks side by side and say that both return the same data frame. The box is the promise for the hour: each part adds one line to the right-hand pipeline.
+
+---
+
+# Learning Objectives for Today's Class
+
+- **Define** what an API is and why APIs matter for data analysts.
+- **Construct** API requests and handle authentication.
+- **Parse** JSON responses into data frames.
+
+<div style="display:grid; grid-template-columns:14fr 15fr 25fr; gap:10px; margin-top:14px;">
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:14px; padding:7px 12px;">Part 1 &nbsp;<span style="font-weight:400; opacity:0.85;">14 min</span></div>
+    <div style="padding:9px 12px; font-size:13px; line-height:1.45;"><b>What is an API?</b> The steps of a request, shown on Cincinnati's crash data (no key). The parts of an API URL. Status codes. The Class 06 chat app as an API client.</div>
+  </div>
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:14px; padding:7px 12px;">Part 2 &nbsp;<span style="font-weight:400; opacity:0.85;">15 min</span></div>
+    <div style="padding:9px 12px; font-size:13px; line-height:1.45;"><b>One key in the URL.</b> FRED: get a key, store it in <code>.Renviron</code>, read the documentation, request Ohio job postings.</div>
+  </div>
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:14px; padding:7px 12px;">Part 3 &nbsp;<span style="font-weight:400; opacity:0.85;">25 min</span></div>
+    <div style="padding:9px 12px; font-size:13px; line-height:1.45;"><b>Key in headers.</b> USAJOBS: reading documentation, nested JSON to a data frame, federal Data Analyst jobs. Then the same pipeline calls OpenAI.</div>
+  </div>
+</div>
+
+<div style="margin-top:14px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:10px 16px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:15px; line-height:1.5;">
+<b style="color:#c3142d;">The same httr2 pipeline is used in every part.</b> Each API adds one line to it: query parameters, then a key, then headers, then a body. The Cincinnati request is worked out in full in Appendix A1 and A2.
+</div>
+
+???
+
+Three objectives from the schedule, three parts. The Cincinnati hands-on example and its URL builder practice are in Appendix A1 and A2 for students to do on their own. The card widths are the time budget. Say the bottom line out loud; it is how the hour is organized and how they should take notes.
+
+---
+
+class: inverse, center, middle
+
+# Part 1: What Is an API?
+
+---
+
+# What Is an API?
+
+<div style="display:grid; grid-template-columns:1fr auto 1.25fr auto 1fr; gap:10px; align-items:stretch; margin-top:14px;">
+  <div style="border:1px solid #d1d5db; border-radius:10px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#585E60; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">Client</div>
+    <div style="padding:12px 14px; font-size:14px; line-height:1.5;"><b>Your R session.</b> It wants data it does not have: crash reports, a job postings index, federal job ads.</div>
+  </div>
+  <div style="align-self:center; color:#c3142d; font-size:26px; font-weight:700;">&rarr;</div>
+  <div style="border:2px solid #c3142d; border-radius:10px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">API: application programming interface</div>
+    <div style="padding:12px 14px; font-size:14px; line-height:1.5;"><b>The documented contract between the two.</b> Which requests you may send, how to write them, and what comes back. Written for programs, not for people clicking.</div>
+  </div>
+  <div style="align-self:center; color:#c3142d; font-size:26px; font-weight:700;">&rarr;</div>
+  <div style="border:1px solid #d1d5db; border-radius:10px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#585E60; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">Server</div>
+    <div style="padding:12px 14px; font-size:14px; line-height:1.5;"><b>Someone else's computer</b> holding the data. It answers requests that follow the contract and refuses the rest.</div>
+  </div>
+</div>
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:16px;">
+  <div style="border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:10px 14px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.5;"><b style="color:#c3142d;">The interface is separate from the implementation.</b> The owner can change the database behind the API. If the documented requests and replies stay the same, your code keeps working.</div>
+  <div style="border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:10px 14px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.5;"><b style="color:#c3142d;">Controlled by the owner.</b> The API exposes only what the owner chooses, to whom they choose, at the rate they choose. That is what keys and limits are for.</div>
+</div>
+
+<div style="margin-top:12px; font-size:14px;"><b style="color:#c3142d;">First example:</b> the City of Cincinnati's crash data from Class 04. The next slides use it to show where an API address comes from and what happens when R sends a request.</div>
+
+<div style="margin-top:8px; font-size:12px; color:#585E60;">Definition adapted from the <a href="https://developer.mozilla.org/en-US/docs/Glossary/API" target="_blank">MDN Web Docs glossary entry for API</a>.</div>
+
+???
+
+Two minutes. Read the middle card; it is the definition. Then the two boxes, which are the two reasons from the old deck in fewer words: the interface stays put while the implementation changes, and the owner decides what is exposed and how fast. The second box is the setup for keys in Parts 3 and 4.
+
+---
+
+# Documentation: Cincinnati Crash Data
+
+<div style="display:grid; grid-template-columns:1.55fr 1fr; gap:16px; margin-top:6px; align-items:start;">
+  <div><img src="`r knitr::image_uri('img/doc_cincy.png')`" style="width:100%; border:1px solid #d1d5db; border-radius:8px; box-shadow:0 1px 3px rgba(0,0,0,0.1);"></div>
+  <div style="font-size:13.5px; line-height:1.45;">
+    <div style="font-weight:700; color:#c3142d; font-size:14.5px;">What this page tells us</div>
+      <div style="display:flex; gap:9px; margin-top:7px;"><span style="flex:0 0 22px; height:22px; border-radius:50%; background:#c3142d; color:#fff; font-weight:700; font-size:12.5px; text-align:center; line-height:22px;">1</span><span>On the dataset's page, <b>Actions</b> then <b>API</b> opens this dialog.</span></div>
+      <div style="display:flex; gap:9px; margin-top:7px;"><span style="flex:0 0 22px; height:22px; border-radius:50%; background:#c3142d; color:#fff; font-weight:700; font-size:12.5px; text-align:center; line-height:22px;">2</span><span>The table has <b>433,160 rows</b>. Too many to download for one question.</span></div>
+      <div style="display:flex; gap:9px; margin-top:7px;"><span style="flex:0 0 22px; height:22px; border-radius:50%; background:#c3142d; color:#fff; font-weight:700; font-size:12.5px; text-align:center; line-height:22px;">3</span><span>One request returns <b>1,000 rows</b> unless we ask for a different number.</span></div>
+      <div style="display:flex; gap:9px; margin-top:7px;"><span style="flex:0 0 22px; height:22px; border-radius:50%; background:#c3142d; color:#fff; font-weight:700; font-size:12.5px; text-align:center; line-height:22px;">4</span><span>Two API versions. <b>SODA3</b> requires authentication. <b>SODA2</b> does not, so we use it today.</span></div>
+      <div style="display:flex; gap:9px; margin-top:7px;"><span style="flex:0 0 22px; height:22px; border-radius:50%; background:#c3142d; color:#fff; font-weight:700; font-size:12.5px; text-align:center; line-height:22px;">5</span><span>The <b>API endpoint</b>: the address that every request to this table starts with.</span></div>
+      <div style="display:flex; gap:9px; margin-top:7px;"><span style="flex:0 0 22px; height:22px; border-radius:50%; background:#c3142d; color:#fff; font-weight:700; font-size:12.5px; text-align:center; line-height:22px;">6</span><span>The link to the <b>API documentation</b>, which lists the column names and the query options.</span></div>
+    <div style="margin-top:10px; font-size:12.5px; color:#585E60;">Open it yourself: <a href="https://data.cincinnati-oh.gov/safety/Traffic-Crash-Reports-CPD-/rvmt-pkmq" target="_blank">Traffic Crash Reports (CPD)</a> on the City of Cincinnati open data portal, then <b>Actions</b>, then <b>API</b>. Screenshot taken Sep 21, 2026.</div>
+    <div style="margin-top:8px; font-size:12.5px; color:#585E60;">The portal notes that this dataset is paused while the city changes record systems. The newest record is dated Aug 24, 2026.</div>
+  </div>
+</div>
+
+???
+
+One minute. Before any code, show where an API address comes from: the owner publishes it. Open the live page if the network allows and click Actions, then API, then SODA2. Every number on the right is on the screenshot. Point 3 is the reason $limit exists, and point 4 is why this example needs no key. The portal also states that this dataset is not updating while the city moves to a new records system; the newest record is dated Aug 24, 2026, which matters for the counts in Part 2.
+
+---
+
+# A Request, Step by Step: Cincinnati
+
+```{r rq_v1, include=FALSE}
+v1_url = "https://data.cincinnati-oh.gov/resource/rvmt-pkmq.json"
+v1_resp = httr2::request(v1_url) |> httr2::req_url_query("$limit" = 5) |> httr2::req_perform()
+v1_df = httr2::resp_body_string(v1_resp) |> jsonlite::fromJSON()
+stopifnot(httr2::resp_status(v1_resp) == 200, nrow(v1_df) == 5)
+v1_keep = intersect(c("crashdate", "crashseverity", "age", "weather"), names(v1_df))
+v1_json = paste0(substr(jsonlite::toJSON(v1_df[1:2, v1_keep[1:3]], pretty = TRUE), 1, 300), "\n  ... (shortened: 5 records, ", ncol(v1_df), " fields each)")
+v1_show = v1_df[, v1_keep[1:3]]
+v1_show$crashdate = substr(v1_show$crashdate, 1, 16)
+v1_show$crashseverity = strtrim(v1_show$crashseverity, 22)
+v1_parts = data.frame(
+  text = c("https://data.cincinnati-oh.gov", "/resource/rvmt-pkmq.json", "?", "$limit", "=5"),
+  kind = c("base", "path", "q", "name", "value"),
+  from = c(1, 1, 2, 2, 2))
+v1_steps = data.frame(
+  caption = c(
+    "<b>Start.</b> Your R session wants crash records. They live on a server run by the City of Cincinnati.",
+    "<b>The address.</b> Blue is the server. Green is the path to one dataset on it. Both come from the API documentation.",
+    "<b>The query parameters.</b> After the <b>?</b> come <b>name=value</b> pairs that the documentation defines. <code>$limit=5</code> asks for five rows.",
+    "<b>Send.</b> <code>req_perform()</code> is the only line that touches the network. Everything before it only wrote the request.",
+    "<b>The server processes the request.</b> It checks that the request is valid, then looks up five rows.",
+    "<b>The reply.</b> A status code first (<b>200</b> means OK), then the data as JSON text.",
+    "<b>Parse.</b> <code>jsonlite::fromJSON()</code> turns the JSON text into a data frame. The dplyr verbs from Class 07 apply from here."),
+  where = c("r", "r", "r", "wire_out", "server", "wire_back", "r_done"),
+  status = c("", "", "", "", "", "200", "200"),
+  reply = c("", "", "", "", "", v1_json, v1_json),
+  line = c(-1, 0, 1, 2, 2, 3, 4))
+v1_code = c('httr2::request("https://data.cincinnati-oh.gov/resource/rvmt-pkmq.json") |>',
+            '  httr2::req_url_query("$limit" = 5) |>',
+            '  httr2::req_perform() |>',
+            '  httr2::resp_body_string() |>',
+            '  jsonlite::fromJSON()')
+v1_html = rq_widget(url_parts = v1_parts, steps = v1_steps, code = v1_code,
+                    server = c("data.cincinnati-oh.gov", "checks the request, finds the rows"),
+                    result = list(html = rq_table(v1_show, sprintf("A data frame: %d rows, %d columns (three shown)", nrow(v1_df), ncol(v1_df))), from = 6))
+```
+
+`r v1_html`
+
+???
+
+Three minutes, Step by Step. This picture comes back three more times today and gains one part each time, so spend the time here. Step 2: the colors are the vocabulary, server and path. Step 3: the question mark separates where from what. Step 4: say that the first two lines of code sent nothing; req_perform() is the moment of contact. Step 6: status first, body second, always. Step 7: the JSON and the data frame are the same five records; the reply shown is shortened. Play is for a replay at the end.
+
+---
+
+# Anatomy of an API URL
+
+<div style="border:1px solid #d1d5db; border-radius:10px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); padding:16px 18px; margin-top:14px; font-family:'Source Code Pro',monospace; font-size:17px; line-height:1.7; word-break:break-all;"><span style="color:#2563eb;">https://data.cincinnati-oh.gov</span><span style="color:#059669;">/resource/rvmt-pkmq.json</span><span style="color:#585E60; font-weight:700;">?</span><span style="color:#b45309;">$limit</span>=5<span style="color:#585E60; font-weight:700;">&amp;</span><span style="color:#b45309;">$order</span>=crashdate DESC</div>
+
+<div style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:12px; margin-top:16px;">
+  <div style="border:1px solid #d1d5db; border-top:5px solid #2563eb; border-radius:8px; padding:10px 12px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13.5px; line-height:1.5;"><b style="color:#2563eb;">Server</b><br>Whose computer. The City of Cincinnati's open data site.</div>
+  <div style="border:1px solid #d1d5db; border-top:5px solid #059669; border-radius:8px; padding:10px 12px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13.5px; line-height:1.5;"><b style="color:#059669;">Path (endpoint)</b><br>Which dataset on that server. <code>rvmt-pkmq</code> is the traffic crash table; <code>.json</code> is the format.</div>
+  <div style="border:1px solid #d1d5db; border-top:5px solid #585E60; border-radius:8px; padding:10px 12px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13.5px; line-height:1.5;"><b style="color:#585E60;">? and &amp;</b><br><b>?</b> starts the question. <b>&amp;</b> separates one parameter from the next.</div>
+  <div style="border:1px solid #d1d5db; border-top:5px solid #b45309; border-radius:8px; padding:10px 12px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13.5px; line-height:1.5;"><b style="color:#b45309;">name=value</b><br>Query parameters. Each API defines its own parameter names and lists them in its documentation.</div>
+</div>
+
+<div style="margin-top:16px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:10px 16px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14.5px; line-height:1.55;">
+<b style="color:#c3142d;">This server's parameters:</b> <code>$limit</code> how many rows, <code>$order</code> sorted how, <code>$where</code> which rows, <code>$select</code> which columns. They correspond to the SQL clauses from Class 06 and the dplyr verbs from Class 07, and Socrata documents each one (<a href="https://dev.socrata.com/docs/queries/limit.html" target="_blank">LIMIT</a>, <a href="https://dev.socrata.com/docs/queries/order.html" target="_blank">ORDER BY</a>, <a href="https://dev.socrata.com/docs/queries/where.html" target="_blank">WHERE</a>, <a href="https://dev.socrata.com/docs/queries/select.html" target="_blank">SELECT</a>). <b>The $ is part of the name on this server:</b> a request with <code>limit=5</code> is answered with 400, "Unrecognized arguments [limit]".
+</div>
+
+???
+
+Two minutes. Same colors as the animation. The point of the fourth card is the one to dwell on: parameter names come from documentation, and a different API will use different names for the same idea (FRED says limit, USAJOBS says ResultsPerPage). The bottom box ties to what they know: where, select, order by.
+
+---
+
+# Status Codes
+
+<div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-top:12px;">
+  <div style="border:1px solid #d1d5db; border-left:6px solid #059669; border-radius:8px; padding:10px 14px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.5;"><b style="font-family:'Source Code Pro',monospace; font-size:19px; color:#059669;">200</b> &nbsp;<b>OK</b><br>The request was understood and the data is in the body.</div>
+  <div style="border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:10px 14px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.5;"><b style="font-family:'Source Code Pro',monospace; font-size:19px; color:#c3142d;">400</b> &nbsp;<b>Bad Request</b><br>The server could not read your request: a misspelled or missing parameter.</div>
+  <div style="border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:10px 14px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.5;"><b style="font-family:'Source Code Pro',monospace; font-size:19px; color:#c3142d;">401 / 403</b> &nbsp;<b>Unauthorized / Forbidden</b><br>The server does not know who you are, or knows and says no. Usually the key.</div>
+  <div style="border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:10px 14px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.5;"><b style="font-family:'Source Code Pro',monospace; font-size:19px; color:#c3142d;">404</b> &nbsp;<b>Not Found</b><br>Nothing lives at that path. Check the address against the documentation.</div>
+  <div style="border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:10px 14px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.5;"><b style="font-family:'Source Code Pro',monospace; font-size:19px; color:#c3142d;">429</b> &nbsp;<b>Too Many Requests</b><br>You passed the owner's rate limit. Wait, then ask less often.</div>
+  <div style="border:1px solid #d1d5db; border-left:6px solid #b45309; border-radius:8px; padding:10px 14px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.5;"><b style="font-family:'Source Code Pro',monospace; font-size:19px; color:#b45309;">500s</b> &nbsp;<b>Server errors</b><br>The problem is on their side. Your request may be fine; try again later.</div>
+</div>
+
+<div style="margin-top:14px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:10px 16px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14.5px; line-height:1.55;">
+<b style="color:#c3142d;">Read the first digit:</b> 2 means success, 4 means a problem with your request, 5 means a problem on the server. <code>httr2::req_perform()</code> stops with an R error on any 4xx or 5xx reply, and the error message starts with the code. Meanings from the <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status" target="_blank">MDN HTTP status code reference</a>.
+</div>
+
+???
+
+One minute. They will meet 400 and 403 on purpose in the next twenty minutes, so this slide is a legend, not a lecture. The sentence to say: a 4 means read your own request again, a 5 means it is not you.
+
+---
+
+# Three Uses of the Word API
+
+<div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin-top:14px;">
+  <div style="border:2px solid #c3142d; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">1 &nbsp; Data from a web server</div>
+    <div style="padding:12px 14px; font-size:14px; line-height:1.55;">A request over the internet, a reply in JSON. <b>Today's topic.</b><div style="margin-top:8px; color:#585E60;">The Cincinnati request you just saw. Next: FRED economic series and USAJOBS postings.</div></div>
+  </div>
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#585E60; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">2 &nbsp; A package's functions</div>
+    <div style="padding:12px 14px; font-size:14px; line-height:1.55;">The documented functions of a package are its API: names, arguments, and what each returns.<div style="margin-top:8px; color:#585E60;">You used one last week: the <a href="https://dplyr.tidyverse.org/reference/index.html" target="_blank">dplyr function reference</a>. No network involved.</div></div>
+  </div>
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#585E60; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">3 &nbsp; A model behind a server</div>
+    <div style="padding:12px 14px; font-size:14px; line-height:1.55;">You send text, a model on someone else's computer sends text back. Same request and reply as use 1.<div style="margin-top:8px; color:#585E60;">The Class 06 chat app works this way. See the next slide.</div></div>
+  </div>
+</div>
+
+<div style="margin-top:16px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:10px 16px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:15px; line-height:1.5;">
+<b style="color:#c3142d;">What the three share:</b> documentation that says what you may ask for and what you get back, so you never need to see how the other side is built.
+</div>
+
+???
+
+One minute. The word is used three ways and they will hear all three in internships. Card 2 is why the dplyr reference page is called an API reference. Card 3 leads into the next slide; do not explain it here.
+
+---
+
+# Your Chat App Is an API Client
+
+<style>
+.qc { font-family:'Noto Sans','Roboto',Arial,sans-serif; }
+.qc-rail { display:flex; align-items:center; margin:2px 0 10px 0; }
+.qc-st { border:1px solid #d1d5db; border-radius:16px; padding:3px 12px; font-size:12.5px; color:#585E60; background:#ffffff; transition:all .3s; white-space:nowrap; }
+.qc-st.on { background:#c3142d; color:#ffffff; border-color:#c3142d; transform:scale(1.06); box-shadow:0 2px 6px rgba(195,20,45,0.35); }
+.qc-st.done { background:#f3f4f6; color:#1b1b1b; border-color:#9ca3af; }
+.qc-seg { flex:1; height:3px; background:#d1d5db; transition:background .3s; }
+.qc-seg.done { background:#c3142d; }
+.qc-stage { position:relative; height:285px; }
+.qc-pan { position:absolute; left:0; right:0; top:0; opacity:0; transform:translateX(28px); transition:opacity .35s, transform .35s; pointer-events:none; }
+.qc-pan.on { opacity:1; transform:none; pointer-events:auto; }
+.qc-two { display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:start; }
+.qc-card { border:1px solid #d1d5db; border-radius:10px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); overflow:hidden; }
+.qc-card .qc-h { background:#585E60; color:#ffffff; font-weight:700; font-size:13.5px; padding:6px 12px; }
+.qc-card .qc-b { padding:12px 14px; font-size:15px; line-height:1.5; }
+.qc-bubble { background:#eff6ff; border:1px solid #bfdbfe; border-radius:14px 14px 2px 14px; padding:8px 14px; font-size:14.5px; display:inline-block; }
+.qc-mono { font-family:'Source Code Pro',monospace; font-size:13.5px !important; line-height:1.6; }
+.qc-mono .k { color:#b45309; font-weight:600; }
+.qc-keyline { border-radius:5px; padding:1px 4px; transition:background .4s, box-shadow .4s; }
+.qc-leak .qc-keyline { background:#fde2e2; box-shadow:0 0 0 2px #c3142d; }
+.qc-sql { background:#1d1f21; color:#dedede; border-radius:8px; padding:10px 14px; font-family:'Source Code Pro',monospace; font-size:13.5px; line-height:1.5; white-space:pre; }
+.qc-sql b { color:#7aa6da; font-weight:400; }
+.qc-pan table { border-collapse:collapse; font-family:'Source Code Pro',monospace; font-size:14px; margin:0 !important; width:auto !important; }
+.qc-pan th { background:#1d1f21; color:#ffffff; padding:3px 12px !important; line-height:1.25 !important; text-align:left; }
+.qc-pan td { padding:2px 12px !important; line-height:1.3 !important; border-bottom:1px solid #e5e7eb; background:#ffffff; }
+.qc .sc-caps { min-height:44px; font-size:13px; padding:6px 12px; }
+</style>
+
+```{r qc_data, include=FALSE}
+# the real answer to the example question, from the same scout.db the class app uses
+qc_con = DBI::dbConnect(RSQLite::SQLite(), "../../data/scout.db")
+qc_sql = "SELECT location_state, COUNT(*) AS n\nFROM scout_postings\nWHERE remote = 1 AND location_state IS NOT NULL\nGROUP BY location_state\nORDER BY n DESC\nLIMIT 5"
+qc_res = DBI::dbGetQuery(qc_con, qc_sql)
+qc_cols = DBI::dbListFields(qc_con, "scout_postings")
+DBI::dbDisconnect(qc_con)
+stopifnot(nrow(qc_res) == 5)
+qc_tab = rq_table(qc_res, "")
+qc_sql_html = gsub("\\b(SELECT|FROM|WHERE|GROUP BY|ORDER BY|LIMIT|AND|AS|DESC|IS NOT NULL|COUNT)\\b", "<b>\\1</b>", htmltools::htmlEscape(qc_sql))
+qc_sql_html = gsub("\n", "&#10;", qc_sql_html, fixed = TRUE)
+```
+
+<div class="qc">
+<div class="qc-rail"><span class="qc-st" data-k="0">You ask</span><span class="qc-seg" data-k="1"></span><span class="qc-st" data-k="1">The app sends a request</span><span class="qc-seg" data-k="2"></span><span class="qc-st" data-k="2">The model writes SQL</span><span class="qc-seg" data-k="3"></span><span class="qc-st" data-k="3">The app runs the SQL</span><span class="qc-seg" data-k="4"></span><span class="qc-st" data-k="4">The key</span></div>
+<div class="qc-stage">
+<div class="qc-pan" data-from="0" data-to="1"><div class="qc-two"><div class="qc-card"><div class="qc-h">Job Scout Chat, in your browser</div><div class="qc-b" style="text-align:right; min-height:120px;"><span class="qc-bubble">Which states have the most remote postings?</span></div></div><div class="qc-card"><div class="qc-h">What you saw in Class 06</div><div class="qc-b">A question typed in plain English, and a table a few seconds later.<div style="margin-top:8px; color:#585E60;"><code>app.R</code> is a short R script with no language model inside it. Something else interprets the question.</div></div></div></div></div>
+<div class="qc-pan" data-from="1" data-to="2"><div class="qc-two"><div class="qc-card"><div class="qc-h">The request the app sends</div><div class="qc-b qc-mono"><div><span class="k">POST</span> https://api.openai.com/...</div><div class="qc-keyline"><span class="k">Authorization:</span> Bearer <span class="rq-pill">&bull;&bull;&bull;&bull;<small>OPENAI_API_KEY</small></span></div><div style="margin-top:6px;"><span class="k">Body:</span> the model name (<code>gpt-5.6-luna</code> in our <code>app.R</code>), your question, and instructions from querychat</div></div></div><div class="qc-card"><div class="qc-h">What goes to the model, in querychat's words</div><div class="qc-b">"querychat <b>does not</b> send raw data to the LLM; it shares only enough structural information for the model to generate accurate queries."<div style="margin-top:8px; color:#585E60;">For our table that means its `r length(qc_cols)` column names, their types, ranges, and categories. Source: <a href="https://posit-dev.github.io/querychat/r/" target="_blank">querychat for R, How it works</a>.</div></div></div></div></div>
+<div class="qc-pan" data-from="2" data-to="3"><div class="qc-two"><div class="qc-card"><div class="qc-h">The reply contains SQL</div><div class="qc-b"><div class="qc-sql">`r qc_sql_html`</div></div></div><div class="qc-card"><div class="qc-h">What the model did</div><div class="qc-b">"querychat uses LLMs to translate natural language into SQL queries." The reply is a status code and JSON, like every reply today; the SQL is a string inside it.<div style="margin-top:8px; color:#585E60;">This query is an example written for this slide; the model's wording varies from run to run.</div></div></div></div></div>
+<div class="qc-pan" data-from="3" data-to="4"><div class="qc-two"><div class="qc-card"><div class="qc-h">The app runs the SQL on its own copy of the data</div><div class="qc-b">`r qc_tab`</div></div><div class="qc-card"><div class="qc-h">Where the numbers come from</div><div class="qc-b">"When the LLM produces a query, querychat executes it in a SQL database (DuckDB, by default) to obtain precise results."<div style="margin-top:8px; color:#585E60;">The table on the left is that query run on <code>scout.db</code> when these slides were built. The model wrote the SQL. The database computed the result.</div></div></div></div></div>
+<div class="qc-pan qc-leak" data-from="4"><div class="qc-two"><div class="qc-card"><div class="qc-h">The request the app sends</div><div class="qc-b qc-mono"><div><span class="k">POST</span> https://api.openai.com/...</div><div class="qc-keyline"><span class="k">Authorization:</span> Bearer <span class="rq-pill">&bull;&bull;&bull;&bull;<small>OPENAI_API_KEY</small></span></div><div style="margin-top:6px;"><span class="k">Body:</span> the model name, your question, and instructions from querychat</div></div></div><div class="qc-card" style="border-color:#c3142d;"><div class="qc-h" style="background:#c3142d;">Sep 14: this is the value that leaked</div><div class="qc-b">The key identifies the account that sent the request and that is billed for it. Anyone who has the key can send requests on that account, which is why OpenAI disabled ours the day it appeared on GitHub.<div style="margin-top:8px; color:#585E60;">OpenAI's own guidance: <a href="https://help.openai.com/en/articles/5112595-best-practices-for-api-key-safety" target="_blank">Best practices for API key safety</a>. In Part 3 you send this request yourself.</div></div></div></div></div>
+</div>
+<div class="sc-caps">
+<div class="sc-cap on" data-step="0"><b>You ask.</b> A question in English goes into the app you ran and deployed last week.</div>
+<div class="sc-cap" data-step="1"><b>An API call.</b> The app sends a request to OpenAI's server: an address, a header carrying the key, and a body carrying the question.</div>
+<div class="sc-cap" data-step="2"><b>The model returns SQL,</b> not numbers. It does not compute the counts.</div>
+<div class="sc-cap" data-step="3"><b>The app runs that SQL</b> in a database on its own side and shows you the result.</div>
+<div class="sc-cap" data-step="4"><b>Every question you typed was one of these requests,</b> and every one carried the key in a header.</div>
+</div>
+<div class="sc-bar"><button type="button" class="sc-btn sc-back">Back</button><button type="button" class="sc-btn sc-primary sc-step">Step</button><button type="button" class="sc-btn sc-play">Play</button><button type="button" class="sc-btn sc-reset">Reset</button><span class="sc-spds"><button type="button" class="sc-spd" data-spd="0.5">0.5x</button><button type="button" class="sc-spd on" data-spd="1">1x</button><button type="button" class="sc-spd" data-spd="2">2x</button></span><span class="sc-count">0 / 4</span></div>
+</div>
+
+<script>
+(function () {
+  function build(root) {
+    if (root.getAttribute('data-built')) { return; }
+    var st = root.querySelectorAll('.qc-st'), seg = root.querySelectorAll('.qc-seg');
+    window.isaStepper(root, {
+      n: 4,
+      dwell: [3200, 4200, 3600, 3600, 0],
+      render: function (j) {
+        st.forEach(function (s) { var k = Number(s.getAttribute('data-k')); s.classList.toggle('on', k === j); s.classList.toggle('done', j > k); });
+        seg.forEach(function (s) { var k = Number(s.getAttribute('data-k')); s.classList.toggle('done', j >= k); });
+      }
+    });
+  }
+  function buildAll() { document.querySelectorAll('.qc').forEach(build); }
+  buildAll();
+  if (window.slideshow && !window.qcHooked) { window.qcHooked = true; window.slideshow.on('afterShowSlide', buildAll); }
+})();
+</script>
+
+???
+
+Three minutes. This is the refreshed "use a pretrained model" story, told with their own app. Step 1: ask who understood the English; app.R is a short script with no language model inside it. Step 2: it is an API call like the Cincinnati request in the animation, with two parts they will learn later today, a header and a body. The quote is querychat's own; do not claim more than it says. Step 3: the model returned SQL text, and the example SQL is ours, not a recording. Step 4: the numbers come from the database, which is why they are exact. Step 5: connect to Sep 14. The key is the identity and the wallet. In Part 4 they send this request by hand.
+
+---
+
+class: inverse, center, middle
+
+# Part 2: One Key in the URL
+
+---
+
+# Get a FRED API Key
+
+`r countdown(minutes = 3, seconds = 0, top = 0, font_size = "2em")`
+
+<div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin-top:14px;">
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">1 &nbsp; Create a free account</div>
+    <div style="padding:12px 14px; font-size:14px; line-height:1.55;">Go to <a href="https://fredaccount.stlouisfed.org/apikeys" target="_blank"><b>fredaccount.stlouisfed.org/apikeys</b></a>. It sends you to the sign-in page; create a free account with your Miami email.</div>
+  </div>
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">2 &nbsp; Request the key</div>
+    <div style="padding:12px 14px; font-size:14px; line-height:1.55;">On the <b>API Keys</b> page click <b>Request API Key</b>. The form asks why you want it: <i>"Coursework for ISA 401 at Miami University"</i> is a complete answer.</div>
+  </div>
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">3 &nbsp; Leave the page open</div>
+    <div style="padding:12px 14px; font-size:14px; line-height:1.55;">The key is 32 letters and digits, shown on the page right away. <b>Do not paste it into your markdown.</b> The next slide says where it goes.</div>
+  </div>
+</div>
+
+<div style="margin-top:16px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:10px 16px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14.5px; line-height:1.55;">
+<b style="color:#c3142d;">Why a key at all?</b> FRED's data is free, but the key tells the St. Louis Fed who is asking, so it can limit how fast any one person asks and switch off a key that misbehaves. Details: <a href="https://fred.stlouisfed.org/docs/api/api_key.html" target="_blank">FRED API Keys documentation</a>.
+</div>
+
+???
+
+Three minutes on the clock. FRED issues the key on the page, no email wait, which is why it comes before USAJOBS. While they work, ask who has received the USAJOBS emails. The "32 letters and digits" detail is from FRED's own documentation page. Do not show your own key on the projector.
+
+---
+
+# Keep the Key Out of Your Code
+
+```{r key_code, include=FALSE}
+key_step1 = 'usethis::edit_r_environment("project")'
+key_step2 = c('FRED_API_KEY=abcdefghijklmnopqrstuvwxyz123456')
+key_step3 = c('Sys.getenv("FRED_API_KEY")   # shows the key, so: Console only',
+              'usethis::use_git_ignore(".Renviron")')
+```
+
+.left55[
+
+<div style="font-size:14px; line-height:1.5;">
+<div><b style="color:#c3142d;">1.</b> In the <b>Console</b>, open the project's <code>.Renviron</code> file:</div>
+`r hl_r(key_step1, "68%")`
+<div style="margin-top:6px;"><b style="color:#c3142d;">2.</b> Add one line, no quotes, no spaces, then save. <span style="color:#585E60;">(This is a made-up key.)</span></div>
+<pre class="rout" style="font-size:68%; margin:4px 0;">FRED_API_KEY=abcdefghijklmnopqrstuvwxyz123456</pre>
+<div style="margin-top:6px;"><b style="color:#c3142d;">3.</b> <b>Session &rarr; Restart R</b>. R reads <code>.Renviron</code> only when it starts.</div>
+<div style="margin-top:6px;"><b style="color:#c3142d;">4.</b> Check it, and make sure Git ignores the file:</div>
+`r hl_r(key_step3, "68%")`
+</div>
+
+]
+
+.right43[
+
+<div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+  <div style="background:#585E60; color:#fff; font-weight:700; font-size:14px; padding:7px 12px;">Key typed in class08.Rmd</div>
+  <div style="padding:9px 12px; font-size:13px; line-height:1.5;"><code>class08.Rmd</code> &rarr; commit &rarr; push &rarr; <b style="color:#c3142d;">public on GitHub</b>, along with the key. This is what happened to the class OpenAI key on Sep 14.</div>
+</div>
+
+<div style="margin-top:10px; border:2px solid #059669; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+  <div style="background:#059669; color:#fff; font-weight:700; font-size:14px; padding:7px 12px;">Key in .Renviron</div>
+  <div style="padding:9px 12px; font-size:13px; line-height:1.5;"><code>class08.Rmd</code> says only <code>Sys.getenv("FRED_API_KEY")</code>. The value stays in <code>.Renviron</code>, which <code>.gitignore</code> keeps out of every commit. <b style="color:#059669;">The code is public, the key is not.</b></div>
+</div>
+
+<div style="margin-top:10px; font-size:12.5px; color:#585E60;">Same recipe as the OpenAI key in <a href="http://fmegahed.github.io/isa401/fall2026/class07/07_data_wrangling.html" target="_blank">Class 07</a>. You will add a second line for USAJOBS in Part 3.</div>
+
+]
+
+???
+
+Four minutes, everyone does it. This is the Class 06 and 07 recipe again, on purpose: by the third key it should be a habit. Walk the room for three mistakes: quotes around the key, a space around the equals sign, and forgetting Restart R. Sys.getenv() prints the key, so it belongs in the Console for a check and never in a knitted chunk on its own line. If .gitignore already lists .Renviron, use_git_ignore() changes nothing, which is fine.
+
+---
+
+# Documentation: FRED
+
+<div style="display:grid; grid-template-columns:1.55fr 1fr; gap:16px; margin-top:6px; align-items:start;">
+  <div><img src="`r knitr::image_uri('img/doc_fred.png')`" style="width:100%; border:1px solid #d1d5db; border-radius:8px; box-shadow:0 1px 3px rgba(0,0,0,0.1);"></div>
+  <div style="font-size:13.5px; line-height:1.45;">
+    <div style="font-weight:700; color:#c3142d; font-size:14.5px;">What this page tells us</div>
+      <div style="display:flex; gap:9px; margin-top:7px;"><span style="flex:0 0 22px; height:22px; border-radius:50%; background:#c3142d; color:#fff; font-weight:700; font-size:12.5px; text-align:center; line-height:22px;">1</span><span>The <b>path</b> for the values of one series: <code>fred/series/observations</code>.</span></div>
+      <div style="display:flex; gap:9px; margin-top:7px;"><span style="flex:0 0 22px; height:22px; border-radius:50%; background:#c3142d; color:#fff; font-weight:700; font-size:12.5px; text-align:center; line-height:22px;">2</span><span>An <b>example request</b>. Server, path, then three parameters: <code>series_id</code>, <code>api_key</code>, <code>file_type</code>. The key shown is a made-up example.</span></div>
+      <div style="display:flex; gap:9px; margin-top:7px;"><span style="flex:0 0 22px; height:22px; border-radius:50%; background:#c3142d; color:#fff; font-weight:700; font-size:12.5px; text-align:center; line-height:22px;">3</span><span><code>api_key</code> is <b>required</b>, and it is a query parameter. That is where our key goes.</span></div>
+      <div style="display:flex; gap:9px; margin-top:7px;"><span style="flex:0 0 22px; height:22px; border-radius:50%; background:#c3142d; color:#fff; font-weight:700; font-size:12.5px; text-align:center; line-height:22px;">4</span><span><code>observation_start</code> is <b>optional</b>: a date as <code>YYYY-MM-DD</code>. Without it we get the whole history.</span></div>
+    <div style="margin-top:10px; font-size:12.5px; color:#585E60;">The full page: <a href="https://fred.stlouisfed.org/docs/api/fred/series_observations.html" target="_blank">fred/series/observations</a> in the FRED API documentation. Four parts of one long page are shown. Screenshot taken Sep 21, 2026.</div>
+  </div>
+</div>
+
+???
+
+One minute. Same routine as Cincinnati: read the documentation first, then write the request. The example URL in callout 2 is the template for our request; we change the series id and supply our own key. Ask the room which parts are the server, the path, and the parameters, using the colors from Part 1. Callout 3 answers where the key goes for this API. The page lists about fifteen parameters; we need four.
+
+---
+
+# A Request, Step by Step: FRED
+
+```{r fred_solution, include=FALSE}
+# Full solution for Part 2 (FRED). Students: the key is in the project .Renviron as FRED_API_KEY.
+fred_reply = httr2::request("https://api.stlouisfed.org/fred/series/observations") |>
+  httr2::req_url_query(
+    series_id = "IHLIDXUSOH",
+    api_key = Sys.getenv("FRED_API_KEY"),
+    file_type = "json",
+    observation_start = "2021-08-21"
+  ) |>
+  httr2::req_perform() |>
+  httr2::resp_body_string() |>
+  jsonlite::fromJSON()
+
+# the reply is a list; the table is one element of it, and both columns are text
+fred_df = fred_reply$observations |>
+  dplyr::select(date, value) |>
+  dplyr::mutate(date = as.Date(date), value = as.numeric(value))
+
+ggplot2::ggplot(fred_df, ggplot2::aes(x = date, y = value)) + ggplot2::geom_line()
+
+# the series' own description, from the API (used for the plot labels)
+fred_meta = httr2::request("https://api.stlouisfed.org/fred/series") |>
+  httr2::req_url_query(series_id = "IHLIDXUSOH", api_key = Sys.getenv("FRED_API_KEY"), file_type = "json") |>
+  httr2::req_perform() |>
+  httr2::resp_body_string() |>
+  jsonlite::fromJSON()
+fred_meta = fred_meta$seriess
+
+# the same call without a key, kept for the animation (an error body, no key involved)
+fred_err_resp = httr2::request("https://api.stlouisfed.org/fred/series/observations") |>
+  httr2::req_url_query(series_id = "IHLIDXUSOH", file_type = "json") |>
+  httr2::req_error(is_error = function(resp) FALSE) |>
+  httr2::req_perform()
+fred_err = httr2::resp_body_json(fred_err_resp)
+stopifnot(httr2::resp_status(fred_err_resp) == 400, nrow(fred_df) > 1000, !anyNA(fred_df$date))
+```
+
+```{r rq_v2, include=FALSE}
+v2_err_json = jsonlite::toJSON(fred_err, pretty = TRUE, auto_unbox = TRUE)
+v2_ok_json = paste0('{\n  "units": "lin",\n  "count": ', fred_reply$count, ',\n  "observations": [\n    { "date": "', fred_reply$observations$date[1], '", "value": "', fred_reply$observations$value[1], '" },\n    ... (shortened)')
+v2_parts = data.frame(
+  text = c("https://api.stlouisfed.org", "/fred/series/observations", "?", "series_id", "=IHLIDXUSOH", "&", "file_type", "=json", "&", "api_key", "="),
+  kind = c("base", "path", "q", "name", "value", "q", "name", "value", "q", "name", "key"),
+  from = c(1, 1, 1, 1, 1, 1, 1, 1, 4, 4, 4))
+v2_steps = data.frame(
+  caption = c(
+    "<b>A different server.</b> FRED, run by the Federal Reserve Bank of St. Louis, holds the Ohio job postings index from Class 04.",
+    "<b>The documentation says:</b> the path is <code>fred/series/observations</code>, and the parameters name the series and the format.",
+    "<b>Send the request</b> without a key.",
+    "<b>400, Bad Request.</b> The server replied in JSON and the message names the missing parameter. Read the reply first when a request fails.",
+    "<b>Add the key.</b> One more name=value pair. R fills in the value from <code>.Renviron</code>, so the key never appears in the markdown.",
+    "<b>Send the request</b> with the key.",
+    "<b>200.</b> The path and the other parameters are unchanged. The key was the only addition.",
+    "<b>Parse.</b> The reply is a list with some facts about the request and one table, <code>observations</code>."),
+  where = c("r", "r", "wire_out", "wire_back", "r", "wire_out", "wire_back", "r_done"),
+  status = c("", "", "", "400", "", "", "200", "200"),
+  reply = c("", "", "", v2_err_json, "", "", v2_ok_json, v2_ok_json),
+  line = c(-1, 1, 7, 7, 3, 7, 7, 8),
+  line_to = c(-1, 5, 7, 7, 3, 7, 7, 9))
+v2_code = c('httr2::request("https://api.stlouisfed.org/fred/series/observations") |>',
+            '  httr2::req_url_query(',
+            '    series_id = "IHLIDXUSOH",',
+            '    api_key = Sys.getenv("FRED_API_KEY"),',
+            '    file_type = "json"',
+            '  ) |>',
+            '  # nothing has been sent yet',
+            '  httr2::req_perform() |>',
+            '  httr2::resp_body_string() |>',
+            '  jsonlite::fromJSON()')
+v2_show = utils::tail(fred_reply$observations[, c("date", "value")], 4)
+v2_html = rq_widget(url_parts = v2_parts, steps = v2_steps, code = v2_code, code_size = "52%", reply_h = 112, box_h = 150,
+                    server = c("api.stlouisfed.org", "checks the key, then finds the series"),
+                    result = list(html = rq_table(v2_show, sprintf("reply$observations: %s rows, both columns text (last four shown)", fmt(nrow(fred_reply$observations)))), from = 7))
+```
+
+`r v2_html`
+
+???
+
+Three minutes. Same animation, one new part. Steps 1 to 4 are the failure on purpose: the request looks complete, and the server says 400 with a readable message. That message is real; it is what FRED returned when these slides were built. The habit to teach: when a request fails, read the reply first. Step 5: the key is one more query parameter, and the black pill means the value came from .Renviron. Step 8: the reply is a list, and the table is one element of it, which is the next slide.
+
+---
+
+# Demo: Ohio Job Postings from FRED
+
+<div class="qbar"><b>Question.</b> In Class 04 we downloaded this series as a CSV by hand. Can the API give us the same numbers, as a data frame, every time we knit?</div>
+
+.panelset[
+
+.panel[.panel-name[The reply]
+
+.left55[
+
+```{r fred_out1, echo=FALSE, hl.size="62%"}
+names(fred_reply)
+```
+
+```{r fred_out2, echo=FALSE, hl.size="62%"}
+fred_reply$count
+```
+
+]
+
+.right43[
+<div class="vcard" style="margin-top:0;"><span class="vh">A list, not a table.</span> <code>jsonlite::fromJSON()</code> returned `r length(fred_reply)` named elements. Most describe the request. One, <code>observations</code>, is the data frame we came for, with <b>`r fmt(fred_reply$count)`</b> rows. Which bracket from Class 04 pulls one element out of a list?</div>
+]
+
+]
+
+.panel[.panel-name[The table]
+
+.left55[
+
+```{r fred_out3, echo=FALSE, hl.size="62%"}
+dplyr::glimpse(fred_reply$observations)
+```
+
+```{r fred_out4, echo=FALSE, hl.size="62%"}
+dplyr::glimpse(fred_df)
+```
+
+]
+
+.right43[
+<div class="vcard" style="margin-top:0;"><span class="vh">Top: as delivered.</span> Four columns, all <code>&lt;chr&gt;</code>. JSON has no date type, and FRED sends the numbers as text.</div>
+<div class="vcard"><span class="vh">Bottom: after three verbs.</span> Keep two columns, then convert: <code>as.Date()</code> for the date, <code>as.numeric()</code> for the value. Which verbs?</div>
+]
+
+]
+
+.panel[.panel-name[The plot]
+
+```{r fred_plot, echo=FALSE, fig.height=2.4, fig.width=9, out.width="88%"}
+ggplot2::ggplot(fred_df, ggplot2::aes(x = date, y = value)) +
+  ggplot2::geom_line(color = miamired, linewidth = 0.5) +
+  ggplot2::geom_hline(yintercept = 100, linetype = 2, color = "#585E60") +
+  ggplot2::labs(x = NULL, y = fred_meta$units_short,
+                title = paste0(fred_meta$title, " (", fred_meta$frequency, ", ", fred_meta$seasonal_adjustment, ")"))
+```
+
+<div style="font-size:12.5px; color:#585E60; text-align:center;">Series <a href="https://fred.stlouisfed.org/series/IHLIDXUSOH" target="_blank">IHLIDXUSOH</a>, Indeed Hiring Lab via FRED, `r format(min(fred_df$date), "%b %d, %Y")` to `r format(max(fred_df$date), "%b %d, %Y")`, retrieved through the API when these slides were built.</div>
+
+]
+
+.panel[.panel-name[Your turn]
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:6px;">
+  <div class="vcard" style="margin-top:0; font-size:14px;"><span class="vh">Change one value.</span> Every state has its own series: <code>IHLIDXUS</code> followed by the state's two letters. Texas is <code>IHLIDXUSTX</code>; the whole country is <code>IHLIDXUS</code>. Get one, convert its columns, and compare its latest value with Ohio's <b>`r utils::tail(fred_df$value, 1)`</b>.</div>
+  <div class="vcard" style="margin-top:0; font-size:14px;"><span class="vh">Then request fewer rows.</span> The documentation lists <code>observation_start</code>. Add it to the request so the server sends only 2026. Full list of parameters: <a href="https://fred.stlouisfed.org/docs/api/fred/series_observations.html" target="_blank">fred/series/observations</a>.</div>
+</div>
+
+]
+
+]
+
+???
+
+Four minutes, typed live in class08.Rmd; the slide shows outputs only. Tab 1: the reply is a list, and the double bracket or the dollar sign pulls out observations. Tab 2: every column is text, because JSON has no date type and FRED sends numbers as text; select, then mutate with as.Date and as.numeric. Tab 3: the payoff, the Class 04 chart without a manual download. Tab 4 is a two-minute exercise while you check on USAJOBS emails. The full code is the fred_solution chunk in the Rmd:
+
+fred_reply = httr2::request("https://api.stlouisfed.org/fred/series/observations") |> httr2::req_url_query(series_id = "IHLIDXUSOH", api_key = Sys.getenv("FRED_API_KEY"), file_type = "json", observation_start = "2021-08-21") |> httr2::req_perform() |> httr2::resp_body_string() |> jsonlite::fromJSON()
+fred_df = fred_reply$observations |> dplyr::select(date, value) |> dplyr::mutate(date = as.Date(date), value = as.numeric(value))
+ggplot2::ggplot(fred_df, ggplot2::aes(x = date, y = value)) + ggplot2::geom_line()
+
+---
+
+class: inverse, center, middle
+
+# Part 3: Key in Headers
+
+---
+
+# Reading API Documentation
+
+<div style="display:grid; grid-template-columns:1fr 1.7fr; gap:16px; margin-top:6px; align-items:start;">
+  <div>
+    <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+      <div style="background:#585E60; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">Five questions for any API</div>
+      <div style="padding:10px 16px; font-size:14.5px; line-height:1.8;">
+        <div><b style="color:#c3142d;">1.</b> Do I need a key, and how do I get one?</div>
+        <div><b style="color:#c3142d;">2.</b> What is the base URL and the path?</div>
+        <div><b style="color:#c3142d;">3.</b> Which query parameters exist?</div>
+        <div><b style="color:#c3142d;">4.</b> Does the key go in the URL or in <b>headers</b>?</div>
+        <div><b style="color:#c3142d;">5.</b> What are the limits?</div>
+      </div>
+    </div>
+    <div style="margin-top:10px; font-size:13px; line-height:1.5; color:#585E60;">Before the five: check whether an R package already exists for the API. Then open the <a href="https://developer.usajobs.gov/tutorials/search-jobs" target="_blank"><b>USAJOBS Search Jobs tutorial</b></a> and find the answers. The red numbers on the screenshot match the questions.</div>
+  </div>
+  <div><img src="`r knitr::image_uri('img/doc_usajobs.png')`" style="width:100%; border:1px solid #d1d5db; border-radius:8px; box-shadow:0 1px 3px rgba(0,0,0,0.1);"><div style="font-size:12px; color:#585E60; margin-top:3px;">USAJOBS Developer Site, Tutorials, Search Jobs (cURL tab). Screenshot taken Sep 21, 2026.</div></div>
+</div>
+
+???
+
+Two minutes, on their site if the network allows. The five questions are the routine we already followed twice today without naming it. Let the room find questions 2, 3, and 4 on the screenshot. Questions 1 and 5 are answered elsewhere on the same site: the key request form from the start of class, and a note further down the tutorial. For FRED there is the fredr package and for the Census tidycensus; today is about what such packages do for you. The new word is headers: information sent with the request that is not part of the address.
+
+---
+
+# What the USAJOBS Pages Say
+
+<div style="margin-top:14px; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:15.5px; line-height:1.5;">
+  <div style="display:flex; gap:12px; padding:10px 16px; border-bottom:1px solid #e5e7eb;"><b style="color:#c3142d; flex:0 0 18px;">1.</b><span><b>Key.</b> Free. Requested with a <a href="https://developer.usajobs.gov/apirequest/" target="_blank">form</a> and sent by email.</span></div>
+  <div style="display:flex; gap:12px; padding:10px 16px; border-bottom:1px solid #e5e7eb; background:#fafafa;"><b style="color:#c3142d; flex:0 0 18px;">2.</b><span><b>Base URL and path.</b> <code>https://data.usajobs.gov/api/search</code></span></div>
+  <div style="display:flex; gap:12px; padding:10px 16px; border-bottom:1px solid #e5e7eb;"><b style="color:#c3142d; flex:0 0 18px;">3.</b><span><b>Query parameters.</b> <code>Keyword</code>, <code>LocationName</code>, <code>ResultsPerPage</code>, and many more, listed in the <a href="https://developer.usajobs.gov/api-reference/get-api-search" target="_blank">GET /api/Search reference</a>.</span></div>
+  <div style="display:flex; gap:12px; padding:10px 16px; border-bottom:1px solid #e5e7eb; background:#fafafa;"><b style="color:#c3142d; flex:0 0 18px;">4.</b><span><b>Where the key goes.</b> In <b>headers</b>, three of them: <code>Host</code> (data.usajobs.gov), <code>User-Agent</code> (your email), <code>Authorization-Key</code> (your key).</span></div>
+  <div style="display:flex; gap:12px; padding:10px 16px;"><b style="color:#c3142d; flex:0 0 18px;">5.</b><span><b>Limits.</b> "The number of results returned per request defaults to 25 but can be defined in your request up to 500 per request."</span></div>
+</div>
+
+<div style="margin-top:14px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:10px 16px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14.5px; line-height:1.5;">
+<b style="color:#c3142d;">What is different from FRED:</b> the key is not a query parameter. It is sent in a header, together with two other headers that identify the sender.
+</div>
+
+???
+
+One minute. One answer per line, numbered like the questions. Answer 4 is the new idea of this part. The sentence in answer 5 is quoted from the tutorial page. With these five answers the request on the next slide can be written without guessing.
+
+---
+
+# A Request, Step by Step: USAJOBS
+
+```{r usajobs_solution, include=FALSE}
+# Full solution for Part 3 (USAJOBS). Students: add USAJOBS_API_KEY=yourkey to the project .Renviron,
+# restart R, and put their own email in User-Agent.
+usajobs_reply = httr2::request("https://data.usajobs.gov/api/search") |>
+  httr2::req_url_query(Keyword = "Data Analyst", ResultsPerPage = 500) |>
+  httr2::req_headers(
+    Host = "data.usajobs.gov",
+    "User-Agent" = "megahefm@miamioh.edu",
+    "Authorization-Key" = Sys.getenv("USAJOBS_API_KEY")
+  ) |>
+  httr2::req_perform() |>
+  httr2::resp_body_string() |>
+  jsonlite::fromJSON(flatten = TRUE)
+
+# the table is two levels down in the list
+usajobs_df = usajobs_reply$SearchResult$SearchResultItems |> tibble::as_tibble()
+
+jobs_small = usajobs_df |>
+  dplyr::select(
+    title = MatchedObjectDescriptor.PositionTitle,
+    department = MatchedObjectDescriptor.DepartmentName,
+    agency = MatchedObjectDescriptor.OrganizationName,
+    location = MatchedObjectDescriptor.PositionLocationDisplay,
+    closes = MatchedObjectDescriptor.ApplicationCloseDate
+  )
+
+# Question 1: how many postings are open?
+uj_n = nrow(jobs_small)
+# Question 2: which department has the most?
+uj_dept = jobs_small |> dplyr::count(department, sort = TRUE)
+
+# the same call without headers, kept for the animation (no key involved)
+uj_err_resp = httr2::request("https://data.usajobs.gov/api/search") |>
+  httr2::req_url_query(Keyword = "Data Analyst") |>
+  httr2::req_error(is_error = function(resp) FALSE) |>
+  httr2::req_perform()
+stopifnot(uj_n > 0, ncol(usajobs_df) > 20, httr2::resp_status(uj_err_resp) %in% c(401, 403))
+```
+
+```{r rq_v3, include=FALSE}
+v3_err_title = sub(".*<TITLE>(.*?)</TITLE>.*", "\\1", gsub("[\r\n]", " ", httr2::resp_body_string(uj_err_resp)), ignore.case = TRUE)
+v3_err_text = paste0("(an HTML page, not JSON)\n<TITLE>", v3_err_title, "</TITLE>\nYou don't have permission to access ... on this server.")
+stopifnot(nchar(v3_err_title) < 40)
+v3_ok_json = paste0('{\n  "SearchResult": {\n    "SearchResultCount": ', usajobs_reply$SearchResult$SearchResultCount,
+                    ',\n    "SearchResultItems": [\n      { "MatchedObjectDescriptor": { "PositionTitle": ...\n  ... (shortened)')
+v3_parts = data.frame(
+  text = c("https://data.usajobs.gov", "/api/search", "?", "Keyword", "=Data Analyst", "&", "ResultsPerPage", "=500"),
+  kind = c("base", "path", "q", "name", "value", "q", "name", "value"),
+  from = c(1, 1, 1, 1, 1, 1, 1, 1))
+v3_headers = data.frame(
+  name = c("Host", "User-Agent", "Authorization-Key"),
+  value = c("data.usajobs.gov", "yourname@miamioh.edu", "KEY"),
+  from = c(4, 4, 4))
+v3_steps = data.frame(
+  caption = c(
+    "<b>USAJOBS</b> is the federal government's job board. Its API does not take the key as a query parameter.",
+    "<b>The address and the question,</b> as before: keyword and how many results per page.",
+    "<b>Send the request</b> without headers.",
+    sprintf("<b>%d.</b> The server refuses requests that do not identify the sender. The reply is an HTML page, not JSON.", httr2::resp_status(uj_err_resp)),
+    "<b>Headers.</b> Name and value pairs that travel with the request but are not part of the address. The key goes here, read from <code>.Renviron</code>.",
+    "<b>Send the request</b> with the headers. The address is unchanged.",
+    "<b>200.</b> The address is the same as in the failed request. Only the headers were added.",
+    "<b>Parse.</b> The table is two levels down: <code>reply$SearchResult$SearchResultItems</code>."),
+  where = c("r", "r", "wire_out", "wire_back", "r", "wire_out", "wire_back", "r_done"),
+  status = c("", "", "", as.character(httr2::resp_status(uj_err_resp)), "", "", "200", "200"),
+  reply = c("", "", "", v3_err_text, "", "", v3_ok_json, v3_ok_json),
+  line = c(-1, 0, 7, 7, 2, 7, 7, 8),
+  line_to = c(-1, 1, 7, 7, 6, 7, 7, 9))
+v3_code = c('httr2::request("https://data.usajobs.gov/api/search") |>',
+            '  httr2::req_url_query(Keyword = "Data Analyst", ResultsPerPage = 500) |>',
+            '  httr2::req_headers(',
+            '    Host = "data.usajobs.gov",',
+            '    "User-Agent" = "yourname@miamioh.edu",',
+            '    "Authorization-Key" = Sys.getenv("USAJOBS_API_KEY")',
+            '  ) |>',
+            '  httr2::req_perform() |>',
+            '  httr2::resp_body_string() |>',
+            '  jsonlite::fromJSON(flatten = TRUE)')
+v3_show = as.data.frame(jobs_small[1:4, c("title", "department")])
+v3_show$title = strtrim(v3_show$title, 30); v3_show$department = strtrim(v3_show$department, 30)
+v3_html = rq_widget(url_parts = v3_parts, headers = v3_headers, steps = v3_steps, code = v3_code, code_size = "50%", reply_h = 92, box_h = 140,
+                    server = c("data.usajobs.gov", "reads the headers first, then searches"),
+                    result = list(html = rq_table(v3_show, sprintf("%d postings, %d columns (two shown)", uj_n, ncol(usajobs_df))), from = 7))
+```
+
+`r v3_html`
+
+???
+
+Three minutes. Third appearance, one new part again. The failure this time is a 403 and the body is an HTML page, which is what the server really sent when these slides were built: some servers do not bother with a polite JSON error. Step 5 is the new idea of the part: headers ride along with the request. Browsers send headers on every page load; students have just never seen them. The email in User-Agent is how USAJOBS contacts you if your script misbehaves. Add USAJOBS_API_KEY to .Renviron and restart R before the demo; anyone without a key yet watches and pairs up.
+
+---
+
+# Demo: Data Analyst Jobs on USAJOBS
+
+<div class="qbar"><b>Question.</b> How many federal postings match "Data Analyst" right now, and what does the reply look like?</div>
+
+.left55[
+
+```{r uj_out1, echo=FALSE, hl.size="58%"}
+names(usajobs_reply$SearchResult)
+```
+
+```{r uj_out2, echo=FALSE, hl.size="58%"}
+dim(usajobs_df)
+```
+
+```{r uj_out3, echo=FALSE, hl.size="58%"}
+names(usajobs_df)[c(1:3, 5, 9)]
+```
+
+]
+
+.right43[
+<div class="vcard" style="margin-top:0;"><span class="vh">Today:</span> <b>`r uj_n`</b> postings, <b>`r ncol(usajobs_df)`</b> columns. The count changes daily; yours may differ from your neighbor's by tomorrow.</div>
+<div class="vcard"><span class="vh">Two levels down.</span> The reply is a list, <code>SearchResult</code> is a list inside it, and <code>SearchResultItems</code> inside that is the table.</div>
+<div class="vcard"><span class="vh">flatten = TRUE.</span> Each posting is itself nested JSON. <code>jsonlite::fromJSON(flatten = TRUE)</code> spreads the nested fields into ordinary columns and joins the names with dots. That is where the long names come from.</div>
+]
+
+???
+
+Four minutes, typed live. First names(usajobs_reply), then walk down with the dollar sign until a data frame appears. Let them find SearchResultItems. Then dim(): seventy-odd columns from one request, because flatten spread the nested fields out. The next slide cleans that up. Full code is the usajobs_solution chunk:
+
+usajobs_reply = httr2::request("https://data.usajobs.gov/api/search") |> httr2::req_url_query(Keyword = "Data Analyst", ResultsPerPage = 500) |> httr2::req_headers(Host = "data.usajobs.gov", "User-Agent" = "yourname@miamioh.edu", "Authorization-Key" = Sys.getenv("USAJOBS_API_KEY")) |> httr2::req_perform() |> httr2::resp_body_string() |> jsonlite::fromJSON(flatten = TRUE)
+usajobs_df = usajobs_reply$SearchResult$SearchResultItems |> tibble::as_tibble()
+
+---
+
+# From Nested JSON to a Data Frame
+
+<div class="qbar"><b>Question.</b> The table has `r ncol(usajobs_df)` columns with names like <code>MatchedObjectDescriptor.PositionTitle</code>. How do we get to five readable ones?</div>
+
+```{r mt_helpers, include=FALSE}
+mt_esc = htmltools::htmlEscape
+mt_tab = function(df, row_cls = rep("", nrow(df)), col_cls = rep("", ncol(df)), name = NULL, width = 22) {
+  d = as.data.frame(df, stringsAsFactors = FALSE)
+  for (cc in names(d)) d[[cc]] = strtrim(as.character(d[[cc]]), width)
+  th = paste0(sprintf('<th class="%s">%s</th>', col_cls, sub(".", ".<br>", mt_esc(names(d)), fixed = TRUE)), collapse = "")
+  rows = vapply(seq_len(nrow(d)), function(i) {
+    vals = vapply(d[i, ], function(v) if (is.na(v)) "NA" else as.character(v), character(1))
+    tds = paste0(sprintf('<td class="%s">%s</td>', col_cls, mt_esc(vals)), collapse = "")
+    sprintf('<tr class="%s">%s</tr>', row_cls[i], tds)
+  }, character(1))
+  cap = if (is.null(name)) "" else sprintf('<div class="mt-name">%s</div>', name)
+  sprintf('<div class="mt-tab">%s<table><thead><tr>%s</tr></thead><tbody>%s</tbody></table></div>', cap, th, paste0(rows, collapse = ""))
+}
+nj_before = usajobs_df[1:5, c("MatchedObjectId", "MatchedObjectDescriptor.PositionTitle", "MatchedObjectDescriptor.DepartmentName", "MatchedObjectDescriptor.PositionLocationDisplay")]
+nj_after = jobs_small[1:5, c("title", "department", "location")]
+nj_html = paste0(
+  mt_tab(nj_before, col_cls = c("mt-x", "mt-keep", "mt-keep", "mt-keep"), name = sprintf("usajobs_df: %d columns, four shown", ncol(usajobs_df)), width = 20),
+  '<div class="mt-arrow" style="flex-direction:row; gap:8px; margin:4px 0;"><div class="mt-arr" style="transform:rotate(90deg);">&rarr;</div><div class="mt-verb">dplyr::select(new_name = old_name, ...)</div></div>',
+  mt_tab(nj_after, col_cls = rep("mt-keep", 3), name = "jobs_small: the same five postings", width = 34))
+```
+
+<div style="display:flex; flex-direction:column; align-items:flex-start;">`r nj_html`</div>
+
+--
+
+```{r nj_shown, eval=FALSE, hl.size="51%"}
+jobs_small = usajobs_df |>
+  dplyr::select(
+    title = MatchedObjectDescriptor.PositionTitle,
+    department = MatchedObjectDescriptor.DepartmentName,
+    agency = MatchedObjectDescriptor.OrganizationName,
+    location = MatchedObjectDescriptor.PositionLocationDisplay,
+    closes = MatchedObjectDescriptor.ApplicationCloseDate
+  )
+```
+
+???
+
+Two minutes. The picture is five real postings from today's reply: the long dotted names on top, the renamed columns below. Ask which verb keeps columns, then remind them from Class 07 that select() can rename while it selects: new name on the left of the equals sign. After this chunk the API part is over and the rest is dplyr. Type names(usajobs_df) live and use tab completion after MatchedObjectDescriptor. to find the columns.
+
+---
+
+# Practice: Federal Data Analyst Jobs
+
+`r countdown(minutes = 5, seconds = 0, top = 0, font_size = "2em")`
+
+.panelset[
+
+.panel[.panel-name[Task]
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:6px;">
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">Two questions on <code style="color:#fff;">jobs_small</code></div>
+    <div style="padding:12px 14px; font-size:14.5px; line-height:1.6;">
+      <div><b>1.</b> How many federal postings match "Data Analyst" today?</div>
+      <div style="margin-top:6px;"><b>2.</b> Which three departments have the most of them?</div>
+      <div style="margin-top:10px; color:#585E60;">Work in pairs, in <code>class08.Rmd</code>. Your request must run from a fresh knit, with the key coming from <code>.Renviron</code>.</div>
+    </div>
+  </div>
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#585E60; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">Key not here yet?</div>
+    <div style="padding:12px 14px; font-size:14.5px; line-height:1.6;">Pair with someone whose key has arrived, or answer these with your FRED key instead:
+      <div style="margin-top:6px;"><b>1.</b> How many daily observations does <code>IHLIDXUSOH</code> have since 2026-01-01?</div>
+      <div style="margin-top:6px;"><b>2.</b> On which three dates in 2026 was the index highest?</div>
+    </div>
+  </div>
+</div>
+
+]
+
+.panel[.panel-name[Answer]
+
+<details class="answer-gate" style="margin-top:4px;"><summary style="cursor:pointer; font-weight:700; color:#c3142d; font-size:16px;">Answer will be shown in class</summary>
+
+<div style="font-size:14.5px; line-height:1.7; margin-top:8px;">
+<b>1.</b> <b>`r uj_n`</b> postings when these slides were built (<code>nrow(jobs_small)</code>). The reply also reports it: <code>usajobs_reply$SearchResult$SearchResultCountAll</code> is `r usajobs_reply$SearchResult$SearchResultCountAll`.<br>
+<b>2.</b> `r paste(sprintf("%s (%d)", uj_dept$department[1:3], uj_dept$n[1:3]), collapse = "; ")`.
+</div>
+
+<div class="vcard" style="margin-top:10px;">Question 2 is <code>dplyr::count(department, sort = TRUE)</code> and <code>head(3)</code>. FRED version: `r sum(fred_df$date >= as.Date("2026-01-01"))` observations since 2026-01-01; the three highest dates come from <code>dplyr::filter()</code>, <code>dplyr::arrange(dplyr::desc(value))</code>, <code>head(3)</code>.</div>
+
+</details>
+
+]
+
+.panel[.panel-name[Discussion]
+
+<div style="font-size:14.5px; line-height:1.6; margin-top:6px;">
+<div><b style="color:#c3142d;">This count will be different tomorrow.</b> Postings open and close every day, so the same code gives a new answer each time it runs. What should a report built on an API always state?</div>
+<div style="margin-top:8px;"><b style="color:#c3142d;">ResultsPerPage stops at 500.</b> What would you do if 1,200 postings matched?</div>
+</div>
+
+.can-edit.key-c08-usajobs[
+- Notes from the room:
+]
+
+]
+
+]
+
+???
+
+Five minutes. No verb hints on the slide. The right-hand card is the safety net for anyone whose USAJOBS key is still in the mail; it uses the same skills on the FRED data. At the bell, Answer tab (same password), then Discussion: numbers from an API are a snapshot, so reports carry the retrieval date; and the 500 limit is the doorway to paging, which we meet again in web scraping.
+
+---
+
+# Documentation: OpenAI
+
+<div style="display:grid; grid-template-columns:1.55fr 1fr; gap:16px; margin-top:6px; align-items:start;">
+  <div><img src="`r knitr::image_uri('img/doc_openai.png')`" style="width:100%; border:1px solid #d1d5db; border-radius:8px; box-shadow:0 1px 3px rgba(0,0,0,0.1);"></div>
+  <div style="font-size:13.5px; line-height:1.45;">
+    <div style="font-weight:700; color:#c3142d; font-size:14.5px;">What this page tells us</div>
+      <div style="display:flex; gap:9px; margin-top:7px;"><span style="flex:0 0 22px; height:22px; border-radius:50%; background:#c3142d; color:#fff; font-weight:700; font-size:12.5px; text-align:center; line-height:22px;">1</span><span>The method is <b>POST</b> and the path is <code>/responses</code>. The first three APIs today used GET.</span></div>
+      <div style="display:flex; gap:9px; margin-top:7px;"><span style="flex:0 0 22px; height:22px; border-radius:50%; background:#c3142d; color:#fff; font-weight:700; font-size:12.5px; text-align:center; line-height:22px;">2</span><span>The <b>address</b>: <code>https://api.openai.com/v1/responses</code>. No query parameters.</span></div>
+      <div style="display:flex; gap:9px; margin-top:7px;"><span style="flex:0 0 22px; height:22px; border-radius:50%; background:#c3142d; color:#fff; font-weight:700; font-size:12.5px; text-align:center; line-height:22px;">3</span><span>The key goes in a <b>header</b>: <code>Authorization: Bearer</code> followed by the key.</span></div>
+      <div style="display:flex; gap:9px; margin-top:7px;"><span style="flex:0 0 22px; height:22px; border-radius:50%; background:#c3142d; color:#fff; font-weight:700; font-size:12.5px; text-align:center; line-height:22px;">4</span><span>The <b>body</b> is JSON with two fields we need: <code>model</code> and <code>input</code>. The page's example sends a file; <code>input</code> can also be plain text.</span></div>
+    <div style="margin-top:10px; font-size:12.5px; color:#585E60;">The full page: <a href="https://developers.openai.com/api/reference/resources/responses/methods/create" target="_blank">Create a model response</a> in the OpenAI API reference. Screenshot taken Sep 21, 2026.</div>
+  </div>
+</div>
+
+???
+
+One minute. Fourth time through the same routine. The example on the page is in curl, not R: -H is a header and -d is the body, which map to httr2::req_headers() and httr2::req_body_json(). The model named in their example differs from ours; we use the model from our app.R. The Body Parameters list on the left of the page describes input as text or a list of items.
+
+---
+
+# A Request, Step by Step: OpenAI
+
+```{r openai_solution, include=FALSE}
+# Full solution for the OpenAI slide. The class key is in the project .Renviron as OPENAI_API_KEY.
+ai_resp = httr2::request("https://api.openai.com/v1/responses") |>
+  httr2::req_headers(Authorization = paste("Bearer", Sys.getenv("OPENAI_API_KEY"))) |>
+  httr2::req_body_json(list(
+    model = "gpt-5.6-luna",
+    input = "In one sentence, what is an API?"
+  )) |>
+  httr2::req_error(is_error = function(resp) FALSE) |>
+  httr2::req_perform()
+if (httr2::resp_status(ai_resp) == 401) stop("Knit stopped: OpenAI rejected OPENAI_API_KEY in the repo-root .Renviron (401). Replace the key.", call. = FALSE)
+stopifnot(httr2::resp_status(ai_resp) == 200)
+ai_reply = httr2::resp_body_json(ai_resp)
+# the visible code on the slide reads output[[1]]; fail the knit if OpenAI ever changes that shape
+stopifnot(length(ai_reply$output) == 1, identical(ai_reply$output[[1]]$type, "message"))
+ai_text = ai_reply$output[[1]]$content[[1]]$text
+stopifnot(is.character(ai_text), nzchar(ai_text))
+```
+
+```{r rq_v4, include=FALSE}
+v4_parts = data.frame(
+  text = c("https://api.openai.com", "/v1/responses"),
+  kind = c("base", "path"), from = c(1, 1))
+v4_headers = data.frame(name = "Authorization", value = "BEARER", from = 2)
+v4_body = list(text = '{ "model": "gpt-5.6-luna",\n  "input": "In one sentence, what is an API?" }', from = 3)
+v4_ok = paste0('{\n  "model": "', ai_reply$model, '",\n  "output": [ { "type": "message", "content": [ {\n      "type": "output_text",\n      "text": "', substr(ai_text, 1, 60), '..." } ] } ],\n  ... (shortened)')
+v4_steps = data.frame(
+  caption = c(
+    "<b>OpenAI's API,</b> the one the Class 06 chat app sends its requests to.",
+    "<b>The address</b> has no query parameters. The input text can be long, so it is sent in the body instead.",
+    "<b>The header,</b> as with USAJOBS. OpenAI's documentation names it <code>Authorization</code> and wants the word Bearer before the key.",
+    "<b>The body</b> is data sent with the request, written as JSON. A request that carries a body is a <b>POST</b>; the first three were <b>GET</b>.",
+    "<b>Send.</b>",
+    "<b>200.</b> The reply is a status code and JSON, as with the other three APIs. The model's sentence is one string inside the JSON.",
+    "<b>Parse.</b> The reply is a nested list. Extract the text element."),
+  where = c("r", "r", "r", "r", "wire_out", "wire_back", "r_done"),
+  status = c("", "", "", "", "", "200", "200"),
+  reply = c("", "", "", "", "", v4_ok, v4_ok),
+  line = c(-1, 0, 1, 4, 8, 8, 9),
+  line_to = c(-1, 0, 3, 7, 8, 8, 9))
+v4_code = c('httr2::request("https://api.openai.com/v1/responses") |>',
+            '  httr2::req_headers(',
+            '    Authorization = paste("Bearer", Sys.getenv("OPENAI_API_KEY"))',
+            '  ) |>',
+            '  httr2::req_body_json(list(',
+            '    model = "gpt-5.6-luna",',
+            '    input = "In one sentence, what is an API?"',
+            '  )) |>',
+            '  httr2::req_perform() |>',
+            '  httr2::resp_body_json()')
+v4_html = rq_widget(verb = "POST", url_parts = v4_parts, headers = v4_headers, body = v4_body, steps = v4_steps, code = v4_code, code_size = "50%", reply_h = 98, box_h = 140,
+                    server = c("api.openai.com", "checks the key, runs the model on your input"))
+```
+
+`r v4_html`
+
+???
+
+Two minutes. Last appearance, last new part: the body. Everything else they have already seen today, which is the point. Step 2: no query parameters, because a prompt can be pages long. Step 4: GET asks, POST sends. The reply shown is the real one from when these slides were built, shortened. Next slide they run it.
+
+---
+
+# Calling OpenAI with httr2
+
+
+<div class="qbar"><b>Question.</b> Part 1 showed that the chat app sends requests to OpenAI. Can we send one ourselves with the same httr2 pipeline?</div>
+
+.left55[
+
+```{r ai_shown, eval=FALSE, hl.size="53%"}
+reply = httr2::request("https://api.openai.com/v1/responses") |>
+  httr2::req_headers(
+    Authorization = paste("Bearer", Sys.getenv("OPENAI_API_KEY"))
+  ) |>
+  httr2::req_body_json(list(        # new: a body
+    model = "gpt-5.6-luna",
+    input = "In one sentence, what is an API?"
+  )) |>
+  httr2::req_perform() |>
+  httr2::resp_body_json()
+
+reply$output[[1]]$content[[1]]$text
+```
+
+<pre class="rout" style="font-size:60%; white-space:pre-wrap;">`r htmltools::htmlEscape(paste(strwrap(ai_text, 62), collapse = "\n"))`</pre>
+
+]
+
+.right43[
+<div class="vcard" style="margin-top:0;"><span class="vh">What is new.</span> <code>httr2::req_body_json()</code> sends data <b>with</b> the request. A request with a body is a <b>POST</b>; everything before this slide was a <b>GET</b>. GET asks, POST sends.</div>
+<div class="vcard"><span class="vh">The header.</span> <code>Authorization: Bearer</code> followed by the key, as shown in Part 1. USAJOBS used a different header name; each API's documentation specifies its own.</div>
+<div class="vcard"><span class="vh">How this relates to the app.</span> Our <code>app.R</code> calls <code>ellmer::chat_openai(model = "gpt-5.6-luna")</code> and hands it to querychat. Packages like <a href="https://ellmer.tidyverse.org/" target="_blank">ellmer</a> build and send this request for you.</div>
+<div style="font-size:11.5px; color:#585E60; margin-top:6px;">The sentence on the left is the model's reply when these slides were built; yours will be worded differently. Reference: <a href="https://developers.openai.com/api/reference/resources/responses/methods/create" target="_blank">OpenAI API, create a response</a>.</div>
+]
+
+???
+
+Four minutes, and the payoff of the hour. They run it: the class key is already in their .Renviron from Class 07 as OPENAI_API_KEY. Read the pipeline aloud and ask what is new: only req_body_json(). No query parameters this time, because the question travels in the body. The reply is a nested list again, so the last line walks down it exactly as they did for USAJOBS. Then close the loop with Part 1: querychat, through ellmer, sends requests like this one every time someone types a question, which is why the key matters. A 401 here means the old, disabled key is still in .Renviron.
+
+---
+
+# Our Class Git + GitHub Ritual
+
+<div style="display:flex; gap:14px; align-items:stretch; margin-top:14px;">
+  <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:9px 14px;">1 &nbsp; Knit</div>
+    <div style="padding:14px; font-size:14.5px; line-height:1.55;">Click <b>Knit</b>. <code>class08.html</code> re-runs every chunk top to bottom and saves the page next to your markdown.<div style="margin-top:6px; color:#585E60;">If the knit fails, a chunk depends on something you only ran in the Console. Fix the markdown, not the Console.</div></div>
+  </div>
+  <div style="align-self:center; color:#c3142d; font-size:24px; font-weight:700;">&rarr;</div>
+  <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:9px 14px;">2 &nbsp; Commit</div>
+    <div style="padding:14px; font-size:14.5px; line-height:1.55;">GitHub Desktop lists today's work: <code>markdowns/class08.Rmd</code> and <code>class08.html</code>. Nothing else.<div style="margin-top:6px; color:#585E60;">Today you added two keys to <code>.Renviron</code>. If <code>.Renviron</code> is in the list, stop: uncheck it and run <code>usethis::use_git_ignore(".Renviron")</code>. Summary: <code>Add class 08 markdown on APIs</code>.</div></div>
+  </div>
+  <div style="align-self:center; color:#c3142d; font-size:24px; font-weight:700;">&rarr;</div>
+  <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:9px 14px;">3 &nbsp; Push and verify</div>
+    <div style="padding:14px; font-size:14.5px; line-height:1.55;"><b>Push origin</b>, then open the repo on GitHub and read <code>class08.Rmd</code> there.<div style="margin-top:6px; color:#585E60;">Search the page for your key. You should find <code>Sys.getenv()</code> and nothing else.</div></div>
+  </div>
+</div>
+
+<br>
+
+<div style="margin-top:14px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:14px 20px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:18px; line-height:1.55; color:#1b1b1b;">
+<b style="color:#c3142d;">If it is not pushed, it is not done.</b> Your code contains the name of the key. The value stays on your PC.
+</div>
+
+???
+
+Same ritual. Today it has a second purpose: two new keys went into .Renviron, so look at the GitHub Desktop list on the projector with them. The markdown and its HTML, yes; .Renviron, never. After the push, open class08.Rmd on GitHub and search for the key: Sys.getenv() is all anyone should find.
+
+---
+
+class: inverse, center, middle
+
+# Recap
+
+
+---
+
+# Summary of Main Points
+
+By now, you should be able to do the following:
+
+- **Define** an API as a documented contract: you send a request the documentation describes, the server returns a status code and, when it says 200, data.
+- **Construct** a request with `httr2::request()`, `httr2::req_url_query()`, and `httr2::req_headers()`, with every key read from `.Renviron` by `Sys.getenv()`.
+- **Parse** the JSON reply with `jsonlite::fromJSON()`, find the table inside the list, and hand it to the dplyr verbs.
+
+**Next class (Mon, Sep 28):** Web Scraping I, for the pages that have no API.
+
+???
+
+One bullet per objective. The sentence to repeat: the pipeline never changed today, each API added one line to it. Then point forward: when a site has no API, we read its HTML instead, and that is Monday.
+
+
+---
+
+
+# Before You Go
+
+<div style="height:495px; max-width:880px; margin:0 auto; padding:0; overflow:hidden;">
+  <iframe
+    src="https://www.mentimeter.com/app/presentation/alkim66z8wex2hguaep3uv4bke15kac4/embed"
+    scrolling="no"
+    frameborder="0"
+    allowfullscreen
+    sandbox="allow-popups allow-scripts allow-same-origin allow-presentation"
+    style="width:100%; height:100%; border:0;">
+  </iframe>
+</div>
+
+???
+
+The Class 05 Menti presentation is reused here; reset its results in Menti before class and advance it to the clarification question before this slide comes up. Answer the top two or three on the spot and carry the rest into Wednesday's opening.
+
+
+---
+
+
+# 📝 Review and Clarification 📝
+
+.pull-left[
+
+1. **Class Notes**: Take some time to revisit your class notes for key insights/concepts.
+
+2. **Zoom Recording**: The recording of today's class will be made available on Canvas approximately 3-4 hours after the session ends.
+
+3. **AI Recaps:** make your own with Gemini's NotebookLM, as I did for Class 01 (see the right).
+
+4. **Questions**: Do not let confusion pile up.
+
+]
+
+.pull-right[
+
+<div style="border:1px solid #d1d5db; border-radius:8px; padding:14px 18px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:16px; line-height:1.55; margin-top:6px;">
+<div style="font-weight:700; color:#c3142d; font-size:18px;">Make your own recap in NotebookLM</div>
+<ol style="margin:10px 0 0 0; padding-left:22px;">
+<li style="margin-bottom:6px;">Go to <a href="https://notebooklm.google.com" target="_blank">notebooklm.google.com</a> and sign in with your Miami Google account.</li>
+<li style="margin-bottom:6px;">Add today's slide deck as a source: paste the deck's address from Canvas as a <b>Website</b> source.</li>
+<li>Click <b>Audio Overview</b> for a podcast, or <b>Video Overview</b> for a narrated video. Both take a few minutes to generate.</li>
+</ol>
+<div style="margin-top:12px; color:#585E60; font-size:15px;">What it looks like: the Class 01 <a href="https://www.youtube.com/watch?v=sys7WBk0iew" target="_blank">video</a> and <a href="https://drive.google.com/file/d/1lt6hqrMuW8JOy9ilvkT5NVlPABowj7SE/view" target="_blank">podcast</a>. Treat them as a study aid, not a substitute for the slides: the AI summarizes what is on the page and can misstate details.</div>
+</div>
+
+]
+
+???
+
+Same slide as the last two classes. Point at the Class 01 examples so they know what they get, and repeat the caveat: NotebookLM paraphrases and occasionally invents.
+
+
+---
+
+
+# 🎯 Assignments 🎯
+
+.pull-left[
+
+<div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+  <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">No new graded assignment today</div>
+  <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;">Open assignments and their due dates are on the <a href="https://miamioh.instructure.com/courses/258169/assignments" target="_blank"><b>Canvas Assignments page</b></a>. The practice questions on the right use the three APIs from today and the keys you now have.</div>
+</div>
+
+<div style="margin-top:12px; border:1px solid #c3142d; border-left:6px solid #c3142d; border-radius:8px; padding:10px 14px; background:#fdf2f2; font-size:13.5px; line-height:1.5;">
+<b style="color:#c3142d;">Keep your keys private.</b> The FRED and USAJOBS keys are registered to your email. They live in <code>.Renviron</code>, never in a markdown, a commit, a screenshot, or a chat message.
+</div>
+
+<div style="margin-top:12px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:10px 14px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13.5px; line-height:1.5; color:#1b1b1b;">
+<b style="color:#c3142d;">Before you leave:</b> knit, then commit and push <code>markdowns/class08.Rmd</code> and <code>class08.html</code>. If it is not pushed, it is not done.
+</div>
+
+]
+
+.pull-right[
+
+<div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+  <div style="background:#f9dbdb; color:#c3142d; font-weight:700; font-size:15px; padding:8px 14px;">Ungraded Practice Questions</div>
+  <div style="padding:10px 14px; font-size:13px; line-height:1.5;">
+    <div><b>1. Cincinnati (Appendix A1 and A2).</b> Which five <code>sna_neighborhood</code> values have the most records among the 1,000 most recent?</div>
+    <div style="margin-top:4px;"><b>2. FRED.</b> Get <code>IHLIDXUSOH</code> and <code>IHLIDXUS</code> since 2026-01-01. On how many days was Ohio's index above the national one?</div>
+    <div style="margin-top:4px;"><b>3. USAJOBS.</b> Change the request so it returns "Data Analyst" postings in Ohio (the documentation's <code>LocationName</code> parameter). How many are there?</div>
+    <div style="margin-top:4px;"><b>4. USAJOBS.</b> What are the typical minimum and maximum pay for today's postings? The pay columns are nested one level deeper; see Appendix A3.</div>
+    <div style="margin-top:4px;"><b>5. OpenAI.</b> Send your own one-sentence question. Then change <code>input</code> to ask for the answer in Spanish.</div>
+    <details style="margin-top:8px;"><summary style="cursor:pointer; font-weight:700; color:#c3142d; font-size:13px;">Answers</summary>
+      <div style="font-family:'Source Code Pro', monospace; font-size:11px; line-height:1.55; margin-top:4px; color:#1b1b1b;">
+        1. cincy_recent |&gt; dplyr::count(sna_neighborhood, sort = TRUE) |&gt; head(5)<br>
+        2. Two requests that differ only in series_id; dplyr::inner_join() the two data frames by date, then dplyr::filter(value.x &gt; value.y) |&gt; nrow()<br>
+        3. httr2::req_url_query(Keyword = "Data Analyst", LocationName = "Ohio", ResultsPerPage = 500)<br>
+        4. Appendix A3<br>
+        5. Only the input string changes; the header and the rest of the body stay as they are.
+      </div>
+    </details>
+  </div>
+</div>
+
+]
+
+???
+
+Nothing new is due from today. The practice questions reuse the three APIs; the answers are one click away. Say the before-you-leave line while pointing at GitHub Desktop, and repeat the key rule once more.
+
+---
+
+class: inverse, center, middle
+
+# Appendices
+
+<div style="font-size:16px; margin-top:10px; opacity:0.9;">Not covered live. A1 for the bracket-to-verb translation, A2 when a deploy fails, A3 for the reading.</div>
+
+---
+
+name: appendix-a1
+
+# A1: Cincinnati Example in httr2
+
+<div class="qbar"><b>Question.</b> How many traffic crashes has Cincinnati recorded since August 1, 2026?</div>
+
+```{r cincy_solution, include=FALSE}
+# Full solution for the Cincinnati example (Appendix A1) and its practice slide (A2).
+# Students type this in markdowns/class08.Rmd. No key needed.
+cincy_url = "https://data.cincinnati-oh.gov/resource/rvmt-pkmq.json"
+
+# Question 1: how many records and how many crashes since Aug 1, 2026? (the server counts)
+# one crash has one row per person involved; rows of the same crash share an instanceid
+cincy_count = httr2::request(cincy_url) |>
+  httr2::req_url_query(
+    "$select" = "count(*) as records, count(distinct instanceid) as crashes",
+    "$where" = "crashdate >= '2026-08-01'"
+  ) |>
+  httr2::req_perform() |>
+  httr2::resp_body_string() |>
+  jsonlite::fromJSON()
+
+# Question 2: the 1,000 most recent records, then count by severity with dplyr (R counts)
+cincy_recent = httr2::request(cincy_url) |>
+  httr2::req_url_query("$limit" = 1000, "$order" = "crashdate DESC") |>
+  httr2::req_perform() |>
+  httr2::resp_body_string() |>
+  jsonlite::fromJSON()
+cincy_top = cincy_recent |> dplyr::count(crashseverity, sort = TRUE)
+# plausibility check used on the slide: the same two counts for all of 2025
+cincy_2025 = httr2::request(cincy_url) |>
+  httr2::req_url_query(
+    "$select" = "count(*) as records, count(distinct instanceid) as crashes",
+    "$where" = "crashdate between '2025-01-01' and '2025-12-31'"
+  ) |>
+  httr2::req_perform() |>
+  httr2::resp_body_string() |>
+  jsonlite::fromJSON()
+cincy_last = as.Date(substr(max(cincy_recent$crashdate, na.rm = TRUE), 1, 10))
+cincy_days = as.numeric(cincy_last - as.Date("2026-08-01")) + 1
+stopifnot(as.numeric(cincy_count$crashes) > 0, as.numeric(cincy_count$records) >= as.numeric(cincy_count$crashes), nrow(cincy_recent) == 1000)
+```
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+  <div class="vcard"><span class="vh">Two ways to answer.</span> Download every record and count rows in R, or ask the server to count and download one number. The table has `r fmt(as.numeric(jsonlite::fromJSON(paste0(cincy_url, "?$select=count(*)"))$count))` rows today.</div>
+  <div class="vcard"><span class="vh">What is one row?</span> One person involved in a crash. Rows from the same crash share an <code>instanceid</code>, so counting crashes means counting <b>distinct</b> <code>instanceid</code> values, with a condition on <code>crashdate</code>.</div>
+</div>
+
+--
+
+```{r cincy_shown, hl.size="58%"}
+cincy_url = "https://data.cincinnati-oh.gov/resource/rvmt-pkmq.json"
+
+httr2::request(cincy_url) |>
+  httr2::req_url_query(
+    "$select" = "count(*) as records, count(distinct instanceid) as crashes",
+    "$where" = "crashdate >= '2026-08-01'"
+  ) |>
+  httr2::req_perform() |>
+  httr2::resp_body_string() |>
+  jsonlite::fromJSON()
+```
+
+<div class="vcard" style="margin-top:4px;"><span class="vh">Is the number reasonable?</span> The newest record is dated `r format(cincy_last, "%b %d")`, so the request covers `r cincy_days` days: about `r round(as.numeric(cincy_count$crashes) / cincy_days)` crashes a day, from `r fmt(as.numeric(cincy_count$records))` records. The same request for all of 2025 returns `r fmt(as.numeric(cincy_2025$crashes))` crashes, about `r round(as.numeric(cincy_2025$crashes) / 365)` a day. Both values are text, like every column from this server.</div>
+
+???
+
+Three minutes. Question first: let the room say filter and count before the click. After the click, read the pipeline as five verbs: start a request, add the question, send it, take the body as text, parse the JSON. httr2 writes the ? and & and encodes the spaces and quotes for us, which is the practical reason to stop pasting URLs by hand. Note the count comes back as text, like every column from this server. The solution chunk above holds both practice answers.
+
+---
+
+name: appendix-a2
+
+# A2: Practice: Build the URL
+
+`r countdown(minutes = 5, seconds = 0, top = 0, font_size = "2em")`
+
+<style>
+.ub { font-family:'Noto Sans','Roboto',Arial,sans-serif; }
+.ub-ctl { display:grid; grid-template-columns:repeat(4, auto); gap:8px 14px; align-items:center; justify-content:start; font-size:13px; }
+.ub-ctl label { font-family:'Source Code Pro',monospace; color:#b45309; font-weight:600; }
+.ub-ctl input[type=number], .ub-ctl input[type=date], .ub-ctl select { font-family:'Source Code Pro',monospace; font-size:12.5px; padding:3px 6px; border:1px solid #d1d5db; border-radius:6px; }
+.ub-ctl .ub-f { display:flex; align-items:center; gap:6px; border:1px solid #d1d5db; border-radius:8px; padding:4px 10px; background:#ffffff; }
+.ub-url { margin-top:8px; border:1px solid #d1d5db; border-radius:8px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); padding:7px 12px; font-family:'Source Code Pro',monospace; font-size:13px; line-height:1.55; word-break:break-all; }
+.ub-url a { float:right; font-family:'Noto Sans',Arial,sans-serif; font-size:12px; font-weight:700; color:#c3142d !important; margin-left:10px; }
+.ub pre.rcode { margin:8px 0 0 0 !important; padding:8px 12px !important; font-size:12.5px; line-height:1.5; }
+</style>
+
+.panelset[
+
+.panel[.panel-name[Task]
+
+<div class="ub">
+<div class="ub-ctl">
+<span class="ub-f"><input type="checkbox" class="ub-on-limit" checked><label>$limit</label><input type="number" class="ub-limit" value="5" min="1" max="1000" style="width:70px;"></span>
+<span class="ub-f"><input type="checkbox" class="ub-on-where"><label>$where</label><span style="font-family:'Source Code Pro',monospace; font-size:12.5px;">crashdate &gt;=</span><input type="date" class="ub-date" value="2026-08-01" max="2026-08-24"></span>
+<span class="ub-f"><input type="checkbox" class="ub-on-order"><label>$order</label><select class="ub-order"><option>crashdate DESC</option><option>crashdate ASC</option><option>age DESC</option></select></span>
+<span class="ub-f"><input type="checkbox" class="ub-on-count"><label>$select</label><span style="font-family:'Source Code Pro',monospace; font-size:12.5px;">count(*)</span></span>
+</div>
+<div class="ub-url"><a class="ub-open" href="#" target="_blank">Open in a new tab</a><span class="ub-addr"></span></div>
+<pre class="rcode ub-code"></pre>
+</div>
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:8px;">
+  <div class="vcard"><span class="vh">1.</span> Pick any date in August 2026. How many crash records since that date? Let the <b>server</b> count.</div>
+  <div class="vcard"><span class="vh">2.</span> Download the 1,000 most recent records. Which <code>crashseverity</code> is most common? Let <b>R</b> count.</div>
+</div>
+
+<div style="margin-top:6px; font-size:12.5px; color:#585E60;"><b>Why the quotes?</b> On this server the <code>$</code> is part of each parameter's name, and an R argument name cannot start with <code>$</code> unless it is quoted. FRED and USAJOBS use plain names, so no quotes are needed there. Tick boxes to build the request, open it in a browser tab to read the raw reply, then run the R version in <code>class08.Rmd</code>. The newest record in this table is dated `r substr(max(cincy_recent$crashdate, na.rm = TRUE), 1, 10)`.</div>
+
+]
+
+.panel[.panel-name[Answer]
+
+<details class="answer-gate" style="margin-top:4px;"><summary style="cursor:pointer; font-weight:700; color:#c3142d; font-size:16px;">Answer will be shown in class</summary>
+
+<div style="font-size:14.5px; line-height:1.7; margin-top:8px;">
+<b>1.</b> Since 2026-08-01: <b>`r fmt(as.numeric(cincy_count$records))`</b> records (your date gives a different count), which come from `r fmt(as.numeric(cincy_count$crashes))` crashes. The reply is one row, and the number is text: <code>"`r cincy_count$records`"</code>.<br>
+<b>2.</b> Of the 1,000 most recent: `r paste(sprintf("%s (%s)", cincy_top$crashseverity[1:3], cincy_top$n[1:3]), collapse = "; ")`.
+</div>
+
+<div class="vcard" style="margin-top:10px;">Question 1 is <code>"$select" = "count(*)"</code> plus <code>"$where"</code>. Question 2 is <code>"$limit" = 1000</code> plus <code>"$order" = "crashdate DESC"</code>, then <code>dplyr::count(crashseverity, sort = TRUE)</code> on the data frame. The full code is in this slide's notes.</div>
+
+</details>
+
+]
+
+.panel[.panel-name[Discussion]
+
+<div style="font-size:14.5px; line-height:1.6; margin-top:6px;">
+<div><b style="color:#c3142d;">Where was the counting done?</b> In question 1 the server counted and sent one number. In question 2 the server sent 1,000 rows and R counted. When is each approach appropriate?</div>
+<div style="margin-top:8px;"><b style="color:#c3142d;">`r sum(is.na(cincy_recent$crashdate))` of the 1,000 "most recent" records have no date.</b> This server sorts missing values first when the order is descending. How would you have noticed?</div>
+<div style="margin-top:8px;"><b style="color:#c3142d;">Every column is text,</b> including <code>age</code> and the count itself. What has to happen before <code>mean(age)</code>?</div>
+</div>
+
+.can-edit.key-c08-cincy[
+- Notes from the room:
+]
+
+]
+
+]
+
+<script>
+(function () {
+  var BASE = 'https://data.cincinnati-oh.gov/resource/rvmt-pkmq.json';
+  var AMP = String.fromCharCode(38);
+  function esc(t) { return t.replace(/&/g, AMP + 'amp;').replace(/</g, AMP + 'lt;').replace(/>/g, AMP + 'gt;'); }
+  function sp(cls, t) { return '<span class=' + cls + '>' + esc(t) + '</span>'; }
+  function line(html) { return '<span class=rl>' + html + '</span>'; }
+  function call(pkg, fun) { return sp('rpkg', pkg) + '::' + sp('rfun', fun); }
+  function build(root) {
+    if (root.getAttribute('data-built')) { return; }
+    root.setAttribute('data-built', '1');
+    var q = function (s) { return root.querySelector(s); };
+    function draw() {
+      var ps = [];
+      if (q('.ub-on-count').checked) { ps.push(['$select', 'count(*)', false]); }
+      if (q('.ub-on-where').checked) { ps.push(['$where', 'crashdate >= ' + String.fromCharCode(39) + q('.ub-date').value + String.fromCharCode(39), false]); }
+      if (q('.ub-on-order').checked && !q('.ub-on-count').checked) { ps.push(['$order', q('.ub-order').value, false]); }
+      if (q('.ub-on-limit').checked && !q('.ub-on-count').checked) { ps.push(['$limit', String(Number(q('.ub-limit').value) || 5), true]); }
+      var addr = '<span style=color:#2563eb>https://data.cincinnati-oh.gov</span><span style=color:#059669>/resource/rvmt-pkmq.json</span>';
+      var href = BASE;
+      ps.forEach(function (p, i) {
+        var sep = (i === 0) ? '?' : '&';
+        addr += '<b style=color:#585E60>' + esc(sep) + '</b><span style=color:#b45309>' + esc(p[0]) + '</span>=' + esc(p[1]);
+        href += sep + p[0] + '=' + encodeURIComponent(p[1]);
+      });
+      q('.ub-addr').innerHTML = addr;
+      q('.ub-open').setAttribute('href', href);
+      var dq = String.fromCharCode(34);
+      var code = [line(call('httr2', 'request') + '(' + sp('rstr', dq + BASE + dq) + ') ' + sp('rop', '|>'))];
+      if (ps.length) {
+        code.push(line('  ' + call('httr2', 'req_url_query') + '('));
+        ps.forEach(function (p, i) {
+          var val = p[2] ? sp('rnum', p[1]) : sp('rstr', dq + p[1] + dq);
+          code.push(line('    ' + sp('rstr', dq + p[0] + dq) + ' ' + sp('rop', '=') + ' ' + val + (i === ps.length - 1 ? '' : sp('rop', ','))));
+        });
+        code.push(line('  ) ' + sp('rop', '|>')));
+      }
+      code.push(line('  ' + call('httr2', 'req_perform') + '() ' + sp('rop', '|>')));
+      code.push(line('  ' + call('httr2', 'resp_body_string') + '() ' + sp('rop', '|>')));
+      code.push(line('  ' + call('jsonlite', 'fromJSON') + '()'));
+      q('.ub-code').innerHTML = code.join('');
+    }
+    root.querySelectorAll('input, select').forEach(function (el) { el.addEventListener('input', draw); el.addEventListener('change', draw); });
+    ['keydown', 'keypress', 'keyup'].forEach(function (t) { root.addEventListener(t, function (e) { e.stopPropagation(); }); });
+    root.addEventListener('focusin', function () { if (window.slideshow) { window.slideshow.pause(); } });
+    root.addEventListener('focusout', function () { if (window.slideshow) { window.slideshow.resume(); } });
+    draw();
+  }
+  function buildAll() { document.querySelectorAll('.ub').forEach(build); }
+  buildAll();
+  if (window.slideshow && !window.ubHooked) { window.ubHooked = true; window.slideshow.on('afterShowSlide', buildAll); }
+})();
+</script>
+
+<script>
+(function () {
+  // Password gate for the "Answer will be shown in class" details boxes (class answer-gate).
+  // Light gate only: the password is stored as a 32-bit FNV-1a hash so it is not readable in
+  // the page source, but anyone determined can open the box from DevTools. sessionStorage
+  // remembers an unlock for the rest of the browser session, so one password opens every box.
+  var HASH = "806d8122";
+  var KEY = "isa401_gate_08";
+  function fnv(str) {
+    var x = 0x811c9dc5;
+    for (var i = 0; i !== str.length; i = i + 1) { x ^= str.charCodeAt(i); x = Math.imul(x, 16777619) >>> 0; }
+    return ("0000000" + x.toString(16)).slice(-8);
+  }
+  function unlocked() { try { return sessionStorage.getItem(KEY) === "1"; } catch (e) { return false; } }
+  function remember() { try { sessionStorage.setItem(KEY, "1"); } catch (e) {} }
+
+  function arm(d) {
+    if (d.getAttribute("data-gated")) { return; }
+    d.setAttribute("data-gated", "1");
+    var prompt = null;
+    d.addEventListener("toggle", function () {
+      if (!d.open) { return; }   // closing (including our own d.open = false below) needs nothing
+      if (unlocked()) { if (prompt) { prompt.remove(); prompt = null; } return; }
+      d.open = false;
+      if (prompt) { prompt.querySelector("input").focus(); return; }
+      prompt = document.createElement("div");
+      prompt.setAttribute("style", "display:flex; align-items:center; gap:8px; margin:6px 0 0 0; font-size:13px;");
+      prompt.innerHTML = "<span style='color:#585E60;'>Password</span>" +
+        "<input type='password' autocomplete='off' style='font-family:Source Code Pro, monospace; font-size:13px; padding:4px 8px; border:1px solid #d1d5db; border-radius:6px; width:140px;'>" +
+        "<button type='button' style='background:#c3142d; color:#fff; border:0; border-radius:6px; padding:5px 14px; font-weight:700; font-size:13px; cursor:pointer;'>Unlock</button>" +
+        "<span class='gate-msg' style='color:#c3142d;'></span>";
+      d.parentNode.insertBefore(prompt, d.nextSibling);
+      var input = prompt.querySelector("input");
+      var msg = prompt.querySelector(".gate-msg");
+      // keep remark's keyboard shortcuts (f, p, digits) from firing while typing: same
+      // pause/resume pattern xaringanExtra uses for its editable fields
+      ["keydown", "keypress", "keyup"].forEach(function (t) { input.addEventListener(t, function (e) { e.stopPropagation(); }); });
+      input.addEventListener("focus", function () { if (window.slideshow) { window.slideshow.pause(); } });
+      input.addEventListener("blur", function () { if (window.slideshow) { window.slideshow.resume(); } });
+      function tryIt() {
+        if (fnv(input.value.trim()) === HASH) { remember(); prompt.remove(); prompt = null; d.open = true; }
+        else { msg.textContent = "Not it."; input.select(); }
+      }
+      prompt.querySelector("button").addEventListener("click", tryIt);
+      input.addEventListener("keydown", function (e) { if (e.key === "Enter") { tryIt(); } });
+      input.focus();
+    });
+  }
+  function armAll() { document.querySelectorAll("details.answer-gate").forEach(arm); }
+  armAll();
+  if (window.slideshow) { if (!window.answerGateHooked) { window.answerGateHooked = true; window.slideshow.on("afterShowSlide", armAll); } }
+})();
+</script>
+
+???
+
+Five minutes on the clock, pairs. The builder writes both spellings of the same request: the address for the browser and the httr2 code for the markdown. Insist on the order: tick, open in a tab, read the raw reply, then run it in R. When count(*) is ticked the builder drops $limit and $order, because a count is one row. At the bell: Answer tab (password), then Discussion. The first discussion point is the business one: pushing work to the server is cheaper, but only R can do what the API does not offer. The second sets up as.numeric() in Part 3.
+
+Full code:
+cincy_url = "https://data.cincinnati-oh.gov/resource/rvmt-pkmq.json"
+httr2::request(cincy_url) |> httr2::req_url_query("$select" = "count(*)", "$where" = "crashdate >= '2026-08-01'") |> httr2::req_perform() |> httr2::resp_body_string() |> jsonlite::fromJSON()
+httr2::request(cincy_url) |> httr2::req_url_query("$limit" = 1000, "$order" = "crashdate DESC") |> httr2::req_perform() |> httr2::resp_body_string() |> jsonlite::fromJSON() |> dplyr::count(crashseverity, sort = TRUE)
+
+---
+
+name: appendix-a3
+
+# A3: Practice with USAJOBS Pay and Remotive
+
+```{r a1_solution, include=FALSE}
+# USAJOBS pay: PositionRemuneration is a list column (one small data frame per posting)
+uj_pay = usajobs_df |>
+  dplyr::select(title = MatchedObjectDescriptor.PositionTitle, pay = MatchedObjectDescriptor.PositionRemuneration) |>
+  tidyr::unnest(pay) |>
+  dplyr::mutate(MinimumRange = as.numeric(MinimumRange), MaximumRange = as.numeric(MaximumRange))
+uj_pay_year = uj_pay |> dplyr::filter(RateIntervalCode == "PA")
+uj_pay_med = c(min = median(uj_pay_year$MinimumRange), max = median(uj_pay_year$MaximumRange))
+
+# Remotive: no key; documented parameters are category, company_name, search, limit
+remotive_reply = httr2::request("https://remotive.com/api/remote-jobs") |>
+  httr2::req_url_query(category = "data", limit = 25) |>
+  httr2::req_perform() |>
+  httr2::resp_body_string() |>
+  jsonlite::fromJSON()
+remotive_df = remotive_reply$jobs
+stopifnot(nrow(uj_pay_year) > 0, is.data.frame(remotive_df))
+```
+
+.pull-left[
+
+<div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+  <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">USAJOBS: typical pay</div>
+  <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;">The column <code>MatchedObjectDescriptor.PositionRemuneration</code> is a <b>list column</b>: each cell holds a small data frame with <code>MinimumRange</code>, <code>MaximumRange</code>, and <code>RateIntervalCode</code> ("PA" means per year).</div>
+</div>
+
+```{r a1_shown, eval=FALSE, hl.size="50%"}
+usajobs_df |>
+  dplyr::select(
+    title = MatchedObjectDescriptor.PositionTitle,
+    pay = MatchedObjectDescriptor.PositionRemuneration
+  ) |>
+  tidyr::unnest(pay) |>
+  dplyr::filter(RateIntervalCode == "PA") |>
+  dplyr::summarize(
+    min = median(as.numeric(MinimumRange)),
+    max = median(as.numeric(MaximumRange))
+  )
+```
+
+<div style="font-size:13px; color:#585E60;">When these slides were built: median minimum `r scales::dollar(uj_pay_med[["min"]])`, median maximum `r scales::dollar(uj_pay_med[["max"]])`, across `r nrow(uj_pay_year)` per-year pay ranges.</div>
+
+]
+
+.pull-right[
+
+<div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+  <div style="background:#585E60; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">Remotive: remote jobs, no key</div>
+  <div style="padding:10px 14px; font-size:13.5px; line-height:1.55;">
+    <div><b>1.</b> Open <a href="https://remotive.com/api/remote-jobs?category=data&limit=25" target="_blank">remotive.com/api/remote-jobs?category=data&amp;limit=25</a> in a browser tab. Read the <b>legal notice</b> at the top of the reply: it states what you may do with the data and asks you to credit Remotive and link back.</div>
+    <div style="margin-top:5px;"><b>2.</b> Write the same request with <code>httr2</code>. The table is the <code>jobs</code> element (`r ncol(remotive_df)` columns when these slides were built).</div>
+    <div style="margin-top:5px;"><b>3.</b> The documented parameters are <code>category</code>, <code>company_name</code>, <code>search</code>, and <code>limit</code> (<a href="https://github.com/remotive-com/remote-jobs-api" target="_blank">Remotive API documentation</a>). Use <code>search</code> to find postings that mention SQL.</div>
+    <div style="margin-top:5px;"><b>4.</b> Which <code>candidate_required_location</code> values are most common?</div>
+  </div>
+</div>
+
+<div style="margin-top:8px; font-size:12.5px; color:#585E60;">Job data on this slide's exercise comes from <a href="https://remotive.com" target="_blank">Remotive</a>. Its documentation advises at most four requests a day and blocks more than two a minute, so ask once, save the data frame, and work from the saved copy.</div>
+
+]
+
+???
+
+Not covered in class. The USAJOBS half answers the third question from the old deck (typical salary range) and introduces a list column and tidyr::unnest(), which returns in the tidy data class. The Remotive half is a second no-key API whose reply opens with terms of use, a useful habit to build: read what the owner allows before using the data.
+
+---
+
+name: appendix-a4
+
+# A4: Reading
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:12px;">
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="padding:12px 16px; font-size:14.5px; line-height:1.55;"><span style="background:#f9dbdb; color:#c3142d; font-weight:700; font-size:12px; border-radius:10px; padding:2px 10px;">Suggested</span>
+      <div style="margin-top:8px;"><a href="https://httr2.r-lib.org/articles/httr2.html" target="_blank"><b>Get started with httr2</b></a></div>
+      <div style="color:#585E60; margin-top:4px;">The package's own introduction: create a request, modify it, perform it, read the response. Today's pipeline, with more options.</div>
+    </div>
+  </div>
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="padding:12px 16px; font-size:14.5px; line-height:1.55;"><span style="background:#e5e7eb; color:#585E60; font-weight:700; font-size:12px; border-radius:10px; padding:2px 10px;">Skim if curious</span>
+      <div style="margin-top:8px;"><a href="https://httr2.r-lib.org/articles/wrapping-apis.html" target="_blank"><b>httr2: Wrapping APIs</b></a></div>
+      <div style="color:#585E60; margin-top:4px;">How R packages such as ellmer are built on top of requests like today's, including a section on keeping secrets out of code.</div>
+    </div>
+  </div>
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="padding:12px 16px; font-size:14.5px; line-height:1.55;"><span style="background:#e5e7eb; color:#585E60; font-weight:700; font-size:12px; border-radius:10px; padding:2px 10px;">Skim if curious</span>
+      <div style="margin-top:8px;"><a href="https://fred.stlouisfed.org/docs/api/fred/" target="_blank"><b>FRED API documentation</b></a></div>
+      <div style="color:#585E60; margin-top:4px;">A well organized example of API documentation: every path, every parameter, an example request and reply for each.</div>
+    </div>
+  </div>
+  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="padding:12px 16px; font-size:14.5px; line-height:1.55;"><span style="background:#e5e7eb; color:#585E60; font-weight:700; font-size:12px; border-radius:10px; padding:2px 10px;">Skim if curious</span>
+      <div style="margin-top:8px;"><a href="https://dev.socrata.com/docs/endpoints.html" target="_blank"><b>Socrata API endpoints and versions</b></a></div>
+      <div style="color:#585E60; margin-top:4px;">Explains the two versions seen on the Cincinnati portal: the older one we used (no key) and version 3, which requires authentication.</div>
+    </div>
+  </div>
+</div>
+
+???
+
+Nothing is required. The httr2 introduction is the one to read if they read one.
+
