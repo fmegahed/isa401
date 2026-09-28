@@ -1,0 +1,1503 @@
+---
+title: "ISA 401: Business Intelligence & Data Visualization"
+subtitle: "10: Web Scraping I"
+author: '<br>Fadel M. Megahed, PhD <br><br> Raymond E. Glos Professor in Business <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("linkedin"), fill = "white")` @Fadel Megahed](https://www.linkedin.com/in/fadel-megahed-289046b4) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
+date: "Fall 2026"
+output:
+  xaringan::moon_reader:
+    self_contained: true
+    css: [default, "../../style_files/fonts.css", "../../style_files/my-theme.css", "../../style_files/code-tomorrow-night-bright.css"]
+    lib_dir: libs
+    mathjax: null
+    nature:
+      highlightStyle: magula
+      highlightLines: true
+      highlightLanguage: ["r"]
+      countIncrementalSlides: false
+      ratio: "16:9"
+    includes:
+      in_header: "../../style_files/header.html"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache = FALSE,
+                      echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE,
+                      progress = FALSE,
+                      verbose = FALSE,
+                      dev = 'png',
+                      fig.height = 3,
+                      dpi = 300,
+                      fig.align = 'center')
+
+options(htmltools.dir.version = FALSE, width = 52)
+
+miamired = '#C3142D'
+
+if(require(pacman)==FALSE) install.packages("pacman")
+if(require(devtools)==FALSE) install.packages("devtools")
+if(require(countdown)==FALSE) devtools::install_github("gadenbuie/countdown")
+if(require(xaringanExtra)==FALSE) devtools::install_github("gadenbuie/xaringanExtra")
+if(require(emo)==FALSE) devtools::install_github("hadley/emo")
+
+pacman::p_load(tidyverse, magrittr, lubridate, janitor, # data analysis pkgs
+               httr2, rvest, robotstxt, # web pkgs
+               DBI, RSQLite, # Job Scout database
+               fontawesome, emo, xaringanExtra, countdown) # for slides
+
+ggplot2::theme_set(ggplot2::theme_bw(base_size = 12))
+
+# Code styling shared by all ISA 401 decks: hl_r() + knitr source hook (see style_files/hl_r.R)
+source("../../style_files/hl_r.R")
+```
+
+```{r web_setup, include=FALSE}
+# Everything below is fetched live at knit time, so every number on the slides is the one the
+# pages returned when the deck was built. Knitting needs network access.
+fmt = function(x) format(x, big.mark = ",")
+esc = function(x) htmltools::htmlEscape(x)
+options(width = 66, tibble.print_min = 5, tibble.print_max = 5, pillar.min_title_chars = 8)
+built_on = format(Sys.Date(), "%b %d, %Y")
+ua = "ISA 401 class scraper (fmegahed@miamioh.edu)"
+wiki_url = "https://en.wikipedia.org/wiki/Miami_RedHawks_football"
+
+# small HTML table in the deck's .mt-tab style
+tbl_html = function(df, cap = NULL, cls = "") {
+  th = paste0(sprintf("<th>%s</th>", esc(names(df))), collapse = "")
+  rows = vapply(seq_len(nrow(df)), function(i) {
+    paste0("<tr>", paste0(sprintf("<td>%s</td>", esc(vapply(df[i, ], function(v) as.character(v[[1]]), ""))), collapse = ""), "</tr>")
+  }, "")
+  paste0(if (!is.null(cap)) sprintf('<div class="mt-name">%s</div>', cap) else "",
+         sprintf('<div class="mt-tab %s"><table><thead><tr>%s</tr></thead><tbody>%s</tbody></table></div>', cls, th, paste0(rows, collapse = "")))
+}
+# printed output of an R expression, as one HTML-escaped string
+out_txt = function(x, n = 99) paste(head(utils::capture.output(print(x)), n), collapse = "\n")
+```
+
+```{r wiki_data, include=FALSE}
+# Part 3's worked example: every data table on the Miami RedHawks football page
+wiki_page = httr2::request(wiki_url) |>
+  httr2::req_user_agent(ua) |>
+  httr2::req_perform() |>
+  httr2::resp_body_html()
+wiki_all = rvest::html_elements(wiki_page, "table")
+wiki_nodes = rvest::html_elements(wiki_page, "table.wikitable")
+wiki_tables = rvest::html_table(wiki_nodes)
+bowl_games = wiki_tables[[4]]
+n_all = length(wiki_all); n_wiki = length(wiki_nodes)
+stopifnot(n_wiki == 9, identical(names(bowl_games), c("Season", "Coach", "Bowl", "Opponent", "Result")))
+wiki_heads = vapply(wiki_nodes, function(x) rvest::html_text2(rvest::html_element(x, xpath = "preceding::*[self::h2 or self::h3][1]")), "")
+wiki_dims = vapply(wiki_tables, function(d) sprintf("%d x %d", nrow(d), ncol(d)), "")
+bowl_wins = sum(startsWith(bowl_games$Result, "W"))
+# the elements used on the anatomy and extraction slides
+sun_bowl = rvest::html_elements(wiki_nodes[[4]], "td a")
+sun_bowl = sun_bowl[rvest::html_text2(sun_bowl) == "Sun Bowl"][[1]]
+sun_href = rvest::html_attr(sun_bowl, "href"); sun_title = rvest::html_attr(sun_bowl, "title")
+bowl_h2 = rvest::html_element(wiki_page, "#Bowl_games")
+stopifnot(rvest::html_text2(bowl_h2) == "Bowl games", nzchar(sun_href))
+bowl_intro = rvest::html_text2(rvest::html_element(wiki_page, xpath = "//h2[@id='Bowl_games']/following::p[1]"))
+bowl_intro = sub("\\[[0-9]+\\]$", "", bowl_intro)
+```
+
+```{r ua_data, include=FALSE}
+# the same request with no User-Agent, with a generic one, and with ours (status codes only)
+ua_status = function(agent) {
+  httr2::request(wiki_url) |> httr2::req_user_agent(agent) |>
+    httr2::req_error(is_error = function(resp) FALSE) |> httr2::req_perform() |> httr2::resp_status()
+}
+s_blank = ua_status(""); s_generic = ua_status("python-requests/2.31"); s_ours = ua_status(ua)
+stopifnot(s_blank == 403, s_ours == 200)
+ua_err = tryCatch({ httr2::request(wiki_url) |> httr2::req_user_agent("") |> httr2::req_perform(); "" },
+                  error = function(e) paste(cli::ansi_strip(conditionMessage(e)), collapse = " "))
+ua_err = gsub("\\s+", " ", ua_err)
+```
+
+```{r robots_data, include=FALSE}
+robot = function(path, domain) suppressWarnings(suppressMessages(robotstxt::paths_allowed(paths = path, domain = domain, bot = "*", verbose = FALSE)))
+r_bulletin = robot("/courses-instruction/isa/", "bulletin.miamioh.edu")
+r_wiki = robot("/wiki/Miami_RedHawks_football", "en.wikipedia.org")
+r_linkedin = robot("/jobs/", "www.linkedin.com")
+r_indeed_jobs = robot("/jobs", "www.indeed.com")
+r_indeed_view = robot("/viewjob", "www.indeed.com")
+stopifnot(isTRUE(r_bulletin), isFALSE(r_linkedin))
+tf = function(x) if (isTRUE(x)) '<b style="color:#059669;">TRUE</b>' else '<b style="color:#c3142d;">FALSE</b>'
+```
+
+```{r scout_data, include=FALSE}
+# Job Scout's own database (data/scout.db, the same file behind the Class 01 dashboard)
+scout_con = DBI::dbConnect(RSQLite::SQLite(), "../../data/scout.db")
+scout = DBI::dbGetQuery(scout_con, "select source, apply_url, description, title, company, location_city, location_state, posted_at, harvested_at from scout_postings")
+DBI::dbDisconnect(scout_con)
+# ActiveJobs returned nothing from Aug 30 on, so compare the two sources only over the weeks both ran
+aj_last = max(scout$harvested_at[scout$source == "activejobs"])
+n_all_scout = nrow(scout)
+scout = scout[scout$harvested_at <= aj_last, ]
+n_scout = nrow(scout); n_aj = sum(scout$source == "activejobs"); n_usa = sum(scout$source == "usajobs")
+n_hosts = length(unique(sub("^https?://([^/]+).*$", "\\1", scout$apply_url[scout$source == "activejobs"])))
+n_workday = sum(grepl("myworkdayjobs", scout$apply_url))
+scrape_hits = scout[grepl("web[ -]scrap", scout$description, ignore.case = TRUE), ]
+harv = range(as.Date(substr(scout$harvested_at, 1, 10)))
+stopifnot(nrow(scrape_hits) == 3)
+pct = function(x) round(100 * x / n_scout)
+```
+
+```{r catalog_solution, include=FALSE}
+# Demo: Miami's ISA course catalog (live demo, typed in class; nothing below is shown on a slide)
+catalog_url = "https://bulletin.miamioh.edu/courses-instruction/isa/"
+robotstxt::paths_allowed(paths = "/courses-instruction/isa/", domain = "bulletin.miamioh.edu", bot = "*")
+catalog_page = rvest::read_html(catalog_url)
+# Step 1: titles (Inspector: each course title is a <p class="courseblocktitle">)
+course_titles = catalog_page |>
+  rvest::html_elements(".courseblocktitle") |>
+  rvest::html_text2()
+length(course_titles)
+# Step 2: descriptions (<p class="courseblockdesc">)
+course_desc = catalog_page |>
+  rvest::html_elements(".courseblockdesc") |>
+  rvest::html_text2()
+length(course_desc)
+# Step 3: one row per course
+isa_courses = tibble::tibble(title = course_titles, description = course_desc)
+dplyr::glimpse(isa_courses)
+```
+
+```{r catalog_checks, include=FALSE}
+stopifnot(length(course_titles) == length(course_desc), nrow(isa_courses) >= 40)
+n_courses = nrow(isa_courses)
+n_prereq = sum(grepl("Prerequisite", isa_courses$description))
+first_block = as.character(rvest::html_element(catalog_page, ".courseblock"))
+# the Discussion tab says ISA 177 has a title and an empty description
+i177 = grep("^ISA.177", course_titles)
+stopifnot(length(i177) == 1, !nzchar(trimws(course_desc[i177])))
+```
+
+```{r fakejobs_solution, include=FALSE}
+# Practice: the Real Python "Fake Jobs" board, a static page built for scraping practice
+jobs_url = "https://realpython.github.io/fake-jobs/"
+jobs_page = rvest::read_html(jobs_url)
+# 1. one row per job
+job_title = jobs_page |> rvest::html_elements("h2.title") |> rvest::html_text2()
+job_company = jobs_page |> rvest::html_elements("h3.company") |> rvest::html_text2()
+job_location = jobs_page |> rvest::html_elements("p.location") |> rvest::html_text2()
+job_date = jobs_page |> rvest::html_elements("time") |> rvest::html_text2()
+# each card has two links (Learn and Apply); keep the ones whose text is Apply
+links = jobs_page |> rvest::html_elements("a.card-footer-item")
+job_apply = rvest::html_attr(links[rvest::html_text2(links) == "Apply"], "href")
+jobs = tibble::tibble(title = job_title, company = job_company, location = job_location,
+                      posted = job_date, apply_link = job_apply)
+dplyr::glimpse(jobs)
+# 2. how many titles contain "Python"?
+sum(grepl("Python", jobs$title))
+```
+
+```{r fakejobs_checks, include=FALSE}
+stopifnot(nrow(jobs) == 100, length(links) == 200)
+n_python = sum(grepl("Python", jobs$title))
+jobs_state = jobs |> dplyr::mutate(state = sub(".*, ", "", location)) |> dplyr::count(state, sort = TRUE)
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+if(require(xaringanthemer) == FALSE) install.packages("xaringanthemer")
+library(xaringanthemer)
+
+style_mono_accent(base_color = "#84d6d3",
+                  base_font_size = "20px")
+
+xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "tachyons", "panelset", "broadcast", "share_again", "search", "fit_screen", "editable"))
+
+xaringanExtra::use_clipboard(button_text = paste0(fontawesome::fa("clipboard", fill = "#dedede", height = "0.9em"), " Copy"), success_text = paste0(fontawesome::fa("check", fill = "#b9ca4a", height = "0.9em"), " Copied"))
+
+xaringanExtra::use_extra_styles(
+  hover_code_line = TRUE,
+  mute_unhighlighted_code = TRUE
+)
+```
+
+<style>
+.code-sm .rcode { font-size: 78% !important; } .code-md .rcode { font-size: 90% !important; }
+.rcode { position: relative; padding-top: 18px !important; }
+.rcode .xaringanextra-clipboard-button { display: block !important; opacity: 0.55; top: 0; right: 4px; padding: 2px 6px; font-size: 11px; font-family: Lato, sans-serif; color: #dedede; cursor: pointer; }
+.rcode .xaringanextra-clipboard-button:hover { opacity: 1; }
+.airy .rout { margin: 2px 0 20px 0 !important; }
+</style>
+<style>
+.sc-bar { display:flex; gap:6px; align-items:center; margin-top:6px; font-family:'Noto Sans','Roboto',Arial,sans-serif; }
+.sc-btn { background:#ffffff; color:#374151; border:1px solid #d1d5db; border-radius:6px; padding:4px 11px; font-size:12.5px; font-weight:600; cursor:pointer; line-height:1.2; }
+.sc-btn:disabled { opacity:0.4; cursor:default; }
+.sc-btn.sc-primary { background:#c3142d; color:#ffffff; border-color:#c3142d; }
+.sc-spds { display:inline-flex; border:1px solid #d1d5db; border-radius:6px; overflow:hidden; margin-left:4px; }
+.sc-spd { background:#ffffff; color:#374151; border:0; border-right:1px solid #d1d5db; padding:4px 8px; font-size:11.5px; cursor:pointer; }
+.sc-spd:last-child { border-right:0; }
+.sc-spd.on { background:#585E60; color:#ffffff; }
+.sc-count { margin-left:auto; color:#585E60; font-size:12px; font-variant-numeric:tabular-nums; }
+.sc-caps { position:relative; margin-top:8px; border:1px solid #d1d5db; border-left:5px solid #c3142d; border-radius:8px; background:#fdf2f2; padding:8px 12px; font-size:13.5px; line-height:1.45; color:#1b1b1b; min-height:46px; }
+.sc-cap { display:none; }
+.sc-cap.on { display:block; }
+.sc-cap b { color:#c3142d; }
+</style>
+<script>
+(function () {
+  if (window.isaStepper) { return; }
+  window.isaStepper = function (root, scene) {
+    if (root.getAttribute('data-built')) { return; }
+    root.setAttribute('data-built', '1');
+    var i = 0, timer = null, speed = 1;
+    var q = function (s) { return root.querySelector(s); };
+    var bBack = q('.sc-back'), bStep = q('.sc-step'), bPlay = q('.sc-play'), bReset = q('.sc-reset'), cnt = q('.sc-count');
+    var spd = root.querySelectorAll('.sc-spd');
+    var caps = root.querySelectorAll('.sc-cap');
+    var flagged = root.querySelectorAll('[data-from]');
+    function applyFlags(j) {
+      flagged.forEach(function (el) {
+        var f = Number(el.getAttribute('data-from'));
+        var t = el.hasAttribute('data-to') ? Number(el.getAttribute('data-to')) : 9999;
+        el.classList.toggle('on', j >= f && !(j >= t));
+      });
+      caps.forEach(function (c) { c.classList.toggle('on', Number(c.getAttribute('data-step')) === j); });
+    }
+    function paint() {
+      bBack.disabled = (i === 0);
+      bStep.disabled = (i === scene.n);
+      bPlay.textContent = (timer !== null) ? 'Pause' : 'Play';
+      cnt.textContent = i + ' / ' + scene.n;
+    }
+    function go(j, dir) { i = j; applyFlags(j); if (scene.render) { scene.render(j, dir, speed, root); } paint(); }
+    function stop() { if (timer !== null) { clearTimeout(timer); timer = null; } paint(); }
+    function tick() {
+      timer = null;
+      if (i === scene.n) { paint(); return; }
+      go(i + 1, 1);
+      if (i !== scene.n) { timer = setTimeout(tick, scene.dwell[i] / speed); }
+      paint();
+    }
+    bStep.addEventListener('click', function () { stop(); if (i !== scene.n) { go(i + 1, 1); } });
+    bBack.addEventListener('click', function () { stop(); if (i !== 0) { go(i - 1, -1); } });
+    bReset.addEventListener('click', function () { stop(); go(0, -1); });
+    bPlay.addEventListener('click', function () {
+      if (timer !== null) { stop(); return; }
+      if (i === scene.n) { go(0, -1); }
+      timer = setTimeout(tick, scene.dwell[i] / speed);
+      paint();
+    });
+    spd.forEach(function (b) {
+      b.addEventListener('click', function () {
+        speed = Number(b.getAttribute('data-spd'));
+        spd.forEach(function (o) { o.classList.toggle('on', o === b); });
+      });
+    });
+    ['keydown', 'keypress', 'keyup'].forEach(function (t) { root.addEventListener(t, function (e) { e.stopPropagation(); }); });
+    root.addEventListener('mousedown', function (e) { if (e.target.tagName === 'BUTTON') { e.preventDefault(); } });
+    root.addEventListener('focusin', function () { if (window.slideshow) { window.slideshow.pause(); } });
+    root.addEventListener('focusout', function () { if (window.slideshow) { window.slideshow.resume(); } });
+    if (window.slideshow) { window.slideshow.on('hideSlide', stop); }
+    go(0, -1);
+  };
+  window.isaTypewriter = function (el, text, msPerChar, done) {
+    var k = 0, h = null;
+    function step() {
+      k = k + 1;
+      el.textContent = text.slice(0, k);
+      if (k !== text.length) { h = setTimeout(step, msPerChar); } else { h = null; if (done) { done(); } }
+    }
+    el.textContent = '';
+    h = setTimeout(step, msPerChar);
+    return function () { if (h !== null) { clearTimeout(h); h = null; } };
+  };
+})();
+</script>
+
+<style>
+.mt-pair { display:flex; align-items:center; gap:10px; margin:0; }
+.mt-arrow { display:flex; flex-direction:column; align-items:center; flex:0 0 auto; padding:0 4px; }
+.mt-verb { font-family:'Source Code Pro',monospace; font-size:11px; color:#c3142d; font-weight:700; white-space:pre-line; max-width:250px; text-align:center; line-height:1.3; }
+.mt-arr { font-size:26px; color:#c3142d; line-height:1; }
+.mt-name { font-family:'Source Code Pro',monospace; font-size:11.5px; font-weight:700; color:#585E60; margin-bottom:2px; }
+.mt-tab table { border-collapse:separate; border-spacing:0; margin:0 !important; border-top:0 !important; border-bottom:0 !important; font-family:'Source Code Pro',monospace; font-size:10.5px; line-height:1.15; width:auto !important; }
+.mt-tab th { background:#1d1f21; color:#ffffff; padding:1px 6px !important; line-height:1.2 !important; text-align:left; font-weight:600; white-space:nowrap; }
+.mt-tab td { padding:1px 6px !important; line-height:1.2 !important; border-bottom:1px solid #e5e7eb; white-space:nowrap; color:#1b1b1b; background:#ffffff; }
+.mt-tab .mt-keep { background:#fdf2f2; }
+.mt-tab th.mt-keep { background:#c3142d; }
+.mt-tab .mt-x { color:#9ca3af; text-decoration:line-through; background:#fafafa; }
+.mt-tab th.mt-x { background:#585E60; color:#d1d5db; }
+.mt-tab .mt-new { background:#fff3bf; }
+.mt-tab th.mt-new { background:#b45309; }
+.mt-tab tr.mt-g1 td { background:#fdf2f2; } .mt-tab tr.mt-g1 td:first-child { box-shadow:inset 4px 0 0 #c3142d; }
+.mt-tab tr.mt-g2 td { background:#eff6ff; } .mt-tab tr.mt-g2 td:first-child { box-shadow:inset 4px 0 0 #2563eb; }
+.mt-tab tr.mt-g3 td { background:#ecfdf5; } .mt-tab tr.mt-g3 td:first-child { box-shadow:inset 4px 0 0 #059669; }
+.mt-tab tr.mt-g4 td { background:#fff7ed; } .mt-tab tr.mt-g4 td:first-child { box-shadow:inset 4px 0 0 #d97706; }
+.mt-tab .mt-na { color:#9ca3af; font-style:italic; }
+.qbar { border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:5px 14px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.4; margin:0 0 6px 0; }
+.qbar b { color:#c3142d; }
+.vcard { border:1px solid #d1d5db; border-radius:8px; padding:6px 12px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:12.5px; line-height:1.4; margin-top:6px; }
+.vcard .vh { font-weight:700; color:#c3142d; font-size:13px; display:inline; margin-right:6px; }
+.vrow { display:block; }
+.vrow .vdiag { display:flex; justify-content:center; }
+</style>
+
+<style>
+/* shared cards */
+.card { border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1); background:#ffffff; }
+.card .ch { background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:7px 12px; }
+.card .ch.gray { background:#585E60; }
+.card .cb { padding:9px 12px; font-size:13.5px; line-height:1.45; }
+.lesson { margin-top:12px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:9px 16px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14.5px; line-height:1.5; }
+.lesson b.r { color:#c3142d; }
+.src { font-size:11.5px; color:#585E60; line-height:1.4; }
+.htmlsrc { margin:0 !important; background:#f8f8f6; border:1px solid #d1d5db; border-radius:8px; padding:8px 10px; font-family:'Source Code Pro',monospace; font-size:11px; line-height:1.4; color:#1b1b1b; white-space:pre-wrap; word-break:break-word; }
+.htmlsrc .tg { color:#881280; } .htmlsrc .at { color:#994500; } .htmlsrc .av { color:#1a1aa6; }
+.xaringanextra-clipboard-button { display:none; }
+.rcode .xaringanextra-clipboard-button { display:block !important; }
+.num { flex:0 0 22px; height:22px; border-radius:50%; background:#c3142d; color:#fff; font-weight:700; font-size:12.5px; text-align:center; line-height:22px; }
+
+/* CSS selector step-through (Part 2) */
+.cs-wrap { display:grid; grid-template-columns:1.02fr 1fr; gap:18px; margin-top:4px; align-items:start; }
+.cs-tab { width:100%; border-collapse:collapse; font-size:14px; }
+.cs-tab td { padding:4px 8px !important; border-bottom:1px solid #e5e7eb; background:#ffffff; color:#9ca3af; vertical-align:top; line-height:1.35; }
+.cs-tab td:first-child { font-family:'Source Code Pro',monospace; font-weight:700; white-space:nowrap; width:120px; }
+.cs-tab tr.on td { color:#1b1b1b; background:#fdf2f2; }
+.cs-tab tr.on td:first-child { color:#c3142d; box-shadow:inset 4px 0 0 #c3142d; }
+.cs-note { margin-top:10px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:7px 12px; background:#ffffff; font-size:13.5px; line-height:1.45; }
+.cs-note .cs-n { font-weight:700; color:#c3142d; }
+.cs-code { margin:0 !important; background:#ffffff; border:1px solid #d1d5db; border-radius:8px; padding:6px 0; font-family:'Source Code Pro',monospace; font-size:10.8px; line-height:1.3; color:#9ca3af; }
+.cs-code .ln { display:block; padding:0 10px; white-space:pre; min-height:1.3em; }
+.cs-code .ln.hit { background:#fdf2f2; color:#c3142d; font-weight:600; box-shadow:inset 4px 0 0 #c3142d; }
+.cs-code .ln.all { color:#1b1b1b; }
+
+/* Wikipedia animation (Part 3) */
+.wk { font-family:'Noto Sans','Roboto',Arial,sans-serif; }
+.wk-grid { display:grid; grid-template-columns:minmax(0,0.8fr) minmax(0,1.2fr); gap:14px; align-items:start; }
+.wk-browser { border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1); background:#ffffff; }
+.wk-url { background:#f3f4f6; border-bottom:1px solid #d1d5db; font-size:10.5px; color:#374151; padding:3px 8px; font-family:'Source Code Pro',monospace; }
+.wk-shot { position:relative; line-height:0; }
+.wk-shot img { width:100%; display:block; }
+.wk-box { position:absolute; left:1.8%; top:20%; width:93.3%; height:79%; border:3px solid #2563eb; background:rgba(37,99,235,0.10); opacity:0; transition:opacity .3s; }
+.wk-cursor { position:absolute; left:55%; top:50%; width:16px; height:24px; line-height:0; opacity:0; transition:opacity .3s; }
+.wk-menu { position:absolute; left:57%; top:54%; background:#ffffff; border:1px solid #9ca3af; border-radius:6px; box-shadow:0 3px 10px rgba(0,0,0,0.25); font-size:10.5px; line-height:1.55; padding:4px 0; width:120px; opacity:0; transition:opacity .3s; }
+.wk-menu div { padding:0 10px; color:#374151; }
+.wk-menu div.pick { background:#dbeafe; color:#1e3a8a; font-weight:700; }
+.wk-box.on, .wk-cursor.on, .wk-menu.on { opacity:1; }
+.wk-dev { border-top:2px solid #9ca3af; background:#ffffff; font-family:'Source Code Pro',monospace; font-size:9.6px; line-height:1.45; padding:4px 0; height:96px; overflow:hidden; opacity:0.15; transition:opacity .3s; }
+.wk-dev.on { opacity:1; }
+.wk-dev .dt { font-family:'Noto Sans',Arial,sans-serif; font-size:9.5px; color:#374151; font-weight:700; padding:0 8px 2px 8px; border-bottom:1px solid #e5e7eb; margin-bottom:2px; }
+.wk-dev .dl { padding:0 8px; white-space:pre; color:#374151; }
+.wk-dev .dl.hit.on { background:#dbeafe; }
+.wk-dev .tg { color:#881280; } .wk-dev .at { color:#994500; } .wk-dev .av { color:#1a1aa6; }
+.wk-sel { display:flex; align-items:center; gap:8px; border:1px solid #d1d5db; border-radius:8px; background:#ffffff; padding:5px 10px; font-size:12.5px; box-shadow:0 1px 3px rgba(0,0,0,0.1); min-height:30px; }
+.wk-sel .lab { font-weight:700; color:#585E60; }
+.wk-chip { font-family:'Source Code Pro',monospace; font-weight:700; font-size:14px; color:#c3142d; display:none; }
+.wk-chip.on { display:inline; }
+.wk-cnt { margin-left:auto; font-size:12px; color:#ffffff; background:#585E60; border-radius:10px; padding:1px 9px; display:none; }
+.wk-cnt.on { display:inline-block; }
+.wk-cnt.good { background:#059669; }
+.wk-code { margin-top:6px; }
+.wk-code .rcode { margin:0 !important; padding-top:6px !important; }
+.wk-code .xaringanextra-clipboard-button { display:none !important; }
+.wk .rcode .rl { opacity:0.42; transition:opacity .2s, background .2s; }
+.wk .rcode .rl.done { opacity:0.85; }
+.wk .rcode .rl.on { opacity:1; background:rgba(231, 197, 71, 0.22); }
+.wk-out { margin-top:6px; height:118px; overflow:hidden; border:1px solid #d1d5db; border-radius:8px; background:#f3f4f6; padding:5px 8px; position:relative; }
+.wk-o { display:none; }
+.wk-o.on { display:block; }
+.wk-o pre { margin:0 !important; font-family:'Source Code Pro',monospace; font-size:10.5px; line-height:1.35; color:#1b1b1b; white-space:pre; background:transparent !important; }
+.wk-o .mt-tab table { font-size:10px; }
+.wk-ph { color:#9ca3af; font-size:12px; }
+.wk .sc-caps { min-height:40px; font-size:13px; padding:6px 12px; margin-top:7px; }
+
+/* Scraping workflow (Part 3) */
+.wf { font-family:'Noto Sans','Roboto',Arial,sans-serif; }
+.wf-strip { display:grid; grid-template-columns:repeat(4, 1fr); gap:8px; }
+.wf-st { border:1px solid #d1d5db; border-radius:8px; padding:6px 10px; background:#ffffff; color:#9ca3af; font-size:12.5px; line-height:1.35; transition:all .25s; }
+.wf-st b { display:block; font-size:14px; }
+.wf-st code { font-size:11px; }
+.wf-st.act { border:2px solid #c3142d; color:#1b1b1b; background:#fdf2f2; box-shadow:0 0 0 3px rgba(195,20,45,0.12); }
+.wf-st.act b { color:#c3142d; }
+.wf-st.done { color:#1b1b1b; border-color:#059669; }
+.wf-st.done b { color:#059669; }
+.wf-st.stop { color:#ffffff; background:#c3142d; border-color:#c3142d; }
+.wf-main { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:10px; align-items:start; }
+.wf-q { font-weight:700; font-size:14.5px; color:#1b1b1b; line-height:1.4; min-height:40px; }
+.wf-btns { display:flex; flex-direction:column; gap:6px; margin-top:8px; }
+.wf-btns button { text-align:left; background:#ffffff; border:1px solid #c3142d; color:#1b1b1b; border-radius:6px; padding:6px 12px; font-size:13px; cursor:pointer; line-height:1.3; }
+.wf-btns button:hover { background:#fdf2f2; }
+.wf-note { margin-top:10px; border-left:5px solid #b45309; background:#fffbeb; border-radius:6px; padding:6px 10px; font-size:12.5px; line-height:1.45; display:none; }
+.wf-note.on { display:block; }
+.wf-note.bad { border-left-color:#c3142d; background:#fdf2f2; }
+.wf-path { border:1px solid #d1d5db; border-radius:8px; background:#ffffff; padding:6px 10px; min-height:210px; }
+.wf-pt { font-weight:700; font-size:12.5px; color:#585E60; margin-bottom:4px; }
+.wf-code .rcode { margin:0 0 4px 0 !important; padding-top:5px !important; }
+.wf-code .xaringanextra-clipboard-button { display:none !important; }
+.wf-empty { color:#9ca3af; font-size:12.5px; }
+.wf-reset { margin-top:8px; background:#ffffff; color:#374151; border:1px solid #d1d5db; border-radius:6px; padding:4px 11px; font-size:12.5px; font-weight:600; cursor:pointer; }
+.wf-snip { display:none; }
+
+/* rvest process strip */
+.flow { display:grid; grid-template-columns:minmax(0,1fr) 26px minmax(0,1.1fr) 26px minmax(0,1.25fr); align-items:stretch; gap:0; margin-top:8px; }
+.flow .fa { display:flex; align-items:center; justify-content:center; color:#c3142d; font-size:24px; font-weight:700; }
+.flow .fs { border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1); background:#ffffff; }
+.flow .fs .fh { background:#c3142d; color:#ffffff; font-weight:700; font-size:14px; padding:6px 10px; }
+.flow .fs .fb { padding:7px 10px; font-size:12.5px; line-height:1.45; }
+.flow .fs .ret { margin-top:6px; font-family:'Source Code Pro',monospace; font-size:11px; background:#f3f4f6; border:1px solid #e5e7eb; border-radius:6px; padding:3px 7px; color:#1b1b1b; white-space:pre; overflow:hidden; }
+.flow .rcode { margin:4px 0 0 0 !important; padding-top:5px !important; }
+.flow .xaringanextra-clipboard-button { display:none !important; }
+
+/* choosing an extraction function */
+.pick3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-top:8px; }
+.pick3 .pk { border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1); background:#ffffff; display:flex; flex-direction:column; }
+.pick3 .pkh { font-weight:700; font-size:14px; padding:7px 10px; color:#ffffff; background:#c3142d; }
+.pick3 .pkb { padding:7px 10px; font-size:12.5px; line-height:1.4; flex:1; }
+.pick3 .arrow { text-align:center; color:#c3142d; font-size:18px; line-height:1; margin:5px 0 2px 0; }
+.pick3 .fn { text-align:center; font-family:'Source Code Pro',monospace; font-weight:700; font-size:14px; color:#1b1b1b; background:#fff3bf; border-radius:6px; padding:3px 6px; }
+.pick3 .res { margin-top:5px; font-family:'Source Code Pro',monospace; font-size:10.5px; background:#f3f4f6; border:1px solid #e5e7eb; border-radius:6px; padding:4px 7px; white-space:pre-wrap; word-break:break-all; color:#1b1b1b; }
+.pick3 .mt-tab table { font-size:9.8px; }
+
+/* quote cards (job ads) */
+.qcard { border:1px solid #d1d5db; border-left:5px solid #c3142d; border-radius:8px; padding:6px 11px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:12.5px; line-height:1.4; margin-bottom:7px; }
+.qcard .qt { font-weight:700; font-size:13px; color:#1b1b1b; }
+.qcard .qm { color:#585E60; font-size:11.5px; }
+.qcard .qq { margin-top:3px; font-style:italic; }
+.qcard .qq b { font-style:normal; background:#fff3bf; font-weight:600; }
+.sbar { display:flex; height:30px; border-radius:6px; overflow:hidden; margin-top:6px; font-size:12.5px; font-weight:700; color:#ffffff; }
+.sbar div { display:flex; align-items:center; padding:0 10px; white-space:nowrap; }
+</style>
+
+```{r css_helpers, include=FALSE}
+# The CSS selector step-through: the sample page students saw in earlier semesters, with the
+# matching elements computed by rvest (not by hand), so each highlight is what html_elements() returns.
+css_lines = c('<h1>This is a sample html</h1>', '', '<blockquote>', '<p>Maybe stories are just data with a soul.</p>',
+  '<footer>Brene Brown</footer>', '</blockquote>', '', '<div id="p1" class="parent">', 'Hmm', '<p>Hi!</p>',
+  'How are you?', '<div class="child nice">', '  <p>Hello!</p>', '</div>', '</div>', '', '<p>Household 1</p>', '',
+  '<div class="parent">', '<p>Hi!</p>', '<blockquote class="child rebel">', "  <p>Don't talk to me!</p>",
+  '</blockquote>', '</div>', '', '<span class="child">', '<span class="parent child rebel">',
+  '  <p>Clean your room!</p>', '</span>', '</span>', '', '<p>End of households</p>')
+# tag every element with a number and remember which lines it spans
+css_k = 0; css_stack = list(); css_span = list(); css_ann = css_lines
+for (i in seq_along(css_lines)) {
+  rest = css_lines[i]; out = ""
+  repeat {
+    m = regexpr("</?[a-z0-9]+[^>]*>", rest)
+    if (m < 0) { out = paste0(out, rest); break }
+    tag = regmatches(rest, m); out = paste0(out, substr(rest, 1, m - 1))
+    if (startsWith(tag, "</")) {
+      top = css_stack[[length(css_stack)]]; css_stack[[length(css_stack)]] = NULL
+      css_span[[as.character(top$k)]] = c(top$line, i); out = paste0(out, tag)
+    } else {
+      css_k = css_k + 1; css_stack[[length(css_stack) + 1]] = list(k = css_k, line = i)
+      out = paste0(out, sub(">$", sprintf(' data-k="%d">', css_k), tag))
+    }
+    rest = substr(rest, m + attr(m, "match.length"), nchar(rest))
+  }
+  css_ann[i] = out
+}
+css_doc = xml2::read_html(paste(css_ann, collapse = "\n"))
+css_match = function(sel) {
+  ks = rvest::html_attr(rvest::html_elements(css_doc, sel), "data-k"); ks = ks[!is.na(ks)]
+  list(n = length(ks), lines = sort(unique(unlist(lapply(ks, function(x) seq(css_span[[x]][1], css_span[[x]][2]))))))
+}
+css_rows_a = data.frame(sel = c("*", "div", "div, p", "div p", "div > p", "div + p", "div ~ p"),
+  what = c("every element", "every &lt;div&gt;", "every &lt;div&gt; and every &lt;p&gt;",
+           "every &lt;p&gt; inside a &lt;div&gt;, at any depth", "every &lt;p&gt; directly inside a &lt;div&gt; (one level)",
+           "the &lt;p&gt; right after a &lt;div&gt;, same parent", "every &lt;p&gt; after a &lt;div&gt;, same parent"))
+css_rows_b = data.frame(sel = c(".parent", "div.parent", ".child.rebel", ".parent .rebel", "#p1"),
+  what = c("every element with <code>class=\"parent\"</code>", "every &lt;div&gt; with class parent",
+           "elements with both classes, child and rebel", "class rebel inside an element with class parent",
+           "the element with <code>id=\"p1\"</code>"))
+css_notes = c(
+  "*" = "Every element on the page. Text such as <i>Hmm</i> is not an element, so it is not counted.",
+  "div" = "Both divs with class parent and the div inside the first one. A match covers everything from its start tag to its end tag.",
+  "div, p" = "The comma means <b>or</b>: every div, plus every p.",
+  "div p" = "A space means <b>inside, at any depth</b>. <i>Clean your room!</i> is inside two spans, not inside a div.",
+  "div > p" = "<b>&gt;</b> means <b>directly inside</b>. <i>Don't talk to me!</i> is inside a blockquote, one level too deep.",
+  "div + p" = "<b>+</b> means the p that comes <b>right after</b> a div, with the same parent: <i>Household 1</i>.",
+  "div ~ p" = "<b>~</b> means <b>any later</b> p with the same parent: <i>Household 1</i> and <i>End of households</i>.",
+  ".parent" = "A dot selects by <b>class</b>, whatever the tag: two divs and one span.",
+  "div.parent" = "Tag and class together, with no space: only the divs with class parent. We use the same pattern later today: <code>table.wikitable</code>.",
+  ".child.rebel" = "Two classes with no space: the element must have <b>both</b>.",
+  ".parent .rebel" = "With a space: class rebel <b>inside</b> class parent. The span has both classes itself, but it is not inside a parent, so it does not count.",
+  "#p1" = "# selects by <b>id</b>. An id is unique on a page, so there is at most one match.")
+css_slide = function(sel, first = FALSE) {
+  m = css_match(sel)
+  rows = if (sel %in% css_rows_a$sel) css_rows_a else css_rows_b
+  tab = paste0('<table class="cs-tab" style="border:0 !important; box-shadow:none !important;">',
+    paste0(sprintf('<tr class="%s"><td>%s</td><td>%s</td></tr>', ifelse(rows$sel == sel, "on", ""), esc(rows$sel), rows$what), collapse = ""), '</table>')
+  lns = paste0(vapply(seq_along(css_lines), function(i) {
+    cls = if (sel == "*" && i %in% m$lines) "ln hit" else if (i %in% m$lines) "ln hit" else "ln"
+    sprintf('<span class="%s">%s</span>', cls, if (nzchar(css_lines[i])) esc(css_lines[i]) else "&nbsp;")
+  }, ""), collapse = "")
+  note = sprintf('<div class="cs-note"><span class="cs-n">%s</span> matches <b>%d</b> element%s. %s</div>',
+                 esc(sel), m$n, if (m$n == 1) "" else "s", css_notes[[sel]])
+  paste0(if (first) "" else "---\ncount: false\n\n", "# CSS Selectors\n\n",
+         '<div class="cs-wrap"><div>', tab, note,
+         if (sel %in% css_rows_b$sel) '<div class="src" style="margin-top:8px;">A class attribute can hold several names separated by spaces: <code>class="child rebel"</code> is class child <b>and</b> class rebel.</div>' else '<div class="src" style="margin-top:8px;">Red lines: what <code>rvest::html_elements()</code> returns for this selector on the sample page at the right (computed when these slides were built).</div>',
+         '</div><div><pre class="cs-code">', lns, '</pre></div></div>\n\n',
+         "???\n\n", sprintf("Selector %s. Ask the room which lines will turn red before advancing.", sel), "\n\n")
+}
+```
+
+```{r wk_build, include=FALSE}
+# The Wikipedia animation: browser + Inspector on the left, selector + code + output on the right.
+wk_code = c('wiki_url = "https://en.wikipedia.org/wiki/Miami_RedHawks_football"',
+            'wiki_page = httr2::request(wiki_url) |>',
+            '  httr2::req_user_agent("ISA 401 class scraper (your_email@miamioh.edu)") |>',
+            '  httr2::req_perform() |>',
+            '  httr2::resp_body_html()',
+            'wiki_tables = wiki_page |>',
+            '  rvest::html_elements("table.wikitable") |>',
+            '  rvest::html_table()',
+            'bowl_games = wiki_tables[[4]]')
+tagc = function(x) {  # color an HTML snippet like the browser's Elements panel
+  x = esc(x)
+  x = gsub('([a-z-]+)="([^"]*)"', '<span class="at">\\1</span>="<span class="av">\\2</span>"', x)
+  x = gsub('(&lt;/?)([a-z0-9]+)', '\\1<span class="tg">\\2</span>', x)
+  x
+}
+wk_dev_lines = c('<h2 id="Bowl_games">Bowl games</h2>',
+                 paste0('<p>', bowl_intro, '</p>'),
+                 '<table class="wikitable">',
+                 '  <tbody>',
+                 '    <tr> <th>Season</th> <th>Coach</th> <th>Bowl</th> ...',
+                 paste0('    <tr> <td><a href="...">', bowl_games$Season[1], '</a></td> ...'))
+wk_dev = paste0('<div class="wk-dev" data-from="2"><div class="dt">Elements (DevTools, shortened)</div>',
+  paste0(sprintf('<div class="dl%s"%s>%s</div>', ifelse(seq_along(wk_dev_lines) == 3, " hit", ""),
+                 ifelse(seq_along(wk_dev_lines) == 3, ' data-from="2"', ""), vapply(wk_dev_lines, tagc, "")), collapse = ""), '</div>')
+wk_nodes_txt = out_txt(wiki_nodes, 4)
+wk_doc_txt = paste(head(capture.output(print(wiki_page)), 1), "\n[1] <head>\\n<meta http-equiv=... \n[2] <body class=\"skin--responsive ...")
+wk_list_df = data.frame(`[[i]]` = sprintf("[[%d]]", seq_along(wiki_tables)), section = wiki_heads, size = wiki_dims, check.names = FALSE)
+wk_outs = c(
+  '<span class="wk-ph">Output appears here when a line runs.</span>',
+  paste0('<pre>', esc(substr(wk_doc_txt, 1, 400)), '</pre>'),
+  paste0('<pre>', esc(paste(substr(strsplit(wk_nodes_txt, "\n")[[1]], 1, 80), collapse = "\n")), '</pre>'),
+  tbl_html(wk_list_df[1:5, ], sprintf("A list of %d data frames (first 5 shown)", length(wiki_tables))),
+  tbl_html(head(bowl_games, 4), sprintf("bowl_games: %d rows, %d columns (4 shown)", nrow(bowl_games), ncol(bowl_games))))
+wk_out_from = c(0, 5, 6, 7, 8); wk_out_to = c(5, 6, 7, 8, 99)
+wk_steps = data.frame(
+  caption = c(
+    "<b>Goal.</b> Every data table on this Wikipedia page, in R. We start in the browser, not in R.",
+    "<b>Right-click</b> on the table, then choose <b>Inspect</b>.",
+    "<b>The Elements panel</b> opens at the element under the cursor. The table starts with <code>&lt;table class=\"wikitable\"&gt;</code>: the tag is <b>table</b>, the class is <b>wikitable</b>.",
+    sprintf("<b>Try the tag alone.</b> <code>table</code> matches <b>%d</b> tables on this page. The extra %d are the information box at the top and the navigation boxes at the bottom.", n_all, n_all - n_wiki),
+    sprintf("<b>Add the class.</b> <code>table.wikitable</code> means a table with class wikitable, the pattern from the CSS Selectors slides. It matches <b>%d</b>: the data tables.", n_wiki),
+    "<b>Read the page in R.</b> The request says who is asking (next slides explain why). <code>resp_body_html()</code> parses the reply as HTML.",
+    sprintf("<b>Select.</b> <code>rvest::html_elements()</code> keeps the <b>%d</b> elements that match the selector.", n_wiki),
+    sprintf("<b>Extract.</b> <code>rvest::html_table()</code> turns each table into a data frame. The result is a list of %d.", n_wiki),
+    "<b>Take one out.</b> The bowl games are the 4th data table on the page. <code>[[ ]]</code> from Class 03 takes it out of the list."),
+  line = c(-1, -1, -1, -1, -1, 0, 5, 7, 8), line_to = c(-1, -1, -1, -1, -1, 4, 6, 7, 8))
+wk_n = nrow(wk_steps)
+wk_html = paste0('<div class="wk">',
+  '<div class="wk-grid"><div class="wk-browser"><div class="wk-url">en.wikipedia.org/wiki/Miami_RedHawks_football</div>',
+  '<div class="wk-shot"><img src="', knitr::image_uri("img/wiki_bowl_top.png"), '">',
+  '<div class="wk-box" data-from="2"></div><div class="wk-cursor" data-from="1" data-to="3"><svg width="16" height="24" viewBox="0 0 16 24"><path d="M1 1 L1 19 L5.5 14.5 L8.5 22 L11.5 20.8 L8.5 13.5 L14.5 13.5 Z" fill="#111827" stroke="#ffffff" stroke-width="1.2"></path></svg></div>',
+  '<div class="wk-menu" data-from="1" data-to="2"><div>Back</div><div>Reload</div><div>Save as...</div><div>View page source</div><div class="pick">Inspect</div></div></div>',
+  wk_dev, '</div>',
+  '<div><div class="wk-sel"><span class="lab">Selector:</span><span><span class="wk-chip" data-from="3">table</span><span class="wk-chip" data-from="4">.wikitable</span></span>',
+  sprintf('<span class="wk-cnt" data-from="3" data-to="4">%d matches</span><span class="wk-cnt good" data-from="4">%d matches</span></div>', n_all, n_wiki),
+  '<div class="wk-code">', hl_r(wk_code, "46%"), '</div>',
+  '<div class="wk-out">', paste0(sprintf('<div class="wk-o" data-from="%d" data-to="%d">%s</div>', wk_out_from, wk_out_to, wk_outs), collapse = ""), '</div>',
+  '</div></div>',
+  '<div class="sc-caps">', paste0(sprintf('<div class="sc-cap%s" data-step="%d">%s</div>', ifelse(seq_len(wk_n) == 1, " on", ""), seq_len(wk_n) - 1, wk_steps$caption), collapse = ""), '</div>',
+  sprintf('<div class="sc-bar"><button type="button" class="sc-btn sc-back">Back</button><button type="button" class="sc-btn sc-primary sc-step">Step</button><button type="button" class="sc-btn sc-play">Play</button><button type="button" class="sc-btn sc-reset">Reset</button><span class="sc-spds"><button type="button" class="sc-spd" data-spd="0.5">0.5x</button><button type="button" class="sc-spd on" data-spd="1">1x</button><button type="button" class="sc-spd" data-spd="2">2x</button></span><span class="sc-count">0 / %d</span></div>', wk_n - 1),
+  paste0(sprintf('<span class="wk-step" data-line="%d" data-lineto="%d" style="display:none;"></span>', as.integer(wk_steps$line), as.integer(wk_steps$line_to)), collapse = ""),
+  '</div>')
+wk_html = gsub("\n", "&#10;", wk_html, fixed = TRUE)  # keep it one line so remark leaves it alone
+```
+
+```{r wf_build, include=FALSE}
+# Scraping workflow guide: code snippets rendered once, cloned into "Your code so far" by the script.
+wf_snips = list(
+  robots = c('url = "https://en.wikipedia.org/wiki/Miami_RedHawks_football"', 'robotstxt::paths_allowed(paths = "/wiki/Miami_RedHawks_football",', '                         domain = "en.wikipedia.org", bot = "*")'),
+  read = 'page = rvest::read_html(url)',
+  ua = c('page = httr2::request(url) |>', '  httr2::req_user_agent("ISA 401 class scraper (your_email@miamioh.edu)") |>', '  httr2::req_perform() |>', '  httr2::resp_body_html()'),
+  live = c('page = rvest::read_html_live(url)  # runs the page in a hidden Chrome first'),
+  select = 'items = page |> rvest::html_elements("table.wikitable")',
+  table = 'items |> rvest::html_table()',
+  text = 'items |> rvest::html_text2()',
+  attr = 'items |> rvest::html_attr("href")')
+wf_snip_html = paste0(vapply(names(wf_snips), function(k) sprintf('<div class="wf-snip" data-k="%s">%s</div>', k, hl_r(wf_snips[[k]], "46%")), ""), collapse = "")
+wf_html = paste0('<div class="wf">',
+  '<div class="wf-strip">',
+  '<div class="wf-st" data-s="1"><b>1 &nbsp;Permission</b>robots.txt and the terms of service</div>',
+  '<div class="wf-st" data-s="2"><b>2 &nbsp;Load</b>get the HTML into R</div>',
+  '<div class="wf-st" data-s="3"><b>3 &nbsp;Select</b>find a CSS selector for the elements</div>',
+  '<div class="wf-st" data-s="4"><b>4 &nbsp;Extract</b>table, text, or attribute</div></div>',
+  '<div class="wf-main"><div><div class="wf-q"></div><div class="wf-btns"></div><div class="wf-note"></div><button type="button" class="wf-reset">Start over</button></div>',
+  '<div class="wf-path"><div class="wf-pt">Your code so far</div><div class="wf-code"><div class="wf-empty">Answer the questions on the left. Each answer adds the code for that step.</div></div></div></div>',
+  wf_snip_html, '</div>')
+wf_html = gsub("\n", "&#10;", wf_html, fixed = TRUE)
+```
+
+<script>
+(function () {
+  // Wikipedia animation: the stepper toggles data-from elements; this highlights code lines.
+  function buildWk(root) {
+    if (root.getAttribute('data-built')) { return; }
+    var steps = root.querySelectorAll('.wk-step'), ln = root.querySelectorAll('.wk-code .rcode .rl');
+    var dwell = [];
+    for (var d = 0; d !== steps.length; d = d + 1) { dwell.push(3600); }
+    window.isaStepper(root, {
+      n: steps.length - 1,
+      dwell: dwell,
+      render: function (j) {
+        var k = Number(steps[j].getAttribute('data-line')), k2 = Number(steps[j].getAttribute('data-lineto'));
+        ln.forEach(function (l, i) { l.classList.toggle('on', i >= k ? !(i > k2) : false); l.classList.toggle('done', k > i); });
+      }
+    });
+  }
+  // Scraping workflow guide
+  function buildWf(root) {
+    if (root.getAttribute('data-built')) { return; }
+    root.setAttribute('data-built', '1');
+    var q = root.querySelector('.wf-q'), btns = root.querySelector('.wf-btns'), note = root.querySelector('.wf-note');
+    var code = root.querySelector('.wf-code'), sts = root.querySelectorAll('.wf-st');
+    var empty = code.innerHTML;
+    function snip(k) { var s = root.querySelector('.wf-snip[data-k="' + k + '"]'); var c = s.cloneNode(true); c.className = 'wf-added'; code.appendChild(c); var e = code.querySelector('.wf-empty'); if (e) { e.remove(); } }
+    function stage(n, cls) { sts.forEach(function (s) { var i = Number(s.getAttribute('data-s')); s.classList.remove('act'); s.classList.remove('stop'); if (i === n) { s.classList.add(cls); } if (n > i) { s.classList.add('done'); } else { s.classList.remove('done'); } }); }
+    function say(txt, bad) { note.innerHTML = txt; note.className = 'wf-note' + (txt ? ' on' : '') + (bad ? ' bad' : ''); }
+    function ask(text, opts) { q.innerHTML = text; btns.innerHTML = ''; opts.forEach(function (o) { var b = document.createElement('button'); b.type = 'button'; b.innerHTML = o[0]; b.addEventListener('click', o[1]); btns.appendChild(b); }); }
+    function s1() {
+      stage(1, 'act'); say('');
+      ask('Do robots.txt and the site terms allow scraping this page?', [
+        ['Yes, both allow it', function () { snip('robots'); say('Note what you checked and the date. Rules change.'); s2(); }],
+        ['No, or I am not sure', function () { stage(1, 'stop'); ask('Stop here.', []); say('Look for an API or a download link first (Class 08), or ask the site owner for permission.', true); }]
+      ]);
+    }
+    function s2() {
+      stage(2, 'act');
+      ask('What happens when you run <code>rvest::read_html(url)</code>?', [
+        ['The page loads', function () { snip('read'); say(''); s3(); }],
+        ['Error: HTTP 403 Forbidden', function () { snip('ua'); say('The site refused a request that did not say who sent it. Send a User-Agent with your contact details; the next two slides show this on Wikipedia.'); s3(); }],
+        ['It loads, but the data I see in the browser is not in it', function () { snip('live'); say('The browser ran JavaScript that added the data after the page opened; <code>read_html()</code> only gets the HTML the server sent. <code>rvest::read_html_live()</code> runs the page in a hidden Chrome first (it needs the chromote package and Chrome). Also check the Network tab: many such pages get their data from an API.'); s3(); }]
+      ]);
+    }
+    function s3() {
+      stage(3, 'act');
+      ask('Find a selector with the Inspector or SelectorGadget. How many elements does <code>html_elements()</code> return?', [
+        ['As many as I see on the page', function () { snip('select'); say(''); s4(); }],
+        ['More than I see', function () { say('The selector is too general. Add a class or a parent: on the Wikipedia page, <code>table</code> matches 15 tables and <code>table.wikitable</code> matches 9.', true); }],
+        ['Zero', function () { say('Check the spelling, the dot before a class, and the # before an id. If the selector is right, go back to step 2: the content may be added by JavaScript.', true); }]
+      ]);
+    }
+    function s4() {
+      stage(4, 'act');
+      ask('What do you need from those elements?', [
+        ['A table with rows and columns', function () { snip('table'); done(); }],
+        ['The text a reader sees', function () { snip('text'); done(); }],
+        ['A value inside the tag, such as a link address', function () { snip('attr'); done(); }]
+      ]);
+    }
+    function done() { stage(5, 'act'); ask('Done. The code on the right is in the order you write it.', []); say(''); }
+    root.querySelector('.wf-reset').addEventListener('click', function () { code.innerHTML = empty; s1(); });
+    ['keydown', 'keypress', 'keyup'].forEach(function (t) { root.addEventListener(t, function (e) { e.stopPropagation(); }); });
+    s1();
+  }
+  function buildAll() { document.querySelectorAll('.wk').forEach(buildWk); document.querySelectorAll('.wf').forEach(buildWf); }
+  buildAll();
+  if (window.slideshow) { if (!window.wkHooked) { window.wkHooked = true; window.slideshow.on('afterShowSlide', buildAll); } }
+})();
+</script>
+
+<script>
+(function () {
+  // Password gate for the "Answer will be shown in class" details boxes (class answer-gate).
+  // Light gate only: the password is stored as a 32-bit FNV-1a hash so it is not readable in
+  // the page source, but anyone determined can open the box from DevTools. sessionStorage
+  // remembers an unlock for the rest of the browser session, so one password opens every box.
+  var HASH = "806d8122";
+  var KEY = "isa401_gate_10";
+  function fnv(str) {
+    var x = 0x811c9dc5;
+    for (var i = 0; i !== str.length; i = i + 1) { x ^= str.charCodeAt(i); x = Math.imul(x, 16777619) >>> 0; }
+    return ("0000000" + x.toString(16)).slice(-8);
+  }
+  function unlocked() { try { return sessionStorage.getItem(KEY) === "1"; } catch (e) { return false; } }
+  function remember() { try { sessionStorage.setItem(KEY, "1"); } catch (e) {} }
+
+  function arm(d) {
+    if (d.getAttribute("data-gated")) { return; }
+    d.setAttribute("data-gated", "1");
+    var prompt = null;
+    d.addEventListener("toggle", function () {
+      if (!d.open) { return; }   // closing (including our own d.open = false below) needs nothing
+      if (unlocked()) { if (prompt) { prompt.remove(); prompt = null; } return; }
+      d.open = false;
+      if (prompt) { prompt.querySelector("input").focus(); return; }
+      prompt = document.createElement("div");
+      prompt.setAttribute("style", "display:flex; align-items:center; gap:8px; margin:6px 0 0 0; font-size:13px;");
+      prompt.innerHTML = "<span style='color:#585E60;'>Password</span>" +
+        "<input type='password' autocomplete='off' style='font-family:Source Code Pro, monospace; font-size:13px; padding:4px 8px; border:1px solid #d1d5db; border-radius:6px; width:140px;'>" +
+        "<button type='button' style='background:#c3142d; color:#fff; border:0; border-radius:6px; padding:5px 14px; font-weight:700; font-size:13px; cursor:pointer;'>Unlock</button>" +
+        "<span class='gate-msg' style='color:#c3142d;'></span>";
+      d.parentNode.insertBefore(prompt, d.nextSibling);
+      var input = prompt.querySelector("input");
+      var msg = prompt.querySelector(".gate-msg");
+      // keep remark's keyboard shortcuts (f, p, digits) from firing while typing: same
+      // pause/resume pattern xaringanExtra uses for its editable fields
+      ["keydown", "keypress", "keyup"].forEach(function (t) { input.addEventListener(t, function (e) { e.stopPropagation(); }); });
+      input.addEventListener("focus", function () { if (window.slideshow) { window.slideshow.pause(); } });
+      input.addEventListener("blur", function () { if (window.slideshow) { window.slideshow.resume(); } });
+      function tryIt() {
+        if (fnv(input.value.trim()) === HASH) { remember(); prompt.remove(); prompt = null; d.open = true; }
+        else { msg.textContent = "Not it."; input.select(); }
+      }
+      prompt.querySelector("button").addEventListener("click", tryIt);
+      input.addEventListener("keydown", function (e) { if (e.key === "Enter") { tryIt(); } });
+      input.focus();
+    });
+  }
+  function armAll() { document.querySelectorAll("details.answer-gate").forEach(arm); }
+  armAll();
+  if (window.slideshow) { if (!window.answerGateHooked) { window.answerGateHooked = true; window.slideshow.on("afterShowSlide", armAll); } }
+})();
+</script>
+
+# Before We Start
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:16px;">
+  <div class="card">
+    <div class="ch">1 &nbsp; Join today's Zoom</div>
+    <div class="cb" style="font-size:14px; line-height:1.5;">Use the Zoom link in the <a href="https://miamioh.instructure.com/courses/258169/modules/981092" target="_blank"><b>Week 0 Module</b></a> on Canvas. <b>Mute</b> your mic and <b>turn off</b> your video.<br><span style="color:#585E60;">Log in from the <span style="background:#ffe58f; padding:0 5px; border-radius:4px; font-weight:600;">lab's computer</span> so you can <span style="background:#ffe58f; padding:0 5px; border-radius:4px; font-weight:600;">share your screen</span> if you need help with an error.</span></div>
+  </div>
+  <div class="card">
+    <div class="ch">2 &nbsp; Open the project, start the markdown</div>
+    <div class="cb" style="font-size:14px; line-height:1.5;"><b>GitHub Desktop</b> &rarr; <code>business_intelligence</code> &rarr; <b>Fetch origin</b>, then open <code>business_intelligence.Rproj</code>.<br><span style="color:#585E60;">New R Markdown, title <i>Class 10</i>, delete everything below the setup chunk, save it as <span style="background:#ffe58f; padding:0 5px; border-radius:4px; font-weight:600;">markdowns/class10.Rmd</span>.</span></div>
+  </div>
+  <div class="card">
+    <div class="ch">3 &nbsp; Install two packages</div>
+    <div class="cb" style="font-size:14px; line-height:1.5;">In the <b>Console</b> (not in the markdown): <code>install.packages(c("rvest", "robotstxt"))</code><br><span style="color:#585E60;"><code>httr2</code> is already installed from Class 08.</span></div>
+  </div>
+  <div class="card">
+    <div class="ch gray">4 &nbsp; Optional, on your own laptop</div>
+    <div class="cb" style="font-size:14px; line-height:1.5;">Add the <a href="https://chromewebstore.google.com/detail/selectorgadget/mhjhnkcfbdhnjickkkdbjoemdmbfginb" target="_blank"><b>SelectorGadget</b></a> extension to Chrome. It is one of two ways to find a selector today; the other, the <b>Inspector</b>, is built into every browser.</div>
+  </div>
+</div>
+
+<div style="text-align:center; margin-top:18px; font-size:14px; color:#585E60;">Done early? <b style="color:#c3142d;">Help the person next to you.</b> Stuck? <b style="color:#c3142d;">Share your screen on Zoom</b> and we fix it together.</div>
+
+???
+
+Two minutes while people settle. Card 3 is the only one that matters for the code: rvest and robotstxt. SelectorGadget is optional and only on personal laptops; the Inspector does the same job on the lab PCs.
+
+---
+
+# Where We Left Off
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:10px;">
+  <div class="card">
+    <div class="ch gray">Class 08: an API</div>
+    <div class="cb">The owner <b>documents</b> an address and its parameters. The reply is <b>JSON written for programs</b>: only data, in named fields. Some APIs ask for a key.</div>
+  </div>
+  <div class="card">
+    <div class="ch">Today: a web page</div>
+    <div class="cb">No documentation and no key. The reply is <b>HTML written for people</b>: the data sits inside tags, next to menus, links, and images.</div>
+  </div>
+</div>
+
+<div style="margin-top:10px; font-weight:700; color:#c3142d; font-size:14px;">The first course on Miami's ISA catalog page, as the server sends it</div>
+
+<pre class="htmlsrc" style="margin-top:4px !important; font-size:11.5px;">`r paste(vapply(strsplit(substr(gsub("\n{2,}", "\n", first_block), 1, 560), "\n")[[1]], tagc, ""), collapse = "\n")` ...</pre>
+
+<div class="lesson"><b class="r">When an API exists, use it.</b> When the data exists only on a page, we read the page's HTML and pull out the parts we need. That is web scraping, and it starts with checking that we are allowed to.</div>
+
+???
+
+Two minutes. Left card is Class 08 in one sentence. Right card is today. The code block is real: the first course block on the ISA catalog page, the same page we scrape at the end of class. Point at the title and the description inside their tags. The bottom line is the order of the day: permission first, then the page, then R.
+
+---
+
+# Scraping in Job Ads
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:6px; align-items:start;">
+<div>
+<div class="card"><div class="ch">Where Job Scout's `r fmt(n_scout)` postings came from</div><div class="cb">
+<div class="sbar"><div style="background:#c3142d; width:`r pct(n_aj)`%;">`r fmt(n_aj)` (`r pct(n_aj)`%)</div><div style="background:#585E60; width:`r 100 - pct(n_aj)`%;">`r fmt(n_usa)` (`r 100 - pct(n_aj)`%)</div></div>
+<div style="display:flex; gap:14px; margin-top:6px; font-size:12.5px;"><span><b style="color:#c3142d;">&#9632;</b> Employer career sites, via Active Jobs DB</span><span><b style="color:#585E60;">&#9632;</b> USAJOBS API (Class 08)</span></div>
+<div style="margin-top:8px;">The `r fmt(n_aj)` career-site postings link to <b>`r fmt(n_hosts)` different sites</b>; `r n_workday` of them are pages hosted by Workday.</div>
+<div class="src" style="margin-top:8px;">Job Scout buys this feed; it does not scrape. The feed's maker, Fantastic.jobs, publishes a tool called <a href="https://apify.com/fantastic-jobs/jobs-scraper/api" target="_blank">"Jobs Scraper for ATS / Career Sites"</a> and describes its data as coming from <a href="https://fantastic.jobs/article/best-job-posting-apis" target="_blank">"200k+ career sites and 54 ATS platforms"</a>. Postings harvested `r format(harv[1], "%b %d")` to `r format(harv[2], "%b %d, %Y")`, the weeks both sources returned postings (<code>data/scout.db</code>).</div>
+</div></div>
+</div>
+<div>
+<div style="font-weight:700; color:#c3142d; font-size:14px; margin-bottom:5px;">A skill some jobs ask for: three examples from Job Scout</div>
+<div class="qcard"><div class="qt">Business Analyst, Hisense USA</div><div class="qm">Alpharetta, GA. Posted Jul 23, 2026.</div><div class="qq">"Apply Python-based data analysis techniques, including <b>web scraping tools</b>, to collect and monitor pricing data across multiple sales channels."</div></div>
+<div class="qcard"><div class="qt">AI Automation &amp; Business Analytics Intern, Brio Water Technology</div><div class="qm">Glendale, CA. Posted Jul 16, 2026.</div><div class="qq">"Develop or improve <b>web scrapers</b> and data collection tools when needed."</div></div>
+<div class="qcard"><div class="qt">Data Science Intern, Mendoza Research Team, University of Notre Dame</div><div class="qm">Notre Dame, IN. Posted Aug 18, 2026.</div><div class="qq">"Clean, merge, and validate complex research datasets, including financial/market data, administrative records, survey results, and <b>web-scraped data</b>."</div></div>
+</div>
+</div>
+
+<div class="lesson" style="margin-top:6px; font-size:13.5px;"><b class="r">Two sides of the same skill.</b> Most of these postings reached Job Scout because someone scraped employer career sites, and some employers hire analysts to do the same work: track prices, collect data, and clean what was scraped.</div>
+
+???
+
+Three minutes. Left: the numbers are computed from Job Scout's own database, the same file behind the Class 01 dashboard. Be precise: Job Scout calls an API; the company behind that API collects the postings from career sites, and its own tool is named a scraper. Right: three real postings that list scraping among the job's tasks: a business analyst tracking prices, an analytics intern maintaining scrapers, a research intern cleaning web-scraped data. They are examples, not a share of the market: in this window only `r nrow(scrape_hits)` descriptions say web scraping, web scrapers, or web-scraped, so do not present them as a trend.
+
+---
+
+# Learning Objectives for Today's Class
+
+- **Determine** when scraping is permitted (robots.txt, terms of service).
+- **Parse** HTML using `rvest`.
+- **Extract** text, tables, and attributes from HTML elements.
+
+<div style="display:grid; grid-template-columns:14fr 18fr 33fr; gap:10px; margin-top:14px;">
+  <div class="card"><div class="ch">Part 1 &nbsp;<span style="font-weight:400; opacity:0.85;">14 min</span></div><div class="cb"><b>When can we scrape?</b> robots.txt, terms of service, and one court case.</div></div>
+  <div class="card"><div class="ch">Part 2 &nbsp;<span style="font-weight:400; opacity:0.85;">18 min</span></div><div class="cb"><b>How a web page is built.</b> HTML elements, CSS selectors, and two tools that find a selector for you.</div></div>
+  <div class="card"><div class="ch">Part 3 &nbsp;<span style="font-weight:400; opacity:0.85;">35 min</span></div><div class="cb"><b>Scraping with rvest.</b> The workflow, the User-Agent header, all the tables on a Wikipedia page, then Miami's course catalog and a practice job board.</div></div>
+</div>
+
+<div class="lesson" style="margin-top:14px;"><b class="r">Wednesday:</b> many pages at once with <code>purrr::map()</code>, polite delays between requests, and pages where some fields are missing.</div>
+
+???
+
+One minute. Three objectives, three parts; the card widths are the time budget. Handling missing or malformed data moved to Wednesday, where it comes up naturally when the same code runs over many pages.
+
+---
+
+class: inverse, center, middle
+
+# Part 1: When Can We Scrape?
+
+---
+
+# robots.txt
+
+<div style="display:grid; grid-template-columns:1fr 1.15fr; gap:16px; margin-top:4px; align-items:start;">
+<div>
+<div style="font-size:14px; line-height:1.5;">A plain text file at the root of a site, written for programs that visit pages automatically. <b>User-agent</b> names the program (<b>*</b> means every program); <b>Disallow</b> lists paths they should not visit.</div>
+<div style="margin-top:8px; font-weight:700; font-size:13px; color:#585E60;">bulletin.miamioh.edu/robots.txt (excerpt)</div>
+<pre class="htmlsrc">User-agent: *
+Disallow: /archive/
+Disallow: /admin/
+Disallow: /azindex/
+Disallow: /catalogcontents/
+...</pre>
+<div style="margin-top:6px; font-size:13px;">The course pages under <code>/courses-instruction/</code> are not on the list.</div>
+</div>
+<div>
+<div style="font-weight:700; font-size:13px; color:#585E60;">www.linkedin.com/robots.txt (first lines, then line 4,857)</div>
+<pre class="htmlsrc"># Notice: The use of robots or other automated means to access LinkedIn without
+# the express permission of LinkedIn is strictly prohibited.
+# See https://www.linkedin.com/legal/user-agreement.
+...
+User-agent: *
+Disallow: /</pre>
+<div style="margin-top:6px; font-size:13px;"><code>Disallow: /</code> covers every path on the site. Named crawlers, such as Googlebot and Bingbot, get their own rules higher in the file.</div>
+</div>
+</div>
+
+<div class="qbar" style="margin-top:10px;"><b>Question.</b> May a program read the ISA page of Miami's course catalog?</div>
+
+--
+
+```{r robots_shown, eval=FALSE, hl.size="58%"}
+robotstxt::paths_allowed(paths = "/courses-instruction/isa/", domain = "bulletin.miamioh.edu", bot = "*")
+```
+
+<div style="font-size:13.5px;">Returns `r tf(r_bulletin)`. robots.txt is a <b>request</b> from the site owner, not a law. Respecting it is the first thing a careful scraper does.</div>
+
+???
+
+Three minutes. Open both files in the browser if the network allows: bulletin.miamioh.edu/robots.txt is 29 lines, LinkedIn's is almost 4,900. Read the LinkedIn notice aloud; it already points at the next slide (the user agreement). Ask the question, let the room answer from the Miami list, then click for the code. paths_allowed() downloads robots.txt and applies its rules to the path you give.
+
+---
+
+# Check Three Sites
+
+`r countdown(minutes = 3, seconds = 0, top = 0, font_size = "2em")`
+
+.panelset[
+
+.panel[.panel-name[Task]
+
+<div style="font-size:15px; line-height:1.6; margin-top:6px;">In <code>class10.Rmd</code>, use <code>robotstxt::paths_allowed()</code> to check each path for every program (<code>bot = "*"</code>):</div>
+
+| Site | Path |
+|------|------|
+| `en.wikipedia.org` | `/wiki/Miami_RedHawks_football` |
+| `www.linkedin.com` | `/jobs/` |
+| `www.indeed.com` | `/jobs` and `/viewjob` |
+
+<div style="font-size:14px; margin-top:8px; color:#585E60;">Then open one of the robots.txt files in the browser and find the line that decided your answer.</div>
+
+]
+
+.panel[.panel-name[Answer]
+
+<details class="answer-gate" style="margin-top:4px;"><summary style="cursor:pointer; font-weight:700; color:#c3142d; font-size:16px;">Answer will be shown in class</summary>
+
+<div style="font-size:15px; line-height:1.8; margin-top:8px;">
+Wikipedia, <code>/wiki/Miami_RedHawks_football</code>: `r tf(r_wiki)`<br>
+LinkedIn, <code>/jobs/</code>: `r tf(r_linkedin)` (<code>Disallow: /</code> for every program)<br>
+Indeed, <code>/jobs</code>: `r tf(r_indeed_jobs)` &nbsp; and &nbsp; <code>/viewjob</code>: `r tf(r_indeed_view)`
+</div>
+
+<div class="vcard" style="margin-top:10px;">Checked on `r built_on`. Rules are set path by path: on Indeed the search results are open to programs and single job pages are not. Rules also change, so a scraper checks them each time it runs.</div>
+
+</details>
+
+]
+
+.panel[.panel-name[Discussion]
+
+<div style="font-size:14.5px; line-height:1.6; margin-top:6px;">
+<div><b style="color:#c3142d;">Indeed allows one path and not the other.</b> What would a scraper need to do differently for the two?</div>
+<div style="margin-top:8px;"><b style="color:#c3142d;">TRUE from robots.txt.</b> Does that settle whether you may scrape a site?</div>
+</div>
+
+.can-edit.key-c10-robots[
+- Edit me to include any notes/discussion
+]
+
+]
+
+]
+
+???
+
+Three minutes. The Answer tab is computed when the deck is knit, so the date matters; say it. The second discussion question sets up the next slide: robots.txt is not the only rule.
+
+---
+
+# Terms of Service
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:8px; align-items:start;">
+  <div class="card">
+    <div class="ch">LinkedIn User Agreement, section 8.2 "Don'ts"</div>
+    <div class="cb" style="font-size:14px;">
+      <div style="font-style:italic;">"Develop, support or use software, devices, scripts, robots or any other means or processes (such as crawlers, browser plugins and add-ons or any other technology) to <b style="font-style:normal; background:#fff3bf;">scrape or copy the Services, including profiles and other data</b> from the Services"</div>
+      <div class="src" style="margin-top:8px;"><a href="https://www.linkedin.com/legal/user-agreement" target="_blank">LinkedIn User Agreement</a>, effective Nov 3, 2025. Signing up for an account means accepting it.</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ch gray">Wikipedia's copyright page</div>
+    <div class="cb" style="font-size:14px;">
+      <div style="font-style:italic;">"Permission is granted to copy, distribute and/or modify Wikipedia's text under the terms of the <b style="font-style:normal; background:#fff3bf;">Creative Commons Attribution-ShareAlike 4.0</b> International License"</div>
+      <div class="src" style="margin-top:8px;"><a href="https://en.wikipedia.org/wiki/Wikipedia:Copyrights" target="_blank">Wikipedia:Copyrights</a>. Reuse requires credit, such as a link to the page.</div>
+    </div>
+  </div>
+</div>
+
+<div class="lesson" style="margin-top:14px;">
+<div><b class="r">robots.txt</b> says which paths programs should visit. <b class="r">The terms of service</b> say what you may do with the site and its data, and they bind you once you accept them (for example, by creating an account).</div>
+<div style="margin-top:6px;">Look for the terms in the page footer ("Terms", "User Agreement", "Legal") and search them for <i>scrape</i>, <i>crawl</i>, <i>robot</i>, and <i>automated</i>.</div>
+</div>
+
+???
+
+Two minutes. Two real documents with opposite answers: LinkedIn prohibits scraping in its user agreement; Wikipedia licenses its text for reuse with credit. Today's examples (Wikipedia, Miami's catalog, a practice site) were chosen because they are on the permitted side. Transition: what happens when a company ignores the terms? The next slide is the best-known case.
+
+---
+
+# hiQ Labs v. LinkedIn
+
+<div style="font-size:14px; margin-top:2px;">hiQ collected public LinkedIn profiles and sold analyses of them to employers. LinkedIn sent a cease-and-desist letter and blocked it; hiQ sued.</div>
+
+<div style="display:grid; grid-template-columns:repeat(6, 1fr); gap:8px; margin-top:12px; position:relative;">
+  <div style="position:absolute; left:0; right:0; top:14px; height:3px; background:#d1d5db;"></div>
+  <div style="position:relative;"><div style="width:14px; height:14px; border-radius:50%; background:#059669; margin:8px 0 0 4px;"></div><div style="font-weight:700; font-size:13px; margin-top:6px;">Aug 2017</div><div style="font-size:12px; line-height:1.4;">District court orders LinkedIn to let hiQ keep collecting public profiles while the case goes on.</div></div>
+  <div style="position:relative;"><div style="width:14px; height:14px; border-radius:50%; background:#059669; margin:8px 0 0 4px;"></div><div style="font-weight:700; font-size:13px; margin-top:6px;">Sep 9, 2019</div><div style="font-size:12px; line-height:1.4;">Ninth Circuit upholds the order: scraping public pages is likely not access "without authorization" under the federal anti-hacking law (CFAA).</div><div class="src"><a href="https://cdn.ca9.uscourts.gov/datastore/opinions/2019/09/09/17-16783.pdf" target="_blank">Opinion</a></div></div>
+  <div style="position:relative;"><div style="width:14px; height:14px; border-radius:50%; background:#b45309; margin:8px 0 0 4px;"></div><div style="font-weight:700; font-size:13px; margin-top:6px;">Jun 14, 2021</div><div style="font-size:12px; line-height:1.4;">Supreme Court sends the case back to be reconsidered in light of a new CFAA decision, <i>Van Buren</i>.</div><div class="src"><a href="https://techcrunch.com/2021/06/14/supreme-court-revives-linkedin-bid-to-protect-user-data-from-web-scrapers/" target="_blank">TechCrunch</a></div></div>
+  <div style="position:relative;"><div style="width:14px; height:14px; border-radius:50%; background:#059669; margin:8px 0 0 4px;"></div><div style="font-weight:700; font-size:13px; margin-top:6px;">Apr 18, 2022</div><div style="font-size:12px; line-height:1.4;">Ninth Circuit reaches the same conclusion again.</div><div class="src"><a href="https://cdn.ca9.uscourts.gov/datastore/opinions/2022/04/18/17-16783.pdf" target="_blank">Opinion</a></div></div>
+  <div style="position:relative;"><div style="width:14px; height:14px; border-radius:50%; background:#c3142d; margin:8px 0 0 4px;"></div><div style="font-weight:700; font-size:13px; margin-top:6px;">Nov 4, 2022</div><div style="font-size:12px; line-height:1.4;">District court: hiQ <b>breached LinkedIn's User Agreement</b>, by scraping and by using fake profiles.</div><div class="src"><a href="https://caselaw.findlaw.com/court/us-dis-crt-n-d-cal/2182242.html" target="_blank">Order</a></div></div>
+  <div style="position:relative;"><div style="width:14px; height:14px; border-radius:50%; background:#c3142d; margin:8px 0 0 4px;"></div><div style="font-weight:700; font-size:13px; margin-top:6px;">Dec 2022</div><div style="font-size:12px; line-height:1.4;">Consent judgment: <b>$500,000</b> against hiQ; hiQ stops scraping LinkedIn and destroys the scraped data and code built on it.</div><div class="src"><a href="https://www.privacyworld.blog/2022/12/linkedins-data-scraping-battle-with-hiq-labs-ends-with-proposed-judgment/" target="_blank">Privacy World</a></div></div>
+</div>
+
+<div class="lesson" style="margin-top:16px;"><b class="r">What the case shows.</b> The court did not treat scraping public pages as hacking, and hiQ still lost, because it had agreed to LinkedIn's terms and then broken them. The terms of service are part of the permission check.</div>
+
+<div class="src" style="margin-top:6px;">The 2017 order is described in the 2019 opinion. This is a U.S. case; other countries have their own rules, and this slide is not legal advice.</div>
+
+???
+
+Three minutes. Walk the timeline left to right; the colors are hiQ winning (green), a reset (amber), hiQ losing (red). The point to land: two different legal questions. On the anti-hacking law, hiQ mostly won. On the contract, the terms it accepted, it lost, and the settlement required it to delete what it had collected. That is why step 1 of our workflow reads both robots.txt and the terms.
+
+---
+
+class: inverse, center, middle
+
+# Part 2: How a Web Page Is Built
+
+---
+
+# One Page, Two Views
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:4px; align-items:start;">
+<div>
+<div style="font-weight:700; font-size:13.5px; color:#585E60; margin-bottom:4px;">In the browser: what a reader sees</div>
+<img src="`r knitr::image_uri('img/catalog.jpg')`" style="width:100%; border:1px solid #d1d5db; border-radius:8px; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+</div>
+<div>
+<div style="font-weight:700; font-size:13.5px; color:#585E60; margin-bottom:4px;">View page source (<b>Ctrl+U</b>): what the server sent</div>
+<pre class="htmlsrc" style="font-size:10.5px;">`r paste(vapply(strsplit(substr(gsub("\n{2,}", "\n", as.character(rvest::html_element(catalog_page, "#textcontainer"))), 1, 1250), "\n")[[1]], tagc, ""), collapse = "\n")` ...</pre>
+<div style="font-size:13px; margin-top:6px; line-height:1.45;">The same course, twice. The browser reads the tags to decide how each piece looks; <b>rvest reads the same tags to decide which pieces to keep.</b></div>
+</div>
+</div>
+
+<div class="src" style="margin-top:6px;"><a href="https://bulletin.miamioh.edu/courses-instruction/isa/" target="_blank">Miami University General Bulletin 2026-2027, Information Systems &amp; Analytics (ISA)</a>. Screenshot taken `r built_on`.</div>
+
+???
+
+Two minutes. Open the page and press Ctrl+U so they see it is the same page. Match one course title on the left with its tags on the right. Do not name the selectors yet; they find them in the demo at the end.
+
+---
+
+# HTML Elements
+
+<div style="display:grid; grid-template-columns:1.2fr 1fr; gap:18px; margin-top:6px; align-items:start;">
+<div>
+<div style="font-weight:700; font-size:13.5px; color:#585E60;">One element from the Wikipedia bowl games table (two attributes left out)</div>
+<div style="margin-top:8px; border:1px solid #d1d5db; border-radius:8px; background:#ffffff; padding:14px 12px; font-family:'Source Code Pro',monospace; font-size:14px; line-height:1.5; position:relative; box-shadow:0 1px 3px rgba(0,0,0,0.1); word-break:break-all;"><span style="color:#881280;">&lt;a</span> <span style="color:#994500; background:#fff3bf;">href</span>=<span style="color:#1a1aa6; background:#dbeafe;">"`r sun_href`"</span> <span style="color:#994500;">title</span>=<span style="color:#1a1aa6;">"`r sun_title`"</span><span style="color:#881280;">&gt;</span><span style="background:#dcfce7; font-weight:700;">Sun Bowl</span><span style="color:#881280;">&lt;/a&gt;</span></div>
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:6px 12px; margin-top:10px; font-size:13px; line-height:1.4;">
+  <div><b style="color:#881280;">Tag:</b> <code>a</code>, a link. The start tag <code>&lt;a ...&gt;</code> and end tag <code>&lt;/a&gt;</code> wrap the content.</div>
+  <div><b style="color:#994500;">Attribute name:</b> <code>href</code>, where the link goes. <code>title</code> is a second attribute.</div>
+  <div><span style="background:#dbeafe; font-weight:700;">Attribute value:</span> the address, inside quotes. A reader never sees it.</div>
+  <div><span style="background:#dcfce7; font-weight:700;">Content:</span> the text a reader sees on the page.</div>
+</div>
+<div class="lesson" style="font-size:13.5px;">Common tags: <code>h1</code> to <code>h6</code> headings, <code>p</code> paragraph, <code>a</code> link, <code>img</code> image, <code>div</code> and <code>span</code> containers, <code>table</code>, <code>tr</code> row, <code>th</code> header cell, <code>td</code> data cell.</div>
+</div>
+<div>
+<div style="font-weight:700; font-size:13.5px; color:#585E60;">Elements sit inside elements</div>
+<div style="margin-top:8px; font-family:'Source Code Pro',monospace; font-size:12.5px; line-height:1.9;">
+<div>&lt;html&gt;</div>
+<div style="padding-left:16px;">&lt;head&gt; <span style="font-family:'Noto Sans',Arial,sans-serif; color:#585E60; font-size:11.5px;">title, styles: not shown</span></div>
+<div style="padding-left:16px;">&lt;body&gt; <span style="font-family:'Noto Sans',Arial,sans-serif; color:#585E60; font-size:11.5px;">everything on the page</span></div>
+<div style="padding-left:32px;">...</div>
+<div style="padding-left:32px; color:#c3142d; font-weight:700;">&lt;table class="wikitable"&gt;</div>
+<div style="padding-left:48px;">&lt;tbody&gt;</div>
+<div style="padding-left:64px;">&lt;tr&gt; <span style="font-family:'Noto Sans',Arial,sans-serif; color:#585E60; font-size:11.5px;">one per row</span></div>
+<div style="padding-left:80px;">&lt;th&gt; Season &lt;/th&gt; ...</div>
+<div style="padding-left:64px;">&lt;tr&gt;</div>
+<div style="padding-left:80px;">&lt;td&gt; &lt;a&gt;`r bowl_games$Season[1]`&lt;/a&gt; &lt;/td&gt;</div>
+<div style="padding-left:80px;">&lt;td&gt; &lt;a&gt;Sun Bowl&lt;/a&gt; &lt;/td&gt; ...</div>
+</div>
+<div style="font-size:13px; margin-top:8px; line-height:1.45;">This nesting is the <b>tree</b> that rvest searches. The <code>class</code> attribute on the table is how we will point at it.</div>
+</div>
+</div>
+
+???
+
+Three minutes. Left: the vocabulary on one real element, color by color. The two things to remember: content is what a reader sees, attribute values are what a reader does not see. That maps onto html_text2() and html_attr() in Part 3. Right: the tree, from html down to the link inside a table cell. Every selector in the next slides is a way of pointing at a node in a tree like this.
+
+---
+
+```{r css_slides, echo=FALSE, results="asis"}
+sels = c(css_rows_a$sel, css_rows_b$sel)
+cat(paste0(vapply(seq_along(sels), function(i) css_slide(sels[i], first = (i == 1)), ""), collapse = ""))
+```
+
+---
+
+# Two Tools for Finding a Selector
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:6px; align-items:start;">
+<div>
+<div style="font-weight:700; font-size:15px; color:#c3142d;">The Inspector (every browser)</div>
+<div style="font-size:13px; margin:3px 0 6px 0;">Right-click an element on the page, then <b>Inspect</b>. The Elements panel opens at that element; its tag, class, and id are the parts of a selector.</div>
+<img src="`r knitr::image_uri('img/tool_inspector.jpg')`" style="width:100%; border:1px solid #d1d5db; border-radius:8px; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+</div>
+<div>
+<div style="font-weight:700; font-size:15px; color:#c3142d;"><a href="https://selectorgadget.com/" target="_blank">SelectorGadget</a> (Chrome extension)</div>
+<div style="font-size:13px; margin:3px 0 6px 0;">Click an element: it turns green, similar ones turn yellow, and the bar at the bottom shows the selector and the count. Click a yellow one to exclude it.</div>
+<img src="`r knitr::image_uri('img/tool_selectorgadget.jpg')`" style="width:100%; border:1px solid #d1d5db; border-radius:8px; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+</div>
+</div>
+
+<div class="lesson" style="font-size:13.5px;"><b class="r">Check the count.</b> Whichever tool you use, compare the number of matches with what you see on the page before writing R code. Screenshots from an earlier edition of Miami's catalog; the current page uses the same tags.</div>
+
+???
+
+Two minutes. Both screenshots are the ISA catalog page from an earlier bulletin; the structure is unchanged in 2026-2027 (checked when building the slides). Demonstrate the Inspector live on any element. SelectorGadget is optional; many students will only have the Inspector on lab PCs. The count check is the habit: SelectorGadget shows it in its bar, and in R it is length() of the result.
+
+---
+
+class: inverse, center, middle
+
+# Part 3: Scraping with rvest
+
+---
+
+# The Scraping Workflow
+
+`r wf_html`
+
+???
+
+Four minutes, before any code. Click through it with the class twice. First pass, the easy path: yes, the page loads, the count matches, a table. Second pass, the detours: 403 (the next slides), data missing because JavaScript adds it (read_html_live() exists; we do not use it today), and a selector that matches too much or nothing. The right-hand panel builds the code in the order they will write it. The No branch at step 1 is a real stop: look for an API or a download first.
+
+---
+
+# The rvest Process
+
+<div class="flow">
+  <div class="fs"><div class="fh">1 &nbsp;Read</div><div class="fb">Download the page and parse the HTML into a tree R can search.
+`r hl_r('page = rvest::read_html(url)', "80%")`
+<div style="margin-top:4px;">Returns an HTML document:</div><div class="ret">{html_document}</div></div></div>
+  <div class="fa">&rarr;</div>
+  <div class="fs"><div class="fh">2 &nbsp;Select</div><div class="fb">Keep every element that matches a CSS selector.
+`r hl_r('items = page |>\n  rvest::html_elements("table.wikitable")', "80%")`
+<div style="margin-top:4px;">Returns the matching elements:</div><div class="ret">{xml_nodeset (`r n_wiki`)}</div></div></div>
+  <div class="fa">&rarr;</div>
+  <div class="fs"><div class="fh">3 &nbsp;Extract</div><div class="fb">Pull the data out of the elements, one of three ways:
+<div style="margin-top:6px; display:grid; grid-template-columns:auto 1fr; gap:4px 8px; align-items:center;">
+<code>rvest::html_table()</code><span>a list of data frames</span>
+<code>rvest::html_text2()</code><span>a character vector of text</span>
+<code>rvest::html_attr("href")</code><span>a character vector of attribute values</span>
+</div></div></div>
+</div>
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:12px;">
+<div class="lesson" style="margin-top:0; font-size:13.5px;"><b class="r">One rvest function per step.</b> The selector from Part 2 is the only thing that changes from page to page, so most of the work happens in the browser, not in R.</div>
+<div class="lesson" style="margin-top:0; font-size:13.5px;"><b class="r">rvest::html_elements() and rvest::html_element().</b> With an <b>s</b>: every match. Without it: the first match only. Wednesday uses the second one on pages with missing fields.</div>
+</div>
+
+???
+
+Two minutes. This is the whole package in three boxes. The printed types under each box are what R shows when you print the object (the 9 is the Wikipedia page from the next slides). Step 1 has a second form for sites that ask who is sending the request: that is the next slide.
+
+---
+
+# Some Sites Ask Who Is Sending the Request
+
+```{r ua_url, eval=FALSE, hl.size="50%"}
+wiki_url = "https://en.wikipedia.org/wiki/Miami_RedHawks_football"
+```
+
+<div style="display:grid; grid-template-columns:minmax(0,0.85fr) minmax(0,1.4fr); gap:14px; margin-top:2px; align-items:start;">
+<div>
+<div style="font-weight:700; color:#c3142d; font-size:14px;">A request that does not say who sent it</div>
+
+```{r ua_bad, eval=FALSE, hl.size="50%"}
+httr2::request(wiki_url) |>
+  httr2::req_user_agent("") |>
+  httr2::req_perform()
+```
+
+<pre class="rout rerr" style="font-size:11px; white-space:pre-wrap;">`r esc(ua_err)`</pre>
+<div style="font-size:12.5px; margin-top:4px;">Wikipedia answered <b>`r s_blank`</b> to an empty User-Agent and <b>`r s_generic`</b> to one that only said <code>python-requests/2.31</code>, when these slides were built.</div>
+</div>
+<div>
+<div style="font-weight:700; color:#059669; font-size:14px;">The same request, with a name and a way to reach you</div>
+
+```{r ua_good, eval=FALSE, hl.size="50%"}
+wiki_page = httr2::request(wiki_url) |>
+  httr2::req_user_agent("ISA 401 class scraper (your_email@miamioh.edu)") |>
+  httr2::req_perform() |>
+  httr2::resp_body_html()
+```
+
+<div style="font-size:12.5px; margin-top:4px;">Status <b>`r s_ours`</b>. <code>httr2::resp_body_html()</code> gives the same kind of document as <code>rvest::read_html()</code>, so steps 2 and 3 do not change.</div>
+</div>
+</div>
+
+<div class="lesson" style="font-size:13.5px;">
+<div><b class="r">User-Agent</b> is a request header (Class 08) that names the program sending the request. Every browser sends one. Some sites refuse requests that leave it out or use a generic one, and the reply is <b>403 Forbidden</b>.</div>
+<div style="margin-top:5px;">Wikimedia's <a href="https://foundation.wikimedia.org/wiki/Policy:Wikimedia_Foundation_User-Agent_Policy" target="_blank">User-Agent policy</a>: <i>"Scripts should use an informative User-Agent string with contact information, or they may be blocked without notice."</i></div>
+</div>
+
+???
+
+Three minutes. Both status codes on the left are real and computed at knit. rvest::read_html() sends a default User-Agent of its own (the curl library's name), which Wikipedia accepted when these slides were built, but the policy asks for contact details, so today's code sends ours. This is the same httr2 pipeline as Class 08 with one header; only the last line is new. Students put their own Miami email in the string.
+
+---
+
+# Choosing an Extraction Function
+
+<div style="font-size:13.5px; margin-top:2px;">Three elements from the same Wikipedia page, and what each function returns for them.</div>
+
+<div class="pick3">
+<div class="pk"><div class="pkh">I see rows and columns</div><div class="pkb">
+<pre class="htmlsrc" style="font-size:9.8px;">`r tagc('<table class="wikitable">')`
+  `r tagc('<tr><th>Season</th><th>Coach</th> ...')`
+  `r tagc(paste0('<tr><td>', bowl_games$Season[1], '</td> ...'))`</pre>
+<div class="arrow">&darr;</div><div class="fn">rvest::html_table()</div>
+<div style="margin-top:5px;">`r tbl_html(head(bowl_games[, c("Season", "Bowl", "Result")], 2))`</div>
+<div class="src" style="margin-top:4px;">A data frame (one per table), with column names from the header row.</div>
+</div></div>
+<div class="pk"><div class="pkh">I need the text a reader sees</div><div class="pkb">
+<pre class="htmlsrc" style="font-size:9.8px;">`r tagc(as.character(bowl_h2))`</pre>
+<div class="arrow">&darr;</div><div class="fn">rvest::html_text2()</div>
+<div class="res">`r esc(out_txt(rvest::html_text2(bowl_h2)))`</div>
+<div class="src" style="margin-top:4px;">The content, without tags, with spaces and line breaks cleaned up the way the browser shows them.</div>
+</div></div>
+<div class="pk"><div class="pkh">I need a value inside the tag</div><div class="pkb">
+<pre class="htmlsrc" style="font-size:9.8px;">`r tagc(sprintf('<a href="%s" title="%s">Sun Bowl</a>', sun_href, sun_title))`</pre>
+<div class="arrow">&darr;</div><div class="fn">rvest::html_attr("href")</div>
+<div class="res">`r esc(out_txt(sun_href))`</div>
+<div class="src" style="margin-top:4px;">The attribute you name: <code>"href"</code> for links, <code>"src"</code> for images.</div>
+</div></div>
+</div>
+
+???
+
+Two minutes. Same page, three questions. Note the third: the link text says Sun Bowl, the address it points to is the page for the 1948 Sun Bowl (the game after the 1947 season). Only html_attr() can see that. html_text2() versus html_text(): the 2 version returns text the way a browser shows it.
+
+---
+
+# All the Tables on a Wikipedia Page
+
+`r wk_html`
+
+???
+
+Five minutes, Step by Step. Steps 1 to 4 happen in the browser: do them live on the real page as well if the network allows (right-click the bowl games table, Inspect). Step 3 and 4 are the lesson: the tag alone matches the infobox and navigation boxes too; adding the class keeps the data tables. Steps 5 to 8 are the three rvest steps from the previous slides. Play is for a replay at the end.
+
+---
+
+# The Code and the Result
+
+<div style="display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,1fr); gap:16px; margin-top:4px; align-items:start;">
+<div>
+
+```{r wiki_shown, eval=FALSE, hl.size="52%"}
+wiki_url = "https://en.wikipedia.org/wiki/Miami_RedHawks_football"
+
+robotstxt::paths_allowed(paths = "/wiki/Miami_RedHawks_football",
+                         domain = "en.wikipedia.org", bot = "*")
+
+wiki_page = httr2::request(wiki_url) |>
+  httr2::req_user_agent("ISA 401 class scraper (your_email@miamioh.edu)") |>
+  httr2::req_perform() |>
+  httr2::resp_body_html()
+
+wiki_tables = wiki_page |>
+  rvest::html_elements("table.wikitable") |>
+  rvest::html_table()
+
+length(wiki_tables)
+
+bowl_games = wiki_tables[[4]]
+bowl_games
+```
+
+</div>
+<div>
+`r tbl_html(data.frame(" " = sprintf("[[%d]]", seq_along(wiki_tables)), Section = wiki_heads, Size = wiki_dims, check.names = FALSE), sprintf("wiki_tables: a list of %d data frames", length(wiki_tables)))`
+<div style="margin-top:8px;">`r tbl_html(bowl_games[4:7, c("Season", "Coach", "Bowl", "Result")], sprintf("bowl_games, rows 4 to 7 of %d (Opponent not shown)", nrow(bowl_games)))`</div>
+<div class="src" style="margin-top:6px;">Dick Crum coached both the 1974 and 1975 games. On the page his name fills one merged cell; <code>rvest::html_table()</code> repeats it on each row.</div>
+</div>
+</div>
+
+<div class="lesson" style="font-size:13.5px;"><b class="r">Check the result against the page.</b> The page says the RedHawks are 9-8 in bowl games. <code>sum(startsWith(bowl_games$Result, "W"))</code> gives <b>`r bowl_wins`</b> wins in `r nrow(bowl_games)` games.</div>
+
+???
+
+Four minutes. They type this in class10.Rmd and knit. Show the list: the section names come from the heading above each table, which also answers "how did we know the bowl games were number 4". The merged-cell note is worth ten seconds: it is the kind of thing to check every time. The last line is the habit: compare a number computed from the scraped data with a number printed on the page.
+
+---
+
+# Demo: Miami's ISA Course Catalog
+
+.panelset[
+
+.panel[.panel-name[Question]
+
+<div class="qbar"><b>Question.</b> Build a data frame of every ISA course in Miami's 2026-2027 General Bulletin: one row per course, with its title and its description.</div>
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:8px; align-items:start;">
+<img src="`r knitr::image_uri('img/catalog.jpg')`" style="width:100%; height:300px; object-fit:cover; object-position:top; border:1px solid #d1d5db; border-radius:8px; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+<div style="font-size:14px; line-height:1.55;">
+<div>Page: <a href="https://bulletin.miamioh.edu/courses-instruction/isa/" target="_blank">bulletin.miamioh.edu/courses-instruction/isa/</a></div>
+<div style="margin-top:8px;">Work through the workflow: permission, load, select, extract. Find both selectors in the browser first.</div>
+<div style="margin-top:8px; color:#585E60;">We write the code together. Type it in <code>class10.Rmd</code>.</div>
+</div>
+</div>
+
+]
+
+.panel[.panel-name[Titles]
+
+<div class="qbar"><b>Step 1.</b> Every course title on the page, as text.</div>
+
+```{r cat_out1, echo=FALSE, hl.size="58%"}
+length(course_titles)
+head(course_titles, 5)
+```
+
+]
+
+.panel[.panel-name[Descriptions]
+
+<div class="qbar"><b>Step 2.</b> Every description. Is there one for every title?</div>
+
+```{r cat_out2, echo=FALSE, hl.size="58%"}
+length(course_desc)
+substr(course_desc[c(1, 3)], 1, 150)
+```
+
+]
+
+.panel[.panel-name[Data Frame]
+
+<div class="qbar"><b>Step 3.</b> One row per course.</div>
+
+```{r cat_out3, echo=FALSE, hl.size="58%"}
+dplyr::glimpse(isa_courses, width = 70)
+```
+
+<div style="font-size:14px; margin-top:6px;">`r n_prereq` of the `r n_courses` descriptions mention a prerequisite.</div>
+
+]
+
+.panel[.panel-name[Discussion]
+
+<div style="font-size:14.5px; line-height:1.6; margin-top:6px;">
+<div><b style="color:#c3142d;">ISA 177 has a title but an empty description.</b> Why did the two vectors still line up?</div>
+<div style="margin-top:8px;"><b style="color:#c3142d;">The title holds three things:</b> code, name, and credit hours. How would you split them into columns?</div>
+</div>
+
+.can-edit.key-c10-catalog[
+- Edit me to include any notes/discussion
+]
+
+]
+
+]
+
+???
+
+Ten minutes, live. No code on the slide on purpose: the full solution is in the hidden chunk catalog_solution in the Rmd, starting from paths_allowed(). Let the room find the two selectors with the Inspector (course title and course description paragraphs). Each tab shows the output they should get. Discussion 1: ISA 177's description paragraph exists but is empty, so the counts still match; on Wednesday a missing element breaks this. Discussion 2 previews text cleaning.
+
+---
+
+# Practice: The Fake Jobs Board
+
+`r countdown(minutes = 5, seconds = 0, top = 0, font_size = "2em")`
+
+.panelset[
+
+.panel[.panel-name[Task]
+
+<div style="display:grid; grid-template-columns:1.2fr 1fr; gap:14px; margin-top:6px;">
+  <div class="card">
+    <div class="ch">Two questions</div>
+    <div class="cb" style="font-size:14.5px; line-height:1.6;">
+      <div><b>1.</b> Build a data frame with one row per job: title, company, location, date posted, and the address of its <b>Apply</b> link.</div>
+      <div style="margin-top:6px;"><b>2.</b> How many job titles contain the word "Python"?</div>
+      <div style="margin-top:10px; color:#585E60;">Work in pairs, in <code>class10.Rmd</code>.</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ch gray">The page</div>
+    <div class="cb" style="font-size:14px; line-height:1.6;"><a href="https://realpython.github.io/fake-jobs/" target="_blank"><b>realpython.github.io/fake-jobs</b></a><br>A static job board that Real Python built for scraping practice. The companies and jobs are made up.</div>
+  </div>
+</div>
+
+]
+
+.panel[.panel-name[Answer]
+
+<details class="answer-gate" style="margin-top:4px;"><summary style="cursor:pointer; font-weight:700; color:#c3142d; font-size:16px;">Answer will be shown in class</summary>
+
+```{r fj_out, echo=FALSE, hl.size="54%"}
+dplyr::glimpse(jobs, width = 80)
+```
+
+<div style="font-size:14.5px; line-height:1.6; margin-top:4px;"><b>2.</b> <b>`r n_python`</b> titles contain "Python". The full code is in the Rmd's <code>fakejobs_solution</code> chunk.</div>
+
+</details>
+
+]
+
+.panel[.panel-name[Discussion]
+
+<div style="font-size:14.5px; line-height:1.6; margin-top:6px;">
+<div><b style="color:#c3142d;">Each card has two links, Learn and Apply.</b> A selector for the links matched 200 elements for 100 jobs. How did you keep only the Apply links?</div>
+<div style="margin-top:8px;"><b style="color:#c3142d;">Five selectors, five vectors of 100.</b> What would happen if one card had no location?</div>
+</div>
+
+.can-edit.key-c10-fakejobs[
+- Edit me to include any notes/discussion
+]
+
+]
+
+]
+
+???
+
+Five minutes. No function hints on the slide. At the bell: Answer tab (password), then Discussion. The first question is the attribute step: the links share a class, and the answer in the Rmd keeps the ones whose text is Apply. The second question is Wednesday's topic: with one location missing, the vectors would have different lengths and tibble() would stop with an error.
+
+---
+
+class: inverse, center, middle
+
+# Recap
+
+---
+
+# Summary of Main Points
+
+By now, you should be able to do the following:
+
+- **Determine** when scraping is permitted: `robotstxt::paths_allowed()` for the path, then the site's terms of service. hiQ v. LinkedIn is the reminder that the terms count.
+- **Parse** HTML with `rvest::read_html()`, or with `httr2` and a User-Agent when a site asks who is sending the request, then select elements with a CSS selector found in the Inspector.
+- **Extract** tables with `rvest::html_table()`, text with `rvest::html_text2()`, and attribute values with `rvest::html_attr()`.
+
+**Next class (Wed, Sep 30):** Web Scraping II: many pages with `purrr::map()`, polite delays between requests, and fields that are missing on some pages.
+
+???
+
+One bullet per objective. The sentence to repeat: most of scraping happens in the browser (permission, selector); the R part is three functions.
+
+---
+
+# Before You Go
+
+<div style="height:495px; max-width:880px; margin:0 auto; padding:0; overflow:hidden;">
+  <iframe
+    src="https://www.mentimeter.com/app/presentation/alkim66z8wex2hguaep3uv4bke15kac4/embed"
+    scrolling="no"
+    frameborder="0"
+    allowfullscreen
+    sandbox="allow-popups allow-scripts allow-same-origin allow-presentation"
+    style="width:100%; height:100%; border:0;">
+  </iframe>
+</div>
+
+???
+
+The Class 05 Menti presentation is reused here (as in Class 08); reset its results in Menti before class and advance it to the clarification question before this slide comes up. Answer the top two or three on the spot and carry the rest into Wednesday.
+
+---
+
+# 🎯 Assignments 🎯
+
+.pull-left[
+
+<div class="card">
+  <div class="ch">No new graded assignment today</div>
+  <div class="cb">Open assignments and their due dates are on the <a href="https://miamioh.instructure.com/courses/258169/assignments" target="_blank"><b>Canvas Assignments page</b></a>. The practice questions on the right use today's three pages.</div>
+</div>
+
+<div style="margin-top:12px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:10px 14px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13.5px; line-height:1.5; color:#1b1b1b;">
+<b style="color:#c3142d;">Before you leave:</b> knit, then commit and push <code>markdowns/class10.Rmd</code> and <code>class10.html</code>. If it is not pushed, it is not done.
+</div>
+
+<div style="margin-top:12px; font-size:13px; line-height:1.5;"><b>Reading, if you want more:</b> <a href="https://r4ds.hadley.nz/webscraping" target="_blank">R4DS 2e, Chapter 24: Web scraping</a> and the <a href="https://rvest.tidyverse.org/articles/rvest.html" target="_blank">rvest getting-started article</a>.</div>
+
+]
+
+.pull-right[
+
+<div class="card">
+  <div class="ch" style="background:#f9dbdb; color:#c3142d;">Ungraded Practice Questions</div>
+  <div class="cb" style="font-size:13px; line-height:1.5;">
+    <div><b>1. Wikipedia.</b> Which coach took Miami to the most bowl games? Use <code>bowl_games</code>.</div>
+    <div style="margin-top:4px;"><b>2. Wikipedia.</b> Get the link address of every bowl in the bowl games table.</div>
+    <div style="margin-top:4px;"><b>3. Catalog.</b> Which ISA courses carry exactly 3 credit hours? Count them.</div>
+    <div style="margin-top:4px;"><b>4. Fake Jobs.</b> Which state appears most often in the locations?</div>
+    <div style="margin-top:4px;"><b>5. Your pick.</b> Choose a site you use, find its robots.txt and its terms, and decide whether you may scrape it.</div>
+    <details style="margin-top:8px;"><summary style="cursor:pointer; font-weight:700; color:#c3142d; font-size:13px;">Answers</summary>
+      <div style="font-family:'Source Code Pro', monospace; font-size:11px; line-height:1.55; margin-top:4px; color:#1b1b1b;">
+        1. bowl_games |&gt; dplyr::count(Coach, sort = TRUE): `r esc(dplyr::count(bowl_games, Coach, sort = TRUE)$Coach[1])` (`r dplyr::count(bowl_games, Coach, sort = TRUE)$n[1]`)<br>
+        2. html_elements("table.wikitable") gives 9 tables; take the 4th, then html_elements("td a") and html_attr("href"); keep the ones in the Bowl column<br>
+        3. sum(grepl("\\(3\\)$", isa_courses$title)): `r sum(grepl("\\(3\\)$", isa_courses$title))`<br>
+        4. `r jobs_state$state[1]` (`r jobs_state$n[1]` jobs)<br>
+        5. No single answer: bring it Wednesday.
+      </div>
+    </details>
+  </div>
+</div>
+
+]
+
+???
+
+Nothing new is due from today. The practice questions reuse the three pages. Say the before-you-leave line while pointing at GitHub Desktop.

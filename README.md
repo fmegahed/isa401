@@ -39,9 +39,9 @@ ISA 401 teaches the complete business intelligence pipeline: acquiring data from
 | **04** | Mon 09/14 | SQLite and Your First Deployed App | [Slides](http://fmegahed.github.io/isa401/fall2026/class06/06_sqlite_deployed_app.html) |
 | | Wed 09/16 | Data Wrangling with dplyr | [Slides](http://fmegahed.github.io/isa401/fall2026/class07/07_data_wrangling.html) |
 | **05** | Mon 09/21 | Structured Data: APIs | [Slides](http://fmegahed.github.io/isa401/fall2026/class08/08_apis.html) |
-| | Wed 09/23 | Semi-Structured Data: Web Scraping I | |
-| **06** | Mon 09/28 | Semi-Structured Data: Web Scraping II | |
-| | Wed 09/30 | Semi-Structured Data: Web Scraping III | |
+| | Wed 09/23 | Structured Data: APIs (Cont.) | [Slides](http://fmegahed.github.io/isa401/fall2026/class08/08_apis.html) |
+| **06** | Mon 09/28 | Semi-Structured Data: Web Scraping I | [Slides](http://fmegahed.github.io/isa401/fall2026/class10/10_web_scraping_1.html) |
+| | Wed 09/30 | Semi-Structured Data: Web Scraping II | |
 | **07** | Mon 10/05 | Unstructured Data: LLM Text Extraction | |
 | | Wed 10/07 | Tidy, Technically Correct, and Consistent Data | |
 | **08** | Mon 10/12 | **Exam 01: Data Acquisition & Transformation** | |

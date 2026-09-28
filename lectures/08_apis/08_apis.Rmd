@@ -362,18 +362,18 @@ rq_widget = function(verb = "GET", url_parts, headers = NULL, body = NULL, steps
     <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">2 &nbsp; Open the project, start the markdown</div>
     <div style="padding:12px 14px; font-size:14px; line-height:1.5;">
       <b>GitHub Desktop</b> &rarr; <code>business_intelligence</code> &rarr; <b>Fetch origin</b>, then open <code>business_intelligence.Rproj</code>.<br>
-      <span style="color:#585E60;">New R Markdown, title <i>Class 08</i>, delete everything below the setup chunk, save as <span style="background:#ffe58f; padding:0 5px; border-radius:4px; font-weight:600;">markdowns/class08.Rmd</span>.</span>
+      <span style="color:#585E60;">Open <span style="background:#ffe58f; padding:0 5px; border-radius:4px; font-weight:600;">markdowns/class08.Rmd</span>. If you do not have it yet: new R Markdown, title <i>Class 08</i>, delete everything below the setup chunk, save it under that name.</span>
     </div>
   </div>
   <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
     <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">3 &nbsp; Install one package</div>
     <div style="padding:12px 14px; font-size:14px; line-height:1.5;">
-      In the <b>Console</b> (not in the markdown): <code>install.packages("httr2")</code><br>
+      In the <b>Console</b> (not in the markdown), if you have not done so: <code>install.packages("httr2")</code><br>
       <span style="color:#585E60;"><code>jsonlite</code> and <code>dplyr</code> are already installed from Classes 04 and 07.</span>
     </div>
   </div>
   <div style="border:2px solid #c3142d; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
-    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">4 &nbsp; Request your USAJOBS key now</div>
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">4 &nbsp; Request your USAJOBS key, if you have none</div>
     <div style="padding:12px 14px; font-size:14px; line-height:1.5;">
       Fill the form at <a href="https://developer.usajobs.gov/apirequest/" target="_blank"><b>developer.usajobs.gov/apirequest</b></a> with your Miami email, then <span style="background:#ffe58f; padding:0 5px; border-radius:4px; font-weight:600;">confirm the email</span> they send.<br>
       <span style="color:#585E60;">The key arrives in a later email. We use it in Part 3, about 30 minutes from now.</span>
@@ -391,41 +391,43 @@ Do this while the dplyr carryover wraps up, or in the first two minutes of the A
 
 # Where We Left Off
 
-```{r wl_code, include=FALSE}
-wl_old = c('crashes = jsonlite::fromJSON(',
-           '  "https://data.cincinnati-oh.gov/resource/rvmt-pkmq.json?$limit=100"',
-           ')')
-wl_new = c('crashes = httr2::request("https://data.cincinnati-oh.gov/resource/rvmt-pkmq.json") |>',
-           '  httr2::req_url_query("$limit" = 100) |>',
-           '  httr2::req_perform() |>',
-           '  httr2::resp_body_string() |>',
-           '  jsonlite::fromJSON()')
+```{r wl_monday, include=FALSE}
+# the request typed in class on Monday, Sep 21 (right-assignment as typed)
+httr2::request("https://data.cincinnati-oh.gov/resource/rvmt-pkmq.json") |>
+  httr2::req_url_query("$limit" = 5) |>
+  httr2::req_perform() |>
+  httr2::resp_body_string() |>
+  jsonlite::fromJSON() -> cincy_crashes
+stopifnot(nrow(cincy_crashes) == 5)
 ```
 
-<div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:10px;">
-  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
-    <div style="background:#585E60; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">Class 04: "a web-served JSON file"</div>
-    <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;">
-`r hl_r(wl_old, "58%")`
-      <div style="margin-top:8px;">We pasted an address and got 100 rows. We did not discuss the <code>?$limit=100</code> at the end of it.</div>
-    </div>
-  </div>
-  <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
-    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:8px 14px;">Today: the same address is an API</div>
-    <div style="padding:10px 14px; font-size:13.5px; line-height:1.5;">
-`r hl_r(wl_new, "58%")`
-      <div style="margin-top:8px;">Everything after the <code>?</code> is a set of query parameters. Today you write them yourself.</div>
-    </div>
-  </div>
-</div>
+<div style="font-weight:700; color:#c3142d; font-size:15px; margin-bottom:4px;">Monday: the last thing we typed in class08.Rmd</div>
 
-<div style="margin-top:16px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:12px 18px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:16px; line-height:1.55;">
-<b style="color:#c3142d;">Both return the same 100 rows.</b> We use the <code>httr2</code> version today because it can also send a key, send headers, and report the status code. <code>jsonlite::fromJSON()</code> on an address cannot.
-</div>
+```{r wl_shown, eval=FALSE, hl.size="62%"}
+httr2::request("https://data.cincinnati-oh.gov/resource/rvmt-pkmq.json") |>
+  httr2::req_url_query("$limit" = 5) |>
+  httr2::req_perform() |>
+  httr2::resp_body_string() |>
+  jsonlite::fromJSON() -> cincy_crashes
+```
+
+.left55[
+
+```{r wl_out, echo=FALSE, hl.size="58%"}
+dplyr::glimpse(cincy_crashes[, c("crashdate", "crashseverity", "age", "weather")], width = 52)
+```
+
+]
+
+.right43[
+<div class="vcard" style="margin-top:0;"><span class="vh">What each line did.</span> Start a request to the endpoint from Cincinnati's portal; add one query parameter; send it; take the reply as text; parse the JSON into a data frame. Five rows, `r ncol(cincy_crashes)` columns (four shown), every column text.</div>
+<div class="vcard"><span class="vh">Today.</span> The rest of Part 1 (the parts of the address, status codes, the chat app as an API client), then two APIs that require a key: FRED and USAJOBS.</div>
+<div class="vcard"><span class="vh">Before Part 3.</span> If you have not requested a USAJOBS key yet, do it now (card 4 on the previous slide). It arrives by email.</div>
+]
 
 ???
 
-One minute. They have already used an API without the word; Class 04 deliberately called it a web-served JSON file. Read the two blocks side by side and say that both return the same data frame. The box is the promise for the hour: each part adds one line to the right-hand pipeline.
+One minute. Run the Monday request again so everyone has cincy_crashes in the Environment; anyone who missed Monday copies these five lines. Read the five lines once more, one verb per line, then move on. The USAJOBS key reminder matters: it takes a few minutes to arrive, and Part 3 needs it.
 
 ---
 
@@ -437,8 +439,8 @@ One minute. They have already used an API without the word; Class 04 deliberatel
 
 <div style="display:grid; grid-template-columns:14fr 15fr 25fr; gap:10px; margin-top:14px;">
   <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
-    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:14px; padding:7px 12px;">Part 1 &nbsp;<span style="font-weight:400; opacity:0.85;">14 min</span></div>
-    <div style="padding:9px 12px; font-size:13px; line-height:1.45;"><b>What is an API?</b> The steps of a request, shown on Cincinnati's crash data (no key). The parts of an API URL. Status codes. The Class 06 chat app as an API client.</div>
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:14px; padding:7px 12px;">Part 1 &nbsp;<span style="font-weight:400; opacity:0.85;">Monday, and 10 min today</span></div>
+    <div style="padding:9px 12px; font-size:13px; line-height:1.45;"><b>What is an API?</b> Monday: the definition and a request to Cincinnati's crash data, step by step. Today: the parts of an API URL, status codes, and the Class 06 chat app as an API client.</div>
   </div>
   <div style="border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
     <div style="background:#c3142d; color:#fff; font-weight:700; font-size:14px; padding:7px 12px;">Part 2 &nbsp;<span style="font-weight:400; opacity:0.85;">15 min</span></div>
@@ -456,13 +458,13 @@ One minute. They have already used an API without the word; Class 04 deliberatel
 
 ???
 
-Three objectives from the schedule, three parts. The Cincinnati hands-on example and its URL builder practice are in Appendix A1 and A2 for students to do on their own. The card widths are the time budget. Say the bottom line out loud; it is how the hour is organized and how they should take notes.
+Three objectives across two sessions, three parts. Today starts with the four slides of Part 1 that Monday did not reach (from Anatomy of an API URL). The Cincinnati hands-on example and its URL builder practice are in Appendix A1 and A2 for students to do on their own. The card widths are the time budget. Say the bottom line out loud; it is how the hour is organized and how they should take notes.
 
 ---
 
 class: inverse, center, middle
 
-# Part 1: What Is an API?
+# Part 1: What Is an API? (Cont.)
 
 ---
 
@@ -923,7 +925,7 @@ Three minutes. Same animation, one new part. Steps 1 to 4 are the failure on pur
 .left55[
 
 ```{r fred_out1, echo=FALSE, hl.size="62%"}
-names(fred_reply)
+print(names(fred_reply), width = 52)
 ```
 
 ```{r fred_out2, echo=FALSE, hl.size="62%"}
@@ -943,11 +945,11 @@ fred_reply$count
 .left55[
 
 ```{r fred_out3, echo=FALSE, hl.size="62%"}
-dplyr::glimpse(fred_reply$observations)
+dplyr::glimpse(fred_reply$observations, width = 52)
 ```
 
 ```{r fred_out4, echo=FALSE, hl.size="62%"}
-dplyr::glimpse(fred_df)
+dplyr::glimpse(fred_df, width = 52)
 ```
 
 ]
