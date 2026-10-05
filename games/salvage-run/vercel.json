@@ -1,0 +1,7 @@
+{
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/registry", "destination": "/api/registry" },
+    { "source": "/wreck/:hull", "destination": "/api/wreck?hull=:hull" }
+  ]
+}

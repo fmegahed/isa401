@@ -1,0 +1,8 @@
+dev
+blender
+make_registry.py
+solution.R
+*.blend
+*.blend1
+.env*
+README.md

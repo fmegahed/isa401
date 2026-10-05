@@ -1,0 +1,1174 @@
+---
+title: "ISA 401: Business Intelligence & Data Visualization"
+subtitle: "12: Structured Text Extraction with LLMs"
+author: '<br>Fadel M. Megahed, PhD <br><br> Raymond E. Glos Professor in Business <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("linkedin"), fill = "white")` @Fadel Megahed](https://www.linkedin.com/in/fadel-megahed-289046b4) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
+date: "Fall 2026"
+output:
+  xaringan::moon_reader:
+    self_contained: true
+    css: [default, "../../style_files/fonts.css", "../../style_files/my-theme.css", "../../style_files/code-tomorrow-night-bright.css"]
+    lib_dir: libs
+    mathjax: null
+    nature:
+      highlightStyle: magula
+      highlightLines: true
+      highlightLanguage: ["r"]
+      countIncrementalSlides: false
+      ratio: "16:9"
+    includes:
+      in_header: "../../style_files/header.html"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache = FALSE,
+                      echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE,
+                      progress = FALSE,
+                      verbose = FALSE,
+                      dev = 'png',
+                      fig.height = 3,
+                      dpi = 300,
+                      fig.align = 'center')
+
+options(htmltools.dir.version = FALSE, width = 52)
+
+miamired = '#C3142D'
+
+if(require(pacman)==FALSE) install.packages("pacman")
+if(require(devtools)==FALSE) install.packages("devtools")
+if(require(countdown)==FALSE) devtools::install_github("gadenbuie/countdown")
+if(require(xaringanExtra)==FALSE) devtools::install_github("gadenbuie/xaringanExtra")
+if(require(emo)==FALSE) devtools::install_github("hadley/emo")
+
+pacman::p_load(tidyverse, magrittr, lubridate, janitor, # data analysis pkgs
+               httr2, rvest, ellmer, # web and LLM pkgs
+               DBI, RSQLite, # Job Scout database
+               fontawesome, emo, xaringanExtra, countdown) # for slides
+
+ggplot2::theme_set(ggplot2::theme_bw(base_size = 12))
+
+# Code styling shared by all ISA 401 decks: hl_r() + knitr source hook (see style_files/hl_r.R)
+source("../../style_files/hl_r.R")
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+if(require(xaringanthemer) == FALSE) install.packages("xaringanthemer")
+library(xaringanthemer)
+
+style_mono_accent(base_color = "#84d6d3",
+                  base_font_size = "20px")
+
+xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "tachyons", "panelset", "broadcast", "share_again", "search", "fit_screen", "editable"))
+
+xaringanExtra::use_clipboard(button_text = paste0(fontawesome::fa("clipboard", fill = "#dedede", height = "0.9em"), " Copy"), success_text = paste0(fontawesome::fa("check", fill = "#b9ca4a", height = "0.9em"), " Copied"))
+
+xaringanExtra::use_extra_styles(
+  hover_code_line = TRUE,
+  mute_unhighlighted_code = TRUE
+)
+```
+
+<style>
+.code-sm .rcode { font-size: 78% !important; } .code-md .rcode { font-size: 90% !important; }
+.rcode { position: relative; padding-top: 18px !important; }
+.rcode .xaringanextra-clipboard-button { display: block !important; opacity: 0.55; top: 0; right: 4px; padding: 2px 6px; font-size: 11px; font-family: Lato, sans-serif; color: #dedede; cursor: pointer; }
+.rcode .xaringanextra-clipboard-button:hover { opacity: 1; }
+.airy .rout { margin: 2px 0 20px 0 !important; }
+</style>
+<style>
+.sc-bar { display:flex; gap:6px; align-items:center; margin-top:6px; font-family:'Noto Sans','Roboto',Arial,sans-serif; }
+.sc-btn { background:#ffffff; color:#374151; border:1px solid #d1d5db; border-radius:6px; padding:4px 11px; font-size:12.5px; font-weight:600; cursor:pointer; line-height:1.2; }
+.sc-btn:disabled { opacity:0.4; cursor:default; }
+.sc-btn.sc-primary { background:#c3142d; color:#ffffff; border-color:#c3142d; }
+.sc-spds { display:inline-flex; border:1px solid #d1d5db; border-radius:6px; overflow:hidden; margin-left:4px; }
+.sc-spd { background:#ffffff; color:#374151; border:0; border-right:1px solid #d1d5db; padding:4px 8px; font-size:11.5px; cursor:pointer; }
+.sc-spd:last-child { border-right:0; }
+.sc-spd.on { background:#585E60; color:#ffffff; }
+.sc-count { margin-left:auto; color:#585E60; font-size:12px; font-variant-numeric:tabular-nums; }
+.sc-caps { position:relative; margin-top:8px; border:1px solid #d1d5db; border-left:5px solid #c3142d; border-radius:8px; background:#fdf2f2; padding:8px 12px; font-size:13.5px; line-height:1.45; color:#1b1b1b; min-height:46px; }
+.sc-cap { display:none; }
+.sc-cap.on { display:block; }
+.sc-cap b { color:#c3142d; }
+</style>
+<script>
+(function () {
+  if (window.isaStepper) { return; }
+  window.isaStepper = function (root, scene) {
+    if (root.getAttribute('data-built')) { return; }
+    root.setAttribute('data-built', '1');
+    var i = 0, timer = null, speed = 1;
+    var q = function (s) { return root.querySelector(s); };
+    var bBack = q('.sc-back'), bStep = q('.sc-step'), bPlay = q('.sc-play'), bReset = q('.sc-reset'), cnt = q('.sc-count');
+    var spd = root.querySelectorAll('.sc-spd');
+    var caps = root.querySelectorAll('.sc-cap');
+    var flagged = root.querySelectorAll('[data-from]');
+    function applyFlags(j) {
+      flagged.forEach(function (el) {
+        var f = Number(el.getAttribute('data-from'));
+        var t = el.hasAttribute('data-to') ? Number(el.getAttribute('data-to')) : 9999;
+        el.classList.toggle('on', j >= f && !(j >= t));
+      });
+      caps.forEach(function (c) { c.classList.toggle('on', Number(c.getAttribute('data-step')) === j); });
+    }
+    function paint() {
+      bBack.disabled = (i === 0);
+      bStep.disabled = (i === scene.n);
+      bPlay.textContent = (timer !== null) ? 'Pause' : 'Play';
+      cnt.textContent = i + ' / ' + scene.n;
+    }
+    function go(j, dir) { i = j; applyFlags(j); if (scene.render) { scene.render(j, dir, speed, root); } paint(); }
+    function stop() { if (timer !== null) { clearTimeout(timer); timer = null; } paint(); }
+    function tick() {
+      timer = null;
+      if (i === scene.n) { paint(); return; }
+      go(i + 1, 1);
+      if (i !== scene.n) { timer = setTimeout(tick, scene.dwell[i] / speed); }
+      paint();
+    }
+    bStep.addEventListener('click', function () { stop(); if (i !== scene.n) { go(i + 1, 1); } });
+    bBack.addEventListener('click', function () { stop(); if (i !== 0) { go(i - 1, -1); } });
+    bReset.addEventListener('click', function () { stop(); go(0, -1); });
+    bPlay.addEventListener('click', function () {
+      if (timer !== null) { stop(); return; }
+      if (i === scene.n) { go(0, -1); }
+      timer = setTimeout(tick, scene.dwell[i] / speed);
+      paint();
+    });
+    spd.forEach(function (b) {
+      b.addEventListener('click', function () {
+        speed = Number(b.getAttribute('data-spd'));
+        spd.forEach(function (o) { o.classList.toggle('on', o === b); });
+      });
+    });
+    ['keydown', 'keypress', 'keyup'].forEach(function (t) { root.addEventListener(t, function (e) { e.stopPropagation(); }); });
+    root.addEventListener('mousedown', function (e) { if (e.target.tagName === 'BUTTON') { e.preventDefault(); } });
+    root.addEventListener('focusin', function () { if (window.slideshow) { window.slideshow.pause(); } });
+    root.addEventListener('focusout', function () { if (window.slideshow) { window.slideshow.resume(); } });
+    if (window.slideshow) { window.slideshow.on('hideSlide', stop); }
+    go(0, -1);
+  };
+  window.isaTypewriter = function (el, text, msPerChar, done) {
+    var k = 0, h = null;
+    function step() {
+      k = k + 1;
+      el.textContent = text.slice(0, k);
+      if (k !== text.length) { h = setTimeout(step, msPerChar); } else { h = null; if (done) { done(); } }
+    }
+    el.textContent = '';
+    h = setTimeout(step, msPerChar);
+    return function () { if (h !== null) { clearTimeout(h); h = null; } };
+  };
+})();
+</script>
+
+<style>
+.mt-pair { display:flex; align-items:center; gap:10px; margin:0; }
+.mt-arrow { display:flex; flex-direction:column; align-items:center; flex:0 0 auto; padding:0 4px; }
+.mt-verb { font-family:'Source Code Pro',monospace; font-size:11px; color:#c3142d; font-weight:700; white-space:pre-line; max-width:250px; text-align:center; line-height:1.3; }
+.mt-arr { font-size:26px; color:#c3142d; line-height:1; }
+.mt-name { font-family:'Source Code Pro',monospace; font-size:11.5px; font-weight:700; color:#585E60; margin-bottom:2px; }
+.mt-tab table { border-collapse:separate; border-spacing:0; margin:0 !important; border-top:0 !important; border-bottom:0 !important; font-family:'Source Code Pro',monospace; font-size:10.5px; line-height:1.15; width:auto !important; }
+.mt-tab th { background:#1d1f21; color:#ffffff; padding:1px 6px !important; line-height:1.2 !important; text-align:left; font-weight:600; white-space:nowrap; }
+.mt-tab td { padding:1px 6px !important; line-height:1.2 !important; border-bottom:1px solid #e5e7eb; white-space:nowrap; color:#1b1b1b; background:#ffffff; }
+.mt-tab .mt-keep { background:#fdf2f2; }
+.mt-tab th.mt-keep { background:#c3142d; }
+.mt-tab .mt-x { color:#9ca3af; text-decoration:line-through; background:#fafafa; }
+.mt-tab th.mt-x { background:#585E60; color:#d1d5db; }
+.mt-tab .mt-new { background:#fff3bf; }
+.mt-tab th.mt-new { background:#b45309; }
+.mt-tab tr.mt-g1 td { background:#fdf2f2; } .mt-tab tr.mt-g1 td:first-child { box-shadow:inset 4px 0 0 #c3142d; }
+.mt-tab tr.mt-g2 td { background:#eff6ff; } .mt-tab tr.mt-g2 td:first-child { box-shadow:inset 4px 0 0 #2563eb; }
+.mt-tab tr.mt-g3 td { background:#ecfdf5; } .mt-tab tr.mt-g3 td:first-child { box-shadow:inset 4px 0 0 #059669; }
+.mt-tab tr.mt-g4 td { background:#fff7ed; } .mt-tab tr.mt-g4 td:first-child { box-shadow:inset 4px 0 0 #d97706; }
+.mt-tab .mt-na { color:#9ca3af; font-style:italic; }
+.qbar { border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:5px 14px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.4; margin:0 0 6px 0; }
+.qbar b { color:#c3142d; }
+.vcard { border:1px solid #d1d5db; border-radius:8px; padding:6px 12px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:12.5px; line-height:1.4; margin-top:6px; }
+.vcard .vh { font-weight:700; color:#c3142d; font-size:13px; display:inline; margin-right:6px; }
+.vrow { display:block; }
+.vrow .vdiag { display:flex; justify-content:center; }
+</style>
+<style>
+/* shared cards */
+.card { border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1); background:#ffffff; }
+.card .ch { background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:7px 12px; }
+.card .ch.gray { background:#585E60; }
+.card .cb { padding:9px 12px; font-size:13.5px; line-height:1.45; }
+.lesson { margin-top:12px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:9px 16px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14.5px; line-height:1.5; }
+.lesson b.r { color:#c3142d; }
+.src { font-size:11.5px; color:#585E60; line-height:1.4; }
+.htmlsrc { margin:0 !important; background:#f8f8f6; border:1px solid #d1d5db; border-radius:8px; padding:8px 10px; font-family:'Source Code Pro',monospace; font-size:11px; line-height:1.4; color:#1b1b1b; white-space:pre-wrap; word-break:break-word; }
+.htmlsrc .tg { color:#881280; } .htmlsrc .at { color:#994500; } .htmlsrc .av { color:#1a1aa6; }
+.xaringanextra-clipboard-button { display:none; }
+.rcode .xaringanextra-clipboard-button { display:block !important; }
+.num { flex:0 0 22px; height:22px; border-radius:50%; background:#c3142d; color:#fff; font-weight:700; font-size:12.5px; text-align:center; line-height:22px; }
+
+/* CSS selector step-through (Part 2) */
+.cs-wrap { display:grid; grid-template-columns:1.02fr 1fr; gap:18px; margin-top:4px; align-items:start; }
+.cs-tab { width:100%; border-collapse:collapse; font-size:14px; }
+.cs-tab td { padding:4px 8px !important; border-bottom:1px solid #e5e7eb; background:#ffffff; color:#9ca3af; vertical-align:top; line-height:1.35; }
+.cs-tab td:first-child { font-family:'Source Code Pro',monospace; font-weight:700; white-space:nowrap; width:120px; }
+.cs-tab tr.on td { color:#1b1b1b; background:#fdf2f2; }
+.cs-tab tr.on td:first-child { color:#c3142d; box-shadow:inset 4px 0 0 #c3142d; }
+.cs-note { margin-top:10px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:7px 12px; background:#ffffff; font-size:13.5px; line-height:1.45; }
+.cs-note .cs-n { font-weight:700; color:#c3142d; }
+.cs-code { margin:0 !important; background:#ffffff; border:1px solid #d1d5db; border-radius:8px; padding:6px 0; font-family:'Source Code Pro',monospace; font-size:10.8px; line-height:1.3; color:#9ca3af; }
+.cs-code .ln { display:block; padding:0 10px; white-space:pre; min-height:1.3em; }
+.cs-code .ln.hit { background:#fdf2f2; color:#c3142d; font-weight:600; box-shadow:inset 4px 0 0 #c3142d; }
+.cs-code .ln.all { color:#1b1b1b; }
+
+/* Wikipedia animation (Part 3) */
+.wk { font-family:'Noto Sans','Roboto',Arial,sans-serif; }
+.wk-grid { display:grid; grid-template-columns:minmax(0,0.8fr) minmax(0,1.2fr); gap:14px; align-items:start; }
+.wk-browser { border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1); background:#ffffff; }
+.wk-url { background:#f3f4f6; border-bottom:1px solid #d1d5db; font-size:10.5px; color:#374151; padding:3px 8px; font-family:'Source Code Pro',monospace; }
+.wk-shot { position:relative; line-height:0; }
+.wk-shot img { width:100%; display:block; }
+.wk-box { position:absolute; left:1.8%; top:20%; width:93.3%; height:79%; border:3px solid #2563eb; background:rgba(37,99,235,0.10); opacity:0; transition:opacity .3s; }
+.wk-cursor { position:absolute; left:55%; top:50%; width:16px; height:24px; line-height:0; opacity:0; transition:opacity .3s; }
+.wk-menu { position:absolute; left:57%; top:54%; background:#ffffff; border:1px solid #9ca3af; border-radius:6px; box-shadow:0 3px 10px rgba(0,0,0,0.25); font-size:10.5px; line-height:1.55; padding:4px 0; width:120px; opacity:0; transition:opacity .3s; }
+.wk-menu div { padding:0 10px; color:#374151; }
+.wk-menu div.pick { background:#dbeafe; color:#1e3a8a; font-weight:700; }
+.wk-box.on, .wk-cursor.on, .wk-menu.on { opacity:1; }
+.wk-dev { border-top:2px solid #9ca3af; background:#ffffff; font-family:'Source Code Pro',monospace; font-size:9.6px; line-height:1.45; padding:4px 0; height:96px; overflow:hidden; opacity:0.15; transition:opacity .3s; }
+.wk-dev.on { opacity:1; }
+.wk-dev .dt { font-family:'Noto Sans',Arial,sans-serif; font-size:9.5px; color:#374151; font-weight:700; padding:0 8px 2px 8px; border-bottom:1px solid #e5e7eb; margin-bottom:2px; }
+.wk-dev .dl { padding:0 8px; white-space:pre; color:#374151; }
+.wk-dev .dl.hit.on { background:#dbeafe; }
+.wk-dev .tg { color:#881280; } .wk-dev .at { color:#994500; } .wk-dev .av { color:#1a1aa6; }
+.wk-sel { display:flex; align-items:center; gap:8px; border:1px solid #d1d5db; border-radius:8px; background:#ffffff; padding:5px 10px; font-size:12.5px; box-shadow:0 1px 3px rgba(0,0,0,0.1); min-height:30px; }
+.wk-sel .lab { font-weight:700; color:#585E60; }
+.wk-chip { font-family:'Source Code Pro',monospace; font-weight:700; font-size:14px; color:#c3142d; display:none; }
+.wk-chip.on { display:inline; }
+.wk-cnt { margin-left:auto; font-size:12px; color:#ffffff; background:#585E60; border-radius:10px; padding:1px 9px; display:none; }
+.wk-cnt.on { display:inline-block; }
+.wk-cnt.good { background:#059669; }
+.wk-code { margin-top:6px; }
+.wk-code .rcode { margin:0 !important; padding-top:6px !important; }
+.wk-code .xaringanextra-clipboard-button { display:none !important; }
+.wk .rcode .rl { opacity:0.42; transition:opacity .2s, background .2s; }
+.wk .rcode .rl.done { opacity:0.85; }
+.wk .rcode .rl.on { opacity:1; background:rgba(231, 197, 71, 0.22); }
+.wk-out { margin-top:6px; height:118px; overflow:hidden; border:1px solid #d1d5db; border-radius:8px; background:#f3f4f6; padding:5px 8px; position:relative; }
+.wk-o { display:none; }
+.wk-o.on { display:block; }
+.wk-o pre { margin:0 !important; font-family:'Source Code Pro',monospace; font-size:10.5px; line-height:1.35; color:#1b1b1b; white-space:pre; background:transparent !important; }
+.wk-o .mt-tab table { font-size:10px; }
+.wk-ph { color:#9ca3af; font-size:12px; }
+.wk .sc-caps { min-height:40px; font-size:13px; padding:6px 12px; margin-top:7px; }
+
+/* Scraping workflow (Part 3) */
+.wf { font-family:'Noto Sans','Roboto',Arial,sans-serif; }
+.wf-strip { display:grid; grid-template-columns:repeat(4, 1fr); gap:8px; }
+.wf-st { border:1px solid #d1d5db; border-radius:8px; padding:6px 10px; background:#ffffff; color:#9ca3af; font-size:12.5px; line-height:1.35; transition:all .25s; }
+.wf-st b { display:block; font-size:14px; }
+.wf-st code { font-size:11px; }
+.wf-st.act { border:2px solid #c3142d; color:#1b1b1b; background:#fdf2f2; box-shadow:0 0 0 3px rgba(195,20,45,0.12); }
+.wf-st.act b { color:#c3142d; }
+.wf-st.done { color:#1b1b1b; border-color:#059669; }
+.wf-st.done b { color:#059669; }
+.wf-st.stop { color:#ffffff; background:#c3142d; border-color:#c3142d; }
+.wf-main { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:10px; align-items:start; }
+.wf-q { font-weight:700; font-size:14.5px; color:#1b1b1b; line-height:1.4; min-height:40px; }
+.wf-btns { display:flex; flex-direction:column; gap:6px; margin-top:8px; }
+.wf-btns button { text-align:left; background:#ffffff; border:1px solid #c3142d; color:#1b1b1b; border-radius:6px; padding:6px 12px; font-size:13px; cursor:pointer; line-height:1.3; }
+.wf-btns button:hover { background:#fdf2f2; }
+.wf-note { margin-top:10px; border-left:5px solid #b45309; background:#fffbeb; border-radius:6px; padding:6px 10px; font-size:12.5px; line-height:1.45; display:none; }
+.wf-note.on { display:block; }
+.wf-note.bad { border-left-color:#c3142d; background:#fdf2f2; }
+.wf-path { border:1px solid #d1d5db; border-radius:8px; background:#ffffff; padding:6px 10px; min-height:210px; }
+.wf-pt { font-weight:700; font-size:12.5px; color:#585E60; margin-bottom:4px; }
+.wf-code .rcode { margin:0 0 4px 0 !important; padding-top:5px !important; }
+.wf-code .xaringanextra-clipboard-button { display:none !important; }
+.wf-empty { color:#9ca3af; font-size:12.5px; }
+.wf-reset { margin-top:8px; background:#ffffff; color:#374151; border:1px solid #d1d5db; border-radius:6px; padding:4px 11px; font-size:12.5px; font-weight:600; cursor:pointer; }
+.wf-snip { display:none; }
+
+/* rvest process strip */
+.flow { display:grid; grid-template-columns:minmax(0,1fr) 26px minmax(0,1.1fr) 26px minmax(0,1.25fr); align-items:stretch; gap:0; margin-top:8px; }
+.flow .fa { display:flex; align-items:center; justify-content:center; color:#c3142d; font-size:24px; font-weight:700; }
+.flow .fs { border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1); background:#ffffff; }
+.flow .fs .fh { background:#c3142d; color:#ffffff; font-weight:700; font-size:14px; padding:6px 10px; }
+.flow .fs .fb { padding:7px 10px; font-size:12.5px; line-height:1.45; }
+.flow .fs .ret { margin-top:6px; font-family:'Source Code Pro',monospace; font-size:11px; background:#f3f4f6; border:1px solid #e5e7eb; border-radius:6px; padding:3px 7px; color:#1b1b1b; white-space:pre; overflow:hidden; }
+.flow .rcode { margin:4px 0 0 0 !important; padding-top:5px !important; }
+.flow .xaringanextra-clipboard-button { display:none !important; }
+
+/* choosing an extraction function */
+.pick3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-top:8px; }
+.pick3 .pk { border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1); background:#ffffff; display:flex; flex-direction:column; }
+.pick3 .pkh { font-weight:700; font-size:14px; padding:7px 10px; color:#ffffff; background:#c3142d; }
+.pick3 .pkb { padding:7px 10px; font-size:12.5px; line-height:1.4; flex:1; }
+.pick3 .arrow { text-align:center; color:#c3142d; font-size:18px; line-height:1; margin:5px 0 2px 0; }
+.pick3 .fn { text-align:center; font-family:'Source Code Pro',monospace; font-weight:700; font-size:14px; color:#1b1b1b; background:#fff3bf; border-radius:6px; padding:3px 6px; }
+.pick3 .res { margin-top:5px; font-family:'Source Code Pro',monospace; font-size:10.5px; background:#f3f4f6; border:1px solid #e5e7eb; border-radius:6px; padding:4px 7px; white-space:pre-wrap; word-break:break-all; color:#1b1b1b; }
+.pick3 .mt-tab table { font-size:9.8px; }
+
+/* quote cards (job ads) */
+.qcard { border:1px solid #d1d5db; border-left:5px solid #c3142d; border-radius:8px; padding:6px 11px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:12.5px; line-height:1.4; margin-bottom:7px; }
+.qcard .qt { font-weight:700; font-size:13px; color:#1b1b1b; }
+.qcard .qm { color:#585E60; font-size:11.5px; }
+.qcard .qq { margin-top:3px; font-style:italic; }
+.qcard .qq b { font-style:normal; background:#fff3bf; font-weight:600; }
+.sbar { display:flex; height:30px; border-radius:6px; overflow:hidden; margin-top:6px; font-size:12.5px; font-weight:700; color:#ffffff; }
+.sbar div { display:flex; align-items:center; padding:0 10px; white-space:nowrap; }
+</style>
+
+<style>
+.sx-grid { display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,1fr); gap:14px; align-items:start; margin-top:6px; }
+.sx-src { background:#f8f8f6; border:1px solid #d1d5db; border-radius:8px; padding:9px 12px; font-size:12.5px; line-height:1.5; color:#1b1b1b; white-space:pre-wrap; }
+.sx-h { border-radius:3px; padding:0 2px; transition:background 0.4s; }
+.sx-h.on { background:#fff3bf; box-shadow:0 0 0 1px #e0b000; }
+[data-built].sx .sx-s { visibility:hidden; opacity:0; transition:opacity 0.5s; }
+[data-built].sx .sx-s.on { visibility:visible; opacity:1; }
+.sx-num { display:inline-block; width:19px; height:19px; line-height:19px; border-radius:50%; background:#c3142d; color:#ffffff; text-align:center; font-size:12px; margin-right:4px; }
+.tbl-sm table { font-size:13.5px !important; line-height:1.35 !important; }
+.tbl-sm table td, .tbl-sm table th { padding:5px 10px !important; }
+.tbl-sm table code { font-size:12.5px !important; }
+.newsimg { display:block; width:100%; height:165px; object-fit:cover; object-position:top left; border-bottom:1px solid #d1d5db; }
+.sx-s .rcode { margin:0 !important; padding:8px 10px !important; }
+.sx-row table { border-collapse:separate; border-spacing:0; width:100% !important; margin:8px 0 0 0 !important; font-size:12px; }
+.sx-row th { background:#1d1f21; color:#ffffff; padding:3px 8px !important; text-align:left; font-family:'Source Code Pro',monospace; font-weight:600; white-space:nowrap; }
+.sx-row th span { color:#9ca3af; font-weight:400; }
+.sx-row td { background:#ffffff; padding:4px 8px !important; border-bottom:1px solid #e5e7eb; height:22px; }
+.sx-lab { font-weight:700; color:#c3142d; font-size:13.5px; margin-bottom:3px; }
+.newsrow { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:12px; margin:8px 0 14px 0; }
+.pill { display:inline-block; border-radius:999px; padding:1px 10px; font-size:12px; font-weight:700; color:#ffffff; }
+.vidwrap video { width:100%; border:1px solid #d1d5db; border-radius:8px; box-shadow:0 1px 3px rgba(0,0,0,0.1); background:#000000; }
+.cmp table { font-size:12.5px !important; }
+.embedbox { border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1); }
+.embedbox iframe { display:block; width:100%; border:0; }
+</style>
+<script>
+(function () {
+  // Extraction animation: the stepper toggles every data-from element; nothing else to render.
+  function buildSx(root) {
+    if (root.getAttribute('data-built')) { return; }
+    var n = Number(root.getAttribute('data-n')), dwell = [];
+    for (var d = 0; d !== n + 1; d = d + 1) { dwell.push(3200); }
+    window.isaStepper(root, { n: n, dwell: dwell });
+  }
+  function buildAll() { document.querySelectorAll('.sx').forEach(buildSx); }
+  buildAll();
+  if (window.slideshow) { if (!window.sxHooked) { window.sxHooked = true; window.slideshow.on('afterShowSlide', buildAll); } }
+})();
+</script>
+
+```{r helpers, include=FALSE}
+fmt = function(x) format(x, big.mark = ",")
+esc = function(x) htmltools::htmlEscape(x)
+options(width = 70, tibble.print_min = 5, tibble.print_max = 5, pillar.min_title_chars = 8)
+built_on = format(Sys.Date(), "%b %d, %Y")
+# small HTML table in the deck's .mt-tab style; hi = columns to mark, cls = extra class
+tbl_html = function(df, cap = NULL, hi = character(0), hicls = "mt-new") {
+  th = paste0(sprintf('<th class="%s">%s</th>', ifelse(names(df) %in% hi, hicls, ""), esc(names(df))), collapse = "")
+  rows = vapply(seq_len(nrow(df)), function(i) {
+    vals = vapply(df[i, ], function(v) if (is.na(v[[1]])) "NA" else as.character(v[[1]]), "")
+    paste0("<tr>", paste0(sprintf('<td class="%s">%s</td>', ifelse(names(df) %in% hi, hicls, ""), esc(vals)), collapse = ""), "</tr>")
+  }, "")
+  paste0(if (!is.null(cap)) sprintf('<div class="mt-name">%s</div>', cap) else "",
+         sprintf('<div class="mt-tab"><table><thead><tr>%s</tr></thead><tbody>%s</tbody></table></div>', th, paste0(rows, collapse = "")))
+}
+```
+
+```{r planecrash_solution, include=FALSE}
+# planecrashinfo.com, finished: the Class 11 example from the error to a clean data frame.
+# Nothing in this chunk is shown on a slide. It runs at knit time (needs network).
+year = 2025
+crash_url = paste0('https://www.planecrashinfo.com/', year, '/', year, '.htm')
+
+# Step 0 (the error from Class 11): the page says charset=windows-1252 in its <head>.
+# rvest::read_html(crash_url) reads it, but printing the page stops with
+# "invalid multibyte string". Naming the encoding fixes it.
+crash_page = rvest::read_html(crash_url, encoding = "ISO-8859-1")
+
+# Step 1: the quick read. header = TRUE uses the first row as the column names.
+crash_raw = crash_page |>
+  rvest::html_element("table") |>
+  rvest::html_table(header = TRUE)
+crash_raw
+
+# Step 2: why "Washington DCAmerican Eagle" is glued together. In the HTML the two
+# values are separated by a <br> tag, and html_table() drops it. html_text2() turns
+# each <br> into "\n", when we select the <font> element inside each cell
+# (on the <td> itself it does not), so we read that text and split on "\n".
+cells = crash_page |>
+  rvest::html_elements("table tr td font") |>
+  rvest::html_text2()
+length(cells) / 4   # 4 cells per row, the first row is the header
+
+crash_df = matrix(cells, ncol = 4, byrow = TRUE) |>
+  as.data.frame() |>
+  tibble::as_tibble() |>
+  dplyr::slice(-1) |>
+  dplyr::rename(date = V1, loc_op = V2, type_reg = V3, fatal = V4) |>
+  tidyr::separate_wider_delim(loc_op, delim = "\n", names = c("location", "operator"),
+                              too_few = "align_start", too_many = "merge") |>
+  tidyr::separate_wider_delim(type_reg, delim = "\n", names = c("aircraft", "registration"),
+                              too_few = "align_start", too_many = "merge") |>
+  # Step 3: "67/67(0)" holds three numbers: fatalities / aboard (ground)
+  tidyr::separate_wider_regex(fatal, c(fatalities = "[0-9?]+", "/", aboard = "[0-9?]+",
+                                       "[(]", ground = "[0-9?]+", "[)]"), too_few = "align_start") |>
+  # Step 4: technically correct types. "?" on the site means unknown, so it becomes NA.
+  dplyr::mutate(
+    date = as.Date(date, format = "%d %b %Y"),
+    dplyr::across(c(fatalities, aboard, ground), \(x) suppressWarnings(as.integer(x)))
+  )
+dplyr::glimpse(crash_df)
+
+# Step 5: the same steps as a function of the year, then several years with purrr::map()
+scrape_crashes = function(year) {
+  crash_url = paste0('https://www.planecrashinfo.com/', year, '/', year, '.htm')
+  crash_page = rvest::read_html(crash_url, encoding = "ISO-8859-1")
+  Sys.sleep(1)   # one second between requests
+  cells = crash_page |> rvest::html_elements("table tr td font") |> rvest::html_text2()
+  matrix(cells, ncol = 4, byrow = TRUE) |>
+    as.data.frame() |>
+    tibble::as_tibble() |>
+    dplyr::slice(-1) |>
+    dplyr::rename(date = V1, loc_op = V2, type_reg = V3, fatal = V4) |>
+    tidyr::separate_wider_delim(loc_op, delim = "\n", names = c("location", "operator"),
+                                too_few = "align_start", too_many = "merge") |>
+    tidyr::separate_wider_delim(type_reg, delim = "\n", names = c("aircraft", "registration"),
+                                too_few = "align_start", too_many = "merge") |>
+    tidyr::separate_wider_regex(fatal, c(fatalities = "[0-9?]+", "/", aboard = "[0-9?]+",
+                                         "[(]", ground = "[0-9?]+", "[)]"), too_few = "align_start") |>
+    dplyr::mutate(
+      date = as.Date(date, format = "%d %b %Y"),
+      dplyr::across(c(fatalities, aboard, ground), \(x) suppressWarnings(as.integer(x))),
+      year = year
+    )
+}
+crashes = purrr::map(2021:2025, scrape_crashes) |> purrr::list_rbind()
+dplyr::count(crashes, year)
+```
+
+```{r planecrash_checks, include=FALSE}
+stopifnot(length(cells) %% 4 == 0, mean(is.na(crash_df$operator)) < 0.2, mean(is.na(crashes$operator)) < 0.2,
+          ncol(crash_raw) == 4, nrow(crash_df) == nrow(crash_raw), !any(is.na(crash_df$date)),
+          all(c("location", "operator", "fatalities", "aboard", "ground") %in% names(crash_df)))
+crash_charset = crash_page |> rvest::html_element("meta[http-equiv]") |> rvest::html_attr("content")
+stopifnot(grepl("windows-1252", crash_charset))
+n_crash = nrow(crash_raw); n_crash_all = nrow(crashes)
+# the rows shown on the slide
+show_i = which(grepl("Washington|Toronto|Ahmedabad|Louisville", crash_raw[[2]]))[1:4]
+raw_show = as.data.frame(crash_raw[show_i, ])
+clean_show = as.data.frame(crash_df[show_i, c("date", "location", "operator", "fatalities", "aboard", "ground")])
+clean_show$date = format(clean_show$date)
+```
+
+```{r salvage_solution, include=FALSE, eval=FALSE}
+# Salvage Run: the full key for all three stages (same code as games/salvage-run/solution.R).
+# Not evaluated at knit time. It runs top to bottom in about 20 seconds.
+base = "https://isa401-salvage.vercel.app"
+
+# ---- Stage 1: pick the right CSS selector ------------------------------------
+page1 = rvest::read_html(paste0(base, "/registry?start=1"))
+
+classes = page1 |> rvest::html_elements(".wreck .ship-class") |> rvest::html_text2()
+length(classes)                                                     # 50
+sum(classes == "Dreadnought")                                       # stage 1 answer: 3
+
+# ---- Stage 2: how does the URL change? ----------------------------------------
+# Click Next: start=1 becomes start=51. start is the number of the first wreck
+# on the page, so it goes up by 50 (the page size): 1, 51, 101, ..., 351.
+next_href = page1 |> rvest::html_element("a.next") |> rvest::html_attr("href")
+next_href                                                           # "/registry?start=51"
+readr::parse_number(sub(".*start=", "", next_href)) - 1             # stage 2 answer: 50
+
+# ---- Stage 3: a for loop over every page -------------------------------------
+starts = seq(from = 1, to = 351, by = 50)
+registry = vector("list", length(starts))
+for (i in seq_along(starts)) {
+  pg = rvest::read_html(paste0(base, "/registry?start=", starts[i]))
+  registry[[i]] = data.frame(
+    hull  = pg |> rvest::html_elements(".wreck .hull-id") |> rvest::html_text2(),
+    class = pg |> rvest::html_elements(".wreck .ship-class") |> rvest::html_text2(),
+    value = pg |> rvest::html_elements(".wreck .salvage-value") |> rvest::html_text2() |> readr::parse_number()
+  )
+  Sys.sleep(1)                                                      # robots.txt asks for a pause
+}
+registry = dplyr::bind_rows(registry)
+nrow(registry)                                                      # 400
+sum(registry$value[registry$class == "Dreadnought"])                # stage 3 answer: 224.0
+
+# ---- Finished early: the stage 3 scrape as a function plus map --------------
+scrape_page = function(start) {
+  pg = rvest::read_html(paste0(base, "/registry?start=", start))
+  Sys.sleep(1)
+  data.frame(
+    hull  = pg |> rvest::html_elements(".wreck .hull-id") |> rvest::html_text2(),
+    class = pg |> rvest::html_elements(".wreck .ship-class") |> rvest::html_text2(),
+    value = pg |> rvest::html_elements(".wreck .salvage-value") |> rvest::html_text2() |> readr::parse_number()
+  )
+}
+registry2 = purrr::map(starts, scrape_page) |> purrr::list_rbind()
+identical(registry2$hull, registry$hull)                            # TRUE
+```
+
+```{r isa_llm_solution, include=FALSE, eval=FALSE}
+# Demo 1: the ISA course catalog with an LLM (typed live in class; not shown on a slide).
+# Not evaluated at knit time: each run costs about five cents and returns slightly different
+# text. The slides read the results of one run (and a second run of the same code) from
+# cache/isa_llm.rds. Delete that file and run this chunk to refresh it.
+# The class key is in the project .Renviron as OPENAI_API_KEY.
+
+# Step 1: one course, the example from the ellmer vignette
+# vignette(topic = "structured-data", package = "ellmer")
+chat = ellmer::chat_openai(model = 'gpt-5-mini-2025-08-07')
+
+chat$chat_structured(
+  "ISA 125. Introduction to Business Statistics. (3). This course provides an introduction to data, probability, sampling and its importance to analytical decision-making in business. Upon successful completion of this course, students will have the foundational skills necessary to summarize data, describe relationships among variables, and conduct one-sample and two-sample statistical inference. Note: Credit for graduation will not be given for more than one of STA 125, ISA 125, STA 261, STA 301, or STA 368. Prerequisites: MTH 102 or MTH 121 or MTH 125, MTH 122, MTH 141 or MTH 151; ACT Math Score of 22 or higher; SAT Math Score of 540 or higher; or Miami International Math Placement Test score of 8 or higher; or successful completion of MTH 025; or permission of department chair. Cross-listed with STA 125.",
+  type = ellmer::type_object(
+    name = ellmer::type_string(
+      description = "Title of the course. For example, ISA 401: Business Intelligence and Data Visualization"
+    ),
+    description = ellmer::type_string(
+      description = "Description of the course. In addition to the course description, do include the prereqs in your description"
+    )
+  )
+)
+
+# Step 2: every ISA course. One selector for the whole course block (title, description,
+# and prerequisites together), then the LLM splits each block into columns.
+isa_page = rvest::read_html("https://bulletin.miamioh.edu/courses-instruction/isa/")
+
+isa_page |>
+  rvest::html_elements("div.courseblock") |>
+  rvest::html_text2() |>
+  as.list() ->
+  isa_course_list   # one prompt per course
+
+type_course = ellmer::type_object(
+  code = ellmer::type_string(
+    description = "Subject and number of the course. For example, ISA 401"
+  ),
+  name = ellmer::type_string(
+    description = "Name of the course, without the code and the credit hours"
+  ),
+  credit_hours = ellmer::type_integer(
+    description = "Credit hours, the number in parentheses after the name", required = FALSE
+  ),
+  course_desc = ellmer::type_string(
+    description = "The description of the course, without the prerequisites", required = FALSE
+  ),
+  prereqs = ellmer::type_string(
+    description = "The prerequisite[s] for this course", required = FALSE
+  )
+)
+
+chat = ellmer::chat_openai(model = 'gpt-5-mini-2025-08-07')
+
+isa_df = ellmer::parallel_chat_structured(
+  chat = chat, prompts = isa_course_list, type = type_course,
+  include_tokens = TRUE, include_cost = TRUE
+)
+dplyr::glimpse(isa_df)
+sum(isa_df$cost)
+
+# Step 3: check the result against the page
+# (a) is every description a word-for-word copy of text in the course block?
+mapply(grepl, isa_df$course_desc, isa_course_list, MoreArgs = list(fixed = TRUE)) |> table(useNA = "ifany")
+# (b) run the same code again and compare
+isa_df2 = ellmer::parallel_chat_structured(chat = chat, prompts = isa_course_list, type = type_course)
+sum(isa_df$prereqs != isa_df2$prereqs, na.rm = TRUE)
+# (c) credit hours two ways: the LLM, and one line of string code on the title
+titles = sapply(isa_course_list, \(x) strsplit(x, "\n")[[1]][1])
+credit_from_title = readr::parse_number(sub(".*[(]", "", titles))
+data.frame(titles, credit_from_title, llm = isa_df$credit_hours) |> dplyr::filter(is.na(llm))
+```
+
+```{r isa_llm_load, include=FALSE}
+isa_cache = readRDS("cache/isa_llm.rds")
+isa_course_list = isa_cache$isa_course_list; isa_df = isa_cache$isa_df; isa_df2 = isa_cache$isa_df2
+isa_run_on = format(as.Date(isa_cache$run_at), "%b %d, %Y")
+n_isa = nrow(isa_df); stopifnot(n_isa == length(isa_course_list))
+isa_cost = sum(isa_df$cost); isa_secs = round(isa_cache$secs)
+isa_in = sum(isa_df$input_tokens); isa_out = sum(isa_df$output_tokens)
+squish = function(x) gsub("\\s+", " ", trimws(x))
+# (a) word-for-word check: is the extracted description inside the course block?
+verbatim = mapply(function(d, src) if (is.na(d)) NA else grepl(squish(d), squish(src), fixed = TRUE), isa_df$course_desc, isa_course_list)
+n_desc = sum(!is.na(verbatim)); n_verbatim = sum(verbatim, na.rm = TRUE); n_reworded = n_desc - n_verbatim
+# of the descriptions that are not one continuous copy: is every sentence still on the page?
+all_sentences = mapply(function(d, src) {
+  if (is.na(d)) return(NA)
+  parts = squish(strsplit(d, "(?<=[.]) ", perl = TRUE)[[1]])
+  all(vapply(parts, function(p) grepl(sub("[.]$", "", p), squish(src), fixed = TRUE), TRUE))
+}, isa_df$course_desc, isa_course_list)
+n_joined = sum(all_sentences & !verbatim, na.rm = TRUE); n_newwords = n_reworded - n_joined
+# (b) the same code, run twice
+differs = function(v) sum(!mapply(identical, isa_df[[v]], isa_df2[[v]]))
+d_code = differs("code"); d_name = differs("name"); d_credit = differs("credit_hours"); d_desc = differs("course_desc"); d_pre = differs("prereqs")
+# (c) credit hours: LLM (integer) against one line of string code on the title line
+isa_titles = vapply(isa_course_list, function(x) strsplit(x, "\n")[[1]][1], "")
+in_parens = sub(".*[(](.*)[)]\\s*$", "\\1", isa_titles)
+single_credit = grepl("^[0-9.]+$", in_parens)
+credit_title = ifelse(single_credit, as.numeric(in_parens), NA)
+n_single = sum(single_credit)
+n_agree = sum(single_credit & !is.na(isa_df$credit_hours) & isa_df$credit_hours == credit_title)
+frac_i = which(single_credit & credit_title != floor(credit_title))
+stopifnot(length(frac_i) >= 1)
+frac_codes = paste(isa_df$code[frac_i], collapse = ", "); frac_val = credit_title[frac_i[1]]
+stopifnot(length(unique(credit_title[frac_i])) == 1)
+frac_llm_na = all(is.na(isa_df$credit_hours[frac_i]))
+n_range = sum(!single_credit)
+# ISA 177: the page has no description for it (Class 10)
+i177 = which(isa_df$code == "ISA 177"); stopifnot(length(i177) == 1)
+desc177 = c(isa_df$course_desc[i177], isa_df2$course_desc[i177])
+# the row used in the animation
+i401 = grep("^ISA 401", isa_titles); stopifnot(length(i401) == 1)
+r401 = isa_df[i401, ]; src401 = isa_course_list[[i401]]
+mark = function(txt, piece, from) { stopifnot(grepl(piece, txt, fixed = TRUE)); sub(piece, sprintf('<span class="sx-h" data-from="%d">%s</span>', from, piece), txt, fixed = TRUE) }
+src401_html = esc(gsub("\n{2,}", "\n", trimws(src401)))
+src401_html = mark(src401_html, "ISA 401/ISA 501", 3)
+src401_html = mark(src401_html, esc("Business Intelligence and Data Visualization"), 3)
+src401_html = mark(src401_html, "(3)", 3)
+src401_html = mark(src401_html, "ISA 245 or ISA 345 or CSE 385", 3)
+schema_code = 'type_course = ellmer::type_object(
+  code = ellmer::type_string(
+    "Subject and number. For example, ISA 401"
+  ),
+  name = ellmer::type_string(
+    "Name of the course, without the code"
+  ),
+  credit_hours = ellmer::type_integer(
+    "The number in parentheses after the name",
+    required = FALSE
+  ),
+  prereqs = ellmer::type_string(
+    "The prerequisite[s] for this course",
+    required = FALSE
+  )
+)'
+call_code = 'chat = ellmer::chat_openai(
+  model = "gpt-5-mini-2025-08-07"
+)
+chat$chat_structured(
+  course_text, type = type_course
+)'
+show_df = tibble::as_tibble(isa_df[, c("code", "name", "credit_hours", "course_desc", "prereqs")])
+```
+
+```{r bls_solution, include=FALSE, eval=FALSE}
+# Demo 2: a chart image to a data frame (typed live in class; not shown on a slide).
+# Not evaluated at knit time; the slide reads one run from cache/bls_llm.rds.
+# The image is data/bls_bachelors_openings.png: Chart 4 of
+# https://www.bls.gov/careeroutlook/2025/article/education-level-and-openings-2024-34.htm
+chat = ellmer::chat_openai(model = 'gpt-5-mini-2025-08-07')
+
+# type_array(type_object(...)) asks for many rows with the same columns,
+# so the result is already a data frame: no strsplit() on "|" needed.
+type_chart = ellmer::type_object(
+  rows = ellmer::type_array(
+    ellmer::type_object(
+      occupation = ellmer::type_string("Occupation name, as written on the chart"),
+      openings = ellmer::type_number("Projected openings each year, read from the length of the bar")
+    )
+  )
+)
+
+bls_list = chat$chat_structured(
+  ellmer::content_image_file(path = "data/bls_bachelors_openings.png"),
+  type = type_chart
+)
+
+bls_df = bls_list$rows
+bls_df
+chat$get_cost()
+```
+
+```{r bls_load, include=FALSE}
+bls_cache = readRDS("cache/bls_llm.rds")
+bls_df = as.data.frame(bls_cache$bls$rows)
+bls_run_on = format(as.Date(bls_cache$run_at), "%b %d, %Y")
+# The values BLS publishes under "View Chart Data" for Chart 4 (copied Oct 5, 2026)
+bls_truth = data.frame(
+  occupation = c("General and operations managers", "Registered nurses", "Accountants and auditors",
+                 "Software developers", "Business operations specialists, all other", "Managers, all other",
+                 "Management analysts", "Elementary school teachers, except special education",
+                 "Market research analysts and marketing specialists", "Human resources specialists"),
+  published = c(308700, 189100, 124200, 115200, 108200, 106700, 98100, 91000, 87200, 81800)
+)
+stopifnot(nrow(bls_df) == 10, identical(tolower(trimws(bls_df$occupation)), tolower(bls_truth$occupation)))
+bls_cmp = data.frame(Occupation = bls_truth$occupation, `Read from the image` = fmt(bls_df$openings),
+                     `Published by BLS` = fmt(bls_truth$published),
+                     Difference = sprintf("%+.1f%%", 100 * (bls_df$openings - bls_truth$published) / bls_truth$published), check.names = FALSE)
+bls_err = 100 * (bls_df$openings - bls_truth$published) / bls_truth$published
+bls_low = sum(bls_err < 0); bls_worst = max(abs(bls_err)); bls_exact = sum(bls_err == 0)
+```
+
+# Before We Start
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:16px;">
+  <div class="card">
+    <div class="ch">1 &nbsp; Join today's Zoom</div>
+    <div class="cb" style="font-size:14px; line-height:1.5;">Use the Zoom link in the <a href="https://miamioh.instructure.com/courses/258169/modules/981092" target="_blank"><b>Week 0 Module</b></a> on Canvas. <b>Mute</b> your mic and <b>turn off</b> your video.<br><span style="color:#585E60;">Log in from the <span style="background:#ffe58f; padding:0 5px; border-radius:4px; font-weight:600;">lab's computer</span> so you can <span style="background:#ffe58f; padding:0 5px; border-radius:4px; font-weight:600;">share your screen</span> if you need help with an error.</span></div>
+  </div>
+  <div class="card">
+    <div class="ch">2 &nbsp; Open the project, start the markdown</div>
+    <div class="cb" style="font-size:14px; line-height:1.5;"><b>GitHub Desktop</b> &rarr; <code>business_intelligence</code> &rarr; <b>Fetch origin</b>, then open <code>business_intelligence.Rproj</code>.<br><span style="color:#585E60;">New R Markdown, title <i>Class 12</i>, delete everything below the setup chunk, save it as <span style="background:#ffe58f; padding:0 5px; border-radius:4px; font-weight:600;">markdowns/class12.Rmd</span>.</span></div>
+  </div>
+  <div class="card">
+    <div class="ch">3 &nbsp; Check two things in the Console</div>
+    <div class="cb" style="font-size:14px; line-height:1.5;"><code>packageVersion("ellmer")</code> prints a version number. If it gives an error, run <code>install.packages("ellmer")</code>.<br><code>nchar(Sys.getenv("OPENAI_API_KEY"))</code> prints a number above 0.<br><span style="color:#585E60;">Both were set up for the app in Class 07.</span></div>
+  </div>
+  <div class="card">
+    <div class="ch gray">4 &nbsp; Today's plan</div>
+    <div class="cb" style="font-size:14px; line-height:1.5;"><b>8 min.</b> Finish the planecrashinfo example from Class 11.<br><b>20 min.</b> Practice scraping many pages: Salvage Run.<br><b>45 min.</b> Structured text extraction with an LLM.<br><span style="color:#585E60;"><b style="color:#c3142d;">Exam 01 is Monday, Oct 12.</b> The practice exam is on the last slide.</span></div>
+  </div>
+</div>
+
+<div style="text-align:center; margin-top:18px; font-size:14px; color:#585E60;">Done early? <b style="color:#c3142d;">Help the person next to you.</b> Stuck? <b style="color:#c3142d;">Share your screen on Zoom</b> and we fix it together.</div>
+
+???
+
+Two minutes while people settle. Card 3 matters for Part 3: ellmer and the class key were both set up for the querychat app in Class 07, so most students only confirm. Card 4 is the plan; say the exam date out loud.
+
+---
+
+class: inverse, center, middle
+
+# Part 1: Finishing planecrashinfo
+
+---
+
+# Where We Stopped on Wednesday
+
+<div style="display:grid; grid-template-columns:minmax(0,1.75fr) minmax(0,1fr); gap:16px; margin-top:4px; align-items:start;">
+<div class="vidwrap">
+<video controls preload="metadata" src="planecrash_encoding.mp4"></video>
+<div class="src" style="margin-top:3px;">Class 11 recording (Sep 30, 2026), 2 min 59 s, in three pieces: the error, the fix, and the second encoding (from 2:32).</div>
+</div>
+<div>
+<div class="card"><div class="ch">What happened</div><div class="cb" style="font-size:13.5px; line-height:1.5;">
+<div><b>1.</b> <code>rvest::read_html(crash_url)</code> ran, but printing the page stopped with <code>invalid multibyte string</code>.</div>
+<div style="margin-top:5px;"><b>2.</b> We pasted the code and the error into ChatISA. It suggested naming the encoding.</div>
+<div style="margin-top:5px;"><b>3.</b> With <code>encoding = "ISO-8859-1"</code> the page printed and <code>html_table()</code> returned the table.</div>
+<div style="margin-top:5px;"><b>4.</b> ChatISA's second suggestion, <code>encoding = "windows-1252"</code>, also ran without the error.</div>
+</div></div>
+<div class="card" style="margin-top:10px;"><div class="ch gray">Why it happened</div><div class="cb" style="font-size:13.5px; line-height:1.5;">The page's <code>&lt;head&gt;</code> says <code>`r esc(crash_charset)`</code>. R expected UTF-8, so characters outside plain English letters could not be read until we named an encoding. Both suggestions worked.</div></div>
+</div>
+</div>
+
+???
+
+Three minutes: play the clip (2:59). It is three pieces of Wednesday's recording joined together: the error in RStudio; ChatISA's answer and the fixed code running in RStudio (the printed table is on screen at about 2:25); then, from 2:32, the second suggested encoding, windows-1252, run inside ChatISA, which also works. After the clip, ask what looks wrong with the printed table before going to the next slide. The charset line on the right is read from the page at knit time.
+
+---
+
+# The Table Still Needs Cleaning
+
+<div class="qbar"><b>Question.</b> These are four of the `r n_crash` rows that <code>rvest::html_table()</code> returned for `r year`. What has to change before we can analyze them?</div>
+
+`r tbl_html(raw_show, "crash_raw (four rows)")`
+
+<div style="margin-top:14px; font-weight:700; color:#c3142d; font-size:14.5px;">What needs cleaning</div>
+
+.can-edit.key-c12-cleaning[
+- Edit me to include any notes/discussion
+]
+
+<div class="src" style="margin-top:10px;">Source: <a href="https://www.planecrashinfo.com/2025/2025.htm" target="_blank">planecrashinfo.com/2025/2025.htm</a>, read `r built_on`. We clean this table on Wednesday.</div>
+
+???
+
+Five minutes. The slide shows only the raw rows; type the room's answers into the box. Three things to get out of them. (1) Two values in one cell: "Washington DCAmerican Eagle". On the page a br tag separates location and operator, and html_table() drops it. (2) Three numbers in one cell: "67/67(0)" is fatalities, people aboard, and fatalities on the ground, stored as text. (3) "29 Jan 2025" is a character string, not a date. Do not type the cleaning code live. The full code, including 2021 to 2025 with a function and purrr::map(), is in the hidden planecrash_solution chunk (read the font element inside each cell with html_text2 so the br tags become line breaks, then tidyr::separate_wider_delim and separate_wider_regex, then as.Date and as.integer). The point: scraping returned the data, but not yet in a form we can analyze, and that is Wednesday's topic.
+
+---
+
+class: inverse, center, middle
+
+# Part 2: Scraping Many Pages
+
+---
+
+# Practice: Salvage Run
+
+`r countdown(minutes = 15, seconds = 0, top = 0, font_size = "2em")`
+
+<div style="display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,1fr); gap:16px; margin-top:6px; align-items:start;">
+<div>
+<div class="card"><div class="ch">Open the crew console for your section</div><div class="cb" style="font-size:15px; line-height:1.7;">
+<div><b>Section A:</b> <a href="https://isa401-salvage.vercel.app/?section=A" target="_blank">isa401-salvage.vercel.app/?section=A</a></div>
+<div><b>Section B:</b> <a href="https://isa401-salvage.vercel.app/?section=B" target="_blank">isa401-salvage.vercel.app/?section=B</a></div>
+<div style="color:#585E60; font-size:13.5px; line-height:1.5; margin-top:6px;">Work in pairs, in <code>class12.Rmd</code>. The page you scrape is the Ceres Salvage Registry: 400 ships, 50 on each page. Enter each answer in the console to move your ship on the board.</div>
+</div></div>
+<div class="lesson" style="font-size:13.5px;"><b class="r">Pause between requests.</b> The registry's robots.txt asks for it: put <code>Sys.sleep(1)</code> inside your loop.</div>
+</div>
+<div>
+<div class="card"><div class="ch gray">Three stages, one skill each</div><div class="cb" style="font-size:14px; line-height:1.6;">
+<div><b>Stage 1.</b> A CSS selector that returns one value for each of the 50 ships on the first page.</div>
+<div style="margin-top:5px;"><b>Stage 2.</b> How the address changes when you click Next.</div>
+<div style="margin-top:5px;"><b>Stage 3.</b> A <code>for</code> loop over every page, then one number computed from all 400 ships.</div>
+<div style="margin-top:8px; color:#585E60;">Finished early? Rewrite stage 3 as a function and <code>purrr::map()</code>.</div>
+</div></div>
+</div>
+</div>
+
+.can-edit.key-c12-salvage[
+- Edit me to include any notes/discussion
+]
+
+???
+
+Twenty minutes in total: 15 on the timer, 5 for the debrief. Before each section: open https://isa401-salvage.vercel.app/board?section=A (or B) with &key=fall2026, click Start a new run twice, click Sound off once, and leave the board on the projector. An amber halo on a seat means three or more wrong tries on its current stage: walk over. Answers: stage 1 is 3 Dreadnoughts (check that length() is 50 first), stage 2 is 50 (start=1, 51, 101, ..., 351), stage 3 is 224.0 MCr (14 Dreadnoughts). The full key is in the Rmd's salvage_solution chunk and in games/salvage-run/solution.R. Debrief: start= is an offset, not a page number; seq(from = 1, to = 351, by = 50); the list plus dplyr::bind_rows() pattern.
+
+---
+
+class: inverse, center, middle
+
+# Part 3: Structured Text Extraction
+
+---
+
+# Three Ways We Get Data
+
+<div style="display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:12px; margin-top:10px;">
+<div class="card"><div class="ch gray">Classes 08 and 09: an API</div><div class="cb" style="line-height:1.5;"><span class="pill" style="background:#059669;">structured</span><div style="margin-top:6px;">The owner sends JSON with named fields. We ask for a field by its name.</div><div style="margin-top:6px; color:#585E60;">FRED, USAJOBS, Cincinnati open data.</div></div></div>
+<div class="card"><div class="ch gray">Classes 10 and 11: web scraping</div><div class="cb" style="line-height:1.5;"><span class="pill" style="background:#d97706;">semi-structured</span><div style="margin-top:6px;">The data sits in HTML tags. A CSS selector works when each value has its own tag.</div><div style="margin-top:6px; color:#585E60;">Wikipedia tables, the course catalog, planecrashinfo.</div></div></div>
+<div class="card"><div class="ch">Today: text extraction</div><div class="cb" style="line-height:1.5;"><span class="pill" style="background:#c3142d;">unstructured</span><div style="margin-top:6px;">The value is somewhere inside a sentence, an image, or a PDF. No field name and no tag points to it.</div><div style="margin-top:6px; color:#585E60;">A prerequisite inside a course description. A number shown only as a bar in a chart.</div></div></div>
+</div>
+
+<div class="lesson"><b class="r">Learning objectives.</b> (1) Explain the role of LLMs in extracting structured data from text. (2) Use an LLM API from R to parse unstructured text. (3) Write a schema and field descriptions that tell the model what to return. (4) Compare LLM extraction with selectors and string patterns.</div>
+
+???
+
+Two minutes. The three pills are the same three data types from Class 03. The first two columns are what we have done; the third is what neither tool can do. Read the four objectives; number 3 is the prompt-design objective, and in structured extraction the prompt is mostly the schema and its descriptions.
+
+---
+
+# A Value Without Its Own Tag
+
+<div class="qbar"><b>Question.</b> In Class 10 we scraped this course with two selectors: one for the title and one for the description. Which selector would return only the prerequisite? Only the credit hours?</div>
+
+<div style="display:grid; grid-template-columns:minmax(0,1.2fr) minmax(0,1fr); gap:14px; margin-top:8px; align-items:start;">
+<div>
+<div class="sx-lab">One course block from the ISA catalog page, as text</div>
+<div class="sx-src">`r esc(gsub("\n{2,}", "\n", trimws(src401)))`</div>
+</div>
+<div>
+<div class="sx-lab">The columns we want</div>
+`r tbl_html(data.frame(column = c("code", "name", "credit_hours", "course_desc", "prereqs"), type = c("text", "text", "number", "text", "text")))`
+</div>
+</div>
+
+--
+
+<div class="lesson" style="font-size:14px;"><b class="r">No selector does.</b> The code, the name, and the credit hours share one tag, and the prerequisite is a sentence inside the description. The usual tool is a string pattern (a regular expression) written for this exact layout. A second option is to give the text to a language model and tell it which columns we want.</div>
+
+???
+
+Three minutes. Question first: let them look for a tag. There is none; the title paragraph holds three values and the prerequisite is part of the description paragraph. On the click, name both options. Regular expressions come back on Wednesday; today is the second option.
+
+---
+
+# Text In, One Row Out
+
+<div class="sx" data-n="4">
+<div class="sx-grid" style="margin-top:0;">
+<div>
+<div class="sx-lab"><span class="sx-num">1</span> Input: the text of one course, stored as <code>course_text</code></div>
+<div class="sx-src">`r src401_html`</div>
+<div class="sx-s" data-from="2" style="margin-top:7px;">
+<div class="sx-lab"><span class="sx-num">3</span> The call: send the text and the schema to the model</div>
+`r hl_r(call_code, "58%")`
+</div>
+<div class="sx-s" data-from="3" style="margin-top:7px;">
+<div class="sx-lab"><span class="sx-num">4</span> Output: one value for each field in the schema</div>
+<div class="sx-row"><table style="margin-top:0 !important;"><thead><tr><th>code <span>chr</span></th><th>name <span>chr</span></th><th>credit_hours <span>int</span></th><th>prereqs <span>chr</span></th></tr></thead><tbody><tr><td>`r esc(r401$code)`</td><td>`r esc(r401$name)`</td><td><span class="sx-h" data-from="4">`r r401$credit_hours`</span></td><td><span class="sx-h" data-from="4">`r esc(r401$prereqs)`</span></td></tr></tbody></table></div>
+</div>
+</div>
+<div class="sx-s" data-from="1">
+<div class="sx-lab"><span class="sx-num">2</span> Schema: the columns we want, stored as <code>type_course</code></div>
+`r hl_r(schema_code, "58%")`
+</div>
+</div>
+<div class="sc-caps"><div class="sc-cap on" data-step="0"><b>1. Input.</b> One course block, exactly as <code>rvest::html_text2()</code> returned it. Nothing has been sent yet.</div><div class="sc-cap" data-step="1"><b>2. Schema.</b> We write the columns we want: a name, a type, and a description for each one. The descriptions are our instructions to the model.</div><div class="sc-cap" data-step="2"><b>3. The call.</b> <code>ellmer::chat_openai()</code> chooses the model. <code>chat$chat_structured()</code> sends the text and the schema together in one API request, like the POST request in Class 08.</div><div class="sc-cap" data-step="3"><b>4. Output.</b> The reply has exactly the fields in the schema. The highlighted parts of the input show where each value came from. These are the values the model returned on `r isa_run_on`.</div><div class="sc-cap" data-step="4"><b>Types.</b> <code>credit_hours</code> was declared as an integer, so R receives the number 3, not the text "(3)". <code>prereqs</code> is <code>required = FALSE</code>: for a course with no prerequisite, R stores <code>NA</code>.</div></div>
+<div class="sc-bar"><button type="button" class="sc-btn sc-back">Back</button><button type="button" class="sc-btn sc-primary sc-step">Step</button><button type="button" class="sc-btn sc-play">Play</button><button type="button" class="sc-btn sc-reset">Reset</button><span class="sc-spds"><button type="button" class="sc-spd" data-spd="0.5">0.5x</button><button type="button" class="sc-spd on" data-spd="1">1x</button><button type="button" class="sc-spd" data-spd="2">2x</button></span><span class="sc-count">0 / 4</span></div>
+</div>
+
+???
+
+Four minutes. Click Step four times; the numbered labels give the order. 1: the input is plain text. 2: the schema is the instruction; in structured extraction most of the prompt is the field names, the types, and the descriptions. 3: the call sends both in one request. 4: the output, with the parts of the input it came from highlighted. The last step is about types. The values are the model's actual answer for ISA 401 from the run cached in the deck folder. Say what structured output guarantees and what it does not: the reply always has these fields with these types; it does not guarantee that the values are right.
+
+---
+
+class: tbl-sm
+
+# ellmer Types and R Column Types
+
+| In the schema | What comes back in R | Example from the catalog |
+|---|---|---|
+| `ellmer::type_string()` | character | `"ISA 401"` |
+| `ellmer::type_integer()` | integer | `3` |
+| `ellmer::type_number()` | double | `1.5` |
+| `ellmer::type_boolean()` | logical | `TRUE` if the course is cross-listed |
+| `ellmer::type_enum(c("undergraduate", "graduate"))` | one of the listed values | `"graduate"` |
+| `ellmer::type_array(...)` | several values of one type | every course named in the prerequisites |
+| `ellmer::type_object(...)` | named fields: one row | one course |
+
+<div class="lesson" style="font-size:14px;"><b class="r">Two arguments on every type.</b> The first is the <b>description</b>: one sentence telling the model what belongs in the field. <code>required = FALSE</code> lets the model leave the field empty when the text does not contain it; without it the model must return something.</div>
+
+<div class="src" style="margin-top:6px;">Source: <a href="https://ellmer.tidyverse.org/reference/type_boolean.html" target="_blank">ellmer reference, Type specifications</a>.</div>
+
+???
+
+Three minutes. Map each type to a column type they already know from Class 03. Stress required = FALSE: if a field is required and the text does not contain it, the model has to produce something, and that is where invented values come from. We see one case of this in the demo.
+
+---
+
+# The ellmer Structured Data Article
+
+```{r vignette_embed, echo=FALSE, out.width="100%"}
+knitr::include_url("https://ellmer.tidyverse.org/articles/structured-data.html", height = "470px")
+```
+
+<div class="src" style="margin-top:2px;">In RStudio: <code>vignette(topic = "structured-data", package = "ellmer")</code>. Online: <a href="https://ellmer.tidyverse.org/articles/structured-data.html" target="_blank">ellmer.tidyverse.org/articles/structured-data.html</a>.</div>
+
+???
+
+Three minutes. Scroll the article on the slide: the first example (structured data basics), then the section on data frames (type_array of type_object), then the note on required fields. Today's two demos are the article's examples applied to our own pages. Show how to open it from RStudio with vignette().
+
+---
+
+class: tbl-sm
+
+# Related News: Decision Models
+
+<div style="font-size:14px; margin-top:0;">Three recent releases use the same idea, a schema that limits what a model may return, for one narrow job: answering questions that have a fixed set of answers.</div>
+
+<div class="newsrow">
+<div class="card"><a href="https://techcrunch.com/2026/09/18/a-new-kind-of-ai-model-from-a-chatgpt-inventor-is-thrilling-developers/" target="_blank"><img class="newsimg" src="`r knitr::image_uri('img/news_techcrunch.jpg')`"></a><div class="cb" style="font-size:12.5px; line-height:1.4;"><b style="color:#c3142d;">Jev, from TypeSafe AI.</b> Early access. TypeSafe describes it as built "to make fast, structured decisions that software can use directly."<div class="src" style="margin-top:3px;"><a href="https://techcrunch.com/2026/09/18/a-new-kind-of-ai-model-from-a-chatgpt-inventor-is-thrilling-developers/" target="_blank">TechCrunch, Sep 18, 2026</a> &middot; <a href="https://typesafe.ai/blog/introducing-system-one-models-and-jev" target="_blank">TypeSafe announcement</a> &middot; <a href="https://docs.typesafe.ai/concepts/system-one" target="_blank">docs</a></div></div></div>
+<div class="card"><a href="https://huggingface.co/convaiinnovations/laya" target="_blank"><img class="newsimg" src="`r knitr::image_uri('img/news_laya.jpg')`"></a><div class="cb" style="font-size:12.5px; line-height:1.4;"><b style="color:#c3142d;">Laya, from Convai Innovations.</b> Open weights under Apache 2.0. Takes text and typed questions and returns typed answers with probabilities.<div class="src" style="margin-top:3px;"><a href="https://huggingface.co/convaiinnovations/laya" target="_blank">Hugging Face model card, posted Sep 18, 2026</a></div></div></div>
+<div class="card"><a href="https://community.openai.com/t/devday-2026-announcements-and-developer-resources/1402006" target="_blank"><img class="newsimg" src="`r knitr::image_uri('img/news_openai.jpg')`"></a><div class="cb" style="font-size:12.5px; line-height:1.4;"><b style="color:#c3142d;">Decisions API, from OpenAI.</b> In limited preview. It classifies inputs, routes requests, or chooses an action from answers the developer defines.<div class="src" style="margin-top:3px;"><a href="https://community.openai.com/t/devday-2026-announcements-and-developer-resources/1402006" target="_blank">OpenAI Developer Community, Sep 29, 2026</a> &middot; <a href="https://openai.com/index/devday-2026-recap/" target="_blank">DevDay recap</a></div></div></div>
+</div>
+
+| | Structured extraction (today) | Decision models |
+|---|---|---|
+| Question | "What is the prerequisite?" | "Is this a graduate course: yes or no?" |
+| Answer | Any text or number found in the source | One option from a list we wrote, or a score |
+| Also returned | Nothing else | A probability for the answer |
+
+???
+
+Three minutes. Be exact about the relationship: these are not extraction tools. They cannot return a course description, because the answer has to be one of the options the developer listed (a choice, a yes or no, or a score). What they share with today's topic is the schema: we tell the model the shape of the answer in advance, and software can use the reply without parsing prose. The probability is the new part: the reply says how sure the model is. The three pictures are the TechCrunch article on Jev, Laya's model card on Hugging Face, and OpenAI's DevDay announcement post (the red box marks the Decisions API line); each picture links to its page. Speed and cost claims are the makers' own and are left off the slide. In ellmer terms, a decision question is close to type_enum() or type_boolean().
+
+---
+
+# An App for Trying Schemas
+
+<div class="embedbox">
+<iframe src="https://fmegahed-structured-text-extraction.hf.space" height="455" loading="lazy" allow="clipboard-write"></iframe>
+</div>
+
+<div class="src" style="margin-top:4px;">Open it in its own tab: <a href="https://huggingface.co/spaces/fmegahed/structured_text_extraction" target="_blank">huggingface.co/spaces/fmegahed/structured_text_extraction</a>. The app is written in R with Shiny and ellmer.</div>
+
+???
+
+Five minutes. Use the app to show the idea before any code: paste the ISA 125 course block, define two or three fields, and run it. Then change one field description and run it again so they see that the description is the prompt. If the frame is slow to wake up, open the link below it in a new tab.
+
+---
+
+# Demo 1: The ISA Catalog with an LLM
+
+.panelset[
+
+.panel[.panel-name[Question]
+
+<div class="qbar"><b>Question.</b> Build the same data frame of ISA courses as in Class 10, with three more columns: the course code, the credit hours as a number, and the prerequisites on their own.</div>
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:8px;">
+<div class="card"><div class="ch">Step 1: one course</div><div class="cb" style="font-size:14px; line-height:1.55;">Open the vignette, copy its first example, and make it work on the text of ISA 125 with <code>chat$chat_structured()</code>.</div></div>
+<div class="card"><div class="ch">Step 2: all `r n_isa` courses</div><div class="cb" style="font-size:14px; line-height:1.55;">One selector, <code>div.courseblock</code>, returns each course as a single block of text. Send every block with the same schema using <code>ellmer::parallel_chat_structured()</code>.</div></div>
+</div>
+
+<div style="margin-top:10px; font-size:14px; color:#585E60;">Page: <a href="https://bulletin.miamioh.edu/courses-instruction/isa/" target="_blank">bulletin.miamioh.edu/courses-instruction/isa/</a>. We write the code together. Type it in <code>class12.Rmd</code>.</div>
+
+]
+
+.panel[.panel-name[Result]
+
+<div class="qbar"><b>Result.</b> One row per course. The model was <code>gpt-5-mini-2025-08-07</code>, run on `r isa_run_on`.</div>
+
+```{r isa_out1, echo=FALSE, hl.size="56%"}
+dplyr::glimpse(show_df, width = 86)
+```
+
+]
+
+.panel[.panel-name[Cost]
+
+<div class="qbar"><b>Cost.</b> <code>include_tokens = TRUE</code> and <code>include_cost = TRUE</code> add these columns to the result.</div>
+
+<div style="display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:10px; margin-top:10px;">
+<div class="card"><div class="ch gray">Courses</div><div class="cb" style="font-size:20px; font-weight:700;">`r n_isa`</div></div>
+<div class="card"><div class="ch gray">Tokens sent / received</div><div class="cb" style="font-size:20px; font-weight:700;">`r fmt(isa_in)` / `r fmt(isa_out)`</div></div>
+<div class="card"><div class="ch gray">Total cost</div><div class="cb" style="font-size:20px; font-weight:700;">$`r sprintf("%.3f", isa_cost)`</div></div>
+<div class="card"><div class="ch gray">Time</div><div class="cb" style="font-size:20px; font-weight:700;">`r isa_secs` seconds</div></div>
+</div>
+
+<div style="font-size:14px; line-height:1.55; margin-top:12px;">The Class 10 version of this scrape used two selectors, made one request, and cost nothing. Here every course is its own request to a paid API, sent ten at a time.</div>
+
+]
+
+.panel[.panel-name[Checks]
+
+<div class="qbar"><b>Checks.</b> Three ways to test the result without reading all `r n_isa` rows.</div>
+
+<div style="display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:10px; margin-top:8px;">
+<div class="card"><div class="ch">Is the text copied or reworded?</div><div class="cb" style="font-size:13px; line-height:1.5;">Of `r n_desc` descriptions returned, <b>`r n_verbatim`</b> are word-for-word copies of one passage on the page. Of the other <b>`r n_reworded`</b>, `r n_joined` join sentences that are all on the page, and <b>`r n_newwords`</b> contain wording that is not on the page.<br><span style="color:#585E60;">ISA 177 has no description on the page. One run returned "`r esc(ifelse(is.na(desc177[1]), "NA", desc177[1]))`" and the other returned `r esc(ifelse(is.na(desc177[2]), "NA", paste0('"', desc177[2], '"')))`.</span></div></div>
+<div class="card"><div class="ch">Does a second run agree?</div><div class="cb" style="font-size:13px; line-height:1.5;">The same code, run twice. Rows that differ, out of `r n_isa`:<br>code <b>`r d_code`</b>, name <b>`r d_name`</b>, credit_hours <b>`r d_credit`</b>, prereqs <b>`r d_pre`</b>, course_desc <b>`r d_desc`</b>.<br><span style="color:#585E60;">Many differences are small, such as a period at the end.</span></div></div>
+<div class="card"><div class="ch">Does the type fit the data?</div><div class="cb" style="font-size:13px; line-height:1.5;">`r n_single` titles show a single credit number. The model's integer matches the title in <b>`r n_agree`</b>.<br><span style="color:#585E60;">`r frac_codes` are `r frac_val` credits. We asked for an integer, and the model returned `r if (frac_llm_na) "NA" else "a whole number"` for them. The other `r n_range` titles show a range such as (0-6).</span></div></div>
+</div>
+
+]
+
+.panel[.panel-name[Discussion]
+
+<div style="font-size:14.5px; line-height:1.6; margin-top:6px;">
+<div><b style="color:#c3142d;">Which of the five columns would you trust without checking?</b> Which would you check, and how?</div>
+<div style="margin-top:8px;"><b style="color:#c3142d;">How would you change the schema</b> so that a 1.5 credit course and a (0-6) course both come back with useful values?</div>
+<div style="margin-top:8px;"><b style="color:#c3142d;">For which of these columns is one line of string code the better tool?</b></div>
+</div>
+
+.can-edit.key-c12-isa[
+- Edit me to include any notes/discussion
+]
+
+]
+
+]
+
+???
+
+Eight minutes, live. No code on the slide: the full solution is in the hidden chunk isa_llm_solution, starting from the vignette example. Every number on the Result, Cost, and Checks tabs comes from one run of that chunk (and a second run of the same call) saved in cache/isa_llm.rds; the students' numbers will differ slightly, and that is the second check. Checks tab, left: copying text is what we want from extraction, and the model sometimes rewords instead; grepl(fixed = TRUE) against the source finds those rows. Middle: code never changed between runs and the long text fields changed most. Right: a type that does not fit the data returns NA without any warning; type_number() or a string would fix it. Discussion 3: the code and the credit hours follow a fixed pattern in the title, so string code is free, instant, and gives the same answer every time; the prerequisites are the column where the model helps.
+
+---
+
+# Demo 2: A Chart Image to a Data Frame
+
+.panelset[
+
+.panel[.panel-name[Question]
+
+<div style="display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:16px; align-items:start;">
+<img src="`r knitr::image_uri('img/bls_bachelors_openings.png')`" style="width:100%; border:1px solid #d1d5db; border-radius:8px; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+<div>
+<div class="qbar"><b>Question.</b> This chart is a picture: there is no table and no tag to select. Build a data frame with one row per occupation and its projected openings each year.</div>
+<div style="font-size:14px; line-height:1.55; margin-top:8px;">Send the image with <code>ellmer::content_image_file()</code>. For many rows with the same columns, the schema is <code>ellmer::type_array()</code> around <code>ellmer::type_object()</code>.</div>
+<div style="font-size:14px; line-height:1.55; margin-top:8px; color:#585E60;">Download <a href="https://miamioh.instructure.com/courses/258169/files/40605451?module_item_id=6988251" target="_blank"><b>bls_bachelors_openings.png</b> from Canvas</a> and save it in your <code>data</code> folder.</div>
+<div class="src" style="margin-top:8px;">Chart 4 in <a href="https://www.bls.gov/careeroutlook/2025/article/education-level-and-openings-2024-34.htm" target="_blank">Education level and projected openings, 2024-34</a>, U.S. Bureau of Labor Statistics, Career Outlook, September 2025.</div>
+</div>
+</div>
+
+]
+
+.panel[.panel-name[Result]
+
+<div class="qbar"><b>Result.</b> The model's values next to the numbers BLS publishes under the chart's "View Chart Data" link. Run on `r bls_run_on`.</div>
+
+<div class="cmp">
+
+```{r bls_out, echo=FALSE, results="asis"}
+knitr::kable(bls_cmp, format = "html", align = "lrrr")
+```
+
+</div>
+
+]
+
+.panel[.panel-name[Discussion]
+
+<div style="font-size:14.5px; line-height:1.6; margin-top:6px;">
+<div><b style="color:#c3142d;">All ten occupation names are correct.</b> The names are printed on the chart as text.</div>
+<div style="margin-top:8px;"><b style="color:#c3142d;">None of the ten numbers is exact.</b> The chart prints no numbers, so the model estimated each one from the length of its bar. `r bls_low` of 10 estimates are below the published value, and the largest difference is `r sprintf("%.1f", bls_worst)`%.</div>
+<div style="margin-top:8px;"><b style="color:#c3142d;">The page has a "View Chart Data" table.</b> Which tool from Class 10 reads that table exactly? When would you still need the image?</div>
+</div>
+
+.can-edit.key-c12-bls[
+- Edit me to include any notes/discussion
+]
+
+]
+
+]
+
+???
+
+Six minutes, live. The full solution is in the hidden chunk bls_solution; the slide reads one run from cache/bls_llm.rds. The schema change from the older version of this demo: type_array(type_object(...)) returns a data frame directly, so there is no splitting of strings on a separator. The Result tab is the lesson: text that is printed in the image comes back exactly; numbers that are only drawn come back as estimates. Discussion 3: the same page has the data as an HTML table, so rvest::html_table() is the right tool there. The image route is for scanned reports, slides, and PDFs where the picture is all there is.
+
+---
+
+class: tbl-sm
+
+# Choosing a Method
+
+| The data is... | Use | Same result every run? | Cost | What to check |
+|---|---|---|---|---|
+| offered through an API | `httr2` (Classes 08, 09) | Yes | Free or a key | Status code, number of rows |
+| in HTML, each value in its own tag | `rvest` and a CSS selector (Classes 10, 11) | Yes | Free | Element counts match the page |
+| in text that follows a fixed pattern | String functions and regular expressions | Yes | Free | Rows where the pattern did not match |
+| in free text, an image, or a PDF | An LLM with a schema (today) | No | Paid per token | A sample of rows against the source |
+
+<div class="lesson" style="font-size:14px;"><b class="r">From today's catalog run.</b> `r n_isa` courses cost $`r sprintf("%.3f", isa_cost)` and took `r isa_secs` seconds. `r n_newwords` of `r n_desc` descriptions contain wording that is not on the page, and a second run changed the prerequisites text in `r d_pre` rows. Use the model for the columns that need it, and a selector or string code for the rest.</div>
+
+???
+
+Four minutes. This is the summary of the last five classes. Read the table top to bottom as an order of preference: the further down, the more checking the result needs. The red box repeats the measured numbers from Demo 1 so the trade-off is concrete.
+
+---
+
+class: inverse, center, middle
+
+# Recap
+
+---
+
+# Summary of Main Points
+
+By now, you should be able to do the following:
+
+- **Explain** the role of LLMs in extraction: they return values that sit inside free text or an image, where no field name or tag points to them.
+- **Use** an LLM API from R: `ellmer::chat_openai()`, then `chat$chat_structured()` for one text and `ellmer::parallel_chat_structured()` for many.
+- **Write** a schema: `ellmer::type_object()` with one typed field per column, a description for each field, and `required = FALSE` for values that may be absent.
+- **Compare** methods: selectors and string patterns are free and give the same result every run; an LLM handles free text and images, costs money, and needs its output checked against the source.
+
+**Next class (Wed, Oct 7):** Tidy, technically correct, and consistent data.
+
+???
+
+One bullet per objective. The sentence to repeat: structured output fixes the shape of the answer, not its correctness.
+
+---
+
+# 🎯 Exam 01 and Assignments 🎯
+
+.pull-left[
+
+<div class="card">
+  <div class="ch">Exam 01: Monday, Oct 12</div>
+  <div class="cb" style="font-size:14px; line-height:1.55;">Data acquisition and transformation (Phase I on the course schedule).<br><br><b>Practice exam:</b> the <a href="https://miamioh.instructure.com/courses/258169/quizzes/827524" target="_blank"><b>Fall 2025 Exam 01</b></a> is open on Canvas. Work through it with your notes and R open, the way you will take the exam.</div>
+</div>
+
+<div style="margin-top:12px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:10px 14px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13.5px; line-height:1.5; color:#1b1b1b;">
+<b style="color:#c3142d;">Before you leave:</b> knit, then commit and push <code>markdowns/class12.Rmd</code> and <code>class12.html</code>. If it is not pushed, it is not done.
+</div>
+
+]
+
+.pull-right[
+
+<div class="card">
+  <div class="ch">Assignment 07: FSB Directory</div>
+  <div class="cb" style="font-size:14px; line-height:1.55;">One question, 10 points. Scrape the faculty and staff directory pages of the seven Farmer School departments into a single data frame: department, name, position, and website.<br><br>Instructions and the due date are on the <a href="https://miamioh.instructure.com/courses/258169/assignments" target="_blank"><b>Canvas Assignments page</b></a>.</div>
+</div>
+
+<div style="margin-top:12px; font-size:13px; line-height:1.5;"><b>Reading, if you want more:</b> the ellmer articles on <a href="https://ellmer.tidyverse.org/articles/structured-data.html" target="_blank">structured data</a> and <a href="https://ellmer.tidyverse.org/articles/prompt-design.html" target="_blank">prompt design</a>.</div>
+
+]
+
+???
+
+Two minutes. The practice exam is last fall's Exam 01. Assignment 07 uses Classes 10 and 11 only (rvest and many pages); nothing from today is needed for it. Say the before-you-leave line while pointing at GitHub Desktop.

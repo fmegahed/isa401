@@ -104,3 +104,4 @@ speaker_notes/
 
 # never commit a key file dropped at the repo root
 api_key.txt
+/lectures/12_structured_text_extraction/for_video

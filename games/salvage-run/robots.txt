@@ -1,0 +1,8 @@
+# Ceres Salvage Registry
+# Crawlers welcome on the registry and the dossiers. Please pause between requests.
+User-agent: *
+Allow: /registry
+Allow: /wreck/
+Disallow: /api/
+Disallow: /board
+Crawl-delay: 1

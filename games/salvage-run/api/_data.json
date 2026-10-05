@@ -1,0 +1,6061 @@
+{
+ "seed": 401,
+ "per_page": 50,
+ "n": 400,
+ "wrecks": [
+  {
+   "pos": 1,
+   "hull": "VR-1192",
+   "name": "ISV Ninth Promise",
+   "cls": "Tug",
+   "value": 1.4,
+   "sector": "Pallas Gap",
+   "built": 2270,
+   "lost": 2278,
+   "crew": 3,
+   "cargo": [
+    "water tanks",
+    "hydroponic racks",
+    "cobalt ingots"
+   ]
+  },
+  {
+   "pos": 2,
+   "hull": "MZ-1290",
+   "name": "ISV Cold Meridian",
+   "cls": "Freighter",
+   "value": 4.6,
+   "sector": "Hygiea Reach",
+   "built": 2222,
+   "lost": 2269,
+   "crew": 15,
+   "cargo": [
+    "reactor shielding",
+    "spare hull plate"
+   ]
+  },
+  {
+   "pos": 3,
+   "hull": "CS-6502",
+   "name": "ISV Northern Compass",
+   "cls": "Tug",
+   "value": 1.0,
+   "sector": "Ceres Near",
+   "built": 2264,
+   "lost": 2275,
+   "crew": 5,
+   "cargo": [
+    "reactor shielding"
+   ]
+  },
+  {
+   "pos": 4,
+   "hull": "PX-6059",
+   "name": "CSS Patient Lantern",
+   "cls": "Corvette",
+   "value": 3.0,
+   "sector": "Psyche Deep",
+   "built": 2218,
+   "lost": 2268,
+   "crew": 88,
+   "cargo": [
+    "hydroponic racks",
+    "spare hull plate"
+   ]
+  },
+  {
+   "pos": 5,
+   "hull": "PX-3675",
+   "name": "ISV Broken Wake",
+   "cls": "Hauler",
+   "value": 4.3,
+   "sector": "Ceres Near",
+   "built": 2217,
+   "lost": 2250,
+   "crew": 4,
+   "cargo": [
+    "fuel cells"
+   ]
+  },
+  {
+   "pos": 6,
+   "hull": "MZ-9582",
+   "name": "ISV Pale Promise",
+   "cls": "Probe",
+   "value": 0.7,
+   "sector": "Ceres Near",
+   "built": 2202,
+   "lost": 2261,
+   "crew": 0,
+   "cargo": [
+    "cobalt ingots",
+    "nickel ore"
+   ]
+  },
+  {
+   "pos": 7,
+   "hull": "KV-8506",
+   "name": "CSS Distant Sparrow",
+   "cls": "Dreadnought",
+   "value": 23.6,
+   "sector": "Hygiea Reach",
+   "built": 2271,
+   "lost": 2279,
+   "crew": 1684,
+   "cargo": [
+    "cobalt ingots"
+   ],
+   "core": null
+  },
+  {
+   "pos": 8,
+   "hull": "HQ-2082",
+   "name": "ISV Salt Tide",
+   "cls": "Probe",
+   "value": 0.4,
+   "sector": "Psyche Deep",
+   "built": 2247,
+   "lost": 2283,
+   "crew": 0,
+   "cargo": [
+    "water tanks",
+    "reactor shielding",
+    "fuel cells"
+   ]
+  },
+  {
+   "pos": 9,
+   "hull": "JL-8104",
+   "name": "ISV Velvet Compass",
+   "cls": "Hauler",
+   "value": 4.9,
+   "sector": "Psyche Deep",
+   "built": 2251,
+   "lost": 2271,
+   "crew": 5,
+   "cargo": [
+    "survey drones",
+    "hydroponic racks"
+   ]
+  },
+  {
+   "pos": 10,
+   "hull": "RX-3734",
+   "name": "ISV Amber Sparrow",
+   "cls": "Probe",
+   "value": 0.4,
+   "sector": "Hygiea Reach",
+   "built": 2247,
+   "lost": 2268,
+   "crew": 0,
+   "cargo": [
+    "water tanks",
+    "reactor shielding"
+   ]
+  },
+  {
+   "pos": 11,
+   "hull": "RX-4276",
+   "name": "ISV Pale Tide",
+   "cls": "Probe",
+   "value": 0.8,
+   "sector": "Hygiea Reach",
+   "built": 2248,
+   "lost": 2289,
+   "crew": 0,
+   "cargo": [
+    "hydroponic racks"
+   ]
+  },
+  {
+   "pos": 12,
+   "hull": "RX-5753",
+   "name": "ISV Bright Covenant",
+   "cls": "Probe",
+   "value": 0.7,
+   "sector": "Pallas Gap",
+   "built": 2200,
+   "lost": 2258,
+   "crew": 0,
+   "cargo": [
+    "seed vault",
+    "reactor shielding",
+    "spare hull plate"
+   ]
+  },
+  {
+   "pos": 13,
+   "hull": "MZ-8977",
+   "name": "ISV Velvet Lantern",
+   "cls": "Freighter",
+   "value": 2.1,
+   "sector": "Juno Shelf",
+   "built": 2207,
+   "lost": 2261,
+   "crew": 28,
+   "cargo": [
+    "fuel cells",
+    "cobalt ingots"
+   ]
+  },
+  {
+   "pos": 14,
+   "hull": "JL-3674",
+   "name": "ISV Iron Tide",
+   "cls": "Hauler",
+   "value": 3.5,
+   "sector": "Psyche Deep",
+   "built": 2239,
+   "lost": 2273,
+   "crew": 10,
+   "cargo": [
+    "reactor shielding",
+    "spare hull plate"
+   ]
+  },
+  {
+   "pos": 15,
+   "hull": "JL-2593",
+   "name": "ISV Salt Quill",
+   "cls": "Probe",
+   "value": 0.4,
+   "sector": "Psyche Deep",
+   "built": 2264,
+   "lost": 2281,
+   "crew": 0,
+   "cargo": [
+    "medical stores"
+   ]
+  },
+  {
+   "pos": 16,
+   "hull": "NB-4985",
+   "name": "ISV Amber Halyard",
+   "cls": "Tug",
+   "value": 0.3,
+   "sector": "Juno Shelf",
+   "built": 2253,
+   "lost": 2281,
+   "crew": 4,
+   "cargo": [
+    "medical stores"
+   ]
+  },
+  {
+   "pos": 17,
+   "hull": "VR-9811",
+   "name": "ISV Amber Solace",
+   "cls": "Hauler",
+   "value": 4.7,
+   "sector": "Hygiea Reach",
+   "built": 2188,
+   "lost": 2246,
+   "crew": 15,
+   "cargo": [
+    "reactor shielding",
+    "medical stores"
+   ]
+  },
+  {
+   "pos": 18,
+   "hull": "VR-2864",
+   "name": "CSS Cold Sparrow",
+   "cls": "Corvette",
+   "value": 9.4,
+   "sector": "Hygiea Reach",
+   "built": 2262,
+   "lost": 2281,
+   "crew": 48,
+   "cargo": [
+    "water tanks"
+   ]
+  },
+  {
+   "pos": 19,
+   "hull": "TD-9185",
+   "name": "CSS Broken Harbor",
+   "cls": "Corvette",
+   "value": 3.8,
+   "sector": "Ceres Near",
+   "built": 2247,
+   "lost": 2260,
+   "crew": 61,
+   "cargo": [
+    "survey drones",
+    "spare hull plate",
+    "ice cores"
+   ]
+  },
+  {
+   "pos": 20,
+   "hull": "CS-7532",
+   "name": "ISV Salt Orchard",
+   "cls": "Freighter",
+   "value": 8.8,
+   "sector": "Eros Belt",
+   "built": 2228,
+   "lost": 2284,
+   "crew": 26,
+   "cargo": [
+    "medical stores",
+    "hydroponic racks",
+    "spare hull plate"
+   ]
+  },
+  {
+   "pos": 21,
+   "hull": "HQ-9269",
+   "name": "CSS Last Covenant",
+   "cls": "Corvette",
+   "value": 6.1,
+   "sector": "Pallas Gap",
+   "built": 2251,
+   "lost": 2280,
+   "crew": 114,
+   "cargo": [
+    "hydroponic racks",
+    "navigation beacons"
+   ]
+  },
+  {
+   "pos": 22,
+   "hull": "VR-6211",
+   "name": "ISV Cold Cinder",
+   "cls": "Probe",
+   "value": 0.7,
+   "sector": "Pallas Gap",
+   "built": 2214,
+   "lost": 2240,
+   "crew": 0,
+   "cargo": [
+    "seed vault",
+    "ice cores",
+    "navigation beacons"
+   ]
+  },
+  {
+   "pos": 23,
+   "hull": "RX-8709",
+   "name": "ISV Silent Wake",
+   "cls": "Hauler",
+   "value": 2.1,
+   "sector": "Juno Shelf",
+   "built": 2226,
+   "lost": 2246,
+   "crew": 11,
+   "cargo": [
+    "survey drones",
+    "hydroponic racks"
+   ]
+  },
+  {
+   "pos": 24,
+   "hull": "CS-3549",
+   "name": "ISV Salt Meridian",
+   "cls": "Tug",
+   "value": 0.6,
+   "sector": "Vesta Drift",
+   "built": 2218,
+   "lost": 2259,
+   "crew": 3,
+   "cargo": [
+    "spare hull plate"
+   ]
+  },
+  {
+   "pos": 25,
+   "hull": "CS-3947",
+   "name": "ISV Distant Promise",
+   "cls": "Hauler",
+   "value": 4.2,
+   "sector": "Juno Shelf",
+   "built": 2189,
+   "lost": 2248,
+   "crew": 13,
+   "cargo": [
+    "cobalt ingots",
+    "nickel ore",
+    "seed vault"
+   ]
+  },
+  {
+   "pos": 26,
+   "hull": "MZ-4086",
+   "name": "ISV Wandering Heron",
+   "cls": "Probe",
+   "value": 0.4,
+   "sector": "Ceres Near",
+   "built": 2273,
+   "lost": 2282,
+   "crew": 0,
+   "cargo": [
+    "cobalt ingots",
+    "survey drones",
+    "seed vault"
+   ]
+  },
+  {
+   "pos": 27,
+   "hull": "HQ-8285",
+   "name": "ISV Velvet Covenant",
+   "cls": "Hauler",
+   "value": 4.3,
+   "sector": "Eros Belt",
+   "built": 2243,
+   "lost": 2266,
+   "crew": 15,
+   "cargo": [
+    "ice cores",
+    "survey drones",
+    "fuel cells"
+   ]
+  },
+  {
+   "pos": 28,
+   "hull": "MZ-2949",
+   "name": "CSS Bright Solace",
+   "cls": "Dreadnought",
+   "value": 13.2,
+   "sector": "Pallas Gap",
+   "built": 2241,
+   "lost": 2287,
+   "crew": 1310,
+   "cargo": [
+    "cobalt ingots"
+   ],
+   "core": "BREACHED"
+  },
+  {
+   "pos": 29,
+   "hull": "JL-2449",
+   "name": "ISV Bright Promise",
+   "cls": "Freighter",
+   "value": 2.4,
+   "sector": "Psyche Deep",
+   "built": 2242,
+   "lost": 2251,
+   "crew": 28,
+   "cargo": [
+    "ice cores",
+    "seed vault",
+    "hydroponic racks"
+   ]
+  },
+  {
+   "pos": 30,
+   "hull": "CS-5725",
+   "name": "ISV Pale Ember",
+   "cls": "Tug",
+   "value": 1.1,
+   "sector": "Pallas Gap",
+   "built": 2257,
+   "lost": 2274,
+   "crew": 5,
+   "cargo": [
+    "nickel ore",
+    "navigation beacons",
+    "water tanks"
+   ]
+  },
+  {
+   "pos": 31,
+   "hull": "JL-8327",
+   "name": "ISV Distant Solace",
+   "cls": "Tug",
+   "value": 0.7,
+   "sector": "Vesta Drift",
+   "built": 2242,
+   "lost": 2285,
+   "crew": 4,
+   "cargo": [
+    "survey drones",
+    "reactor shielding",
+    "spare hull plate"
+   ]
+  },
+  {
+   "pos": 32,
+   "hull": "KV-4475",
+   "name": "CSS Wandering Orchard",
+   "cls": "Dreadnought",
+   "value": 12.3,
+   "sector": "Juno Shelf",
+   "built": 2252,
+   "lost": 2272,
+   "crew": 2384,
+   "cargo": [
+    "spare hull plate",
+    "water tanks"
+   ],
+   "core": null
+  },
+  {
+   "pos": 33,
+   "hull": "CS-1253",
+   "name": "ISV Northern Sparrow",
+   "cls": "Freighter",
+   "value": 2.5,
+   "sector": "Eros Belt",
+   "built": 2225,
+   "lost": 2257,
+   "crew": 30,
+   "cargo": [
+    "navigation beacons",
+    "reactor shielding",
+    "survey drones"
+   ]
+  },
+  {
+   "pos": 34,
+   "hull": "JL-8650",
+   "name": "ISV Ninth Orchard",
+   "cls": "Probe",
+   "value": 0.5,
+   "sector": "Ceres Near",
+   "built": 2234,
+   "lost": 2251,
+   "crew": 0,
+   "cargo": [
+    "seed vault",
+    "ice cores",
+    "fuel cells"
+   ]
+  },
+  {
+   "pos": 35,
+   "hull": "HQ-8297",
+   "name": "ISV Marrow Vigil",
+   "cls": "Freighter",
+   "value": 4.9,
+   "sector": "Vesta Drift",
+   "built": 2233,
+   "lost": 2254,
+   "crew": 22,
+   "cargo": [
+    "hydroponic racks",
+    "seed vault",
+    "spare hull plate"
+   ]
+  },
+  {
+   "pos": 36,
+   "hull": "HQ-8820",
+   "name": "ISV Ashen Ledger",
+   "cls": "Hauler",
+   "value": 1.8,
+   "sector": "Pallas Gap",
+   "built": 2211,
+   "lost": 2268,
+   "crew": 16,
+   "cargo": [
+    "medical stores",
+    "ice cores"
+   ]
+  },
+  {
+   "pos": 37,
+   "hull": "TD-7992",
+   "name": "ISV Amber Harbor",
+   "cls": "Hauler",
+   "value": 1.5,
+   "sector": "Eros Belt",
+   "built": 2278,
+   "lost": 2289,
+   "crew": 12,
+   "cargo": [
+    "hydroponic racks",
+    "cobalt ingots"
+   ]
+  },
+  {
+   "pos": 38,
+   "hull": "NB-1285",
+   "name": "ISV Marrow Heron",
+   "cls": "Freighter",
+   "value": 7.6,
+   "sector": "Hygiea Reach",
+   "built": 2222,
+   "lost": 2269,
+   "crew": 21,
+   "cargo": [
+    "seed vault",
+    "hydroponic racks",
+    "cobalt ingots"
+   ]
+  },
+  {
+   "pos": 39,
+   "hull": "MZ-7235",
+   "name": "ISV Last Harbor",
+   "cls": "Freighter",
+   "value": 2.7,
+   "sector": "Juno Shelf",
+   "built": 2241,
+   "lost": 2250,
+   "crew": 11,
+   "cargo": [
+    "navigation beacons",
+    "spare hull plate"
+   ]
+  },
+  {
+   "pos": 40,
+   "hull": "NB-4618",
+   "name": "ISV Ninth Cinder",
+   "cls": "Hauler",
+   "value": 5.5,
+   "sector": "Eros Belt",
+   "built": 2202,
+   "lost": 2253,
+   "crew": 11,
+   "cargo": [
+    "cobalt ingots",
+    "medical stores",
+    "seed vault"
+   ]
+  },
+  {
+   "pos": 41,
+   "hull": "VR-1662",
+   "name": "ISV Marrow Wake",
+   "cls": "Probe",
+   "value": 0.9,
+   "sector": "Pallas Gap",
+   "built": 2183,
+   "lost": 2236,
+   "crew": 0,
+   "cargo": [
+    "nickel ore",
+    "water tanks",
+    "fuel cells"
+   ]
+  },
+  {
+   "pos": 42,
+   "hull": "RX-9022",
+   "name": "ISV Lone Wake",
+   "cls": "Tug",
+   "value": 0.4,
+   "sector": "Vesta Drift",
+   "built": 2221,
+   "lost": 2236,
+   "crew": 3,
+   "cargo": [
+    "medical stores",
+    "cobalt ingots",
+    "navigation beacons"
+   ]
+  },
+  {
+   "pos": 43,
+   "hull": "KV-5820",
+   "name": "ISV Last Compass",
+   "cls": "Freighter",
+   "value": 6.1,
+   "sector": "Pallas Gap",
+   "built": 2251,
+   "lost": 2271,
+   "crew": 19,
+   "cargo": [
+    "survey drones",
+    "water tanks"
+   ]
+  },
+  {
+   "pos": 44,
+   "hull": "VR-9756",
+   "name": "ISV Salt Cinder",
+   "cls": "Probe",
+   "value": 0.5,
+   "sector": "Pallas Gap",
+   "built": 2256,
+   "lost": 2271,
+   "crew": 0,
+   "cargo": [
+    "fuel cells",
+    "spare hull plate",
+    "hydroponic racks"
+   ]
+  },
+  {
+   "pos": 45,
+   "hull": "TD-8881",
+   "name": "ISV Marrow Meridian",
+   "cls": "Hauler",
+   "value": 2.5,
+   "sector": "Psyche Deep",
+   "built": 2197,
+   "lost": 2253,
+   "crew": 16,
+   "cargo": [
+    "medical stores"
+   ]
+  },
+  {
+   "pos": 46,
+   "hull": "TD-2985",
+   "name": "CSS Quiet Cinder",
+   "cls": "Corvette",
+   "value": 7.8,
+   "sector": "Ceres Near",
+   "built": 2230,
+   "lost": 2268,
+   "crew": 71,
+   "cargo": [
+    "hydroponic racks",
+    "water tanks"
+   ]
+  },
+  {
+   "pos": 47,
+   "hull": "HQ-7493",
+   "name": "CSS Patient Promise",
+   "cls": "Corvette",
+   "value": 8.6,
+   "sector": "Juno Shelf",
+   "built": 2221,
+   "lost": 2277,
+   "crew": 70,
+   "cargo": [
+    "survey drones",
+    "spare hull plate"
+   ]
+  },
+  {
+   "pos": 48,
+   "hull": "TD-8162",
+   "name": "ISV Bright Cinder",
+   "cls": "Freighter",
+   "value": 5.7,
+   "sector": "Eros Belt",
+   "built": 2226,
+   "lost": 2263,
+   "crew": 14,
+   "cargo": [
+    "hydroponic racks",
+    "reactor shielding"
+   ]
+  },
+  {
+   "pos": 49,
+   "hull": "VR-5377",
+   "name": "CSS Velvet Harbor",
+   "cls": "Corvette",
+   "value": 5.9,
+   "sector": "Hygiea Reach",
+   "built": 2247,
+   "lost": 2287,
+   "crew": 81,
+   "cargo": [
+    "cobalt ingots"
+   ]
+  },
+  {
+   "pos": 50,
+   "hull": "RX-4174",
+   "name": "CSS Lone Sparrow",
+   "cls": "Corvette",
+   "value": 3.3,
+   "sector": "Juno Shelf",
+   "built": 2239,
+   "lost": 2247,
+   "crew": 106,
+   "cargo": [
+    "ice cores"
+   ]
+  },
+  {
+   "pos": 51,
+   "hull": "TD-3066",
+   "name": "ISV Copper Heron",
+   "cls": "Probe",
+   "value": 0.7,
+   "sector": "Psyche Deep",
+   "built": 2258,
+   "lost": 2274,
+   "crew": 0,
+   "cargo": [
+    "ice cores"
+   ]
+  },
+  {
+   "pos": 52,
+   "hull": "NB-6445",
+   "name": "ISV Gilded Harbor",
+   "cls": "Hauler",
+   "value": 1.7,
+   "sector": "Hygiea Reach",
+   "built": 2217,
+   "lost": 2248,
+   "crew": 12,
+   "cargo": [
+    "spare hull plate",
+    "nickel ore",
+    "water tanks"
+   ]
+  },
+  {
+   "pos": 53,
+   "hull": "TD-8503",
+   "name": "ISV Hollow Meridian",
+   "cls": "Freighter",
+   "value": 4.5,
+   "sector": "Vesta Drift",
+   "built": 2249,
+   "lost": 2262,
+   "crew": 30,
+   "cargo": [
+    "medical stores",
+    "ice cores",
+    "nickel ore"
+   ]
+  },
+  {
+   "pos": 54,
+   "hull": "RX-9961",
+   "name": "ISV Cold Solace",
+   "cls": "Freighter",
+   "value": 5.4,
+   "sector": "Eros Belt",
+   "built": 2235,
+   "lost": 2269,
+   "crew": 9,
+   "cargo": [
+    "ice cores"
+   ]
+  },
+  {
+   "pos": 55,
+   "hull": "TD-6995",
+   "name": "CSS Crimson Sparrow",
+   "cls": "Corvette",
+   "value": 9.9,
+   "sector": "Eros Belt",
+   "built": 2234,
+   "lost": 2242,
+   "crew": 86,
+   "cargo": [
+    "nickel ore",
+    "spare hull plate",
+    "survey drones"
+   ]
+  },
+  {
+   "pos": 56,
+   "hull": "VR-9743",
+   "name": "ISV Brass Harbor",
+   "cls": "Hauler",
+   "value": 2.8,
+   "sector": "Ceres Near",
+   "built": 2205,
+   "lost": 2242,
+   "crew": 8,
+   "cargo": [
+    "survey drones",
+    "seed vault",
+    "reactor shielding"
+   ]
+  },
+  {
+   "pos": 57,
+   "hull": "CS-5462",
+   "name": "ISV Salt Compass",
+   "cls": "Probe",
+   "value": 0.7,
+   "sector": "Pallas Gap",
+   "built": 2205,
+   "lost": 2259,
+   "crew": 0,
+   "cargo": [
+    "navigation beacons",
+    "hydroponic racks"
+   ]
+  },
+  {
+   "pos": 58,
+   "hull": "TD-9042",
+   "name": "ISV Quiet Meridian",
+   "cls": "Probe",
+   "value": 0.6,
+   "sector": "Psyche Deep",
+   "built": 2225,
+   "lost": 2246,
+   "crew": 0,
+   "cargo": [
+    "nickel ore",
+    "fuel cells",
+    "spare hull plate"
+   ]
+  },
+  {
+   "pos": 59,
+   "hull": "NB-7312",
+   "name": "ISV Northern Heron",
+   "cls": "Hauler",
+   "value": 5.6,
+   "sector": "Hygiea Reach",
+   "built": 2248,
+   "lost": 2282,
+   "crew": 6,
+   "cargo": [
+    "fuel cells",
+    "spare hull plate",
+    "navigation beacons"
+   ]
+  },
+  {
+   "pos": 60,
+   "hull": "JL-7274",
+   "name": "ISV Hollow Orchard",
+   "cls": "Hauler",
+   "value": 2.4,
+   "sector": "Ceres Near",
+   "built": 2235,
+   "lost": 2274,
+   "crew": 11,
+   "cargo": [
+    "spare hull plate",
+    "survey drones"
+   ]
+  },
+  {
+   "pos": 61,
+   "hull": "JL-1463",
+   "name": "CSS Pale Covenant",
+   "cls": "Corvette",
+   "value": 8.3,
+   "sector": "Vesta Drift",
+   "built": 2255,
+   "lost": 2263,
+   "crew": 58,
+   "cargo": [
+    "reactor shielding",
+    "survey drones",
+    "hydroponic racks"
+   ]
+  },
+  {
+   "pos": 62,
+   "hull": "CS-6530",
+   "name": "ISV Ashen Bastion",
+   "cls": "Probe",
+   "value": 0.5,
+   "sector": "Eros Belt",
+   "built": 2203,
+   "lost": 2257,
+   "crew": 0,
+   "cargo": [
+    "seed vault",
+    "survey drones",
+    "cobalt ingots"
+   ]
+  },
+  {
+   "pos": 63,
+   "hull": "JL-8946",
+   "name": "ISV Last Halyard",
+   "cls": "Hauler",
+   "value": 5.2,
+   "sector": "Eros Belt",
+   "built": 2191,
+   "lost": 2237,
+   "crew": 4,
+   "cargo": [
+    "seed vault",
+    "navigation beacons"
+   ]
+  },
+  {
+   "pos": 64,
+   "hull": "HQ-7074",
+   "name": "ISV Wandering Tide",
+   "cls": "Probe",
+   "value": 0.2,
+   "sector": "Vesta Drift",
+   "built": 2199,
+   "lost": 2233,
+   "crew": 0,
+   "cargo": [
+    "ice cores",
+    "survey drones",
+    "hydroponic racks"
+   ]
+  },
+  {
+   "pos": 65,
+   "hull": "PX-4569",
+   "name": "ISV Wandering Wake",
+   "cls": "Freighter",
+   "value": 3.9,
+   "sector": "Pallas Gap",
+   "built": 2270,
+   "lost": 2281,
+   "crew": 15,
+   "cargo": [
+    "survey drones",
+    "hydroponic racks"
+   ]
+  },
+  {
+   "pos": 66,
+   "hull": "KV-4705",
+   "name": "ISV Velvet Quill",
+   "cls": "Freighter",
+   "value": 4.3,
+   "sector": "Psyche Deep",
+   "built": 2257,
+   "lost": 2287,
+   "crew": 30,
+   "cargo": [
+    "navigation beacons"
+   ]
+  },
+  {
+   "pos": 67,
+   "hull": "PX-4562",
+   "name": "ISV Northern Promise",
+   "cls": "Probe",
+   "value": 0.8,
+   "sector": "Ceres Near",
+   "built": 2205,
+   "lost": 2242,
+   "crew": 0,
+   "cargo": [
+    "nickel ore",
+    "medical stores",
+    "spare hull plate"
+   ]
+  },
+  {
+   "pos": 68,
+   "hull": "HQ-3704",
+   "name": "ISV Velvet Meridian",
+   "cls": "Probe",
+   "value": 0.2,
+   "sector": "Ceres Near",
+   "built": 2277,
+   "lost": 2289,
+   "crew": 0,
+   "cargo": [
+    "navigation beacons",
+    "hydroponic racks"
+   ]
+  },
+  {
+   "pos": 69,
+   "hull": "HQ-7816",
+   "name": "ISV Northern Kestrel",
+   "cls": "Tug",
+   "value": 0.6,
+   "sector": "Hygiea Reach",
+   "built": 2245,
+   "lost": 2282,
+   "crew": 4,
+   "cargo": [
+    "medical stores"
+   ]
+  },
+  {
+   "pos": 70,
+   "hull": "VR-9809",
+   "name": "ISV Amber Anvil",
+   "cls": "Hauler",
+   "value": 1.7,
+   "sector": "Psyche Deep",
+   "built": 2195,
+   "lost": 2231,
+   "crew": 15,
+   "cargo": [
+    "hydroponic racks",
+    "reactor shielding"
+   ]
+  },
+  {
+   "pos": 71,
+   "hull": "MZ-8288",
+   "name": "ISV Silent Orchard",
+   "cls": "Freighter",
+   "value": 7.2,
+   "sector": "Eros Belt",
+   "built": 2227,
+   "lost": 2258,
+   "crew": 14,
+   "cargo": [
+    "hydroponic racks",
+    "medical stores",
+    "seed vault"
+   ]
+  },
+  {
+   "pos": 72,
+   "hull": "PX-8107",
+   "name": "ISV Patient Compass",
+   "cls": "Hauler",
+   "value": 5.7,
+   "sector": "Hygiea Reach",
+   "built": 2208,
+   "lost": 2236,
+   "crew": 12,
+   "cargo": [
+    "water tanks",
+    "survey drones",
+    "spare hull plate"
+   ]
+  },
+  {
+   "pos": 73,
+   "hull": "RX-7751",
+   "name": "ISV Bright Anvil",
+   "cls": "Hauler",
+   "value": 4.3,
+   "sector": "Hygiea Reach",
+   "built": 2253,
+   "lost": 2270,
+   "crew": 13,
+   "cargo": [
+    "water tanks"
+   ]
+  },
+  {
+   "pos": 74,
+   "hull": "TD-9036",
+   "name": "ISV Silent Compass",
+   "cls": "Freighter",
+   "value": 6.0,
+   "sector": "Eros Belt",
+   "built": 2191,
+   "lost": 2237,
+   "crew": 18,
+   "cargo": [
+    "survey drones",
+    "seed vault"
+   ]
+  },
+  {
+   "pos": 75,
+   "hull": "CS-8261",
+   "name": "ISV Iron Anvil",
+   "cls": "Tug",
+   "value": 0.8,
+   "sector": "Vesta Drift",
+   "built": 2188,
+   "lost": 2248,
+   "crew": 5,
+   "cargo": [
+    "ice cores"
+   ]
+  },
+  {
+   "pos": 76,
+   "hull": "JL-1556",
+   "name": "CSS Salt Harbor",
+   "cls": "Corvette",
+   "value": 6.1,
+   "sector": "Juno Shelf",
+   "built": 2245,
+   "lost": 2264,
+   "crew": 108,
+   "cargo": [
+    "navigation beacons",
+    "seed vault"
+   ]
+  },
+  {
+   "pos": 77,
+   "hull": "VR-2380",
+   "name": "CSS Broken Meridian",
+   "cls": "Corvette",
+   "value": 5.3,
+   "sector": "Eros Belt",
+   "built": 2225,
+   "lost": 2284,
+   "crew": 77,
+   "cargo": [
+    "survey drones",
+    "medical stores",
+    "hydroponic racks"
+   ]
+  },
+  {
+   "pos": 78,
+   "hull": "VR-5057",
+   "name": "ISV Silent Cinder",
+   "cls": "Freighter",
+   "value": 6.7,
+   "sector": "Vesta Drift",
+   "built": 2240,
+   "lost": 2263,
+   "crew": 21,
+   "cargo": [
+    "fuel cells",
+    "nickel ore"
+   ]
+  },
+  {
+   "pos": 79,
+   "hull": "JL-2385",
+   "name": "ISV Wandering Promise",
+   "cls": "Hauler",
+   "value": 4.4,
+   "sector": "Eros Belt",
+   "built": 2224,
+   "lost": 2258,
+   "crew": 9,
+   "cargo": [
+    "spare hull plate",
+    "seed vault"
+   ]
+  },
+  {
+   "pos": 80,
+   "hull": "TD-6941",
+   "name": "ISV Silent Vigil",
+   "cls": "Freighter",
+   "value": 6.0,
+   "sector": "Eros Belt",
+   "built": 2254,
+   "lost": 2278,
+   "crew": 26,
+   "cargo": [
+    "reactor shielding",
+    "survey drones",
+    "fuel cells"
+   ]
+  },
+  {
+   "pos": 81,
+   "hull": "KV-9392",
+   "name": "ISV Hollow Ember",
+   "cls": "Probe",
+   "value": 0.2,
+   "sector": "Vesta Drift",
+   "built": 2236,
+   "lost": 2248,
+   "crew": 0,
+   "cargo": [
+    "reactor shielding",
+    "spare hull plate"
+   ]
+  },
+  {
+   "pos": 82,
+   "hull": "CS-4359",
+   "name": "ISV Ashen Lantern",
+   "cls": "Hauler",
+   "value": 5.3,
+   "sector": "Psyche Deep",
+   "built": 2266,
+   "lost": 2284,
+   "crew": 5,
+   "cargo": [
+    "nickel ore",
+    "spare hull plate",
+    "medical stores"
+   ]
+  },
+  {
+   "pos": 83,
+   "hull": "KV-8136",
+   "name": "ISV Copper Tide",
+   "cls": "Hauler",
+   "value": 4.7,
+   "sector": "Pallas Gap",
+   "built": 2236,
+   "lost": 2250,
+   "crew": 15,
+   "cargo": [
+    "survey drones",
+    "seed vault",
+    "water tanks"
+   ]
+  },
+  {
+   "pos": 84,
+   "hull": "HQ-5612",
+   "name": "CSS Wandering Halyard",
+   "cls": "Corvette",
+   "value": 4.4,
+   "sector": "Eros Belt",
+   "built": 2228,
+   "lost": 2263,
+   "crew": 49,
+   "cargo": [
+    "survey drones"
+   ]
+  },
+  {
+   "pos": 85,
+   "hull": "RX-9231",
+   "name": "ISV Broken Lantern",
+   "cls": "Freighter",
+   "value": 6.8,
+   "sector": "Eros Belt",
+   "built": 2216,
+   "lost": 2249,
+   "crew": 16,
+   "cargo": [
+    "seed vault",
+    "survey drones"
+   ]
+  },
+  {
+   "pos": 86,
+   "hull": "PX-1399",
+   "name": "ISV Quiet Solace",
+   "cls": "Freighter",
+   "value": 6.5,
+   "sector": "Hygiea Reach",
+   "built": 2209,
+   "lost": 2241,
+   "crew": 25,
+   "cargo": [
+    "navigation beacons",
+    "fuel cells"
+   ]
+  },
+  {
+   "pos": 87,
+   "hull": "KV-4647",
+   "name": "ISV Salt Kestrel",
+   "cls": "Hauler",
+   "value": 1.9,
+   "sector": "Eros Belt",
+   "built": 2202,
+   "lost": 2248,
+   "crew": 4,
+   "cargo": [
+    "spare hull plate"
+   ]
+  },
+  {
+   "pos": 88,
+   "hull": "MZ-3594",
+   "name": "CSS Crimson Orchard",
+   "cls": "Dreadnought",
+   "value": 16.4,
+   "sector": "Hygiea Reach",
+   "built": 2227,
+   "lost": 2271,
+   "crew": 1860,
+   "cargo": [
+    "medical stores"
+   ],
+   "core": "COLD"
+  },
+  {
+   "pos": 89,
+   "hull": "MZ-7744",
+   "name": "CSS Lone Cinder",
+   "cls": "Corvette",
+   "value": 5.1,
+   "sector": "Ceres Near",
+   "built": 2193,
+   "lost": 2243,
+   "crew": 111,
+   "cargo": [
+    "spare hull plate",
+    "cobalt ingots",
+    "navigation beacons"
+   ]
+  },
+  {
+   "pos": 90,
+   "hull": "PX-9207",
+   "name": "ISV Crimson Compass",
+   "cls": "Freighter",
+   "value": 4.1,
+   "sector": "Psyche Deep",
+   "built": 2232,
+   "lost": 2248,
+   "crew": 20,
+   "cargo": [
+    "seed vault",
+    "nickel ore",
+    "hydroponic racks"
+   ]
+  },
+  {
+   "pos": 91,
+   "hull": "MZ-5772",
+   "name": "CSS Last Tern",
+   "cls": "Corvette",
+   "value": 8.9,
+   "sector": "Vesta Drift",
+   "built": 2249,
+   "lost": 2273,
+   "crew": 112,
+   "cargo": [
+    "cobalt ingots"
+   ]
+  },
+  {
+   "pos": 92,
+   "hull": "PX-3812",
+   "name": "ISV Northern Harbor",
+   "cls": "Hauler",
+   "value": 3.4,
+   "sector": "Psyche Deep",
+   "built": 2234,
+   "lost": 2245,
+   "crew": 14,
+   "cargo": [
+    "fuel cells",
+    "reactor shielding"
+   ]
+  },
+  {
+   "pos": 93,
+   "hull": "VR-4977",
+   "name": "ISV Last Ember",
+   "cls": "Hauler",
+   "value": 4.7,
+   "sector": "Juno Shelf",
+   "built": 2213,
+   "lost": 2269,
+   "crew": 16,
+   "cargo": [
+    "cobalt ingots"
+   ]
+  },
+  {
+   "pos": 94,
+   "hull": "PX-7092",
+   "name": "ISV Bright Tide",
+   "cls": "Tug",
+   "value": 0.7,
+   "sector": "Vesta Drift",
+   "built": 2192,
+   "lost": 2233,
+   "crew": 5,
+   "cargo": [
+    "hydroponic racks",
+    "survey drones"
+   ]
+  },
+  {
+   "pos": 95,
+   "hull": "KV-4941",
+   "name": "ISV Last Meridian",
+   "cls": "Probe",
+   "value": 0.2,
+   "sector": "Psyche Deep",
+   "built": 2187,
+   "lost": 2239,
+   "crew": 0,
+   "cargo": [
+    "nickel ore",
+    "ice cores",
+    "spare hull plate"
+   ]
+  },
+  {
+   "pos": 96,
+   "hull": "TD-8811",
+   "name": "ISV Velvet Solace",
+   "cls": "Freighter",
+   "value": 8.7,
+   "sector": "Hygiea Reach",
+   "built": 2255,
+   "lost": 2286,
+   "crew": 26,
+   "cargo": [
+    "fuel cells",
+    "navigation beacons",
+    "seed vault"
+   ]
+  },
+  {
+   "pos": 97,
+   "hull": "HQ-3170",
+   "name": "ISV Iron Covenant",
+   "cls": "Freighter",
+   "value": 3.4,
+   "sector": "Hygiea Reach",
+   "built": 2230,
+   "lost": 2275,
+   "crew": 11,
+   "cargo": [
+    "medical stores",
+    "water tanks"
+   ]
+  },
+  {
+   "pos": 98,
+   "hull": "TD-7041",
+   "name": "ISV Distant Wake",
+   "cls": "Tug",
+   "value": 1.1,
+   "sector": "Psyche Deep",
+   "built": 2239,
+   "lost": 2280,
+   "crew": 4,
+   "cargo": [
+    "medical stores",
+    "spare hull plate"
+   ]
+  },
+  {
+   "pos": 99,
+   "hull": "MZ-5022",
+   "name": "ISV Distant Lantern",
+   "cls": "Probe",
+   "value": 0.6,
+   "sector": "Pallas Gap",
+   "built": 2257,
+   "lost": 2278,
+   "crew": 0,
+   "cargo": [
+    "ice cores",
+    "hydroponic racks",
+    "spare hull plate"
+   ]
+  },
+  {
+   "pos": 100,
+   "hull": "NB-6742",
+   "name": "ISV Velvet Promise",
+   "cls": "Freighter",
+   "value": 3.0,
+   "sector": "Vesta Drift",
+   "built": 2213,
+   "lost": 2243,
+   "crew": 9,
+   "cargo": [
+    "seed vault"
+   ]
+  },
+  {
+   "pos": 101,
+   "hull": "KV-2700",
+   "name": "ISV Gilded Orchard",
+   "cls": "Tug",
+   "value": 0.4,
+   "sector": "Psyche Deep",
+   "built": 2260,
+   "lost": 2275,
+   "crew": 4,
+   "cargo": [
+    "survey drones",
+    "ice cores",
+    "nickel ore"
+   ]
+  },
+  {
+   "pos": 102,
+   "hull": "MZ-7302",
+   "name": "CSS Lone Halyard",
+   "cls": "Corvette",
+   "value": 9.1,
+   "sector": "Eros Belt",
+   "built": 2230,
+   "lost": 2268,
+   "crew": 98,
+   "cargo": [
+    "seed vault",
+    "hydroponic racks",
+    "spare hull plate"
+   ]
+  },
+  {
+   "pos": 103,
+   "hull": "RX-5462",
+   "name": "ISV Brass Solace",
+   "cls": "Freighter",
+   "value": 3.2,
+   "sector": "Eros Belt",
+   "built": 2210,
+   "lost": 2233,
+   "crew": 17,
+   "cargo": [
+    "cobalt ingots",
+    "survey drones",
+    "nickel ore"
+   ]
+  },
+  {
+   "pos": 104,
+   "hull": "VR-5025",
+   "name": "CSS Bright Lantern",
+   "cls": "Corvette",
+   "value": 8.6,
+   "sector": "Hygiea Reach",
+   "built": 2199,
+   "lost": 2240,
+   "crew": 86,
+   "cargo": [
+    "nickel ore"
+   ]
+  },
+  {
+   "pos": 105,
+   "hull": "TD-3632",
+   "name": "ISV Gilded Halyard",
+   "cls": "Freighter",
+   "value": 5.3,
+   "sector": "Vesta Drift",
+   "built": 2217,
+   "lost": 2266,
+   "crew": 28,
+   "cargo": [
+    "reactor shielding",
+    "seed vault"
+   ]
+  },
+  {
+   "pos": 106,
+   "hull": "KV-5636",
+   "name": "ISV Hollow Vigil",
+   "cls": "Hauler",
+   "value": 1.8,
+   "sector": "Psyche Deep",
+   "built": 2220,
+   "lost": 2277,
+   "crew": 11,
+   "cargo": [
+    "navigation beacons"
+   ]
+  },
+  {
+   "pos": 107,
+   "hull": "JL-3492",
+   "name": "ISV Brass Halyard",
+   "cls": "Probe",
+   "value": 0.2,
+   "sector": "Ceres Near",
+   "built": 2216,
+   "lost": 2253,
+   "crew": 0,
+   "cargo": [
+    "survey drones",
+    "seed vault",
+    "water tanks"
+   ]
+  },
+  {
+   "pos": 108,
+   "hull": "TD-3673",
+   "name": "ISV Quiet Tide",
+   "cls": "Hauler",
+   "value": 2.8,
+   "sector": "Eros Belt",
+   "built": 2216,
+   "lost": 2252,
+   "crew": 9,
+   "cargo": [
+    "water tanks",
+    "hydroponic racks"
+   ]
+  },
+  {
+   "pos": 109,
+   "hull": "CS-5602",
+   "name": "CSS Ninth Tern",
+   "cls": "Corvette",
+   "value": 8.2,
+   "sector": "Psyche Deep",
+   "built": 2246,
+   "lost": 2256,
+   "crew": 46,
+   "cargo": [
+    "hydroponic racks",
+    "fuel cells",
+    "navigation beacons"
+   ]
+  },
+  {
+   "pos": 110,
+   "hull": "JL-9823",
+   "name": "ISV Hollow Cinder",
+   "cls": "Freighter",
+   "value": 5.9,
+   "sector": "Ceres Near",
+   "built": 2243,
+   "lost": 2283,
+   "crew": 30,
+   "cargo": [
+    "water tanks"
+   ]
+  },
+  {
+   "pos": 111,
+   "hull": "CS-1583",
+   "name": "ISV Lone Compass",
+   "cls": "Probe",
+   "value": 0.7,
+   "sector": "Pallas Gap",
+   "built": 2233,
+   "lost": 2250,
+   "crew": 0,
+   "cargo": [
+    "water tanks",
+    "navigation beacons"
+   ]
+  },
+  {
+   "pos": 112,
+   "hull": "MZ-7099",
+   "name": "CSS Velvet Kestrel",
+   "cls": "Corvette",
+   "value": 8.7,
+   "sector": "Psyche Deep",
+   "built": 2203,
+   "lost": 2250,
+   "crew": 79,
+   "cargo": [
+    "nickel ore"
+   ]
+  },
+  {
+   "pos": 113,
+   "hull": "RX-1351",
+   "name": "CSS Lone Orchard",
+   "cls": "Corvette",
+   "value": 9.8,
+   "sector": "Vesta Drift",
+   "built": 2261,
+   "lost": 2271,
+   "crew": 107,
+   "cargo": [
+    "water tanks",
+    "ice cores",
+    "reactor shielding"
+   ]
+  },
+  {
+   "pos": 114,
+   "hull": "RX-1254",
+   "name": "CSS Wandering Covenant",
+   "cls": "Dreadnought",
+   "value": 17.3,
+   "sector": "Eros Belt",
+   "built": 2206,
+   "lost": 2257,
+   "crew": 1076,
+   "cargo": [
+    "nickel ore"
+   ],
+   "core": "COLD"
+  },
+  {
+   "pos": 115,
+   "hull": "TD-7846",
+   "name": "CSS Bright Ledger",
+   "cls": "Corvette",
+   "value": 4.5,
+   "sector": "Hygiea Reach",
+   "built": 2223,
+   "lost": 2275,
+   "crew": 56,
+   "cargo": [
+    "nickel ore"
+   ]
+  },
+  {
+   "pos": 116,
+   "hull": "NB-5781",
+   "name": "ISV Amber Ember",
+   "cls": "Tug",
+   "value": 0.9,
+   "sector": "Psyche Deep",
+   "built": 2254,
+   "lost": 2270,
+   "crew": 2,
+   "cargo": [
+    "spare hull plate",
+    "seed vault",
+    "reactor shielding"
+   ]
+  },
+  {
+   "pos": 117,
+   "hull": "MZ-1949",
+   "name": "ISV Cold Ledger",
+   "cls": "Hauler",
+   "value": 2.6,
+   "sector": "Vesta Drift",
+   "built": 2192,
+   "lost": 2238,
+   "crew": 7,
+   "cargo": [
+    "cobalt ingots",
+    "nickel ore",
+    "reactor shielding"
+   ]
+  },
+  {
+   "pos": 118,
+   "hull": "HQ-1161",
+   "name": "ISV Lone Lantern",
+   "cls": "Freighter",
+   "value": 3.3,
+   "sector": "Juno Shelf",
+   "built": 2244,
+   "lost": 2283,
+   "crew": 14,
+   "cargo": [
+    "spare hull plate"
+   ]
+  },
+  {
+   "pos": 119,
+   "hull": "NB-5571",
+   "name": "ISV Northern Ember",
+   "cls": "Hauler",
+   "value": 3.2,
+   "sector": "Eros Belt",
+   "built": 2243,
+   "lost": 2272,
+   "crew": 15,
+   "cargo": [
+    "survey drones",
+    "medical stores"
+   ]
+  },
+  {
+   "pos": 120,
+   "hull": "NB-1236",
+   "name": "ISV Quiet Covenant",
+   "cls": "Probe",
+   "value": 0.6,
+   "sector": "Pallas Gap",
+   "built": 2222,
+   "lost": 2256,
+   "crew": 0,
+   "cargo": [
+    "seed vault"
+   ]
+  },
+  {
+   "pos": 121,
+   "hull": "PX-4147",
+   "name": "ISV Last Bastion",
+   "cls": "Probe",
+   "value": 0.4,
+   "sector": "Hygiea Reach",
+   "built": 2234,
+   "lost": 2288,
+   "crew": 0,
+   "cargo": [
+    "reactor shielding"
+   ]
+  },
+  {
+   "pos": 122,
+   "hull": "PX-3653",
+   "name": "CSS Northern Anvil",
+   "cls": "Corvette",
+   "value": 3.0,
+   "sector": "Pallas Gap",
+   "built": 2253,
+   "lost": 2270,
+   "crew": 55,
+   "cargo": [
+    "reactor shielding",
+    "ice cores"
+   ]
+  },
+  {
+   "pos": 123,
+   "hull": "JL-5567",
+   "name": "CSS Patient Ember",
+   "cls": "Corvette",
+   "value": 3.7,
+   "sector": "Eros Belt",
+   "built": 2244,
+   "lost": 2271,
+   "crew": 43,
+   "cargo": [
+    "ice cores",
+    "seed vault"
+   ]
+  },
+  {
+   "pos": 124,
+   "hull": "VR-8380",
+   "name": "CSS Pale Tern",
+   "cls": "Corvette",
+   "value": 3.6,
+   "sector": "Vesta Drift",
+   "built": 2230,
+   "lost": 2277,
+   "crew": 109,
+   "cargo": [
+    "navigation beacons",
+    "spare hull plate",
+    "water tanks"
+   ]
+  },
+  {
+   "pos": 125,
+   "hull": "JL-8613",
+   "name": "ISV Salt Tern",
+   "cls": "Freighter",
+   "value": 4.1,
+   "sector": "Vesta Drift",
+   "built": 2210,
+   "lost": 2265,
+   "crew": 28,
+   "cargo": [
+    "nickel ore"
+   ]
+  },
+  {
+   "pos": 126,
+   "hull": "KV-8463",
+   "name": "ISV Gilded Sparrow",
+   "cls": "Freighter",
+   "value": 8.0,
+   "sector": "Psyche Deep",
+   "built": 2247,
+   "lost": 2283,
+   "crew": 17,
+   "cargo": [
+    "cobalt ingots",
+    "medical stores",
+    "survey drones"
+   ]
+  },
+  {
+   "pos": 127,
+   "hull": "RX-6625",
+   "name": "ISV Bright Vigil",
+   "cls": "Hauler",
+   "value": 4.8,
+   "sector": "Hygiea Reach",
+   "built": 2178,
+   "lost": 2232,
+   "crew": 11,
+   "cargo": [
+    "navigation beacons"
+   ]
+  },
+  {
+   "pos": 128,
+   "hull": "JL-5709",
+   "name": "ISV Hollow Tide",
+   "cls": "Tug",
+   "value": 1.2,
+   "sector": "Psyche Deep",
+   "built": 2185,
+   "lost": 2240,
+   "crew": 2,
+   "cargo": [
+    "medical stores",
+    "survey drones"
+   ]
+  },
+  {
+   "pos": 129,
+   "hull": "VR-4209",
+   "name": "ISV Silent Heron",
+   "cls": "Freighter",
+   "value": 8.6,
+   "sector": "Eros Belt",
+   "built": 2225,
+   "lost": 2267,
+   "crew": 8,
+   "cargo": [
+    "medical stores",
+    "reactor shielding",
+    "hydroponic racks"
+   ]
+  },
+  {
+   "pos": 130,
+   "hull": "PX-6453",
+   "name": "ISV Silent Harbor",
+   "cls": "Freighter",
+   "value": 6.2,
+   "sector": "Vesta Drift",
+   "built": 2256,
+   "lost": 2277,
+   "crew": 20,
+   "cargo": [
+    "water tanks",
+    "medical stores"
+   ]
+  },
+  {
+   "pos": 131,
+   "hull": "TD-2453",
+   "name": "CSS Patient Cinder",
+   "cls": "Corvette",
+   "value": 6.4,
+   "sector": "Hygiea Reach",
+   "built": 2219,
+   "lost": 2260,
+   "crew": 47,
+   "cargo": [
+    "ice cores",
+    "medical stores",
+    "cobalt ingots"
+   ]
+  },
+  {
+   "pos": 132,
+   "hull": "NB-5269",
+   "name": "ISV Quiet Ember",
+   "cls": "Hauler",
+   "value": 5.8,
+   "sector": "Psyche Deep",
+   "built": 2244,
+   "lost": 2271,
+   "crew": 4,
+   "cargo": [
+    "water tanks",
+    "survey drones"
+   ]
+  },
+  {
+   "pos": 133,
+   "hull": "MZ-3865",
+   "name": "CSS Marrow Kestrel",
+   "cls": "Corvette",
+   "value": 8.5,
+   "sector": "Juno Shelf",
+   "built": 2217,
+   "lost": 2244,
+   "crew": 100,
+   "cargo": [
+    "ice cores",
+    "fuel cells",
+    "hydroponic racks"
+   ]
+  },
+  {
+   "pos": 134,
+   "hull": "JL-1769",
+   "name": "ISV Brass Ember",
+   "cls": "Freighter",
+   "value": 2.9,
+   "sector": "Pallas Gap",
+   "built": 2272,
+   "lost": 2286,
+   "crew": 29,
+   "cargo": [
+    "water tanks",
+    "fuel cells",
+    "nickel ore"
+   ]
+  },
+  {
+   "pos": 135,
+   "hull": "NB-1624",
+   "name": "ISV Wandering Harbor",
+   "cls": "Probe",
+   "value": 0.2,
+   "sector": "Hygiea Reach",
+   "built": 2231,
+   "lost": 2258,
+   "crew": 0,
+   "cargo": [
+    "fuel cells",
+    "water tanks"
+   ]
+  },
+  {
+   "pos": 136,
+   "hull": "MZ-5685",
+   "name": "ISV Copper Sparrow",
+   "cls": "Tug",
+   "value": 0.5,
+   "sector": "Vesta Drift",
+   "built": 2207,
+   "lost": 2248,
+   "crew": 2,
+   "cargo": [
+    "hydroponic racks",
+    "reactor shielding",
+    "spare hull plate"
+   ]
+  },
+  {
+   "pos": 137,
+   "hull": "MZ-1684",
+   "name": "ISV Pale Bastion",
+   "cls": "Probe",
+   "value": 0.2,
+   "sector": "Psyche Deep",
+   "built": 2218,
+   "lost": 2264,
+   "crew": 0,
+   "cargo": [
+    "navigation beacons",
+    "seed vault"
+   ]
+  },
+  {
+   "pos": 138,
+   "hull": "HQ-5916",
+   "name": "CSS Hollow Sparrow",
+   "cls": "Corvette",
+   "value": 3.4,
+   "sector": "Hygiea Reach",
+   "built": 2240,
+   "lost": 2273,
+   "crew": 75,
+   "cargo": [
+    "cobalt ingots",
+    "water tanks"
+   ]
+  },
+  {
+   "pos": 139,
+   "hull": "PX-3506",
+   "name": "ISV Velvet Bastion",
+   "cls": "Tug",
+   "value": 0.6,
+   "sector": "Eros Belt",
+   "built": 2187,
+   "lost": 2233,
+   "crew": 2,
+   "cargo": [
+    "survey drones",
+    "seed vault"
+   ]
+  },
+  {
+   "pos": 140,
+   "hull": "KV-4902",
+   "name": "ISV Lone Ember",
+   "cls": "Hauler",
+   "value": 4.5,
+   "sector": "Eros Belt",
+   "built": 2237,
+   "lost": 2254,
+   "crew": 9,
+   "cargo": [
+    "seed vault",
+    "survey drones",
+    "reactor shielding"
+   ]
+  },
+  {
+   "pos": 141,
+   "hull": "KV-6328",
+   "name": "CSS Amber Compass",
+   "cls": "Corvette",
+   "value": 8.6,
+   "sector": "Juno Shelf",
+   "built": 2251,
+   "lost": 2284,
+   "crew": 113,
+   "cargo": [
+    "nickel ore"
+   ]
+  },
+  {
+   "pos": 142,
+   "hull": "HQ-2155",
+   "name": "ISV Crimson Ember",
+   "cls": "Freighter",
+   "value": 8.4,
+   "sector": "Pallas Gap",
+   "built": 2239,
+   "lost": 2274,
+   "crew": 15,
+   "cargo": [
+    "ice cores"
+   ]
+  },
+  {
+   "pos": 143,
+   "hull": "KV-3697",
+   "name": "CSS Ninth Halyard",
+   "cls": "Corvette",
+   "value": 6.0,
+   "sector": "Eros Belt",
+   "built": 2233,
+   "lost": 2285,
+   "crew": 76,
+   "cargo": [
+    "medical stores"
+   ]
+  },
+  {
+   "pos": 144,
+   "hull": "CS-2758",
+   "name": "CSS Cold Tern",
+   "cls": "Corvette",
+   "value": 4.0,
+   "sector": "Juno Shelf",
+   "built": 2204,
+   "lost": 2247,
+   "crew": 54,
+   "cargo": [
+    "ice cores",
+    "survey drones",
+    "reactor shielding"
+   ]
+  },
+  {
+   "pos": 145,
+   "hull": "NB-9736",
+   "name": "ISV Bright Sparrow",
+   "cls": "Hauler",
+   "value": 5.4,
+   "sector": "Psyche Deep",
+   "built": 2210,
+   "lost": 2251,
+   "crew": 11,
+   "cargo": [
+    "nickel ore"
+   ]
+  },
+  {
+   "pos": 146,
+   "hull": "CS-1019",
+   "name": "CSS Salt Sparrow",
+   "cls": "Dreadnought",
+   "value": 13.0,
+   "sector": "Ceres Near",
+   "built": 2246,
+   "lost": 2283,
+   "crew": 1086,
+   "cargo": [
+    "medical stores"
+   ],
+   "core": null,
+   "log": "Archive: core read LIVE at the 2280 inspection, before the loss."
+  },
+  {
+   "pos": 147,
+   "hull": "KV-4861",
+   "name": "ISV Marrow Covenant",
+   "cls": "Probe",
+   "value": 0.6,
+   "sector": "Pallas Gap",
+   "built": 2189,
+   "lost": 2244,
+   "crew": 0,
+   "cargo": [
+    "seed vault",
+    "medical stores",
+    "fuel cells"
+   ]
+  },
+  {
+   "pos": 148,
+   "hull": "MZ-2166",
+   "name": "CSS Crimson Vigil",
+   "cls": "Corvette",
+   "value": 5.4,
+   "sector": "Eros Belt",
+   "built": 2218,
+   "lost": 2261,
+   "crew": 52,
+   "cargo": [
+    "medical stores"
+   ]
+  },
+  {
+   "pos": 149,
+   "hull": "MZ-1512",
+   "name": "ISV Quiet Halyard",
+   "cls": "Hauler",
+   "value": 2.0,
+   "sector": "Eros Belt",
+   "built": 2247,
+   "lost": 2258,
+   "crew": 13,
+   "cargo": [
+    "fuel cells"
+   ]
+  },
+  {
+   "pos": 150,
+   "hull": "PX-1904",
+   "name": "ISV Gilded Vigil",
+   "cls": "Hauler",
+   "value": 1.5,
+   "sector": "Eros Belt",
+   "built": 2192,
+   "lost": 2250,
+   "crew": 7,
+   "cargo": [
+    "fuel cells",
+    "spare hull plate",
+    "navigation beacons"
+   ]
+  },
+  {
+   "pos": 151,
+   "hull": "PX-7057",
+   "name": "ISV Patient Bastion",
+   "cls": "Probe",
+   "value": 0.7,
+   "sector": "Pallas Gap",
+   "built": 2223,
+   "lost": 2254,
+   "crew": 0,
+   "cargo": [
+    "survey drones"
+   ]
+  },
+  {
+   "pos": 152,
+   "hull": "HQ-6221",
+   "name": "ISV Crimson Heron",
+   "cls": "Probe",
+   "value": 0.8,
+   "sector": "Juno Shelf",
+   "built": 2240,
+   "lost": 2261,
+   "crew": 0,
+   "cargo": [
+    "survey drones",
+    "spare hull plate"
+   ]
+  },
+  {
+   "pos": 153,
+   "hull": "PX-8128",
+   "name": "ISV Crimson Promise",
+   "cls": "Freighter",
+   "value": 4.5,
+   "sector": "Eros Belt",
+   "built": 2245,
+   "lost": 2271,
+   "crew": 27,
+   "cargo": [
+    "medical stores"
+   ]
+  },
+  {
+   "pos": 154,
+   "hull": "RX-9248",
+   "name": "ISV Wandering Cinder",
+   "cls": "Hauler",
+   "value": 2.7,
+   "sector": "Pallas Gap",
+   "built": 2226,
+   "lost": 2257,
+   "crew": 15,
+   "cargo": [
+    "seed vault",
+    "spare hull plate"
+   ]
+  },
+  {
+   "pos": 155,
+   "hull": "KV-7121",
+   "name": "ISV Northern Quill",
+   "cls": "Freighter",
+   "value": 5.3,
+   "sector": "Psyche Deep",
+   "built": 2202,
+   "lost": 2241,
+   "crew": 23,
+   "cargo": [
+    "ice cores"
+   ]
+  },
+  {
+   "pos": 156,
+   "hull": "KV-6215",
+   "name": "ISV Silent Sparrow",
+   "cls": "Hauler",
+   "value": 5.2,
+   "sector": "Vesta Drift",
+   "built": 2232,
+   "lost": 2277,
+   "crew": 11,
+   "cargo": [
+    "navigation beacons"
+   ]
+  },
+  {
+   "pos": 157,
+   "hull": "KV-4694",
+   "name": "ISV Broken Anvil",
+   "cls": "Freighter",
+   "value": 2.9,
+   "sector": "Vesta Drift",
+   "built": 2195,
+   "lost": 2251,
+   "crew": 30,
+   "cargo": [
+    "navigation beacons",
+    "fuel cells"
+   ]
+  },
+  {
+   "pos": 158,
+   "hull": "KV-8896",
+   "name": "ISV Pale Sparrow",
+   "cls": "Hauler",
+   "value": 1.3,
+   "sector": "Pallas Gap",
+   "built": 2252,
+   "lost": 2273,
+   "crew": 10,
+   "cargo": [
+    "ice cores",
+    "spare hull plate",
+    "water tanks"
+   ]
+  },
+  {
+   "pos": 159,
+   "hull": "VR-9108",
+   "name": "ISV Ninth Kestrel",
+   "cls": "Freighter",
+   "value": 4.3,
+   "sector": "Ceres Near",
+   "built": 2245,
+   "lost": 2258,
+   "crew": 11,
+   "cargo": [
+    "seed vault"
+   ]
+  },
+  {
+   "pos": 160,
+   "hull": "MZ-2857",
+   "name": "ISV Velvet Heron",
+   "cls": "Probe",
+   "value": 0.2,
+   "sector": "Vesta Drift",
+   "built": 2217,
+   "lost": 2232,
+   "crew": 0,
+   "cargo": [
+    "spare hull plate",
+    "nickel ore"
+   ]
+  },
+  {
+   "pos": 161,
+   "hull": "MZ-4549",
+   "name": "ISV Bright Tern",
+   "cls": "Freighter",
+   "value": 2.6,
+   "sector": "Vesta Drift",
+   "built": 2210,
+   "lost": 2242,
+   "crew": 13,
+   "cargo": [
+    "spare hull plate",
+    "cobalt ingots"
+   ]
+  },
+  {
+   "pos": 162,
+   "hull": "TD-8074",
+   "name": "ISV Silent Halyard",
+   "cls": "Hauler",
+   "value": 2.5,
+   "sector": "Vesta Drift",
+   "built": 2237,
+   "lost": 2252,
+   "crew": 7,
+   "cargo": [
+    "reactor shielding",
+    "spare hull plate"
+   ]
+  },
+  {
+   "pos": 163,
+   "hull": "RX-8630",
+   "name": "ISV Gilded Kestrel",
+   "cls": "Tug",
+   "value": 1.5,
+   "sector": "Ceres Near",
+   "built": 2226,
+   "lost": 2286,
+   "crew": 3,
+   "cargo": [
+    "hydroponic racks"
+   ]
+  },
+  {
+   "pos": 164,
+   "hull": "MZ-9629",
+   "name": "ISV Velvet Halyard",
+   "cls": "Tug",
+   "value": 1.4,
+   "sector": "Juno Shelf",
+   "built": 2243,
+   "lost": 2262,
+   "crew": 4,
+   "cargo": [
+    "water tanks"
+   ]
+  },
+  {
+   "pos": 165,
+   "hull": "CS-2919",
+   "name": "CSS Quiet Lantern",
+   "cls": "Corvette",
+   "value": 6.6,
+   "sector": "Hygiea Reach",
+   "built": 2254,
+   "lost": 2286,
+   "crew": 117,
+   "cargo": [
+    "cobalt ingots"
+   ]
+  },
+  {
+   "pos": 166,
+   "hull": "RX-6366",
+   "name": "ISV Lone Solace",
+   "cls": "Freighter",
+   "value": 6.0,
+   "sector": "Ceres Near",
+   "built": 2188,
+   "lost": 2245,
+   "crew": 19,
+   "cargo": [
+    "hydroponic racks",
+    "ice cores",
+    "fuel cells"
+   ]
+  },
+  {
+   "pos": 167,
+   "hull": "HQ-8966",
+   "name": "ISV Hollow Lantern",
+   "cls": "Hauler",
+   "value": 4.5,
+   "sector": "Ceres Near",
+   "built": 2226,
+   "lost": 2240,
+   "crew": 11,
+   "cargo": [
+    "nickel ore"
+   ]
+  },
+  {
+   "pos": 168,
+   "hull": "PX-9360",
+   "name": "ISV Hollow Halyard",
+   "cls": "Probe",
+   "value": 0.8,
+   "sector": "Psyche Deep",
+   "built": 2229,
+   "lost": 2259,
+   "crew": 0,
+   "cargo": [
+    "spare hull plate",
+    "cobalt ingots"
+   ]
+  },
+  {
+   "pos": 169,
+   "hull": "HQ-7556",
+   "name": "ISV Hollow Harbor",
+   "cls": "Probe",
+   "value": 0.9,
+   "sector": "Psyche Deep",
+   "built": 2229,
+   "lost": 2273,
+   "crew": 0,
+   "cargo": [
+    "nickel ore",
+    "navigation beacons",
+    "hydroponic racks"
+   ]
+  },
+  {
+   "pos": 170,
+   "hull": "TD-5299",
+   "name": "ISV Silent Kestrel",
+   "cls": "Tug",
+   "value": 1.2,
+   "sector": "Ceres Near",
+   "built": 2205,
+   "lost": 2238,
+   "crew": 2,
+   "cargo": [
+    "medical stores",
+    "water tanks",
+    "fuel cells"
+   ]
+  },
+  {
+   "pos": 171,
+   "hull": "HQ-6396",
+   "name": "ISV Salt Promise",
+   "cls": "Hauler",
+   "value": 3.4,
+   "sector": "Pallas Gap",
+   "built": 2231,
+   "lost": 2245,
+   "crew": 16,
+   "cargo": [
+    "medical stores",
+    "ice cores"
+   ]
+  },
+  {
+   "pos": 172,
+   "hull": "TD-1739",
+   "name": "ISV Distant Vigil",
+   "cls": "Hauler",
+   "value": 5.1,
+   "sector": "Pallas Gap",
+   "built": 2224,
+   "lost": 2236,
+   "crew": 8,
+   "cargo": [
+    "cobalt ingots",
+    "spare hull plate",
+    "fuel cells"
+   ]
+  },
+  {
+   "pos": 173,
+   "hull": "HQ-9368",
+   "name": "ISV Brass Tide",
+   "cls": "Probe",
+   "value": 0.2,
+   "sector": "Pallas Gap",
+   "built": 2264,
+   "lost": 2280,
+   "crew": 0,
+   "cargo": [
+    "fuel cells"
+   ]
+  },
+  {
+   "pos": 174,
+   "hull": "JL-4295",
+   "name": "ISV Pale Meridian",
+   "cls": "Freighter",
+   "value": 7.7,
+   "sector": "Pallas Gap",
+   "built": 2223,
+   "lost": 2246,
+   "crew": 27,
+   "cargo": [
+    "reactor shielding"
+   ]
+  },
+  {
+   "pos": 175,
+   "hull": "JL-1376",
+   "name": "ISV Iron Wake",
+   "cls": "Hauler",
+   "value": 4.9,
+   "sector": "Juno Shelf",
+   "built": 2217,
+   "lost": 2233,
+   "crew": 6,
+   "cargo": [
+    "reactor shielding",
+    "fuel cells"
+   ]
+  },
+  {
+   "pos": 176,
+   "hull": "VR-2969",
+   "name": "CSS Ashen Harbor",
+   "cls": "Corvette",
+   "value": 6.1,
+   "sector": "Hygiea Reach",
+   "built": 2180,
+   "lost": 2236,
+   "crew": 97,
+   "cargo": [
+    "cobalt ingots",
+    "seed vault",
+    "water tanks"
+   ]
+  },
+  {
+   "pos": 177,
+   "hull": "CS-6609",
+   "name": "ISV Marrow Ember",
+   "cls": "Freighter",
+   "value": 6.1,
+   "sector": "Hygiea Reach",
+   "built": 2221,
+   "lost": 2244,
+   "crew": 22,
+   "cargo": [
+    "survey drones",
+    "hydroponic racks",
+    "fuel cells"
+   ]
+  },
+  {
+   "pos": 178,
+   "hull": "PX-9250",
+   "name": "ISV Cold Anvil",
+   "cls": "Tug",
+   "value": 1.3,
+   "sector": "Ceres Near",
+   "built": 2220,
+   "lost": 2246,
+   "crew": 4,
+   "cargo": [
+    "nickel ore",
+    "hydroponic racks"
+   ]
+  },
+  {
+   "pos": 179,
+   "hull": "TD-5725",
+   "name": "ISV Ashen Ember",
+   "cls": "Probe",
+   "value": 0.8,
+   "sector": "Ceres Near",
+   "built": 2251,
+   "lost": 2274,
+   "crew": 0,
+   "cargo": [
+    "nickel ore",
+    "seed vault",
+    "navigation beacons"
+   ]
+  },
+  {
+   "pos": 180,
+   "hull": "TD-2968",
+   "name": "ISV Amber Vigil",
+   "cls": "Probe",
+   "value": 0.1,
+   "sector": "Vesta Drift",
+   "built": 2248,
+   "lost": 2263,
+   "crew": 0,
+   "cargo": [
+    "cobalt ingots",
+    "water tanks",
+    "reactor shielding"
+   ]
+  },
+  {
+   "pos": 181,
+   "hull": "NB-7595",
+   "name": "CSS Amber Tide",
+   "cls": "Corvette",
+   "value": 9.1,
+   "sector": "Ceres Near",
+   "built": 2222,
+   "lost": 2235,
+   "crew": 78,
+   "cargo": [
+    "cobalt ingots"
+   ]
+  },
+  {
+   "pos": 182,
+   "hull": "HQ-5526",
+   "name": "ISV Broken Promise",
+   "cls": "Hauler",
+   "value": 3.7,
+   "sector": "Pallas Gap",
+   "built": 2238,
+   "lost": 2266,
+   "crew": 9,
+   "cargo": [
+    "fuel cells",
+    "medical stores",
+    "seed vault"
+   ]
+  },
+  {
+   "pos": 183,
+   "hull": "JL-2596",
+   "name": "ISV Crimson Tern",
+   "cls": "Freighter",
+   "value": 6.2,
+   "sector": "Ceres Near",
+   "built": 2265,
+   "lost": 2280,
+   "crew": 29,
+   "cargo": [
+    "seed vault",
+    "medical stores"
+   ]
+  },
+  {
+   "pos": 184,
+   "hull": "JL-9272",
+   "name": "CSS Cold Harbor",
+   "cls": "Dreadnought",
+   "value": 18.6,
+   "sector": "Eros Belt",
+   "built": 2210,
+   "lost": 2248,
+   "crew": 1833,
+   "cargo": [
+    "navigation beacons",
+    "fuel cells",
+    "seed vault"
+   ],
+   "core": "BREACHED"
+  },
+  {
+   "pos": 185,
+   "hull": "RX-6833",
+   "name": "ISV Salt Lantern",
+   "cls": "Freighter",
+   "value": 3.7,
+   "sector": "Hygiea Reach",
+   "built": 2206,
+   "lost": 2254,
+   "crew": 15,
+   "cargo": [
+    "navigation beacons",
+    "cobalt ingots"
+   ]
+  },
+  {
+   "pos": 186,
+   "hull": "PX-2582",
+   "name": "ISV Last Heron",
+   "cls": "Tug",
+   "value": 1.3,
+   "sector": "Eros Belt",
+   "built": 2203,
+   "lost": 2239,
+   "crew": 2,
+   "cargo": [
+    "seed vault"
+   ]
+  },
+  {
+   "pos": 187,
+   "hull": "PX-5742",
+   "name": "ISV Gilded Compass",
+   "cls": "Hauler",
+   "value": 5.1,
+   "sector": "Pallas Gap",
+   "built": 2192,
+   "lost": 2231,
+   "crew": 12,
+   "cargo": [
+    "reactor shielding",
+    "navigation beacons"
+   ]
+  },
+  {
+   "pos": 188,
+   "hull": "PX-2555",
+   "name": "CSS Broken Tern",
+   "cls": "Corvette",
+   "value": 3.4,
+   "sector": "Psyche Deep",
+   "built": 2259,
+   "lost": 2284,
+   "crew": 89,
+   "cargo": [
+    "medical stores",
+    "ice cores",
+    "nickel ore"
+   ]
+  },
+  {
+   "pos": 189,
+   "hull": "MZ-2982",
+   "name": "ISV Distant Anvil",
+   "cls": "Probe",
+   "value": 0.9,
+   "sector": "Hygiea Reach",
+   "built": 2237,
+   "lost": 2284,
+   "crew": 0,
+   "cargo": [
+    "medical stores",
+    "nickel ore"
+   ]
+  },
+  {
+   "pos": 190,
+   "hull": "MZ-6515",
+   "name": "CSS Wandering Ledger",
+   "cls": "Corvette",
+   "value": 4.9,
+   "sector": "Vesta Drift",
+   "built": 2247,
+   "lost": 2272,
+   "crew": 107,
+   "cargo": [
+    "medical stores",
+    "ice cores",
+    "reactor shielding"
+   ]
+  },
+  {
+   "pos": 191,
+   "hull": "RX-2470",
+   "name": "ISV Ninth Sparrow",
+   "cls": "Freighter",
+   "value": 3.9,
+   "sector": "Ceres Near",
+   "built": 2215,
+   "lost": 2232,
+   "crew": 17,
+   "cargo": [
+    "hydroponic racks",
+    "spare hull plate"
+   ]
+  },
+  {
+   "pos": 192,
+   "hull": "KV-5059",
+   "name": "ISV Marrow Harbor",
+   "cls": "Probe",
+   "value": 0.6,
+   "sector": "Psyche Deep",
+   "built": 2242,
+   "lost": 2267,
+   "crew": 0,
+   "cargo": [
+    "survey drones"
+   ]
+  },
+  {
+   "pos": 193,
+   "hull": "NB-6419",
+   "name": "ISV Brass Wake",
+   "cls": "Freighter",
+   "value": 8.8,
+   "sector": "Pallas Gap",
+   "built": 2184,
+   "lost": 2244,
+   "crew": 21,
+   "cargo": [
+    "water tanks"
+   ]
+  },
+  {
+   "pos": 194,
+   "hull": "HQ-7701",
+   "name": "ISV Iron Tern",
+   "cls": "Tug",
+   "value": 1.2,
+   "sector": "Vesta Drift",
+   "built": 2252,
+   "lost": 2272,
+   "crew": 3,
+   "cargo": [
+    "nickel ore"
+   ]
+  },
+  {
+   "pos": 195,
+   "hull": "CS-5917",
+   "name": "ISV Quiet Sparrow",
+   "cls": "Probe",
+   "value": 0.5,
+   "sector": "Juno Shelf",
+   "built": 2196,
+   "lost": 2233,
+   "crew": 0,
+   "cargo": [
+    "water tanks"
+   ]
+  },
+  {
+   "pos": 196,
+   "hull": "MZ-2491",
+   "name": "ISV Gilded Anvil",
+   "cls": "Freighter",
+   "value": 3.9,
+   "sector": "Eros Belt",
+   "built": 2208,
+   "lost": 2254,
+   "crew": 30,
+   "cargo": [
+    "ice cores",
+    "spare hull plate"
+   ]
+  },
+  {
+   "pos": 197,
+   "hull": "KV-9421",
+   "name": "ISV Brass Cinder",
+   "cls": "Freighter",
+   "value": 6.7,
+   "sector": "Juno Shelf",
+   "built": 2247,
+   "lost": 2283,
+   "crew": 30,
+   "cargo": [
+    "seed vault"
+   ]
+  },
+  {
+   "pos": 198,
+   "hull": "MZ-6690",
+   "name": "ISV Iron Lantern",
+   "cls": "Tug",
+   "value": 1.3,
+   "sector": "Eros Belt",
+   "built": 2190,
+   "lost": 2243,
+   "crew": 5,
+   "cargo": [
+    "survey drones"
+   ]
+  },
+  {
+   "pos": 199,
+   "hull": "JL-2362",
+   "name": "ISV Ninth Solace",
+   "cls": "Freighter",
+   "value": 7.8,
+   "sector": "Psyche Deep",
+   "built": 2232,
+   "lost": 2250,
+   "crew": 14,
+   "cargo": [
+    "spare hull plate",
+    "nickel ore",
+    "water tanks"
+   ]
+  },
+  {
+   "pos": 200,
+   "hull": "TD-3202",
+   "name": "ISV Copper Harbor",
+   "cls": "Probe",
+   "value": 0.4,
+   "sector": "Hygiea Reach",
+   "built": 2225,
+   "lost": 2270,
+   "crew": 0,
+   "cargo": [
+    "cobalt ingots"
+   ]
+  },
+  {
+   "pos": 201,
+   "hull": "PX-1884",
+   "name": "ISV Cold Bastion",
+   "cls": "Freighter",
+   "value": 3.3,
+   "sector": "Psyche Deep",
+   "built": 2270,
+   "lost": 2279,
+   "crew": 24,
+   "cargo": [
+    "medical stores"
+   ]
+  },
+  {
+   "pos": 202,
+   "hull": "RX-6817",
+   "name": "CSS Pale Wake",
+   "cls": "Corvette",
+   "value": 5.6,
+   "sector": "Juno Shelf",
+   "built": 2198,
+   "lost": 2241,
+   "crew": 57,
+   "cargo": [
+    "cobalt ingots",
+    "navigation beacons",
+    "water tanks"
+   ]
+  },
+  {
+   "pos": 203,
+   "hull": "NB-4109",
+   "name": "ISV Silent Solace",
+   "cls": "Tug",
+   "value": 0.8,
+   "sector": "Pallas Gap",
+   "built": 2261,
+   "lost": 2285,
+   "crew": 3,
+   "cargo": [
+    "cobalt ingots",
+    "seed vault"
+   ]
+  },
+  {
+   "pos": 204,
+   "hull": "MZ-9288",
+   "name": "ISV Ashen Solace",
+   "cls": "Freighter",
+   "value": 6.7,
+   "sector": "Ceres Near",
+   "built": 2190,
+   "lost": 2234,
+   "crew": 20,
+   "cargo": [
+    "ice cores"
+   ]
+  },
+  {
+   "pos": 205,
+   "hull": "HQ-3551",
+   "name": "ISV Wandering Ember",
+   "cls": "Freighter",
+   "value": 2.1,
+   "sector": "Pallas Gap",
+   "built": 2220,
+   "lost": 2238,
+   "crew": 15,
+   "cargo": [
+    "nickel ore"
+   ]
+  },
+  {
+   "pos": 206,
+   "hull": "RX-1062",
+   "name": "ISV Pale Quill",
+   "cls": "Hauler",
+   "value": 3.7,
+   "sector": "Pallas Gap",
+   "built": 2226,
+   "lost": 2272,
+   "crew": 12,
+   "cargo": [
+    "nickel ore",
+    "fuel cells",
+    "hydroponic racks"
+   ]
+  },
+  {
+   "pos": 207,
+   "hull": "KV-4153",
+   "name": "ISV Marrow Orchard",
+   "cls": "Tug",
+   "value": 0.9,
+   "sector": "Eros Belt",
+   "built": 2250,
+   "lost": 2272,
+   "crew": 3,
+   "cargo": [
+    "hydroponic racks",
+    "cobalt ingots"
+   ]
+  },
+  {
+   "pos": 208,
+   "hull": "RX-9547",
+   "name": "CSS Cold Wake",
+   "cls": "Dreadnought",
+   "value": 15.1,
+   "sector": "Pallas Gap",
+   "built": 2222,
+   "lost": 2232,
+   "crew": 2028,
+   "cargo": [
+    "fuel cells",
+    "cobalt ingots",
+    "navigation beacons"
+   ],
+   "core": "COLD",
+   "log": "Archive: core read LIVE at the 2229 inspection, before the loss."
+  },
+  {
+   "pos": 209,
+   "hull": "HQ-5816",
+   "name": "ISV Lone Tide",
+   "cls": "Probe",
+   "value": 0.6,
+   "sector": "Ceres Near",
+   "built": 2226,
+   "lost": 2254,
+   "crew": 0,
+   "cargo": [
+    "spare hull plate"
+   ]
+  },
+  {
+   "pos": 210,
+   "hull": "VR-3831",
+   "name": "ISV Marrow Compass",
+   "cls": "Probe",
+   "value": 0.9,
+   "sector": "Psyche Deep",
+   "built": 2246,
+   "lost": 2259,
+   "crew": 0,
+   "cargo": [
+    "medical stores",
+    "water tanks",
+    "spare hull plate"
+   ]
+  },
+  {
+   "pos": 211,
+   "hull": "MZ-6495",
+   "name": "ISV Silent Meridian",
+   "cls": "Hauler",
+   "value": 2.9,
+   "sector": "Vesta Drift",
+   "built": 2228,
+   "lost": 2238,
+   "crew": 14,
+   "cargo": [
+    "water tanks",
+    "ice cores"
+   ]
+  },
+  {
+   "pos": 212,
+   "hull": "PX-7333",
+   "name": "CSS Lone Covenant",
+   "cls": "Corvette",
+   "value": 6.0,
+   "sector": "Ceres Near",
+   "built": 2246,
+   "lost": 2284,
+   "crew": 85,
+   "cargo": [
+    "spare hull plate",
+    "hydroponic racks"
+   ]
+  },
+  {
+   "pos": 213,
+   "hull": "VR-6390",
+   "name": "CSS Crimson Tide",
+   "cls": "Corvette",
+   "value": 5.8,
+   "sector": "Ceres Near",
+   "built": 2235,
+   "lost": 2248,
+   "crew": 106,
+   "cargo": [
+    "fuel cells"
+   ]
+  },
+  {
+   "pos": 214,
+   "hull": "NB-1256",
+   "name": "CSS Broken Orchard",
+   "cls": "Dreadnought",
+   "value": 24.4,
+   "sector": "Hygiea Reach",
+   "built": 2213,
+   "lost": 2269,
+   "crew": 2073,
+   "cargo": [
+    "water tanks"
+   ],
+   "core": "BREACHED"
+  },
+  {
+   "pos": 215,
+   "hull": "HQ-4999",
+   "name": "CSS Silent Lantern",
+   "cls": "Corvette",
+   "value": 6.9,
+   "sector": "Eros Belt",
+   "built": 2234,
+   "lost": 2252,
+   "crew": 107,
+   "cargo": [
+    "ice cores",
+    "water tanks",
+    "navigation beacons"
+   ]
+  },
+  {
+   "pos": 216,
+   "hull": "JL-5968",
+   "name": "ISV Brass Meridian",
+   "cls": "Tug",
+   "value": 1.1,
+   "sector": "Hygiea Reach",
+   "built": 2213,
+   "lost": 2236,
+   "crew": 5,
+   "cargo": [
+    "ice cores"
+   ]
+  },
+  {
+   "pos": 217,
+   "hull": "CS-8343",
+   "name": "ISV Salt Covenant",
+   "cls": "Hauler",
+   "value": 2.6,
+   "sector": "Ceres Near",
+   "built": 2243,
+   "lost": 2253,
+   "crew": 8,
+   "cargo": [
+    "nickel ore"
+   ]
+  },
+  {
+   "pos": 218,
+   "hull": "JL-7114",
+   "name": "ISV Northern Orchard",
+   "cls": "Hauler",
+   "value": 3.8,
+   "sector": "Eros Belt",
+   "built": 2224,
+   "lost": 2281,
+   "crew": 7,
+   "cargo": [
+    "hydroponic racks",
+    "survey drones",
+    "nickel ore"
+   ]
+  },
+  {
+   "pos": 219,
+   "hull": "MZ-6611",
+   "name": "ISV Northern Vigil",
+   "cls": "Freighter",
+   "value": 5.1,
+   "sector": "Juno Shelf",
+   "built": 2240,
+   "lost": 2274,
+   "crew": 30,
+   "cargo": [
+    "reactor shielding"
+   ]
+  },
+  {
+   "pos": 220,
+   "hull": "JL-2495",
+   "name": "ISV Brass Promise",
+   "cls": "Hauler",
+   "value": 4.0,
+   "sector": "Psyche Deep",
+   "built": 2242,
+   "lost": 2264,
+   "crew": 9,
+   "cargo": [
+    "ice cores",
+    "nickel ore",
+    "hydroponic racks"
+   ]
+  },
+  {
+   "pos": 221,
+   "hull": "VR-6628",
+   "name": "ISV Gilded Wake",
+   "cls": "Freighter",
+   "value": 8.4,
+   "sector": "Vesta Drift",
+   "built": 2193,
+   "lost": 2233,
+   "crew": 26,
+   "cargo": [
+    "survey drones"
+   ]
+  },
+  {
+   "pos": 222,
+   "hull": "HQ-9011",
+   "name": "CSS Wandering Lantern",
+   "cls": "Corvette",
+   "value": 9.0,
+   "sector": "Pallas Gap",
+   "built": 2200,
+   "lost": 2237,
+   "crew": 51,
+   "cargo": [
+    "seed vault"
+   ]
+  },
+  {
+   "pos": 223,
+   "hull": "PX-3826",
+   "name": "ISV Ninth Anvil",
+   "cls": "Tug",
+   "value": 0.5,
+   "sector": "Hygiea Reach",
+   "built": 2249,
+   "lost": 2278,
+   "crew": 4,
+   "cargo": [
+    "seed vault"
+   ]
+  },
+  {
+   "pos": 224,
+   "hull": "CS-1357",
+   "name": "CSS Copper Covenant",
+   "cls": "Corvette",
+   "value": 6.6,
+   "sector": "Pallas Gap",
+   "built": 2190,
+   "lost": 2231,
+   "crew": 94,
+   "cargo": [
+    "ice cores"
+   ]
+  },
+  {
+   "pos": 225,
+   "hull": "TD-9764",
+   "name": "ISV Hollow Promise",
+   "cls": "Probe",
+   "value": 0.8,
+   "sector": "Eros Belt",
+   "built": 2276,
+   "lost": 2288,
+   "crew": 0,
+   "cargo": [
+    "reactor shielding"
+   ]
+  },
+  {
+   "pos": 226,
+   "hull": "JL-1159",
+   "name": "CSS Pale Cinder",
+   "cls": "Corvette",
+   "value": 8.1,
+   "sector": "Ceres Near",
+   "built": 2237,
+   "lost": 2275,
+   "crew": 52,
+   "cargo": [
+    "navigation beacons",
+    "water tanks"
+   ]
+  },
+  {
+   "pos": 227,
+   "hull": "NB-4427",
+   "name": "ISV Quiet Vigil",
+   "cls": "Tug",
+   "value": 0.6,
+   "sector": "Hygiea Reach",
+   "built": 2222,
+   "lost": 2266,
+   "crew": 5,
+   "cargo": [
+    "navigation beacons",
+    "spare hull plate",
+    "fuel cells"
+   ]
+  },
+  {
+   "pos": 228,
+   "hull": "JL-6408",
+   "name": "ISV Wandering Solace",
+   "cls": "Probe",
+   "value": 0.5,
+   "sector": "Psyche Deep",
+   "built": 2214,
+   "lost": 2271,
+   "crew": 0,
+   "cargo": [
+    "cobalt ingots",
+    "seed vault"
+   ]
+  },
+  {
+   "pos": 229,
+   "hull": "CS-7612",
+   "name": "ISV Copper Solace",
+   "cls": "Probe",
+   "value": 0.2,
+   "sector": "Hygiea Reach",
+   "built": 2246,
+   "lost": 2260,
+   "crew": 0,
+   "cargo": [
+    "hydroponic racks",
+    "medical stores",
+    "water tanks"
+   ]
+  },
+  {
+   "pos": 230,
+   "hull": "HQ-9679",
+   "name": "ISV Bright Halyard",
+   "cls": "Freighter",
+   "value": 8.0,
+   "sector": "Juno Shelf",
+   "built": 2218,
+   "lost": 2270,
+   "crew": 17,
+   "cargo": [
+    "cobalt ingots",
+    "ice cores",
+    "water tanks"
+   ]
+  },
+  {
+   "pos": 231,
+   "hull": "CS-9615",
+   "name": "ISV Amber Covenant",
+   "cls": "Probe",
+   "value": 0.1,
+   "sector": "Psyche Deep",
+   "built": 2222,
+   "lost": 2245,
+   "crew": 0,
+   "cargo": [
+    "seed vault"
+   ]
+  },
+  {
+   "pos": 232,
+   "hull": "RX-7442",
+   "name": "ISV Lone Promise",
+   "cls": "Probe",
+   "value": 0.8,
+   "sector": "Ceres Near",
+   "built": 2216,
+   "lost": 2263,
+   "crew": 0,
+   "cargo": [
+    "medical stores",
+    "navigation beacons",
+    "seed vault"
+   ]
+  },
+  {
+   "pos": 233,
+   "hull": "TD-6959",
+   "name": "CSS Broken Kestrel",
+   "cls": "Corvette",
+   "value": 8.0,
+   "sector": "Pallas Gap",
+   "built": 2274,
+   "lost": 2284,
+   "crew": 57,
+   "cargo": [
+    "seed vault"
+   ]
+  },
+  {
+   "pos": 234,
+   "hull": "NB-3109",
+   "name": "ISV Bright Meridian",
+   "cls": "Probe",
+   "value": 0.4,
+   "sector": "Pallas Gap",
+   "built": 2230,
+   "lost": 2263,
+   "crew": 0,
+   "cargo": [
+    "seed vault",
+    "hydroponic racks",
+    "medical stores"
+   ]
+  },
+  {
+   "pos": 235,
+   "hull": "PX-1330",
+   "name": "CSS Crimson Kestrel",
+   "cls": "Corvette",
+   "value": 6.8,
+   "sector": "Juno Shelf",
+   "built": 2269,
+   "lost": 2281,
+   "crew": 107,
+   "cargo": [
+    "cobalt ingots",
+    "medical stores"
+   ]
+  },
+  {
+   "pos": 236,
+   "hull": "HQ-9782",
+   "name": "ISV Broken Vigil",
+   "cls": "Probe",
+   "value": 0.2,
+   "sector": "Ceres Near",
+   "built": 2228,
+   "lost": 2274,
+   "crew": 0,
+   "cargo": [
+    "survey drones",
+    "seed vault"
+   ]
+  },
+  {
+   "pos": 237,
+   "hull": "RX-5244",
+   "name": "ISV Brass Orchard",
+   "cls": "Freighter",
+   "value": 3.3,
+   "sector": "Vesta Drift",
+   "built": 2185,
+   "lost": 2241,
+   "crew": 27,
+   "cargo": [
+    "spare hull plate",
+    "medical stores",
+    "ice cores"
+   ]
+  },
+  {
+   "pos": 238,
+   "hull": "RX-9071",
+   "name": "ISV Amber Ledger",
+   "cls": "Probe",
+   "value": 0.2,
+   "sector": "Eros Belt",
+   "built": 2211,
+   "lost": 2271,
+   "crew": 0,
+   "cargo": [
+    "medical stores",
+    "water tanks"
+   ]
+  },
+  {
+   "pos": 239,
+   "hull": "PX-1802",
+   "name": "ISV Broken Sparrow",
+   "cls": "Probe",
+   "value": 0.5,
+   "sector": "Eros Belt",
+   "built": 2232,
+   "lost": 2240,
+   "crew": 0,
+   "cargo": [
+    "ice cores"
+   ]
+  },
+  {
+   "pos": 240,
+   "hull": "CS-6267",
+   "name": "ISV Ashen Heron",
+   "cls": "Probe",
+   "value": 0.8,
+   "sector": "Juno Shelf",
+   "built": 2211,
+   "lost": 2242,
+   "crew": 0,
+   "cargo": [
+    "spare hull plate",
+    "navigation beacons"
+   ]
+  },
+  {
+   "pos": 241,
+   "hull": "RX-2874",
+   "name": "ISV Quiet Harbor",
+   "cls": "Freighter",
+   "value": 8.7,
+   "sector": "Psyche Deep",
+   "built": 2210,
+   "lost": 2266,
+   "crew": 28,
+   "cargo": [
+    "cobalt ingots",
+    "survey drones",
+    "water tanks"
+   ]
+  },
+  {
+   "pos": 242,
+   "hull": "KV-4427",
+   "name": "CSS Brass Kestrel",
+   "cls": "Corvette",
+   "value": 8.8,
+   "sector": "Hygiea Reach",
+   "built": 2259,
+   "lost": 2269,
+   "crew": 78,
+   "cargo": [
+    "ice cores"
+   ]
+  },
+  {
+   "pos": 243,
+   "hull": "VR-3251",
+   "name": "ISV Hollow Heron",
+   "cls": "Hauler",
+   "value": 3.0,
+   "sector": "Pallas Gap",
+   "built": 2211,
+   "lost": 2242,
+   "crew": 15,
+   "cargo": [
+    "survey drones"
+   ]
+  },
+  {
+   "pos": 244,
+   "hull": "TD-7117",
+   "name": "ISV Gilded Tern",
+   "cls": "Freighter",
+   "value": 7.2,
+   "sector": "Juno Shelf",
+   "built": 2214,
+   "lost": 2271,
+   "crew": 11,
+   "cargo": [
+    "navigation beacons",
+    "fuel cells",
+    "nickel ore"
+   ]
+  },
+  {
+   "pos": 245,
+   "hull": "VR-4367",
+   "name": "ISV Iron Solace",
+   "cls": "Probe",
+   "value": 0.9,
+   "sector": "Hygiea Reach",
+   "built": 2212,
+   "lost": 2267,
+   "crew": 0,
+   "cargo": [
+    "fuel cells"
+   ]
+  },
+  {
+   "pos": 246,
+   "hull": "NB-8266",
+   "name": "ISV Broken Ledger",
+   "cls": "Freighter",
+   "value": 6.9,
+   "sector": "Juno Shelf",
+   "built": 2240,
+   "lost": 2272,
+   "crew": 12,
+   "cargo": [
+    "ice cores"
+   ]
+  },
+  {
+   "pos": 247,
+   "hull": "PX-4593",
+   "name": "ISV Pale Solace",
+   "cls": "Probe",
+   "value": 0.5,
+   "sector": "Pallas Gap",
+   "built": 2201,
+   "lost": 2257,
+   "crew": 0,
+   "cargo": [
+    "ice cores",
+    "survey drones",
+    "navigation beacons"
+   ]
+  },
+  {
+   "pos": 248,
+   "hull": "MZ-8683",
+   "name": "ISV Gilded Cinder",
+   "cls": "Probe",
+   "value": 0.4,
+   "sector": "Vesta Drift",
+   "built": 2230,
+   "lost": 2281,
+   "crew": 0,
+   "cargo": [
+    "reactor shielding"
+   ]
+  },
+  {
+   "pos": 249,
+   "hull": "MZ-9628",
+   "name": "ISV Ashen Orchard",
+   "cls": "Tug",
+   "value": 1.2,
+   "sector": "Eros Belt",
+   "built": 2250,
+   "lost": 2278,
+   "crew": 2,
+   "cargo": [
+    "seed vault"
+   ]
+  },
+  {
+   "pos": 250,
+   "hull": "HQ-4513",
+   "name": "ISV Wandering Tern",
+   "cls": "Hauler",
+   "value": 4.4,
+   "sector": "Juno Shelf",
+   "built": 2222,
+   "lost": 2236,
+   "crew": 10,
+   "cargo": [
+    "reactor shielding"
+   ]
+  },
+  {
+   "pos": 251,
+   "hull": "TD-4289",
+   "name": "CSS Marrow Anvil",
+   "cls": "Dreadnought",
+   "value": 13.0,
+   "sector": "Pallas Gap",
+   "built": 2249,
+   "lost": 2267,
+   "crew": 2198,
+   "cargo": [
+    "medical stores"
+   ],
+   "core": null
+  },
+  {
+   "pos": 252,
+   "hull": "MZ-9736",
+   "name": "ISV Patient Wake",
+   "cls": "Freighter",
+   "value": 2.1,
+   "sector": "Psyche Deep",
+   "built": 2238,
+   "lost": 2275,
+   "crew": 15,
+   "cargo": [
+    "ice cores",
+    "navigation beacons"
+   ]
+  },
+  {
+   "pos": 253,
+   "hull": "MZ-7269",
+   "name": "ISV Last Sparrow",
+   "cls": "Freighter",
+   "value": 4.0,
+   "sector": "Hygiea Reach",
+   "built": 2213,
+   "lost": 2243,
+   "crew": 12,
+   "cargo": [
+    "spare hull plate",
+    "survey drones",
+    "nickel ore"
+   ]
+  },
+  {
+   "pos": 254,
+   "hull": "KV-2513",
+   "name": "ISV Patient Anvil",
+   "cls": "Freighter",
+   "value": 4.9,
+   "sector": "Pallas Gap",
+   "built": 2205,
+   "lost": 2245,
+   "crew": 23,
+   "cargo": [
+    "cobalt ingots"
+   ]
+  },
+  {
+   "pos": 255,
+   "hull": "MZ-3377",
+   "name": "ISV Last Wake",
+   "cls": "Tug",
+   "value": 0.8,
+   "sector": "Ceres Near",
+   "built": 2211,
+   "lost": 2238,
+   "crew": 4,
+   "cargo": [
+    "nickel ore",
+    "navigation beacons"
+   ]
+  },
+  {
+   "pos": 256,
+   "hull": "CS-2882",
+   "name": "CSS Silent Tide",
+   "cls": "Corvette",
+   "value": 9.9,
+   "sector": "Juno Shelf",
+   "built": 2237,
+   "lost": 2281,
+   "crew": 93,
+   "cargo": [
+    "survey drones",
+    "seed vault"
+   ]
+  },
+  {
+   "pos": 257,
+   "hull": "VR-5033",
+   "name": "ISV Copper Wake",
+   "cls": "Probe",
+   "value": 0.3,
+   "sector": "Ceres Near",
+   "built": 2221,
+   "lost": 2231,
+   "crew": 0,
+   "cargo": [
+    "cobalt ingots",
+    "reactor shielding"
+   ]
+  },
+  {
+   "pos": 258,
+   "hull": "PX-4124",
+   "name": "ISV Hollow Bastion",
+   "cls": "Freighter",
+   "value": 4.6,
+   "sector": "Eros Belt",
+   "built": 2238,
+   "lost": 2248,
+   "crew": 22,
+   "cargo": [
+    "survey drones"
+   ]
+  },
+  {
+   "pos": 259,
+   "hull": "KV-9103",
+   "name": "ISV Quiet Bastion",
+   "cls": "Hauler",
+   "value": 3.6,
+   "sector": "Ceres Near",
+   "built": 2204,
+   "lost": 2261,
+   "crew": 8,
+   "cargo": [
+    "cobalt ingots",
+    "hydroponic racks",
+    "medical stores"
+   ]
+  },
+  {
+   "pos": 260,
+   "hull": "PX-1951",
+   "name": "ISV Cold Orchard",
+   "cls": "Hauler",
+   "value": 3.7,
+   "sector": "Ceres Near",
+   "built": 2208,
+   "lost": 2262,
+   "crew": 7,
+   "cargo": [
+    "medical stores",
+    "spare hull plate",
+    "fuel cells"
+   ]
+  },
+  {
+   "pos": 261,
+   "hull": "JL-2742",
+   "name": "ISV Iron Ledger",
+   "cls": "Probe",
+   "value": 0.8,
+   "sector": "Eros Belt",
+   "built": 2206,
+   "lost": 2236,
+   "crew": 0,
+   "cargo": [
+    "cobalt ingots"
+   ]
+  },
+  {
+   "pos": 262,
+   "hull": "HQ-1362",
+   "name": "CSS Velvet Tern",
+   "cls": "Corvette",
+   "value": 3.4,
+   "sector": "Juno Shelf",
+   "built": 2233,
+   "lost": 2278,
+   "crew": 115,
+   "cargo": [
+    "fuel cells",
+    "nickel ore",
+    "reactor shielding"
+   ]
+  },
+  {
+   "pos": 263,
+   "hull": "CS-7354",
+   "name": "CSS Distant Ledger",
+   "cls": "Corvette",
+   "value": 4.1,
+   "sector": "Vesta Drift",
+   "built": 2258,
+   "lost": 2266,
+   "crew": 109,
+   "cargo": [
+    "cobalt ingots",
+    "nickel ore"
+   ]
+  },
+  {
+   "pos": 264,
+   "hull": "CS-2095",
+   "name": "ISV Amber Promise",
+   "cls": "Freighter",
+   "value": 2.6,
+   "sector": "Psyche Deep",
+   "built": 2221,
+   "lost": 2273,
+   "crew": 18,
+   "cargo": [
+    "medical stores",
+    "seed vault"
+   ]
+  },
+  {
+   "pos": 265,
+   "hull": "MZ-6082",
+   "name": "CSS Amber Bastion",
+   "cls": "Corvette",
+   "value": 5.1,
+   "sector": "Eros Belt",
+   "built": 2256,
+   "lost": 2271,
+   "crew": 68,
+   "cargo": [
+    "medical stores",
+    "survey drones"
+   ]
+  },
+  {
+   "pos": 266,
+   "hull": "VR-1621",
+   "name": "CSS Cold Heron",
+   "cls": "Corvette",
+   "value": 5.7,
+   "sector": "Psyche Deep",
+   "built": 2241,
+   "lost": 2273,
+   "crew": 106,
+   "cargo": [
+    "fuel cells",
+    "cobalt ingots",
+    "nickel ore"
+   ]
+  },
+  {
+   "pos": 267,
+   "hull": "JL-4193",
+   "name": "ISV Brass Covenant",
+   "cls": "Tug",
+   "value": 1.2,
+   "sector": "Ceres Near",
+   "built": 2234,
+   "lost": 2249,
+   "crew": 4,
+   "cargo": [
+    "navigation beacons",
+    "survey drones"
+   ]
+  },
+  {
+   "pos": 268,
+   "hull": "NB-7898",
+   "name": "ISV Ninth Harbor",
+   "cls": "Hauler",
+   "value": 4.5,
+   "sector": "Vesta Drift",
+   "built": 2226,
+   "lost": 2245,
+   "crew": 5,
+   "cargo": [
+    "navigation beacons",
+    "reactor shielding",
+    "fuel cells"
+   ]
+  },
+  {
+   "pos": 269,
+   "hull": "RX-3105",
+   "name": "CSS Crimson Halyard",
+   "cls": "Corvette",
+   "value": 4.3,
+   "sector": "Ceres Near",
+   "built": 2225,
+   "lost": 2239,
+   "crew": 47,
+   "cargo": [
+    "water tanks",
+    "medical stores",
+    "fuel cells"
+   ]
+  },
+  {
+   "pos": 270,
+   "hull": "NB-6165",
+   "name": "ISV Velvet Vigil",
+   "cls": "Freighter",
+   "value": 8.6,
+   "sector": "Juno Shelf",
+   "built": 2233,
+   "lost": 2267,
+   "crew": 19,
+   "cargo": [
+    "seed vault",
+    "fuel cells",
+    "cobalt ingots"
+   ]
+  },
+  {
+   "pos": 271,
+   "hull": "VR-4063",
+   "name": "ISV Cold Quill",
+   "cls": "Tug",
+   "value": 1.2,
+   "sector": "Eros Belt",
+   "built": 2248,
+   "lost": 2260,
+   "crew": 3,
+   "cargo": [
+    "water tanks"
+   ]
+  },
+  {
+   "pos": 272,
+   "hull": "VR-8072",
+   "name": "ISV Silent Anvil",
+   "cls": "Probe",
+   "value": 0.8,
+   "sector": "Eros Belt",
+   "built": 2249,
+   "lost": 2274,
+   "crew": 0,
+   "cargo": [
+    "survey drones",
+    "cobalt ingots",
+    "seed vault"
+   ]
+  },
+  {
+   "pos": 273,
+   "hull": "VR-5519",
+   "name": "ISV Brass Heron",
+   "cls": "Hauler",
+   "value": 5.7,
+   "sector": "Ceres Near",
+   "built": 2240,
+   "lost": 2252,
+   "crew": 16,
+   "cargo": [
+    "hydroponic racks",
+    "fuel cells"
+   ]
+  },
+  {
+   "pos": 274,
+   "hull": "NB-6940",
+   "name": "ISV Distant Kestrel",
+   "cls": "Tug",
+   "value": 0.6,
+   "sector": "Vesta Drift",
+   "built": 2256,
+   "lost": 2269,
+   "crew": 3,
+   "cargo": [
+    "nickel ore",
+    "reactor shielding",
+    "navigation beacons"
+   ]
+  },
+  {
+   "pos": 275,
+   "hull": "HQ-7962",
+   "name": "CSS Copper Bastion",
+   "cls": "Dreadnought",
+   "value": 16.4,
+   "sector": "Pallas Gap",
+   "built": 2236,
+   "lost": 2271,
+   "crew": 2345,
+   "cargo": [
+    "reactor shielding",
+    "cobalt ingots",
+    "nickel ore"
+   ],
+   "core": "LIVE"
+  },
+  {
+   "pos": 276,
+   "hull": "VR-1002",
+   "name": "ISV Pale Lantern",
+   "cls": "Freighter",
+   "value": 8.1,
+   "sector": "Ceres Near",
+   "built": 2248,
+   "lost": 2273,
+   "crew": 9,
+   "cargo": [
+    "navigation beacons",
+    "hydroponic racks",
+    "spare hull plate"
+   ]
+  },
+  {
+   "pos": 277,
+   "hull": "TD-4825",
+   "name": "ISV Crimson Cinder",
+   "cls": "Freighter",
+   "value": 6.5,
+   "sector": "Pallas Gap",
+   "built": 2184,
+   "lost": 2241,
+   "crew": 28,
+   "cargo": [
+    "navigation beacons"
+   ]
+  },
+  {
+   "pos": 278,
+   "hull": "VR-5682",
+   "name": "ISV Marrow Promise",
+   "cls": "Freighter",
+   "value": 2.6,
+   "sector": "Juno Shelf",
+   "built": 2237,
+   "lost": 2275,
+   "crew": 17,
+   "cargo": [
+    "cobalt ingots"
+   ]
+  },
+  {
+   "pos": 279,
+   "hull": "VR-6493",
+   "name": "ISV Crimson Lantern",
+   "cls": "Freighter",
+   "value": 8.0,
+   "sector": "Ceres Near",
+   "built": 2238,
+   "lost": 2260,
+   "crew": 24,
+   "cargo": [
+    "navigation beacons"
+   ]
+  },
+  {
+   "pos": 280,
+   "hull": "NB-3308",
+   "name": "ISV Ashen Vigil",
+   "cls": "Freighter",
+   "value": 8.8,
+   "sector": "Psyche Deep",
+   "built": 2235,
+   "lost": 2285,
+   "crew": 29,
+   "cargo": [
+    "water tanks"
+   ]
+  },
+  {
+   "pos": 281,
+   "hull": "JL-3414",
+   "name": "CSS Gilded Heron",
+   "cls": "Corvette",
+   "value": 3.6,
+   "sector": "Hygiea Reach",
+   "built": 2197,
+   "lost": 2245,
+   "crew": 65,
+   "cargo": [
+    "spare hull plate",
+    "water tanks",
+    "seed vault"
+   ]
+  },
+  {
+   "pos": 282,
+   "hull": "HQ-3731",
+   "name": "ISV Amber Tern",
+   "cls": "Probe",
+   "value": 0.3,
+   "sector": "Psyche Deep",
+   "built": 2218,
+   "lost": 2274,
+   "crew": 0,
+   "cargo": [
+    "fuel cells",
+    "ice cores"
+   ]
+  },
+  {
+   "pos": 283,
+   "hull": "TD-7357",
+   "name": "ISV Marrow Tide",
+   "cls": "Probe",
+   "value": 0.7,
+   "sector": "Hygiea Reach",
+   "built": 2256,
+   "lost": 2285,
+   "crew": 0,
+   "cargo": [
+    "survey drones",
+    "nickel ore"
+   ]
+  },
+  {
+   "pos": 284,
+   "hull": "CS-6779",
+   "name": "CSS Copper Orchard",
+   "cls": "Corvette",
+   "value": 8.2,
+   "sector": "Juno Shelf",
+   "built": 2222,
+   "lost": 2244,
+   "crew": 101,
+   "cargo": [
+    "water tanks"
+   ]
+  },
+  {
+   "pos": 285,
+   "hull": "JL-1300",
+   "name": "ISV Amber Kestrel",
+   "cls": "Freighter",
+   "value": 5.1,
+   "sector": "Juno Shelf",
+   "built": 2225,
+   "lost": 2274,
+   "crew": 11,
+   "cargo": [
+    "ice cores",
+    "water tanks"
+   ]
+  },
+  {
+   "pos": 286,
+   "hull": "NB-8028",
+   "name": "ISV Bright Heron",
+   "cls": "Freighter",
+   "value": 2.2,
+   "sector": "Eros Belt",
+   "built": 2225,
+   "lost": 2268,
+   "crew": 10,
+   "cargo": [
+    "navigation beacons",
+    "seed vault"
+   ]
+  },
+  {
+   "pos": 287,
+   "hull": "JL-5593",
+   "name": "ISV Pale Harbor",
+   "cls": "Freighter",
+   "value": 7.4,
+   "sector": "Juno Shelf",
+   "built": 2236,
+   "lost": 2274,
+   "crew": 9,
+   "cargo": [
+    "fuel cells",
+    "ice cores"
+   ]
+  },
+  {
+   "pos": 288,
+   "hull": "RX-8012",
+   "name": "ISV Bright Ember",
+   "cls": "Probe",
+   "value": 0.2,
+   "sector": "Pallas Gap",
+   "built": 2179,
+   "lost": 2235,
+   "crew": 0,
+   "cargo": [
+    "water tanks"
+   ]
+  },
+  {
+   "pos": 289,
+   "hull": "RX-9225",
+   "name": "ISV Bright Orchard",
+   "cls": "Hauler",
+   "value": 4.5,
+   "sector": "Psyche Deep",
+   "built": 2207,
+   "lost": 2235,
+   "crew": 13,
+   "cargo": [
+    "survey drones"
+   ]
+  },
+  {
+   "pos": 290,
+   "hull": "VR-7325",
+   "name": "ISV Iron Ember",
+   "cls": "Hauler",
+   "value": 4.2,
+   "sector": "Juno Shelf",
+   "built": 2228,
+   "lost": 2261,
+   "crew": 15,
+   "cargo": [
+    "navigation beacons",
+    "fuel cells"
+   ]
+  },
+  {
+   "pos": 291,
+   "hull": "TD-2454",
+   "name": "ISV Northern Tern",
+   "cls": "Freighter",
+   "value": 8.2,
+   "sector": "Vesta Drift",
+   "built": 2233,
+   "lost": 2272,
+   "crew": 29,
+   "cargo": [
+    "cobalt ingots",
+    "water tanks",
+    "fuel cells"
+   ]
+  },
+  {
+   "pos": 292,
+   "hull": "PX-6080",
+   "name": "ISV Iron Promise",
+   "cls": "Probe",
+   "value": 0.6,
+   "sector": "Juno Shelf",
+   "built": 2275,
+   "lost": 2284,
+   "crew": 0,
+   "cargo": [
+    "ice cores",
+    "fuel cells",
+    "nickel ore"
+   ]
+  },
+  {
+   "pos": 293,
+   "hull": "RX-6051",
+   "name": "ISV Iron Bastion",
+   "cls": "Freighter",
+   "value": 4.8,
+   "sector": "Juno Shelf",
+   "built": 2213,
+   "lost": 2267,
+   "crew": 20,
+   "cargo": [
+    "spare hull plate",
+    "ice cores"
+   ]
+  },
+  {
+   "pos": 294,
+   "hull": "HQ-9878",
+   "name": "ISV Gilded Solace",
+   "cls": "Hauler",
+   "value": 1.6,
+   "sector": "Juno Shelf",
+   "built": 2205,
+   "lost": 2257,
+   "crew": 9,
+   "cargo": [
+    "water tanks",
+    "nickel ore"
+   ]
+  },
+  {
+   "pos": 295,
+   "hull": "VR-1135",
+   "name": "ISV Ninth Ledger",
+   "cls": "Tug",
+   "value": 0.7,
+   "sector": "Eros Belt",
+   "built": 2191,
+   "lost": 2249,
+   "crew": 4,
+   "cargo": [
+    "water tanks"
+   ]
+  },
+  {
+   "pos": 296,
+   "hull": "HQ-8349",
+   "name": "ISV Marrow Ledger",
+   "cls": "Tug",
+   "value": 0.5,
+   "sector": "Eros Belt",
+   "built": 2181,
+   "lost": 2231,
+   "crew": 5,
+   "cargo": [
+    "spare hull plate"
+   ]
+  },
+  {
+   "pos": 297,
+   "hull": "VR-8202",
+   "name": "CSS Cold Lantern",
+   "cls": "Dreadnought",
+   "value": 14.7,
+   "sector": "Eros Belt",
+   "built": 2233,
+   "lost": 2258,
+   "crew": 1373,
+   "cargo": [
+    "cobalt ingots"
+   ],
+   "core": "COLD"
+  },
+  {
+   "pos": 298,
+   "hull": "CS-5882",
+   "name": "ISV Copper Cinder",
+   "cls": "Freighter",
+   "value": 6.5,
+   "sector": "Juno Shelf",
+   "built": 2231,
+   "lost": 2252,
+   "crew": 21,
+   "cargo": [
+    "water tanks",
+    "navigation beacons"
+   ]
+  },
+  {
+   "pos": 299,
+   "hull": "PX-1400",
+   "name": "ISV Amber Lantern",
+   "cls": "Hauler",
+   "value": 3.4,
+   "sector": "Juno Shelf",
+   "built": 2229,
+   "lost": 2253,
+   "crew": 12,
+   "cargo": [
+    "nickel ore",
+    "hydroponic racks"
+   ]
+  },
+  {
+   "pos": 300,
+   "hull": "RX-7365",
+   "name": "CSS Ashen Sparrow",
+   "cls": "Corvette",
+   "value": 9.8,
+   "sector": "Eros Belt",
+   "built": 2259,
+   "lost": 2283,
+   "crew": 42,
+   "cargo": [
+    "navigation beacons",
+    "water tanks"
+   ]
+  },
+  {
+   "pos": 301,
+   "hull": "TD-3434",
+   "name": "ISV Amber Cinder",
+   "cls": "Freighter",
+   "value": 6.2,
+   "sector": "Vesta Drift",
+   "built": 2197,
+   "lost": 2237,
+   "crew": 24,
+   "cargo": [
+    "survey drones"
+   ]
+  },
+  {
+   "pos": 302,
+   "hull": "TD-6786",
+   "name": "ISV Broken Covenant",
+   "cls": "Hauler",
+   "value": 5.8,
+   "sector": "Pallas Gap",
+   "built": 2228,
+   "lost": 2280,
+   "crew": 7,
+   "cargo": [
+    "medical stores",
+    "spare hull plate",
+    "fuel cells"
+   ]
+  },
+  {
+   "pos": 303,
+   "hull": "JL-1166",
+   "name": "ISV Bright Quill",
+   "cls": "Tug",
+   "value": 0.7,
+   "sector": "Psyche Deep",
+   "built": 2217,
+   "lost": 2277,
+   "crew": 2,
+   "cargo": [
+    "medical stores",
+    "navigation beacons"
+   ]
+  },
+  {
+   "pos": 304,
+   "hull": "NB-7474",
+   "name": "CSS Crimson Anvil",
+   "cls": "Corvette",
+   "value": 6.1,
+   "sector": "Juno Shelf",
+   "built": 2230,
+   "lost": 2263,
+   "crew": 60,
+   "cargo": [
+    "ice cores",
+    "fuel cells",
+    "seed vault"
+   ]
+  },
+  {
+   "pos": 305,
+   "hull": "JL-8566",
+   "name": "CSS Pale Halyard",
+   "cls": "Corvette",
+   "value": 8.3,
+   "sector": "Eros Belt",
+   "built": 2176,
+   "lost": 2232,
+   "crew": 85,
+   "cargo": [
+    "ice cores",
+    "water tanks",
+    "seed vault"
+   ]
+  },
+  {
+   "pos": 306,
+   "hull": "MZ-1038",
+   "name": "ISV Distant Harbor",
+   "cls": "Freighter",
+   "value": 8.7,
+   "sector": "Vesta Drift",
+   "built": 2243,
+   "lost": 2279,
+   "crew": 20,
+   "cargo": [
+    "cobalt ingots",
+    "ice cores",
+    "survey drones"
+   ]
+  },
+  {
+   "pos": 307,
+   "hull": "TD-7551",
+   "name": "ISV Cold Ember",
+   "cls": "Freighter",
+   "value": 7.6,
+   "sector": "Vesta Drift",
+   "built": 2216,
+   "lost": 2232,
+   "crew": 23,
+   "cargo": [
+    "reactor shielding",
+    "water tanks"
+   ]
+  },
+  {
+   "pos": 308,
+   "hull": "PX-6129",
+   "name": "ISV Distant Tern",
+   "cls": "Probe",
+   "value": 0.5,
+   "sector": "Eros Belt",
+   "built": 2228,
+   "lost": 2260,
+   "crew": 0,
+   "cargo": [
+    "nickel ore"
+   ]
+  },
+  {
+   "pos": 309,
+   "hull": "CS-5350",
+   "name": "ISV Patient Kestrel",
+   "cls": "Freighter",
+   "value": 4.1,
+   "sector": "Pallas Gap",
+   "built": 2256,
+   "lost": 2283,
+   "crew": 27,
+   "cargo": [
+    "water tanks"
+   ]
+  },
+  {
+   "pos": 310,
+   "hull": "TD-5955",
+   "name": "CSS Pale Orchard",
+   "cls": "Corvette",
+   "value": 8.7,
+   "sector": "Vesta Drift",
+   "built": 2200,
+   "lost": 2243,
+   "crew": 80,
+   "cargo": [
+    "ice cores"
+   ]
+  },
+  {
+   "pos": 311,
+   "hull": "CS-3742",
+   "name": "ISV Ashen Compass",
+   "cls": "Tug",
+   "value": 1.2,
+   "sector": "Ceres Near",
+   "built": 2229,
+   "lost": 2254,
+   "crew": 2,
+   "cargo": [
+    "navigation beacons"
+   ]
+  },
+  {
+   "pos": 312,
+   "hull": "HQ-4520",
+   "name": "CSS Quiet Promise",
+   "cls": "Corvette",
+   "value": 8.2,
+   "sector": "Vesta Drift",
+   "built": 2207,
+   "lost": 2251,
+   "crew": 106,
+   "cargo": [
+    "ice cores",
+    "water tanks",
+    "reactor shielding"
+   ]
+  },
+  {
+   "pos": 313,
+   "hull": "HQ-1623",
+   "name": "ISV Ashen Covenant",
+   "cls": "Probe",
+   "value": 0.8,
+   "sector": "Juno Shelf",
+   "built": 2214,
+   "lost": 2256,
+   "crew": 0,
+   "cargo": [
+    "medical stores"
+   ]
+  },
+  {
+   "pos": 314,
+   "hull": "KV-8462",
+   "name": "ISV Marrow Quill",
+   "cls": "Tug",
+   "value": 0.8,
+   "sector": "Psyche Deep",
+   "built": 2234,
+   "lost": 2283,
+   "crew": 2,
+   "cargo": [
+    "nickel ore",
+    "navigation beacons",
+    "ice cores"
+   ]
+  },
+  {
+   "pos": 315,
+   "hull": "KV-8770",
+   "name": "ISV Crimson Bastion",
+   "cls": "Tug",
+   "value": 1.4,
+   "sector": "Ceres Near",
+   "built": 2207,
+   "lost": 2235,
+   "crew": 2,
+   "cargo": [
+    "medical stores",
+    "survey drones"
+   ]
+  },
+  {
+   "pos": 316,
+   "hull": "TD-8387",
+   "name": "ISV Distant Orchard",
+   "cls": "Hauler",
+   "value": 1.3,
+   "sector": "Psyche Deep",
+   "built": 2243,
+   "lost": 2277,
+   "crew": 13,
+   "cargo": [
+    "cobalt ingots",
+    "nickel ore"
+   ]
+  },
+  {
+   "pos": 317,
+   "hull": "HQ-7539",
+   "name": "ISV Crimson Covenant",
+   "cls": "Freighter",
+   "value": 2.1,
+   "sector": "Hygiea Reach",
+   "built": 2220,
+   "lost": 2238,
+   "crew": 11,
+   "cargo": [
+    "ice cores",
+    "medical stores",
+    "cobalt ingots"
+   ]
+  },
+  {
+   "pos": 318,
+   "hull": "PX-9649",
+   "name": "ISV Lone Bastion",
+   "cls": "Probe",
+   "value": 0.8,
+   "sector": "Juno Shelf",
+   "built": 2230,
+   "lost": 2241,
+   "crew": 0,
+   "cargo": [
+    "reactor shielding",
+    "fuel cells",
+    "cobalt ingots"
+   ]
+  },
+  {
+   "pos": 319,
+   "hull": "TD-4411",
+   "name": "ISV Distant Bastion",
+   "cls": "Freighter",
+   "value": 7.2,
+   "sector": "Hygiea Reach",
+   "built": 2222,
+   "lost": 2272,
+   "crew": 17,
+   "cargo": [
+    "medical stores",
+    "water tanks"
+   ]
+  },
+  {
+   "pos": 320,
+   "hull": "KV-8281",
+   "name": "CSS Wandering Anvil",
+   "cls": "Corvette",
+   "value": 3.2,
+   "sector": "Pallas Gap",
+   "built": 2216,
+   "lost": 2272,
+   "crew": 105,
+   "cargo": [
+    "seed vault",
+    "survey drones"
+   ]
+  },
+  {
+   "pos": 321,
+   "hull": "CS-4290",
+   "name": "CSS Ashen Kestrel",
+   "cls": "Corvette",
+   "value": 5.3,
+   "sector": "Juno Shelf",
+   "built": 2213,
+   "lost": 2254,
+   "crew": 117,
+   "cargo": [
+    "reactor shielding"
+   ]
+  },
+  {
+   "pos": 322,
+   "hull": "KV-9314",
+   "name": "ISV Ninth Compass",
+   "cls": "Hauler",
+   "value": 5.5,
+   "sector": "Ceres Near",
+   "built": 2225,
+   "lost": 2267,
+   "crew": 16,
+   "cargo": [
+    "cobalt ingots",
+    "water tanks",
+    "spare hull plate"
+   ]
+  },
+  {
+   "pos": 323,
+   "hull": "RX-7965",
+   "name": "ISV Copper Quill",
+   "cls": "Hauler",
+   "value": 3.9,
+   "sector": "Hygiea Reach",
+   "built": 2255,
+   "lost": 2268,
+   "crew": 11,
+   "cargo": [
+    "ice cores",
+    "nickel ore",
+    "navigation beacons"
+   ]
+  },
+  {
+   "pos": 324,
+   "hull": "TD-1170",
+   "name": "CSS Lone Anvil",
+   "cls": "Corvette",
+   "value": 6.0,
+   "sector": "Vesta Drift",
+   "built": 2232,
+   "lost": 2252,
+   "crew": 71,
+   "cargo": [
+    "navigation beacons"
+   ]
+  },
+  {
+   "pos": 325,
+   "hull": "HQ-2414",
+   "name": "ISV Ashen Halyard",
+   "cls": "Tug",
+   "value": 0.6,
+   "sector": "Hygiea Reach",
+   "built": 2235,
+   "lost": 2278,
+   "crew": 2,
+   "cargo": [
+    "water tanks"
+   ]
+  },
+  {
+   "pos": 326,
+   "hull": "CS-8090",
+   "name": "CSS Patient Vigil",
+   "cls": "Corvette",
+   "value": 5.8,
+   "sector": "Psyche Deep",
+   "built": 2230,
+   "lost": 2267,
+   "crew": 62,
+   "cargo": [
+    "nickel ore",
+    "navigation beacons"
+   ]
+  },
+  {
+   "pos": 327,
+   "hull": "KV-7988",
+   "name": "ISV Northern Halyard",
+   "cls": "Freighter",
+   "value": 5.5,
+   "sector": "Ceres Near",
+   "built": 2209,
+   "lost": 2234,
+   "crew": 26,
+   "cargo": [
+    "reactor shielding"
+   ]
+  },
+  {
+   "pos": 328,
+   "hull": "HQ-1946",
+   "name": "ISV Quiet Orchard",
+   "cls": "Freighter",
+   "value": 4.0,
+   "sector": "Ceres Near",
+   "built": 2247,
+   "lost": 2267,
+   "crew": 17,
+   "cargo": [
+    "ice cores"
+   ]
+  },
+  {
+   "pos": 329,
+   "hull": "JL-4533",
+   "name": "ISV Brass Bastion",
+   "cls": "Freighter",
+   "value": 7.8,
+   "sector": "Juno Shelf",
+   "built": 2230,
+   "lost": 2258,
+   "crew": 20,
+   "cargo": [
+    "seed vault",
+    "navigation beacons",
+    "cobalt ingots"
+   ]
+  },
+  {
+   "pos": 330,
+   "hull": "HQ-3691",
+   "name": "ISV Crimson Meridian",
+   "cls": "Probe",
+   "value": 0.4,
+   "sector": "Juno Shelf",
+   "built": 2229,
+   "lost": 2254,
+   "crew": 0,
+   "cargo": [
+    "fuel cells"
+   ]
+  },
+  {
+   "pos": 331,
+   "hull": "PX-8170",
+   "name": "ISV Wandering Kestrel",
+   "cls": "Hauler",
+   "value": 2.7,
+   "sector": "Vesta Drift",
+   "built": 2267,
+   "lost": 2281,
+   "crew": 7,
+   "cargo": [
+    "ice cores",
+    "medical stores",
+    "spare hull plate"
+   ]
+  },
+  {
+   "pos": 332,
+   "hull": "TD-5835",
+   "name": "ISV Northern Meridian",
+   "cls": "Probe",
+   "value": 0.2,
+   "sector": "Vesta Drift",
+   "built": 2236,
+   "lost": 2247,
+   "crew": 0,
+   "cargo": [
+    "navigation beacons",
+    "survey drones"
+   ]
+  },
+  {
+   "pos": 333,
+   "hull": "RX-4615",
+   "name": "ISV Patient Ledger",
+   "cls": "Freighter",
+   "value": 2.7,
+   "sector": "Pallas Gap",
+   "built": 2268,
+   "lost": 2284,
+   "crew": 17,
+   "cargo": [
+    "ice cores"
+   ]
+  },
+  {
+   "pos": 334,
+   "hull": "JL-3758",
+   "name": "ISV Quiet Wake",
+   "cls": "Freighter",
+   "value": 3.9,
+   "sector": "Psyche Deep",
+   "built": 2238,
+   "lost": 2275,
+   "crew": 30,
+   "cargo": [
+    "nickel ore",
+    "cobalt ingots"
+   ]
+  },
+  {
+   "pos": 335,
+   "hull": "PX-2839",
+   "name": "CSS Quiet Tern",
+   "cls": "Corvette",
+   "value": 8.7,
+   "sector": "Hygiea Reach",
+   "built": 2201,
+   "lost": 2234,
+   "crew": 46,
+   "cargo": [
+    "fuel cells"
+   ]
+  },
+  {
+   "pos": 336,
+   "hull": "TD-3682",
+   "name": "ISV Last Vigil",
+   "cls": "Tug",
+   "value": 1.5,
+   "sector": "Ceres Near",
+   "built": 2213,
+   "lost": 2244,
+   "crew": 3,
+   "cargo": [
+    "water tanks",
+    "survey drones",
+    "cobalt ingots"
+   ]
+  },
+  {
+   "pos": 337,
+   "hull": "RX-4831",
+   "name": "ISV Marrow Halyard",
+   "cls": "Hauler",
+   "value": 5.0,
+   "sector": "Ceres Near",
+   "built": 2262,
+   "lost": 2275,
+   "crew": 16,
+   "cargo": [
+    "water tanks"
+   ]
+  },
+  {
+   "pos": 338,
+   "hull": "CS-6853",
+   "name": "ISV Salt Halyard",
+   "cls": "Freighter",
+   "value": 9.0,
+   "sector": "Ceres Near",
+   "built": 2209,
+   "lost": 2249,
+   "crew": 24,
+   "cargo": [
+    "ice cores",
+    "cobalt ingots"
+   ]
+  },
+  {
+   "pos": 339,
+   "hull": "KV-7285",
+   "name": "CSS Brass Vigil",
+   "cls": "Corvette",
+   "value": 6.4,
+   "sector": "Pallas Gap",
+   "built": 2208,
+   "lost": 2265,
+   "crew": 79,
+   "cargo": [
+    "reactor shielding",
+    "ice cores",
+    "seed vault"
+   ]
+  },
+  {
+   "pos": 340,
+   "hull": "NB-9625",
+   "name": "ISV Broken Heron",
+   "cls": "Tug",
+   "value": 1.3,
+   "sector": "Psyche Deep",
+   "built": 2248,
+   "lost": 2283,
+   "crew": 2,
+   "cargo": [
+    "reactor shielding",
+    "nickel ore"
+   ]
+  },
+  {
+   "pos": 341,
+   "hull": "RX-2095",
+   "name": "ISV Iron Orchard",
+   "cls": "Freighter",
+   "value": 2.3,
+   "sector": "Pallas Gap",
+   "built": 2226,
+   "lost": 2242,
+   "crew": 9,
+   "cargo": [
+    "water tanks",
+    "nickel ore",
+    "spare hull plate"
+   ]
+  },
+  {
+   "pos": 342,
+   "hull": "TD-7087",
+   "name": "ISV Salt Heron",
+   "cls": "Freighter",
+   "value": 7.2,
+   "sector": "Pallas Gap",
+   "built": 2186,
+   "lost": 2243,
+   "crew": 19,
+   "cargo": [
+    "spare hull plate",
+    "ice cores"
+   ]
+  },
+  {
+   "pos": 343,
+   "hull": "NB-5690",
+   "name": "CSS Pale Kestrel",
+   "cls": "Dreadnought",
+   "value": 12.6,
+   "sector": "Psyche Deep",
+   "built": 2218,
+   "lost": 2258,
+   "crew": 941,
+   "cargo": [
+    "ice cores",
+    "navigation beacons"
+   ],
+   "core": "COLD"
+  },
+  {
+   "pos": 344,
+   "hull": "PX-6616",
+   "name": "ISV Ninth Tide",
+   "cls": "Freighter",
+   "value": 5.4,
+   "sector": "Psyche Deep",
+   "built": 2224,
+   "lost": 2259,
+   "crew": 18,
+   "cargo": [
+    "fuel cells",
+    "spare hull plate"
+   ]
+  },
+  {
+   "pos": 345,
+   "hull": "NB-8680",
+   "name": "CSS Northern Lantern",
+   "cls": "Corvette",
+   "value": 6.5,
+   "sector": "Hygiea Reach",
+   "built": 2243,
+   "lost": 2273,
+   "crew": 84,
+   "cargo": [
+    "ice cores"
+   ]
+  },
+  {
+   "pos": 346,
+   "hull": "MZ-1302",
+   "name": "ISV Crimson Quill",
+   "cls": "Probe",
+   "value": 0.2,
+   "sector": "Ceres Near",
+   "built": 2228,
+   "lost": 2247,
+   "crew": 0,
+   "cargo": [
+    "hydroponic racks",
+    "fuel cells",
+    "cobalt ingots"
+   ]
+  },
+  {
+   "pos": 347,
+   "hull": "PX-6946",
+   "name": "CSS Iron Kestrel",
+   "cls": "Corvette",
+   "value": 7.9,
+   "sector": "Eros Belt",
+   "built": 2259,
+   "lost": 2289,
+   "crew": 109,
+   "cargo": [
+    "seed vault",
+    "survey drones",
+    "cobalt ingots"
+   ]
+  },
+  {
+   "pos": 348,
+   "hull": "JL-2103",
+   "name": "ISV Iron Harbor",
+   "cls": "Hauler",
+   "value": 2.2,
+   "sector": "Hygiea Reach",
+   "built": 2256,
+   "lost": 2281,
+   "crew": 6,
+   "cargo": [
+    "ice cores"
+   ]
+  },
+  {
+   "pos": 349,
+   "hull": "NB-6325",
+   "name": "ISV Silent Quill",
+   "cls": "Probe",
+   "value": 0.7,
+   "sector": "Psyche Deep",
+   "built": 2242,
+   "lost": 2285,
+   "crew": 0,
+   "cargo": [
+    "seed vault",
+    "water tanks"
+   ]
+  },
+  {
+   "pos": 350,
+   "hull": "NB-8168",
+   "name": "ISV Cold Kestrel",
+   "cls": "Hauler",
+   "value": 1.3,
+   "sector": "Ceres Near",
+   "built": 2197,
+   "lost": 2257,
+   "crew": 10,
+   "cargo": [
+    "survey drones",
+    "cobalt ingots",
+    "medical stores"
+   ]
+  },
+  {
+   "pos": 351,
+   "hull": "RX-3068",
+   "name": "CSS Copper Anvil",
+   "cls": "Corvette",
+   "value": 3.2,
+   "sector": "Psyche Deep",
+   "built": 2206,
+   "lost": 2233,
+   "crew": 49,
+   "cargo": [
+    "navigation beacons",
+    "medical stores",
+    "nickel ore"
+   ]
+  },
+  {
+   "pos": 352,
+   "hull": "VR-4454",
+   "name": "ISV Hollow Quill",
+   "cls": "Tug",
+   "value": 1.3,
+   "sector": "Eros Belt",
+   "built": 2246,
+   "lost": 2273,
+   "crew": 2,
+   "cargo": [
+    "reactor shielding",
+    "hydroponic racks"
+   ]
+  },
+  {
+   "pos": 353,
+   "hull": "PX-3468",
+   "name": "ISV Lone Tern",
+   "cls": "Tug",
+   "value": 0.6,
+   "sector": "Vesta Drift",
+   "built": 2264,
+   "lost": 2282,
+   "crew": 3,
+   "cargo": [
+    "nickel ore",
+    "seed vault"
+   ]
+  },
+  {
+   "pos": 354,
+   "hull": "PX-9279",
+   "name": "ISV Cold Covenant",
+   "cls": "Freighter",
+   "value": 5.1,
+   "sector": "Pallas Gap",
+   "built": 2210,
+   "lost": 2241,
+   "crew": 28,
+   "cargo": [
+    "spare hull plate",
+    "fuel cells",
+    "survey drones"
+   ]
+  },
+  {
+   "pos": 355,
+   "hull": "RX-6683",
+   "name": "ISV Marrow Cinder",
+   "cls": "Hauler",
+   "value": 1.2,
+   "sector": "Juno Shelf",
+   "built": 2197,
+   "lost": 2237,
+   "crew": 9,
+   "cargo": [
+    "nickel ore",
+    "reactor shielding"
+   ]
+  },
+  {
+   "pos": 356,
+   "hull": "RX-1975",
+   "name": "ISV Bright Harbor",
+   "cls": "Freighter",
+   "value": 4.6,
+   "sector": "Psyche Deep",
+   "built": 2219,
+   "lost": 2275,
+   "crew": 19,
+   "cargo": [
+    "survey drones"
+   ]
+  },
+  {
+   "pos": 357,
+   "hull": "RX-3101",
+   "name": "ISV Copper Halyard",
+   "cls": "Freighter",
+   "value": 2.3,
+   "sector": "Eros Belt",
+   "built": 2223,
+   "lost": 2281,
+   "crew": 19,
+   "cargo": [
+    "survey drones",
+    "ice cores"
+   ]
+  },
+  {
+   "pos": 358,
+   "hull": "VR-6056",
+   "name": "CSS Ninth Ember",
+   "cls": "Corvette",
+   "value": 5.8,
+   "sector": "Eros Belt",
+   "built": 2207,
+   "lost": 2234,
+   "crew": 89,
+   "cargo": [
+    "hydroponic racks",
+    "ice cores",
+    "medical stores"
+   ]
+  },
+  {
+   "pos": 359,
+   "hull": "JL-4969",
+   "name": "ISV Cold Vigil",
+   "cls": "Probe",
+   "value": 0.2,
+   "sector": "Hygiea Reach",
+   "built": 2244,
+   "lost": 2257,
+   "crew": 0,
+   "cargo": [
+    "seed vault"
+   ]
+  },
+  {
+   "pos": 360,
+   "hull": "HQ-8721",
+   "name": "ISV Ninth Quill",
+   "cls": "Tug",
+   "value": 0.9,
+   "sector": "Vesta Drift",
+   "built": 2202,
+   "lost": 2247,
+   "crew": 2,
+   "cargo": [
+    "seed vault"
+   ]
+  },
+  {
+   "pos": 361,
+   "hull": "CS-7695",
+   "name": "ISV Distant Ember",
+   "cls": "Freighter",
+   "value": 7.5,
+   "sector": "Pallas Gap",
+   "built": 2211,
+   "lost": 2262,
+   "crew": 26,
+   "cargo": [
+    "seed vault",
+    "nickel ore",
+    "spare hull plate"
+   ]
+  },
+  {
+   "pos": 362,
+   "hull": "RX-5665",
+   "name": "ISV Velvet Ledger",
+   "cls": "Tug",
+   "value": 1.3,
+   "sector": "Ceres Near",
+   "built": 2255,
+   "lost": 2284,
+   "crew": 5,
+   "cargo": [
+    "cobalt ingots",
+    "seed vault",
+    "navigation beacons"
+   ]
+  },
+  {
+   "pos": 363,
+   "hull": "CS-6926",
+   "name": "ISV Quiet Ledger",
+   "cls": "Probe",
+   "value": 0.6,
+   "sector": "Vesta Drift",
+   "built": 2229,
+   "lost": 2238,
+   "crew": 0,
+   "cargo": [
+    "water tanks",
+    "survey drones"
+   ]
+  },
+  {
+   "pos": 364,
+   "hull": "CS-6333",
+   "name": "ISV Brass Compass",
+   "cls": "Freighter",
+   "value": 4.4,
+   "sector": "Ceres Near",
+   "built": 2207,
+   "lost": 2243,
+   "crew": 18,
+   "cargo": [
+    "seed vault",
+    "hydroponic racks"
+   ]
+  },
+  {
+   "pos": 365,
+   "hull": "NB-6172",
+   "name": "ISV Ashen Promise",
+   "cls": "Probe",
+   "value": 0.4,
+   "sector": "Ceres Near",
+   "built": 2228,
+   "lost": 2261,
+   "crew": 0,
+   "cargo": [
+    "survey drones",
+    "medical stores"
+   ]
+  },
+  {
+   "pos": 366,
+   "hull": "VR-2944",
+   "name": "ISV Copper Vigil",
+   "cls": "Tug",
+   "value": 0.9,
+   "sector": "Eros Belt",
+   "built": 2248,
+   "lost": 2269,
+   "crew": 2,
+   "cargo": [
+    "survey drones"
+   ]
+  },
+  {
+   "pos": 367,
+   "hull": "HQ-1960",
+   "name": "ISV Salt Ember",
+   "cls": "Hauler",
+   "value": 2.0,
+   "sector": "Ceres Near",
+   "built": 2227,
+   "lost": 2244,
+   "crew": 6,
+   "cargo": [
+    "navigation beacons"
+   ]
+  },
+  {
+   "pos": 368,
+   "hull": "PX-6205",
+   "name": "ISV Gilded Quill",
+   "cls": "Freighter",
+   "value": 3.8,
+   "sector": "Juno Shelf",
+   "built": 2193,
+   "lost": 2239,
+   "crew": 12,
+   "cargo": [
+    "survey drones",
+    "hydroponic racks",
+    "water tanks"
+   ]
+  },
+  {
+   "pos": 369,
+   "hull": "VR-6162",
+   "name": "CSS Cold Tide",
+   "cls": "Dreadnought",
+   "value": 13.4,
+   "sector": "Pallas Gap",
+   "built": 2190,
+   "lost": 2246,
+   "crew": 1570,
+   "cargo": [
+    "reactor shielding",
+    "hydroponic racks",
+    "cobalt ingots"
+   ],
+   "core": "BREACHED"
+  },
+  {
+   "pos": 370,
+   "hull": "PX-8047",
+   "name": "ISV Pale Compass",
+   "cls": "Tug",
+   "value": 0.7,
+   "sector": "Vesta Drift",
+   "built": 2236,
+   "lost": 2262,
+   "crew": 3,
+   "cargo": [
+    "nickel ore",
+    "reactor shielding",
+    "ice cores"
+   ]
+  },
+  {
+   "pos": 371,
+   "hull": "MZ-3013",
+   "name": "CSS Copper Lantern",
+   "cls": "Corvette",
+   "value": 4.6,
+   "sector": "Psyche Deep",
+   "built": 2200,
+   "lost": 2259,
+   "crew": 117,
+   "cargo": [
+    "navigation beacons",
+    "reactor shielding"
+   ]
+  },
+  {
+   "pos": 372,
+   "hull": "MZ-1972",
+   "name": "ISV Patient Halyard",
+   "cls": "Tug",
+   "value": 1.1,
+   "sector": "Pallas Gap",
+   "built": 2265,
+   "lost": 2278,
+   "crew": 3,
+   "cargo": [
+    "cobalt ingots",
+    "water tanks"
+   ]
+  },
+  {
+   "pos": 373,
+   "hull": "KV-1339",
+   "name": "ISV Lone Ledger",
+   "cls": "Probe",
+   "value": 0.7,
+   "sector": "Hygiea Reach",
+   "built": 2255,
+   "lost": 2288,
+   "crew": 0,
+   "cargo": [
+    "fuel cells",
+    "reactor shielding",
+    "medical stores"
+   ]
+  },
+  {
+   "pos": 374,
+   "hull": "TD-4631",
+   "name": "ISV Last Anvil",
+   "cls": "Freighter",
+   "value": 7.1,
+   "sector": "Hygiea Reach",
+   "built": 2195,
+   "lost": 2246,
+   "crew": 17,
+   "cargo": [
+    "hydroponic racks",
+    "survey drones",
+    "nickel ore"
+   ]
+  },
+  {
+   "pos": 375,
+   "hull": "NB-1838",
+   "name": "ISV Northern Ledger",
+   "cls": "Tug",
+   "value": 0.8,
+   "sector": "Pallas Gap",
+   "built": 2260,
+   "lost": 2278,
+   "crew": 3,
+   "cargo": [
+    "ice cores",
+    "cobalt ingots"
+   ]
+  },
+  {
+   "pos": 376,
+   "hull": "TD-5383",
+   "name": "CSS Iron Quill",
+   "cls": "Corvette",
+   "value": 3.4,
+   "sector": "Vesta Drift",
+   "built": 2227,
+   "lost": 2256,
+   "crew": 104,
+   "cargo": [
+    "fuel cells",
+    "hydroponic racks",
+    "cobalt ingots"
+   ]
+  },
+  {
+   "pos": 377,
+   "hull": "CS-6982",
+   "name": "ISV Silent Promise",
+   "cls": "Freighter",
+   "value": 5.4,
+   "sector": "Eros Belt",
+   "built": 2255,
+   "lost": 2289,
+   "crew": 21,
+   "cargo": [
+    "fuel cells"
+   ]
+  },
+  {
+   "pos": 378,
+   "hull": "CS-5207",
+   "name": "ISV Pale Ledger",
+   "cls": "Tug",
+   "value": 0.7,
+   "sector": "Psyche Deep",
+   "built": 2238,
+   "lost": 2283,
+   "crew": 4,
+   "cargo": [
+    "survey drones",
+    "hydroponic racks"
+   ]
+  },
+  {
+   "pos": 379,
+   "hull": "VR-4181",
+   "name": "ISV Gilded Ledger",
+   "cls": "Freighter",
+   "value": 2.1,
+   "sector": "Psyche Deep",
+   "built": 2218,
+   "lost": 2261,
+   "crew": 14,
+   "cargo": [
+    "seed vault",
+    "cobalt ingots"
+   ]
+  },
+  {
+   "pos": 380,
+   "hull": "CS-7523",
+   "name": "ISV Distant Compass",
+   "cls": "Freighter",
+   "value": 7.5,
+   "sector": "Ceres Near",
+   "built": 2224,
+   "lost": 2251,
+   "crew": 11,
+   "cargo": [
+    "fuel cells",
+    "survey drones",
+    "medical stores"
+   ]
+  },
+  {
+   "pos": 381,
+   "hull": "JL-3967",
+   "name": "ISV Distant Quill",
+   "cls": "Tug",
+   "value": 1.0,
+   "sector": "Vesta Drift",
+   "built": 2171,
+   "lost": 2231,
+   "crew": 5,
+   "cargo": [
+    "spare hull plate",
+    "water tanks"
+   ]
+  },
+  {
+   "pos": 382,
+   "hull": "PX-6061",
+   "name": "ISV Iron Halyard",
+   "cls": "Probe",
+   "value": 0.3,
+   "sector": "Psyche Deep",
+   "built": 2220,
+   "lost": 2271,
+   "crew": 0,
+   "cargo": [
+    "cobalt ingots"
+   ]
+  },
+  {
+   "pos": 383,
+   "hull": "MZ-7057",
+   "name": "CSS Marrow Tern",
+   "cls": "Corvette",
+   "value": 9.7,
+   "sector": "Psyche Deep",
+   "built": 2241,
+   "lost": 2278,
+   "crew": 113,
+   "cargo": [
+    "nickel ore"
+   ]
+  },
+  {
+   "pos": 384,
+   "hull": "JL-7907",
+   "name": "ISV Patient Tern",
+   "cls": "Hauler",
+   "value": 2.0,
+   "sector": "Eros Belt",
+   "built": 2221,
+   "lost": 2235,
+   "crew": 11,
+   "cargo": [
+    "spare hull plate",
+    "medical stores"
+   ]
+  },
+  {
+   "pos": 385,
+   "hull": "CS-2364",
+   "name": "CSS Ninth Heron",
+   "cls": "Corvette",
+   "value": 5.2,
+   "sector": "Eros Belt",
+   "built": 2249,
+   "lost": 2259,
+   "crew": 61,
+   "cargo": [
+    "water tanks"
+   ]
+  },
+  {
+   "pos": 386,
+   "hull": "PX-3473",
+   "name": "ISV Broken Tide",
+   "cls": "Freighter",
+   "value": 8.5,
+   "sector": "Juno Shelf",
+   "built": 2256,
+   "lost": 2265,
+   "crew": 20,
+   "cargo": [
+    "survey drones",
+    "ice cores",
+    "seed vault"
+   ]
+  },
+  {
+   "pos": 387,
+   "hull": "KV-3129",
+   "name": "ISV Distant Covenant",
+   "cls": "Freighter",
+   "value": 4.8,
+   "sector": "Vesta Drift",
+   "built": 2232,
+   "lost": 2246,
+   "crew": 25,
+   "cargo": [
+    "navigation beacons",
+    "reactor shielding",
+    "ice cores"
+   ]
+  },
+  {
+   "pos": 388,
+   "hull": "NB-9847",
+   "name": "ISV Broken Halyard",
+   "cls": "Hauler",
+   "value": 1.6,
+   "sector": "Hygiea Reach",
+   "built": 2193,
+   "lost": 2244,
+   "crew": 14,
+   "cargo": [
+    "reactor shielding"
+   ]
+  },
+  {
+   "pos": 389,
+   "hull": "VR-2598",
+   "name": "CSS Hollow Kestrel",
+   "cls": "Corvette",
+   "value": 4.3,
+   "sector": "Eros Belt",
+   "built": 2185,
+   "lost": 2245,
+   "crew": 59,
+   "cargo": [
+    "reactor shielding",
+    "survey drones",
+    "nickel ore"
+   ]
+  },
+  {
+   "pos": 390,
+   "hull": "VR-9617",
+   "name": "CSS Velvet Ember",
+   "cls": "Corvette",
+   "value": 3.6,
+   "sector": "Juno Shelf",
+   "built": 2248,
+   "lost": 2262,
+   "crew": 50,
+   "cargo": [
+    "spare hull plate",
+    "hydroponic racks"
+   ]
+  },
+  {
+   "pos": 391,
+   "hull": "JL-3871",
+   "name": "CSS Patient Harbor",
+   "cls": "Corvette",
+   "value": 4.0,
+   "sector": "Vesta Drift",
+   "built": 2214,
+   "lost": 2241,
+   "crew": 66,
+   "cargo": [
+    "seed vault",
+    "cobalt ingots",
+    "medical stores"
+   ]
+  },
+  {
+   "pos": 392,
+   "hull": "HQ-7568",
+   "name": "ISV Brass Tern",
+   "cls": "Hauler",
+   "value": 5.1,
+   "sector": "Psyche Deep",
+   "built": 2206,
+   "lost": 2258,
+   "crew": 14,
+   "cargo": [
+    "nickel ore",
+    "ice cores"
+   ]
+  },
+  {
+   "pos": 393,
+   "hull": "NB-5216",
+   "name": "ISV Northern Covenant",
+   "cls": "Hauler",
+   "value": 2.1,
+   "sector": "Ceres Near",
+   "built": 2281,
+   "lost": 2289,
+   "crew": 4,
+   "cargo": [
+    "medical stores",
+    "nickel ore"
+   ]
+  },
+  {
+   "pos": 394,
+   "hull": "TD-9619",
+   "name": "ISV Distant Cinder",
+   "cls": "Probe",
+   "value": 0.5,
+   "sector": "Eros Belt",
+   "built": 2252,
+   "lost": 2279,
+   "crew": 0,
+   "cargo": [
+    "medical stores",
+    "fuel cells",
+    "survey drones"
+   ]
+  },
+  {
+   "pos": 395,
+   "hull": "HQ-8878",
+   "name": "ISV Last Orchard",
+   "cls": "Freighter",
+   "value": 5.7,
+   "sector": "Ceres Near",
+   "built": 2175,
+   "lost": 2231,
+   "crew": 9,
+   "cargo": [
+    "medical stores"
+   ]
+  },
+  {
+   "pos": 396,
+   "hull": "PX-8256",
+   "name": "CSS Broken Quill",
+   "cls": "Corvette",
+   "value": 3.8,
+   "sector": "Pallas Gap",
+   "built": 2244,
+   "lost": 2273,
+   "crew": 104,
+   "cargo": [
+    "spare hull plate",
+    "water tanks"
+   ]
+  },
+  {
+   "pos": 397,
+   "hull": "KV-6477",
+   "name": "ISV Ninth Meridian",
+   "cls": "Hauler",
+   "value": 5.9,
+   "sector": "Juno Shelf",
+   "built": 2190,
+   "lost": 2234,
+   "crew": 10,
+   "cargo": [
+    "nickel ore",
+    "medical stores"
+   ]
+  },
+  {
+   "pos": 398,
+   "hull": "KV-8361",
+   "name": "CSS Salt Anvil",
+   "cls": "Corvette",
+   "value": 9.9,
+   "sector": "Hygiea Reach",
+   "built": 2262,
+   "lost": 2278,
+   "crew": 80,
+   "cargo": [
+    "ice cores"
+   ]
+  },
+  {
+   "pos": 399,
+   "hull": "CS-1252",
+   "name": "ISV Velvet Tide",
+   "cls": "Tug",
+   "value": 1.4,
+   "sector": "Psyche Deep",
+   "built": 2264,
+   "lost": 2279,
+   "crew": 4,
+   "cargo": [
+    "ice cores",
+    "cobalt ingots",
+    "hydroponic racks"
+   ]
+  },
+  {
+   "pos": 400,
+   "hull": "JL-3072",
+   "name": "ISV Salt Ledger",
+   "cls": "Hauler",
+   "value": 5.9,
+   "sector": "Pallas Gap",
+   "built": 2248,
+   "lost": 2257,
+   "crew": 16,
+   "cargo": [
+    "spare hull plate",
+    "hydroponic racks"
+   ]
+  }
+ ],
+ "answers": {
+  "1": 3,
+  "2": 50,
+  "3": 224.0
+ },
+ "wrong": {
+  "1": {
+   "14": "all_pages",
+   "50": "cards",
+   "11": "class:Hauler",
+   "10": "class:Freighter",
+   "8": "class:Corvette",
+   "7": "class:Tug"
+  },
+  "3": {
+   "49.1": "page1_only",
+   "65.5": "pages:2",
+   "95.8": "pages:3",
+   "114.4": "pages:4",
+   "153.9": "pages:5",
+   "198.0": "pages:6",
+   "210.6": "pages:7",
+   "369.2": "start_1_to_8",
+   "174.9": "start_50_by_50",
+   "1646.7": "all_classes"
+  }
+ }
+}

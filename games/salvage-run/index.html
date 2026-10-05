@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Salvage Run: crew console</title>
+<link rel="icon" href="favicon.png">
+<style>
+  :root { --bg:#070a11; --panel:rgba(14,20,31,.92); --line:#26344d; --ink:#e6edf7; --muted:#8fa0bb; --amber:#f5b942; --teal:#43d1c5; --red:#ff5a6a; }
+  * { box-sizing:border-box; }
+  html, body { margin:0; height:100%; font-family:"Segoe UI", Helvetica, Arial, sans-serif; color:var(--ink); background:var(--bg); }
+  #stage { position:fixed; inset:0; overflow:hidden; background:#000; }
+  #stage .bg { position:absolute; inset:-4%; background:url(img/hero.jpg) center/cover; transition:transform 2.4s cubic-bezier(.3,.8,.3,1), filter 2.4s; transform:scale(1.05) translate(0,0); }
+  #stage.l0 .bg { transform:scale(1.02) translate(2%,0); filter:saturate(.7) brightness(.75); }
+  #stage.l1 .bg { transform:scale(1.10) translate(1%,1%); }
+  #stage.l2 .bg { transform:scale(1.22) translate(-1%,2%); }
+  #stage.l3 .bg { transform:scale(1.6) translate(-3%,4%); filter:saturate(1.3) brightness(1.15); }
+  #stage::after { content:""; position:absolute; inset:0; background:linear-gradient(90deg, rgba(0,0,0,0) 30%, rgba(0,0,0,.7) 100%); pointer-events:none; }
+
+  #strip { position:fixed; top:0; left:0; right:0; z-index:5; display:flex; background:rgba(7,10,17,.92); border-bottom:1px solid var(--line); backdrop-filter:blur(6px); }
+  #strip .brand { padding:10px 16px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--amber); font-size:13px; display:flex; align-items:center; gap:10px; border-right:1px solid var(--line); white-space:nowrap; }
+  #strip .brand .sec { background:var(--amber); color:#111; border-radius:4px; padding:1px 7px; font-size:12px; letter-spacing:0; }
+  #strip .pin { flex:1; padding:8px 12px; display:flex; align-items:center; gap:9px; color:var(--muted); font-size:13px; border-right:1px solid var(--line); white-space:nowrap; }
+  #strip .pin:last-child { border-right:0; }
+  #strip .pin .dot { width:13px; height:13px; border-radius:50%; border:2px solid #4b5a73; flex:none; transition:all .4s; }
+  #strip .pin.now { color:var(--ink); font-weight:700; }
+  #strip .pin.now .dot { border-color:var(--amber); box-shadow:0 0 0 4px rgba(245,185,66,.2); }
+  #strip .pin.done .dot { background:var(--teal); border-color:var(--teal); box-shadow:0 0 10px var(--teal); }
+  #strip .pin.done { color:var(--ink); }
+
+  #col { position:fixed; top:48px; right:0; bottom:0; width:min(600px,100%); z-index:4; overflow-y:auto; padding:18px 18px 40px; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,.45); margin-bottom:14px; overflow:hidden; backdrop-filter:blur(4px); }
+  .card .hd { padding:9px 14px; font-weight:700; font-size:13.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--amber); border-bottom:1px solid var(--line); display:flex; align-items:center; gap:10px; }
+  .card .hd .skill { margin-left:auto; font-size:11px; color:var(--teal); border:1px solid var(--teal); border-radius:999px; padding:1px 8px; letter-spacing:.08em; }
+  .card.cleared .hd { color:var(--teal); }
+  .card .bd { padding:12px 14px; font-size:14.5px; line-height:1.55; }
+  a { color:var(--teal); }
+  code, pre { font-family:"Source Code Pro", Consolas, monospace; }
+  code { background:#1b2536; padding:1px 5px; border-radius:4px; font-size:13px; color:#ffd88a; }
+  pre.r { background:#05080e; border:1px solid var(--line); color:#d7dde8; border-radius:8px; padding:10px 12px; font-size:12.5px; line-height:1.5; margin:8px 0 0; overflow-x:auto; white-space:pre; }
+  pre.r .s { color:#b9ca4a; } pre.r .f { color:#7aa6da; } pre.r .c { color:#6b7a93; font-style:italic; } pre.r .b { color:#111; background:var(--amber); border-radius:3px; padding:0 3px; font-weight:700; }
+  .row { display:flex; gap:8px; margin-top:12px; }
+  input.ans { flex:1; font:inherit; font-size:16px; padding:9px 11px; border:1.5px solid var(--line); border-radius:8px; background:#05080e; color:var(--ink); }
+  input.ans:focus { outline:none; border-color:var(--amber); box-shadow:0 0 0 3px rgba(245,185,66,.18); }
+  button.go { font:inherit; font-weight:700; padding:9px 18px; border:0; border-radius:8px; background:var(--amber); color:#111; cursor:pointer; }
+  button.go:hover { filter:brightness(1.1); }
+  button.go:disabled { opacity:.5; cursor:wait; }
+  button.ghost { font:inherit; padding:5px 13px; border:1.5px solid var(--line); border-radius:8px; background:transparent; color:var(--ink); cursor:pointer; }
+  button.ghost.on { border-color:var(--amber); color:var(--amber); font-weight:700; }
+  .hint { margin-top:10px; border-left:4px solid var(--red); background:rgba(255,90,106,.09); padding:9px 12px; border-radius:6px; font-size:13.5px; line-height:1.5; display:none; }
+  .hint.show { display:block; animation:shake .35s; }
+  @keyframes shake { 25% { transform:translateX(-4px); } 75% { transform:translateX(4px); } }
+  .ok { margin-top:10px; border-left:4px solid var(--teal); background:rgba(67,209,197,.09); padding:9px 12px; border-radius:6px; font-size:13.5px; display:none; }
+  .ok.show { display:block; }
+  .muted { color:var(--muted); font-size:13px; }
+  .plan { background:#f4f5f7; border-radius:8px; padding:6px; }
+  .plan svg { width:100%; height:auto; display:block; }
+  .phone-only { display:none; } @media (max-width:640px) { .phone-only { display:inline; } }
+
+  #finish { position:fixed; inset:0; z-index:8; display:none; background:radial-gradient(ellipse at 35% 45%, #0d2a2c 0%, #04060b 60%); overflow:auto; }
+  #finish.on { display:block; animation:fadein 1.4s ease; }
+  @keyframes fadein { from { opacity:0; } }
+  #finish .wrap { max-width:1240px; margin:0 auto; padding:24px; display:grid; grid-template-columns:1.2fr 1fr; gap:22px; align-items:start; }
+  #finish h1 { margin:0; font-size:34px; letter-spacing:.06em; color:var(--teal); text-shadow:0 0 24px rgba(67,209,197,.6); }
+  #finish .sub { color:var(--muted); margin:4px 0 14px; }
+  #viewer { width:100%; aspect-ratio:4/3; border-radius:14px; border:1px solid var(--line); background:#000; display:block; }
+  #roomline { font-size:18px; font-weight:700; color:var(--amber); margin-top:12px; }
+  @media (max-width:900px) {
+    html, body { height:auto; }
+    #col { position:relative; width:100%; padding-top:64px; }
+    #finish .wrap { grid-template-columns:1fr; }
+    #strip .pin { font-size:0; gap:0; padding:8px; } #strip .pin.now { font-size:12px; gap:6px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="stage" class="l0"><div class="bg"></div></div>
+
+<div id="strip">
+  <div class="brand">Salvage Run <span class="sec" id="secbadge">A</span></div>
+  <div class="pin" id="pin0"><span class="dot"></span>Dock</div>
+  <div class="pin" id="pin1"><span class="dot"></span>1 Selector</div>
+  <div class="pin" id="pin2"><span class="dot"></span>2 URL</div>
+  <div class="pin" id="pin3"><span class="dot"></span>3 Loop</div>
+</div>
+
+<div id="col">
+
+  <div class="card" id="intro">
+    <div class="hd">Mission briefing</div>
+    <div class="bd">
+      <div>The <a href="/registry?start=1" target="_blank"><b>Ceres Salvage Registry</b></a> lists 400 derelict ships in the belt, 50 to a page. Its Dreadnoughts still carry <b style="color:var(--teal)">warp cores</b>. Your crew prices the salvage by scraping the registry from R, then tows a core home.</div>
+      <div style="margin-top:8px;"><b>1.</b> Work in pairs. Each of you taps your own seat below, and you both enter answers on your own screens.</div>
+      <div style="margin-top:4px;"><b>2.</b> Keep the registry open in another tab. <b>Right-click, then Inspect</b> is your best tool today.</div>
+      <div style="margin-top:4px;"><b>3.</b> Write your R code in today's Rmd. Every answer is one value your code prints. A wrong answer is never a penalty: it gets you a hint.</div>
+      <div class="muted" style="margin-top:8px;">Be a good citizen: the registry's <a href="/robots.txt" target="_blank">robots.txt</a> asks for a one-second pause between requests. <a href="#" id="restart">Start over on this device</a></div>
+    </div>
+  </div>
+
+  <div class="card" id="seatbox">
+    <div class="hd">Dock &nbsp; Where are you sitting?</div>
+    <div class="bd">
+      <div class="row" style="margin:0 0 10px; align-items:center;">
+        <span class="muted">Section</span>
+        <button class="ghost secbtn" data-sec="A">A</button>
+        <button class="ghost secbtn" data-sec="B">B</button>
+        <span class="muted" style="margin-left:auto;">Front of the room (screens) is at the top.</span>
+      </div>
+      <div class="muted" style="margin-bottom:6px;">Tap your computer's circle. <span class="phone-only">On a phone, scroll the plan sideways.</span> Your tug launches on the projector as you clear each stage.</div>
+      <div class="plan" id="plan0"></div>
+      <div class="ok" id="ok0"></div>
+    </div>
+  </div>
+
+  <div class="card" id="lv1" hidden>
+    <div class="hd">Stage 1 &nbsp; Read the manifest <span class="skill">CSS selector</span></div>
+    <div class="bd">
+      <div><b>Question:</b> how many <b>Dreadnoughts</b> are listed on the <b>first page</b> of the registry, among its 50 wreck cards?</div>
+      <pre class="r">page = rvest::read_html(<span class="s">"https://isa401-salvage.vercel.app/registry?start=1"</span>)
+classes = page |&gt;
+  rvest::html_elements(<span class="b">"????"</span>) |&gt;
+  rvest::html_text2()
+length(classes)   <span class="c"># check this first: one per card</span></pre>
+      <div class="muted" style="margin-top:8px;">Inspect a card before you trust a selector, and check <code>length()</code> before you count anything.</div>
+      <div class="row"><input class="ans" id="in1" placeholder="a whole number" autocomplete="off" inputmode="numeric"><button class="go" data-lv="1">Check</button></div>
+      <div class="hint" id="h1"></div><div class="ok" id="ok1"></div>
+    </div>
+  </div>
+
+  <div class="card" id="lv2" hidden>
+    <div class="hd">Stage 2 &nbsp; Plot the course <span class="skill">URL pattern</span></div>
+    <div class="bd">
+      <div><b>Question:</b> click <b>Next</b> on the registry and watch the address bar. By how much does the <code>start=</code> value change from one page to the next?</div>
+      <pre class="r">https://isa401-salvage.vercel.app/registry?start=<span class="b">1</span>
+https://isa401-salvage.vercel.app/registry?start=<span class="b">???</span></pre>
+      <div class="row"><input class="ans" id="in2" placeholder="a whole number" autocomplete="off" inputmode="numeric"><button class="go" data-lv="2">Check</button></div>
+      <div class="hint" id="h2"></div><div class="ok" id="ok2"></div>
+    </div>
+  </div>
+
+  <div class="card" id="lv3" hidden>
+    <div class="hd">Stage 3 &nbsp; Sweep the belt <span class="skill">for loop</span></div>
+    <div class="bd">
+      <div><b>Question:</b> scrape all 400 wrecks. What is the <b>total estimated salvage</b> of every Dreadnought, in MCr?</div>
+      <pre class="r">base = <span class="s">"https://isa401-salvage.vercel.app"</span>
+starts = seq(from = 1, to = <span class="b">???</span>, by = <span class="b">???</span>)
+pages = vector(<span class="s">"list"</span>, length(starts))
+<span class="f">for</span> (i <span class="f">in</span> seq_along(starts)) {
+  pg = rvest::read_html(paste0(base, <span class="s">"/registry?start="</span>, starts[i]))
+  pages[[i]] = data.frame(
+    class = <span class="b">???</span>,
+    value = <span class="b">???</span> |&gt; readr::parse_number()
+  )
+  Sys.sleep(1)   <span class="c"># robots.txt asks for it</span>
+}
+registry = dplyr::bind_rows(pages)   <span class="c"># 400 rows?</span></pre>
+      <div class="row"><input class="ans" id="in3" placeholder="a number in MCr, e.g. 123.4" autocomplete="off" inputmode="decimal"><button class="go" data-lv="3">Check</button></div>
+      <div class="hint" id="h3"></div><div class="ok" id="ok3"></div>
+    </div>
+  </div>
+
+</div>
+
+<div id="finish">
+  <div class="wrap">
+    <div>
+      <h1>CORE SECURED</h1>
+      <div class="sub" id="finsub"></div>
+      <canvas id="viewer"></canvas>
+      <div id="roomline"></div>
+    </div>
+    <div>
+      <div class="card">
+        <div class="hd">The run, in R</div>
+        <div class="bd">
+<pre class="r"><span class="c"># 1. the right selector: one match per card, 50</span>
+rvest::html_elements(page, <span class="s">".wreck .ship-class"</span>)
+<span class="c"># 2. the URL: start is a wreck number</span>
+seq(from = 1, to = 351, by = 50)   <span class="c"># 1 51 101 ... 351</span>
+<span class="c"># 3. one page at a time, in a loop</span>
+<span class="f">for</span> (i <span class="f">in</span> seq_along(starts)) { ... }
+sum(registry$value[registry$class == <span class="s">"Dreadnought"</span>])</pre>
+        </div>
+      </div>
+      <div class="card">
+        <div class="hd">Finished early? Say it with map</div>
+        <div class="bd">Rewrite your stage 3 loop as <code>scrape_page = function(start) { ... }</code> and <code>purrr::map(starts, scrape_page) |&gt; purrr::list_rbind()</code>. Same 400 rows, no <code>pages[[i]]</code> bookkeeping. Then help a crew near you.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/" } }
+</script>
+<script type="module">
+const $ = (id) => document.getElementById(id);
+const qs = new URLSearchParams(location.search);
+const KEY = "isa401-salvage";
+const TOP = 3;   // last stage
+const state = JSON.parse(localStorage.getItem(KEY) || "{}");
+let section = (qs.get("section") || state.section || "A").toUpperCase();
+if (!/^[ABZ]$/.test(section)) section = "A";
+let seat = state.seat && state.section === section ? state.seat : null;
+let level = seat ? Math.max(0, state.level ?? 0) : -1;
+let runId = state.runId || null;
+
+const save = () => localStorage.setItem(KEY, JSON.stringify({ section, seat, level, runId }));
+const restart = () => { localStorage.removeItem(KEY); location.href = location.pathname + "?section=" + section; };
+$("restart").addEventListener("click", (e) => { e.preventDefault(); restart(); });
+
+async function post(stage, answer) {
+  const r = await fetch("/api/check", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ section, seat, stage, answer }) });
+  const j = await r.json();
+  if (j.runId) { runId = j.runId; save(); }
+  return j;
+}
+// a reset on the board starts a new run: a device that remembers an older run starts over
+async function checkRun() {
+  try {
+    const j = await fetch("/api/board?section=" + section, { cache: "no-store" }).then((r) => r.json());
+    if (j.runId && runId && j.runId !== runId) { restart(); return true; }
+    if (j.runId && seat && !j.seats[seat]) { restart(); return true; }
+  } catch (e) {}
+  return false;
+}
+
+function setSection(s) {
+  section = s; $("secbadge").textContent = s;
+  document.querySelectorAll(".secbtn").forEach((b) => b.classList.toggle("on", b.dataset.sec === s));
+  save();
+}
+function render(scroll = true) {
+  for (let k = 1; k <= TOP; k++) { $("lv" + k).hidden = level < k - 1; $("lv" + k).classList.toggle("cleared", level >= k); }
+  for (let k = 0; k <= TOP; k++) { const p = $("pin" + k); p.classList.toggle("done", level >= k); p.classList.toggle("now", level === k - 1); }
+  $("stage").className = "l" + Math.max(0, Math.min(level, TOP));
+  if (seat) { $("ok0").textContent = `Seat ${seat}, section ${section}. Your tug is on the pad. Stage 1 is below.`; $("ok0").classList.add("show"); }
+  if (!scroll) return;
+  const target = level < 0 ? "seatbox" : "lv" + Math.min(level + 1, TOP);
+  const el = $(target); if (el && !el.hidden) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  const inp = $("in" + (level + 1)); if (inp) setTimeout(() => inp.focus({ preventScroll: true }), 500);
+}
+
+const OK = {
+  1: "Correct. One class per card, 50 in all, and 3 of them are Dreadnoughts. Stage 2 is open.",
+  2: "Correct. start goes up by 50 each page: 1, 51, 101, ... That is the by = in your loop. Stage 3 is open.",
+};
+
+async function check(lv) {
+  const inp = $("in" + lv), btn = document.querySelector(`button.go[data-lv="${lv}"]`), hb = $("h" + lv);
+  btn.disabled = true;
+  let j;
+  try { j = await post(lv, inp.value); } catch (e) { j = { ok: false, hint: "No answer from the server. Check your connection and try again." }; }
+  btn.disabled = false;
+  if (!j.ok) { hb.classList.remove("show"); void hb.offsetWidth; hb.textContent = j.hint || "Not quite."; hb.classList.add("show"); inp.select(); return; }
+  hb.classList.remove("show");
+  level = Math.max(level, lv); save();
+  if (lv < TOP) { $("ok" + lv).textContent = OK[lv]; $("ok" + lv).classList.add("show"); render(); }
+  else finish(j);
+}
+document.querySelectorAll("button.go").forEach((b) => b.addEventListener("click", () => check(Number(b.dataset.lv))));
+document.querySelectorAll("input.ans").forEach((i) => i.addEventListener("keydown", (e) => { if (e.key === "Enter") check(Number(i.id.slice(2))); }));
+
+// ---- seat plan
+if (seat && await checkRun()) throw new Error("restarting");
+$("plan0").innerHTML = await fetch("plan.svg").then((r) => r.text());
+const seats = [...$("plan0").querySelectorAll(".seat")];
+seats.forEach((g) => g.addEventListener("click", async () => {
+  if (seat && seat !== g.dataset.seat && level > 0) return;   // no moving seats mid-run
+  seat = g.dataset.seat; level = Math.max(level, 0);
+  seats.forEach((x) => x.classList.remove("picked", "mine"));
+  g.classList.add("picked", "mine");
+  save(); render();
+  try { await post(0); } catch (e) {}
+}));
+if (seat) { const g = $("plan0").querySelector(`.seat[data-seat="${seat}"]`); if (g) g.classList.add("picked", "mine"); }
+document.querySelectorAll(".secbtn").forEach((b) => b.addEventListener("click", () => { if (level > 0) return; setSection(b.dataset.sec); if (seat) post(0); }));
+setSection(section);
+for (let k = 1; k < TOP; k++) if (level >= k) { $("ok" + k).textContent = OK[k]; $("ok" + k).classList.add("show"); }
+render(false);
+if (level >= TOP) finish({});
+
+// ---- finish: the recovered Dreadnought, core blazing, in 3D
+async function finish(resp) {
+  $("finsub").textContent = `Seat ${seat}, section ${section}. Eight pages, one loop: your tug is towing a core home. Look at the projector.`;
+  $("finish").classList.add("on");
+  const THREE = await import("three");
+  const { GLTFLoader } = await import("three/addons/loaders/GLTFLoader.js");
+  const { OrbitControls } = await import("three/addons/controls/OrbitControls.js");
+  const { EffectComposer } = await import("three/addons/postprocessing/EffectComposer.js");
+  const { RenderPass } = await import("three/addons/postprocessing/RenderPass.js");
+  const { UnrealBloomPass } = await import("three/addons/postprocessing/UnrealBloomPass.js");
+  const { OutputPass } = await import("three/addons/postprocessing/OutputPass.js");
+  const canvas = $("viewer");
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  const scene = new THREE.Scene();
+  scene.background = new THREE.TextureLoader().load("img/starfield.jpg", (t) => { t.colorSpace = THREE.SRGBColorSpace; });
+  const cam = new THREE.PerspectiveCamera(38, 4 / 3, 0.1, 500);
+  cam.position.set(12, 5, -13);   // the breach side (Blender +Y is glTF -Z), so the core shows
+  scene.add(new THREE.HemisphereLight(0x8fb8ff, 0x201810, 1.2));
+  const sun = new THREE.DirectionalLight(0xffe2c0, 2.6); sun.position.set(8, 10, 6); scene.add(sun);
+  const gltf = await new GLTFLoader().loadAsync("models/salvage.glb");
+  const ship = gltf.scene.getObjectByName("Dreadnought");
+  scene.add(ship);
+  const core = ship.getObjectByName("Core");
+  const glow = new THREE.PointLight(0x43d1c5, 30, 14); core.add(glow);
+  core.traverse((o) => { if (o.material) { o.material = o.material.clone(); o.material.emissive = new THREE.Color(0x43d1c5); } });
+  const controls = new OrbitControls(cam, canvas); controls.enableDamping = true; controls.autoRotate = true; controls.autoRotateSpeed = 0.9;
+  const composer = new EffectComposer(renderer);
+  composer.addPass(new RenderPass(scene, cam));
+  composer.addPass(new UnrealBloomPass(new THREE.Vector2(800, 600), 1.1, 0.5, 0.2));
+  composer.addPass(new OutputPass());
+  function size() { const w = canvas.clientWidth, h = canvas.clientHeight; renderer.setSize(w, h, false); composer.setSize(w, h); cam.aspect = w / h; cam.updateProjectionMatrix(); }
+  size(); addEventListener("resize", size);
+  const clock = new THREE.Clock();
+  (function loop() {
+    const t = clock.getElapsedTime();
+    core.traverse((o) => { if (o.material) o.material.emissiveIntensity = 6 + 4 * Math.sin(t * 3); });
+    glow.intensity = 25 + 12 * Math.sin(t * 3);
+    controls.update(); composer.render(); requestAnimationFrame(loop);
+  })();
+  async function room() {
+    try {
+      const j = await fetch("/api/board?section=" + section, { cache: "no-store" }).then((r) => r.json());
+      const n = j.present.length, d = j.done;
+      $("roomline").textContent = n ? `${d} of ${n} crews have secured the core. ${d >= n ? "Every crew is home. Look up." : "Help a crew near you."}` : "";
+    } catch (e) {}
+  }
+  room(); setInterval(room, 4000);
+}
+</script>
+</body>
+</html>
