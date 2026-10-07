@@ -1,0 +1,758 @@
+{
+ "data-shapes": {
+  "prompt": "The same job ad reaches us three ways: the free text of its description, a JSON list of its skills, and a row in a database table. Say which one is structured, which is semi-structured and which is unstructured, and what makes each one so.",
+  "ideas": [
+   {
+    "label": "The database row is structured: fixed columns",
+    "ask": "Does the student's answer say that the database row (the table) is structured data, because it has fixed columns or a fixed table layout?",
+    "yes": "The answer states or clearly paraphrases that the database row (the table) is structured data, because it has fixed columns or a fixed table layout.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "The JSON is semi-structured: labels, no fixed table",
+    "ask": "Does the student's answer say that the JSON is semi-structured data, because it carries labels, keys or tags (or nesting) without being a fixed table?",
+    "yes": "The answer states or clearly paraphrases that the JSON is semi-structured data, because it carries labels, keys or tags (or nesting) without being a fixed table.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "The description text is unstructured: no fields",
+    "ask": "Does the student's answer say that the free-text description is unstructured data, because it has no fields, columns or labels?",
+    "yes": "The answer states or clearly paraphrases that the free-text description is unstructured data, because it has no fields, columns or labels.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": [
+   {
+    "ask": "Does the student's answer claim that the JSON is structured data, or that the free text is semi-structured data?",
+    "yes": "The answer asserts that the JSON is structured data, or that the free text is semi-structured data.",
+    "no": "The answer does not assert this. It may not mention it, or may reject it.",
+    "msg": "Check which label you gave the JSON and the free text."
+   }
+  ]
+ },
+ "data-unit": {
+  "prompt": "A classmate looks at this output and writes: \"There were 1,000 crashes.\" Use the output to say what one row of this table is, and what is wrong with the sentence. <span style=\"color:#585E60;\">(The rows are a small made-up example in the shape of the Cincinnati crashes file.)</span>",
+  "context": "> dplyr::glimpse(crashes)\nRows: 1,000\nColumns: 5\n$ instanceid    <chr> \"A2026-0412\", \"A2026-0412\", \"A2026-0413\", \"A2026-0413\", \"A2026-0413\", ...\n$ crashdate     <dttm> 2026-08-21 07:40:00, 2026-08-21 07:40:00, 2026-08-21 09:05:00, ...\n$ persontype    <chr> \"D - DRIVER\", \"O - OCCUPANT\", \"D - DRIVER\", \"D - DRIVER\", \"P - PEDESTRIAN\", ...\n$ age           <chr> \"34\", \"8\", \"51\", \"UNKNOWN\", \"27\", ...\n$ injuries      <chr> \"5 - NO APPARENT INJURY\", \"5 - NO APPARENT INJURY\", \"2 - SUSPECTED SERIOUS\", ...\n\n> length(unique(crashes$instanceid))\n[1] 431",
+  "ideas": [
+   {
+    "label": "One row is one person involved in a crash",
+    "ask": "Does the student's answer say that one row of the table is one person (a driver, occupant or pedestrian) involved in a crash, not one crash?",
+    "yes": "The answer states or clearly paraphrases that one row of the table is one person (a driver, occupant or pedestrian) involved in a crash, not one crash.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "Rows are not crashes: there are 431 crashes, not 1,000",
+    "ask": "Does the student's answer say that the number of crashes is smaller than the number of rows (431 distinct crashes, or that several rows share the same crash id), so 1,000 is the wrong count of crashes?",
+    "yes": "The answer states or clearly paraphrases that the number of crashes is smaller than the number of rows (431 distinct crashes, or that several rows share the same crash id), so 1,000 is the wrong count of crashes.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": [
+   {
+    "ask": "Does the student's answer claim that each row of the table is one crash and the count of 1,000 crashes is correct?",
+    "yes": "The answer asserts that each row of the table is one crash and the count of 1,000 crashes is correct.",
+    "no": "The answer does not assert this. It may not mention it, or may reject it.",
+    "msg": "Compare the first two rows: same instanceid, same time, different people."
+   }
+  ]
+ },
+ "git-commit-push": {
+  "prompt": "You committed <code>class13.Rmd</code> in GitHub Desktop, but your partner cannot see it on github.com. Explain what the commit did, and what is still missing.",
+  "ideas": [
+   {
+    "label": "A commit saves a snapshot on your own computer",
+    "ask": "Does the student's answer say that a commit saves or records the changes (a snapshot) locally, on the student's own computer or local repository?",
+    "yes": "The answer states or clearly paraphrases that a commit saves or records the changes (a snapshot) locally, on the student's own computer or local repository.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "A push sends the commits to GitHub",
+    "ask": "Does the student's answer say that a push (Push origin) is needed to send or upload the commit to GitHub, and it has not been done yet?",
+    "yes": "The answer states or clearly paraphrases that a push (Push origin) is needed to send or upload the commit to GitHub, and it has not been done yet.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": [
+   {
+    "ask": "Does the student's answer claim that committing by itself uploads the file to GitHub?",
+    "yes": "The answer asserts that committing by itself uploads the file to GitHub.",
+    "no": "The answer does not assert this. It may not mention it, or may reject it.",
+    "msg": "A commit never touches the internet."
+   }
+  ]
+ },
+ "git-revert": {
+  "prompt": "You pushed the second commit below and then noticed it deleted a chunk your report needs. GitHub Desktop offers <b>Undo</b> and <b>Revert</b>. Which one applies here, and what does it do to the history?",
+  "context": "History (newest first)\n  a41c9e2  Remove old chunks          pushed 10:42\n  7be0d15  Add class 13 markdown      pushed 10:15",
+  "ideas": [
+   {
+    "label": "Revert, because the commit is already pushed",
+    "ask": "Does the student's answer say that Revert is the one to use here, because the commit has already been pushed (Undo only works before a push)?",
+    "yes": "The answer states or clearly paraphrases that Revert is the one to use here, because the commit has already been pushed (Undo only works before a push).",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "Revert adds a new commit that reverses the old one",
+    "ask": "Does the student's answer say that Revert creates a new commit that reverses the changes of the earlier commit, and the earlier commit stays in the history?",
+    "yes": "The answer states or clearly paraphrases that Revert creates a new commit that reverses the changes of the earlier commit, and the earlier commit stays in the history.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": [
+   {
+    "ask": "Does the student's answer claim that Undo is the right choice for a commit that has already been pushed?",
+    "yes": "The answer asserts that Undo is the right choice for a commit that has already been pushed.",
+    "no": "The answer does not assert this. It may not mention it, or may reject it.",
+    "msg": "Check when Undo is available."
+   }
+  ]
+ },
+ "import-path": {
+  "prompt": "Your markdown is saved in <code>markdowns/</code> and the file is in <code>data/</code>. Explain what <code>\"../data/jobs.csv\"</code> tells R to do, and why that same line can work when you knit but fail when you run it in the Console.",
+  "ideas": [
+   {
+    "label": "\"..\" goes up one folder, then into data/",
+    "ask": "Does the student's answer say that the two dots mean go up one folder (to the parent or project folder) from where the markdown is, and then into the data folder?",
+    "yes": "The answer states or clearly paraphrases that the two dots mean go up one folder (to the parent or project folder) from where the markdown is, and then into the data folder.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "Knit starts from the markdown's folder; the Console starts from the project folder",
+    "ask": "Does the student's answer say that knitting runs from the folder of the markdown file while the Console runs from the project (root) folder, so the same relative path points to a different place?",
+    "yes": "The answer states or clearly paraphrases that knitting runs from the folder of the markdown file while the Console runs from the project (root) folder, so the same relative path points to a different place.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": [
+   {
+    "ask": "Does the student's answer claim that the fix is to call setwd() or to type the full absolute path starting with C:?",
+    "yes": "The answer asserts that the fix is to call setwd() or to type the full absolute path starting with C:.",
+    "no": "The answer does not assert this. It may not mention it, or may reject it.",
+    "msg": "We never use setwd() or absolute paths in this course."
+   }
+  ]
+ },
+ "import-brackets": {
+  "prompt": "For the list below, explain the difference between what <code>job[\"salary\"]</code> and <code>job[[\"salary\"]]</code> return, and which one you need before you can ask for <code>$max</code>.",
+  "context": "job = list(\n  title  = \"Data Analyst\",\n  salary = list(min = 62000, max = 78000))",
+  "ideas": [
+   {
+    "label": "[ ] keeps the container: a list with one element",
+    "ask": "Does the student's answer say that single brackets return a list (a smaller list that still contains the salary element), that is, the container is kept?",
+    "yes": "The answer states or clearly paraphrases that single brackets return a list (a smaller list that still contains the salary element), that is, the container is kept.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "[[ ]] opens it: the element itself",
+    "ask": "Does the student's answer say that double brackets (or the dollar sign) return the element itself, here the inner salary list with min and max, not a list wrapped around it?",
+    "yes": "The answer states or clearly paraphrases that double brackets (or the dollar sign) return the element itself, here the inner salary list with min and max, not a list wrapped around it.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "You need [[ ]] (or $) before $max",
+    "ask": "Does the student's answer say that to get max you must use double brackets or the dollar sign, as in job[[\"salary\"]]$max or job$salary$max?",
+    "yes": "The answer states or clearly paraphrases that to get max you must use double brackets or the dollar sign, as in job[[\"salary\"]]$max or job$salary$max.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": [
+   {
+    "ask": "Does the student's answer claim that single brackets and double brackets return the same thing?",
+    "yes": "The answer asserts that single brackets and double brackets return the same thing.",
+    "no": "The answer does not assert this. It may not mention it, or may reject it.",
+    "msg": "They do not. Check what each one returns."
+   }
+  ]
+ },
+ "import-skip": {
+  "prompt": "This is what R printed for the Excel sheet from the last task when it was read without <code>skip</code>. What went wrong, and which argument fixes it?",
+  "context": "> by_state = readxl::read_excel(path = \"../data/postings_by_state.xlsx\", sheet = \"by_state\")\nNew names:\n* `` -> `...2`\n* `` -> `...3`\n> dplyr::glimpse(by_state)\nRows: 12\nColumns: 3\n$ `Full-time postings by state, ChatISA Job Scout, harvested through Sep 27, 2026` <chr> \"~\n$ ...2                                                                             <chr> \"~\n$ ...3                                                                             <chr> \"~\n> as.data.frame(by_state)[1:3, 2:3]\n      ...2         ...3\n1 postings remote_share\n2      272         0.06\n3      248          0.1",
+  "ideas": [
+   {
+    "label": "The title row was read as the column names",
+    "ask": "Does the student's answer say that the title line at the top of the sheet was treated as the column names (the header), so the real column names ended up in the first row of data?",
+    "yes": "The answer states or clearly paraphrases that the title line at the top of the sheet was treated as the column names (the header), so the real column names ended up in the first row of data.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "skip = 1 passes over the title row",
+    "ask": "Does the student's answer say that the fix is to use the skip argument of read_excel, for example skip = 1?",
+    "yes": "The answer states or clearly paraphrases that the fix is to use the skip argument of read_excel, for example skip = 1.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": []
+ },
+ "qc-privacy": {
+  "prompt": "A friend says: \"I would never use querychat at work. It sends our whole table to OpenAI.\" Explain what is sent to the model, what comes back, and where the data is queried.",
+  "ideas": [
+   {
+    "label": "Only the question and the table's structure are sent, not the rows",
+    "ask": "Does the student's answer say that the rows of data are not sent to the model; only structural information such as the column names and types (the schema) is sent?",
+    "yes": "The answer states or clearly paraphrases that the rows of data are not sent to the model; only structural information such as the column names and types (the schema) is sent.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "The model returns SQL, not the answer",
+    "ask": "Does the student's answer say that the model sends back a SQL query (code), not the numbers or the answer itself?",
+    "yes": "The answer states or clearly paraphrases that the model sends back a SQL query (code), not the numbers or the answer itself.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "The SQL runs on the database, where the data stays",
+    "ask": "Does the student's answer say that the SQL query is run by the database (SQLite) locally or on the app's own server, where the data stays?",
+    "yes": "The answer states or clearly paraphrases that the SQL query is run by the database (SQLite) locally or on the app's own server, where the data stays.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": [
+   {
+    "ask": "Does the student's answer claim that the data is kept private because it is encrypted or anonymized before it is sent to the model, or that the model reads the rows of the table?",
+    "yes": "The answer asserts that the data is kept private because it is encrypted or anonymized before it is sent to the model, or that the model reads the rows of the table.",
+    "no": "The answer does not assert this. It may not mention it, or may reject it.",
+    "msg": "The protection is not encryption. Think about what is sent at all."
+   }
+  ]
+ },
+ "qc-sql": {
+  "prompt": "You asked the Job Scout app \"How many postings are in Ohio?\" and it answered 0. This is the SQL it wrote and one row of the table. Explain why the answer is 0, and what you would add to the app so it gets this right.",
+  "context": "SELECT COUNT(*) AS n\nFROM scout_postings\nWHERE location_state LIKE '%Ohio%';\n\n-- one row of scout_postings\n-- title: \"Data Analyst\"   location_city: \"Columbus\"   location_state: \"OH\"",
+  "ideas": [
+   {
+    "label": "The column holds two-letter codes, so 'Ohio' matches nothing",
+    "ask": "Does the student's answer say that the location_state column stores two-letter state codes such as OH, so searching for the word Ohio matches no rows?",
+    "yes": "The answer states or clearly paraphrases that the location_state column stores two-letter state codes such as OH, so searching for the word Ohio matches no rows.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "A data dictionary (or an instruction) tells the model how the column is coded",
+    "ask": "Does the student's answer say that a data dictionary, column description or extra instruction should be added to tell the model that states are stored as two-letter codes?",
+    "yes": "The answer states or clearly paraphrases that a data dictionary, column description or extra instruction should be added to tell the model that states are stored as two-letter codes.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": [
+   {
+    "ask": "Does the student's answer claim that the result of 0 is correct and there really are no postings in Ohio?",
+    "yes": "The answer asserts that the result of 0 is correct and there really are no postings in Ohio.",
+    "no": "The answer does not assert this. It may not mention it, or may reject it.",
+    "msg": "Look at the example row again."
+   }
+  ]
+ },
+ "qc-key": {
+  "prompt": "Your app needs <code>OPENAI_API_KEY</code>. Explain where the key is kept on your own computer, where it is kept once the app runs on Render, and why it must never be in a file you commit.",
+  "ideas": [
+   {
+    "label": "Locally: in .Renviron, which is git-ignored",
+    "ask": "Does the student's answer say that on the student's own computer the key is kept in the .Renviron file?",
+    "yes": "The answer states or clearly paraphrases that on the student's own computer the key is kept in the .Renviron file.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "On Render: as an environment variable on the server",
+    "ask": "Does the student's answer say that on Render the key is set as an environment variable on Render's server (in the service settings), not stored in the repository?",
+    "yes": "The answer states or clearly paraphrases that on Render the key is set as an environment variable on Render's server (in the service settings), not stored in the repository.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "A committed key is public and stays in the history",
+    "ask": "Does the student's answer say that a key that is committed or pushed becomes public or exposed to other people, for example because the repository is public or the Git history keeps it?",
+    "yes": "The answer states or clearly paraphrases that a key that is committed or pushed becomes public or exposed to other people, for example because the repository is public or the Git history keeps it.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": [
+   {
+    "ask": "Does the student's answer claim that it is fine to paste the key directly into app.R or the markdown as long as the repository is deleted or the line is removed later?",
+    "yes": "The answer asserts that it is fine to paste the key directly into app.R or the markdown as long as the repository is deleted or the line is removed later.",
+    "no": "The answer does not assert this. It may not mention it, or may reject it.",
+    "msg": "Removing the line later does not remove it from the history."
+   }
+  ]
+ },
+ "dplyr-mutate-summarize": {
+  "prompt": "Both <code>dplyr::mutate()</code> and <code>dplyr::summarise()</code> can compute a new column. Explain what each one does to the number of rows, and what <code>dplyr::group_by()</code> changes about the result of <code>summarise()</code>.",
+  "ideas": [
+   {
+    "label": "mutate() keeps every row",
+    "ask": "Does the student's answer say that mutate keeps the same number of rows (it does not change the row count)?",
+    "yes": "The answer states or clearly paraphrases that mutate keeps the same number of rows (it does not change the row count).",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "summarise() collapses rows into a summary",
+    "ask": "Does the student's answer say that summarise (also spelled summarize) collapses the rows into a summary, a single row when there is no grouping?",
+    "yes": "The answer states or clearly paraphrases that summarise (also spelled summarize) collapses the rows into a summary, a single row when there is no grouping.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "After group_by(), summarise() returns one row per group",
+    "ask": "Does the student's answer say that after group_by, summarise (also spelled summarize) returns one row for each group?",
+    "yes": "The answer states or clearly paraphrases that after group_by, summarise (also spelled summarize) returns one row for each group.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": [
+   {
+    "ask": "Does the student's answer claim that mutate reduces the number of rows, or that summarise (summarize) keeps every original row?",
+    "yes": "The answer asserts that mutate reduces the number of rows, or that summarise (summarize) keeps every original row.",
+    "no": "The answer does not assert this. It may not mention it, or may reject it.",
+    "msg": "You have the two the wrong way round."
+   }
+  ]
+ },
+ "dplyr-small-groups": {
+  "prompt": "This is the class demo for \"among the full-time jobs, which states have the highest remote share?\", run on the same postings but without the line <code>dplyr::filter(postings &gt;= 50)</code>. Use the output to say what the first row is, and why that line belongs in the pipeline.",
+  "context": "> jobs |>\n+   dplyr::filter(category == \"fulltime\") |>\n+   dplyr::group_by(location_state) |>\n+   dplyr::summarise(\n+     postings = dplyr::n(),\n+     remote_share = mean(remote) |> round(3)\n+   ) |>\n+   dplyr::arrange(dplyr::desc(remote_share)) |>\n+   head(3)\n# A tibble: 3 x 3\n  location_state postings remote_share\n  <chr>             <int>        <dbl>\n1 <NA>                  7        0.429\n2 OH                   95        0.179\n3 NC                   98        0.133",
+  "ideas": [
+   {
+    "label": "The first row is the postings with no state, and there are only 7",
+    "ask": "Does the student's answer say that the first row is the group of postings whose state is missing (NA), and that it contains only a few postings (7)?",
+    "yes": "The answer states or clearly paraphrases that the first row is the group of postings whose state is missing (NA), and that it contains only a few postings (7).",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "A share from so few postings should not lead the ranking",
+    "ask": "Does the student's answer say that a share or average computed from very few postings is not reliable or meaningful, so it should not be ranked alongside states that have many postings?",
+    "yes": "The answer states or clearly paraphrases that a share or average computed from very few postings is not reliable or meaningful, so it should not be ranked alongside states that have many postings.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "filter(postings >= 50) keeps only groups with enough postings",
+    "ask": "Does the student's answer say that filtering on postings (for example postings >= 50) keeps only the groups or states that have enough postings, which removes the small group before the ranking?",
+    "yes": "The answer states or clearly paraphrases that filtering on postings (for example postings >= 50) keeps only the groups or states that have enough postings, which removes the small group before the ranking.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": [
+   {
+    "ask": "Does the student's answer claim that the output shows that the top-ranked row is a real state that is the best place for remote full-time work?",
+    "yes": "The answer asserts that the output shows that the top-ranked row is a real state that is the best place for remote full-time work.",
+    "no": "The answer does not assert this. It may not mention it, or may reject it.",
+    "msg": "Look at what is written in location_state for row 1, and at how many postings it has."
+   }
+  ]
+ },
+ "dplyr-join": {
+  "prompt": "<code>by_state</code> counts the postings in each state, and <code>states</code> is a lookup table of the fifty states with their regions. The output shows a <code>dplyr::left_join()</code> of the two and then a <code>dplyr::anti_join()</code>. Explain the <code>NA</code> values in row 7, what <code>left_join()</code> did with that row, and what <code>dplyr::inner_join()</code> would have done with it.",
+  "context": "> by_state |>\n+   dplyr::left_join(states, by = \"location_state\") |>\n+   head(7)\n# A tibble: 7 x 4\n  location_state     n state_name region       \n  <chr>          <int> <chr>      <chr>        \n1 CA               372 California West         \n2 TX               311 Texas      South        \n3 NY               197 New York   Northeast    \n4 IL               160 Illinois   North Central\n5 GA               141 Georgia    South        \n6 OH               135 Ohio       North Central\n7 DC               124 <NA>       <NA>         \n> by_state |>\n+   dplyr::anti_join(states, by = \"location_state\")\n# A tibble: 2 x 2\n  location_state     n\n  <chr>          <int>\n1 DC               124\n2 <NA>              52",
+  "ideas": [
+   {
+    "label": "NA means DC had no match in the states table",
+    "ask": "Does the student's answer say that the NA values mean that DC had no matching row in the states lookup table (the right-hand table), so there was no state name or region to fill in?",
+    "yes": "The answer states or clearly paraphrases that the NA values mean that DC had no matching row in the states lookup table (the right-hand table), so there was no state name or region to fill in.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "left_join() kept the row anyway",
+    "ask": "Does the student's answer say that left_join keeps every row of the left table, including rows without a match?",
+    "yes": "The answer states or clearly paraphrases that left_join keeps every row of the left table, including rows without a match.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "inner_join() would have dropped DC without a message",
+    "ask": "Does the student's answer say that inner_join would have dropped the DC row (kept only matching rows), so those 124 postings would be missing, with no warning?",
+    "yes": "The answer states or clearly paraphrases that inner_join would have dropped the DC row (kept only matching rows), so those 124 postings would be missing, with no warning.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": [
+   {
+    "ask": "Does the student's answer claim that the NA means the number of postings for DC is missing or zero?",
+    "yes": "The answer asserts that the NA means the number of postings for DC is missing or zero.",
+    "no": "The answer does not assert this. It may not mention it, or may reject it.",
+    "msg": "The count for DC is there. Look at which columns hold the NA."
+   }
+  ]
+ },
+ "api-url": {
+  "prompt": "Explain the parts of this API address: what comes before the <code>?</code>, what comes after it, and what the <code>&amp;</code> does.",
+  "context": "https://api.stlouisfed.org/fred/series/observations?series_id=IHLIDXUSOH&file_type=json&observation_start=2026-01-01",
+  "ideas": [
+   {
+    "label": "Before the ?: the server and the path (the endpoint)",
+    "ask": "Does the student's answer say that the part before the question mark is the server and path, that is, the endpoint or location the request is sent to?",
+    "yes": "The answer states or clearly paraphrases that the part before the question mark is the server and path, that is, the endpoint or location the request is sent to.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "After the ?: query parameters written as name=value",
+    "ask": "Does the student's answer say that the part after the question mark holds the query parameters, each written as a name and a value (name=value), which say what data is wanted?",
+    "yes": "The answer states or clearly paraphrases that the part after the question mark holds the query parameters, each written as a name and a value (name=value), which say what data is wanted.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "& separates one parameter from the next",
+    "ask": "Does the student's answer say that the ampersand separates one parameter (name=value pair) from the next?",
+    "yes": "The answer states or clearly paraphrases that the ampersand separates one parameter (name=value pair) from the next.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": []
+ },
+ "api-status": {
+  "prompt": "A request to the USAJOBS API stopped with the message below. What does a code that starts with 4 tell you about where the problem is, and what would you check first for a 401?",
+  "context": "Error in `httr2::req_perform()`:\n! HTTP 401 Unauthorized.",
+  "ideas": [
+   {
+    "label": "4xx: the problem is in my request, not on the server",
+    "ask": "Does the student's answer say that a status code starting with 4 means the problem is with the request that was sent (the client side), not a failure of the server?",
+    "yes": "The answer states or clearly paraphrases that a status code starting with 4 means the problem is with the request that was sent (the client side), not a failure of the server.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "401: the key is missing or wrong, so check the key",
+    "ask": "Does the student's answer say that a 401 means the API key is missing, wrong or not being sent correctly, so the first thing to check is the key (the .Renviron entry, Sys.getenv returning it, restarting R, or the header or parameter name)?",
+    "yes": "The answer states or clearly paraphrases that a 401 means the API key is missing, wrong or not being sent correctly, so the first thing to check is the key (the .Renviron entry, Sys.getenv returning it, restarting R, or the header or parameter name).",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": [
+   {
+    "ask": "Does the student's answer claim that a 401 means the server is down or broken and the only thing to do is wait?",
+    "yes": "The answer asserts that a 401 means the server is down or broken and the only thing to do is wait.",
+    "no": "The answer does not assert this. It may not mention it, or may reject it.",
+    "msg": "A server failure would be a code that starts with 5."
+   }
+  ]
+ },
+ "scrape-permission": {
+  "prompt": "Before scraping a site, what do you check? If <code>robotstxt::paths_allowed()</code> returns <code>TRUE</code>, does that settle whether you may scrape the page? Explain.",
+  "ideas": [
+   {
+    "label": "Check robots.txt for the path you want",
+    "ask": "Does the student's answer say that the site's robots.txt should be checked for the specific path, for example with robotstxt::paths_allowed?",
+    "yes": "The answer states or clearly paraphrases that the site's robots.txt should be checked for the specific path, for example with robotstxt::paths_allowed.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "Read the site's terms of service too",
+    "ask": "Does the student's answer say that the site's terms of service (terms of use, user agreement) also have to be checked?",
+    "yes": "The answer states or clearly paraphrases that the site's terms of service (terms of use, user agreement) also have to be checked.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "TRUE does not settle it",
+    "ask": "Does the student's answer say that a TRUE from robots.txt is not enough by itself to settle permission, because the terms of service can still forbid scraping?",
+    "yes": "The answer states or clearly paraphrases that a TRUE from robots.txt is not enough by itself to settle permission, because the terms of service can still forbid scraping.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": [
+   {
+    "ask": "Does the student's answer claim that a TRUE from paths_allowed means scraping is fully permitted and nothing else needs checking?",
+    "yes": "The answer asserts that a TRUE from paths_allowed means scraping is fully permitted and nothing else needs checking.",
+    "no": "The answer does not assert this. It may not mention it, or may reject it.",
+    "msg": "One more document applies."
+   }
+  ]
+ },
+ "scrape-lengths": {
+  "prompt": "A scrape of a page that shows 20 jobs printed this. What does it tell you about the selector used for the titles, and what do you do next?",
+  "context": "> length(title)\n[1] 23\n> length(company)\n[1] 20\n> jobs_df = data.frame(title = title, company = company)\nError: arguments imply differing number of rows: 23, 20",
+  "ideas": [
+   {
+    "label": "The title selector matches more than the 20 jobs",
+    "ask": "Does the student's answer say that the selector used for the titles is too broad and matches extra elements that are not job titles (23 instead of 20)?",
+    "yes": "The answer states or clearly paraphrases that the selector used for the titles is too broad and matches extra elements that are not job titles (23 instead of 20).",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "Make the selector more specific, then check length() again",
+    "ask": "Does the student's answer say that the selector should be made more specific (for example by adding a class or a parent element) and the count checked again so that it equals 20?",
+    "yes": "The answer states or clearly paraphrases that the selector should be made more specific (for example by adding a class or a parent element) and the count checked again so that it equals 20.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": [
+   {
+    "ask": "Does the student's answer claim that the fix is to cut the longer vector down to its first 20 values without changing the selector?",
+    "yes": "The answer asserts that the fix is to cut the longer vector down to its first 20 values without changing the selector.",
+    "no": "The answer does not assert this. It may not mention it, or may reject it.",
+    "msg": "Which three would you be throwing away? Look at the selector instead."
+   }
+  ]
+ },
+ "llm-schema": {
+  "prompt": "You extract course information with <code>chat$chat_structured()</code> and a schema. Explain what the schema guarantees about the reply, what it does not guarantee, and one way you would check the result.",
+  "ideas": [
+   {
+    "label": "It guarantees the fields and their types",
+    "ask": "Does the student's answer say that the schema guarantees the structure of the reply: the fields (columns) that come back and their data types?",
+    "yes": "The answer states or clearly paraphrases that the schema guarantees the structure of the reply: the fields (columns) that come back and their data types.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "It does not guarantee the values are correct",
+    "ask": "Does the student's answer say that the schema does not guarantee that the values are correct or true; the model can still return wrong or invented values?",
+    "yes": "The answer states or clearly paraphrases that the schema does not guarantee that the values are correct or true; the model can still return wrong or invented values.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "Check a sample against the source (or run it twice)",
+    "ask": "Does the student's answer say that the result should be checked, for example by comparing a sample of rows with the original text, checking the text appears on the page word for word, or running the extraction a second time and comparing?",
+    "yes": "The answer states or clearly paraphrases that the result should be checked, for example by comparing a sample of rows with the original text, checking the text appears on the page word for word, or running the extraction a second time and comparing.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": [
+   {
+    "ask": "Does the student's answer claim that using a schema makes the extracted values correct or guarantees accuracy?",
+    "yes": "The answer asserts that using a schema makes the extracted values correct or guarantees accuracy.",
+    "no": "The answer does not assert this. It may not mention it, or may reject it.",
+    "msg": "A schema controls the shape, nothing more."
+   }
+  ]
+ },
+ "llm-required": {
+  "prompt": "The catalog says this course is worth 1.5 credit hours and lists no prerequisite. Use the schema to explain why the model returned <code>2</code> and <code>\"None listed\"</code>, and how you would change the schema.",
+  "context": "type_course = ellmer::type_object(\n  code = ellmer::type_string(description = \"Subject and number of the course\"),\n  credit_hours = ellmer::type_integer(description = \"Credit hours\"),\n  prereqs = ellmer::type_string(description = \"The prerequisite[s] for this course\")\n)\n\n# what came back for one course\n#   code       credit_hours   prereqs\n#   \"ISA 177\"  2              \"None listed\"",
+  "ideas": [
+   {
+    "label": "An integer field cannot hold 1.5: use type_number()",
+    "ask": "Does the student's answer say that credit_hours was declared as an integer, which cannot hold 1.5, so the value was changed to a whole number, and the field should be a number type (type_number) instead?",
+    "yes": "The answer states or clearly paraphrases that credit_hours was declared as an integer, which cannot hold 1.5, so the value was changed to a whole number, and the field should be a number type (type_number) instead.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "prereqs is required, so the model had to return something",
+    "ask": "Does the student's answer say that the prereqs field is required (by default), so the model had to return some text even though the course has no prerequisite?",
+    "yes": "The answer states or clearly paraphrases that the prereqs field is required (by default), so the model had to return some text even though the course has no prerequisite.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "required = FALSE lets it return NA",
+    "ask": "Does the student's answer say that adding required = FALSE to the prereqs field lets the model return a missing value (NA) when there is no prerequisite?",
+    "yes": "The answer states or clearly paraphrases that adding required = FALSE to the prereqs field lets the model return a missing value (NA) when there is no prerequisite.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": []
+ },
+ "tidy-vs-correct": {
+  "prompt": "A table of Airbnb listings has one row per listing and one column per variable, but <code>price</code> is stored as text such as <code>\"$119.00\"</code>. Is the table tidy? Is it technically correct? Explain the difference between the two.",
+  "ideas": [
+   {
+    "label": "Tidy is about shape: variables in columns, observations in rows, one value per cell",
+    "ask": "Does the student's answer say that tidy data is about the shape or layout of the table: each variable is a column, each observation is a row, and each cell holds one value?",
+    "yes": "The answer states or clearly paraphrases that tidy data is about the shape or layout of the table: each variable is a column, each observation is a row, and each cell holds one value.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "Technically correct is about names and types",
+    "ask": "Does the student's answer say that technically correct data is about the columns having the correct data types (and reasonable column names)?",
+    "yes": "The answer states or clearly paraphrases that technically correct data is about the columns having the correct data types (and reasonable column names).",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "This table is tidy but not technically correct",
+    "ask": "Does the student's answer say that this table is tidy but is not technically correct, because price is stored as text instead of a number?",
+    "yes": "The answer states or clearly paraphrases that this table is tidy but is not technically correct, because price is stored as text instead of a number.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": [
+   {
+    "ask": "Does the student's answer claim that the table is not tidy because the price column is stored as text or has the wrong type?",
+    "yes": "The answer asserts that the table is not tidy because the price column is stored as text or has the wrong type.",
+    "no": "The answer does not assert this. It may not mention it, or may reject it.",
+    "msg": "A wrong type does not change the shape of the table."
+   }
+  ]
+ },
+ "tidy-warning": {
+  "prompt": "The call below printed a warning. Using the cell <code>67/67(0)</code>, explain why R found more pieces than names, and whether the result can be trusted.",
+  "context": "> crashes |>\n+   tidyr::separate(fatalities, into = c(\"air_fatalities\", \"passengers\", \"ground\")) |>\n+   head(3)\nWarning message:\nExpected 3 pieces. Additional pieces discarded in 14 rows [1, 2, 3, 4, 5, 6, 7, 8, 9, 10,\n11, 12, 13, 14].\n# A tibble: 3 x 6\n  date        location                           operator   air_fatalities passengers ground\n  <chr>       <chr>                              <chr>      <chr>          <chr>      <chr> \n1 07 Jan 2025 Off Rottnest Island, WA, Australia Swan Rive~ 3              7          0     \n2 29 Jan 2025 Washington DC                      American ~ 67             67         0     \n3 29 Jan 2025 GPOC Unity Airstrip, South Sudan   Light Air~ 20             21         0     ",
+  "ideas": [
+   {
+    "label": "Without sep, separate() cuts at /, ( and ), which gives four pieces",
+    "ask": "Does the student's answer say that separate, when no sep is given, also splits at the parentheses (at every character that is not a letter or a number), which produces four pieces instead of three?",
+    "yes": "The answer states or clearly paraphrases that separate, when no sep is given, also splits at the parentheses (at every character that is not a letter or a number), which produces four pieces instead of three.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "The extra piece is empty, so the three columns are right",
+    "ask": "Does the student's answer say that the discarded fourth piece is empty (nothing comes after the closing parenthesis), so no data is lost and the three resulting columns are correct?",
+    "yes": "The answer states or clearly paraphrases that the discarded fourth piece is empty (nothing comes after the closing parenthesis), so no data is lost and the three resulting columns are correct.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": [
+   {
+    "ask": "Does the student's answer claim that the warning means the code failed or the result is wrong and cannot be used?",
+    "yes": "The answer asserts that the warning means the code failed or the result is wrong and cannot be used.",
+    "no": "The answer does not assert this. It may not mention it, or may reject it.",
+    "msg": "A warning is not an error. Work out what was discarded."
+   }
+  ]
+ },
+ "int-messy": {
+  "prompt": "\"Tell me about a time data arrived in a form you could not analyze. What did you do?\"",
+  "ideas": [
+   {
+    "label": "Names a specific problem with the data",
+    "ask": "Does the student's answer say that the answer names a specific problem with the data, such as several values combined in one cell, numbers or dates stored as text, or a table that had to be scraped or reshaped?",
+    "yes": "The answer states or clearly paraphrases that the answer names a specific problem with the data, such as several values combined in one cell, numbers or dates stored as text, or a table that had to be scraped or reshaped.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "Describes the steps taken to fix it",
+    "ask": "Does the student's answer say that the answer describes concrete steps taken to fix the data, such as splitting a column, converting types, or reshaping, ideally naming the tool or function?",
+    "yes": "The answer states or clearly paraphrases that the answer describes concrete steps taken to fix the data, such as splitting a column, converting types, or reshaping, ideally naming the tool or function.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "Says how the result was checked",
+    "ask": "Does the student's answer say that the answer says how the result was verified or checked, such as inspecting the types, comparing counts or totals, or looking at the rows?",
+    "yes": "The answer states or clearly paraphrases that the answer says how the result was verified or checked, such as inspecting the types, comparing counts or totals, or looking at the rows.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": []
+ },
+ "int-reproducible": {
+  "prompt": "\"How do you make sure a colleague can reproduce your analysis six months from now?\"",
+  "ideas": [
+   {
+    "label": "The steps are in code, not manual clicks",
+    "ask": "Does the student's answer say that the analysis is written as code or a script (for example R or R Markdown) that can be rerun, not done by manual steps in a spreadsheet?",
+    "yes": "The answer states or clearly paraphrases that the analysis is written as code or a script (for example R or R Markdown) that can be rerun, not done by manual steps in a spreadsheet.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "The work is under version control",
+    "ask": "Does the student's answer say that the work is kept under version control, such as Git and GitHub, with commits?",
+    "yes": "The answer states or clearly paraphrases that the work is kept under version control, such as Git and GitHub, with commits.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "It runs from a clean start: project, relative paths, a fresh knit",
+    "ask": "Does the student's answer say that the work is set up to run on another computer or from a clean start, for example by using a project with relative paths, knitting the document from scratch, or keeping keys outside the code?",
+    "yes": "The answer states or clearly paraphrases that the work is set up to run on another computer or from a clean start, for example by using a project with relative paths, knitting the document from scratch, or keeping keys outside the code.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": []
+ },
+ "int-api": {
+  "prompt": "\"Our sales data sits behind a vendor's API. Walk me through how you would get it into a table you can analyze.\"",
+  "ideas": [
+   {
+    "label": "Starts from the documentation: endpoint, parameters, key",
+    "ask": "Does the student's answer say that the first step is reading the API documentation to find the endpoint, the parameters, and how authentication (the key) works?",
+    "yes": "The answer states or clearly paraphrases that the first step is reading the API documentation to find the endpoint, the parameters, and how authentication (the key) works.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "Sends the request with the key kept out of the code",
+    "ask": "Does the student's answer say that a request is sent from code (for example with httr2 in R) with the API key kept out of the code, such as in an environment variable or .Renviron?",
+    "yes": "The answer states or clearly paraphrases that a request is sent from code (for example with httr2 in R) with the API key kept out of the code, such as in an environment variable or .Renviron.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "Parses the JSON into a data frame and fixes the types",
+    "ask": "Does the student's answer say that the reply (JSON) is parsed or converted into a data frame or table?",
+    "yes": "The answer states or clearly paraphrases that the reply (JSON) is parsed or converted into a data frame or table.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": []
+ },
+ "int-llm-privacy": {
+  "prompt": "\"A manager wants to paste our customer records into a chatbot to have it analyze them. What do you say?\"",
+  "ideas": [
+   {
+    "label": "Names the risk: the records leave the company",
+    "ask": "Does the student's answer say that pasting the records sends private or confidential customer data to an outside company or service, which is a privacy or confidentiality risk?",
+    "yes": "The answer states or clearly paraphrases that pasting the records sends private or confidential customer data to an outside company or service, which is a privacy or confidentiality risk.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "Offers a way that keeps the rows in house",
+    "ask": "Does the student's answer say that there is an alternative in which only the structure of the data (the schema or column names) is shared and the model writes code or SQL that is run locally on the data, so the records stay inside the company?",
+    "yes": "The answer states or clearly paraphrases that there is an alternative in which only the structure of the data (the schema or column names) is shared and the model writes code or SQL that is run locally on the data, so the records stay inside the company.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "Says the output still has to be checked",
+    "ask": "Does the student's answer say that the model's output can be wrong and should be checked or verified, for example by reading the code or SQL it wrote?",
+    "yes": "The answer states or clearly paraphrases that the model's output can be wrong and should be checked or verified, for example by reading the code or SQL it wrote.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": []
+ },
+ "int-scrape": {
+  "prompt": "\"You need prices from a public website that has no API. How do you go about it responsibly, and how do you know you got everything?\"",
+  "ideas": [
+   {
+    "label": "Checks permission: robots.txt and the terms of service",
+    "ask": "Does the student's answer say that permission is checked first, by looking at the site's robots.txt and its terms of service?",
+    "yes": "The answer states or clearly paraphrases that permission is checked first, by looking at the site's robots.txt and its terms of service.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "Is polite: pauses between requests",
+    "ask": "Does the student's answer say that requests are sent politely, with a pause or delay between them so the site is not overloaded?",
+    "yes": "The answer states or clearly paraphrases that requests are sent politely, with a pause or delay between them so the site is not overloaded.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "Verifies the result: counts match the page",
+    "ask": "Does the student's answer say that the result is verified, for example by checking that the number of items scraped matches what the page shows or that the columns have equal length?",
+    "yes": "The answer states or clearly paraphrases that the result is verified, for example by checking that the number of items scraped matches what the page shows or that the columns have equal length.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": []
+ },
+ "int-summary": {
+  "prompt": "\"You ranked our sales regions by average order value, and a region nobody expected came out on top. What do you check before you present it?\"",
+  "ideas": [
+   {
+    "label": "How many records are behind each average",
+    "ask": "Does the student's answer say that the number of records, orders or rows behind each group's average should be checked, because a group with very few records can produce an extreme average?",
+    "yes": "The answer states or clearly paraphrases that the number of records, orders or rows behind each group's average should be checked, because a group with very few records can produce an extreme average.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "Whether a few extreme values drive it",
+    "ask": "Does the student's answer say that outliers or extreme values (a skewed distribution) should be checked, for example by comparing the average with the median or looking at the largest values?",
+    "yes": "The answer states or clearly paraphrases that outliers or extreme values (a skewed distribution) should be checked, for example by comparing the average with the median or looking at the largest values.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "How the caveat will be handled in the report",
+    "ask": "Does the student's answer say that the answer says what will be done about it in the report, such as showing the count next to each average, setting a minimum number of records, or stating the caveat?",
+    "yes": "The answer states or clearly paraphrases that the answer says what will be done about it in the report, such as showing the count next to each average, setting a minimum number of records, or stating the caveat.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": []
+ },
+ "int-join": {
+  "prompt": "\"Explain a left join to someone who is not technical, and tell me one way it can mislead you.\"",
+  "ideas": [
+   {
+    "label": "Keeps every row of the first table and adds matching columns from the second",
+    "ask": "Does the student's answer say that a left join keeps every row of the first (left) table and adds the matching information from the second table?",
+    "yes": "The answer states or clearly paraphrases that a left join keeps every row of the first (left) table and adds the matching information from the second table.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "Rows with no match get blanks (NA)",
+    "ask": "Does the student's answer say that rows in the first table that have no match in the second table are kept with blank or missing (NA) values?",
+    "yes": "The answer states or clearly paraphrases that rows in the first table that have no match in the second table are kept with blank or missing (NA) values.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "Names a way it misleads",
+    "ask": "Does the student's answer say that one way it can mislead is named, such as unnoticed missing values from rows that did not match, or rows being duplicated when the key appears more than once in the second table?",
+    "yes": "The answer states or clearly paraphrases that one way it can mislead is named, such as unnoticed missing values from rows that did not match, or rows being duplicated when the key appears more than once in the second table.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": []
+ }
+}

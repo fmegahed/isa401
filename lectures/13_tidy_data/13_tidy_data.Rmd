@@ -1,0 +1,970 @@
+---
+title: "ISA 401: Business Intelligence & Data Visualization"
+subtitle: "13: Tidy and Technically Correct Data"
+author: '<br>Fadel M. Megahed, PhD <br><br> Raymond E. Glos Professor in Business <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("linkedin"), fill = "white")` @Fadel Megahed](https://www.linkedin.com/in/fadel-megahed-289046b4) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
+date: "Fall 2026"
+output:
+  xaringan::moon_reader:
+    self_contained: true
+    css: [default, "../../style_files/fonts.css", "../../style_files/my-theme.css", "../../style_files/code-tomorrow-night-bright.css"]
+    lib_dir: libs
+    mathjax: null
+    nature:
+      highlightStyle: magula
+      highlightLines: true
+      highlightLanguage: ["r"]
+      countIncrementalSlides: false
+      ratio: "16:9"
+    includes:
+      in_header: "../../style_files/header.html"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache = FALSE,
+                      echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE,
+                      progress = FALSE,
+                      verbose = FALSE,
+                      dev = 'png',
+                      fig.height = 3,
+                      dpi = 300,
+                      fig.align = 'center')
+
+options(htmltools.dir.version = FALSE, width = 52)
+
+miamired = '#C3142D'
+
+if(require(pacman)==FALSE) install.packages("pacman")
+if(require(devtools)==FALSE) install.packages("devtools")
+if(require(countdown)==FALSE) devtools::install_github("gadenbuie/countdown")
+if(require(xaringanExtra)==FALSE) devtools::install_github("gadenbuie/xaringanExtra")
+if(require(emo)==FALSE) devtools::install_github("hadley/emo")
+
+pacman::p_load(tidyverse, magrittr, lubridate, janitor, # data analysis pkgs
+               rvest, # web scraping
+               fontawesome, emo, xaringanExtra, countdown) # for slides
+
+ggplot2::theme_set(ggplot2::theme_bw(base_size = 12))
+
+# Code styling shared by all ISA 401 decks: hl_r() + knitr source hook (see style_files/hl_r.R)
+source("../../style_files/hl_r.R")
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+if(require(xaringanthemer) == FALSE) install.packages("xaringanthemer")
+library(xaringanthemer)
+
+style_mono_accent(base_color = "#84d6d3",
+                  base_font_size = "20px")
+
+xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "tachyons", "panelset", "broadcast", "share_again", "search", "fit_screen", "editable"))
+
+xaringanExtra::use_clipboard(button_text = paste0(fontawesome::fa("clipboard", fill = "#dedede", height = "0.9em"), " Copy"), success_text = paste0(fontawesome::fa("check", fill = "#b9ca4a", height = "0.9em"), " Copied"))
+
+xaringanExtra::use_extra_styles(
+  hover_code_line = TRUE,
+  mute_unhighlighted_code = TRUE
+)
+```
+
+<style>
+.code-sm .rcode { font-size: 78% !important; } .code-md .rcode { font-size: 90% !important; }
+.rcode { position: relative; padding-top: 18px !important; }
+.rcode .xaringanextra-clipboard-button { display: block !important; opacity: 0.55; top: 0; right: 4px; padding: 2px 6px; font-size: 11px; font-family: Lato, sans-serif; color: #dedede; cursor: pointer; }
+.rcode .xaringanextra-clipboard-button:hover { opacity: 1; }
+.airy .rout { margin: 2px 0 20px 0 !important; }
+</style>
+<style>
+.sc-bar { display:flex; gap:6px; align-items:center; margin-top:6px; font-family:'Noto Sans','Roboto',Arial,sans-serif; }
+.sc-btn { background:#ffffff; color:#374151; border:1px solid #d1d5db; border-radius:6px; padding:4px 11px; font-size:12.5px; font-weight:600; cursor:pointer; line-height:1.2; }
+.sc-btn:disabled { opacity:0.4; cursor:default; }
+.sc-btn.sc-primary { background:#c3142d; color:#ffffff; border-color:#c3142d; }
+.sc-spds { display:inline-flex; border:1px solid #d1d5db; border-radius:6px; overflow:hidden; margin-left:4px; }
+.sc-spd { background:#ffffff; color:#374151; border:0; border-right:1px solid #d1d5db; padding:4px 8px; font-size:11.5px; cursor:pointer; }
+.sc-spd:last-child { border-right:0; }
+.sc-spd.on { background:#585E60; color:#ffffff; }
+.sc-count { margin-left:auto; color:#585E60; font-size:12px; font-variant-numeric:tabular-nums; }
+.sc-caps { position:relative; margin-top:8px; border:1px solid #d1d5db; border-left:5px solid #c3142d; border-radius:8px; background:#fdf2f2; padding:8px 12px; font-size:13.5px; line-height:1.45; color:#1b1b1b; min-height:46px; }
+.sc-cap { display:none; }
+.sc-cap.on { display:block; }
+.sc-cap b { color:#c3142d; }
+</style>
+<script>
+(function () {
+  if (window.isaStepper) { return; }
+  window.isaStepper = function (root, scene) {
+    if (root.getAttribute('data-built')) { return; }
+    root.setAttribute('data-built', '1');
+    var i = 0, timer = null, speed = 1;
+    var q = function (s) { return root.querySelector(s); };
+    var bBack = q('.sc-back'), bStep = q('.sc-step'), bPlay = q('.sc-play'), bReset = q('.sc-reset'), cnt = q('.sc-count');
+    var spd = root.querySelectorAll('.sc-spd');
+    var caps = root.querySelectorAll('.sc-cap');
+    var flagged = root.querySelectorAll('[data-from]');
+    function applyFlags(j) {
+      flagged.forEach(function (el) {
+        var f = Number(el.getAttribute('data-from'));
+        var t = el.hasAttribute('data-to') ? Number(el.getAttribute('data-to')) : 9999;
+        el.classList.toggle('on', j >= f && !(j >= t));
+      });
+      caps.forEach(function (c) { c.classList.toggle('on', Number(c.getAttribute('data-step')) === j); });
+    }
+    function paint() {
+      bBack.disabled = (i === 0);
+      bStep.disabled = (i === scene.n);
+      bPlay.textContent = (timer !== null) ? 'Pause' : 'Play';
+      cnt.textContent = i + ' / ' + scene.n;
+    }
+    function go(j, dir) { i = j; applyFlags(j); if (scene.render) { scene.render(j, dir, speed, root); } paint(); }
+    function stop() { if (timer !== null) { clearTimeout(timer); timer = null; } paint(); }
+    function tick() {
+      timer = null;
+      if (i === scene.n) { paint(); return; }
+      go(i + 1, 1);
+      if (i !== scene.n) { timer = setTimeout(tick, scene.dwell[i] / speed); }
+      paint();
+    }
+    bStep.addEventListener('click', function () { stop(); if (i !== scene.n) { go(i + 1, 1); } });
+    bBack.addEventListener('click', function () { stop(); if (i !== 0) { go(i - 1, -1); } });
+    bReset.addEventListener('click', function () { stop(); go(0, -1); });
+    bPlay.addEventListener('click', function () {
+      if (timer !== null) { stop(); return; }
+      if (i === scene.n) { go(0, -1); }
+      timer = setTimeout(tick, scene.dwell[i] / speed);
+      paint();
+    });
+    spd.forEach(function (b) {
+      b.addEventListener('click', function () {
+        speed = Number(b.getAttribute('data-spd'));
+        spd.forEach(function (o) { o.classList.toggle('on', o === b); });
+      });
+    });
+    ['keydown', 'keypress', 'keyup'].forEach(function (t) { root.addEventListener(t, function (e) { e.stopPropagation(); }); });
+    root.addEventListener('mousedown', function (e) { if (e.target.tagName === 'BUTTON') { e.preventDefault(); } });
+    root.addEventListener('focusin', function () { if (window.slideshow) { window.slideshow.pause(); } });
+    root.addEventListener('focusout', function () { if (window.slideshow) { window.slideshow.resume(); } });
+    if (window.slideshow) { window.slideshow.on('hideSlide', stop); }
+    go(0, -1);
+  };
+  window.isaTypewriter = function (el, text, msPerChar, done) {
+    var k = 0, h = null;
+    function step() {
+      k = k + 1;
+      el.textContent = text.slice(0, k);
+      if (k !== text.length) { h = setTimeout(step, msPerChar); } else { h = null; if (done) { done(); } }
+    }
+    el.textContent = '';
+    h = setTimeout(step, msPerChar);
+    return function () { if (h !== null) { clearTimeout(h); h = null; } };
+  };
+})();
+</script>
+
+<style>
+.mt-pair { display:flex; align-items:center; gap:10px; margin:0; }
+.mt-arrow { display:flex; flex-direction:column; align-items:center; flex:0 0 auto; padding:0 4px; }
+.mt-verb { font-family:'Source Code Pro',monospace; font-size:11px; color:#c3142d; font-weight:700; white-space:pre-line; max-width:250px; text-align:center; line-height:1.3; }
+.mt-arr { font-size:26px; color:#c3142d; line-height:1; }
+.mt-name { font-family:'Source Code Pro',monospace; font-size:11.5px; font-weight:700; color:#585E60; margin-bottom:2px; }
+.mt-tab table { border-collapse:separate; border-spacing:0; margin:0 !important; border-top:0 !important; border-bottom:0 !important; font-family:'Source Code Pro',monospace; font-size:10.5px; line-height:1.15; width:auto !important; }
+.mt-tab th { background:#1d1f21; color:#ffffff; padding:1px 6px !important; line-height:1.2 !important; text-align:left; font-weight:600; white-space:nowrap; }
+.mt-tab td { padding:1px 6px !important; line-height:1.2 !important; border-bottom:1px solid #e5e7eb; white-space:nowrap; color:#1b1b1b; background:#ffffff; }
+.mt-tab .mt-keep { background:#fdf2f2; }
+.mt-tab th.mt-keep { background:#c3142d; }
+.mt-tab .mt-x { color:#9ca3af; text-decoration:line-through; background:#fafafa; }
+.mt-tab th.mt-x { background:#585E60; color:#d1d5db; }
+.mt-tab .mt-new { background:#fff3bf; }
+.mt-tab th.mt-new { background:#b45309; }
+.mt-tab tr.mt-g1 td { background:#fdf2f2; } .mt-tab tr.mt-g1 td:first-child { box-shadow:inset 4px 0 0 #c3142d; }
+.mt-tab tr.mt-g2 td { background:#eff6ff; } .mt-tab tr.mt-g2 td:first-child { box-shadow:inset 4px 0 0 #2563eb; }
+.mt-tab tr.mt-g3 td { background:#ecfdf5; } .mt-tab tr.mt-g3 td:first-child { box-shadow:inset 4px 0 0 #059669; }
+.mt-tab tr.mt-g4 td { background:#fff7ed; } .mt-tab tr.mt-g4 td:first-child { box-shadow:inset 4px 0 0 #d97706; }
+.mt-tab .mt-na { color:#9ca3af; font-style:italic; }
+.qbar { border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:5px 14px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.4; margin:0 0 6px 0; }
+.qbar b { color:#c3142d; }
+.vcard { border:1px solid #d1d5db; border-radius:8px; padding:6px 12px; background:#fcfcfc; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:12.5px; line-height:1.4; margin-top:6px; }
+.vcard .vh { font-weight:700; color:#c3142d; font-size:13px; display:inline; margin-right:6px; }
+.vrow { display:block; }
+.vrow .vdiag { display:flex; justify-content:center; }
+</style>
+<style>
+/* shared cards */
+.card { border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1); background:#ffffff; }
+.card .ch { background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:7px 12px; }
+.card .ch.gray { background:#585E60; }
+.card .cb { padding:9px 12px; font-size:13.5px; line-height:1.45; }
+.lesson { margin-top:12px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:9px 16px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14.5px; line-height:1.5; }
+.lesson b.r { color:#c3142d; }
+.src { font-size:11.5px; color:#585E60; line-height:1.4; }
+.htmlsrc { margin:0 !important; background:#f8f8f6; border:1px solid #d1d5db; border-radius:8px; padding:8px 10px; font-family:'Source Code Pro',monospace; font-size:11px; line-height:1.4; color:#1b1b1b; white-space:pre-wrap; word-break:break-word; }
+.htmlsrc .tg { color:#881280; } .htmlsrc .at { color:#994500; } .htmlsrc .av { color:#1a1aa6; }
+.xaringanextra-clipboard-button { display:none; }
+.rcode .xaringanextra-clipboard-button { display:block !important; }
+.num { flex:0 0 22px; height:22px; border-radius:50%; background:#c3142d; color:#fff; font-weight:700; font-size:12.5px; text-align:center; line-height:22px; }
+.tbl-sm table { font-size:13.5px !important; line-height:1.35 !important; }
+.tbl-sm table td, .tbl-sm table th { padding:5px 10px !important; }
+.tbl-sm table code { font-size:12.5px !important; }
+.sx-lab { font-weight:700; color:#c3142d; font-size:13.5px; margin-bottom:3px; }
+.ct .mt-tab table { font-size:11.5px; }
+.ct .mt-tab td, .ct .mt-tab th { padding:2px 7px !important; }
+.mt-tab th span.ty { color:#9ca3af; font-weight:400; margin-left:4px; }
+.mt-tab .nl { background:#fff3bf; color:#b45309; font-weight:700; border-radius:3px; padding:0 2px; margin:0 3px; box-shadow:0 0 0 1px #e0b000; }
+.htmlsrc .br { background:#fff3bf; box-shadow:0 0 0 1px #e0b000; border-radius:3px; padding:0 2px; margin:0 3px; font-weight:700; }
+.ct2 .mt-tab table { font-size:13px; }
+.ct2 .mt-tab td, .ct2 .mt-tab th { padding:3px 9px !important; }
+.rstr-box { font-family:Source Code Pro,monospace; font-size:12.5px; background:#f3f4f6; border:1px solid #e5e7eb; border-radius:6px; padding:4px 8px; color:#1b1b1b; margin-top:5px; word-break:break-word; }
+.rstr-box .nl { background:#fff3bf; color:#b45309; font-weight:700; border-radius:3px; padding:0 2px; margin:0 3px; box-shadow:0 0 0 1px #e0b000; }
+.mini { display:grid; grid-template-columns:repeat(4, 38px); gap:3px; justify-content:center; margin:4px 0 10px 0; }
+.mini span { height:17px; background:#e5e7eb; border-radius:3px; }
+.mini span.h { background:#9ca3af; }
+.mini span.on { background:#c3142d; }
+.rule { font-weight:700; font-size:15px; color:#1b1b1b; text-align:center; }
+.tick { color:#059669; font-weight:700; }
+.pcs { display:flex; align-items:flex-end; gap:3px; margin:6px 0 2px 0; font-family:Source Code Pro,monospace; }
+.pcs .pc { text-align:center; }
+.pcs .pc b { display:block; background:#fdf2f2; border:1px solid #c3142d; border-radius:5px; padding:2px 10px; font-size:16px; color:#1b1b1b; min-width:14px; min-height:22px; }
+.pcs .pc i { display:block; font-style:normal; font-family:Noto Sans,Arial,sans-serif; font-size:10.5px; color:#585E60; margin-top:2px; }
+.pcs .pc.x b { background:#f3f4f6; border:1px dashed #9ca3af; color:#9ca3af; }
+.pcs .sp { font-size:16px; font-weight:700; color:#b45309; background:#fff3bf; border-radius:4px; padding:2px 5px; margin-bottom:17px; }
+.tz { font-family:Noto Sans,Roboto,Arial,sans-serif; }
+.tz-stage { position:relative; margin:2px auto 0 auto; }
+.tz-lab { position:absolute; top:0; font-family:Source Code Pro,monospace; font-size:12px; font-weight:700; color:#585E60; }
+.tz-c { position:absolute; box-sizing:border-box; height:24px; line-height:23px; padding:0 7px; font-family:Source Code Pro,monospace; font-size:12.5px; color:#1b1b1b; background:#ffffff; border-bottom:1px solid #e5e7eb; border-right:1px solid #f3f4f6; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.tz-c.tz-h { background:#1d1f21; color:#ffffff; font-weight:600; border-right:1px solid #374151; }
+.tz-c.g1 { background:#fdf2f2; } .tz-c.g2 { background:#eff6ff; } .tz-c.g3 { background:#ecfdf5; } .tz-c.g4 { background:#fff7ed; }
+.tz-c.tz-h.g1 { background:#c3142d; } .tz-c.tz-h.g2 { background:#2563eb; } .tz-c.tz-h.g3 { background:#059669; } .tz-c.tz-h.g4 { background:#b45309; }
+.tz-c.tz-src { transition:box-shadow .3s; }
+.tz-c.tz-src.on { box-shadow:inset 0 0 0 2px #e0b000; z-index:2; }
+.tz-c.tz-fly { opacity:0; transform:translate(var(--dx, 0px), var(--dy, 0px)); transition:transform .9s cubic-bezier(.4,0,.2,1), opacity .35s; z-index:3; }
+.tz-c.tz-fly.on { opacity:1; transform:none; }
+.tz-arrow { position:absolute; display:flex; flex-direction:column; align-items:center; }
+.tz-code .rcode { margin:8px 0 0 0 !important; padding-top:8px !important; }
+.tz-code .xaringanextra-clipboard-button { display:none !important; }
+.tz .sc-caps { min-height:42px; font-size:13.5px; }
+.ct .mt-tab th.mt-new { background:#b45309 !important; } .ct .mt-tab th.mt-x { background:#585E60 !important; color:#d1d5db !important; }
+</style>
+<script>
+(function () {
+  // tidyr tour: the stepper toggles every data-from element; the movement itself is CSS.
+  function buildTz(root) {
+    if (root.getAttribute('data-built')) { return; }
+    var n = Number(root.getAttribute('data-n')), dwell = [];
+    for (var d = 0; d !== n + 1; d = d + 1) { dwell.push(2800); }
+    window.isaStepper(root, { n: n, dwell: dwell });
+  }
+  function buildAll() { document.querySelectorAll('.tz').forEach(buildTz); }
+  buildAll();
+  if (window.slideshow) { if (!window.tzHooked) { window.tzHooked = true; window.slideshow.on('afterShowSlide', buildAll); } }
+})();
+</script>
+
+```{r helpers, include=FALSE}
+fmt = function(x) format(x, big.mark = ",")
+esc = function(x) htmltools::htmlEscape(x)
+options(width = 70, tibble.print_min = 5, tibble.print_max = 5, pillar.min_title_chars = 8)
+built_on = format(Sys.Date(), "%b %d, %Y")
+
+# small HTML table in the deck's .mt-tab style. A line break inside a value is shown as a marked \n.
+# hi = columns whose header is marked, ty = named vector of types shown after the header.
+mt_tab = function(df, name = NULL, width = 22, hi = character(0), hicls = "mt-new",
+                  row_cls = paste0("mt-g", seq_len(nrow(df))), ty = NULL) {
+  d = as.data.frame(df, stringsAsFactors = FALSE)
+  show = function(v) {
+    v = ifelse(is.na(v), "NA", as.character(v))
+    v = gsub("\n", "\\n", v, fixed = TRUE)
+    v = ifelse(nchar(v) > width, paste0(substr(v, 1, width - 1), "…"), v)
+    gsub("\\n", '<span class="nl">\\n</span>', esc(v), fixed = TRUE)
+  }
+  head_txt = esc(names(d))
+  if (!is.null(ty)) head_txt = paste0(head_txt, sprintf('<span class="ty">%s</span>', esc(ty[names(d)])))
+  th = paste0(sprintf('<th class="%s">%s</th>', ifelse(names(d) %in% hi, hicls, ""), head_txt), collapse = "")
+  body = vapply(d, show, character(nrow(d)))
+  if (nrow(d) == 1) body = matrix(body, nrow = 1)
+  rows = vapply(seq_len(nrow(d)), function(i)
+    sprintf('<tr class="%s">%s</tr>', row_cls[i], paste0(sprintf("<td>%s</td>", body[i, ]), collapse = "")), "")
+  cap = if (is.null(name)) "" else sprintf('<div class="mt-name">%s</div>', name)
+  sprintf('<div class="mt-tab">%s<table><thead><tr>%s</tr></thead><tbody>%s</tbody></table></div>', cap, th, paste0(rows, collapse = ""))
+}
+mt_pair = function(a, b, verb) sprintf('<div class="mt-pair ct">%s<div class="mt-arrow"><div class="mt-verb">%s</div><div class="mt-arr">&rarr;</div></div>%s</div>', a, esc(verb), b)
+
+# a printed R string with its \n marked
+r_string = function(x) gsub("\\n", '<span class="nl">\\n</span>', esc(encodeString(x, quote = '"')), fixed = TRUE)
+
+# console block inside raw HTML (no leading or trailing blank line)
+out_block = function(x, size = "66%", kind = "rout") trimws(hl_out(paste(x, collapse = "\n"), size, kind))
+
+# the three tidy data pictures: a 4 x 4 grid with one column, one row, or one cell marked
+mini = function(type) {
+  cells = vapply(1:16, function(k) {
+    r = (k - 1) %/% 4 + 1; cc = (k - 1) %% 4 + 1
+    on = switch(type, col = cc == 2, row = r == 3, cell = (r == 3 && cc == 2))
+    sprintf('<span class="%s"></span>', paste(c(if (r == 1) "h", if (on) "on"), collapse = " "))
+  }, "")
+  sprintf('<div class="mini">%s</div>', paste(cells, collapse = ""))
+}
+
+sc_bar = function(n) sprintf('<div class="sc-bar"><button type="button" class="sc-btn sc-back">Back</button><button type="button" class="sc-btn sc-primary sc-step">Step</button><button type="button" class="sc-btn sc-play">Play</button><button type="button" class="sc-btn sc-reset">Reset</button><span class="sc-spds"><button type="button" class="sc-spd" data-spd="0.5">0.5x</button><button type="button" class="sc-spd on" data-spd="1">1x</button><button type="button" class="sc-spd" data-spd="2">2x</button></span><span class="sc-count">0 / %d</span></div>', n)
+
+# data frame -> character matrix with the column names as row 1
+tz_mat = function(df) unname(rbind(names(df), vapply(df, as.character, character(nrow(df)))))
+
+# One tidyr animation. L and R are character matrices (row 1 = column names) for the table before and
+# after. map has one row per moving cell: r, c = where it lands in R; fr, fc = the cell of L it comes
+# from (NA = it has no source and fades in); step = the step at which it moves. Two map rows may land
+# on the same cell (unite). gl, gr = optional colour classes (g1 to g4), same shape as L and R.
+tz_widget = function(L, R, map, wl, wr, lname, rname, verb, code, caps, gl = NULL, gr = NULL, size = "68%") {
+  H = 24; top = 20; gap = 130
+  n = max(map$step)
+  stopifnot(length(wl) == ncol(L), length(wr) == ncol(R), length(caps) == n + 1,
+            nrow(unique(map[, c("r", "c")])) == length(R))
+  if (is.null(gl)) gl = matrix("", nrow(L), ncol(L))
+  if (is.null(gr)) gr = matrix("", nrow(R), ncol(R))
+  xl = c(0, cumsum(wl))[seq_along(wl)]
+  x0 = sum(wl) + gap
+  xr = x0 + c(0, cumsum(wr))[seq_along(wr)]
+  left = character(0)
+  for (i in seq_len(nrow(L))) for (j in seq_len(ncol(L))) {
+    st = map$step[!is.na(map$fr) & map$fr == i & map$fc == j]
+    src = if (length(st)) sprintf(' data-from="%d" data-to="%d"', min(st), min(st) + 1L) else ""
+    left = c(left, sprintf('<div class="tz-c %s %s %s"%s style="left:%dpx;top:%dpx;width:%dpx;">%s</div>',
+      if (i == 1) "tz-h" else "", gl[i, j], if (length(st)) "tz-src" else "", src,
+      xl[j], top + (i - 1L) * H, wl[j], esc(L[i, j])))
+  }
+  right = vapply(seq_len(nrow(map)), function(k) {
+    m = map[k, ]
+    move = if (is.na(m$fr)) "" else sprintf("--dx:%dpx;--dy:%dpx;", xl[m$fc] - xr[m$c], (m$fr - m$r) * H)
+    sprintf('<div class="tz-c tz-fly %s %s" data-from="%d" style="left:%dpx;top:%dpx;width:%dpx;%s">%s</div>',
+      if (m$r == 1) "tz-h" else "", gr[m$r, m$c], m$step, xr[m$c], top + (m$r - 1L) * H, wr[m$c], move, esc(R[m$r, m$c]))
+  }, "")
+  rows = max(nrow(L), nrow(R))
+  cap_html = paste0(sprintf('<div class="sc-cap%s" data-step="%d">%s</div>', ifelse(seq_along(caps) == 1, " on", ""), seq_along(caps) - 1L, caps), collapse = "")
+  paste0(
+    sprintf('<div class="tz" data-n="%d">', n),
+    sprintf('<div class="tz-stage" style="width:%dpx;height:%dpx;">', x0 + sum(wr), top + rows * H + 2L),
+    sprintf('<div class="tz-lab" style="left:0;">%s</div><div class="tz-lab" style="left:%dpx;">%s</div>', lname, x0, rname),
+    sprintf('<div class="tz-arrow" style="left:%dpx;width:%dpx;top:%dpx;"><div class="mt-arr">&rarr;</div><div class="mt-verb">%s</div></div>', sum(wl), gap, top + 30L, verb),
+    paste0(left, collapse = ""), paste0(right, collapse = ""), "</div>",
+    sprintf('<div class="tz-code">%s</div>', hl_r(code, size)),
+    sprintf('<div class="sc-caps">%s</div>', cap_html), sc_bar(n), "</div>")
+}
+```
+
+```{r crash_demo, include=FALSE, eval=FALSE}
+# Part 3 in-class demo: the crash table from the page to a tidy data frame. Typed live in class.
+# Not shown on a slide and not evaluated at knit time.
+crash_url = "https://www.planecrashinfo.com/2025/2025.htm"
+crash_page = rvest::read_html(crash_url,
+                              encoding = "ISO-8859-1")
+
+date = crash_page |> rvest::html_elements("tr > td:nth-child(1)") |> rvest::html_text2()
+location_operator = crash_page |>
+  rvest::html_elements("tr > td:nth-child(2) > font") |>
+  rvest::html_text2()
+aircraft_registeration = crash_page |>
+  rvest::html_elements("tr > td:nth-child(3) > font") |>
+  rvest::html_text2()
+fatalities = crash_page |>
+  rvest::html_elements("tr > td:nth-child(4) > font") |>
+  rvest::html_text2()
+
+df = tibble::tibble(date, location_operator, aircraft_registeration, fatalities) |>
+  dplyr::slice(-1) |>
+  tidyr::separate(fatalities, into = c("air_fatalities", "passengers", "ground")) |>
+  tidyr::separate(location_operator, into = c("location", "operator"), sep = "\n") |>
+  tidyr::separate(aircraft_registeration, into = c("aircraft_type", "registration"), sep = "\n")
+```
+
+```{r crash_solution, include=FALSE}
+# Knit-time copy of the demo's result, used only for the tables on the slides (needs network).
+# Same selectors and the same three separate() calls as the crash_demo chunk above.
+code = list()
+crash_url = "https://www.planecrashinfo.com/2025/2025.htm"
+crash_page = rvest::read_html(crash_url, encoding = "ISO-8859-1")
+
+# the quick read from Class 11 and 12, kept for the "raw" state
+crash_raw = crash_page |>
+  rvest::html_element("table") |>
+  rvest::html_table(header = TRUE)
+
+col_text = function(css) crash_page |> rvest::html_elements(css) |> rvest::html_text2()
+crash_cols = tibble::tibble(
+  date = col_text("tr > td:nth-child(1)"),
+  location_operator = col_text("tr > td:nth-child(2) > font"),
+  aircraft_registeration = col_text("tr > td:nth-child(3) > font"),
+  fatalities = col_text("tr > td:nth-child(4) > font")) |>
+  dplyr::slice(-1)
+
+df = crash_cols |>
+  tidyr::separate(fatalities, into = c("air_fatalities", "passengers", "ground")) |>
+  tidyr::separate(location_operator, into = c("location", "operator"), sep = "\n") |>
+  tidyr::separate(aircraft_registeration, into = c("aircraft_type", "registration"), sep = "\n")
+
+# Part 4, shown on the slide and evaluated here
+code$types = r"---(crash_clean = df |>
+  dplyr::mutate(
+    date = lubridate::dmy(date),
+    dplyr::across(c(air_fatalities, passengers, ground),
+                  as.integer)
+  ))---"
+code$types_show = paste0(code$types, "\n\ndplyr::glimpse(crash_clean)")
+eval(parse(text = code$types))
+```
+
+```{r crash_checks, include=FALSE}
+target = c(date = "Date", location = "character", operator = "character", aircraft_type = "character",
+           registration = "character", air_fatalities = "integer", passengers = "integer", ground = "integer")
+stopifnot(
+  nrow(df) == nrow(crash_raw), ncol(crash_raw) == 4,
+  identical(names(df), names(target)),
+  !anyNA(df), all(vapply(df, is.character, TRUE)),
+  !anyNA(crash_clean),
+  identical(names(crash_clean), names(target)),
+  identical(unname(vapply(crash_clean, \(x) class(x)[1], "")), unname(target)),
+  all(crash_clean$air_fatalities <= crash_clean$passengers)
+)
+n_crash = nrow(crash_clean)
+
+# the four crashes followed through the three states (the same four as deck 12's closing slide)
+show_i = vapply(c("Washington", "Toronto", "Ahmedabad", "Louisville"), \(p) grep(p, crash_raw[[2]])[1], 1L)
+stopifnot(!anyNA(show_i))
+raw_show = crash_raw[show_i, ]
+cols_show = crash_cols[show_i, ]
+tidy_show = df[show_i, ]
+clean_show = crash_clean[show_i, ]
+clean_show_txt = dplyr::mutate(clean_show, dplyr::across(dplyr::everything(), as.character))
+ty_short = c(Date = "date", character = "chr", integer = "int")
+ty_tidy = setNames(rep("chr", ncol(df)), names(df))
+ty_clean = setNames(unname(ty_short[target]), names(target))
+
+# one cell's HTML for the "why html_table() is not enough" slide (Washington DC)
+td_all = crash_page |> rvest::html_elements("table tr td")
+dc_td = as.character(td_all[[which(grepl("Washington", rvest::html_text(td_all)))[1]]])
+stopifnot(grepl("<br>", dc_td, fixed = TRUE))
+dc_raw = raw_show[[2]][1]; dc_cell = cols_show$location_operator[1]
+dc_src = paste0(
+  '<span class="tg">&lt;td</span> <span class="at">align</span>=<span class="av">"left"</span> <span class="at">valign</span>=<span class="av">"top"</span><span class="tg">&gt;</span>\n',
+  '  <span class="tg">&lt;font</span> <span class="at">face</span>=<span class="av">"Arial"</span> <span class="at">size</span>=<span class="av">"2"</span><span class="tg">&gt;</span>\n',
+  "    ", esc(tidy_show$location[1]), '<span class="br">&lt;br&gt;</span>', esc(tidy_show$operator[1]), "\n",
+  '  <span class="tg">&lt;/font&gt;</span>\n<span class="tg">&lt;/td&gt;</span>')
+
+# the two small tables on the "Technically Correct Data" slide
+tbl_names = mt_tab(data.frame(`as read from the page` = c("Location / Operator", "Aircraft Type / Registration", "Fatalities"),
+                              `reasonable` = c("location, operator", "aircraft_type, registration", "air_fatalities, passengers, ground"), check.names = FALSE),
+                   width = 40, row_cls = rep("", 3))
+tbl_types = mt_tab(data.frame(column = c("date", "air_fatalities", "operator"),
+                              `a value` = c(encodeString(tidy_show$date[3], quote = '"'), encodeString(tidy_show$air_fatalities[3], quote = '"'), encodeString(tidy_show$operator[3], quote = '"')),
+                              `stored as` = "chr", `should be` = c("date", "int", "chr"), check.names = FALSE),
+                   width = 40, row_cls = rep("", 3))
+
+glimpse_clean = utils::capture.output(dplyr::glimpse(crash_clean, width = 52))
+```
+
+```{r tour_data, include=FALSE}
+# tidyr tour: every "after" table is the result of the real call, checked against the picture's layout.
+skills_wide = readr::read_csv("../../data/skill_trends_wide.csv", show_col_types = FALSE) |>
+  dplyr::filter(Skill %in% c("Python", "SQL", "Tableau")) |>
+  dplyr::select(Skill, "2024", "2025", "2026") |>
+  dplyr::mutate(dplyr::across(-Skill, \(x) round(x, 2)))
+
+code$longer = r"---(skills_long = skills_wide |>
+  tidyr::pivot_longer(cols = c("2024", "2025", "2026"),
+                      names_to = "year", values_to = "share"))---"
+code$wider = r"---(skills_wide = skills_long |>
+  tidyr::pivot_wider(names_from = year, values_from = share))---"
+eval(parse(text = code$longer))
+wide_back = skills_long |> tidyr::pivot_wider(names_from = year, values_from = share)
+stopifnot(nrow(skills_wide) == 3, nrow(skills_long) == 9, isTRUE(all.equal(as.data.frame(wide_back), as.data.frame(skills_wide), check.attributes = FALSE)),
+          identical(skills_long$Skill, rep(skills_wide$Skill, each = 3)),
+          identical(skills_long$year, rep(c("2024", "2025", "2026"), times = 3)))
+
+fmt2 = function(df) dplyr::mutate(df, dplyr::across(dplyr::where(is.numeric), \(x) sprintf("%.2f", x)))
+Lw = tz_mat(fmt2(skills_wide)); Ll = tz_mat(fmt2(skills_long))
+k = 1:9; s = (k - 1) %/% 3 + 1; y = (k - 1) %% 3 + 1          # long row k is skill s in year y
+g_wide = matrix("", 4, 4); g_wide[, 2:4] = rep(c("g1", "g2", "g3"), each = 4)
+g_long = matrix("", 10, 3); g_long[k + 1, 2] = paste0("g", y); g_long[k + 1, 3] = paste0("g", y)
+
+map_longer = rbind(
+  data.frame(r = c(1, k + 1), c = 1, fr = c(1, s + 1), fc = 1, step = 1),
+  data.frame(r = c(1, k + 1), c = 2, fr = c(NA, rep(1, 9)), fc = c(NA, y + 1), step = 2),
+  data.frame(r = c(1, k + 1), c = 3, fr = c(NA, s + 1), fc = c(NA, y + 1), step = 3))
+map_wider = rbind(
+  data.frame(r = 1:4, c = 1, fr = c(1, 2, 5, 8), fc = 1, step = 1),
+  data.frame(r = 1, c = 2:4, fr = 2:4, fc = 2, step = 2),
+  data.frame(r = s + 1, c = y + 1, fr = k + 1, fc = 3, step = 3))
+
+# separate() and unite() on two crash cells
+crash_two = tibble::tibble(location = tidy_show$location[c(1, 4)], fatalities = cols_show$fatalities[c(1, 4)])
+code$tour_sep = r"---(crash_three = crash_two |>
+  tidyr::separate(fatalities,
+                  into = c("air_fatalities", "passengers", "ground")))---"
+code$tour_unite = r"---(crash_two = crash_three |>
+  tidyr::unite(col = "fatalities", air_fatalities, passengers, ground,
+               sep = "/"))---"
+eval(parse(text = code$tour_sep))
+crash_united = crash_three |> tidyr::unite(col = "fatalities", air_fatalities, passengers, ground, sep = "/")
+stopifnot(identical(names(crash_three), c("location", "air_fatalities", "passengers", "ground")), !anyNA(crash_three),
+          identical(names(crash_united), c("location", "fatalities")))
+L2 = tz_mat(crash_two); L3 = tz_mat(crash_three); LU = tz_mat(crash_united)
+g_two = matrix("", 3, 2); g_two[, 2] = "g4"
+g_three = matrix("", 3, 4); g_three[, 2:4] = rep(c("g1", "g2", "g3"), each = 3)
+map_sep = rbind(
+  data.frame(r = 1:3, c = 1, fr = 1:3, fc = 1, step = 1),
+  data.frame(r = 1, c = 2:4, fr = NA, fc = NA, step = 2),
+  data.frame(r = rep(2:3, each = 3), c = rep(2:4, times = 2), fr = rep(2:3, each = 3), fc = 2, step = 2))
+map_unite = rbind(
+  data.frame(r = 1:3, c = 1, fr = 1:3, fc = 1, step = 1),
+  data.frame(r = 1, c = 2, fr = NA, fc = NA, step = 2),
+  data.frame(r = rep(2:3, each = 3), c = 2, fr = rep(2:3, each = 3), fc = rep(2:4, times = 2), step = 2))
+
+tz_longer = tz_widget(Lw, Ll, map_longer, wl = c(86, 62, 62, 62), wr = c(86, 62, 66), lname = "skills_wide", rname = "skills_long",
+  verb = "tidyr::pivot_longer()", code = code$longer, gl = g_wide, gr = g_long, caps = c(
+  "<b>Wide.</b> Each row is a skill, and each year has its own column. The numbers are the share of analytics job ads that asked for the skill. The year is a value, but here it is stored in the column names.",
+  "<b>1. The columns we do not pivot.</b> <code>Skill</code> stays a column. Each skill is repeated once for every year column, so 3 skills become 9 rows.",
+  "<b>2. <code>names_to = \"year\"</code>.</b> The three column names become values in a new column called <code>year</code>.",
+  "<b>3. <code>values_to = \"share\"</code>.</b> The nine numbers stack into one column called <code>share</code>. Each row is now one skill in one year: 3 rows and 4 columns became 9 rows and 3 columns."))
+
+tz_wider = tz_widget(Ll, Lw, map_wider, wl = c(86, 62, 66), wr = c(86, 62, 62, 62), lname = "skills_long", rname = "skills_wide",
+  verb = "tidyr::pivot_wider()", code = code$wider, gl = g_long, gr = g_wide, caps = c(
+  "<b>Long.</b> The table from the last slide: one row for each skill in each year.",
+  "<b>1. The columns we do not pivot.</b> <code>Skill</code> identifies a row of the result, so each skill appears once.",
+  "<b>2. <code>names_from = year</code>.</b> Each different value of <code>year</code> becomes a column name.",
+  "<b>3. <code>values_from = share</code>.</b> Each number goes to the cell for its skill and its year. <code>pivot_wider()</code> is the reverse of <code>pivot_longer()</code>."))
+
+tz_sep = tz_widget(L2, L3, map_sep, wl = c(170, 96), wr = c(170, 124, 96, 70), lname = "crash_two", rname = "crash_three",
+  verb = "tidyr::separate()", code = code$tour_sep, gl = g_two, gr = g_three, caps = c(
+  "<b>Two crashes from the page.</b> Each <code>fatalities</code> cell holds three numbers: fatalities in the air, people on the aircraft, and fatalities on the ground.",
+  "<b>1. The other columns.</b> <code>location</code> is copied without change, and the number of rows stays the same.",
+  "<b>2. <code>into = c(...)</code>.</b> Each <code>fatalities</code> cell is cut into three pieces, and each piece gets its own column. One column became three. The pieces are still text."))
+
+tz_unite = tz_widget(L3, LU, map_unite, wl = c(170, 124, 96, 70), wr = c(170, 100), lname = "crash_three", rname = "crash_two",
+  verb = "tidyr::unite()", code = code$tour_unite, gl = g_three, gr = g_two, caps = c(
+  "<b>Three columns.</b> The result of the last slide.",
+  "<b>1. The other columns.</b> <code>location</code> is copied without change.",
+  "<b>2. <code>sep = \"/\"</code>.</b> The three values in each row are pasted into one cell with <code>/</code> between them. <code>unite()</code> is the reverse of <code>separate()</code>."))
+```
+
+# Before We Start
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:16px;">
+  <div class="card">
+    <div class="ch">1 &nbsp; Join today's Zoom</div>
+    <div class="cb" style="font-size:14px; line-height:1.5;">Use the Zoom link in the <a href="https://miamioh.instructure.com/courses/258169/modules/981092" target="_blank"><b>Week 0 Module</b></a> on Canvas. <b>Mute</b> your mic and <b>turn off</b> your video.<br><span style="color:#585E60;">Log in from the <span style="background:#ffe58f; padding:0 5px; border-radius:4px; font-weight:600;">lab's computer</span> so you can <span style="background:#ffe58f; padding:0 5px; border-radius:4px; font-weight:600;">share your screen</span> if you need help with an error.</span></div>
+  </div>
+  <div class="card">
+    <div class="ch">2 &nbsp; Open the project, start the markdown</div>
+    <div class="cb" style="font-size:14px; line-height:1.5;"><b>GitHub Desktop</b> &rarr; <code>business_intelligence</code> &rarr; <b>Fetch origin</b>, then open <code>business_intelligence.Rproj</code>.<br><span style="color:#585E60;">New R Markdown, title <i>Class 13</i>, delete everything below the setup chunk, save it as <span style="background:#ffe58f; padding:0 5px; border-radius:4px; font-weight:600;">markdowns/class13.Rmd</span>.</span></div>
+  </div>
+  <div class="card">
+    <div class="ch">3 &nbsp; Check two packages in the Console</div>
+    <div class="cb" style="font-size:14px; line-height:1.5;"><code>packageVersion("tidyr")</code> and <code>packageVersion("lubridate")</code> each print a version number.<br><span style="color:#585E60;">Both were installed with the tidyverse. If one gives an error, run <code>install.packages("tidyverse")</code>.</span></div>
+  </div>
+  <div class="card">
+    <div class="ch gray">4 &nbsp; Today's plan</div>
+    <div class="cb" style="font-size:14px; line-height:1.5;"><b>20 min.</b> Finish Monday's LLM extraction demos.<br><b>45 min.</b> Tidy and technically correct data.<br><b>10 min.</b> Start the Exam 01 review site.<br><b>5 min.</b> Git ritual and getting ready for the exam.<br><span style="color:#585E60;"><b style="color:#c3142d;">Exam 01 is Monday, Oct 12.</b></span></div>
+  </div>
+</div>
+
+<div style="text-align:center; margin-top:18px; font-size:14px; color:#585E60;">Done early? <b style="color:#c3142d;">Help the person next to you.</b> Stuck? <b style="color:#c3142d;">Share your screen on Zoom</b> and we fix it together.</div>
+
+???
+
+Two minutes while people settle. The first 20 minutes of the session are Part 3 of Monday's deck (Class 12, LLM extraction); switch to this deck after that. Card 3: tidyr and lubridate are both part of the tidyverse install, so this is a check and not an install. Card 4 is the plan; say the exam date out loud.
+
+---
+
+# Where We Left Off
+
+<div class="qbar"><b>Monday's question.</b> These are four of the `r n_crash` rows that <code>rvest::html_table()</code> returned for 2025. What has to change before we can analyze them?</div>
+
+<div class="ct">`r mt_tab(raw_show, "crash_raw (four rows)", width = 44)`</div>
+
+<div style="display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:12px; margin-top:16px;">
+<div class="card"><div class="ch gray">What you said on Monday</div><div class="cb">Two values share a cell. Three numbers share a cell. The date is text.</div></div>
+<div class="card"><div class="ch gray">What we need today</div><div class="cb">Two definitions that turn "this looks wrong" into a checklist: <b>tidy</b> and <b>technically correct</b>.</div></div>
+<div class="card"><div class="ch">Where we finish</div><div class="cb">One row per crash, eight columns, each with the correct type. The four coloured rows appear on every slide.</div></div>
+</div>
+
+<div class="src" style="margin-top:10px;">Source: <a href="https://www.planecrashinfo.com/2025/2025.htm" target="_blank">planecrashinfo.com/2025/2025.htm</a>, read `r built_on`.</div>
+
+???
+
+One minute. This is the last slide of Monday's first part again. Each of the four crashes has its own colour, and the colours stay with the crashes through the whole deck: Washington is red, Toronto is blue, Ahmedabad is green, Louisville is orange. Do not start cleaning yet; the next two slides give the vocabulary.
+
+---
+
+# Learning Objectives
+
+By the end of today, you should be able to:
+
+1. **Explain** the three rules of tidy data and identify which rule a table breaks.
+
+2. **Recognize** what `tidyr::pivot_longer()`, `tidyr::pivot_wider()`, `tidyr::separate()`, and `tidyr::unite()` do to the shape of a table.
+
+3. **Apply** `tidyr::separate()` to split cells that hold more than one value.
+
+4. **Convert** columns to the correct type with `lubridate::dmy()` and `as.integer()`, and confirm the result with `dplyr::glimpse()`.
+
+<div class="lesson" style="margin-top:22px;"><b class="r">One example for all four.</b> We use the 2025 crash table from start to finish, and we do not use regular expressions.</div>
+
+???
+
+One minute. Objective 2 says recognize: students watch the two pivots today and do not write them. Pivots come back in the visualization part of the course. Objectives 3 and 4 are the ones they type.
+
+---
+
+class: inverse, center, middle
+
+# Part 1: Two Definitions
+
+---
+
+# Tidy Data
+
+<div style="display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:14px; margin-top:12px;">
+<div class="card"><div class="ch">Rule 1</div><div class="cb">`r mini("col")`<div class="rule">Each variable is a column.</div><div style="margin-top:8px; color:#585E60;">A variable is something we measured or recorded: the date, the operator, the number of people aboard.</div></div></div>
+<div class="card"><div class="ch">Rule 2</div><div class="cb">`r mini("row")`<div class="rule">Each observation is a row.</div><div style="margin-top:8px; color:#585E60;">An observation is one of the things we recorded those variables for. In our table, it is one crash.</div></div></div>
+<div class="card"><div class="ch">Rule 3</div><div class="cb">`r mini("cell")`<div class="rule">Each value is a cell.</div><div style="margin-top:8px; color:#585E60;">A cell holds one value. <code>67/67(0)</code> is three values in one cell.</div></div></div>
+</div>
+
+<div class="lesson"><b class="r">Why it matters.</b> The dplyr verbs from Class 07 work on columns. <code>dplyr::filter(operator == "Air India")</code> needs a column called <code>operator</code>, and <code>sum(ground)</code> needs a column that holds only that number.</div>
+
+<div class="src" style="margin-top:8px;">Wickham, H. (2014). <a href="https://www.jstatsoft.org/article/view/v059i10" target="_blank">Tidy data</a>. <i>Journal of Statistical Software</i>, 59(10). See also <a href="https://r4ds.hadley.nz/data-tidy.html" target="_blank">R for Data Science, chapter 5</a>.</div>
+
+???
+
+Three minutes. Read each rule and point at the picture: one column, one row, one cell. Then give the reason in the red box: every verb from Class 07 takes column names, so a value that does not have its own column cannot be filtered, sorted, or summed. The definitions are Hadley Wickham's (2014).
+
+---
+
+# Technically Correct Data
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:12px;">
+<div class="card"><div class="ch">1 &nbsp; Reasonable column names</div><div class="cb" style="font-size:14px; line-height:1.55;">A name we can type without quotes: letters, numbers, and <code>_</code>, starting with a letter.
+<div class="ct2" style="margin-top:8px;">`r tbl_names`</div></div></div>
+<div class="card"><div class="ch">2 &nbsp; Each column has the correct type</div><div class="cb" style="font-size:14px; line-height:1.55;">The type R stores matches what the column holds.
+<div class="ct2" style="margin-top:8px;">`r tbl_types`</div></div></div>
+</div>
+
+<div class="lesson"><b class="r">Tidy is about the shape. Technically correct is about the names and the types.</b> A table can be one without the other, so we check both. A third stage, <b>consistent</b> data, deals with missing and impossible values. We name it today and do not teach it.</div>
+
+<div class="src" style="margin-top:8px;">de Jonge, E. and van der Loo, M. (2013). <a href="https://cran.r-project.org/doc/contrib/de_Jonge+van_der_Loo-Introduction_to_data_cleaning_with_R.pdf" target="_blank">An introduction to data cleaning with R</a>. Statistics Netherlands.</div>
+
+???
+
+Three minutes. Two conditions only. Names: a name with a space or a slash has to be written in backticks every time. Types: connect to Class 03, where one vector has one type, and to Class 08, where every column from the Cincinnati server arrived as text. Technically correct says nothing about whether a value is believable or missing; that is consistent data, which de Jonge and van der Loo treat as the next stage. One sentence on it and move on.
+
+---
+
+# Diagnose the Raw Table
+
+<div class="qbar"><b>Together, 2 minutes.</b> Go through the six checks for <code>crash_raw</code>. Which ones does it pass?</div>
+
+<div class="ct">`r mt_tab(raw_show, "crash_raw (four rows)", width = 44, ty = setNames(rep("chr", 4), names(raw_show)))`</div>
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:12px;">
+<div class="card"><div class="ch">Tidy</div><div class="cb" style="font-size:14px; line-height:1.6;">
+<div><b>1.</b> Does each <code>Location / Operator</code> cell hold one value?</div>
+<div><b>2.</b> Does each <code>Aircraft Type / Registration</code> cell hold one value?</div>
+<div><b>3.</b> Does each <code>Fatalities</code> cell hold one value?</div>
+</div></div>
+<div class="card"><div class="ch">Technically correct</div><div class="cb" style="font-size:14px; line-height:1.6;">
+<div><b>4.</b> Can we type every column name without quotes?</div>
+<div><b>5.</b> Is <code>Date</code> stored as a date?</div>
+<div><b>6.</b> Is <code>Fatalities</code> stored as a number?</div>
+</div></div>
+</div>
+
+<details class="answer-gate" style="margin-top:10px;"><summary style="cursor:pointer; font-weight:700; color:#c3142d; font-size:16px;">Answer will be shown in class</summary>
+<div style="font-size:13.5px; line-height:1.55; margin-top:6px;"><b>It fails all six.</b> (1) and (2): two values with nothing between them, because <code>html_table()</code> dropped the line break. (3): three values: fatalities in the air, people on the aircraft, and fatalities on the ground. (4): two names contain spaces and a slash. (5) and (6): every column is <code>chr</code>. Rule 2 is the only thing that holds: each row is one crash.</div>
+</details>
+
+???
+
+Two minutes, led from the front. Ask for a show of hands on each check, then open the box (password). The table fails all six. Point out what is fine: each row is one crash, so rule 2 holds and we will not change the number of rows today. Checks 1 to 3 are fixed in Part 3, checks 4 to 6 in Parts 3 and 4.
+
+---
+
+class: inverse, center, middle
+
+# Part 2: A Tour of tidyr
+
+---
+
+# pivot_longer(): Columns Become Rows
+
+```{r tz_longer, echo=FALSE, results="asis"}
+cat(tz_longer)
+```
+
+???
+
+Three minutes. Click Step three times; the yellow outline marks the cells that are moving. The data is three skills from the analytics job ads table used in Class 01 (data/skill_trends_wide.csv), rounded to two decimals. Students watch; they do not type this. Say when they will need it: ggplot2 wants one column for the x axis and one for the colour, which is the long form. Pivots return in the visualization part of the course.
+
+---
+
+# pivot_wider(): Rows Become Columns
+
+```{r tz_wider, echo=FALSE, results="asis"}
+cat(tz_wider)
+```
+
+???
+
+Two minutes, or press Play without comment if the first 20 minutes ran long. It is the previous slide in reverse. The wide form is the one people like to read in a report; the long form is the one R likes to compute on.
+
+---
+
+# separate(): One Column Becomes Several
+
+```{r tz_sep, echo=FALSE, results="asis"}
+cat(tz_sep)
+```
+
+???
+
+Two minutes. Two real crashes: Washington and Louisville. Step 2 is the important one: one cell becomes three, and the number of rows does not change. The call prints a warning about a fourth piece; leave it for the demo in Part 3. The pieces are still character values, which Part 4 fixes.
+
+---
+
+# unite(): Several Columns Become One
+
+```{r tz_unite, echo=FALSE, results="asis"}
+cat(tz_unite)
+```
+
+<div class="lesson" style="margin-top:8px; font-size:14px;"><b class="r">Question.</b> Which of the four functions does the crash table need?</div>
+
+???
+
+Two minutes, or press Play without comment if time is short. unite() pastes columns together; note that the result is 67/67/0, not the original 67/67(0), because unite uses one separator. Then ask the question in the box. The answer is separate(), three times: the table already has one row per crash, so nothing needs to be pivoted. That answer is the bridge to Part 3.
+
+---
+
+class: inverse, center, middle
+
+# Part 3: The Crash Table, Raw to Tidy
+
+---
+
+# Why html_table() Is Not Enough
+
+<div style="display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,1fr); gap:16px; margin-top:8px; align-items:start;">
+<div>
+<div class="sx-lab">The HTML of one cell on the page</div>
+<pre class="htmlsrc">`r dc_src`</pre>
+<div class="src" style="margin-top:5px;">Right-click the cell, then Inspect (Class 10). <code>&lt;br&gt;</code> is the HTML tag for a line break.</div>
+</div>
+<div>
+<div class="card"><div class="ch gray">rvest::html_table()</div><div class="cb">Drops the <code>&lt;br&gt;</code>, so the two values run together.<div class="rstr-box">`r r_string(dc_raw)`</div></div></div>
+<div class="card" style="margin-top:10px;"><div class="ch">rvest::html_text2() on the &lt;font&gt; element</div><div class="cb">Turns the <code>&lt;br&gt;</code> into <code>\n</code>, the character R uses for a new line.<div class="rstr-box">`r r_string(dc_cell)`</div></div></div>
+</div>
+</div>
+
+<div class="lesson"><b class="r">The plan.</b> Read the text of every cell with <code>html_text2()</code>, so each cell keeps its <code>\n</code>. Then split each cell at the <code>\n</code> with <code>tidyr::separate()</code>.</div>
+
+???
+
+Three minutes. Monday's question was why Washington DC and American Eagle are glued together. The answer is on the left: the page puts a br tag between them, and html_table() throws it away. html_text2() was written to keep line breaks: it returns the two values with a backslash n between them. One detail for anyone who tries it on their own: html_text2() keeps the break when we select the font element inside the cell, not the td itself, which is why the selectors in the demo end in font.
+
+---
+
+# In-Class Demo: Raw to Tidy
+
+<div class="qbar"><b>We write this part together in <code>class13.Rmd</code>.</b> Type along with me. The code is not on the slides.</div>
+
+<div style="display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:12px; margin-top:12px;">
+<div class="card"><div class="ch">1 &nbsp; Read one column at a time</div><div class="cb">Four CSS selectors, one for each column of the page's table, each followed by <code>rvest::html_text2()</code>. The result is four character vectors.</div></div>
+<div class="card"><div class="ch">2 &nbsp; Build the data frame</div><div class="cb"><code>tibble::tibble()</code> puts the four vectors side by side. <code>dplyr::slice(-1)</code> removes the first row, which holds the column names from the page.</div></div>
+<div class="card"><div class="ch">3 &nbsp; Split the three combined columns</div><div class="cb"><code>tidyr::separate()</code> three times: the fatalities cell into three columns, then location and operator, then aircraft type and registration.</div></div>
+</div>
+
+<div class="sx-lab" style="margin-top:16px;">Where we will end: one row per crash, one value per cell</div>
+<div class="ct">`r mt_tab(tidy_show, "df (four of its rows)", width = 17, ty = ty_tidy)`</div>
+
+<div class="lesson" style="font-size:14px;"><b class="r">Tidy, and not yet technically correct.</b> All three rules hold, but every column is <code>&lt;chr&gt;</code>, including the date and the three counts. Part 4 corrects the types.</div>
+
+???
+
+Sixteen minutes, typed live. The code is in the Rmd in the hidden chunk crash_demo, which is not shown and not run when the slides are built. Order of the demo: (1) crash_url and rvest::read_html() with encoding = "ISO-8859-1", the fix from Class 11. (2) Four vectors, one selector each: "tr > td:nth-child(1)" for the date, then "tr > td:nth-child(2) > font", "tr > td:nth-child(3) > font", and "tr > td:nth-child(4) > font", each piped into rvest::html_text2(). Say what nth-child means: the first, second, third, or fourth cell of every row. The selectors for columns 2 to 4 end in font because html_text2() keeps the line break on the font element. (3) tibble::tibble(date, location_operator, aircraft_registeration, fatalities), then dplyr::slice(-1) to drop the row of column names. (4) Three tidyr::separate() calls. The fatalities call has no sep, so separate() cuts at every character that is not a letter or a number: the slash and both parentheses. That gives four pieces for three names, and R prints a warning: Expected 3 pieces, additional pieces discarded. Read the warning with the room; the extra piece is the empty text after the closing parenthesis, so nothing is lost. The other two calls use sep = "\n". Finish with dplyr::glimpse(df): eight columns, all chr. Tick the three tidy rules against the table on the slide, then ask what would happen if we tried to add up the ground column now. The table on the slide is built from the page when the slides are knit.
+
+---
+
+class: inverse, center, middle
+
+# Part 4: Tidy to Technically Correct
+
+---
+
+# Correct the Types
+
+<div style="display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,1fr); gap:14px; align-items:start;">
+<div>
+`r hl_r(code$types_show, "56%")`
+<div class="vcard"><span class="vh">lubridate::dmy()</span> reads text written as day, month, year: <code>"29 Jan 2025"</code> becomes the date 2025-01-29.</div>
+<div class="vcard"><span class="vh">dplyr::across()</span> applies <code>as.integer</code> to the three count columns (Class 07).</div>
+<div class="vcard"><span class="vh">Why integer?</span> A count of people is a whole number. Text such as <code>"67"</code> cannot be added or averaged.</div>
+</div>
+<div>
+<div class="sx-lab">dplyr::glimpse(crash_clean)</div>
+`r out_block(glimpse_clean, "56%")`
+</div>
+</div>
+
+<div class="ct" style="margin-top:14px;">`r mt_tab(clean_show_txt, "crash_clean (four of its rows)", width = 17, ty = ty_clean, hi = c("date", "air_fatalities", "passengers", "ground"))`</div>
+
+???
+
+Eight minutes. Students type it, starting from the df we built in the demo. lubridate::dmy() is new: the function name is the order of the parts in the text, d for day, m for month, y for year. lubridate also has mdy() and ymd() for the other orders. across() is from Class 07: one function applied to several columns. After running, read the glimpse: date is a date, three columns are int, four are chr, and chr is the correct type for a location, an operator, an aircraft type, and a registration. No warning appeared, which means every count in 2025 was a number. In other years the page writes a question mark for an unknown count, and as.integer() would turn it into NA with a warning; that is a consistent data question.
+
+---
+
+class: inverse, center, middle
+
+# Recap
+
+---
+
+# Summary of Main Points
+
+By now, you should be able to do the following:
+
+- **Explain** tidy data: each variable is a column, each observation is a row, each value is a cell. The raw crash table broke the third rule in three columns.
+- **Recognize** the four tidyr functions: `tidyr::pivot_longer()` and `tidyr::pivot_wider()` move values between column names and rows; `tidyr::separate()` and `tidyr::unite()` split and join columns.
+- **Apply** `tidyr::separate()` with `into` and `sep`, and read its warning when the number of pieces and the number of names differ.
+- **Convert** types with `lubridate::dmy()` and `as.integer()` inside `dplyr::mutate()`, and confirm with `dplyr::glimpse()`.
+
+<div class="lesson"><b class="r">Three states of one table.</b> Raw: 4 text columns. Tidy: 8 text columns. Technically correct: 8 columns, of which 1 is a date and 3 are integers.</div>
+
+**Monday, Oct 12:** Exam 01.
+
+???
+
+Two minutes. One bullet per objective. The red box is the whole class in one line.
+
+---
+
+# Our Class Git + GitHub Ritual
+
+<div style="display:flex; gap:14px; align-items:stretch; margin-top:14px;">
+  <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:9px 14px;">1 &nbsp; Knit</div>
+    <div style="padding:14px; font-size:14.5px; line-height:1.55;">Click <b>Knit</b>. <code>class13.html</code> re-runs every chunk top to bottom and saves the page next to your markdown.<div style="margin-top:6px; color:#585E60;">The knit reads the page from the web again, so it needs a connection. If it fails, a chunk depends on something you only ran in the Console.</div></div>
+  </div>
+  <div style="align-self:center; color:#c3142d; font-size:24px; font-weight:700;">&rarr;</div>
+  <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:9px 14px;">2 &nbsp; Commit</div>
+    <div style="padding:14px; font-size:14.5px; line-height:1.55;">GitHub Desktop lists today's work: <code>markdowns/class13.Rmd</code> and <code>class13.html</code>. Nothing else.<div style="margin-top:6px; color:#585E60;">Summary: <code>Add class 13 markdown on tidy data</code>.</div></div>
+  </div>
+  <div style="align-self:center; color:#c3142d; font-size:24px; font-weight:700;">&rarr;</div>
+  <div style="flex:1; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+    <div style="background:#c3142d; color:#fff; font-weight:700; font-size:15px; padding:9px 14px;">3 &nbsp; Push and verify</div>
+    <div style="padding:14px; font-size:14.5px; line-height:1.55;"><b>Push origin</b>, then open the repo on GitHub and read <code>class13.Rmd</code> there.<div style="margin-top:6px; color:#585E60;">Your three <code>tidyr::separate()</code> calls should be on the page.</div></div>
+  </div>
+</div>
+
+<br>
+
+<div style="margin-top:14px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:14px 20px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:18px; line-height:1.55; color:#1b1b1b;">
+<b style="color:#c3142d;">If it is not pushed, it is not done.</b> Your thirteen class markdowns are also your notes for Monday's exam.
+</div>
+
+???
+
+Same ritual, two minutes. Today's knit reads planecrashinfo again, so it needs the network. Remind them that the class markdowns on GitHub are the notes they will have open during the exam.
+
+---
+
+# 🎯 Getting Ready for Exam 01 🎯
+
+<div style="text-align:center; font-size:15px; color:#585E60; margin-top:2px;"><b style="color:#c3142d;">Exam 01 is Monday, Oct 12.</b> Data acquisition and transformation: Classes 01 to 13. Three places to prepare, in this order.</div>
+
+<div style="display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:14px; margin-top:10px;">
+<div class="card">
+  <div class="ch">1 &nbsp; The review site: start it now</div>
+  <div class="cb" style="font-size:14px; line-height:1.6;">
+    <div>Open <a href="https://isa401-review.vercel.app" target="_blank"><b>isa401-review.vercel.app</b></a> and pick the unit you are least sure about.</div>
+    <div style="margin-top:6px;">Each unit has a one-minute recap. Then you explain the idea in your own words, fix R code that runs in your browser, and read real output.</div>
+    <div style="margin-top:6px; color:#585E60;">Nine units, linked to the slides and to the code we wrote in class. It is not graded and asks for no name. An AI model checks your written answers and can be wrong; the page says what to do when it is.</div>
+  </div>
+</div>
+<div class="card">
+  <div class="ch">2 &nbsp; The past exam</div>
+  <div class="cb" style="font-size:14px; line-height:1.6;">
+    <div>The <a href="https://miamioh.instructure.com/courses/258169/quizzes/827524" target="_blank"><b>Fall 2025 Exam 01</b></a> is open on Canvas as a practice exam.</div>
+    <div style="margin-top:6px;">Take it the way you will take the real one: with your class markdowns and R open, and against the clock.</div>
+    <div style="margin-top:6px; color:#585E60;">It is the closest thing to Monday's exam. Do it after the review site, so it shows you what is still weak.</div>
+  </div>
+</div>
+<div class="card">
+  <div class="ch">3 &nbsp; Everything Fadel posted on Canvas</div>
+  <div class="cb" style="font-size:14px; line-height:1.6;">
+    <div>The <a href="https://miamioh.instructure.com/courses/258169/modules" target="_blank"><b>weekly modules on Canvas</b></a> hold the slides and the materials for every class so far.</div>
+    <div style="margin-top:6px;">Your own <code>markdowns/</code> folder on GitHub is part of this: it is the code you wrote, and you may use it in the exam.</div>  </div>
+</div>
+</div>
+
+<div style="margin-top:14px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:10px 14px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:13.5px; line-height:1.5; color:#1b1b1b;">
+<b style="color:#c3142d;">Before you leave:</b> knit, then commit and push <code>markdowns/class13.Rmd</code> and <code>class13.html</code>. <b>Reading, if you want more:</b> <a href="https://r4ds.hadley.nz/data-tidy.html" target="_blank">R for Data Science, chapter 5 (Data tidying)</a>.
+</div>
+
+<script>
+(function () {
+  // Password gate for the "Answer will be shown in class" details boxes (class answer-gate).
+  // Light gate only: the password is stored as a 32-bit FNV-1a hash so it is not readable in
+  // the page source, but anyone determined can open the box from DevTools. sessionStorage
+  // remembers an unlock for the rest of the browser session, so one password opens every box.
+  var HASH = "806d8122";
+  var KEY = "isa401_gate_13";
+  function fnv(str) {
+    var x = 0x811c9dc5;
+    for (var i = 0; i !== str.length; i = i + 1) { x ^= str.charCodeAt(i); x = Math.imul(x, 16777619) >>> 0; }
+    return ("0000000" + x.toString(16)).slice(-8);
+  }
+  function unlocked() { try { return sessionStorage.getItem(KEY) === "1"; } catch (e) { return false; } }
+  function remember() { try { sessionStorage.setItem(KEY, "1"); } catch (e) {} }
+
+  function arm(d) {
+    if (d.getAttribute("data-gated")) { return; }
+    d.setAttribute("data-gated", "1");
+    var prompt = null;
+    d.addEventListener("toggle", function () {
+      if (!d.open) { return; }   // closing (including our own d.open = false below) needs nothing
+      if (unlocked()) { if (prompt) { prompt.remove(); prompt = null; } return; }
+      d.open = false;
+      if (prompt) { prompt.querySelector("input").focus(); return; }
+      prompt = document.createElement("div");
+      prompt.setAttribute("style", "display:flex; align-items:center; gap:8px; margin:6px 0 0 0; font-size:13px;");
+      prompt.innerHTML = "<span style='color:#585E60;'>Password</span>" +
+        "<input type='password' autocomplete='off' style='font-family:Source Code Pro, monospace; font-size:13px; padding:4px 8px; border:1px solid #d1d5db; border-radius:6px; width:140px;'>" +
+        "<button type='button' style='background:#c3142d; color:#fff; border:0; border-radius:6px; padding:5px 14px; font-weight:700; font-size:13px; cursor:pointer;'>Unlock</button>" +
+        "<span class='gate-msg' style='color:#c3142d;'></span>";
+      d.parentNode.insertBefore(prompt, d.nextSibling);
+      var input = prompt.querySelector("input");
+      var msg = prompt.querySelector(".gate-msg");
+      // keep remark's keyboard shortcuts (f, p, digits) from firing while typing: same
+      // pause/resume pattern xaringanExtra uses for its editable fields
+      ["keydown", "keypress", "keyup"].forEach(function (t) { input.addEventListener(t, function (e) { e.stopPropagation(); }); });
+      input.addEventListener("focus", function () { if (window.slideshow) { window.slideshow.pause(); } });
+      input.addEventListener("blur", function () { if (window.slideshow) { window.slideshow.resume(); } });
+      function tryIt() {
+        if (fnv(input.value.trim()) === HASH) { remember(); prompt.remove(); prompt = null; d.open = true; }
+        else { msg.textContent = "Not it."; input.select(); }
+      }
+      prompt.querySelector("button").addEventListener("click", tryIt);
+      input.addEventListener("keydown", function (e) { if (e.key === "Enter") { tryIt(); } });
+      input.focus();
+    });
+  }
+  function armAll() { document.querySelectorAll("details.answer-gate").forEach(arm); }
+  armAll();
+  if (window.slideshow) { if (!window.answerGateHooked) { window.answerGateHooked = true; window.slideshow.on("afterShowSlide", armAll); } }
+})();
+</script>
+
+???
+
+Ten minutes on the review site, then two for the rest of this slide. There is no assignment on this slide: Assignment 07 was due before class. The slide has one job, which is to send them to three things in order: the review site, the past exam, and what is already on Canvas. Open https://isa401-review.vercel.app on the projector and do one "Explain it" box with the room so they see how it works: type a partial answer and pause, and the first idea gets a tick; add the rest and the status changes to Understanding demonstrated. Then press Run on one "Fix the code" card; R starts in the browser in about ten seconds the first time. Tell them three things. It is practice and not a grade. The written check is done by an AI model (Jev) that looks for the key ideas, and it is sometimes wrong, so use "Show the ideas" to move on and "Report a problem" to tell me. Each question lists real job postings that ask for that skill, from the Job Scout database. Then the second card: the practice exam on Canvas is last fall's Exam 01 and is the closest thing to the real exam, so they should take it timed, with their markdowns and R open. Then the third card: everything already on Canvas, and their own markdowns on GitHub. Say the before-you-leave line while pointing at GitHub Desktop.
+
+After class, reports and per-question counts are at https://isa401-review.vercel.app/api/report (send the admin key in an Authorization header; the command is in games/exam-review/README.md).

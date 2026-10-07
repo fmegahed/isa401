@@ -43,7 +43,7 @@ ISA 401 teaches the complete business intelligence pipeline: acquiring data from
 | **06** | Mon 09/28 | Semi-Structured Data: Web Scraping I | [Slides](http://fmegahed.github.io/isa401/fall2026/class10/10_web_scraping_1.html) |
 | | Wed 09/30 | Semi-Structured Data: Web Scraping II | |
 | **07** | Mon 10/05 | Unstructured Data: LLM Text Extraction | [Slides](http://fmegahed.github.io/isa401/fall2026/class12/12_structured_text_extraction.html) |
-| | Wed 10/07 | Tidy, Technically Correct, and Consistent Data | |
+| | Wed 10/07 | Tidy and Technically Correct Data | [Slides](http://fmegahed.github.io/isa401/fall2026/class13/13_tidy_data.html) |
 | **08** | Mon 10/12 | **Exam 01: Data Acquisition & Transformation** | |
 
 ### Phase II: Data Visualization & Communication

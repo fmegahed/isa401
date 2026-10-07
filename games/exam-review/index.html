@@ -1,0 +1,880 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ISA 401 Review: practice for each exam</title>
+<meta name="description" content="Practice for each ISA 401 exam at Miami University: explain an idea in your own words, fix R code that runs in your browser, and read real output. Ungraded, no sign-in.">
+<meta name="theme-color" content="#c3142d">
+<meta property="og:title" content="ISA 401 Review">
+<meta property="og:description" content="Explain it, fix the code, read the output. Practice for each ISA 401 exam, checked as you type.">
+<meta property="og:type" content="website">
+<link rel="icon" href="favicon.png">
+<style>
+:root { --red:#c3142d; --ink:#1b1b1b; --gray:#585E60; --line:#d1d5db; --soft:#f6f6f4; --ok:#059669; --warn:#b45309; --code:#222222; }
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+:focus-visible { outline:3px solid #1d4ed8; outline-offset:2px; border-radius:4px; }
+header :focus-visible, .hero :focus-visible, .runbar :focus-visible { outline-color:#ffffff; }
+main:focus { outline:none; }
+.skip { position:absolute; left:-999px; top:6px; background:#fff; color:var(--red); font-weight:700; padding:8px 14px; border-radius:8px; z-index:50; }
+.skip:focus { left:8px; }
+.sr { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+::placeholder { color:#6b7280; opacity:1; }
+.sect, .card, .credit, .ledger { scroll-margin-top:70px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior:auto; } *, *::before, *::after { animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; } }
+body { margin:0; font-family:"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif; color:var(--ink); background:var(--soft); line-height:1.5; font-size:16px; }
+a { color:var(--red); }
+code, pre, textarea.r, .mono { font-family:"Cascadia Mono","Source Code Pro",Consolas,Menlo,monospace; font-variant-ligatures:none; font-feature-settings:"liga" 0, "calt" 0; }
+code { background:#eef0f1; border-radius:4px; padding:1px 5px; font-size:0.9em; }
+header { background:var(--red); color:#fff; position:sticky; top:0; z-index:20; box-shadow:0 1px 6px rgba(0,0,0,0.18); }
+.bar { max-width:980px; margin:0 auto; padding:14px 16px; display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+.bar a.home { color:#fff; text-decoration:none; font-weight:700; font-size:18px; }
+.bar .sub { opacity:0.9; font-size:14px; }
+.bar .prog { margin-left:auto; font-size:13.5px; background:rgba(255,255,255,0.18); border-radius:999px; padding:3px 12px; font-variant-numeric:tabular-nums; }
+main { max-width:980px; margin:0 auto; padding:18px 16px 60px 16px; }
+h1 { font-size:26px; margin:6px 0 4px 0; }
+h2 { font-size:19px; margin:0 0 6px 0; }
+.lede { color:var(--gray); margin:0 0 14px 0; }
+.card { background:#fff; border:1px solid var(--line); border-radius:10px; box-shadow:0 1px 3px rgba(0,0,0,0.07); padding:16px 18px; margin:0 0 14px 0; }
+.note { border-left:6px solid var(--warn); background:#fffbeb; font-size:14.5px; }
+.note b { color:var(--warn); }
+.grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:14px; }
+.unit { display:block; text-decoration:none; color:inherit; background:#fff; border:1px solid var(--line); border-radius:10px; padding:14px 16px; box-shadow:0 1px 3px rgba(0,0,0,0.07); transition:border-color .15s, transform .15s; }
+.unit:hover { border-color:var(--red); transform:translateY(-1px); }
+.unit .k { font-size:12.5px; color:var(--gray); text-transform:uppercase; letter-spacing:0.04em; }
+.unit .t { font-weight:700; font-size:17px; margin:2px 0 4px 0; line-height:1.3; }
+.unit .b { font-size:14px; color:var(--gray); min-height:42px; }
+.unit .meter { height:6px; background:#e5e7eb; border-radius:999px; margin-top:10px; overflow:hidden; }
+.unit .meter i { display:block; height:100%; background:var(--ok); }
+.pill { display:inline-block; font-size:11.5px; font-weight:700; border-radius:999px; padding:1px 9px; background:#e5e7eb; color:#374151; vertical-align:middle; }
+.pill.opt { background:#ede9fe; color:#5b21b6; }
+.step { position:relative; }
+.step .kind { font-size:12px; font-weight:700; letter-spacing:0.05em; text-transform:uppercase; color:var(--red); }
+.step.done { border-color:var(--ok); }
+.step .tick { position:absolute; top:14px; right:16px; color:#047857; font-weight:700; font-size:14px; display:none; }
+.step.done .tick { display:block; }
+.read ul { margin:6px 0 6px 0; padding-left:22px; }
+.read li { margin:3px 0; }
+pre.rcode { background:var(--code); color:#dedede; border:1px solid #3a3a3a; border-radius:8px; padding:10px 14px; font-size:13.5px; line-height:1.5; overflow-x:auto; margin:8px 0; white-space:pre; }
+.rpkg { color:#e7c547; } .rfun { color:#7aa6da; } .rkey { color:#c397d8; } .rstr { color:#b9ca4a; }
+.rnum, .rkw { color:#e78c45; } .rop { color:#70c0b1; } .rcom { color:#969896; font-style:italic; }
+.rb0 { color:#ed90a4; } .rb1 { color:#d3a263; } .rb2 { color:#99b657; }
+.edwrap { position:relative; background:var(--code); border:1px solid #3a3a3a; border-bottom:0; border-radius:8px 8px 0 0; overflow:hidden; }
+.edwrap pre.edhl { position:absolute; inset:0; margin:0; border:0; border-radius:0; padding:12px 14px; overflow:hidden; pointer-events:none; background:transparent; tab-size:2; }
+.edwrap textarea.r { position:relative; background:transparent; color:transparent; caret-color:#dedede; border-radius:0; }
+.edwrap textarea.r::selection { background:rgba(122,166,218,0.35); color:transparent; }
+pre.out { background:#f3f4f6; border:1px solid #e5e7eb; color:var(--ink); border-radius:8px; padding:10px 14px; font-size:13px; line-height:1.45; overflow-x:auto; margin:8px 0; white-space:pre; }
+.prompt { font-size:16.5px; margin:4px 0 8px 0; }
+.box { border:2px solid var(--line); border-radius:10px; background:#fff; overflow:hidden; transition:border-color .2s; }
+.box:focus-within { border-color:#0f766e; }
+.box textarea { display:block; width:100%; border:0; outline:0; resize:vertical; min-height:96px; padding:12px 14px; font:inherit; background:#f9fafb; }
+.box .foot { display:flex; justify-content:space-between; gap:10px; padding:6px 12px; border-top:1px solid #e5e7eb; font-size:13px; color:var(--gray); background:#fff; }
+.status { font-weight:700; display:flex; align-items:center; gap:7px; }
+.status::before { content:""; width:8px; height:8px; border-radius:50%; background:#9ca3af; }
+.status.checking::before { background:#f97316; animation:pulse 1s infinite; } .status.checking { color:#c2410c; }
+.status.keep_going::before { background:#f97316; } .status.keep_going { color:#c2410c; }
+.status.more_detail::before { background:#d97706; } .status.more_detail { color:#92400e; }
+.status.revisit::before { background:#dc2626; } .status.revisit { color:#b91c1c; }
+.status.done::before { background:var(--ok); } .status.done { color:#047857; }
+.status.err::before { background:#6b7280; }
+@keyframes pulse { 50% { opacity:0.3; } }
+.chips { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; align-items:flex-start; }
+.chip { border:1px solid var(--line); border-radius:999px; padding:3px 12px; font-size:13px; background:#fff; color:#374151; display:inline-flex; align-items:center; gap:6px; }
+.chip::before { content:""; width:7px; height:7px; border-radius:50%; background:#f97316; }
+.chip.met { border-color:var(--ok); color:#047857; background:#ecfdf5; }
+.chip.met::before { content:"\2713"; width:auto; height:auto; background:none; font-weight:700; }
+.chip.shown { border-style:dashed; color:var(--gray); }
+.chip.shown::before { background:#9ca3af; }
+.chip button { border:1px solid #9ca3af; background:#fff; color:#374151; width:18px; height:18px; border-radius:50%; font-size:11px; line-height:1; cursor:pointer; padding:0; }
+.hint { flex-basis:100%; font-size:13.5px; background:#f3f4f6; border-radius:8px; padding:6px 10px; color:#374151; display:none; }
+.hint.on { display:block; }
+.fb { margin-top:8px; font-size:14px; color:#b91c1c; display:none; }
+.fb.on { display:block; }
+.links { margin-top:10px; font-size:13px; color:var(--gray); display:flex; gap:16px; flex-wrap:wrap; }
+.links button, .linkbtn { background:none; border:0; padding:0; color:var(--gray); text-decoration:underline; cursor:pointer; font:inherit; font-size:13px; }
+.report { margin-top:8px; display:none; gap:8px; }
+.report.on { display:flex; }
+.report input { flex:1; padding:6px 10px; border:1px solid var(--line); border-radius:6px; font:inherit; font-size:14px; }
+.btn { background:var(--red); color:#fff; border:0; border-radius:7px; padding:7px 16px; font-weight:700; font-size:14px; cursor:pointer; }
+.btn.ghost { background:#fff; color:#374151; border:1px solid var(--line); }
+.btn:disabled { opacity:0.5; cursor:default; }
+textarea.r { display:block; width:100%; background:var(--code); color:#dedede; border:0; border-radius:8px 8px 0 0; padding:12px 14px; font-size:13.5px; line-height:1.5; resize:vertical; outline:0; white-space:pre; overflow:auto; tab-size:2; }
+.runbar { display:flex; gap:8px; align-items:center; background:#2e2e2e; border-radius:0 0 8px 8px; padding:7px 10px; flex-wrap:wrap; }
+.runbar .rstat { color:#d1d5db; font-size:13px; margin-left:auto; }
+.result { margin-top:8px; font-size:14.5px; font-weight:700; display:none; }
+@font-face { font-family:"Patrick Hand"; src:url("recap/PatrickHand-Regular.woff2") format("woff2"); font-display:swap; }
+.boardwrap { position:relative; }
+.board { display:block; width:100%; height:auto; background:#fdfdfb; border:1px solid var(--line); border-radius:10px; box-shadow:inset 0 0 0 5px #f3f1ea; }
+.board .bhand { font-family:"Patrick Hand","Segoe Print","Comic Sans MS",cursive; }
+.board .bcode { font-family:"Cascadia Mono","Source Code Pro",Consolas,Menlo,monospace; white-space:pre; font-variant-ligatures:none; }
+.bigplay { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(253,253,251,0.72); border:0; border-radius:10px; cursor:pointer; font-size:20px; font-weight:700; color:var(--red); }
+.recapbar { display:flex; gap:10px; align-items:center; margin-top:10px; }
+.recapbar input[type=range] { flex:1; accent-color:var(--red); }
+.recapbar .clock { font-size:13px; color:var(--gray); font-variant-numeric:tabular-nums; min-width:86px; text-align:right; }
+.cap { min-height:46px; margin-top:8px; font-size:15px; line-height:1.5; color:#374151; }
+.capnote { font-size:12px; color:var(--gray); margin-top:2px; }
+.hero { background:linear-gradient(135deg, #c3142d 0%, #8e0f21 100%); color:#fff; border-radius:16px; padding:38px 36px 34px 36px; margin:4px 0 22px 0; position:relative; overflow:hidden; }
+.hero::after { content:""; position:absolute; right:-70px; top:-70px; width:300px; height:300px; border-radius:50%; background:rgba(255,255,255,0.07); }
+.hero .eyebrow { font-size:13px; letter-spacing:0.08em; text-transform:uppercase; opacity:0.9; }
+.hero h1 { font-size:36px; line-height:1.15; margin:10px 0 12px 0; max-width:680px; }
+.hero p { font-size:17px; line-height:1.55; max-width:660px; margin:0 0 20px 0; opacity:0.96; }
+.hero .cta { display:flex; gap:10px; flex-wrap:wrap; position:relative; z-index:1; }
+.hero .cta a, .hero .cta button { font:inherit; font-weight:700; font-size:15px; border-radius:9px; padding:10px 18px; text-decoration:none; cursor:pointer; border:2px solid #fff; }
+.hero .cta .solid { background:#fff; color:#8e0f21; }
+.hero .cta .line { background:transparent; color:#fff; }
+.stats { display:flex; gap:26px; flex-wrap:wrap; margin-top:22px; font-size:14px; opacity:0.95; position:relative; z-index:1; }
+.stats b { font-size:22px; display:block; line-height:1.1; }
+.sect { margin:30px 0 12px 0; }
+.sect .tag { display:inline-block; font-size:12px; font-weight:700; letter-spacing:0.07em; text-transform:uppercase; color:#fff; background:var(--red); border-radius:999px; padding:3px 12px; }
+.sect .tag.gray { background:#374151; }
+.sect h2 { font-size:25px; margin:8px 0 4px 0; }
+.sect p { color:var(--gray); margin:0; max-width:760px; }
+.exam { display:block; text-decoration:none; color:inherit; background:#fff; border:1px solid var(--line); border-radius:12px; padding:16px 18px; box-shadow:0 1px 3px rgba(0,0,0,0.07); }
+a.exam { border-top:5px solid var(--red); transition:transform .15s, box-shadow .15s; }
+a.exam:hover { transform:translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,0.12); }
+.exam.soon { border-top:5px solid #9ca3af; background:#fafafa; color:#6b7280; }
+.exam .when { font-size:12.5px; text-transform:uppercase; letter-spacing:0.05em; color:var(--gray); }
+.exam .name { font-size:20px; font-weight:700; margin:2px 0 4px 0; color:var(--ink); line-height:1.3; }
+.exam.soon .name { color:#6b7280; }
+.exam .go { margin-top:10px; font-weight:700; color:var(--red); }
+.how4 { display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:12px; }
+.how4 .card, .grid3 .card { margin:0; }
+.how4 .n { width:30px; height:30px; border-radius:50%; background:var(--red); color:#fff; font-weight:700; display:flex; align-items:center; justify-content:center; margin-bottom:8px; }
+.grid3 { display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:12px; }
+.card h3 { margin:0 0 6px 0; font-size:16.5px; }
+.card p.small, .card li { font-size:14.5px; line-height:1.55; color:#374151; }
+.card p.small { margin:0; }
+.card ul.tight { margin:4px 0 0 0; padding-left:20px; }
+.flowline { display:flex; align-items:stretch; gap:8px; flex-wrap:wrap; margin:10px 0 4px 0; }
+.flowline .fbox { flex:1 1 150px; border:1px solid var(--line); border-radius:10px; padding:10px 12px; background:#fff; font-size:13.5px; line-height:1.45; }
+.flowline .fbox b { display:block; color:var(--red); font-size:13px; text-transform:uppercase; letter-spacing:0.04em; margin-bottom:3px; }
+.flowline .arr { align-self:center; color:var(--red); font-weight:700; font-size:20px; }
+.quote { border-left:5px solid var(--red); background:#fff; border-radius:8px; padding:12px 16px; font-size:15px; line-height:1.55; }
+.band { background:#1f2937; color:#e5e7eb; border-radius:14px; padding:22px 24px; margin:26px 0 12px 0; }
+.band h2 { color:#fff; font-size:25px; margin:8px 0 4px 0; } .band p { color:#d1d5db; margin:0; max-width:760px; }
+.art { flex:0 0 auto; border-radius:14px; background:linear-gradient(135deg, #C8102E 0%, #8B0A1E 100%); line-height:0; }
+.art svg { display:block; width:100%; height:100%; }
+.unit.withart { display:flex; gap:14px; align-items:flex-start; }
+.unit.withart .art { width:72px; height:72px; }
+.unit.withart .txt { flex:1; min-width:0; }
+.unithead { display:flex; gap:16px; align-items:center; margin:2px 0 6px 0; }
+.unithead .art { width:84px; height:84px; }
+.unithead h1 { margin:0 0 2px 0; }
+.eyebrow2 { font-size:12px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--red); }
+.credit { display:grid; grid-template-columns:auto 1fr; gap:18px; align-items:start; background:#fff; border:1px solid var(--line); border-left:6px solid var(--red); border-radius:12px; padding:18px 20px; box-shadow:0 1px 3px rgba(0,0,0,0.07); }
+.credit .who { text-align:center; min-width:150px; }
+.credit .who .mono { width:64px; height:64px; border-radius:50%; background:linear-gradient(135deg, #C8102E, #8B0A1E); color:#fff; font-weight:700; font-size:22px; display:flex; align-items:center; justify-content:center; margin:0 auto 8px auto; }
+.credit .who b { display:block; font-size:16px; }
+.credit .who a.handle { display:inline-block; margin-top:6px; font-size:13.5px; font-weight:700; text-decoration:none; border:1.5px solid var(--red); border-radius:999px; padding:3px 12px; }
+.credit p { margin:0 0 8px 0; font-size:15px; line-height:1.6; color:#1f2937; }
+@media (max-width:640px) { .credit { grid-template-columns:1fr; } }
+.combo { display:grid; grid-template-columns:1fr auto 1fr; gap:14px; align-items:stretch; }
+.combo .who2 { background:#fff; border:1px solid var(--line); border-top:5px solid var(--red); border-radius:12px; padding:18px 20px; box-shadow:0 1px 3px rgba(0,0,0,0.07); display:flex; flex-direction:column; }
+.combo .who2 .top { display:flex; gap:12px; align-items:center; margin-bottom:10px; }
+.combo .who2 .mono { flex:0 0 52px; height:52px; border-radius:50%; background:linear-gradient(135deg, #C8102E, #8B0A1E); color:#fff; font-weight:700; font-size:19px; display:flex; align-items:center; justify-content:center; }
+.combo .who2 .mono.dark { background:linear-gradient(135deg, #374151, #111827); }
+.combo .who2 h3 { margin:0; font-size:18px; } .combo .who2 .top span { font-size:13.5px; color:var(--gray); }
+.combo .who2 .part { font-size:12px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--red); margin-bottom:4px; }
+.combo .who2 p { margin:0 0 8px 0; font-size:14.5px; line-height:1.6; color:#1f2937; }
+.combo .who2 a.handle { align-self:flex-start; margin-top:auto; font-size:13.5px; font-weight:700; text-decoration:none; border:1.5px solid var(--red); border-radius:999px; padding:4px 14px; }
+.combo .plus { align-self:center; width:44px; height:44px; border-radius:50%; background:var(--red); color:#fff; font-size:30px; font-weight:700; line-height:1; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 6px rgba(0,0,0,0.18); }
+.combo .equals { grid-column:1 / -1; display:flex; gap:14px; align-items:center; background:#1f2937; color:#f3f4f6; border-radius:12px; padding:14px 20px; font-size:15.5px; line-height:1.55; }
+.combo .equals .eq { flex:0 0 44px; height:44px; border-radius:50%; background:#fff; color:#1f2937; font-size:28px; font-weight:700; line-height:1; display:flex; align-items:center; justify-content:center; }
+.combo .equals b { color:#fff; }
+@media (max-width:760px) { .combo { grid-template-columns:1fr; } .combo .plus { justify-self:center; } }
+.ledger { background:#fff; border:1px solid var(--line); border-radius:12px; box-shadow:0 1px 3px rgba(0,0,0,0.07); padding:8px 22px 8px 22px; }
+.ledger .lrow { display:grid; grid-template-columns:minmax(150px, 215px) 26px 1fr; align-items:stretch; }
+.ledger .when { padding:16px 0; font-weight:700; font-size:15px; color:var(--ink); text-align:right; }
+.ledger .when small { display:block; font-weight:400; font-size:12.5px; color:var(--gray); }
+.ledger .spine { position:relative; }
+.ledger .spine::before { content:""; position:absolute; left:12px; top:0; bottom:0; width:2px; background:#e5e7eb; }
+.ledger .lrow:first-child .spine::before { top:24px; } .ledger .lrow:last-child .spine::before { bottom:calc(100% - 24px); }
+.ledger .spine::after { content:""; position:absolute; left:6px; top:19px; width:14px; height:14px; border-radius:50%; background:var(--red); box-shadow:0 0 0 4px #fff; }
+.ledger .what { padding:14px 0 14px 12px; border-bottom:1px solid #f1f1ef; font-size:14.5px; line-height:1.55; color:#374151; }
+.ledger .lrow:last-child .what { border-bottom:0; }
+.ledger .what a { font-weight:700; font-size:16px; }
+.ledger .lrow.base .spine::after { background:#1f2937; }
+@media (max-width:640px) { .ledger .lrow { grid-template-columns:26px 1fr; } .ledger .when { grid-column:2; text-align:left; padding:14px 0 0 12px; } .ledger .spine { grid-row:1 / span 2; } .ledger .what { grid-column:2; padding-top:2px; } }
+.btn { transition:filter .12s, transform .05s; } .btn:hover:not(:disabled) { filter:brightness(0.94); } .btn:active:not(:disabled) { transform:translateY(1px); }
+.chip button { width:24px !important; height:24px !important; font-size:12.5px !important; }
+.edwrap:focus-within { box-shadow:0 0 0 3px rgba(122,166,218,0.65); }
+.recapbar { flex-wrap:wrap; } .recapbar input[type=range] { min-width:140px; }
+.card.recap:empty { min-height:260px; }
+.unit.alldone { border-color:var(--ok); }
+.unit .complete { color:#047857; font-weight:700; }
+.resetrow { margin-top:16px; font-size:13px; color:var(--gray); }
+@media (max-width:720px) { .flowline { flex-direction:column; } .flowline .fbox { flex:0 0 auto; } .flowline .arr { transform:rotate(90deg); line-height:1; } }
+@media (max-width:480px) { .unithead { align-items:flex-start; } .unithead .art { width:60px; height:60px; } h1 { font-size:23px; } .card { padding:14px 14px; } }
+.reminder { font-size:13.5px; color:#374151; background:#fffbeb; border-left:5px solid var(--warn); border-radius:8px; padding:7px 12px; margin:0 0 10px 0; }
+.recapbar select { font:inherit; font-size:13px; padding:4px 6px; border:1px solid var(--line); border-radius:6px; background:#fff; }
+@media (max-width:600px) { .hero { padding:26px 20px; } .hero h1 { font-size:28px; } }
+.refs { font-size:14px; line-height:1.7; padding:10px 18px; border-left:6px solid var(--red); }
+.stylebox { display:none; margin-top:8px; border-left:5px solid #6b7280; background:#f3f4f6; border-radius:8px; padding:8px 12px; font-size:13.5px; line-height:1.5; color:#374151; }
+.stylebox.on { display:block; }
+.stylebox ul { margin:4px 0 0 0; padding-left:20px; } .stylebox li { margin:4px 0; }
+.result.on { display:block; } .result.ok { color:#047857; } .result.no { color:#b91c1c; }
+.console .o { color:var(--ink); } .console .e { color:#b91c1c; font-weight:600; } .console .w { color:#92400e; } .console .m { color:#374151; font-style:italic; }
+details.sol { margin-top:8px; font-size:14px; } details.sol summary { cursor:pointer; color:var(--gray); }
+.jobs { margin-top:12px; padding-top:10px; border-top:1px dashed var(--line); font-size:13px; color:var(--gray); }
+.jobs .jt { border:1px solid var(--line); background:#fff; border-radius:999px; padding:2px 10px; font-size:12.5px; cursor:pointer; color:#374151; margin:0 4px 4px 0; }
+.jobs .jt:hover, .jobs .jt.on { border-color:var(--red); color:var(--red); }
+.jobs .panel { display:none; margin-top:6px; background:#fafafa; border:1px solid #e5e7eb; border-radius:8px; padding:8px 12px; color:var(--ink); }
+.jobs .panel.on { display:block; }
+.jobs .panel ul { margin:6px 0 4px 0; padding-left:20px; } .jobs .panel li { margin:3px 0; }
+.back { display:inline-block; margin-bottom:8px; font-size:14px; }
+.nextrow { display:flex; justify-content:space-between; gap:10px; margin-top:6px; }
+footer { max-width:980px; margin:0 auto; padding:0 16px 40px 16px; font-size:12.5px; color:var(--gray); }
+@media (max-width:560px) { .bar .sub { display:none; } }
+</style>
+</head>
+<body>
+<a class="skip" href="#/" id="skip">Skip to the content</a>
+<header><div class="bar">
+  <a class="home" href="#/">ISA 401 Review</a>
+  <span class="sub" id="sub"></span>
+  <span class="prog" id="prog"></span>
+</div></header>
+<main id="app" tabindex="-1"><p class="lede">Loading the review...</p><noscript><p class="lede">This site needs JavaScript to run R in your browser and to check your answers.</p></noscript></main>
+<footer>
+  Practice only. Nothing here is graded and no name is collected. Written answers are checked by an AI model (Jev, by TypeSafe AI) and the check can be wrong; what you type in an answer box is sent to that service. R runs in your own browser with webR.
+  Job counts come from the ChatISA Job Scout database.
+</footer>
+
+<script type="module">
+const $ = (s, r = document) => r.querySelector(s);
+const el = (tag, attrs = {}, html = "") => { const e = document.createElement(tag); for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v); e.innerHTML = html; return e; };
+const esc = (t) => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+// posting links come from scraped job data: only plain web addresses are ever turned into a link
+const safeUrl = (u) => { try { const p = new URL(u); return /^https?:$/.test(p.protocol) ? p.href : null; } catch (e) { return null; } };
+
+// ---- R code colours: a JavaScript port of style_files/hl_r.R, the function that colours code in
+// the decks (Tomorrow Night Bright, function calls in blue, package names in yellow, brackets
+// coloured by depth). rTokens() returns [{t: text, c: class}] for one line; st.depth carries the
+// bracket depth from line to line.
+const R_OPS = ["|>", "<<-", "<-", "->", "==", "!=", "<=", ">=", "%in%", "%%", "%/%", "&&", "||", "<", ">", "&", "|", "+", "-", "*", "/", "^", "=", ",", "!", "~"];
+function rTokens(line, st) {
+  const out = []; let i = 0;
+  while (i < line.length) {
+    const ch = line[i], rest = line.slice(i); let m;
+    if (ch === "#") { out.push({ t: rest, c: "rcom" }); break; }
+    if (ch === '"' || ch === "'") {
+      m = rest.match(ch === '"' ? /^"(?:[^"\\]|\\.)*"?/ : /^'(?:[^'\\]|\\.)*'?/);
+      out.push({ t: m[0], c: "rstr" }); i += m[0].length; continue;
+    }
+    if ((m = rest.match(/^\s+/))) { out.push({ t: m[0], c: "" }); i += m[0].length; continue; }
+    if ((m = rest.match(/^[A-Za-z.][A-Za-z0-9._]*/))) {
+      const w = m[0], after = line.slice(i + w.length); let c = "";
+      if (after.startsWith("::")) c = "rpkg";
+      else if (/^(TRUE|FALSE|NULL|NA|NaN|Inf)$/.test(w)) c = "rkw";
+      else if (/^(function|if|else|for|while|in|return|next|break)$/.test(w)) c = "rkey";
+      else if (after.startsWith("(")) c = "rfun";
+      out.push({ t: w, c }); i += w.length; continue;
+    }
+    if ((m = rest.match(/^\d+\.?\d*(?:e[+-]?\d+)?L?/))) { out.push({ t: m[0], c: "rnum" }); i += m[0].length; continue; }
+    if ("([{".includes(ch)) { out.push({ t: ch, c: "rb" + (st.depth % 3) }); st.depth += 1; i += 1; continue; }
+    if (")]}".includes(ch)) { st.depth = Math.max(st.depth - 1, 0); out.push({ t: ch, c: "rb" + (st.depth % 3) }); i += 1; continue; }
+    const op = R_OPS.find((o) => rest.startsWith(o));
+    if (op) { out.push({ t: op, c: "rop" }); i += op.length; continue; }
+    out.push({ t: ch, c: "" }); i += 1;
+  }
+  return out;
+}
+const R_FILL = { rpkg: "#e7c547", rfun: "#7aa6da", rkey: "#c397d8", rstr: "#b9ca4a", rnum: "#e78c45", rkw: "#e78c45", rop: "#70c0b1", rcom: "#969896", rb0: "#ed90a4", rb1: "#d3a263", rb2: "#99b657", "": "#dedede" };
+function hlR(codeText) {
+  const st = { depth: 0 };
+  return codeText.split(/\n/).map((line) => rTokens(line, st).map((k) => (k.c ? `<span class="${k.c}">${esc(k.t)}</span>` : esc(k.t))).join("")).join("\n");
+}
+// colour every R block inside an element (blocks marked "plain" hold SQL or an address, not R)
+function colourCode(root) { root.querySelectorAll("pre.rcode:not(.plain):not(.edhl)").forEach((pre) => { pre.innerHTML = hlR(pre.textContent); }); }
+// A block that scrolls sideways becomes a labelled, focusable region, so arrow keys can scroll it.
+// A block that fits gets no tab stop.
+function scrollable(root) {
+  root.querySelectorAll("pre.rcode:not(.edhl), pre.out").forEach((pre) => {
+    const wide = pre.scrollWidth > pre.clientWidth + 1;
+    if (wide) { pre.tabIndex = 0; pre.setAttribute("role", "region"); pre.setAttribute("aria-label", pre.classList.contains("console") ? "R output, scrolls sideways" : pre.classList.contains("out") ? "Printed output, scrolls sideways" : "Code, scrolls sideways"); }
+    else { pre.removeAttribute("tabindex"); pre.removeAttribute("role"); pre.removeAttribute("aria-label"); }
+  });
+}
+
+// ---- saved progress (this browser only) -------------------------------------------------------
+const KEY = "isa401_exam01_review_v1";
+let saved = { done: {}, text: {}, code: {}, speed: 1 };
+try { saved = Object.assign(saved, JSON.parse(localStorage.getItem(KEY) || "{}")); } catch (e) {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (e) {} };
+
+let units = [], jobs = { total: 0, skills: {} };
+const scored = (u) => u.steps.filter((s) => s.type !== "read");
+function paintProgress() {
+  const all = units.filter((u) => !u.optional).flatMap(scored);
+  $("#prog").textContent = `${all.filter((s) => saved.done[s.id]).length} of ${all.length} done`;
+}
+
+// ---- job tags ---------------------------------------------------------------------------------
+function jobsRow(tags) {
+  const known = tags.filter((t) => jobs.skills[t]);
+  if (!known.length) return null;
+  const row = el("div", { class: "jobs" }, "Employers ask for this: ");
+  const panel = el("div", { class: "panel" });
+  known.forEach((t) => {
+    const s = jobs.skills[t];
+    const b = el("button", { class: "jt", type: "button", "aria-expanded": "false" }, `${esc(s.label)} &middot; ${s.n.toLocaleString()} postings`);
+    b.addEventListener("click", () => {
+      const open = b.classList.contains("on");
+      row.querySelectorAll(".jt").forEach((x) => { x.classList.remove("on"); x.setAttribute("aria-expanded", "false"); });
+      panel.classList.toggle("on", !open);
+      if (open) return;
+      b.classList.add("on"); b.setAttribute("aria-expanded", "true");
+      const items = s.examples.map((x) => `<li><b>${esc(x.title)}</b>, ${esc(x.company)}${x.place ? " (" + esc(x.place) + ")" : ""}${safeUrl(x.url) ? ` &middot; <a href="${esc(safeUrl(x.url))}" target="_blank" rel="noopener noreferrer">open posting</a>` : ""}</li>`).join("");
+      panel.innerHTML = `<b>${esc(s.label)}</b> appears in ${s.n.toLocaleString()} of the ${jobs.total.toLocaleString()} analytics and information systems postings collected by ChatISA Job Scout through ${esc(jobs.harvested)}. ${s.required.toLocaleString()} of them list it as required.<ul>${items}</ul>`;
+    });
+    row.appendChild(b);
+  });
+  row.appendChild(panel);
+  return row;
+}
+
+// ---- written answers, checked while typing ----------------------------------------------------
+const STATUS = { idle: "Start typing", checking: "Checking...", keep_going: "Keep going", more_detail: "Add more detail", revisit: "Revisit an idea", done: "Understanding demonstrated", err: "Check unavailable" };
+function explainStep(step, card) {
+  card.appendChild(el("div", { class: "prompt" }, step.prompt));
+  if (step.show) card.appendChild(el("pre", { class: step.show.kind === "code" ? "rcode" : step.show.kind === "plain" ? "rcode plain" : "out" }, esc(step.show.text)));
+  const box = el("div", { class: "box" });
+  const ta = el("textarea", { placeholder: "Explain in your own words...", "aria-label": "Your explanation", spellcheck: "true" });
+  ta.value = saved.text[step.id] || "";
+  const status = el("span", { class: "status" }, STATUS.idle);
+  const foot = el("div", { class: "foot" });
+  const live = el("span", { class: "sr", role: "status", "aria-live": "polite" });
+  foot.appendChild(status); foot.appendChild(el("span", {}, "Keep editing. No limit on tries.")); foot.appendChild(live);
+  box.appendChild(ta); box.appendChild(foot); card.appendChild(box);
+
+  const chips = el("div", { class: "chips" });
+  const hint = el("div", { class: "hint", role: "status", "aria-live": "polite" });
+  const chipEls = step.hints.map((h, i) => {
+    const c = el("span", { class: "chip" }, `<span class="lab">Idea ${i + 1}</span>`);
+    const q = el("button", { type: "button", title: "Show a hint", "aria-label": `Hint for idea ${i + 1} of ${step.hints.length}: ${step.title}`, "aria-expanded": "false" }, "?");
+    q.addEventListener("click", () => {
+      const same = hint.dataset.i === String(i) && hint.classList.contains("on");
+      hint.dataset.i = i; hint.textContent = same ? "" : `Hint for idea ${i + 1}: ${h}`; hint.classList.toggle("on", !same);
+      chips.querySelectorAll("button").forEach((b) => b.setAttribute("aria-expanded", "false"));
+      q.setAttribute("aria-expanded", same ? "false" : "true");
+    });
+    c.appendChild(q); chips.appendChild(c); return c;
+  });
+  chips.appendChild(hint); card.appendChild(chips);
+  const fb = el("div", { class: "fb" }); card.appendChild(fb);
+
+  const links = el("div", { class: "links" });
+  const showBtn = el("button", { type: "button", style: "display:none", "aria-label": `Show the ideas for: ${step.title}` }, "Show the ideas");
+  const repBtn = el("button", { type: "button", "aria-expanded": "false", "aria-label": `Report a problem with the check for: ${step.title}` }, "Report a problem with this check");
+  links.appendChild(showBtn); links.appendChild(repBtn); card.appendChild(links);
+  const rep = el("div", { class: "report" });
+  const repIn = el("input", { type: "text", placeholder: "What was wrong? (optional)", maxlength: "300" });
+  const repGo = el("button", { class: "btn ghost", type: "button", "aria-label": `Send the report for: ${step.title}` }, "Send");
+  repIn.setAttribute("aria-label", `What was wrong with the check for: ${step.title} (optional)`);
+  rep.appendChild(repIn); rep.appendChild(repGo); card.appendChild(rep);
+
+  let seq = 0, timer = null, checks = 0, last = "";
+  function paint(v) {
+    status.className = "status " + v.status; status.textContent = STATUS[v.status] || "";
+    const said = `${STATUS[v.status] || ""}. ${(v.ideas || []).filter((i) => i.met).length} of ${(v.ideas || []).length} ideas covered.${v.note ? " " + v.note : ""}`;
+    if (live.textContent !== said) live.textContent = said;
+    (v.ideas || []).forEach((idea, i) => {
+      chipEls[i].classList.toggle("met", idea.met); chipEls[i].classList.remove("shown");
+      $(".lab", chipEls[i]).textContent = idea.met ? idea.label : `Idea ${i + 1}`;
+    });
+    fb.textContent = v.note || ""; fb.classList.toggle("on", Boolean(v.note));
+    last = `${v.status}; ideas ${(v.ideas || []).map((i) => (i.met ? 1 : 0)).join("")}${v.note ? "; " + v.note : ""}`;
+    if (v.status === "done") { markDone(step, card); showBtn.style.display = "none"; }
+    else if (checks >= 3) showBtn.style.display = "";
+  }
+  async function check() {
+    const text = ta.value.trim(); const mine = ++seq;
+    if (text.length < 15) { status.className = "status"; status.textContent = text ? STATUS.keep_going : STATUS.idle; return; }
+    status.className = "status checking"; status.textContent = STATUS.checking;
+    try {
+      const r = await fetch("/api/check", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: step.id, text, first: !saved.done[step.id] }) });
+      const v = await r.json();
+      if (mine !== seq) return;
+      if (!r.ok) { status.className = "status err"; status.textContent = v.error || STATUS.err; return; }
+      checks += 1; paint(v);
+    } catch (e) { if (mine === seq) { status.className = "status err"; status.textContent = STATUS.err; } }
+  }
+  ta.addEventListener("input", () => { saved.text[step.id] = ta.value; save(); clearTimeout(timer); seq += 1; status.className = "status checking"; status.textContent = STATUS.checking; timer = setTimeout(check, 900); });
+  showBtn.addEventListener("click", async () => {
+    const r = await fetch("/api/check", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: step.id, reveal: true }) });
+    const v = await r.json();
+    (v.ideas || []).forEach((idea, i) => { if (!chipEls[i].classList.contains("met")) { chipEls[i].classList.add("shown"); $(".lab", chipEls[i]).textContent = idea.label; } });
+    showBtn.style.display = "none"; markDone(step, card);
+    live.textContent = "The ideas are: " + (v.ideas || []).map((i) => i.label).join("; ") + ".";
+    ta.focus();   // the button that had focus is gone
+  });
+  repBtn.addEventListener("click", () => { const open = rep.classList.toggle("on"); repBtn.setAttribute("aria-expanded", String(open)); if (open) repIn.focus(); });
+  repGo.addEventListener("click", async () => {
+    repGo.disabled = true;
+    try { await fetch("/api/report", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: step.id, text: ta.value, verdict: last, comment: repIn.value }) }); repGo.textContent = "Sent. Thank you."; }
+    catch (e) { repGo.textContent = "Could not send"; }
+  });
+  if (ta.value.trim().length >= 15) check();
+}
+
+// ---- R in the browser (webR) ------------------------------------------------------------------
+let webRReady = null; const installed = new Set(), written = new Set();
+function getWebR(say) {
+  if (!webRReady) webRReady = (async () => {
+    say("Starting R in your browser (about 10 seconds the first time)...");
+    const { WebR } = await import("https://webr.r-wasm.org/latest/webr.mjs");
+    const w = new WebR(); await w.init();
+    // Live requests from R (rvest, httr2): the page is cross-origin isolated (vercel.json), and R's
+    // libcurl is sent through the public rOpenSci WebSocket relay, the same one ChatISA uses, so
+    // sites without CORS headers can be read. The tasks themselves only read files from this site.
+    if (self.crossOriginIsolated) await w.evalRVoid('Sys.setenv(ALL_PROXY = "socks5h://test:yolo@ws.r-universe.dev:443")');
+    await w.evalRVoid('dir.create("/home/web_user/project/markdowns", recursive = TRUE); dir.create("/home/web_user/project/data"); setwd("/home/web_user/project/markdowns"); options(width = 84, pillar.min_title_chars = 8, readr.show_col_types = FALSE, dplyr.summarise.inform = FALSE, cli.num_colors = 1, crayon.enabled = FALSE)');
+    return w;
+  })();
+  return webRReady;
+}
+// Course packages a student may call beyond the ones a task lists; installed the first time the
+// code names them as pkg:: or library(pkg).
+const COURSE_PKGS = ["readr", "readxl", "writexl", "jsonlite", "dplyr", "tidyr", "tibble", "lubridate", "rvest", "purrr", "httr2", "stringr", "janitor"];
+async function prepare(w, step, say, code) {
+  const named = COURSE_PKGS.filter((p) => new RegExp("\\b" + p + "\\s*::|\\b(?:library|require)\\s*\\(\\s*[\"']?" + p + "\\b").test(code || ""));
+  const need = [...new Set([...(step.packages || []), ...named])].filter((p) => !installed.has(p));
+  if (need.length) { say("Installing " + need.join(", ") + "..."); await w.installPackages(need, { quiet: true }); need.forEach((p) => installed.add(p)); }
+  for (const f of step.files || []) {
+    if (written.has(f)) continue;
+    const buf = new Uint8Array(await (await fetch("data/" + f)).arrayBuffer());
+    await w.FS.writeFile("/home/web_user/project/data/" + f, buf); written.add(f);
+  }
+}
+// conditionMessage() in R gives the full text, including the bullet lines dplyr and tibble add
+let condFn = null;
+async function condText(w, o) {
+  try {
+    if (!condFn) condFn = await w.evalR('function(cond) paste(conditionMessage(cond), collapse = "\\n")');
+    const a = await (await condFn.exec(o.data)).toArray();
+    return String(a[0]).trim();
+  } catch (e) {
+    try { const a = await (await o.data.get("message")).toArray(); return String(a[0]).trim(); } catch (e2) { return "(could not read the message)"; }
+  }
+}
+// ---- soft style check: notes on course conventions, never a failed task -----------------------
+// Function name -> package, for the functions written in class (isa401a markdowns, Classes 03 to 12,
+// and the Class 13 demo). tests/check_coverage.py keeps this list tied to the class code.
+const PKG = {
+  read_csv: "readr", read_excel: "readxl", fromJSON: "jsonlite",
+  dbConnect: "DBI", dbReadTable: "DBI", dbDisconnect: "DBI",
+  glimpse: "dplyr", select: "dplyr", filter: "dplyr", arrange: "dplyr", mutate: "dplyr", summarise: "dplyr", summarize: "dplyr",
+  group_by: "dplyr", count: "dplyr", across: "dplyr", desc: "dplyr", ends_with: "dplyr", slice: "dplyr", bind_rows: "dplyr",
+  left_join: "dplyr", inner_join: "dplyr", anti_join: "dplyr",
+  separate: "tidyr", tibble: "tibble", as_tibble: "tibble", dmy: "lubridate", ymd: "lubridate",
+  read_html: "rvest", html_elements: "rvest", html_text2: "rvest", html_table: "rvest",
+  map_df: "purrr", str_detect: "stringr", str_remove: "stringr",
+  request: "httr2", req_url_query: "httr2", req_headers: "httr2", req_perform: "httr2", resp_body_string: "httr2",
+  paths_allowed: "robotstxt", chat_openai: "ellmer", type_object: "ellmer", type_string: "ellmer",
+};
+// group 1 is the character before the name (or the start of the code); group 2 is the function
+const BARE = new RegExp("(^|[^\\w.:$@])(" + Object.keys(PKG).join("|") + ")(?=\\s*\\()", "gm");
+function styleNotes(code) {
+  // look at the code only: drop what is inside quotes and after a #
+  const src = code.split(/\n/).map((l) => l.replace(/"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'/g, '""').replace(/#.*$/, "")).join("\n");
+  const notes = [];
+  // No note on assignment: the class code uses =, and also -> at the end of a pipe.
+  if (/%>%/.test(src)) notes.push("You used the older pipe <code>%&gt;%</code>. It still works. In this course we use the native pipe <code>|&gt;</code>.");
+  if (/\bsetwd\s*\(/.test(src)) notes.push("No <code>setwd()</code>, ever. The project sets the folder, and paths are written from the markdown, such as <code>\"../data/jobs.csv\"</code>.");
+  const lib = /\b(?:library|require)\s*\(/.test(src);
+  const bare = [...new Set([...src.matchAll(BARE)].map((m) => m[2]))];
+  if (lib || bare.length) {
+    const shown = bare.slice(0, 4).map((f) => `<code>${f}()</code> as <code>${PKG[f]}::${f}()</code>`).join(", ");
+    notes.push((lib ? "You loaded a package with <code>library()</code>. " : "") +
+      (bare.length ? `Write ${shown}${bare.length > 4 ? ", and the same for the others" : ""}. ` : "") +
+      "In this course every function that is not part of base R is written as <code>package::function()</code>, for three reasons. " +
+      "(1) Anyone reading the line, including you in a month, can see which package the function comes from and where to find its help page. " +
+      "(2) The line runs by itself: it does not depend on a <code>library()</code> call somewhere above it, or on the order in which packages were loaded. " +
+      "(3) Two packages can use the same name. <code>filter()</code> exists in both <code>stats</code> and <code>dplyr</code>, and <code>dplyr::filter()</code> leaves no doubt about which one runs.");
+  }
+  return notes;
+}
+
+function codeStep(step, card) {
+  card.appendChild(el("div", { class: "prompt" }, step.task));
+  if ((step.files || []).length) card.appendChild(el("div", { style: "font-size:13.5px; color:#585E60; margin-bottom:6px;" }, "Your markdown is in <code>markdowns/</code>. Files for this task: " + step.files.map((f) => `<a href="data/${esc(f)}" target="_blank"><code>data/${esc(f)}</code></a>`).join(", ") + "."));
+  const ta = el("textarea", { class: "r", spellcheck: "false", "aria-label": "R code" });
+  ta.value = saved.code[step.id] ?? step.starter;
+  const wrap = el("div", { class: "edwrap" });
+  const layer = el("pre", { class: "rcode edhl", "aria-hidden": "true" });
+  wrap.appendChild(layer); wrap.appendChild(ta);
+  const fit = () => { ta.rows = Math.min(28, Math.max(6, ta.value.split(/\n/).length + 1)); layer.innerHTML = hlR(ta.value) + "\n"; layer.scrollTop = ta.scrollTop; layer.scrollLeft = ta.scrollLeft; };
+  ta.addEventListener("scroll", () => { layer.scrollTop = ta.scrollTop; layer.scrollLeft = ta.scrollLeft; });
+  fit();
+  const bar = el("div", { class: "runbar" });
+  const run = el("button", { class: "btn", type: "button", "aria-label": `Run the code for: ${step.title}` }, "Run");
+  const reset = el("button", { class: "btn ghost", type: "button", "aria-label": `Reset the code for: ${step.title}` }, "Reset code");
+  const IDLE = "Ctrl + Enter runs the code. Esc, then Tab, leaves the editor.";
+  const rstat = el("span", { class: "rstat", id: "rstat-" + step.id }, IDLE);
+  ta.setAttribute("aria-describedby", "rstat-" + step.id);
+  bar.appendChild(run); bar.appendChild(reset); bar.appendChild(rstat);
+  const out = el("pre", { class: "out console", style: "display:none" });
+  const result = el("div", { class: "result", role: "status", "aria-live": "polite" });
+  const style = el("div", { class: "stylebox" });
+  card.appendChild(wrap); card.appendChild(bar); card.appendChild(out); card.appendChild(result); card.appendChild(style);
+  const hint = el("details", { class: "sol" }, `<summary>Show a hint</summary><div style="margin-top:6px;">${step.hint}</div>`);
+  const sol = el("details", { class: "sol" }, `<summary>Show one solution</summary><pre class="rcode">${esc(step.solution)}</pre>`);
+  card.appendChild(hint); card.appendChild(sol);
+  const say = (m) => { rstat.textContent = m; };
+
+  async function go() {
+    run.disabled = true; result.className = "result"; out.style.display = "none"; out.innerHTML = "";
+    const notes = styleNotes(ta.value);
+    style.className = "stylebox" + (notes.length ? " on" : "");
+    style.innerHTML = notes.length ? "<b>Style notes.</b> These do not change whether your answer counts.<ul>" + notes.map((n) => `<li>${n}</li>`).join("") + "</ul>" : "";
+    try {
+      const w = await getWebR(say); await prepare(w, step, say, ta.value); say("Running...");
+      await w.evalRVoid("rm(list = ls(all.names = TRUE, envir = globalenv()), envir = globalenv())");
+      const shelter = await new w.Shelter();
+      let failed = false;
+      try {
+        const res = await shelter.captureR(ta.value, { withAutoprint: true, captureStreams: true, captureConditions: true, throwJsException: false });
+        for (const o of res.output) {
+          if (o.type === "stdout") out.appendChild(el("div", { class: "o" }, esc(o.data) || "&nbsp;"));
+          else if (o.type === "stderr") out.appendChild(el("div", { class: "m" }, esc(o.data)));
+          else if (o.type === "error") { failed = true; out.appendChild(el("div", { class: "e" }, "Error: " + esc(await condText(w, o)))); }
+          else if (o.type === "warning") out.appendChild(el("div", { class: "w" }, "Warning: " + esc(await condText(w, o))));
+          else if (o.type === "message") out.appendChild(el("div", { class: "m" }, esc(await condText(w, o))));
+        }
+      } finally { shelter.purge(); }
+      if (!out.children.length) out.appendChild(el("div", { class: "m" }, "(the code ran and printed nothing)"));
+      out.style.display = ""; scrollable(card);
+      const ok = !failed && await w.evalRBoolean(`isTRUE(tryCatch({ ${step.check} }, error = function(e) FALSE))`);
+      result.className = "result on " + (ok ? "ok" : "no");
+      result.textContent = ok ? ("Correct. " + (step.okMsg || "")) : (failed ? "The code stopped with an error. Read the last line above, fix it, and run again." : "It runs, but the result is not right yet. Compare your output with what the task asks for.");
+      if (ok) markDone(step, card);
+      say(IDLE);
+    } catch (e) {
+      out.style.display = ""; out.appendChild(el("div", { class: "e" }, "R could not start in this browser: " + esc(String(e.message || e))));
+      say("R is unavailable");
+    }
+    run.disabled = false;
+  }
+  run.addEventListener("click", go);
+  reset.addEventListener("click", () => { ta.value = step.starter; delete saved.code[step.id]; save(); fit(); });
+  ta.addEventListener("input", () => { saved.code[step.id] = ta.value; save(); fit(); });
+  let leaving = false;   // set by Esc: the next Tab moves focus instead of indenting
+  ta.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); go(); }
+    if (e.key === "Escape") { leaving = true; return; }
+    if (e.key === "Tab" && !leaving) { e.preventDefault(); const s = ta.selectionStart; ta.setRangeText("  ", s, ta.selectionEnd, "end"); saved.code[step.id] = ta.value; save(); fit(); }
+    if (e.key !== "Shift") leaving = false;
+  });
+}
+
+// ---- recap: a whiteboard that draws in time with the narration --------------------------------
+// recap/<unit>.json (written by make_recap.mjs) lists what to draw, where, and at which second of
+// recap/<unit>.mp3. Everything on the board is a function of the audio's current time, so pausing
+// and dragging the slider work. Code lines use the same colours as the rest of the site.
+const SVGNS = "http://www.w3.org/2000/svg";
+const sv = (tag, attrs = {}) => { const e = document.createElementNS(SVGNS, tag); for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v); return e; };
+const INK = { red: "#c3142d", blue: "#1d4ed8" };
+const clamp01 = (x) => Math.max(0, Math.min(1, x));
+const mmss = (s) => Math.floor(s / 60) + ":" + String(Math.floor(s % 60)).padStart(2, "0");
+let recapCount = 0, nowPlaying = null;
+
+async function recapCard(u, card) {
+  let data;
+  try { const r = await fetch(`recap/${u.id}.json`); if (!r.ok) throw new Error("none"); data = await r.json(); } catch (e) { card.remove(); return; }
+  const uid = ++recapCount;
+  card.appendChild(el("div", { class: "kind" }, "Recap"));
+  card.appendChild(el("h2", {}, `A ${Math.round(data.duration)}-second reminder`));
+  card.appendChild(el("div", { class: "reminder" }, "<b>A reminder, not a replacement.</b> One minute cannot cover what we did in 80 minutes of class. Use it to bring the main ideas back, then work through the questions below, the slides, and the code we wrote together."));
+  const wrap = el("div", { class: "boardwrap" });
+  const svg = sv("svg", { viewBox: "0 0 960 540", class: "board", role: "img", "aria-label": `Whiteboard for the recap of ${u.title}. Everything it shows is also said in the narration, which is printed below the board.` });
+  const big = el("button", { class: "bigplay", type: "button", tabindex: "-1", "aria-hidden": "true" }, "&#9654;&nbsp; Play the recap");
+  wrap.appendChild(svg); wrap.appendChild(big); card.appendChild(wrap);
+  const bar = el("div", { class: "recapbar" });
+  const btn = el("button", { class: "btn", type: "button", "aria-label": `Play the recap of ${u.title}` }, "Play");
+  const range = el("input", { type: "range", min: "0", max: String(data.duration), step: "0.05", value: "0", "aria-label": "Position in the recap" });
+  const clock = el("span", { class: "clock" }, `0:00 / ${mmss(data.duration)}`);
+  const speed = el("select", { "aria-label": "Playback speed" }, ["0.75", "1", "1.25", "1.5", "2"].map((v) => `<option value="${v}">${v}x</option>`).join(""));
+  speed.value = String(saved.speed || 1);
+  bar.appendChild(btn); bar.appendChild(range); bar.appendChild(clock); bar.appendChild(speed); card.appendChild(bar);
+  const cap = el("div", { class: "cap", "aria-live": "off" }); card.appendChild(cap);
+  card.appendChild(el("div", { class: "capnote" }, `The voice is AI-generated (ElevenLabs, "${esc(data.voice)}"), reading a script written for this course.`));
+  const audio = new Audio(`recap/${u.id}.mp3`); audio.preload = "none";
+  // the board is drawn from the audio's clock, so a faster or slower voice needs nothing else
+  const setSpeed = () => { audio.playbackRate = Number(speed.value); audio.defaultPlaybackRate = Number(speed.value); saved.speed = Number(speed.value); save(); };
+  speed.addEventListener("change", setSpeed); setSpeed();
+
+  try { await document.fonts.load('30px "Patrick Hand"'); } catch (e) {}
+  const pages = new Map(), depth = new Map(), draw = [];
+  const pageG = (n) => { if (!pages.has(n)) { const g = sv("g"); pages.set(n, g); depth.set(n, { depth: 0 }); svg.appendChild(g); } return pages.get(n); };
+  const defs = sv("defs"); svg.appendChild(defs);
+  data.items.forEach((it, i) => {
+    if (it.k === "page") return;
+    const g = pageG(it.page);
+    if (it.k === "row") {
+      let x = it.x; const cells = [];
+      it.cells.forEach((label, j) => {
+        const t = sv("text", { y: it.y + 39, class: "bhand", "font-size": 26, fill: "#1b1b1b" }); t.textContent = label; g.appendChild(t);
+        const w = t.getComputedTextLength() + 28;
+        t.setAttribute("x", x + 14);
+        const box = sv("rect", { x, y: it.y + 9, width: w, height: 44, rx: 9, fill: "#ffffff", stroke: "#1b1b1b", "stroke-width": 2 }); g.insertBefore(box, t);
+        const parts = [box, t];
+        if (it.arrows && j < it.cells.length - 1) {
+          const ax = x + w + 7, ay = it.y + 31;
+          const arrow = sv("path", { d: `M${ax} ${ay} H${ax + 30} M${ax + 22} ${ay - 7} L${ax + 31} ${ay} L${ax + 22} ${ay + 7}`, fill: "none", stroke: "#c3142d", "stroke-width": 2.5, "stroke-linecap": "round", "stroke-linejoin": "round" });
+          g.appendChild(arrow); parts.push(arrow);
+        }
+        cells.push({ parts, t: it.t + j * 0.9 }); x += w + (it.arrows ? 44 : 16);
+      });
+      draw.push({ it, cells }); return;
+    }
+    const isCode = it.k === "code", size = isCode ? 19 : it.big ? 40 : 30;
+    let bg = null;
+    if (isCode) { bg = sv("rect", { x: 34, y: it.y, width: 892, height: it.h + 0.6, fill: "#222222" }); g.appendChild(bg); }
+    const text = sv("text", { x: it.x + (isCode ? 8 : 0), y: it.y + it.h * (isCode ? 0.68 : 0.74), class: isCode ? "bcode" : "bhand", "font-size": size, fill: isCode ? "#dedede" : (INK[it.color] || "#1b1b1b") });
+    if (isCode) rTokens(it.text, depth.get(it.page)).forEach((k) => { const s = sv("tspan", { fill: R_FILL[k.c] }); if (k.c === "rcom") s.setAttribute("font-style", "italic"); s.textContent = k.t; text.appendChild(s); });
+    else text.textContent = it.text;
+    g.appendChild(text);
+    const len = text.getComputedTextLength();
+    const clip = sv("clipPath", { id: `rc${uid}_${i}` }), cr = sv("rect", { x: it.x - 6, y: it.y - 4, width: 0, height: it.h + 10 });
+    clip.appendChild(cr); defs.appendChild(clip); text.setAttribute("clip-path", `url(#rc${uid}_${i})`);
+    let strike = null;
+    if (it.strike !== undefined) { strike = sv("line", { x1: it.x - 4, x2: it.x - 4, y1: it.y + it.h * 0.52, y2: it.y + it.h * 0.52, stroke: "#c3142d", "stroke-width": 3, "stroke-linecap": "round" }); g.appendChild(strike); }
+    draw.push({ it, bg, cr, len, strike });
+  });
+
+  function paint(t) {
+    let cur = 0; for (const it of data.items) if (it.k === "page" && it.t <= t) cur = it.page;
+    pages.forEach((g, n) => { g.style.display = n === cur ? "" : "none"; });
+    for (const d of draw) {
+      if (d.it.page !== cur) continue;
+      if (d.cells) { d.cells.forEach((c) => { const p = clamp01((t - c.t) / 0.45); c.parts.forEach((e) => { e.style.opacity = p; }); }); continue; }
+      const p = clamp01((t - d.it.t) / d.it.d);
+      d.cr.setAttribute("width", p * (d.len + 20));
+      if (d.bg) d.bg.style.opacity = clamp01((t - d.it.t + 0.1) / 0.25);
+      if (d.strike) d.strike.setAttribute("x2", d.it.x - 4 + clamp01((t - d.it.strike) / 0.5) * (d.len + 8));
+    }
+    let line = ""; for (const s of data.segments) if (s.t <= t + 0.05) line = s.cap;
+    if (cap.textContent !== line) cap.textContent = line;
+    clock.textContent = `${mmss(t)} / ${mmss(data.duration)}`;
+    range.setAttribute("aria-valuetext", `${mmss(t)} of ${mmss(data.duration)}`);
+  }
+  let raf = null;
+  const tick = () => { range.value = audio.currentTime; paint(audio.currentTime); raf = requestAnimationFrame(tick); };
+  const toggle = () => { if (audio.paused) { if (nowPlaying && nowPlaying !== audio) nowPlaying.pause(); nowPlaying = audio; audio.play(); } else audio.pause(); };
+  const name = (word) => { btn.textContent = word; btn.setAttribute("aria-label", `${word} the recap of ${u.title}`); };
+  audio.addEventListener("play", () => { name("Pause"); big.style.display = "none"; cancelAnimationFrame(raf); tick(); });
+  audio.addEventListener("pause", () => { name("Play"); cancelAnimationFrame(raf); });
+  audio.addEventListener("ended", () => { name("Replay"); cancelAnimationFrame(raf); paint(data.duration); });
+  btn.addEventListener("click", toggle); big.addEventListener("click", toggle);
+  range.addEventListener("input", () => { const v = Number(range.value); big.style.display = "none"; audio.currentTime = v; paint(v); });
+  paint(0);
+}
+
+// ---- pages ------------------------------------------------------------------------------------
+function markDone(step, card) { if (!saved.done[step.id]) { saved.done[step.id] = true; save(); } card.classList.add("done"); paintProgress(); }
+const KIND = { read: "Review", explain: "Explain it", interpret: "Read the output", code: "Fix the code" };
+
+// Unit artwork, drawn for this site in the style of the weekly tiles on the course's Canvas page:
+// white shapes on the Miami red gradient (the gradient is the .art background).
+const W = 'fill="#fff"', M = 'font-family="Consolas, monospace"', R = 'fill="#C8102E"';
+const ART = {
+  data: `<rect x="26" y="30" width="78" height="52" rx="6" ${W}/><path d="M26 47h78M26 64h78M52 30v52M78 30v52" stroke="#C8102E" stroke-width="2" opacity=".55"/><text x="150" y="72" ${M} font-size="40" font-weight="700" ${W} text-anchor="middle">{ }</text><rect x="26" y="104" width="148" height="9" rx="4.5" ${W} opacity=".9"/><rect x="26" y="121" width="112" height="9" rx="4.5" ${W} opacity=".75"/><rect x="26" y="138" width="132" height="9" rx="4.5" ${W} opacity=".6"/><text x="100" y="178" ${M} font-size="17" ${W} text-anchor="middle">c(2020, 2241)</text>`,
+  git: `<path d="M40 150H130" stroke="#fff" stroke-width="5" stroke-linecap="round"/><circle cx="40" cy="150" r="13" ${W}/><circle cx="85" cy="150" r="13" ${W}/><circle cx="130" cy="150" r="13" ${W}/><path d="M130 136V96" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-dasharray="2 9"/><path d="M118 104l12-14 12 14" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M92 76a22 22 0 0 1 42-9a17 17 0 0 1 22 16a15 15 0 0 1-15 15H96a17 17 0 0 1-4-22z" ${W}/><text x="124" y="88" ${M} font-size="13" font-weight="700" ${R} text-anchor="middle">push</text><text x="40" y="184" ${M} font-size="12" ${W} text-anchor="middle">commit</text>`,
+  import: `<g ${W}><path d="M24 36h34l12 12v40H24z"/><path d="M24 104h34l12 12v40H24z" opacity=".85"/></g><text x="47" y="74" ${M} font-size="12" font-weight="700" ${R} text-anchor="middle">CSV</text><text x="47" y="142" ${M} font-size="12" font-weight="700" ${R} text-anchor="middle">XLSX</text><path d="M84 62h30M84 130h30" stroke="#fff" stroke-width="4" stroke-linecap="round"/><path d="M108 54l10 8-10 8M108 122l10 8-10 8" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="152" cy="96" r="32" ${W}/><text x="152" y="109" font-family="Arial, sans-serif" font-size="38" font-weight="700" ${R} text-anchor="middle">R</text><text x="100" y="186" ${M} font-size="13" ${W} text-anchor="middle">"../data/"</text>`,
+  querychat: `<path d="M22 34h96a10 10 0 0 1 10 10v34a10 10 0 0 1-10 10H58l-18 16V88H32a10 10 0 0 1-10-10V44a10 10 0 0 1 10-10z" ${W}/><rect x="36" y="50" width="76" height="7" rx="3.5" ${R} opacity=".7"/><rect x="36" y="65" width="52" height="7" rx="3.5" ${R} opacity=".45"/><rect x="60" y="118" width="62" height="26" rx="13" ${W} opacity=".95"/><text x="91" y="136" ${M} font-size="15" font-weight="700" ${R} text-anchor="middle">SQL</text><path d="M128 131h14" stroke="#fff" stroke-width="4" stroke-linecap="round"/><path d="M138 124l8 7-8 7" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="166" cy="112" rx="20" ry="7" ${W}/><path d="M146 112v38a20 7 0 0 0 40 0v-38" ${W} opacity=".9"/><ellipse cx="166" cy="150" rx="20" ry="7" ${W}/><path d="M146 131a20 7 0 0 0 40 0" fill="none" stroke="#C8102E" stroke-width="1.5" opacity=".5"/>`,
+  dplyr: `<g ${W}><rect x="20" y="40" width="62" height="12" rx="3"/><rect x="20" y="58" width="62" height="12" rx="3" opacity=".85"/><rect x="20" y="76" width="62" height="12" rx="3" opacity=".7"/><rect x="20" y="94" width="62" height="12" rx="3" opacity=".55"/><rect x="20" y="112" width="62" height="12" rx="3" opacity=".4"/><rect x="128" y="58" width="52" height="12" rx="3"/><rect x="128" y="76" width="52" height="12" rx="3" opacity=".8"/></g><text x="105" y="92" ${M} font-size="30" font-weight="700" ${W} text-anchor="middle">|&gt;</text><text x="100" y="158" ${M} font-size="15" ${W} text-anchor="middle">group_by()</text><text x="100" y="180" ${M} font-size="15" ${W} text-anchor="middle">summarise()</text>`,
+  apis: `<rect x="18" y="34" width="164" height="34" rx="17" ${W}/><text x="100" y="56" ${M} font-size="12" ${R} text-anchor="middle">api.site/v1?id=7&amp;n=5</text><path d="M46 94h92" stroke="#fff" stroke-width="5" stroke-linecap="round"/><path d="M128 84l12 10-12 10" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M154 126H62" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".8"/><path d="M72 116l-12 10 12 10" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity=".8"/><text x="30" y="100" ${M} font-size="13" ${W} text-anchor="middle">ask</text><text x="170" y="131" ${M} font-size="13" ${W} text-anchor="middle">{ }</text><rect x="68" y="150" width="64" height="30" rx="15" ${W}/><text x="100" y="171" ${M} font-size="17" font-weight="700" ${R} text-anchor="middle">200</text>`,
+  scraping: `<rect x="22" y="30" width="156" height="126" rx="10" ${W}/><rect x="22" y="30" width="156" height="24" rx="10" ${R} opacity=".22"/><circle cx="38" cy="42" r="4" ${R}/><circle cx="52" cy="42" r="4" ${R} opacity=".6"/><circle cx="66" cy="42" r="4" ${R} opacity=".35"/><text x="34" y="78" ${M} font-size="13" fill="#555">&lt;div class="card"&gt;</text><text x="46" y="98" ${M} font-size="13" font-weight="700" ${R}>&lt;h2&gt;title&lt;/h2&gt;</text><text x="34" y="118" ${M} font-size="13" fill="#555">&lt;/div&gt;</text><rect x="40" y="84" width="118" height="20" rx="4" fill="none" stroke="#C8102E" stroke-width="2" stroke-dasharray="5 4"/><path d="M140 110l6 26 7-9 11 2z" ${R} stroke="#fff" stroke-width="2"/><text x="100" y="184" ${M} font-size="14" ${W} text-anchor="middle">html_elements()</text>`,
+  llm: `<rect x="18" y="38" width="74" height="104" rx="8" ${W}/><g ${R}><rect x="28" y="52" width="54" height="6" rx="3" opacity=".55"/><rect x="28" y="66" width="44" height="6" rx="3" opacity=".55"/><rect x="28" y="80" width="54" height="6" rx="3"/><rect x="28" y="94" width="38" height="6" rx="3" opacity=".55"/><rect x="28" y="108" width="50" height="6" rx="3" opacity=".55"/><rect x="28" y="122" width="30" height="6" rx="3" opacity=".55"/></g><path d="M98 90h14" stroke="#fff" stroke-width="4" stroke-linecap="round"/><path d="M108 82l9 8-9 8" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><rect x="122" y="52" width="62" height="76" rx="8" ${W}/><text x="130" y="72" ${M} font-size="10.5" ${R}>name:</text><text x="130" y="92" ${M} font-size="10.5" ${R}>credits:</text><text x="130" y="112" ${M} font-size="10.5" ${R}>prereqs:</text><text x="100" y="176" ${M} font-size="14" ${W} text-anchor="middle">type_object()</text>`,
+  tidy: `<g ${W}>${[0, 1, 2, 3].map((r) => [0, 1, 2, 3].map((c) => `<rect x="${32 + c * 36}" y="${30 + r * 30}" width="30" height="24" rx="5" opacity="${c === 1 || r === 2 ? ".98" : ".38"}"/>`).join("")).join("")}</g><rect x="68" y="90" width="30" height="24" rx="5" ${R}/><text x="83" y="107" ${M} font-size="13" font-weight="700" ${W} text-anchor="middle">1</text><text x="100" y="170" ${M} font-size="15" ${W} text-anchor="middle">separate()</text><text x="100" y="188" font-family="Arial, sans-serif" font-size="11" ${W} text-anchor="middle" opacity=".9">column, row, cell</text>`,
+  interview: `<path d="M22 36h92a10 10 0 0 1 10 10v36a10 10 0 0 1-10 10H60l-18 16V92H32a10 10 0 0 1-10-10V46a10 10 0 0 1 10-10z" ${W}/><text x="72" y="74" font-family="Arial, sans-serif" font-size="30" font-weight="700" ${R} text-anchor="middle">?</text><path d="M178 96H88a10 10 0 0 0-10 10v36a10 10 0 0 0 10 10h52l18 16v-16h10a10 10 0 0 0 10-10v-36a10 10 0 0 0-10-10z" ${W} opacity=".9"/><rect x="92" y="112" width="74" height="7" rx="3.5" ${R} opacity=".7"/><rect x="92" y="127" width="56" height="7" rx="3.5" ${R} opacity=".45"/>`,
+};
+const art = (id) => (ART[id] ? `<div class="art" aria-hidden="true"><svg viewBox="0 0 200 200" role="presentation">${ART[id]}</svg></div>` : "");
+
+// The exams are not cumulative, so each one gets its own review with its own units and progress.
+// Exam 01 is built; the other two are listed so the address stays the same all semester.
+const EXAMS = [
+  { id: "exam01", name: "Exam 01", topic: "Data Acquisition & Transformation", when: "Monday, Oct 12", classes: "Classes 01 to 13", live: true },
+  { id: "exam02", name: "Exam 02", topic: "Data Visualization & Communication", when: "Monday, Nov 16", classes: "Opens before the exam", live: false },
+  { id: "exam03", name: "Exam 03", topic: "Exploratory Data Mining", when: "Date to be announced", classes: "Opens before the exam", live: false },
+];
+
+function landing() {
+  const app = $("#app"); app.innerHTML = "";
+  const core = units.filter((u) => !u.optional), steps = core.flatMap(scored);
+  const nWritten = units.flatMap(scored).filter((x) => x.type !== "code").length, nCode = units.flatMap(scored).filter((x) => x.type === "code").length;
+  const done = steps.filter((x) => saved.done[x.id]).length;
+  const ext = (url, text) => `<a href="${url}" target="_blank" rel="noopener noreferrer">${text}</a>`;
+
+  app.appendChild(el("div", { class: "hero" }, `
+    <div class="eyebrow">ISA 401 &middot; Business Intelligence &amp; Data Visualization &middot; Fall 2026</div>
+    <h1>Review what we did in class by doing it again.</h1>
+    <p>A practice site for each exam. Explain an idea in your own words and see which parts you covered, fix R code that runs in your own browser, and read real output. It is not graded, and there is no sign-in.</p>
+    <div class="cta">
+      <a class="solid" href="#/exam01">${done ? "Continue the Exam 01 review" : "Start the Exam 01 review"} &rarr;</a>
+      <button class="line" type="button" data-go="how">How it works</button>
+      <button class="line" type="button" data-go="credit">Where the idea came from</button>
+    </div>
+    <div class="stats"><span><b>${core.length}</b>units for Exam 01</span><span><b>${nWritten}</b>questions checked as you type</span><span><b>${nCode}</b>R tasks run in your browser</span><span><b>${units.filter((u) => u.recap).length}</b>one-minute recaps</span></div>`));
+
+  const exams = el("div", { class: "grid" });
+  EXAMS.forEach((x) => {
+    exams.appendChild(x.live
+      ? el("a", { class: "exam", href: "#/" + x.id }, `<div class="when">${esc(x.when)}</div><h2 class="name">${esc(x.name)}</h2><div>${esc(x.topic)}</div><div style="font-size:13.5px; color:#585E60; margin-top:4px;">${esc(x.classes)} &middot; ${done} of ${steps.length} done</div><div class="go">Open the review &rarr;</div>`)
+      : el("div", { class: "exam soon" }, `<div class="when">${esc(x.when)}</div><h2 class="name">${esc(x.name)}</h2><div>${esc(x.topic)}</div><div style="font-size:13.5px; margin-top:4px;">${esc(x.classes)}</div>`));
+  });
+  app.appendChild(exams);
+  app.appendChild(el("p", { class: "lede", style: "margin-top:10px; font-size:14.5px;" }, "The exams are not cumulative. Each review covers only its own part of the course, with its own units and its own progress."));
+
+  // ---- what a unit asks of you ----
+  app.appendChild(el("div", { class: "sect", id: "how" }, `<div class="eyebrow2">How it works</div><h2>Every unit has the same four steps</h2><p>Work through the units in any order, and start with the one you are least sure about.</p>`));
+  app.appendChild(el("div", { class: "how4" }, [
+    ["A one-minute recap", "A narrated whiteboard brings the main ideas back. It is a reminder of what we did in class, not a replacement for it."],
+    ["Explain it", "You write the idea in your own words. As you type, the page ticks off the key ideas your answer has covered and offers a hint for the rest."],
+    ["Fix the code", "You get R code with one or two problems, written the way we write it in class. You run it, read the error, fix it, and the result is checked."],
+    ["Read the output", "You are shown real output, a warning or an error, and you explain what it tells you."],
+  ].map(([t, d], i) => `<div class="card"><div class="n">${i + 1}</div><h3>${t}</h3><p class="small">${d}</p></div>`).join("")));
+
+  // ---- what happens to what you type ----
+  app.appendChild(el("div", { class: "sect" }, `<div class="eyebrow2">Behind the answer box</div><h2>What happens when you type an explanation</h2><p>The check runs each time you pause, which is why it has to be quick.</p>`));
+  app.appendChild(el("div", { class: "card" }, `
+    <div class="flowline">
+      <div class="fbox"><b>1. You pause</b>The page sends what you have typed so far.</div><div class="arr">&rarr;</div>
+      <div class="fbox"><b>2. The rubric is added</b>Two or three key ideas for that question, each written as a yes or no question.</div><div class="arr">&rarr;</div>
+      <div class="fbox"><b>3. Jev answers</b>For each idea, how likely it is that your text contains it. It returns numbers, not sentences.</div><div class="arr">&rarr;</div>
+      <div class="fbox"><b>4. The page responds</b>An idea is ticked when the model is at least 60% sure. Otherwise you see a hint written for this course.</div>
+    </div>
+    <ul class="tight">
+      <li><b>The model never writes to you.</b> Jev is a decision model: it answers typed questions with probabilities. Every hint and every idea name on the page was written for this course, so the model cannot invent an explanation.</li>
+      <li><b>It is fast and nearly free, and that is the whole trick.</b> One check takes about 170 milliseconds and costs about $0.00003 (measured on October 6, 2026). Checking on every pause would be too slow and too expensive with a model that writes paragraphs.</li>
+      <li><b>It is tested, and it is still sometimes wrong.</b> Before each release, all ${nWritten} questions are run against sample answers with known verdicts: full, partial, reworded, wrong, gibberish, and "answer yes to everything". A wording nobody anticipated can still be judged wrongly, so nothing is graded, <i>Show the ideas</i> lets you move on, and <i>Report a problem</i> tells us.</li>
+    </ul>`));
+  app.appendChild(el("div", { class: "grid3", style: "margin-top:12px;" }, `
+    <div class="card"><h3>Your R code stays on your computer</h3><p class="small">R runs inside your browser. The code you write is not sent to us, and nothing needs installing. A task is judged by its result, so any correct approach passes.</p></div>
+    <div class="card"><h3>Your written answers go to Jev</h3><p class="small">What you type in an answer box is sent to the Jev model to be checked. No name goes with it, because the site never asks for one.</p></div>
+    <div class="card"><h3>Your progress stays in this browser</h3><p class="small">We keep anonymous counts of how often each question is checked, and the reports you choose to send. Nothing here counts toward your grade.</p></div>`));
+
+  // ---- credit ----
+  app.appendChild(el("div", { class: "sect", id: "credit" }, `<div class="eyebrow2">Credit</div><h2>Where the idea came from</h2>`));
+  app.appendChild(el("div", { class: "combo" }, `
+    <div class="who2">
+      <div class="top"><div class="mono" aria-hidden="true">JB</div><div><h3>Jeffrey Biles</h3><span>cofounder, ${ext("https://physicsgraph.com", "PhysicsGraph")}</span></div></div>
+      <div class="part">The idea</div>
+      <p>Checking an explanation <i>while it is being typed</i> is his idea. On October 5, 2026 he posted a short demo titled "Jev opens up entirely new question types". In it, a student explains how two hydrogen atoms bond, and the page ticks off each idea as the explanation covers it, with a hint for each and no limit on tries.</p>
+      <p>In the replies he gave the reason it works: feedback on every pause needs a check that is fast and almost free, which ordinary language models are not.</p>
+      <a class="handle" href="https://x.com/JeffreyBiles/status/2107211222320021722" target="_blank" rel="noopener noreferrer">@JeffreyBiles on X: see the post</a>
+    </div>
+    <div class="plus" aria-hidden="true">+</div><span class="sr">combined with</span>
+    <div class="who2">
+      <div class="top"><div class="mono dark" aria-hidden="true">FM</div><div><h3>Fadel Megahed</h3><span>${ext("https://miamioh.edu/fsb/directory/?up=/directory/megahefm", "Farmer School of Business")}, Miami University</span></div></div>
+      <div class="part">The building blocks</div>
+      <p>Fadel was already using Jev for a different job. In the ${ext("https://fsb-expertise.vercel.app/", "Farmer School Expertise Finder")}, it rates how well a faculty member's papers match a research question. The post showed that the same kind of model could give a learner feedback.</p>
+      <p>He combined that idea with what the course already had: R running in the browser with webR, the code we wrote in class, and the job postings in ChatISA's Job Scout. He also added a narrated recap for each unit.</p>
+    </div>
+    <div class="equals"><span class="eq" aria-hidden="true">=</span><div><b>This site.</b> Checking as you type is Jeffrey Biles's idea. The combination, and any mistakes in it, are Fadel's.</div></div>`));
+
+  // ---- what makes this possible: one line per thing you do ----
+  app.appendChild(el("div", { class: "sect" }, `<div class="eyebrow2">Under the hood</div><h2>What makes this possible</h2><p>Each thing you do on the site is carried by a tool someone else built. Follow the line down.</p>`));
+  app.appendChild(el("div", { class: "ledger" }, [
+    ["Press play on a recap", "the narration", ext("https://elevenlabs.io", "ElevenLabs"), "Reads a script Fadel approved, and returns the time of every word, which is how the whiteboard draws in step with the voice."],
+    ["Type an explanation", "the check", ext("https://docs.typesafe.ai", "Jev, from TypeSafe AI"), "Answers yes or no questions about your text with probabilities, in a fraction of a second."],
+    ["Press Run", "the R session", ext("https://docs.r-wasm.org/webr/latest/", "webR"), "R compiled to run inside a browser tab, from the r-wasm project. It runs the same packages we use in class, with nothing installed."],
+    ["Try a live scrape or request", "the connection", ext("https://r-universe.dev", "the rOpenSci WebSocket relay"), "Lets R in the browser reach real websites and APIs from the same editor."],
+    ["Open a job tag", "the postings", ext("https://github.com/fmegahed/chatisa", "ChatISA"), "The course's own AI platform. Its Job Scout database supplies the postings behind each skill tag, and its way of running R with network access in the browser is reused here."],
+    ["Read the code in a unit", "the examples", `${ext("https://github.com/fmegahed/isa401a", "the code we wrote in class")}`, `Kept in public repositories for ${ext("https://github.com/fmegahed/isa401a", "Section A")} and ${ext("https://github.com/fmegahed/isa401b", "Section B")}, written with the tidyverse, rvest, httr2 and ellmer packages. A script checks that the review uses only functions we wrote together.`],
+  ].map(([w, sm, name, d]) => `<div class="lrow"><div class="when">${w}<small>${sm}</small></div><div class="spine"></div><div class="what">${name}<br>${d}</div></div>`).join("") +
+    `<div class="lrow base"><div class="when">And the site itself<small>how it was built</small></div><div class="spine"></div><div class="what">${ext("https://claude.com/claude-code", "Claude Code, with Claude Opus 5.5 at high effort")}<br>Fadel directed the work, supplied the class code and the exam history, approved every recap script, and corrected the drafts. The model wrote the pages, the questions, the tests and the whiteboards in one long session on October 6 and 7, 2026. It is hosted on Vercel, and the whiteboards use the Patrick Hand typeface.</div></div>`));
+
+  // ---- limits and links ----
+  app.appendChild(el("div", { class: "grid3", style: "margin-top:22px;" }, `
+    <div class="card"><h3>What this is not</h3><p class="small">It is not an assessment, and it has not been studied for its effect on learning. It does not replace the practice exam on Canvas, your class markdowns, or the slides.</p></div>
+    <div class="card"><h3>Course materials</h3><p class="small">${ext("https://github.com/fmegahed/isa401", "github.com/fmegahed/isa401")} holds the schedule and every slide deck. Each unit links its own slides and the code from class.</p></div>
+    <div class="card"><h3>Questions and corrections</h3><p class="small">${ext("https://miamioh.edu/fsb/directory/?up=/directory/megahefm", "Fadel M. Megahed")}, Farmer School of Business, Miami University. <a href="mailto:fmegahed@miamioh.edu">fmegahed@miamioh.edu</a></p></div>`));
+
+  app.querySelectorAll("[data-go]").forEach((b) => b.addEventListener("click", () => document.getElementById(b.dataset.go).scrollIntoView({ behavior: "smooth", block: "start" })));
+  window.scrollTo(0, 0);
+}
+
+function examHome() {
+  const app = $("#app"); app.innerHTML = "";
+  app.appendChild(el("a", { class: "back", href: "#/" }, "&larr; ISA 401 Review"));
+  app.appendChild(el("h1", {}, "Exam 01 Review"));
+  app.appendChild(el("p", { class: "lede" }, "Classes 01 to 13: getting data and making it usable. One unit for each part of the course so far. Each unit opens with a short recap, then asks you to explain the idea in your own words, fix broken R code, and read an output. Work in any order."));
+  app.appendChild(el("div", { class: "card note" }, "<b>Read this first.</b> This is practice, not a grade, and it does not replace the practice exam on Canvas. Your written answers are checked by an AI model that looks for the key ideas; it is usually right and sometimes wrong. If a check looks wrong, use <i>Show the ideas</i> to move on and <i>Report a problem</i> so it can be fixed. No name is collected, and your progress is saved only in this browser."));
+  const grid = el("div", { class: "grid" });
+  units.forEach((u) => {
+    const s = scored(u), d = s.filter((x) => saved.done[x.id]).length;
+    grid.appendChild(el("a", { class: "unit withart" + (s.length && d === s.length ? " alldone" : ""), href: "#/exam01/" + u.id }, `${art(u.id)}<div class="txt"><div class="k">${esc(u.classes)} ${u.optional ? '<span class="pill opt">Optional</span>' : ""}</div><h2 class="t">${esc(u.title)}</h2><div class="b">${esc(u.blurb)}</div><div class="meter"><i style="width:${s.length ? Math.round(100 * d / s.length) : 0}%"></i></div><div style="font-size:12.5px; color:#585E60; margin-top:4px;">${s.length && d === s.length ? '<span class="complete">&#10003; complete</span>' : `${d} of ${s.length} done`}</div></div>`));
+  });
+  app.appendChild(grid);
+  const resetRow = el("div", { class: "resetrow" }, "Your progress and your answers are saved in this browser only. ");
+  const reset = el("button", { class: "linkbtn", type: "button" }, "Clear my progress");
+  reset.addEventListener("click", () => {
+    if (reset.dataset.armed !== "1") { reset.dataset.armed = "1"; reset.textContent = "Click again to clear everything you have done here"; return; }
+    saved = { done: {}, text: {}, code: {}, speed: saved.speed || 1 }; save(); examHome(); paintProgress(); $("#app").focus({ preventScroll: true });
+  });
+  resetRow.appendChild(reset); app.appendChild(resetRow);
+  window.scrollTo(0, 0);
+}
+
+function unitPage(u) {
+  const app = $("#app"); app.innerHTML = "";
+  app.appendChild(el("a", { class: "back", href: "#/exam01" }, "&larr; Exam 01 units"));
+  app.appendChild(el("div", { class: "unithead" }, `${art(u.id)}<div><h1>${esc(u.title)}${u.optional ? ' <span class="pill opt">Optional</span>' : ""}</h1><p class="lede" style="margin:0;">${esc(u.classes)}. ${esc(u.blurb)}</p></div>`));
+  const L = u.links || {};
+  if ((L.slides || []).length || (L.code || []).length) {
+    const link = (url, text) => `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(text)}</a>`;
+    const slides = (L.slides || []).map((x) => link(x.url, x.label)).join(" &middot; ");
+    const code = (L.code || []).map((x) => `<code>${esc(x.label)}</code> (${link(x.a, "Section A")}${x.b ? ", " + link(x.b, "Section B") : ""})`).join(" &middot; ");
+    app.appendChild(el("div", { class: "card refs" }, (slides ? `<div><b>Slides:</b> ${slides}</div>` : "") + (code ? `<div><b>Code we wrote in class:</b> ${code}</div>` : "")));
+  }
+  if (u.recap) { const recap = el("div", { class: "card step recap" }); app.appendChild(recap); recapCard(u, recap); }
+  u.steps.forEach((step) => {
+    const card = el("div", { class: "card step " + step.type + (saved.done[step.id] ? " done" : "") });
+    card.appendChild(el("div", { class: "kind" }, KIND[step.type]));
+    card.appendChild(el("span", { class: "tick" }, "&#10003; done"));
+    card.appendChild(el("h2", {}, esc(step.title)));
+    if (step.type === "read") card.appendChild(el("div", {}, step.html));
+    else if (step.type === "code") codeStep(step, card);
+    else explainStep(step, card);
+    if (step.type !== "read") { const j = jobsRow(step.tags || []); if (j) card.appendChild(j); }
+    app.appendChild(card);
+  });
+  const i = units.indexOf(u), row = el("div", { class: "nextrow" });
+  row.appendChild(i > 0 ? el("a", { class: "btn ghost", href: "#/exam01/" + units[i - 1].id, style: "text-decoration:none" }, "&larr; " + esc(units[i - 1].title)) : el("span"));
+  row.appendChild(i < units.length - 1 ? el("a", { class: "btn", href: "#/exam01/" + units[i + 1].id, style: "text-decoration:none" }, esc(units[i + 1].title) + " &rarr;") : el("a", { class: "btn", href: "#/exam01", style: "text-decoration:none" }, "All units"));
+  app.appendChild(row);
+  colourCode(app); scrollable(app);
+  window.scrollTo(0, 0);
+}
+
+let routed = false;
+document.getElementById("skip").addEventListener("click", (e) => { e.preventDefault(); $("#app").focus(); });
+function route() {
+  if (nowPlaying) { nowPlaying.pause(); nowPlaying = null; }   // leaving a unit stops its recap
+  // #/ is the landing page, #/exam01 the list of units, #/exam01/<unit> one unit.
+  const parts = location.hash.replace(/^#\/?/, "").split("/").filter(Boolean);
+  const inExam = parts[0] === "exam01";
+  $("#sub").textContent = inExam ? "Exam 01: Classes 01 to 13" : "Practice for each exam";
+  $("#prog").style.display = inExam ? "" : "none";
+  const old = units.find((x) => x.id === parts[0]);          // links from before the landing page existed
+  if (old) { location.replace("#/exam01/" + old.id); return; }
+  const u = inExam ? units.find((x) => x.id === parts[1]) : null;
+  if (u) unitPage(u); else if (inExam) examHome(); else landing();
+  document.title = u ? `${u.title} | Exam 01 Review | ISA 401` : inExam ? "Exam 01 Review | ISA 401" : "ISA 401 Review: practice for each exam";
+  if (routed) $("#app").focus({ preventScroll: true });   // after the first page, tell keyboard and screen-reader users the page changed
+  routed = true;
+  paintProgress();
+}
+
+try {
+  [units, jobs] = await Promise.all([fetch("units.json").then((r) => r.json()), fetch("jobs.json").then((r) => r.json())]);
+  window.addEventListener("hashchange", route);
+  route();
+} catch (e) {
+  $("#app").innerHTML = '<div class="card note"><b>The review could not load.</b> Check your connection and reload the page.</div>';
+}
+</script>
+</body>
+</html>

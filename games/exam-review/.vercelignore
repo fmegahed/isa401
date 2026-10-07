@@ -1,0 +1,15 @@
+dev
+tests
+content
+make_jobs.py
+build.mjs
+.env*
+README.md
+make_data.R
+make_outputs.R
+recap/scripts.md
+recap/voice_sample.mp3
+recap/voice_sample_speed_0.9.mp3
+recap/voice_sample_speed_0.8.mp3
+recap/voice_sample_speed_0.7.mp3
+make_recap.mjs
