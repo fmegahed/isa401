@@ -1,0 +1,679 @@
+Rank,IPEDS UnitID2,Institution Name,City,State,NCSE Respondent Type,IPEDS Institution Sector2,IPEDS Carnegie Classification3,IPEDS HBCU Status4,"FY25 Total Endowment Market Value (in $1,000s)","FY24 Total Endowment Market Value (in $1,000s)",Change in Total Endowment Market Value (%)1
+1,166027,Harvard University,Cambridge,MA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,55670339,51977208,7.11
+2,130794,Yale University,New Haven,CT,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,44149800,41441700,6.53
+3,243744,Stanford University,Stanford,CA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,40786000,37631000,8.38
+4,186131,The Trustees of Princeton University,Princeton,NJ,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,36415027,34052327,6.94
+5,166683,Massachusetts Institute of Technology,Cambridge,MA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,27366239,24572716,11.37
+6,229020,The University of Texas System^^,Austin,TX,Public college university or system fund,State System Office,N/A,N/A,27167821,24741493,9.81
+7,215062,The University of Pennsylvania,Philadelphia,PA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,24808028,22347945,11.01
+8,228732,The Texas A&M University System & Related Foundations*,College Station,TX,Public college university or system fund,State System Office,Doctorate,Non-HBCU,22229032,20381028,9.07
+9,170976,University of Michigan,Ann Arbor,MI,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,21200625,19166266,10.61
+10,124557,The Regents of the University of California,Oakland,CA,Public college university or system fund,State System Office,N/A,Non-HBCU,20147056,19103077,5.46
+11,152080,University of Notre Dame,Notre Dame,IN,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,20092078,17897379,12.26
+12,190150,Columbia University in the City of New York,New York,NY,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,15917490,14782492,7.68
+13,147767,Northwestern University,Evanston,IL,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,15167620,14209710,6.74
+14,162928,Johns Hopkins University,Baltimore,MD,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,13734964,13063073,5.14
+15,179867,Washington University in St. Louis,St Louis,MO,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,13298963,11981486,11
+16,198419,Duke University,Durham,NC,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,12318455,11889994,3.6
+17,139658,Emory University,Atlanta,GA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,12000436,11043532,8.66
+18,190415,Cornell University,New York,NY,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,11748175,10658170,10.23
+19,234076,University of Virginia,Charlottesville,VA,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,11229839,10217170,9.91
+20,221999,Vanderbilt University,Nashville,TN,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,10856983,10247727,5.95
+21,144050,University of Chicago,Chicago,IL,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,10621048,10104952,5.11
+22,123961,University of Southern California,Los Angeles,CA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,9028352,8145120,10.84
+23,182670,Dartmouth College,Hanover,NH,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,8959701,8273316,8.3
+24,204796,The Ohio State University,Columbus,OH,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,8619921,7931714,8.68
+25,227757,Rice University,Houston,TX,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,8496618,8063340,5.37
+26,217156,Brown University,Providence,RI,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,7278252,6718785,8.33
+27,193900,New York University,New York,NY,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,7276000,6546000,11.15
+28,228778,The University of Texas at Austin^^,Austin,TX,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,6487163,6076638,6.76
+29,174066,University of Minnesota & Foundations**,Minneapolis,MN,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,6448622,5935292,8.65
+30,199120,University of North Carolina at Chapel Hill,Chapel Hill,NC,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,6222201,5728307,8.62
+31,215293,University of Pittsburgh,Pittsburgh,PA,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,6153502,5804260,6.02
+32,214777,The Pennsylvania State University,University Park,PA,Public college university or system fund,NA,Doctorate,Non-HBCU,5061290,4768625,6.14
+33,240444,University of Wisconsin Foundation,Madison,WI,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,4920667,4304809,14.31
+34,110662,UCLA Foundation,Los Angeles,CA,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,4766818,4298619,10.89
+35,171100,Michigan State University,East Lansing,MI,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,4606000,4419000,4.23
+36,243780,Purdue University,West Lafayette,IN,Combined endowment/foundation,4-Year Public College/University,Doctorate,Non-HBCU,4437557,4106075,8.07
+37,110404,California Institute of Technology,Pasadena,CA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,4317200,4144800,4.16
+38,211440,Carnegie Mellon University+,Pittsburgh,PA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,4287143,3997096,7.26
+39,164924,Boston College,Chestnut Hill,MA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,4236200,3777900,12.13
+40,151351,Indiana University Foundation,Bloomington,IN,Combined endowment/foundation,4-Year Public College/University,Doctorate,Non-HBCU,4053279,3820884,6.08
+41,164988,Boston University,Boston,MA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,4016142,3536713,13.56
+42,131496,Georgetown University,Washington,DC,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,3951364,3638443,8.6
+43,168342,Williams College,Williamstown,MA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,3931247,3655558,7.54
+44,164465,Amherst College,Amherst,MA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,3898671,3549576,9.83
+45,145637,University of Illinois & Foundations***,Urbana,IL,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,3797808,3688638,2.96
+46,153658,University of Iowa and Foundations,Iowa City,IA,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,3773673,3501856,7.76
+47,139755,Georgia Institute of Technology and Related Foundations,Atlanta,GA,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,3507395,3166993,10.75
+48,233374,University of Richmond,Richmond,VA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,3493990,3245090,7.67
+49,110635,University of California Berkeley Foundation,Berkeley,CA,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,3394176,3112308,9.06
+50,110699,University of California San Francisco,San Francisco,CA,Public college university or system fund,4-Year Public College/University,Other Graduate/Professional,Non-HBCU,3291359,2948456,11.63
+51,195030,University of Rochester,Rochester,NY,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,3243682,2989014,8.52
+52,234030,Virginia Commonwealth University and Affiliated Entities,Richmond,VA,Combined endowment/foundation,4-Year Public College/University,Doctorate,Non-HBCU,3228517,2885707,11.88
+53,121345,Pomona College,Claremont,CA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,3220513,2991629,7.65
+54,168218,Wellesley College,Wellesley,MA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,3185271,3005052,6
+55,229115,Texas Tech University,Lubbock,TX,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,3069511,2903521,5.72
+56,N/A,University of Toronto,Toronto,ON,Canadian College or University,NA,N/A,N/A,3034112,2755805,10.1
+57,161004,Bowdoin College,Brunswick,ME,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,2915143,2582046,12.9
+58,228875,Texas Christian University,Fort Worth,TX,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,2854000,2676000,6.65
+59,153384,Grinnell College,Grinnell,IA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,2847381,2670846,6.61
+60,216287,Swarthmore College,Swarthmore,PA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,2842685,2728473,4.19
+61,131469,The George Washington University,Washington,DC,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,2812559,2639708,6.55
+62,181464,University of Nebraska,Lincoln,NE,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,2716285,2527253,7.48
+63,167835,Smith College,Northampton,MA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,2709530,2564123,5.67
+64,168148,Tufts University,Medford,MA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,2707042,2533755,6.84
+65,134130,University of Florida Foundation Inc.,Gainesville,FL,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,2688583,2453952,9.56
+66,155317,The Kansas University Endowment Association,Lawrence,KS,Combined endowment/foundation,4-Year Public College/University,Doctorate,Non-HBCU,2687363,2525481,6.41
+67,195049,The Rockefeller University,New York,NY,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Other Graduate/Professional,Non-HBCU,2607903,2420101,7.76
+68,100733,The Board of Trustees of The University of Alabama,Tuscaloosa,AL,Public college university or system fund,State System Office,N/A,Non-HBCU,2587649,2378555,8.79
+69,178439,University of Missouri System,Columbia,MO,Public college university or system fund,State System Office,N/A,Non-HBCU,2551556,2411452,5.81
+70,199193,North Carolina State University,Raleigh,NC,Combined endowment/foundation,4-Year Public College/University,Doctorate,Non-HBCU,2541025,2219516,14.49
+71,201645,Case Western Reserve University,Cleveland,OH,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,2520057,2396658,5.15
+72,228635,The University of Texas Southwestern Medical Center^^,Dallas,TX,Public college university or system fund,4-Year Public College/University,Other Graduate/Professional,Non-HBCU,2472028,2320723,6.52
+73,128300,University of Colorado Foundation,Denver,CO,Institutionally-related foundation (IRF),State System Office,N/A,Non-HBCU,2471684,2245310,10.08
+74,160755,Tulane University,New Orleans,LA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,2467991,2274166,8.52
+75,164146,The University System of Maryland Foundation,Adelphi,MD,Public college university or system fund,State System Office,N/A,Non-HBCU,2459804,2291040,7.37
+76,186380,Rutgers The State University of New Jersey,New Brunswick,NJ,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,2350925,2180235,7.83
+77,228246,Southern Methodist University,Dallas,TX,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,2339670,2122236,10.25
+78,196413,Syracuse University,Syracuse,NY,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,2270377,2097426,8.25
+79,234207,Washington and Lee University,Lexington,VA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,2192230,2043225,7.29
+80,139959,The University of Georgia and Related Foundations,Athens,GA,Combined endowment/foundation,4-Year Public College/University,Doctorate,Non-HBCU,2182999,2055797,6.19
+81,223232,Baylor University,Waco,TX,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,2180227,2094406,4.1
+82,157085,University of Kentucky,Lexington,KY,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,2172651,1978796,9.8
+83,199847,Wake Forest University,Winston-Salem,NC,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,2149689,1997300,7.63
+84,228459,Texas State University System¶,Austin,TX,Public college university or system fund,4-Year Public College/University,Master's,Non-HBCU,2114538,1407321,50.25
+85,233921,Virginia Tech Foundation,Richmond,VA,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,2093032,1953928,7.12
+86,230764,The University of Utah,Salt Lake City,UT,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,2071248,1860128,11.35
+87,130943,University of Delaware,Newark,DE,Private college/university endowment or Other non-profit institution,4-Year Public College/University,Doctorate,Non-HBCU,2056328,1929793,6.56
+88,179159,Saint Louis University,Saint Louis,MO,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,2018472,1879430,7.4
+89,213543,Lehigh University,Bethlehem,PA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,2002530,1872716,6.93
+90,416801,The University of Texas M.D. Anderson Cancer Center^^,Houston,TX,Public college university or system fund,4-Year Public College/University,Baccalaureate,Non-HBCU,1961260,1847198,6.17
+91,229267,Trinity University,San Antonio,TX,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,1938800,1833800,5.73
+92,239169,Medical College of Wisconsin,Milwaukee,WI,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Other Graduate/Professional,Non-HBCU,1936723,1797835,7.73
+93,492263,The University of Tennessee System,Knoxville,TN,Public college university or system fund,State System Office,N/A,Non-HBCU,1915000,1766000,8.44
+94,153603,Iowa State University,Ames,IA,Combined endowment/foundation,4-Year Public College/University,Doctorate,Non-HBCU,1914589,1717452,11.48
+95,209551,University of Oregon Foundation,Eugene,OR,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,1843233,1650549,11.67
+96,156295,Berea College,Berea,KY,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,1831017,1648858,11.05
+97,106397,University of Arkansas at Fayetteville and Foundation,Fayetteville,AR,Public college university or system fund,4-Year Public College/University,N/A,Non-HBCU,1814659,1665643,8.95
+98,166665,University of Massachusetts Foundation,Newton,MA,Institutionally-related foundation (IRF),State System Office,N/A,Non-HBCU,1801260,1546918,16.44
+99,110680,University of California San Diego,La Jolla,CA,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,1792380,1588912,12.81
+100,201885,University of Cincinnati,Cincinnati,OH,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,1770904,1448050,22.3
+101,104151,Arizona State University,Tempe,AZ,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,1757918,1592168,10.41
+102,N/A,McGill University,Montreal,QC,Canadian College or University,NA,N/A,N/A,1745940,1578165,10.63
+103,230959,Middlebury College,Middlebury,VT,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,1729844,1597984,8.25
+104,135726,University of Miami§,Coral Gables,FL,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,1712788,1589857,7.73
+105,122931,Santa Clara University,Santa Clara,CA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,1668622,1555250,7.29
+106,130697,Wesleyan University,Middletown,CT,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,1641277,1583306,3.66
+107,143048,School of the Art Institute of Chicago,Chicago,IL,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,1597885,1501447,6.42
+108,231624,William & Mary and Foundations,Williamsburg,VA,Combined endowment/foundation,4-Year Public College/University,Doctorate,Non-HBCU,1594773,1454416,9.65
+109,207388,Oklahoma State University Foundation,Edmond,OK,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,1564585,1481573,5.6
+110,186122,Princeton Theological Seminary,Princeton,NJ,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Other Graduate/Professional,Non-HBCU,1563206,1453590,7.54
+111,104179,The University of Arizona and the University of Arizona Foundation,Tucson,AZ,Combined endowment/foundation,4-Year Public College/University,Doctorate,Non-HBCU,1500728,1387345,8.17
+112,191515,Hamilton College,Clinton,NY,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,1499899,1364927,9.89
+113,204501,Oberlin College,Oberlin,OH,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,1480794,1270465,16.56
+114,216597,Villanova University,Villanova,PA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,1472111,1335361,10.24
+115,139144,Berry College,Mount Berry,GA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,1469124,1370773,7.17
+116,195003,Rochester Institute of Technology,Rochester,NY,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,1462667,1372505,6.57
+117,198385,Davidson College,Davidson,NC,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,1460452,1374738,6.23
+118,117636,Loma Linda University,Loma Linda,CA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,1441888,1345998,7.12
+119,223223,Baylor College of Medicine,Houston,TX,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Other Graduate/Professional,Non-HBCU,1426937,1481498,-3.68
+120,N/A,University of Alberta,Edmonton,AB,Canadian College or University,N/A,N/A,N/A,1404759,1331794,5.48
+121,197133,Vassar College,Poughkeepsie,NY,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,1393806,1300989,7.13
+122,N/A,McMaster University,Hamilton,ON,Canadian College or University,N/A,N/A,N/A,1362247,1205488,13
+123,165015,Brandeis University,Waltham,MA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,1357267,1264908,7.3
+124,112260,Claremont McKenna College,Claremont,CA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,1353930,1240369,9.16
+125,N/A,Queen's University,Kingston,ON,Canadian College or University,N/A,N/A,N/A,1348520,1215363,10.96
+126,190099,Colgate University,Hamilton,NY,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,1344469,1254352,7.18
+127,211273,Bryn Mawr College,Bryn Mawr,PA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,1344138,1211095,10.99
+128,207971,University of Tulsa,Tulsa,OK,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,1335270,1284525,3.95
+129,173258,Carleton College,Northfield,MN,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,1334430,1237336,7.85
+130,N/A,Oklahoma State Regents for Higher Education,Oklahoma City,OK,Public college university or system fund,NA,N/A,N/A,1306480,1213001,7.71
+131,100858,Auburn University and Foundation,Auburn,AL,Combined endowment/foundation,4-Year Public College/University,Doctorate,Non-HBCU,1306266,1187392,10.01
+132,209490,Oregon Health and Science University Foundation,Portland,OR,Combined endowment/foundation,4-Year Public College/University,Doctorate,Non-HBCU,1302562,1253372,3.92
+133,121150,Pepperdine University,Malibu,CA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,1293290,1295880,-0.2
+134,211291,Bucknell University,Lewisburg,PA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,1263318,1167275,8.23
+135,161086,Colby College,Waterville,ME,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,1252278,1160160,7.94
+136,217882,Clemson University Foundation,Clemson,SC,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,1240332,1124156,10.33
+137,159638,Louisiana State University Systemi,Baton Rouge,LA,Public college university or system fund,NA,NA,N/A,1238022,1138256,8.76
+138,229027,The University of Texas at San Antonio^^,San Antonio,TX,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,1210846,1132976,6.87
+139,166124,College of the Holy Cross,Worcester,MA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,1207691,1109264,8.87
+140,213385,Lafayette College,Easton,PA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,1200555,1124647,6.75
+141,166939,Mount Holyoke College,South Hadley,MA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,1180265,1101548,7.15
+142,146719,Loyola University of Chicago,Chicago,IL,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,1176972,1060033,11.03
+143,196088,University at Buffalo Foundation Inc.,Buffalo,NY,Combined endowment/foundation,4-Year Public College/University,Doctorate,Non-HBCU,1172387,1059489,10.66
+144,144740,DePaul University,Chicago,IL,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,1153126,1019343,13.12
+145,127060,University of Denver,Denver,CO,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,1152779,1088972,5.86
+146,218663,University of South Carolina and Affiliated Foundations,Columbia,SC,Combined endowment/foundation,4-Year Public College/University,Doctorate,Non-HBCU,1145113,1044373,9.65
+147,212054,Drexel University,Philadelphia,PA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,1131987,1069294,5.86
+148,239105,Marquette University,Milwaukee,WI,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,1131419,996986,13.48
+149,131159,American University,Washington,DC,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,1123330,1050811,6.9
+150,131520,Howard University,Washington,DC,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,HBCU,1119926,1032496,8.47
+151,134097,Florida State University Foundation Inc.,Tallahassee,FL,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,1110501,1029931,7.82
+152,202523,Denison University,Granville,OH,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,1104366,1039281,6.26
+153,229300,The University of Texas Health Science Center at Houston^^,Houston,TX,Public college university or system fund,4-Year Public College/University,Other Graduate/Professional,Non-HBCU,1095010,1006090,8.84
+154,204024,Miami University,Oxford,OH,Public college university or system fund,4-Year Public College/University,Master's,Non-HBCU,1089519,813323,33.96
+155,157289,University of Louisville Foundation,Louisville,KY,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,1073797,1008030,6.52
+156,183327,University System of New Hampshire & University of New Hampshire Foundation,Concord,NH,Public college university or system fund,State System Office,Doctorate,Non-HBCU,1062953,981482,8.3
+157,126678,Colorado College,Colorado Springs,CO,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,1061013,989703,7.21
+158,N/A,The University of Western Ontario,London,ON,Canadian College or University,N/A,N/A,N/A,1055683,945424,11.66
+159,191241,Fordham University,Bronx,NY,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,1054037,1024789,2.85
+160,216339,Temple University,Philadelphia,PA,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,1047324,926607,13.03
+161,110653,University of California Irvine Foundation,Irvine,CA,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,1028000,899357,14.3
+162,194824,Rensselaer Polytechnic Institute,Troy,NY,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,1023796,1000295,2.35
+163,209542,Oregon State University Foundation,Corvallis,OR,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,1011494,896062,12.88
+164,176017,University of Mississippi Foundation,Oxford,MS,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,1000326,924527,8.2
+165,176080,Mississippi State University & Foundation,Mississippi State,MS,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,1000028,894682,11.77
+166,N/A,Carnegie Institution of Washington,Washington,DC,Private college/university endowment or Other non-profit institution,N/A,N/A,N/A,985502,978552,0.71
+167,148016,The Principia Corporation,Elsah,IL,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,963362,956223,0.75
+168,191649,Hofstra University,Hempstead,NY,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,955784,884209,8.09
+169,202480,University of Dayton,Dayton,OH,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,938712,866738,8.3
+170,111948,Chapman University,Orange,CA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,929386,810601,14.65
+171,148511,Rush University Medical Center,Chicago,IL,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Other Graduate/Professional,Non-HBCU,929061,852241,9.01
+172,173902,Macalester College,Saint Paul,MN,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,921588,883022,4.37
+173,143853,Midwestern University,Downers Grove,IL,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Other Graduate/Professional,Non-HBCU,916641,826884,10.85
+174,N/A,Medical College of Virginia Foundation,Richmond,VA,Institutionally-related foundation (IRF),N/A,N/A,N/A,903032,821935,9.87
+175,155399,Kansas State University Foundation,Manhattan,KS,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,902200,849000,6.27
+176,130590,Trinity College,Hartford,CT,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,893204,834724,7.01
+177,228787,The University of Texas at Dallas^^,Dallas,TX,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,892724,834404,6.99
+178,N/A,American University of Beirut,New York,NY,Private college/university endowment or Other non-profit institution,N/A,N/A,N/A,891750,843928,5.67
+179,238032,West Virginia University Foundation Inc.,Morgantown,WV,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,889024,864939,2.78
+180,204857,Ohio University and The Ohio University Foundation,Athens,OH,Combined endowment/foundation,4-Year Public College/University,Doctorate,Non-HBCU,886009,779546,13.66
+181,222178,Abilene Christian University,Abilene,TX,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,885878,812215,9.07
+182,218070,Furman University,Greenville,SC,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,885535,827737,6.98
+183,174844,St. Olaf College,Northfield,MN,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,881565,799299,10.29
+184,240727,University of Wyoming Foundation,Laramie,WY,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,879531,810287,8.55
+185,228653,The University of Texas Medical Branch at Galveston^^,Galveston,TX,Public college university or system fund,4-Year Public College/University,Other Graduate/Professional,Non-HBCU,877945,829911,5.79
+186,209922,Reed College,Portland,OR,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,876830,814452,7.66
+187,181002,Creighton University,Omaha,NE,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,866636,782588,10.74
+188,110644,UC Davis Foundation,Davis,CA,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,865367,770401,12.33
+189,195809,St. John's University New Yorkx,Jamaica,NY,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,856293,819408,4.5
+190,172699,Western Michigan University Foundation,Kalamazoo,MI,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,854415,760261,12.38
+191,237057,Whitman College,Walla Walla,WA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,847599,785978,7.84
+192,234085,Virginia Military Institute,Lexington,VA,Public college university or system fund,4-Year Public College/University,Baccalaureate,Non-HBCU,835010,775203,7.71
+193,110705,University of California Santa Barbara,Santa Barbara,CA,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,830353,665899,24.7
+194,164580,Babson College,Wellesley,MA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,811466,739532,9.73
+195,236939,Washington State University Foundation,Pullman,WA,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,800282,728826,9.8
+196,117946,Loyola Marymount University,Los Angeles,CA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,793492,722705,9.79
+197,N/A,National Academy of Sciences,Charlottesville,VA,Private college/university endowment or Other non-profit institution,N/A,N/A,N/A,790646,730085,8.3
+198,227863,University of St Thomas,Saint Paul,MN,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,788397,697445,13.04
+199,137351,University of South Florida,Tampa,FL,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,768035,708333,8.43
+200,122436,University of San Diego,San Diego,CA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,766650,714021,7.37
+201,187985,University of New Mexico Foundation,Albuquerque,NM,Combined endowment/foundation,4-Year Public College/University,Doctorate,Non-HBCU,764993,702521,8.89
+202,212911,Haverford College,Haverford,PA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,755248,706504,6.9
+203,N/A,Whitehead Institute for Biomedical Research,Cambridge,MA,Private college/university endowment or Other non-profit institution,N/A,N/A,N/A,750335,715839,4.82
+204,N/A,Dalhousie University,Halifax,NS,Canadian College or University,N/A,N/A,N/A,747301,694218,7.65
+205,130226,Quinnipiac University,Hamden,CT,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,744821,741710,0.42
+206,212106,Duquesne University,Pittsburgh,PA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,739918,631031,17.26
+207,168421,Worcester Polytechnic Institute,Worcester,MA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,733903,682734,7.49
+208,120883,University of the Pacific,Stockton,CA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,726502,643177,12.96
+209,196097,Stony Brook University New York,Stony Brook,NY,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,724388,520986,39.04
+210,197708,Yeshiva University,New York,NY,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,714153,673493,6.04
+211,178697,College of the Ozarks,Point Lookout,MO,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,703728,651476,8.02
+212,120254,Occidental College,Los Angeles,CA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,698372,654297,6.74
+213,N/A,Lebanese American University,New York,NY,Private college/university endowment or Other non-profit institution,N/A,N/A,N/A,696340,679038,2.55
+214,206084,University of Toledo Foundation,Toledo,OH,Combined endowment/foundation,4-Year Public College/University,Doctorate,Non-HBCU,689086,625086,10.24
+215,203535,Kenyon College,Gambier,OH,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,680015,626603,8.52
+216,212009,Dickinson College,Carlisle,PA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,675209,627548,7.59
+217,149781,Wheaton College,Wheaton,IL,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,672169,610123,10.17
+218,240435,Universities of Wisconsin,Madison,WI,Public college university or system fund,State System Office,N/A,Non-HBCU,671352,701799,-4.34
+219,129020,University of Connecticut,Storrs,CT,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,668561,634309,5.4
+220,126818,Colorado State University Foundation,Fort Collins,CO,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,667537,623615,7.04
+221,182290,University of Nevada Reno°,Reno,NV,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,640286,560059,14.32
+222,172644,Wayne State University Foundation,Detroit,MI,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,636027,571968,11.2
+223,141963,University of Hawaii Foundation,Honolulu,HI,Public college university or system fund,State System Office,N/A,Non-HBCU,632103,566998,11.48
+224,230728,Utah State University,Logan,UT,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,616738,614965,0.29
+225,218335,Medical University of South Carolina,Charleston,SC,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,594390,534532,11.2
+226,N/A,West Point Association of Graduates,West Point,NY,Combined endowment/foundation,N/A,N/A,N/A,590598,518211,13.97
+227,141060,Spelman College,Atlanta,GA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,HBCU,566970,506709,11.89
+228,196468,Teachers College Columbia University,New York,NY,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Other Graduate/Professional,Non-HBCU,564053,526056,7.22
+229,189097,Barnard College,New York,NY,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,557120,503444,10.66
+230,123165,Scripps College,Claremont,CA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,536115,503038,6.58
+231,200332,North Dakota State University Foundation,Fargo,ND,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,528016,486207,8.6
+232,195526,Skidmore College,Saratoga Springs,NY,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,527535,486718,8.39
+233,193654,The New School,New York,NY,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,524084,486977,7.62
+234,221519,The University of the South,Sewanee,TN,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,517640,499944,3.54
+235,218973,Wofford College,Spartanburg,SC,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,512088,458178,11.77
+236,128902,Connecticut College,New London,CT,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,510862,482358,5.91
+237,192448,Long Island University,Brookville,NY,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,510153,462441,10.32
+238,136950,Rollins College,Winter Park,FL,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,509198,483529,5.31
+239,129242,Fairfield University,Fairfield,CT,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,502662,458824,9.55
+240,165334,Clark University,Worcester,MA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,501327,486846,2.97
+241,236328,University of Puget Sound,Tacoma,WA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,499896,471468,6.03
+242,115409,Harvey Mudd College,Claremont,CA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,499658,454550,9.92
+243,235316,Gonzaga University,Spokane,WA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,498806,451883,10.38
+244,122409,The Campanile Foundation,San Diego,CA,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,488793,459561,6.36
+245,184782,Rowan University,Glassboro,NJ,Combined endowment/foundation,4-Year Public College/University,Doctorate,Non-HBCU,487257,440327,10.66
+246,160977,Bates College,Lewiston,ME,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,485312,446805,8.62
+247,215770,Saint Joseph's University,Philadelphia,PA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,484206,467754,3.52
+248,142285,University of Idaho Foundation Inc.,Moscow,ID,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,473957,432853,9.5
+249,200280,University of North Dakota Alumni Association & Foundation,Grand Forks,ND,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,471396,422057,11.69
+250,199148,University of North Carolina at Greensboro,Greensboro,NC,Combined endowment/foundation,4-Year Public College/University,Doctorate,Non-HBCU,471044,430165,9.5
+251,182281,University of Nevada Las Vegas,Las Vegas,NV,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,470847,423832,11.09
+252,N/A,University of South Alabama Foundation,Mobile,AL,Combined endowment/foundation,N/A,N/A,N/A,468874,454543,3.15
+253,N/A,The Brookings Institution,Washington,DC,Private college/university endowment or Other non-profit institution,N/A,N/A,N/A,467738,445254,5.05
+254,152673,Wabash College,Crawfordsville,IN,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,466964,428983,8.85
+255,164748,Berklee College of Music,Boston,MA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,465524,426423,9.17
+256,217493,Rhode Island School of Design,Providence,RI,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,465479,425645,9.36
+257,126775,Colorado School of Mines Foundation,Golden,CO,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,463280,421278,9.97
+258,217864,The Citadel,Charleston,SC,Public college university or system fund,4-Year Public College/University,Master's,Non-HBCU,461908,419792,10.03
+259,N/A,Michigan State University Research Foundation,East Lansing,MI,Institutionally-related foundation (IRF),N/A,N/A,N/A,459549,468671,-1.95
+260,212674,Gettysburg College,Gettysburg,PA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,459198,423841,8.34
+261,239017,Lawrence University,Appleton,WI,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,456586,448965,1.7
+262,161457,University of New England,Biddeford,ME,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,451112,346372,30.24
+263,221351,Rhodes College,Memphis,TN,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,448475,432951,3.59
+264,161253,University of Maine Foundation,Orono,ME,Institutionally-related foundation (IRF),4-Year Public College/University,Master's,Non-HBCU,442226,371067,19.18
+265,N/A,University of Victoria Foundation,Victoria,BC,Canadian College or University,NA,N/A,N/A,440877,431710,2.12
+266,191968,Ithaca College,Ithaca,NY,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,437069,403196,8.4
+267,150455,Earlham College,Richmond,IN,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,427833,416198,2.8
+268,188030,New Mexico State University Foundation,Las Cruces,NM,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,421457,377401,11.67
+269,137546,Stetson University,Deland,FL,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,416118,390513,6.56
+270,156408,Centre College,Danville,KY,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,414294,399402,3.73
+271,228796,The University of Texas at El Paso^^,El Paso,TX,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,413615,381053,8.55
+272,220862,The University of Memphis,Memphis,TN,Combined endowment/foundation,4-Year Public College/University,Doctorate,Non-HBCU,413043,379783,8.76
+273,198516,Elon University,Elon,NC,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,411468,362089,13.64
+274,206695,Youngstown State University Foundation,Youngstown,OH,Combined endowment/foundation,4-Year Public College/University,Doctorate,Non-HBCU,399871,368809,8.42
+275,143358,Bradley University,Peoria,IL,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,394252,390258,1.02
+276,131283,The Catholic University of America,Washington,DC,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,390867,352917,10.75
+277,164739,Bentley University,Waltham,MA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,390389,362644,7.65
+278,232982,Old Dominion University Educational Foundation£,Norfolk,VA,Combined endowment/foundation,4-Year Public College/University,Doctorate,Non-HBCU,388938,353413,10.05
+279,186584,Seton Hall University,South Orange,NJ,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,388402,351827,10.4
+280,186867,Stevens Institute of Technology,Hoboken,NJ,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,387685,374598,3.49
+281,133951,Florida International University,Miami,FL,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,380091,337735,12.54
+282,227216,University of North Texas Foundation,Denton,TX,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,377679,323190,16.86
+283,199139,University of North Carolina at Charlotte,Charlotte,NC,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,376736,344668,9.3
+284,153278,University of Dubuque,Dubuque,IA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,370912,286763,29.34
+285,193016,Mercy University,Dobbs Ferry,NY,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,368498,336522,9.5
+286,209825,University of Portland,Portland,OR,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,367799,314809,16.83
+287,N/A,Medical College of Georgia Foundation Inc.,Augusta,GA,Institutionally-related foundation (IRF),N/A,N/A,N/A,365877,330580,10.86
+288,198464,East Carolina University,Greenville,NC,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,359978,320127,12.45
+289,133553,Embry-Riddle Aeronautical University,Daytona Beach,FL,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,359247,314171,14.35
+290,163046,Loyola University Maryland,Baltimore,MD,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,357952,323911,10.51
+291,130253,Sacred Heart University,Fairfield,CT,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,356777,316003,12.9
+292,168838,Baker College,Owosso,MI,Private college/university endowment or Other non-profit institution,NA,NA,N/A,353188,350630,0.73
+293,156125,Wichita State University Foundation,Wichita,KS,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,350940,335902,4.48
+294,164216,Washington College,Chestertown,MD,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,349625,340724,2.61
+295,N/A,University of New Brunswick,Fredericton,NB,Canadian College or University,N/A,N/A,N/A,348762,307540,13.4
+296,N/A,The RAND Corporation,Santa Monica,CA,Private college/university endowment or Other non-profit institution,N/A,N/A,N/A,345760,313048,10.45
+297,215929,The University of Scranton,Scranton,PA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,342854,324120,5.78
+298,219471,University of South Dakota Foundation and Alumni Association,Vermillion,SD,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,338604,325990,3.87
+299,110422,California Polytechnic State University-San Luis Obispo,San Luis Obispo,CA,Public college university or system fund,4-Year Public College/University,Master's,Non-HBCU,335818,296447,13.28
+300,153269,Drake University,Des Moines,IA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,333617,306209,8.95
+301,N/A,Utah System of Higher Education,Salt Lake City,UT,Public college university or system fund,State System Office,N/A,Non-HBCU,333393,307426,8.45
+302,163976,St. John's College,Annapolis,MD,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,331328,271774,21.91
+303,210401,Willamette University,Salem,OR,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,328694,311559,5.5
+304,173647,Gustavus Adolphus College,Saint Peter,MN,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,328657,315307,4.23
+305,209056,Lewis & Clark College,Portland,OR,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,328249,322022,1.93
+306,232308,Hollins University,Roanoke,VA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,327091,303839,7.65
+307,167996,Stonehill College,North Easton,MA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,326474,306929,6.37
+308,170301,Hope College,Holland,MI,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,325012,306823,5.93
+309,152318,Rose-Hulman Institute of Technology,Terre Haute,IN,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,324141,285255,13.63
+310,152600,Valparaiso University,Valparaiso,IN,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,321453,311933,3.05
+311,180489,University of Montana Foundation,Missoula,MT,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,320684,284152,12.86
+312,170532,Kalamazoo College,Kalamazoo,MI,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,320636,304295,5.37
+313,180461,Montana State University Foundation Inc.,Bozeman,MT,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,319635,287011,11.37
+314,N/A,U.S. Naval Academy Alumni Association & Foundation,Annapolis,MD,Institutionally-related foundation (IRF),N/A,N/A,N/A,319398,293071,8.98
+315,150163,Butler University,Indianapolis,IN,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,319241,295853,7.91
+316,151801,Indiana Wesleyan University,Marion,IN,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,309914,288633,7.37
+317,174792,Saint John's University,Collegeville,MN,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,308856,300875,2.65
+318,157951,Western Kentucky University and Foundations,Bowling Green,KY,Institutionally-related foundation (IRF),4-Year Public College/University,Master's,Non-HBCU,305649,252675,20.97
+319,203368,John Carroll University,University Heights,OH,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,302149,286479,5.47
+320,206622,Xavier University,Cincinnati,OH,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,300653,269006,11.76
+321,162654,Goucher College,Baltimore,MD,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,300094,292650,2.54
+322,169080,Calvin University,Grand Rapids,MI,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,296527,286119,3.64
+323,139348,Columbia Theological Seminary,Decatur,GA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Other Graduate/Professional,Non-HBCU,295666,279927,5.62
+324,165662,Emerson College,Boston,MA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,292994,264748,10.67
+325,219356,South Dakota State University,Brookings,SD,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,292561,260669,12.23
+326,192323,Le Moyne College,Syracuse,NY,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,289826,280009,3.51
+327,194310,Pace University,New York,NY,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,288939,262098,10.24
+328,168281,Wheaton College (MA),Norton,MA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,287390,272797,5.35
+329,169248,Central Michigan University,Mount Pleasant,MI,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,284332,265357,7.15
+330,232256,Hampden-Sydney College,Hampden Sydney,VA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,280401,245432,14.25
+331,210669,Allegheny College,Meadville,PA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,279457,270839,3.18
+332,217484,University of Rhode Island Foundation,Kingston,RI,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,278731,249035,11.92
+333,110556,California State University Fresno,Fresno,CA,Combined endowment/foundation,4-Year Public College/University,Master's,Non-HBCU,277344,254837,8.83
+334,228149,St. Mary's University,San Antonio,TX,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,273710,263028,4.06
+335,102094,University of South Alabama,Mobile,AL,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,273244,257905,5.95
+336,121691,University of Redlands,Redlands,CA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,273056,253550,7.69
+337,132903,University of Central Florida Foundation Inc.,Orlando,FL,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,266680,254508,4.78
+338,N/A,American Mathematical Society,Providence,RI,Private college/university endowment or Other non-profit institution,N/A,N/A,N/A,264825,242379,9.26
+339,168005,Suffolk University,Boston,MA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,260496,252034,3.36
+340,201441,Bowling Green State University Foundation,Bowling Green,OH,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,259224,233289,11.12
+341,232186,George Mason University Foundation Inc.,Fairfax,VA,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,257558,222168,15.93
+342,228769,The University of Texas at Arlington^^,Arlington,TX,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,255855,217421,17.68
+343,191931,Iona University,New Rochelle,NY,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,253907,230907,9.96
+344,167783,Simmons University,Boston,MA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,253622,249717,1.56
+345,143084,Augustana College,Rock Island,IL,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,252561,222939,13.29
+346,196079,The Foundation of the SUNY at Binghamton Inc.,Binghamton,NY,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,250742,223457,12.21
+347,110608,California State University Northridge,Northridge,CA,Public college university or system fund,4-Year Public College/University,Master's,Non-HBCU,249514,229624,8.66
+348,217165,Bryant University,Smithfield,RI,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,249317,232598,7.19
+349,145813,Illinois State University,Normal,IL,Public college university or system fund,4-Year Public College/University,Master's,Non-HBCU,246382,224782,9.61
+350,138600,Agnes Scott College,Decatur,GA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,246263,236895,3.95
+351,216278,Susquehanna University,Selinsgrove,PA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,242571,223211,8.67
+352,160658,University of Louisiana at Lafayette Foundation,Lafayette,LA,Institutionally-related foundation (IRF),4-Year Public College/University,Master's,Non-HBCU,241600,222600,8.54
+353,230782,Weber State University,Ogden,UT,Public college university or system fund,4-Year Public College/University,Master's,Non-HBCU,238017,217850,9.26
+354,221740,University of Chattanooga Foundation,Chattanooga,TN,Institutionally-related foundation (IRF),4-Year Public College/University,Master's,Non-HBCU,234534,210341,11.5
+355,N/A,Mennonite Education Agency Investment Fund LLC,Goshen,IN,Combined endowment/foundation,N/A,N/A,N/A,234410,212655,10.23
+356,212805,Grove City College,Grove City,PA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,234018,208133,12.44
+357,237525,The Marshall University Foundation Inc,Huntington,WV,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,232848,210434,10.65
+358,183239,Saint Anselm College,Manchester,NH,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,231923,213588,8.58
+359,170082,Grand Valley State University,Allendale,MI,Public college university or system fund,4-Year Public College/University,Master's,Non-HBCU,231327,208809,10.78
+360,122755,San Jose State University,San Jose,CA,Combined endowment/foundation,4-Year Public College/University,Doctorate,Non-HBCU,231146,203628,13.51
+361,107044,Harding University,Searcy,AR,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,229007,216988,5.54
+362,149222,Southern Illinois University Foundation,Carbondale,IL,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,228477,205461,11.2
+363,135717,Miami Dade College Foundation Inc.,Miami,FL,Institutionally-related foundation (IRF),4-Year Public College/University,Associate/Baccalaureate,Non-HBCU,227160,216870,4.74
+364,228802,The University of Texas at Tyler^^,Tyler,TX,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,225802,209200,7.94
+365,233295,Randolph-Macon College,Ashland,VA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,222486,215744,3.12
+366,162760,Hood College,Frederick,MD,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,221561,204792,8.19
+367,153834,Luther College,Decorah,IA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,220163,205853,6.95
+368,203517,Kent State University Foundation,Kent,OH,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,218459,194270,12.45
+369,156222,Asbury Theological Seminary,Wilmore,KY,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Other Graduate/Professional,Non-HBCU,217371,205711,5.67
+370,110583,California State University Long Beach,Long Beach,CA,Public college university or system fund,4-Year Public College/University,Master's,Non-HBCU,216653,132909,63.01
+371,112251,Claremont Graduate University,Claremont,CA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Other Graduate/Professional,Non-HBCU,215525,205678,4.79
+372,237066,Whitworth University,Spokane,WA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,215251,202119,6.5
+373,156082,Washburn University,Topeka,KS,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,213397,191099,11.67
+374,107141,John Brown University,Siloam Springs,AR,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,212625,188647,12.71
+375,173300,Concordia College-Moorhead,Moorhead,MN,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,212283,193293,9.82
+376,121257,Pitzer College,Claremont,CA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,206383,191808,7.6
+377,239716,Saint Norbert College,De Pere,WI,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,204019,190027,7.36
+378,110529,Cal Poly Pomona Philanthropic Foundation,Pomona,CA,Institutionally-related foundation (IRF),4-Year Public College/University,Master's,Non-HBCU,203796,186731,9.14
+379,185828,New Jersey Institute of Technology,Newark,NJ,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,203445,179523,13.33
+380,188641,Alfred University,Alfred,NY,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,202973,191742,5.86
+381,129525,University of Hartford,West Hartford,CT,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,202136,194773,3.78
+382,226091,Lamar University,Beaumont,TX,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,200664,182118,10.18
+383,220075,East Tennessee State University,Johnson City,TN,Combined endowment/foundation,4-Year Public College/University,Doctorate,Non-HBCU,198246,179080,10.7
+384,217059,York College of Pennsylvania,York,PA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,197994,181914,8.84
+385,196060,SUNY at Albany,Albany,NY,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,197340,166837,18.28
+386,N/A,Mount Allison University,Sackville,NB,Canadian College or University,N/A,N/A,N/A,196044,179379,9.29
+387,198695,High Point University,High Point,NC,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,194905,173561,12.3
+388,155061,Fort Hays State University Foundation,Hays,KS,Institutionally-related foundation (IRF),4-Year Public College/University,Master's,Non-HBCU,193969,174703,11.03
+389,144962,Elmhurst University,Elmhurst,IL,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,193601,177520,9.06
+390,225627,University of the Incarnate Word,San Antonio,TX,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,191695,188712,1.58
+391,204185,University of Mount Union,Alliance,OH,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,187719,175807,6.78
+392,119173,Mount Saint Mary's University,Los Angeles,CA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,187365,165202,13.42
+393,122597,San Francisco State University Foundation,San Francisco,CA,Institutionally-related foundation (IRF),4-Year Public College/University,Master's,Non-HBCU,186394,174846,6.6
+394,110361,California Baptist University,Riverside,CA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,186078,157607,18.06
+395,142115,Boise State University Foundation,Boise,ID,Institutionally-related foundation (IRF),4-Year Public College/University,Master's,Non-HBCU,184254,161529,14.07
+396,171128,Michigan Technological University,Houghton,MI,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,184151,169089,8.91
+397,232423,James Madison University Foundation,Harrisonburg,VA,Institutionally-related foundation (IRF),4-Year Public College/University,Master's,Non-HBCU,181016,155516,16.4
+398,109651,ArtCenter College of Design,Pasadena,CA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,181003,151618,19.38
+399,199218,University of North Carolina at Wilmington,Wilmington,NC,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,178368,162149,10
+400,165671,Emmanuel College,Boston,MA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,176108,173207,1.67
+401,231970,Eastern Virginia Medical School Foundation,Norfolk,VA,Institutionally-related foundation (IRF),4-Year Public College/University,Other Graduate/Professional,Non-HBCU,173248,159857,8.38
+402,190503,Culinary Institute of America,Hyde Park,NY,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Associate/Baccalaureate,Non-HBCU,172297,155381,10.89
+403,227368,The University of Texas Rio Grande Valley^^,Edinburg,TX,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,171319,147137,16.44
+404,176372,University of Southern Mississippi Foundation,Hattiesburg,MS,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,169302,153147,10.55
+405,102368,Troy University Foundation,Troy,AL,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,168258,150334,11.92
+406,220978,Middle Tennessee State University,Murfreesboro,TN,Public college university or system fund,4-Year Public College/University,Master's,Non-HBCU,167695,145462,15.28
+407,150756,Hanover College,Hanover,IN,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,167190,163733,2.11
+408,153001,Buena Vista University,Storm Lake,IA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,166402,159226,4.51
+408,171571,Oakland University,Rochester,MI,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,166402,143906,15.63
+410,151290,Indiana Institute of Technology,Fort Wayne,IN,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,165930,165897,0.02
+411,164270,McDaniel College,Westminster,MD,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,165901,156757,5.83
+412,237011,Western Washington University Foundation,Bellingham,WA,Institutionally-related foundation (IRF),4-Year Public College/University,Master's,Non-HBCU,165359,145881,13.35
+413,216524,Ursinus College,Collegeville,PA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,164999,156923,5.15
+414,136172,University of North Florida,Jacksonville,FL,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,164481,155410,5.84
+415,165699,Endicott College,Beverly,MA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,163509,146734,11.43
+416,110565,California State University Fullerton,Fullerton,CA,Institutionally-related foundation (IRF),4-Year Public College/University,Master's,Non-HBCU,162083,148677,9.02
+417,227845,St. Edward's University,Austin,TX,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,161234,142261,13.34
+418,195720,St. John Fisher University,Rochester,NY,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,158333,150873,4.94
+419,196307,SUNY Health Science Center at Syracuse,Syracuse,NY,Combined endowment/foundation,4-Year Public College/University,Doctorate,Non-HBCU,158135,141527,11.73
+420,185590,Montclair State University,Montclair,NJ,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,157851,112531,40.27
+421,110413,California Lutheran University,Thousand Oaks,CA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,157607,144054,9.41
+422,174747,College of Saint Benedict,Saint Joseph,MN,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,157168,130579,20.36
+423,217819,College of Charleston,Charleston,SC,Institutionally-related foundation (IRF),4-Year Public College/University,Master's,Non-HBCU,157087,145156,8.22
+424,195304,Sarah Lawrence College,Bronxville,NY,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,156686,148477,5.53
+425,189705,Canisius University of Buffalo New York,Buffalo,NY,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,155793,147365,5.72
+426,201548,Capital University,Columbus,OH,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,155216,140718,10.3
+427,177065,Columbia College,Columbia,MO,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,154684,159247,-2.87
+428,106458,Arkansas State University System Foundation,Jonesboro,AR,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,153428,127295,20.53
+429,147660,North Central College,Naperville,IL,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,153158,139740,9.6
+430,157447,Northern Kentucky University Foundation Inc.,Highland Heights,KY,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,150906,138194,9.2
+431,236577,Seattle Pacific University,Seattle,WA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,149413,168045,-11.09
+432,150215,Christian Theological Seminary,Indianapolis,IN,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Other Graduate/Professional,Non-HBCU,148904,134599,10.63
+433,198950,Meredith College,Raleigh,NC,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,148894,138326,7.64
+434,107558,University of the Ozarks,Clarksville,AR,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,148704,141527,5.07
+435,198835,Lenoir-Rhyne University,Hickory,NC,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,145536,136106,6.93
+436,216807,Westminster College,New Wilmington,PA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,143712,140898,2
+437,171492,Northwood University Michigan Campus,Midland,MI,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,142673,122891,16.1
+438,238616,Concordia University Inc - Wisconsin and Ann Arbor,Mequon,WI,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,142612,131085,8.79
+439,213996,Messiah University,Mechanicsburg,PA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,141090,132098,6.81
+440,232609,University of Lynchburg,Lynchburg,VA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,140753,140060,0.49
+441,114892,Eastern Illinois University Foundation,Charleston,IL,Public college university or system fund,NA,NA,N/A,139892,119956,16.62
+442,228431,Stephen F. Austin State University^^,Nacogdoches,TX,Public college university or system fund,4-Year Public College/University,Master's,Non-HBCU,138847,16130,760.77^^
+443,212601,Gannon University,Erie,PA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,138418,82842,67.09
+444,213251,Juniata College,Huntingdon,PA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,137737,132688,3.8
+445,145275,Garrett-Evangelical Theological Seminary,Evanston,IL,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Other Graduate/Professional,Non-HBCU,136943,125368,9.23
+446,133650,Florida Agricultural and Mechanical University,Tallahassee,FL,Public college university or system fund,4-Year Public College/University,Doctorate,HBCU,135683,124141,9.3
+447,157401,Murray State University,Murray,KY,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,135035,122588,10.15
+448,204936,Otterbein University,Westerville,OH,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,134820,127686,5.59
+449,486840,Kennesaw State University,Kennesaw,GA,Institutionally-related foundation (IRF),4-Year Public College/University,Master's,Non-HBCU,133101,119180,11.68
+450,145691,Illinois College,Jacksonville,IL,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,133019,139556,-4.68
+451,169910,The Ferris Foundation,Big Rapids,MI,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,131937,127499,3.48
+452,219976,Lipscomb University,Nashville,TN,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,131904,119045,10.8
+453,127741,University of Northern Colorado Foundation,Greeley,CO,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,131396,119380,10.07
+454,169716,University of Detroit Mercy,Detroit,MI,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,128798,108570,18.63
+455,209065,Linfield University,McMinnville,OR,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,128437,117798,9.03
+456,209807,Portland State University Foundation,Portland,OR,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,127513,115160,10.73
+457,210739,DeSales University,Center Valley,PA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,127087,119464,6.38
+458,147703,Northern Illinois University Foundation,DeKalb,IL,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,122569,113633,7.86
+459,216852,Widener University,Chester,PA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,122324,117067,4.49
+460,134079,Florida Southern College,Lakeland,FL,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,121451,105039,15.62
+461,230737,Utah Valley University,Orem,UT,Public college university or system fund,4-Year Public College/University,Master's,Non-HBCU,120690,106123,13.73
+462,221847,Tennessee Technological University Foundation,Cookeville,TN,Public college university or system fund,4-Year Public College/University,Master's,Non-HBCU,120448,105785,13.86
+463,172051,Saginaw Valley State University Foundation,University Center,MI,Institutionally-related foundation (IRF),4-Year Public College/University,Master's,Non-HBCU,120435,109976,9.51
+464,151324,Indiana State University,Terre Haute,IN,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,120427,103663,16.17
+465,202806,Franklin University,Columbus,OH,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,118429,107316,10.36
+466,132851,College of Central Florida Foundation,Ocala,FL,Public college university or system fund,4-Year Public College/University,Associate/Baccalaureate,Non-HBCU,117971,106200,11.08
+467,232566,Longwood University,Farmville,VA,Public college university or system fund,4-Year Public College/University,Master's,Non-HBCU,117754,102234,15.18
+468,138354,University of West Florida Foundation,Pensacola,FL,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,117676,108128,8.83
+469,139931,Georgia Southern University Foundation,Statesboro,GA,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,117411,105961,10.81
+470,136330,Palm Beach Atlantic University,West Palm Beach,FL,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,117184,106447,10.09
+471,155681,Pittsburg State University Foundation Inc.,Pittsburg,KS,Institutionally-related foundation (IRF),4-Year Public College/University,Master's,Non-HBCU,116713,106953,9.13
+472,212197,Elizabethtown College,Elizabethtown,PA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,116648,106890,9.13
+473,175980,Millsaps College,Jackson,MS,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,115460,110471,4.52
+474,199999,Winston-Salem State University & Foundation,Winston Salem,NC,Public college university or system fund,4-Year Public College/University,Baccalaureate,HBCU,114530,96642,18.51
+475,163295,Maryland Institute College of Art,Baltimore,MD,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,114136,119386,-4.4
+476,164173,Stevenson University,Stevenson,MD,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,113779,104379,9.01
+477,147679,North Park University,Chicago,IL,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,113599,108329,4.86
+478,133881,Florida Institute of Technology,Melbourne,FL,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,112570,105818,6.38
+479,202356,Cuyahoga Community College Foundation,Cleveland,OH,Institutionally-related foundation (IRF),Public 2-Year College,Associate,Non-HBCU,112083,103163,8.65
+480,229063,Texas Southern University,Houston,TX,Public college university or system fund,4-Year Public College/University,Doctorate,HBCU,111245,97378,14.24
+481,110538,The University Foundation California State University Chico,Chico,CA,Institutionally-related foundation (IRF),4-Year Public College/University,Master's,Non-HBCU,111069,97902,13.45
+482,154527,Wartburg College,Waverly,IA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,110738,98832,12.05
+483,213507,Lebanon Valley College,Annville,PA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,110662,98355,12.51
+484,157854,Kentucky Community & Technical College System,Versailles,KY,Public college university or system fund,State System Office,N/A,Non-HBCU,110380,99336,11.12
+485,179265,University of Health Sciences and Pharmacy in St. Louis,Saint Louis,MO,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,109793,119880,-8.41
+486,232937,Norfolk State University,Norfolk,VA,Institutionally-related foundation (IRF),4-Year Public College/University,Baccalaureate,HBCU,109501,96403,13.59
+487,153162,Cornell College,Mount Vernon,IA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,108240,100875,7.3
+488,181020,Doane University,Crete,NE,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,107434,113088,-5
+489,184603,Fairleigh Dickinson University,Teaneck,NJ,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,107231,100237,6.98
+490,156620,Eastern Kentucky University Foundation,Richmond,KY,Institutionally-related foundation (IRF),4-Year Public College/University,Master's,Non-HBCU,107003,97087,10.21
+491,231581,Bridgewater College,Bridgewater,VA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,106258,102780,3.38
+492,234155,Virginia State University,Petersburg,VA,Public college university or system fund,4-Year Public College/University,Baccalaureate,HBCU,105601,96544,9.38
+493,150604,Franklin College,Franklin,IN,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,105351,99753,5.61
+494,139366,Columbus State University Foundation,Columbus,GA,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,104740,98359,6.49
+495,229355,Tyler Junior College,Tyler,TX,Institutionally-related foundation (IRF),4-Year Public College/University,Associate,Non-HBCU,104616,97067,7.78
+496,195164,St. Bonaventure University,Saint Bonaventure,NY,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,103805,95091,9.16
+497,238458,Carroll University,Waukesha,WI,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,103269,93860,10.02
+498,125727,Westmont College,Santa Barbara,CA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,102944,92162,11.7
+499,193584,Nazareth University,Rochester,NY,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,102466,93529,9.56
+500,228981,Texas Lutheran University,Seguin,TX,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,102342,100227,2.11
+501,180416,Montana Technological University,Butte,MT,Institutionally-related foundation (IRF),4-Year Public College/University,Baccalaureate,Non-HBCU,101555,84604,20.04
+502,204264,Muskingum University,New Concord,OH,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,101108,96032,5.29
+503,239318,Milwaukee School of Engineering,Milwaukee,WI,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,100471,94458,6.37
+504,482680,University of North Georgia Foundation Inc.,Dahlonega,GA,Institutionally-related foundation (IRF),4-Year Public College/University,Master's,Non-HBCU,100377,89840,11.73
+505,217961,Converse University,Spartanburg,SC,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,99940,91718,8.96
+506,224323,University of Dallas,Irving,TX,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,99159,98321,0.85
+507,133711,Flagler College,Saint Augustine,FL,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,99051,94777,4.51
+508,146612,Lewis University,Romeoville,IL,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,98836,91092,8.5
+509,217518,Roger Williams University,Bristol,RI,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,98737,93007,6.16
+510,137847,The University of Tampa,Tampa,FL,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,98269,77125,27.42
+511,214379,Northampton County Area Community College Foundation,Bethlehem,PA,Public college university or system fund,Public 2-Year College,Associate,Non-HBCU,97349,88747,9.69
+512,110617,The University Foundation at Sacramento State,Sacramento,CA,Combined endowment/foundation,4-Year Public College/University,Master's,Non-HBCU,96409,86421,11.56
+513,220215,Freed-Hardeman University,Henderson,TN,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,96231,86658,11.05
+514,163851,Salisbury University Foundation,Salisbury,MD,Institutionally-related foundation (IRF),4-Year Public College/University,Master's,Non-HBCU,95657,82146,16.45
+515,174899,College of St. Scholastica,Duluth,MN,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,95613,87757,8.95
+516,191676,Houghton University,Houghton,NY,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,94659,80765,17.2
+517,224305,Dallas Theological Seminary,Dallas,TX,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Other Graduate/Professional,Non-HBCU,94186,82692,13.9
+518,N/A,Foundation for Indiana University of Pennsylvania,Indiana,PA,Institutionally-related foundation (IRF),N/A,N/A,N/A,94060,85821,9.6
+519,218964,Winthrop University Foundation,Rock Hill,SC,Institutionally-related foundation (IRF),4-Year Public College/University,Master's,Non-HBCU,92066,82580,11.49
+520,186283,Rider University,Lawrenceville,NJ,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,89578,83926,6.73
+521,178059,Maryville University of Saint Louis,Saint Louis,MO,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,89141,78727,13.23
+522,233541,Shenandoah University,Winchester,VA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,89092,84998,4.82
+523,147536,National Louis University,Chicago,IL,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,88734,73183,21.25
+524,173920,Minnesota State University Mankato Foundation,Mankato,MN,Public college university or system fund,4-Year Public College/University,Master's,Non-HBCU,88641,75986,16.65
+525,N/A,Foundation For California Community Colleges,Sacramento,CA,Institutionally-related foundation (IRF),N/A,N/A,N/A,88148,82567,6.76
+526,154174,Palmer College Foundation,Davenport,IA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Other Graduate/Professional,Non-HBCU,87848,79568,10.41
+527,178721,Park University,Parkville,MO,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,87733,83878,4.6
+528,N/A,University of Northern British Columbia,Prince George,BC,Canadian College or University,N/A,N/A,N/A,86470,80224,7.79
+529,177214,Drury University,Springfield,MO,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,86371,89783,-3.8
+530,196185,SUNY Oneonta Foundation,Oneonta,NY,Public college university or system fund,4-Year Public College/University,Master's,Non-HBCU,85625,78601,8.94
+531,193830,New York Medical College,Valhalla,NY,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Other Graduate/Professional,Non-HBCU,85457,81415,4.96
+532,153108,Central College,Pella,IA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,84209,79851,5.46
+533,234933,Clark Community College District No. 14 Foundation,Vancouver,WA,Institutionally-related foundation (IRF),4-Year Public College/University,Associate,Non-HBCU,83348,79634,4.66
+534,199111,University of North Carolina at Asheville,Asheville,NC,Public college university or system fund,4-Year Public College/University,Baccalaureate,Non-HBCU,83053,75643,9.8
+535,151777,Manchester University,North Manchester,IN,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,82790,72830,13.68
+536,229160,Texas Wesleyan University,Fort Worth,TX,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,82533,78383,5.3
+537,147828,Olivet Nazarene University Foundation,Bourbonnais,IL,Institutionally-related foundation (IRF),4-Year Private Nonprofit College/University,Master's,Non-HBCU,81998,68946,18.93
+538,196194,Oswego University Foundation Inc.,Oswego,NY,Institutionally-related foundation (IRF),4-Year Public College/University,Master's,Non-HBCU,80916,71787,12.72
+539,173045,Augsburg University,Minneapolis,MN,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,80881,76281,6.03
+540,197221,Webb Institute,Glen Cove,NY,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,79971,70777,12.99
+541,204200,Mount Saint Joseph University,Cincinnati,OH,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,79784,74026,7.78
+542,240268,University of Wisconsin-Eau Claire Foundation Inc.,Eau Claire,WI,Institutionally-related foundation (IRF),4-Year Public College/University,Master's,Non-HBCU,79490,66563,19.42
+543,214069,Misericordia University,Dallas,PA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,79055,73651,7.34
+544,180106,Carroll College,Helena,MT,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,77957,77719,0.31
+545,233277,Radford University Foundation,Radford,VA,Institutionally-related foundation (IRF),4-Year Public College/University,Master's,Non-HBCU,77587,71673,8.25
+546,217013,Wilson College,Chambersburg,PA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,77178,70217,9.91
+547,196149,SUNY Cortland,Cortland,NY,Institutionally-related foundation (IRF),4-Year Public College/University,Master's,Non-HBCU,76915,67830,13.39
+548,123572,Sonoma State University Foundation,Rohnert Park,CA,Combined endowment/foundation,4-Year Public College/University,Master's,Non-HBCU,76792,70467,8.98
+549,216010,Shippensburg University of Pennsylvania,Shippensburg,PA,Institutionally-related foundation (IRF),4-Year Public College/University,Master's,Non-HBCU,76678,68603,11.77
+550,409254,Erikson Institute,Chicago,IL,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Other Graduate/Professional,Non-HBCU,76573,64920,17.95
+551,182634,Colby-Sawyer College,New London,NH,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,75687,71950,5.19
+552,136774,Ringling College of Art and Design,Sarasota,FL,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,75654,71589,5.68
+553,229018,The University of Texas Permian Basin^^,Odessa,TX,Public college university or system fund,4-Year Public College/University,Master's,Non-HBCU,74465,67244,10.74
+554,193292,Molloy University,Rockville Centre,NY,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,74396,56172,32.44
+555,211158,Bloomsburg University Foundation,Bloomsburg,PA,Institutionally-related foundation (IRF),NA,NA,N/A,72987,66995,8.94
+556,187134,The College of New Jersey,Trenton,NJ,Public college university or system fund,4-Year Public College/University,Master's,Non-HBCU,71816,63349,13.37
+557,214166,Mount Aloysius College,Cresson,PA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,71809,65880,9
+558,110592,California State University Los Angeles,Los Angeles,CA,Public college university or system fund,4-Year Public College/University,Master's,Non-HBCU,71202,62523,13.88
+559,173328,Concordia University,Saint Paul,MN,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,70127,61454,14.11
+560,127556,Colorado Mesa University Foundation,Grand Junction,CO,Institutionally-related foundation (IRF),4-Year Public College/University,Baccalaureate,Non-HBCU,69984,59771,17.09
+561,155089,Friends University,Wichita,KS,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,69288,62972,10.03
+562,106704,University of Central Arkansas,Conway,AR,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,68641,63967,7.31
+563,198260,Central Piedmont Community College,Charlotte,NC,Institutionally-related foundation (IRF),Public 2-Year College,Associate,Non-HBCU,68591,62876,9.09
+564,154712,Benedictine College,Atchison,KS,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,68329,58598,16.61
+565,175227,Dunwoody College of Technology,Minneapolis,MN,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Associate/Baccalaureate,Non-HBCU,68073,61319,11.01
+566,N/A,American University in Bulgaria,Portland,ME,Private college/university endowment or Other non-profit institution,N/A,N/A,N/A,67393,35703,88.76
+567,215743,Saint Francis University,Loretto,PA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,67267,63047,6.69
+568,203748,Lorain County Community College Foundation,Elyria,OH,Institutionally-related foundation (IRF),4-Year Public College/University,Associate,Non-HBCU,67140,53408,25.71
+569,221661,Southern Adventist University,Collegedale,TN,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,66699,64034,4.16
+570,139199,Brenau University,Gainesville,GA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,66420,61204,8.52
+571,199865,Warren Wilson College,Asheville,NC,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,66387,54782,21.18
+572,179894,Webster University,Saint Louis,MO,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,66305,66676,-0.56
+573,165574,Dean College,Franklin,MA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,66157,68823,-3.87
+574,193751,Northeast College of Health Sciences,Seneca Falls,NY,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Other Graduate/Professional,Non-HBCU,66112,65286,1.27
+575,203997,Methodist Theological School,Delaware,OH,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Other Graduate/Professional,Non-HBCU,65125,69068,-5.71
+576,175281,Mitchell Hamline School of Law,Saint Paul,MN,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Other Graduate/Professional,Non-HBCU,64199,56718,13.19
+577,211088,Arcadia University,Glenside,PA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,63443,66459,-4.54
+578,154004,Morningside University,Sioux City,IA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,63067,63615,-0.86
+579,110510,California State University San Bernardino,San Bernardino,CA,Institutionally-related foundation (IRF),4-Year Public College/University,Master's,Non-HBCU,62983,57615,9.32
+580,132471,Barry University Inc.,Miami Shores,FL,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,62712,58752,6.74
+581,440031,Keck Graduate Institute,Claremont,CA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Other Graduate/Professional,Non-HBCU,62607,58446,7.12
+582,240277,University of Wisconsin-Green Bay Foundation,Green Bay,WI,Institutionally-related foundation (IRF),4-Year Public College/University,Baccalaureate,Non-HBCU,61817,56281,9.84
+583,114831,Foothill-De Anza Community Colleges Foundation,Los Altos Hills,CA,Institutionally-related foundation (IRF),State System Office,N/A,Non-HBCU,61631,55494,11.06
+584,228194,South Texas College of Law Houston,Houston,TX,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Other Graduate/Professional,Non-HBCU,61600,57700,6.76
+585,156286,Bellarmine University,Louisville,KY,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,61444,60057,2.31
+586,155511,McPherson College,McPherson,KS,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,61173,60144,1.71
+587,243665,University of the Virgin Islands,St Thomas,VI,Public college university or system fund,4-Year Public College/University,Baccalaureate,HBCU,60865,61730,-1.4
+588,201654,Cedarville University,Cedarville,OH,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,60855,58561,3.92
+589,168430,Worcester State University,Worcester,MA,Institutionally-related foundation (IRF),4-Year Public College/University,Master's,Non-HBCU,60823,52621,15.59
+590,196200,SUNY Potsdam College Foundation,Potsdam,NY,Institutionally-related foundation (IRF),4-Year Public College/University,Baccalaureate,Non-HBCU,60414,53842,12.21
+591,482149,Augusta University Foundation,Augusta,GA,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,60205,52817,13.99
+592,184773,Georgian Court University,Lakewood,NJ,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,59081,53429,10.58
+593,196158,Fredonia State University of New York,Fredonia,NY,Institutionally-related foundation (IRF),4-Year Public College/University,Baccalaureate,Non-HBCU,58535,51711,13.2
+594,231712,Christopher Newport University,Newport News,VA,Public college university or system fund,4-Year Public College/University,Baccalaureate,Non-HBCU,57190,51675,10.67
+595,409698,California State University Monterey Bay,Seaside,CA,Public college university or system fund,4-Year Public College/University,Master's,Non-HBCU,56477,43462,29.95
+596,211644,Clarion University Foundation Inc.,Clarion,PA,Institutionally-related foundation (IRF),NA,NA,N/A,55252,50835,8.69
+597,140696,Oglethorpe University,Brookhaven,GA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,55090,50899,8.23
+598,215655,Robert Morris University,Moon Township,PA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,53886,49473,8.92
+599,240657,Northwest College Foundation,Powell,WY,Institutionally-related foundation (IRF),4-Year Public College/University,Associate,Non-HBCU,53182,49254,7.97
+600,236896,Walla Walla University,College Place,WA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,51190,46573,9.91
+601,240338,Wisconsin Lutheran College,Milwaukee,WI,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,51168,49451,3.47
+602,133508,Florida Southwestern State College Foundation,Fort Myers,FL,Institutionally-related foundation (IRF),4-Year Public College/University,Associate/Baccalaureate,Non-HBCU,50325,49290,2.1
+603,141486,Chaminade University of Honolulu,Honolulu,HI,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,49847,45517,9.51
+604,180595,Rocky Mountain College,Billings,MT,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,49331,44324,11.3
+605,234827,Central Washington University Foundation,Ellensburg,WA,Institutionally-related foundation (IRF),4-Year Public College/University,Master's,Non-HBCU,47591,42375,12.31
+606,115755,Cal Poly Humboldt Foundation,Arcata,CA,Institutionally-related foundation (IRF),4-Year Public College/University,Baccalaureate,Non-HBCU,46680,44065,5.94
+607,110486,California State University Bakersfield Foundation,Bakersfield,CA,Public college university or system fund,4-Year Public College/University,Master's,Non-HBCU,46510,42735,8.83
+608,130493,Southern Connecticut State University Foundation,New Haven,CT,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,46229,42108,9.79
+609,166391,Lasell University,Auburndale,MA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,46143,44809,2.98
+610,230603,Southern Utah University,Cedar City,UT,Public college university or system fund,4-Year Public College/University,Master's,Non-HBCU,45859,40929,12.05
+611,213349,Kutztown University Foundation,Kutztown,PA,Institutionally-related foundation (IRF),4-Year Public College/University,Master's,Non-HBCU,45709,42623,7.24
+612,205470,Sinclair Community College Foundation,Dayton,OH,Institutionally-related foundation (IRF),4-Year Public College/University,Associate,Non-HBCU,45363,40657,11.57
+613,149231,Southern Illinois University Edwardsville Foundation,Edwardsville,IL,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,45109,39800,13.34
+614,177144,Culver-Stockton College,Canton,MO,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,45075,40937,10.11
+615,366711,California State University San Marcos Foundation,San Marcos,CA,Public college university or system fund,4-Year Public College/University,Master's,Non-HBCU,45073,36560,23.29
+616,189547,Broome Community College Foundation,Binghamton,NY,Institutionally-related foundation (IRF),Public 2-Year College,Associate,Non-HBCU,44950,42634,5.43
+617,N/A,Foundation for California University of Pennsylvania,California,PA,Institutionally-related foundation (IRF),N/A,N/A,N/A,44834,41441,8.19
+618,163912,St. Mary's College of Maryland Foundation,Saint Marys City,MD,Institutionally-related foundation (IRF),4-Year Public College/University,Baccalaureate,Non-HBCU,44531,39448,12.88
+619,498571,Edinboro University Foundation,Edinboro,PA,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,44182,38303,15.35
+620,115083,Golden Gate University,San Francisco,CA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,43935,48899,-10.15
+621,441937,California State University Channel Islands,Camarillo,CA,Institutionally-related foundation (IRF),4-Year Public College/University,Baccalaureate,Non-HBCU,42698,35088,21.69
+622,218885,Tri-County Technical College,Pendleton,SC,Institutionally-related foundation (IRF),Public 2-Year College,Associate,Non-HBCU,42074,37434,12.39
+623,180179,Montana State University Billings Foundation,Billings,MT,Institutionally-related foundation (IRF),4-Year Public College/University,Baccalaureate,Non-HBCU,41001,36754,11.55
+624,226231,LeTourneau University,Longview,TX,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,40595,37459,8.37
+625,230171,Utah Tech University,Saint George,UT,Public college university or system fund,4-Year Public College/University,Baccalaureate,Non-HBCU,40208,37186,8.13
+626,216764,West Chester University Foundation,West Chester,PA,Institutionally-related foundation (IRF),4-Year Public College/University,Doctorate,Non-HBCU,39991,34600,15.58
+627,153375,Grand View University,Des Moines,IA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,39876,37528,6.26
+628,198543,Fayetteville State University,Fayetteville,NC,Public college university or system fund,4-Year Public College/University,Master's,HBCU,39544,34915,13.26
+629,199281,University of North Carolina at Pembroke,Raleigh,NC,Public college university or system fund,4-Year Public College/University,Master's,Non-HBCU,39536,36043,9.69
+630,172617,Washtenaw Community College Foundation,Ann Arbor,MI,Institutionally-related foundation (IRF),Public 2-Year College,Associate,Non-HBCU,39438,33943,16.19
+631,194958,Roberts Wesleyan University,Rochester,NY,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,39025,40482,-3.6
+632,110501,The California State University Foundation,Long Beach,CA,Institutionally-related foundation (IRF),State System Office,N/A,Non-HBCU,38201,35857,6.54
+633,127185,Fort Lewis College,Durango,CO,Institutionally-related foundation (IRF),4-Year Public College/University,Baccalaureate,Non-HBCU,38064,32871,15.8
+634,237367,Fairmont State University,Fairmont,WV,Public college university or system fund,4-Year Public College/University,Baccalaureate,Non-HBCU,37985,34451,10.26
+635,215266,Bradford Educational Foundation - University of Pittsburgh at Bradford,Bradford,PA,Institutionally-related foundation (IRF),4-Year Public College/University,Baccalaureate,Non-HBCU,37660,36354,3.59
+636,169521,Delta College,University Center,MI,Public college university or system fund,Public 2-Year College,Associate,Non-HBCU,37514,34521,8.67
+637,N/A,Trinity Western University,Langley,BC,Canadian College or University,N/A,N/A,N/A,36799,31599,16.46
+638,487524,Husson University,Bangor,ME,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,35836,31476,13.85
+639,139764,Georgia Southwestern Foundation,Americus,GA,Public college university or system fund,4-Year Public College/University,Master's,Non-HBCU,35820,34953,2.48
+640,161563,Thomas College,Waterville,ME,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,35369,25297,39.82
+641,186201,Ramapo College of New Jersey,Mahwah,NJ,Combined endowment/foundation,4-Year Public College/University,Master's,Non-HBCU,33732,26842,25.67
+642,196246,SUNY Plattsburgh College Foundation,Plattsburgh,NY,Institutionally-related foundation (IRF),4-Year Public College/University,Baccalaureate,Non-HBCU,33694,30379,10.91
+643,182980,New England College,Henniker,NH,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,33648,31802,5.81
+644,208318,Central Oregon Community College Foundation,Bend,OR,Institutionally-related foundation (IRF),Public 2-Year College,Associate,Non-HBCU,31528,28761,9.62
+645,204477,Northeast Ohio Medical University,Rootstown,OH,Institutionally-related foundation (IRF),4-Year Public College/University,Other Graduate/Professional,Non-HBCU,30783,27608,11.5
+646,101189,Faulkner University,Montgomery,AL,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,30220,27008,11.89
+647,230597,Snow College,Ephraim,UT,Public college university or system fund,4-Year Public College/University,Associate,Non-HBCU,30108,26409,14.01
+648,153126,Clarke University,Dubuque,IA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Doctorate,Non-HBCU,29791,32750,-9.03
+649,170541,Kalamazoo Valley Community College,Kalamazoo,MI,Institutionally-related foundation (IRF),Public 2-Year College,Associate,Non-HBCU,29101,25932,12.22
+650,187745,Institute of American Indian Arts,Santa Fe,NM,Public college university or system fund,4-Year Public College/University,Baccalaureate,Non-HBCU,28709,23506,22.14
+651,110547,California State University-Dominguez Hills,Carson,CA,Institutionally-related foundation (IRF),4-Year Public College/University,Master's,Non-HBCU,28557,26547,7.57
+652,110574,California State University East Bay,Hayward,CA,Public college university or system fund,4-Year Public College/University,Master's,Non-HBCU,28001,21940,27.63
+653,218821,Spartanburg Methodist College,Spartanburg,SC,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Associate/Baccalaureate,Non-HBCU,27572,27031,2
+654,175883,Jones County Junior College,Ellisville,MS,Public college university or system fund,Public 2-Year College,Associate,Non-HBCU,24655,22987,7.26
+655,154059,North Iowa Area Community College,Mason City,IA,Public college university or system fund,Public 2-Year College,Associate,Non-HBCU,24213,20248,19.58
+656,110495,California State University Stanislaus Foundation,Turlock,CA,Institutionally-related foundation (IRF),4-Year Public College/University,Master's,Non-HBCU,22405,20530,9.13
+657,210304,Warner Pacific University,Portland,OR,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,22010,18230,20.73
+658,193326,Monroe Community College,Rochester,NY,Institutionally-related foundation (IRF),Public 2-Year College,Associate,Non-HBCU,21775,20573,5.84
+659,243577,Polytechnic University of Puerto Rico,San Juan,PR,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,20756,19259,7.77
+660,221643,Pellissippi State Community College Foundation,Knoxville,TN,Private college/university endowment or Other non-profit institution,Public 2-Year College,Associate,Non-HBCU,19760,17489,12.98
+661,213613,Lock Haven University Foundation,Lock Haven,PA,Institutionally-related foundation (IRF),NA,N/A,N/A,18546,16714,10.96
+662,N/A,Five Colleges Inc.,Amherst,MA,Private college/university endowment or Other non-profit institution,N/A,N/A,N/A,18367,16686,10.07
+663,238980,Lakeland University,Plymouth,WI,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,18237,19270,-5.36
+664,111188,California State University Maritime Academy,Vallejo,CA,Institutionally-related foundation (IRF),4-Year Public College/University,Baccalaureate,Non-HBCU,17896,19155,-6.57
+665,170037,Cornerstone University,Grand Rapids,MI,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,17807,17012,4.67
+666,231536,Blue Ridge Community College Educational Foundation Inc.,Weyers Cave,VA,Institutionally-related foundation (IRF),Public 2-Year College,Associate,Non-HBCU,14349,13030,10.13
+667,119067,Monterey Peninsula College Foundation,Monterey,CA,Public college university or system fund,Public 2-Year College,Associate,Non-HBCU,13951,12585,10.86
+668,213020,Indiana University of Pennsylvania,Indiana,PA,Public college university or system fund,4-Year Public College/University,Doctorate,Non-HBCU,11366,10218,11.23
+669,145521,Highland Community College Foundation (IL),Freeport,IL,Institutionally-related foundation (IRF),Public 2-Year College,Associate,Non-HBCU,11153,9899,12.67
+670,196033,SUNY Agricultural Technical College at Cobleskill,Cobleskill,NY,Public college university or system fund,4-Year Public College/University,Baccalaureate,Non-HBCU,9555,8500,12.41
+671,236133,Northwest University,Kirkland,WA,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,9368,11784,-20.5
+672,147800,Oakton College Educational Foundation,Des Plaines,IL,Institutionally-related foundation (IRF),Public 2-Year College,Associate,Non-HBCU,9365,8103,15.58
+673,488527,Arkansas Colleges of Health Education,Fort Smith,AR,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Other Graduate/Professional,Non-HBCU,8501,7061,20.39
+674,150774,Holy Cross College,Notre Dame,IN,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,Non-HBCU,6724,6018,11.73
+675,201672,Central Ohio Technical College,Newark,OH,Public college university or system fund,4-Year Public College/University,Associate,Non-HBCU,5839,4650,25.56
+676,482936,Florida Polytechnic University,Lakeland,FL,Public college university or system fund,4-Year Public College/University,Baccalaureate,Non-HBCU,5251,4000,31.3
+677,433387,Western Governors University,Salt Lake City,UT,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Master's,Non-HBCU,3738,3320,12.57
+678,219505,American Baptist College,Nashville,TN,Private college/university endowment or Other non-profit institution,4-Year Private Nonprofit College/University,Baccalaureate,HBCU,2816,1237,127.53
