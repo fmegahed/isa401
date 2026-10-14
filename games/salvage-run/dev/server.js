@@ -15,6 +15,7 @@ http.createServer(async (req, res) => {
   const u = new URL(req.url, "http://x");
   let p = u.pathname; const query = Object.fromEntries(u.searchParams);
   if (p === "/registry") p = "/api/registry";
+  if (p === "/exam/registry") p = "/api/exam";
   const wm = p.match(/^\/wreck\/([^/]+)$/); if (wm) { p = "/api/wreck"; query.hull = decodeURIComponent(wm[1]); }
   if (p.startsWith("/api/") && !p.includes("/_")) {
     const file = path.join(ROOT, p.replace(/\.js$/, "") + ".js");

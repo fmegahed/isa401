@@ -1,0 +1,66 @@
+{
+ "n": 360,
+ "per_page": 40,
+ "starts": [
+  1,
+  41,
+  81,
+  121,
+  161,
+  201,
+  241,
+  281,
+  321
+ ],
+ "count_by_class": {
+  "Corvette": 71,
+  "Dreadnought": 17,
+  "Freighter": 82,
+  "Hauler": 80,
+  "Probe": 44,
+  "Tug": 66
+ },
+ "value_by_class": {
+  "Corvette": 458.8,
+  "Dreadnought": 291.8,
+  "Freighter": 433.4,
+  "Hauler": 296.1,
+  "Probe": 21.6,
+  "Tug": 59.9
+ },
+ "value_all": 1561.6,
+ "count_by_sector": {
+  "Vesta Drift": 54,
+  "Hygiea Reach": 57,
+  "Pallas Gap": 49,
+  "Juno Shelf": 54,
+  "Psyche Deep": 50,
+  "Ceres Near": 44,
+  "Eros Belt": 52
+ },
+ "page1_count_by_class": {
+  "Corvette": 7,
+  "Dreadnought": 2,
+  "Freighter": 8,
+  "Hauler": 8,
+  "Probe": 6,
+  "Tug": 9
+ },
+ "most_valuable": {
+  "pos": 264,
+  "hull": "BN-7027",
+  "name": "CSS Southern Hawser",
+  "cls": "Dreadnought",
+  "value": 24.4,
+  "sector": "Pallas Gap"
+ },
+ "wrong_if_by_50": {
+  "rows": 290,
+  "dreadnought_value": 281.2,
+  "dreadnought_count": 16
+ },
+ "wrong_if_page1_only": {
+  "rows": 40,
+  "dreadnought_value": 34.6
+ }
+}

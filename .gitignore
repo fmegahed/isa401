@@ -66,6 +66,7 @@ rsconnect/
 *_cache/
 
 # student submissions
+grading/
 student_submissions/
 data/accuweather_key.R
 data/cryptocompare_key.R

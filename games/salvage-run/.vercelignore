@@ -6,3 +6,6 @@ solution.R
 *.blend1
 .env*
 README.md
+make_exam_registry.py
+exam_key.json
+exam_solution.R
