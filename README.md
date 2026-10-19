@@ -60,14 +60,15 @@ ISA 401 teaches the complete business intelligence pipeline: acquiring data from
 
 ## Practice Site and Class Games
 
-Four small web apps go with the lectures. Each one runs in a browser with nothing to install, and none of them is graded.
+Five small web apps go with the lectures. Each one runs in a browser with nothing to install, and none of them is graded.
 
-| What | Used in | What students do | Source |
-|:---|:---:|:---|:---:|
-| [**ISA 401 Review**](https://isa401-review.vercel.app) | Before each exam | For each unit: watch a one-minute narrated recap, explain the idea in their own words and see which key ideas they covered as they type, fix R code that runs in the browser, and read real output. Each question links to real job postings that ask for the skill. | [`games/exam-review`](games/exam-review) |
-| [**Find Your Seat**](https://isa401-find-your-seat.vercel.app) | Class 05 | Read a JSON file into R and pull values out of a nested list with `[[ ]]` and `$` to find their seat. | [`games/find-your-seat`](games/find-your-seat) |
-| [**The Import Heist**](https://isa401-import-heist.vercel.app) | Classes 04 and 05 | Work a three-stage incident investigation in which the value read from one CSV or JSON file unlocks the next. | [`games/data-import`](games/data-import) |
-| [**Salvage Run**](https://isa401-salvage.vercel.app) | Classes 11 and 12 | Scrape a registry of 400 ships spread over eight pages: pick a CSS selector, work out how the address changes, and loop over every page. | [`games/salvage-run`](games/salvage-run) |
+| Class | What | What students do | Source |
+|:---:|:---|:---|:---:|
+| Classes 04 and 05 | [**The Import Heist**](https://isa401-import-heist.vercel.app) | Work a three-stage incident investigation in which the value read from one CSV or JSON file unlocks the next. | [`games/data-import`](games/data-import) |
+| Class 05 | [**Find Your Seat**](https://isa401-find-your-seat.vercel.app) | Read a JSON file into R and pull values out of a nested list with `[[ ]]` and `$` to find their seat. | [`games/find-your-seat`](games/find-your-seat) |
+| Classes 11 and 12 | [**Salvage Run**](https://isa401-salvage.vercel.app) | Scrape a registry of 400 ships spread over eight pages: pick a CSS selector, work out how the address changes, and loop over every page. | [`games/salvage-run`](games/salvage-run) |
+| Class 13, and before each exam | [**ISA 401 Review**](https://isa401-review.vercel.app) | For each unit: watch a one-minute narrated recap, explain the idea in their own words and see which key ideas they covered as they type, fix R code that runs in the browser, and read real output. Each question links to real job postings that ask for the skill. | [`games/exam-review`](games/exam-review) |
+| Class 16 | [**Game Day at Yager**](https://isa401-game-day.vercel.app) | Answer 14 questions on their phones, Kahoot style, from their seat on a map of FSB 2050: distortion, data-ink, data types, encodings, color, and the grammar of graphics, told with Miami RedHawks football data. Two typed answers are checked against key ideas, and each reveal shows a strong answer. | [`games/game-day`](games/game-day) |
 
 How the review site works, and whose ideas and tools it rests on, is on its [landing page](https://isa401-review.vercel.app) and under [Acknowledgments](#acknowledgments).
 
@@ -81,7 +82,7 @@ How the review site works, and whose ideas and tools it rests on, is on its [lan
 ├── data/                  # Course datasets (Cincinnati crashes, ChatISA Job Scout, Airbnb extracts)
 ├── docs/                  # Canvas pages, assignments (one folder per HW), planning documents
 ├── figures/               # Figures used across the slide decks (TikZ sources + images)
-├── games/                 # The review site and the three class games (each deploys to Vercel)
+├── games/                 # The review site and the four class games (each deploys to Vercel)
 ├── lectures/              # xaringan slide decks, one folder per class
 ├── notebooklm_summaries/  # Sources for the AI recap videos and podcasts
 ├── old/                   # Materials from previous offerings
