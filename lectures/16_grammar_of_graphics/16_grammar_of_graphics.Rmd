@@ -1,0 +1,1837 @@
+---
+title: "ISA 401: Business Intelligence & Data Visualization"
+subtitle: "16: Fundamentals of Data Visualization (Cont.)"
+author: '<br>Fadel M. Megahed, PhD <br><br> Raymond E. Glos Professor in Business <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("linkedin"), fill = "white")` @Fadel Megahed](https://www.linkedin.com/in/fadel-megahed-289046b4) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
+date: "Fall 2026"
+output:
+  xaringan::moon_reader:
+    self_contained: true
+    css: [default, "../../style_files/fonts.css", "../../style_files/my-theme.css", "../../style_files/code-tomorrow-night-bright.css"]
+    lib_dir: libs
+    mathjax: null
+    nature:
+      highlightStyle: magula
+      highlightLines: true
+      highlightLanguage: ["r"]
+      countIncrementalSlides: false
+      ratio: "16:9"
+    includes:
+      in_header: "../../style_files/header.html"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache = FALSE,
+                      echo = FALSE,
+                      warning = FALSE,
+                      message = FALSE,
+                      progress = FALSE,
+                      verbose = FALSE,
+                      dev = 'png',
+                      fig.height = 3,
+                      dpi = 300,
+                      fig.align = 'center')
+
+options(htmltools.dir.version = FALSE, width = 52)
+
+miamired = '#C3142D'
+
+if(require(pacman)==FALSE) install.packages("pacman")
+if(require(devtools)==FALSE) install.packages("devtools")
+if(require(countdown)==FALSE) devtools::install_github("gadenbuie/countdown")
+if(require(xaringanExtra)==FALSE) devtools::install_github("gadenbuie/xaringanExtra")
+
+pacman::p_load(tidyverse, magrittr, lubridate, janitor, # data analysis pkgs
+               colorspace, # color-vision simulation
+               fontawesome, xaringanExtra, countdown) # for slides
+
+ggplot2::theme_set(ggplot2::theme_bw(base_size = 12))
+
+# Code styling shared by all ISA 401 decks: hl_r() + knitr source hook (see style_files/hl_r.R)
+source("../../style_files/hl_r.R")
+
+# a data frame as a plain HTML table (inherits the theme's default table style)
+tbl = function(df, align = NULL) {
+  knitr::kable(df, format = "html", align = align, escape = FALSE) |> as.character()
+}
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+if(require(xaringanthemer) == FALSE) install.packages("xaringanthemer")
+library(xaringanthemer)
+
+style_mono_accent(base_color = "#84d6d3",
+                  base_font_size = "20px")
+
+xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "tachyons", "panelset", "broadcast", "share_again", "search", "fit_screen", "editable"))
+
+xaringanExtra::use_clipboard(button_text = paste0(fontawesome::fa("clipboard", fill = "#dedede", height = "0.9em"), " Copy"), success_text = paste0(fontawesome::fa("check", fill = "#b9ca4a", height = "0.9em"), " Copied"))
+```
+
+```{r data_part1, include=FALSE}
+# ---- game QR codes: use the game's own images when they exist, else the copies in this folder ----
+qr_path = function(s) {
+  p = file.path("../../games/game-day/images", paste0("qr_", s, ".png"))
+  if (file.exists(p)) p else paste0("qr_", s, ".png")
+}
+stopifnot(file.exists(qr_path("A")), file.exists(qr_path("B")))
+
+# ---- Notes From Wednesday ----
+# 1. Fox News chart: Pew Research Center values (77% in 2009, 65% in 2018/2019)
+fox = list(old = 77, new = 65)
+fox$pts = fox$old - fox$new                 # percentage points
+fox$pct = 100 * (fox$old - fox$new) / fox$old  # percent decline
+stopifnot(fox$pts == 12, round(fox$pct, 1) == 15.6)
+
+# 2. Playfair's cities: London vs Constantinople in the class CSV
+playfair = readr::read_csv("../../data/playfair_data.csv", show_col_types = FALSE)
+pf_london = playfair$population[playfair$city == "London"]
+pf_const = playfair$population[playfair$city == "Constantinople"]
+stopifnot(length(pf_london) == 1, length(pf_const) == 1,
+          pf_london == 1100, pf_const == 900, pf_london > pf_const,
+          playfair$city[which.max(playfair$population)] == "London")
+
+# 3. Fox chart crop (the chart only, without the studio), for the axis-on-the-right note
+fox_crop = file.path(tempdir(), "fox_chart_crop.png")
+magick::image_read("../../figures/terrible_fox_christian.jpg") |>
+  magick::image_crop("950x545+425+62") |>
+  magick::image_resize("700x") |>
+  magick::image_write(fox_crop, format = "png")
+stopifnot(file.exists(fox_crop))
+
+# ---- data terminology activity ----
+shipping_data = readr::read_csv("../../data/shipping_data.csv", show_col_types = FALSE) |>
+  dplyr::rename_with(trimws) |>
+  dplyr::mutate(dplyr::across(dplyr::where(is.character), trimws))
+
+# ---- color vision deficiency figure (same as deck 15) ----
+pal_rg = c(Adelie = "#D7191C", Chinstrap = "#1A9641", Gentoo = "#A6611A")
+pal_oi = c(Adelie = "#E69F00", Chinstrap = "#56B4E9", Gentoo = "#009E73")
+
+peng = datasets::penguins |>
+  dplyr::filter(!is.na(bill_len), !is.na(flipper_len))
+
+cvd = tidyr::expand_grid(
+  palette = factor(c("Red / green palette", "Okabe-Ito palette"), levels = c("Red / green palette", "Okabe-Ito palette")),
+  vision = factor(c("Typical color vision", "Simulated deuteranopia"), levels = c("Typical color vision", "Simulated deuteranopia"))) |>
+  dplyr::cross_join(peng) |>
+  dplyr::mutate(col = ifelse(palette == "Red / green palette", pal_rg[as.character(species)], pal_oi[as.character(species)]),
+                col = ifelse(vision == "Simulated deuteranopia", colorspace::deutan(col), col))
+
+cvd_lab = cvd |>
+  dplyr::group_by(palette, vision, species, col) |>
+  dplyr::summarise(bill_len = mean(bill_len), flipper_len = mean(flipper_len), .groups = "drop") |>
+  dplyr::mutate(flipper_len = flipper_len + c(Adelie = -14, Chinstrap = 14, Gentoo = 13)[as.character(species)])
+
+cvd_file = file.path(tempdir(), "cvd_penguins.png")
+cvd_plot = ggplot2::ggplot(cvd, ggplot2::aes(bill_len, flipper_len)) +
+  ggplot2::geom_point(ggplot2::aes(color = col), size = 1.1, alpha = 0.85) +
+  ggplot2::geom_label(data = cvd_lab, ggplot2::aes(label = species, color = col), size = 2.8, fontface = "bold", linewidth = 0.3) +
+  ggplot2::scale_color_identity() +
+  ggplot2::facet_grid(palette ~ vision) +
+  ggplot2::labs(x = "Bill length (mm)", y = "Flipper length (mm)") +
+  ggplot2::theme_bw(base_size = 10)
+ggplot2::ggsave(cvd_file, cvd_plot, width = 6.4, height = 4.2, dpi = 220)
+stopifnot(file.exists(cvd_file))
+```
+
+<style>
+/* shared cards */
+.card { border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1); background:#ffffff; }
+.card .ch { background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:7px 12px; }
+.card .ch.gray { background:#585E60; }
+.card .cb { padding:9px 12px; font-size:13.5px; line-height:1.45; }
+.lesson { margin-top:12px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:9px 16px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14.5px; line-height:1.5; }
+.lesson b.r { color:#c3142d; }
+.qbar { border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:5px 14px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14px; line-height:1.4; margin:0 0 6px 0; }
+.qbar b { color:#c3142d; }
+.src { font-size:11.5px; color:#585E60; line-height:1.4; }
+.xaringanextra-clipboard-button { display:none; }
+.rcode .xaringanextra-clipboard-button { display:block !important; }
+.rcode { position: relative; padding-top: 18px !important; }
+.rcode .xaringanextra-clipboard-button { opacity: 0.55; top: 0; right: 4px; padding: 2px 6px; font-size: 11px; font-family: Lato, sans-serif; color: #dedede; cursor: pointer; }
+.tbl-sm table { font-size:13px !important; line-height:1.3 !important; }
+.tbl-sm table td, .tbl-sm table th { padding:4px 10px !important; }
+/* fractions without MathJax */
+.eq { display:flex; align-items:center; gap:12px; font-size:19px; color:#1b1b1b; flex-wrap:wrap; }
+.frac { display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; }
+.frac .ft { padding:0 6px 3px 6px; border-bottom:2px solid #1b1b1b; text-align:center; }
+.frac .fb { padding:3px 6px 0 6px; text-align:center; }
+.eq .lab { font-weight:700; color:#c3142d; min-width:150px; }
+.eq .res { font-weight:700; }
+.steprow { border:1px solid #d1d5db; border-left:6px solid #585E60; border-radius:8px; padding:8px 14px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); margin-top:10px; }
+.steprow.red { border-left-color:#c3142d; }
+.tg { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:10px; margin-top:10px; }
+.tg .card .cb { font-size:14.5px; }
+/* deck 16: game join QR codes */
+.qr-pair { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:4px; }
+.qr-box { text-align:center; border:1px solid #e5e7eb; border-radius:8px; padding:8px 6px 6px 6px; background:#ffffff; }
+.qr-box .sec { font-weight:700; font-size:15px; color:#1b1b1b; }
+.qr-box .sec span { font-weight:400; color:#585E60; font-size:13px; }
+.qr-box img { display:block; width:180px; height:180px; margin:6px auto 4px auto; image-rendering:pixelated; }
+.qr-box .url { font-size:12.5px; white-space:nowrap; }
+.qr-box .url a { color:#1b1b1b; text-decoration:underline; text-decoration-color:#9ca3af; }
+/* deck 16: four data-type cards */
+.dt4 { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:10px; }
+.dt4 .cb { font-size:15.5px; line-height:1.5; }
+.dt4 .ex { color:#585E60; font-size:14px; margin-top:6px; }
+.dt4 .test { margin-top:10px; padding:8px 10px; background:#f3f4f6; border-radius:6px; font-size:14.5px; }
+.dt4 .test.r { background:#fdf2f2; }
+.dt-grp { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:10px 0 6px 0; }
+.dt-grp div { text-align:center; font-size:13px; font-weight:700; color:#585E60; border-bottom:2px solid #9ca3af; padding-bottom:2px; letter-spacing:0.03em; }
+.dt-grp div.r { color:#c3142d; border-bottom-color:#c3142d; }
+</style>
+
+<style>
+.sc-bar { display:flex; gap:6px; align-items:center; margin-top:6px; font-family:'Noto Sans','Roboto',Arial,sans-serif; }
+.sc-btn { background:#ffffff; color:#374151; border:1px solid #d1d5db; border-radius:6px; padding:4px 11px; font-size:12.5px; font-weight:600; cursor:pointer; line-height:1.2; }
+.sc-btn:disabled { opacity:0.4; cursor:default; }
+.sc-btn.sc-primary { background:#c3142d; color:#ffffff; border-color:#c3142d; }
+.sc-spds { display:inline-flex; border:1px solid #d1d5db; border-radius:6px; overflow:hidden; margin-left:4px; }
+.sc-spd { background:#ffffff; color:#374151; border:0; border-right:1px solid #d1d5db; padding:4px 8px; font-size:11.5px; cursor:pointer; }
+.sc-spd:last-child { border-right:0; }
+.sc-spd.on { background:#585E60; color:#ffffff; }
+.sc-count { margin-left:auto; color:#585E60; font-size:12px; font-variant-numeric:tabular-nums; }
+.sc-caps { position:relative; margin-top:8px; border:1px solid #d1d5db; border-left:5px solid #c3142d; border-radius:8px; background:#fdf2f2; padding:8px 12px; font-size:13.5px; line-height:1.45; color:#1b1b1b; min-height:46px; }
+.sc-cap { display:none; }
+.sc-cap.on { display:block; }
+.sc-cap b { color:#c3142d; }
+</style>
+<script>
+(function () {
+  if (window.isaStepper) { return; }
+  window.isaStepper = function (root, scene) {
+    if (root.getAttribute('data-built')) { return; }
+    root.setAttribute('data-built', '1');
+    var i = 0, timer = null, speed = 1;
+    var q = function (s) { return root.querySelector(s); };
+    var bBack = q('.sc-back'), bStep = q('.sc-step'), bPlay = q('.sc-play'), bReset = q('.sc-reset'), cnt = q('.sc-count');
+    var spd = root.querySelectorAll('.sc-spd');
+    var caps = root.querySelectorAll('.sc-cap');
+    var flagged = root.querySelectorAll('[data-from]');
+    function applyFlags(j) {
+      flagged.forEach(function (el) {
+        var f = Number(el.getAttribute('data-from'));
+        var t = el.hasAttribute('data-to') ? Number(el.getAttribute('data-to')) : 9999;
+        el.classList.toggle('on', j >= f && !(j >= t));
+      });
+      caps.forEach(function (c) { c.classList.toggle('on', Number(c.getAttribute('data-step')) === j); });
+    }
+    function paint() {
+      bBack.disabled = (i === 0);
+      bStep.disabled = (i === scene.n);
+      bPlay.textContent = (timer !== null) ? 'Pause' : 'Play';
+      cnt.textContent = i + ' / ' + scene.n;
+    }
+    function go(j, dir) { i = j; applyFlags(j); if (scene.render) { scene.render(j, dir, speed, root); } paint(); }
+    function stop() { if (timer !== null) { clearTimeout(timer); timer = null; } paint(); }
+    function tick() {
+      timer = null;
+      if (i === scene.n) { paint(); return; }
+      go(i + 1, 1);
+      if (i !== scene.n) { timer = setTimeout(tick, scene.dwell[i] / speed); }
+      paint();
+    }
+    bStep.addEventListener('click', function () { stop(); if (i !== scene.n) { go(i + 1, 1); } });
+    bBack.addEventListener('click', function () { stop(); if (i !== 0) { go(i - 1, -1); } });
+    bReset.addEventListener('click', function () { stop(); go(0, -1); });
+    bPlay.addEventListener('click', function () {
+      if (timer !== null) { stop(); return; }
+      if (i === scene.n) { go(0, -1); }
+      timer = setTimeout(tick, scene.dwell[i] / speed);
+      paint();
+    });
+    spd.forEach(function (b) {
+      b.addEventListener('click', function () {
+        speed = Number(b.getAttribute('data-spd'));
+        spd.forEach(function (o) { o.classList.toggle('on', o === b); });
+      });
+    });
+    ['keydown', 'keypress', 'keyup'].forEach(function (t) { root.addEventListener(t, function (e) { e.stopPropagation(); }); });
+    root.addEventListener('mousedown', function (e) { if (e.target.tagName === 'BUTTON') { e.preventDefault(); } });
+    root.addEventListener('focusin', function () { if (window.slideshow) { window.slideshow.pause(); } });
+    root.addEventListener('focusout', function () { if (window.slideshow) { window.slideshow.resume(); } });
+    if (window.slideshow) { window.slideshow.on('hideSlide', stop); }
+    go(0, -1);
+  };
+  window.isaTypewriter = function (el, text, msPerChar, done) {
+    var k = 0, h = null;
+    function step() {
+      k = k + 1;
+      el.textContent = text.slice(0, k);
+      if (k !== text.length) { h = setTimeout(step, msPerChar); } else { h = null; if (done) { done(); } }
+    }
+    el.textContent = '';
+    h = setTimeout(step, msPerChar);
+    return function () { if (h !== null) { clearTimeout(h); h = null; } };
+  };
+})();
+</script>
+
+# Before We Start
+
+<div style="display:grid; grid-template-columns:1.15fr 1fr; gap:14px; margin-top:12px;">
+  <div class="card">
+    <div class="ch">1 &nbsp; Join today's game</div>
+    <div class="cb" style="font-size:14px; line-height:1.5;">
+      <div class="qr-pair">
+        <div class="qr-box"><div class="sec">Section A <span>(8:30 AM)</span></div><img src="`r knitr::image_uri(qr_path('A'))`" alt="QR code for the Section A game link"><div class="url"><a href="https://isa401-game-day.vercel.app/?section=A" target="_blank">isa401-game-day.vercel.app/?section=A</a></div></div>
+        <div class="qr-box"><div class="sec">Section B <span>(10:05 AM)</span></div><img src="`r knitr::image_uri(qr_path('B'))`" alt="QR code for the Section B game link"><div class="url"><a href="https://isa401-game-day.vercel.app/?section=B" target="_blank">isa401-game-day.vercel.app/?section=B</a></div></div>
+      </div>
+      <div style="margin-top:10px;">Enter your <b>preferred first name</b> and <b>last initial</b>, then <b>tap your seat</b> (or <b>Joining remotely</b>).</div>
+      <div style="color:#585E60; font-size:13px;">The screen shows only your first name and seat. Points do not count toward your grade.</div>
+    </div>
+  </div>
+  <div style="display:flex; flex-direction:column; gap:14px;">
+    <div class="card">
+      <div class="ch">2 &nbsp; Join today's Zoom</div>
+      <div class="cb" style="font-size:14px; line-height:1.5;">Use the Zoom link in the <a href="https://miamioh.instructure.com/courses/258169/modules/981092" target="_blank"><b>Week 0 Module</b></a> on Canvas. <b>Mute</b> your mic and <b>turn off</b> your video.<br><span style="color:#585E60;">There is no R today. Your phone is enough.</span></div>
+    </div>
+    <div class="card">
+      <div class="ch gray">3 &nbsp; Today's plan</div>
+      <div class="cb" style="font-size:14px; line-height:1.55;"><b>3 min.</b> Join the game.<br><b>12 min.</b> Finishing Wednesday: data types, encodings, color.<br><b>20 min.</b> The grammar of graphics.<br><b>20 min.</b> Game Day at Yager.<br><b>3 min.</b> The class project.<br><b>22 min.</b> Exam 01 review.</div>
+    </div>
+  </div>
+</div>
+
+???
+
+Three minutes (0 to 3). Leave this slide up while people walk in. Open the game's host view in Lobby before class so the seat map fills on the projector while they join. Students on Zoom pick "Joining remotely". The game itself runs in Part 3; joining now saves time later.
+
+---
+
+# Where We Are
+
+<div style="display:flex; justify-content:center; margin-top:18px;"><div style="border:2px solid #1b1b1b; border-radius:10px; padding:10px 40px; font-size:22px; font-weight:700; background:#ffffff;">ISA 401</div></div>
+<div style="display:flex; justify-content:center; color:#585E60; font-size:20px; line-height:1; margin:6px 0;">&darr;</div>
+<div style="display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:14px;">
+<div class="card" style="opacity:0.75;"><div class="ch gray">Phase I</div><div class="cb" style="font-size:16px; line-height:1.55;"><b>Data Acquisition &amp; Transformation</b><br><span style="color:#585E60;">Aug 24 to Oct 12 (ends with Exam 01)</span></div></div>
+<div class="card" style="border:2px solid #c3142d;"><div class="ch">Phase II &nbsp;(we are here)</div><div class="cb" style="font-size:16px; line-height:1.55;"><b>Data Visualization &amp; Communication</b><br><span style="color:#585E60;">Oct 14 to Nov 16 (ends with Exam 02)</span></div></div>
+<div class="card" style="opacity:0.75;"><div class="ch gray">Phase III</div><div class="cb" style="font-size:16px; line-height:1.55;"><b>Exploratory Data Mining &amp; Project Synthesis</b><br><span style="color:#585E60;">Nov 18 to Dec 2</span></div></div>
+</div>
+
+<div class="lesson" style="margin-top:22px;"><b class="r">Today is the second class of Phase II.</b> On Wednesday we covered principles for good charts. Today we finish them and start writing charts as code.</div>
+
+<div class="src" style="margin-top:8px;">Phase names and dates from the course schedule on <a href="https://miamioh.instructure.com/courses/258169" target="_blank">Canvas</a>.</div>
+
+???
+
+Thirty seconds, inside the 3 joining minutes. Same phase cards as Wednesday.
+
+---
+
+# Learning Objectives
+
+By the end of today, you should be able to:
+
+1. **Apply** the grammar of graphics using ggplot2.
+
+2. **Map** data types to visual encodings in code.
+
+3. **Refine** charts with labels, scales, and themes.
+
+4. **Critique** and improve draft visualizations.
+
+<div style="margin-top:18px; color:#585E60; font-size:17px;">... and finish Wednesday: data types, encodings, color.</div>
+
+???
+
+Thirty seconds, inside the 3 joining minutes. The four objectives are the 10/19 row of the schedule. Objectives 1 to 3 are Part 2; objective 4 runs through the game and the exam review.
+
+---
+
+class: inverse, center, middle
+
+# Part 1: Finishing Wednesday
+
+???
+
+No time of its own. Part 1 runs 12 minutes (3 to 15).
+
+---
+
+# Notes From Wednesday
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:12px;">
+<div style="display:flex; flex-direction:column; gap:14px;">
+<div class="card"><div class="ch">1 &nbsp; Correction: points vs. percent</div><div class="cb" style="font-size:14.5px; line-height:1.5;">
+<div>Christians in the US: `r fox$old`% (2009) to `r fox$new`% (2018/2019).</div>
+<div class="eq" style="font-size:17px; margin:8px 0;"><span class="frac"><span class="ft">`r fox$old` &minus; `r fox$new`</span><span class="fb">`r fox$old`</span></span><span>=</span><span class="res">`r formatC(fox$pct, format = "f", digits = 1)`% decline</span></div>
+<div>The drop is <b>`r fox$pts` percentage points</b>, which is a <b>`r formatC(fox$pct, format = "f", digits = 1)`% decline</b>. Our typed note on the Fox slide said "12% drop".</div>
+<div class="src" style="margin-top:6px;">Values: <a href="https://www.pewresearch.org/religion/2019/10/17/in-u-s-decline-of-christianity-continues-at-rapid-pace/" target="_blank">Pew Research Center (2019)</a>.</div>
+</div></div>
+<div class="card"><div class="ch">2 &nbsp; Correction: Playfair's largest city</div><div class="cb" style="font-size:14.5px; line-height:1.5;">
+<div>In our Playfair data, <b>London (`r scales::comma(pf_london)`K)</b> is larger than <b>Constantinople (`r scales::comma(pf_const)`K)</b>. London is the largest of the `r nrow(playfair)` cities.</div>
+<div class="src" style="margin-top:6px;">Data: <code>data/playfair_data.csv</code>, from <a href="http://www.stat.uiowa.edu/~luke/data/Playfair" target="_blank">stat.uiowa.edu/~luke/data/Playfair</a>.</div>
+</div></div>
+</div>
+<div class="card"><div class="ch gray">3 &nbsp; Promised: where is the Fox chart's y-axis?</div><div class="cb" style="font-size:14.5px; line-height:1.5;">
+<img src="`r knitr::image_uri(fox_crop)`" alt="The Fox News bar chart of Americans who identify as Christians, with y-axis labels 58, 68, and 78 on the right side" style="display:block; width:100%; border-radius:4px;">
+<div style="margin-top:8px;">The y-axis labels (<b>58, 68, 78</b>) are on the <b>right</b> side of the chart. The axis starts at 58, not 0, so the 2019 bar looks less than half as tall as the 2009 bar.</div>
+<div class="src" style="margin-top:6px;">Source: <a href="https://video.foxnews.com/v/6274513508001" target="_blank">this Fox News clip</a>.</div>
+</div></div>
+</div>
+
+???
+
+Two minutes (3 to 5), both sections. Card 1: 12 points out of 77 is a 15.6% decline; "percentage points" is the difference, "percent" is the relative change. Card 2: London is first in the data (credit the room, no names). Card 3 was promised to Section A: the labels on the right made the starting value of 58 easy to miss. Measured from 58, the bars are 19 and 7 units tall.
+
+---
+
+# Data Types in One Slide
+
+<div class="dt-grp"><div style="border-bottom:none;"></div><div class="r">QUANTITATIVE</div></div>
+
+<div class="dt4">
+<div class="card"><div class="ch gray">Nominal</div><div class="cb">Values are only <b>=</b> or <b>&ne;</b>.<div class="ex">Apples, bananas, oranges; jersey numbers.</div><div class="test"><b>Test:</b> is jersey #22 "twice" jersey #11? <b>No.</b> The number is a label.</div></div></div>
+<div class="card"><div class="ch gray">Ordinal</div><div class="cb">Values have an order (<b>&lt;</b>), but the gaps are not equal amounts.<div class="ex">Survey ratings (poor, fair, good); finishing place (1st, 2nd, 3rd).</div><div class="test"><b>Test:</b> is the gap from 1st to 2nd place the same as from 2nd to 3rd? <b>We cannot say.</b></div></div></div>
+<div class="card"><div class="ch">Interval</div><div class="cb">Differences mean something; the location of zero is arbitrary.<div class="ex">Temperature in &deg;F or &deg;C.</div><div class="test r"><b>Test:</b> is 40&deg;F twice as warm as 20&deg;F? <b>No,</b> but the 20&deg;F difference is meaningful.</div></div></div>
+<div class="card"><div class="ch">Ratio</div><div class="cb">Zero means none, so ratios, proportions, and differences all mean something.<div class="ex">Length, weight, counts.</div><div class="test r"><b>Test:</b> is a 40 lb bag twice as heavy as a 20 lb bag? <b>Yes.</b> 0 lb means no weight.</div></div></div>
+</div>
+
+<div class="lesson" style="margin-top:16px;"><b class="r">Why it matters for charts:</b> a bar's length shows a value as a distance from zero. That works for ratio data. For interval data, a bar from zero has no meaning, so we use positions (dots, lines) instead.</div>
+
+<div class="src" style="margin-top:8px;">Source: Stevens, S. S. (1946). <a href="https://doi.org/10.1126/science.103.2684.677" target="_blank">On the Theory of Scales of Measurement</a>. <i>Science</i>, 103(2684), 677-680.</div>
+
+???
+
+One and a half minutes (5 to 6.5). This condenses Wednesday's four data-type slides. Section B has not seen them: read the four tests aloud. Section A saw these on Wednesday and stopped partway through Data Terminology: treat this slide and the Task tab on the next slide as re-review (about 30 seconds each), skip or shorten the timer, and pick up at the Answer tab.
+
+---
+
+# Data Terminology
+
+`r countdown(minutes = 2, seconds = 0, top = 0, font_size = "2em")`
+
+.panelset[
+
+.panel[.panel-name[Task]
+
+<div class="qbar" style="margin-top:6px; font-size:15px;"><b>Task.</b> In 2 minutes, identify the data type (nominal, ordinal, interval, or ratio) of each column.</div>
+
+<div class="tbl-sm">
+`r tbl(shipping_data)`
+</div>
+
+]
+
+.panel[.panel-name[Your Answer]
+
+.can-edit.key-c16-datatypes[
+- Order ID: ________________
+- Order Date / Ship Date: ________________
+- Order Priority: ________________
+- Product Container: ________________
+- Product Cost: ________________
+]
+
+]
+
+.panel[.panel-name[Answer]
+
+<details class="answer-gate">
+<summary>Show the answer</summary>
+<div class="tbl-sm" style="margin-top:10px;">
+<table>
+<thead><tr><th>Column</th><th>Type</th><th>Why</th></tr></thead>
+<tbody>
+<tr><td>Order ID</td><td>Nominal</td><td>A label. Order 6 is not "more" than order 3, and averaging IDs means nothing.</td></tr>
+<tr><td>Order Date, Ship Date</td><td>Interval</td><td>The difference (days to ship) is meaningful; a ratio of two dates is not. "Quantitative" is also accepted.</td></tr>
+<tr><td>Order Priority</td><td>Ordinal</td><td>Urgent, high, medium, low has an order, but the gaps between levels are not equal amounts.</td></tr>
+<tr><td>Product Container</td><td>Nominal or ordinal</td><td>Small, medium, large, and jumbo box have an order, so ordinal can be argued. A wrap bag has no place in that order, so with it in the column, nominal is the safer answer.</td></tr>
+<tr><td>Product Cost</td><td>Ratio</td><td>$0 means no cost, so $40 is twice $20.</td></tr>
+</tbody>
+</table>
+</div>
+</details>
+
+]
+
+.panel[.panel-name[Discussion]
+
+.can-edit.key-c16-datatypes-discussion[
+- Edit me to include any notes/discussion
+]
+
+]
+
+]
+
+???
+
+Three and a half minutes (6.5 to 10): two on the timer, the rest on the answer. Section A started this on Wednesday; a shorter timer is fine there. Both answers for Product Container are accepted (that matches what was said in Section A on Wednesday). For the dates, "interval" is the precise answer and "quantitative" is accepted. The point is that the type comes from what the values mean, not from how they are stored (Order ID is a number but nominal).
+
+---
+
+# Data vs. Conceptual Models
+
+<div style="display:flex; gap:12px; align-items:stretch; margin-top:18px;">
+<div class="card" style="flex:1;"><div class="ch gray">1 &nbsp; Data model</div><div class="cb" style="font-size:16px; line-height:1.7;">32.5, 54.0, &minus;17.3, ...<div style="color:#585E60; font-size:14px;">Numbers in a column.</div></div></div>
+<div style="align-self:center; color:#c3142d; font-size:24px; font-weight:700;">&rarr;</div>
+<div class="card" style="flex:1;"><div class="ch gray">2 &nbsp; Conceptual model</div><div class="cb" style="font-size:16px; line-height:1.7;">Temperature<div style="color:#585E60; font-size:14px;">What the numbers mean.</div></div></div>
+<div style="align-self:center; color:#c3142d; font-size:24px; font-weight:700;">&rarr;</div>
+<div class="card" style="flex:1.4;"><div class="ch">3 &nbsp; Data type we choose</div><div class="cb" style="font-size:15.5px; line-height:1.7;">
+<div>Continuous to x significant digits: <b>quantitative</b></div>
+<div>Hot, warm, cold: <b>ordinal</b></div>
+<div>Burned vs. not burned: <b>nominal</b></div>
+</div></div>
+</div>
+
+<div class="lesson" style="margin-top:18px;"><b class="r">The same column can become different data types,</b> depending on the question we ask. The type we choose decides which visual encodings fit.</div>
+
+???
+
+Thirty seconds (10 to 10.5). Unchanged from Wednesday.
+
+---
+
+# Mapping to Data Types
+
+<div style="display:grid; grid-template-columns:1.05fr 0.95fr; gap:18px; margin-top:6px; align-items:start;">
+<div>
+<div style="font-weight:700; font-size:15px; color:#1b1b1b; margin-bottom:4px;">Bertin's visual (encoding) variables</div>
+<img src="`r knitr::image_uri('../../figures/visualvariables.png')`" alt="Bertin's visual variables: position, size, value, texture, color, orientation, and shape" style="display:block; width:100%;">
+<div class="src" style="margin-top:4px;">Source: Bertin, J. (1967). <i>Sémiologie graphique</i>. Paris: Gauthier-Villars. English edition: <a href="https://www.esri.com/en-us/esri-press/browse/semiology-of-graphics-diagrams-networks-maps" target="_blank"><i>Semiology of Graphics</i></a> (Esri Press, 2010).</div>
+</div>
+<div>
+<div style="font-weight:700; font-size:15px; color:#1b1b1b; margin-bottom:4px;">Which variables suit which data type</div>
+<img src="`r knitr::image_uri('../../figures/mappingdatatypes.png')`" alt="A table rating position, size, grey value, texture, color, orientation, and shape as good, OK, or bad for nominal, ordinal, and quantitative data" style="display:block; width:88%;">
+<div class="src" style="margin-top:4px;">Source: adapted from Hanspeter Pfister, lecture notes for CS 171, Harvard University. <a href="http://cs171.org/" target="_blank">cs171.org</a></div>
+</div>
+</div>
+
+???
+
+One minute (10.5 to 11.5). Left: the seven visual variables. Right: read one row from each data type. Position is the only variable rated good for all three; color is good for nominal data only.
+
+---
+
+# Visual Channels and Their Precision
+
+```{r franconeri, out.width='54%', fig.alt='Visual channels ranked by the precision of the comparisons they support'}
+knitr::include_graphics('../../figures/franconeri2021.png')
+```
+
+<div class="lesson" style="margin-top:2px; padding:5px 14px; font-size:14px;">We perceive position more accurately than the other channels; area, angle, and color intensity are less precise.</div>
+
+<div class="src" style="margin-top:4px;">Source: Franconeri, S. L., et al. (2021). <a href="https://doi.org/10.1177/15291006211051956" target="_blank">The Science of Visual Data Communication: What Works</a>. <i>Psychological Science in the Public Interest</i>, 22(3), 110-161.</div>
+
+???
+
+One minute (11.5 to 12.5). Read the left column top to bottom: we perceive position more accurately than the other channels; length next, then area and angle, and intensity gives the least precise comparisons. Tie it back: Russia's squares used area, Playfair's bubbles used area, and the dot chart used position.
+
+---
+
+# Color: Use It Sparingly
+
+<div style="display:grid; grid-template-columns:0.9fr 1.1fr; gap:18px; margin-top:4px; align-items:start;">
+<div>
+<div style="font-weight:700; font-size:15px; color:#1b1b1b; margin-bottom:4px;">Simultaneous contrast</div>
+<img src="`r knitr::image_uri('../../figures/sc2.png')`" alt="The same color looks different on different backgrounds, and different colors can look the same" style="display:block; width:100%;">
+<div class="src" style="margin-top:2px;">Source: adapted from Hanspeter Pfister, lecture notes for CS 171, Harvard University. <a href="http://cs171.org/" target="_blank">cs171.org</a></div>
+<div class="lesson" style="font-size:14px; margin-top:10px;">"About 1 in 12 men have color vision deficiency." <span style="color:#585E60;">(<a href="https://www.nei.nih.gov/learn-about-eye-health/eye-conditions-and-diseases/color-blindness" target="_blank">National Eye Institute</a>)</span></div>
+<div style="font-size:14px; line-height:1.5; margin-top:8px;"><b>Right, top row:</b> under simulated deuteranopia, the red / green palette turns the three species into similar olive browns. <b>Bottom row:</b> the Okabe-Ito palette keeps them apart.</div>
+</div>
+<div>
+<div style="font-weight:700; font-size:15px; color:#1b1b1b; margin-bottom:4px;">Color vision deficiency</div>
+<img src="`r knitr::image_uri(cvd_file)`" alt="Penguin bill length vs flipper length by species, in a red/green palette and the Okabe-Ito palette, each under typical vision and simulated deuteranopia" style="display:block; width:100%;">
+<div class="src" style="margin-top:2px;">Data: <code>datasets::penguins</code> (Palmer Station LTER). Simulation: <code>colorspace::deutan()</code>.</div>
+</div>
+</div>
+
+???
+
+One and a half minutes (12.5 to 14). Left: the same color looks different depending on what surrounds it, so color is a weak channel for exact values. Right: cover the labels and ask the room to name the species in the top-right panel. The fix costs nothing: a different palette.
+
+---
+
+# ColorBrewer: Choosing a Color Scale
+
+```{r brewer, out.width='100%', fig.alt='Sequential, diverging and qualitative color schemes'}
+knitr::include_graphics('../../figures/brewer1.png')
+```
+
+<div class="lesson" style="margin-top:2px; font-size:14px;"><b class="r">Pick a palette:</b> <a href="https://colorbrewer2.org/" target="_blank">colorbrewer2.org</a> lets you choose the number of classes and the scheme type, and filter for colorblind-safe palettes.</div>
+
+<div class="src" style="margin-top:6px;">Source: Brewer, C. A. (1999). Color Use Guidelines for Data Representation. <i>Proceedings of the Section on Statistical Graphics</i>, American Statistical Association, 55-60. The guidelines are built into <a href="https://colorbrewer2.org/" target="_blank">colorbrewer2.org</a>.</div>
+
+???
+
+One minute (14 to 15). Sequential for ordered values from low to high, diverging when there is a meaningful midpoint, qualitative for nominal categories. This matches the data types from earlier. Next: the grammar of graphics, where a palette is one line of code.
+
+<!-- PART2 -->
+
+---
+
+class: inverse, center, middle
+
+# Part 2: The Grammar of Graphics
+
+```{r data_part2, include=FALSE}
+# ---- Part 2: the grammar of graphics ----
+# Every stepper figure is made by running the exact code string shown on the slide (minus the #<< marker),
+# so the code on the slide and the picture next to it cannot drift apart. Steps before a theme layer
+# use ggplot2's real default theme (theme_grey), not the deck's theme_bw.
+p2_dir = file.path(tempdir(), "part2")
+dir.create(p2_dir, showWarnings = FALSE)
+p2_file = function(name) file.path(p2_dir, paste0(name, ".png"))
+
+# eval() only runs the code strings written in this chunk (never outside input).
+gg_run = function(code, name, w = 4.6, h = 3.6, env = globalenv()) {
+  code = gsub("#<<", "", paste(code, collapse = "\n"), fixed = TRUE)
+  old = ggplot2::theme_set(ggplot2::theme_grey())
+  on.exit(ggplot2::theme_set(old))
+  p = eval(parse(text = code), envir = env)
+  ggplot2::ggsave(p2_file(name), p, width = w, height = h, dpi = 200)
+  stopifnot(file.exists(p2_file(name)))
+  p2_file(name)
+}
+
+# Line up the layer-name comments (# data, # aesthetics, ...) in one column: the same column on every
+# step of a stepper, so the comments do not move between steps.
+cm_re = "^(.*?\\S)\\s+(# [a-z][a-z :]*(?: #<<)?)\\s*$"
+cm_width = function(codes) {
+  l = unlist(strsplit(unlist(codes), "\n", fixed = TRUE))
+  l = l[grepl(cm_re, l, perl = TRUE)]
+  if (!length(l)) return(0)
+  max(nchar(sub(cm_re, "\\1", l, perl = TRUE))) + 2
+}
+align_comments = function(code, w = cm_width(code)) {
+  l = strsplit(code, "\n", fixed = TRUE)[[1]]
+  has = grepl(cm_re, l, perl = TRUE)
+  l[has] = paste0(formatC(sub(cm_re, "\\1", l[has], perl = TRUE), width = -w), sub(cm_re, "\\2", l[has], perl = TRUE))
+  paste(l, collapse = "\n")
+}
+
+# Stepper HTML: code (left) and figure (right) for each step, a caption below, then the controls.
+# steps: list of list(code = <string or NULL>, fig = <png path or raw HTML>, alt = , cap = <HTML>)
+# ratio: width / height of the figures, so the figure box keeps one size on every step.
+ggs = function(steps, dwell, size = "60%", ratio = "4.6 / 3.6", note0 = "") {
+  n = length(steps) - 1
+  w = cm_width(lapply(steps, function(s) s$code))
+  code_div = vapply(seq_along(steps), function(k) {
+    s = steps[[k]]
+    inner = if (is.null(s$code)) paste0("<div class='ggs-empty'>", note0, "</div>") else hl_r(align_comments(s$code, w), size)
+    sprintf("<div class='ggs-v' data-from='%d' data-to='%d'>%s</div>", k - 1, k, inner)
+  }, "")
+  fig_div = vapply(seq_along(steps), function(k) {
+    s = steps[[k]]
+    inner = if (grepl("\\.png$", s$fig)) sprintf("<img src='%s' alt='%s'>", knitr::image_uri(s$fig), s$alt) else s$fig
+    sprintf("<div class='ggs-v' data-from='%d' data-to='%d'>%s</div>", k - 1, k, inner)
+  }, "")
+  caps = vapply(seq_along(steps), function(k) {
+    sprintf("<div class='sc-cap%s' data-step='%d'>%s</div>", if (k == 1) " on" else "", k - 1, steps[[k]]$cap)
+  }, "")
+  bar = paste0("<div class='sc-bar'><button type='button' class='sc-btn sc-back'>Back</button>",
+               "<button type='button' class='sc-btn sc-primary sc-step'>Step</button>",
+               "<button type='button' class='sc-btn sc-play'>Play</button>",
+               "<button type='button' class='sc-btn sc-reset'>Reset</button>",
+               "<span class='sc-spds'><button type='button' class='sc-spd' data-spd='0.5'>0.5x</button>",
+               "<button type='button' class='sc-spd on' data-spd='1'>1x</button>",
+               "<button type='button' class='sc-spd' data-spd='2'>2x</button></span>",
+               "<span class='sc-count'>0 / ", n, "</span></div>")
+  stopifnot(length(dwell) == n + 1)
+  paste0("<div class='ggs' data-n='", n, "' data-dwell='", paste(dwell, collapse = ","), "'>",
+         "<div class='ggs-grid'><div class='ggs-l'>", paste(code_div, collapse = ""), "</div>",
+         "<div class='ggs-r' style='aspect-ratio:", ratio, ";'>", paste(fig_div, collapse = ""), "</div></div>",
+         "<div class='sc-caps ggs-caps'>", paste(caps, collapse = ""), "</div>", bar, "</div>")
+}
+
+# Playfair's cities plus a region column. Playfair's data has no region, so we derive one:
+# the UN M49 subregion of each city's present-day country (https://unstats.un.org/unsd/methodology/m49/).
+# Istanbul (Constantinople) is in Turkiye, which M49 places in Western Asia.
+m49 = c(London = "Northern Europe", Constantinople = "Western Asia", Paris = "Western Europe",
+        Naples = "Southern Europe", Vienna = "Western Europe", Moscow = "Eastern Europe",
+        Amsterdam = "Western Europe", Dublin = "Northern Europe", Venice = "Southern Europe",
+        Petersburgh = "Eastern Europe", Rome = "Southern Europe", Berlin = "Western Europe",
+        Madrid = "Southern Europe", Palermo = "Southern Europe", Lisbon = "Southern Europe",
+        Copenhagen = "Northern Europe", Genoa = "Southern Europe", Turin = "Southern Europe",
+        Warsaw = "Eastern Europe", Florence = "Southern Europe", Stockholm = "Northern Europe",
+        Edinburgh = "Northern Europe")
+stopifnot(setequal(names(m49), playfair$city), nrow(playfair) == 22)
+playfair = playfair |> dplyr::mutate(region = unname(m49[city]))
+
+region_totals = playfair |>
+  dplyr::group_by(region) |>
+  dplyr::summarise(cities = dplyr::n(), population = sum(population), .groups = "drop") |>
+  dplyr::arrange(dplyr::desc(population))
+stopifnot(sum(region_totals$cities) == 22, sum(region_totals$population) == sum(playfair$population))
+
+# the finding stated in the Playfair title
+pf_big = playfair$city[playfair$population > 500]
+stopifnot(length(pf_big) == 3, setequal(pf_big, c("London", "Constantinople", "Paris")))
+
+# ---- slide: The Grammar of Graphics (stacked bar -> pie) ----
+region_totals = region_totals |> dplyr::mutate(region = forcats::fct_inorder(region))
+code_bar = 'ggplot2::ggplot(data = region_totals,        # data
+  ggplot2::aes(x = "", y = population,       # aesthetics
+    fill = region)) +
+  ggplot2::geom_col() +                      # geometry
+  ggplot2::coord_cartesian() +               # coordinates
+  ggplot2::theme_void()                      # theme'
+code_pie = sub("  ggplot2::coord_cartesian() +               # coordinates",
+               '  ggplot2::coord_polar(theta = "y") +        # coordinates #<<', code_bar, fixed = TRUE)
+stopifnot(code_pie != code_bar)
+f_bar = gg_run(code_bar, "s13_bar")
+f_pie = gg_run(code_pie, "s13_pie")
+s13_table = paste0("<div class='tbl-sm ggs-tbl'>",
+                   tbl(region_totals |> dplyr::mutate(population = scales::comma(population)) |>
+                         dplyr::rename(`population (thousands)` = population),
+                       align = c("l", "r", "r")), "</div>")
+
+# ---- slide: Building Playfair's Cities (data -> aes -> geom -> reorder -> labs -> theme) ----
+# step 0 is Playfair's bubble chart from Wednesday, redrawn in four rows so the city names are legible
+pf_bubble = playfair |>
+  dplyr::mutate(row = rep(1:4, times = c(6, 6, 5, 5)),
+                col = c(1:6, 1:6, 1:5, 1:5),
+                lab = paste0(city, "\n", scales::comma(population), "K"))
+f_bubble = file.path(p2_dir, "s16_bubble.png")
+ggplot2::ggsave(f_bubble, width = 4.6, height = 3.6, dpi = 200, plot =
+  ggplot2::ggplot(pf_bubble, ggplot2::aes(x = col, y = -row)) +
+    ggplot2::geom_point(ggplot2::aes(size = population), shape = 21, fill = "white", color = "grey25") +
+    ggplot2::geom_text(ggplot2::aes(label = lab), size = 2.5, lineheight = 0.85, nudge_y = 0.48) +
+    ggplot2::scale_size_area(max_size = 16) +
+    ggplot2::scale_y_continuous(expand = ggplot2::expansion(add = c(0.45, 0.65))) +
+    ggplot2::scale_x_continuous(expand = ggplot2::expansion(add = 0.6)) +
+    ggplot2::theme_void() + ggplot2::theme(legend.position = "none"))
+
+pf_title = "Only three cities had over 500,000 people"
+pf_code = list(
+'ggplot2::ggplot(data = playfair)             # data #<<',
+'ggplot2::ggplot(data = playfair,             # data
+  ggplot2::aes(x = population,               # aesthetics #<<
+    y = city))',
+'ggplot2::ggplot(data = playfair,             # data
+  ggplot2::aes(x = population,               # aesthetics
+    y = city)) +
+  ggplot2::geom_point()                      # geometry #<<',
+'ggplot2::ggplot(data = playfair,             # data
+  ggplot2::aes(x = population,               # aesthetics
+    y = forcats::fct_reorder(city, population))) + #<<
+  ggplot2::geom_point()                      # geometry',
+'ggplot2::ggplot(data = playfair,             # data
+  ggplot2::aes(x = population,               # aesthetics
+    y = forcats::fct_reorder(city, population))) +
+  ggplot2::geom_point() +                    # geometry
+  ggplot2::labs(                             # labels #<<
+    title = "Only three cities had over 500,000 people",
+    x = "Population (thousands)", y = NULL)',
+'ggplot2::ggplot(data = playfair,             # data
+  ggplot2::aes(x = population,               # aesthetics
+    y = forcats::fct_reorder(city, population))) +
+  ggplot2::geom_point() +                    # geometry
+  ggplot2::labs(                             # labels
+    title = "Only three cities had over 500,000 people",
+    x = "Population (thousands)", y = NULL) +
+  ggplot2::theme_bw()                        # theme #<<')
+stopifnot(grepl(pf_title, pf_code[[6]], fixed = TRUE))
+f_pf = vapply(seq_along(pf_code), function(k) gg_run(pf_code[[k]], paste0("s16_", k)), "")
+
+# ---- slide: Mapping vs Setting (starts from the finished Playfair chart) ----
+pf_final = gsub(" #<<", "", pf_code[[6]], fixed = TRUE)
+geom_line_txt = "  ggplot2::geom_point() +                    # geometry"
+stopifnot(grepl(geom_line_txt, pf_final, fixed = TRUE))
+swap_geom = function(new) { out = sub(geom_line_txt, new, pf_final, fixed = TRUE); stopifnot(out != pf_final); out }
+ms_code = list(
+  pf_final,
+  swap_geom('  ggplot2::geom_point(                       # geometry #<<
+    ggplot2::aes(color = region)) +'),
+  swap_geom('  ggplot2::geom_point(                       # geometry
+    ggplot2::aes(color = region)) +
+  ggplot2::scale_color_brewer(palette = "Dark2") + # scales #<<'),
+  swap_geom('  ggplot2::geom_point(color = "#C3142D") +   # geometry #<<'),
+  swap_geom('  ggplot2::geom_point(                       # geometry #<<
+    ggplot2::aes(color = "#C3142D")) +'))
+f_ms = vapply(seq_along(ms_code), function(k) gg_run(ms_code[[k]], paste0("s17_", k)), "")
+
+# ---- slide: Change One Layer (each step changes one line of the step-1 chart) ----
+col_base = 'ggplot2::ggplot(data = playfair,             # data
+  ggplot2::aes(x = population,               # aesthetics
+    y = forcats::fct_reorder(city, population))) +
+  ggplot2::geom_col() +                      # geometry
+  ggplot2::coord_cartesian() +               # coordinates
+  ggplot2::labs(x = "Population (thousands)", y = NULL)'
+col_swap = function(old, new) { out = sub(old, new, col_base, fixed = TRUE); stopifnot(out != col_base); out }
+cl_code = list(
+  col_base,
+  col_swap("  ggplot2::geom_col() +                      # geometry",
+           "  ggplot2::geom_point() +                    # geometry #<<"),
+  col_swap("  ggplot2::coord_cartesian() +               # coordinates",
+           '  ggplot2::coord_radial(theta = "y") +       # coordinates #<<'),
+  col_swap("  ggplot2::coord_cartesian() +               # coordinates",
+           '  ggplot2::coord_cartesian() +               # coordinates
+  ggplot2::facet_wrap(~ region, ncol = 2,    # facets #<<
+    scales = "free_y") +'))
+f_cl = vapply(seq_along(cl_code), function(k) gg_run(cl_code[[k]], paste0("s18_", k), w = 5.6, h = 4.24), "")
+
+# ---- activity: Describe a Chart in Grammar (deck 15's color-vision figure) ----
+# cvd and peng are built in the data_part1 chunk (cvd_file is the figure); the answer shows its plotting code.
+stopifnot(nrow(peng) == 342, nrow(cvd) == 4 * nrow(peng))
+
+# ---- slide: The Layers of a Graphic (one small example figure per layer) ----
+stat_code = 'ggplot2::ggplot(data = playfair, ggplot2::aes(y = region)) +
+  ggplot2::geom_bar(stat = "count")'
+theme_code = 'ggplot2::ggplot(data = playfair,
+  ggplot2::aes(x = population, y = forcats::fct_reorder(city, population))) +
+  ggplot2::geom_point() +
+  ggplot2::labs(x = "Population (thousands)", y = NULL) +
+  ggplot2::theme_bw()'
+# the radial example gets a larger canvas and smaller axis text so no city name is clipped
+radial_small = paste0(cl_code[[3]], ' +
+  ggplot2::theme(axis.text = ggplot2::element_text(size = 6.5))')
+lyr_codes = list(pf_code[[1]], pf_code[[2]], pf_code[[3]], cl_code[[4]], stat_code, radial_small, theme_code)
+lyr_w = c(3.9, 3.9, 3.9, 3.9, 3.9, 4.4, 3.9)
+lyr_h = c(2.9, 2.9, 2.9, 2.9, 2.9, 3.4, 2.9)
+lyr_img = vapply(1:7, function(k) gg_run(lyr_codes[[k]], paste0("s14_", k), w = lyr_w[k], h = lyr_h[k]), "")
+lyr_cap = function(k, text, code) {
+  paste0(text, hl_r(code, "92%"),
+         "<img class='lyr-img' src='", knitr::image_uri(lyr_img[k]), "' alt='Example chart for this layer'>")
+}
+
+# ---- slide: Refine a Draft (2026 home attendance at Yager Stadium) ----
+attend = readr::read_csv("../../data/redhawks_home_attendance_2013_2026.csv", show_col_types = FALSE)
+home26 = attend |>
+  dplyr::filter(season == 2026) |>
+  dplyr::mutate(family_weekend = date == as.Date("2026-10-17"),
+                game = paste0(opponent, "\n", format(date, "%b"), " ", as.integer(format(date, "%d")),
+                              ifelse(family_weekend, "\n(Family Weekend)", ""))) |>
+  dplyr::arrange(date)
+stopifnot(nrow(home26) == 4,
+          home26$opponent[home26$family_weekend] == "Akron",
+          home26$attendance[home26$family_weekend] == 18515,
+          home26$opponent[which.max(home26$attendance)] == "Akron",
+          all(grepl("^https://miamiredhawks.com/.+/boxscore/", home26$source_url)))
+
+rd_title = "The Family Weekend game had the largest home crowd of 2026"
+rd_code = list(
+'ggplot2::ggplot(data = home26,
+  ggplot2::aes(x = opponent, y = attendance)) +
+  ggplot2::geom_col()',
+'ggplot2::ggplot(data = home26,                      # data
+  ggplot2::aes(                                      # aesthetics #<<
+    x = forcats::fct_reorder(game, date),
+    y = attendance, fill = family_weekend)) +
+  ggplot2::geom_col(width = 0.6) +                   # geometry #<<
+  ggplot2::scale_fill_manual(                        # scales #<<
+    values = c("grey65", "#C3142D"), guide = "none")',
+'ggplot2::ggplot(data = home26,                      # data
+  ggplot2::aes(                                      # aesthetics
+    x = forcats::fct_reorder(game, date),
+    y = attendance, fill = family_weekend)) +
+  ggplot2::geom_col(width = 0.6) +                   # geometry
+  ggplot2::geom_text(                                # direct labels #<<
+    ggplot2::aes(label = scales::comma(attendance)),
+    vjust = -0.4, size = 3.4) +
+  ggplot2::scale_fill_manual(                        # scales
+    values = c("grey65", "#C3142D"), guide = "none") +
+  ggplot2::scale_y_continuous(labels = scales::comma, #<<
+    limits = c(0, 20000))',
+'ggplot2::ggplot(data = home26,                      # data
+  ggplot2::aes(                                      # aesthetics
+    x = forcats::fct_reorder(game, date),
+    y = attendance, fill = family_weekend)) +
+  ggplot2::geom_col(width = 0.6) +                   # geometry
+  ggplot2::geom_text(                                # direct labels
+    ggplot2::aes(label = scales::comma(attendance)),
+    vjust = -0.4, size = 3.4) +
+  ggplot2::scale_fill_manual(                        # scales
+    values = c("grey65", "#C3142D"), guide = "none") +
+  ggplot2::scale_y_continuous(labels = scales::comma,
+    limits = c(0, 20000)) +
+  ggplot2::labs(                                     # labels #<<
+    title = paste("The Family Weekend game had the largest",
+                  "home crowd of 2026", sep = "\\n"),
+    subtitle = "Home games through Oct 17, 2026",
+    x = NULL, y = "Attendance")',
+'ggplot2::ggplot(data = home26,                      # data
+  ggplot2::aes(                                      # aesthetics
+    x = forcats::fct_reorder(game, date),
+    y = attendance, fill = family_weekend)) +
+  ggplot2::geom_col(width = 0.6) +                   # geometry
+  ggplot2::geom_text(                                # direct labels
+    ggplot2::aes(label = scales::comma(attendance)),
+    vjust = -0.4, size = 3.4) +
+  ggplot2::scale_fill_manual(                        # scales
+    values = c("grey65", "#C3142D"), guide = "none") +
+  ggplot2::scale_y_continuous(labels = scales::comma,
+    limits = c(0, 20000)) +
+  ggplot2::labs(                                     # labels
+    title = paste("The Family Weekend game had the largest",
+                  "home crowd of 2026", sep = "\\n"),
+    subtitle = "Home games through Oct 17, 2026",
+    x = NULL, y = "Attendance") +
+  ggplot2::theme_minimal()                           # theme #<<')
+stopifnot(paste("The Family Weekend game had the largest", "home crowd of 2026") == rd_title,
+          grepl("The Family Weekend game had the largest", rd_code[[5]], fixed = TRUE))
+f_rd = vapply(seq_along(rd_code), function(k) gg_run(rd_code[[k]], paste0("s20_", k), w = 5.0, h = 3.75), "")
+
+# ---- slide: One Template for Every Chart ----
+tmpl_code = 'ggplot2::ggplot(data = <DATA>,             # data
+  ggplot2::aes(<MAPPINGS>)) +              # aesthetics
+  ggplot2::<GEOM_FUNCTION>()               # geometry'
+tmpl_pf = 'ggplot2::ggplot(data = playfair,           # data
+  ggplot2::aes(x = population, y = city)) + # aesthetics
+  ggplot2::geom_point()                    # geometry'
+stopifnot(inherits(eval(parse(text = tmpl_pf)), "ggplot"))
+
+# ---- activity: the color-vision figure, drawn from the code shown in the Answer tab ----
+cvd_code_txt = 'ggplot2::ggplot(data = cvd,                      # data
+  ggplot2::aes(x = bill_len,                     # aesthetics
+    y = flipper_len)) +
+  ggplot2::geom_point(                           # geometry: points
+    ggplot2::aes(color = col), size = 1.1, alpha = 0.85) +
+  ggplot2::geom_label(data = cvd_lab,            # geometry: labels
+    ggplot2::aes(label = species, color = col),
+    size = 2.8, fontface = "bold", linewidth = 0.3) +
+  ggplot2::scale_color_identity() +              # scales
+  ggplot2::facet_grid(palette ~ vision) +        # facets
+  ggplot2::labs(x = "Bill length (mm)",          # labels
+    y = "Flipper length (mm)") +
+  ggplot2::theme_bw(base_size = 10)              # theme'
+cvd_task_file = p2_file("s19_cvd")
+ggplot2::ggsave(cvd_task_file, eval(parse(text = cvd_code_txt)), width = 6.4, height = 4.2, dpi = 220)
+stopifnot(file.exists(cvd_task_file))
+
+# ---- stepper HTML for each slide (captions are literal statements of what changed) ----
+st = function(code, fig, alt, cap) list(code = code, fig = fig, alt = alt, cap = cap)
+
+s13_html = ggs(list(
+  st(NULL, s13_table, "", "<b>The data:</b> the total population of Playfair's 22 cities in each region. A chart menu, as in Excel, offers a fixed list of chart types. The grammar of graphics describes a chart by its parts instead."),
+  st(code_bar, f_bar, "A single stacked bar of population by region",
+     "<b>A stacked bar.</b> Data, an aesthetic mapping (fill = region), a geometry (columns), and Cartesian coordinates."),
+  st(code_pie, f_pie, "The same data as a pie chart",
+     "<b>A pie.</b> Only the coordinates line changed. coord_polar() wraps the same bar around a circle: a pie chart is a stacked bar in polar coordinates.")),
+  dwell = c(3000, 5000, 0), size = "62%", note0 = "The code appears on Step 1.")
+
+s16_html = ggs(list(
+  st(NULL, f_bubble, "Playfair's bubble chart of 22 cities, redrawn",
+     "<b>Wednesday's task:</b> draw a better chart than Playfair's bubbles. Here we build one with the grammar, one layer at a time."),
+  st(pf_code[[1]], f_pf[1], "An empty gray canvas",
+     "<b>Data.</b> ggplot() gets the table but no mappings, so it draws an empty canvas."),
+  st(pf_code[[2]], f_pf[2], "Axes for population and city, with nothing plotted",
+     "<b>Aesthetics.</b> Population goes to the x position and city to the y position. The axes appear, but nothing is drawn: there is no geometry yet."),
+  st(pf_code[[3]], f_pf[3], "One point per city, cities in alphabetical order",
+     "<b>Geometry.</b> geom_point() draws one point per row (22 cities). The cities are in alphabetical order, so the ranking is hard to read."),
+  st(pf_code[[4]], f_pf[4], "The same points with cities sorted by population",
+     "<b>Reorder.</b> fct_reorder() sorts the cities by population. This changes the y aesthetic; the data are unchanged."),
+  st(pf_code[[5]], f_pf[5], "The sorted dot chart with a title and an x-axis label",
+     "<b>Labels.</b> The title states the finding. The x-axis label gives the unit, and y = NULL removes the y-axis title, which showed the code."),
+  st(pf_code[[6]], f_pf[6], "The finished dot chart with a white background",
+     "<b>Theme.</b> theme_bw() changes the parts that do not show data: a white background and gray grid lines. This is the dot chart behind Wednesday's My Solution tab.")),
+  dwell = c(3000, 4500, 5500, 5500, 5500, 5500, 0), size = "60%", note0 = "The code appears on Step 1.")
+
+s17_html = ggs(list(
+  st(ms_code[[1]], f_ms[1], "The finished Playfair dot chart in black",
+     "<b>The chart we just built.</b> There are two ways to give the points a color: map a variable to color, or set one color for all points."),
+  st(ms_code[[2]], f_ms[2], "Points colored by region with a legend",
+     "<b>Mapping.</b> Inside aes(), color = region maps a nominal variable to color. ggplot2 picks one color per region and adds a legend."),
+  st(ms_code[[3]], f_ms[3], "Points colored by region with the Dark2 palette",
+     "<b>Scales.</b> scale_color_brewer() uses a ColorBrewer qualitative palette (Dark2), which suits a nominal variable such as region."),
+  st(ms_code[[4]], f_ms[4], "All points in Miami red, no legend",
+     "<b>Setting.</b> Outside aes(), color = \"#C3142D\" gives every point the same color. No variable is involved, so there is no legend."),
+  st(ms_code[[5]], f_ms[5], "All points in a pinkish red with a legend that reads #C3142D",
+     "<b>A common mistake.</b> Inside aes(), \"#C3142D\" is treated as data: a variable with one value. ggplot2 colors that value with its first default color (not Miami red) and adds a legend.")),
+  dwell = c(3500, 5500, 5000, 5000, 0), size = "56%")
+
+s18_html = ggs(list(
+  st(cl_code[[1]], f_cl[1], "Bars of population by city",
+     "<b>The starting chart:</b> bars (geom_col) in Cartesian coordinates. Each step changes one line of this code."),
+  st(cl_code[[2]], f_cl[2], "Points of population by city",
+     "<b>Geometry.</b> geom_col() becomes geom_point(). Same data and mappings; points instead of bars."),
+  st(cl_code[[3]], f_cl[3], "The bars drawn around a circle",
+     "<b>Coordinates.</b> coord_cartesian() becomes coord_radial(), ggplot2's polar coordinate system. Each city gets an angle, and population is the distance from the center."),
+  st(cl_code[[4]], f_cl[4], "Bars split into one panel per region",
+     "<b>Facets.</b> facet_wrap(~ region) adds one panel per region. scales = \"free_y\" keeps only each region's cities in its panel.")),
+  dwell = c(3500, 5000, 5000, 0), size = "58%", ratio = "5.6 / 4.24")
+
+s20_html = ggs(list(
+  st(NULL, f_rd[1], "A default bar chart of 2026 home attendance by opponent",
+     "<b>A draft.</b> This is ggplot2's default chart of this season's home attendance. What would you change before showing it to someone?"),
+  st(rd_code[[1]], f_rd[1], "A default bar chart of 2026 home attendance by opponent",
+     "<b>The draft's code: three lines.</b> The bars are in alphabetical order, the y-axis numbers have no commas, the axis titles are column names, and there is no title."),
+  st(rd_code[[2]], f_rd[2], "Bars in date order with the Family Weekend game in Miami red",
+     "<b>Aesthetics and scales.</b> The games are in date order, and fill = family_weekend maps the Family Weekend game to its own color. scale_fill_manual() sets gray and Miami red and drops the legend."),
+  st(rd_code[[3]], f_rd[3], "The same bars with each attendance printed above its bar",
+     "<b>Direct labels.</b> geom_text() prints each attendance above its bar, and scale_y_continuous() adds commas to the axis."),
+  st(rd_code[[4]], f_rd[4], "The chart with a title that states the finding",
+     "<b>Labels.</b> The title states the finding, and the subtitle gives the scope: the four home games through Oct 17. The axis titles are no longer column names."),
+  st(rd_code[[5]], f_rd[5], "The refined chart on a white background",
+     "<b>Theme.</b> theme_minimal() removes the gray background. Each refinement was one layer.")),
+  dwell = c(4000, 6000, 6000, 5500, 5500, 0), size = "54%", ratio = "5.0 / 3.75", note0 = "What would you change? The code appears on Step 1.")
+
+# box-score links for the attendance source line
+rd_src = paste0("<a href='", home26$source_url, "' target='_blank'>", home26$opponent, "</a>", collapse = ", ")
+```
+
+<style>
+/* deck 16, Part 2: code + figure steppers (isaStepper) */
+.ggs-grid { display:grid; grid-template-columns:minmax(0,1.13fr) minmax(0,0.87fr); gap:14px; align-items:start; }
+.ggs .xaringanextra-clipboard-button, .lyrs .xaringanextra-clipboard-button, .ans-code .xaringanextra-clipboard-button { display:none !important; }
+.ggs .rcode, .lyrs .rcode, .ans-code .rcode { padding-top:8px !important; }
+.ggs-r { display:flex; align-items:center; }
+.ggs-r > .ggs-v.on { width:100%; }
+.ggs-v { display:none; }
+.ggs-v.on { display:block; }
+.ggs-l .rcode { margin:0 !important; padding-top:8px !important; padding-bottom:8px !important; }
+.ggs-r img { display:block; box-sizing:border-box; width:100%; border:1px solid #e5e7eb; border-radius:6px; background:#ffffff; }
+.ggs-empty { border:1px dashed #9ca3af; border-radius:8px; padding:14px 16px; color:#585E60; font-size:14.5px; background:#f9fafb; }
+.ggs-caps { margin-top:8px; min-height:62px; }
+.ggs-tbl { margin-top:30px; }
+.ggs-tbl table { width:100%; }
+/* layer stack */
+.lyrs-grid { display:grid; grid-template-columns:minmax(0,0.92fr) minmax(0,1.08fr); gap:22px; align-items:start; margin-top:2px; }
+.lyr-stack { display:flex; flex-direction:column-reverse; padding:22px 0 14px 0; }
+.lyr { display:flex; align-items:center; height:40px; opacity:0.12; transform:translateY(-22px); transition:opacity 0.45s ease, transform 0.45s ease; }
+.lyr.on { opacity:1; transform:none; }
+.lyr-name { flex:0 0 132px; text-align:right; font-size:21px; font-style:italic; font-weight:600; color:var(--c); padding-right:4px; }
+.lyr-name.on { text-decoration:underline; text-underline-offset:5px; }
+.lyr-plane { display:block; width:210px; height:56px; margin-left:46px; background:var(--c); opacity:0.78; transform:skewX(-52deg); border-radius:2px; }
+.lyr-caps { margin-top:6px; min-height:398px; font-size:15px; line-height:1.45; }
+.lyr-img { display:block; height:236px; width:auto; margin:8px auto 0 auto; border:1px solid #e5e7eb; border-radius:4px; background:#ffffff; }
+.lyr-caps .rcode { margin-top:8px !important; }
+/* a long one-line title */
+.remark-slide-content.h1-fit h1 { font-size:51px !important; }
+/* a tall stepper: less space under the title */
+.remark-slide-content.tight h1 { margin-top:0 !important; margin-bottom:0.15em !important; }
+/* coach widget (Describe a Chart in Grammar, Your Answer tab) */
+.coach { margin-top:8px; }
+.coach-ta { display:block; width:100%; box-sizing:border-box; min-height:150px; font-family:'Noto Sans','Roboto',Arial,sans-serif; font-size:15px; line-height:1.5; padding:10px 12px; border:1px solid #d1d5db; border-radius:8px; resize:vertical; color:#1b1b1b; background:#ffffff; }
+.coach-ta:focus { outline:2px solid #c3142d; outline-offset:1px; }
+.coach-foot { display:flex; align-items:center; gap:12px; margin-top:8px; }
+.coach-status { flex:1; font-size:14px; color:#585E60; display:inline-flex; align-items:center; gap:8px; }
+.coach-status::before { content:""; width:8px; height:8px; border-radius:50%; background:#9ca3af; flex:0 0 8px; }
+.coach-status.checking::before { background:#f97316; animation:coach-pulse 1s infinite; }
+.coach-status.going { color:#92400e; }
+.coach-status.going::before { background:#d97706; }
+.coach-status.revisit { color:#b91c1c; }
+.coach-status.revisit::before { background:#dc2626; }
+.coach-status.done { color:#047857; font-weight:600; }
+.coach-status.done::before { background:#059669; }
+.coach-status.err { color:#4b5563; }
+@keyframes coach-pulse { 50% { opacity:0.3; } }
+.coach-chips { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+.coach-chip { border:1px solid #d1d5db; border-radius:999px; padding:3px 12px; font-size:13.5px; background:#ffffff; color:#374151; display:inline-flex; align-items:center; gap:6px; }
+.coach-chip::before { content:""; width:7px; height:7px; border-radius:50%; background:#9ca3af; }
+.coach-chip.met { border-color:#059669; color:#047857; background:#ecfdf5; }
+.coach-chip.met::before { content:"\2713"; width:auto; height:auto; background:none; font-weight:700; }
+.coach-chip button { border:1px solid #9ca3af; background:#ffffff; color:#374151; width:18px; height:18px; border-radius:50%; font-size:11px; line-height:1; cursor:pointer; padding:0; }
+.coach-hint { display:none; margin-top:8px; font-size:14px; background:#f3f4f6; border-radius:8px; padding:6px 10px; color:#374151; }
+.coach-hint.on { display:block; }
+/* template slide */
+.tp2 { display:grid; grid-template-columns:1fr; gap:10px; margin-top:4px; }
+.tp2 .rcode { margin:0 !important; }
+.tp3 { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:12px; margin-top:14px; }
+</style>
+
+???
+
+No time of its own. Part 2 runs 20 minutes (15 to 35). Very little R today: the code is there only to show the grammar. No one types code.
+
+---
+
+# The Grammar of Graphics
+
+`r s13_html`
+
+<script>
+(function () {
+  function buildGgs() {
+    document.querySelectorAll('.ggs, .lyrs').forEach(function (root) {
+      var d = root.getAttribute('data-dwell').split(',').map(Number);
+      window.isaStepper(root, { n: Number(root.getAttribute('data-n')), dwell: d });
+    });
+  }
+  buildGgs();
+  if (window.slideshow) { if (!window.ggsHooked) { window.ggsHooked = true; window.slideshow.on('afterShowSlide', buildGgs); } }
+})();
+</script>
+
+<div class="src" style="margin-top:6px;">Data: <code>data/playfair_data.csv</code>. The region column is ours, not Playfair's: the <a href="https://unstats.un.org/unsd/methodology/m49/" target="_blank">UN M49</a> subregion of each city's present-day country (Istanbul is in Türkiye, which M49 places in Western Asia).</div>
+
+???
+
+Two minutes (15 to 17). Step 0: Excel and Tableau start from a menu of chart types. The grammar starts from parts. Step 1: name the parts out loud: data, aesthetic (fill = region), geometry (columns), coordinates. Step 2: only the coordinates line changed and the bar became a pie. The aes(x = "") is a one-value variable on purpose: it puts all five regions in one bar, which coord_polar() turns into one pie. That is the idea for the next 20 minutes: a chart is a sentence made of parts, and changing one part gives a different chart. The region column was added by us (UN M49 subregions), as the source line says.
+
+---
+
+# The Layers of a Graphic
+
+<div class="lyrs" data-n="7" data-dwell="2500,4500,4500,4500,4500,4500,4500,0">
+<div class="lyrs-grid">
+<div>
+<div class="lyr-stack">
+<div class="lyr" data-from="1" style="--c:#E69F00;"><span class="lyr-name" data-from="1" data-to="2">Data</span><span class="lyr-plane"></span></div>
+<div class="lyr" data-from="2" style="--c:#009E73;"><span class="lyr-name" data-from="2" data-to="3">Aesthetics</span><span class="lyr-plane"></span></div>
+<div class="lyr" data-from="3" style="--c:#0072B2;"><span class="lyr-name" data-from="3" data-to="4">Geometries</span><span class="lyr-plane"></span></div>
+<div class="lyr" data-from="4" style="--c:#CC79A7;"><span class="lyr-name" data-from="4" data-to="5">Facets</span><span class="lyr-plane"></span></div>
+<div class="lyr" data-from="5" style="--c:#D55E00;"><span class="lyr-name" data-from="5" data-to="6">Statistics</span><span class="lyr-plane"></span></div>
+<div class="lyr" data-from="6" style="--c:#8B6F47;"><span class="lyr-name" data-from="6" data-to="7">Coordinates</span><span class="lyr-plane"></span></div>
+<div class="lyr" data-from="7" style="--c:#56B4E9;"><span class="lyr-name" data-from="7" data-to="8">Theme</span><span class="lyr-plane"></span></div>
+</div>
+</div>
+<div>
+<div class="sc-caps lyr-caps">
+<div class="sc-cap on" data-step="0"><b>A chart is built from layers.</b> Each layer answers one question about the chart. Press Step to stack them from the bottom up. The examples use Playfair's cities.</div>
+<div class="sc-cap" data-step="1">`r lyr_cap(1, '<b>Data.</b> Which table is the chart made from, and what is one row? Here, one row is one city.', 'ggplot2::ggplot(data = playfair)')`</div>
+<div class="sc-cap" data-step="2">`r lyr_cap(2, '<b>Aesthetics.</b> Which column goes to which visual channel: x position, y position, color, size, shape. Scales then set how each mapping is drawn (which colors, which axis breaks).', 'ggplot2::aes(x = population, y = city)')`</div>
+<div class="sc-cap" data-step="3">`r lyr_cap(3, '<b>Geometries.</b> The marks that show the data: points, lines, bars, text.', 'ggplot2::geom_point()')`</div>
+<div class="sc-cap" data-step="4">`r lyr_cap(4, '<b>Facets.</b> Small multiples: the same chart drawn once for each group.', 'ggplot2::facet_wrap(~ region)')`</div>
+<div class="sc-cap" data-step="5">`r lyr_cap(5, '<b>Statistics.</b> A summary computed from the data before drawing, such as a count, a mean, or a fitted line. Here stat = \"count\" counts the cities in each region.', 'ggplot2::geom_bar(stat = \"count\")')`</div>
+<div class="sc-cap" data-step="6">`r lyr_cap(6, '<b>Coordinates.</b> The space the marks are drawn in: Cartesian (x and y), polar (angle and radius), or a map projection.', 'ggplot2::coord_radial(theta = \"y\")')`</div>
+<div class="sc-cap" data-step="7">`r lyr_cap(7, '<b>Theme.</b> Everything that does not show data: background, grid lines, fonts, legend position.', 'ggplot2::theme_bw()')`</div>
+</div>
+<div class="sc-bar"><button type="button" class="sc-btn sc-back">Back</button><button type="button" class="sc-btn sc-primary sc-step">Step</button><button type="button" class="sc-btn sc-play">Play</button><button type="button" class="sc-btn sc-reset">Reset</button><span class="sc-spds"><button type="button" class="sc-spd" data-spd="0.5">0.5x</button><button type="button" class="sc-spd on" data-spd="1">1x</button><button type="button" class="sc-spd" data-spd="2">2x</button></span><span class="sc-count">0 / 7</span></div>
+</div>
+</div>
+</div>
+
+<script>
+(function () {
+  function buildGgs() {
+    document.querySelectorAll('.ggs, .lyrs').forEach(function (root) {
+      var d = root.getAttribute('data-dwell').split(',').map(Number);
+      window.isaStepper(root, { n: Number(root.getAttribute('data-n')), dwell: d });
+    });
+  }
+  buildGgs();
+  if (window.slideshow) { if (!window.ggsHooked) { window.ggsHooked = true; window.slideshow.on('afterShowSlide', buildGgs); } }
+})();
+</script>
+
+<div class="src" style="margin-top:8px;">Sources: Wilkinson, L. (2005). <a href="https://doi.org/10.1007/0-387-28695-0" target="_blank"><i>The Grammar of Graphics</i></a> (2nd ed.). Springer. Wickham, H. (2010). <a href="https://doi.org/10.1198/jcgs.2009.07098" target="_blank">A Layered Grammar of Graphics</a>. <i>Journal of Computational and Graphical Statistics</i>, 19(1), 3-28. The seven-layer stack is a common teaching summary of these papers; "theme" is ggplot2's name for the non-data parts.</div>
+
+???
+
+Two and a half minutes (17 to 19.5). Step through the seven layers from the bottom. Only the first three are required for every chart; the other four have defaults (no facets, no statistic beyond the identity, Cartesian coordinates, the gray theme). Wilkinson wrote the grammar; Wickham's layered version is what ggplot2 implements. Tableau and Power BI use the same ideas: their shelves and wells are the aesthetics.
+
+---
+
+# One Template for Every Chart
+
+<div class="tp2">
+<div class="card"><div class="ch gray">The template</div><div class="cb" style="padding:8px;">`r hl_r(align_comments(tmpl_code), "104%")`</div></div>
+<div class="card"><div class="ch">Filled in for Playfair's cities</div><div class="cb" style="padding:8px;">`r hl_r(align_comments(tmpl_pf), "104%")`</div></div>
+</div>
+
+<div class="tp3">
+<div class="card"><div class="ch gray">Data</div><div class="cb" style="font-size:15px;">The table. One row per city: city, population, and region.</div></div>
+<div class="card"><div class="ch gray">Aesthetics</div><div class="cb" style="font-size:15px;">Which column goes to which channel. Population to x, city to y.</div></div>
+<div class="card"><div class="ch gray">Geometry</div><div class="cb" style="font-size:15px;">Which mark to draw. One point per row.</div></div>
+</div>
+
+<div class="lesson" style="margin-top:16px;"><b class="r">These three layers are required.</b> Every other part (facets, statistics, coordinates, scales, theme) is added with <b>+</b> and has a default; labs() adds titles.</div>
+
+???
+
+One minute (19.5 to 20.5). This is the most R on any slide today. Read the template as a sentence: "take this data, map these columns to these channels, draw these marks". The comments name the layer of each line; the next slides keep those labels.
+
+---
+
+class: h1-fit
+
+# Building Playfair's Dot Chart One Layer at a Time
+
+`r s16_html`
+
+<script>
+(function () {
+  function buildGgs() {
+    document.querySelectorAll('.ggs, .lyrs').forEach(function (root) {
+      var d = root.getAttribute('data-dwell').split(',').map(Number);
+      window.isaStepper(root, { n: Number(root.getAttribute('data-n')), dwell: d });
+    });
+  }
+  buildGgs();
+  if (window.slideshow) { if (!window.ggsHooked) { window.ggsHooked = true; window.slideshow.on('afterShowSlide', buildGgs); } }
+})();
+</script>
+
+<div class="src" style="margin-top:6px;">Data: <code>data/playfair_data.csv</code> (population in thousands), from <a href="http://www.stat.uiowa.edu/~luke/data/Playfair" target="_blank">stat.uiowa.edu/~luke/data/Playfair</a>.</div>
+
+???
+
+Three and a half minutes (20.5 to 24). Section B never saw Wednesday's My Solution tab; this is it, built one layer at a time. Step 0: the bubble chart from the activity. Before each Step, ask the room what the next layer will change. Step 3: alphabetical order is ggplot2's default for text; the ranking is lost. Step 4: one function reorders the cities; the data are unchanged. Step 5: the title states the finding (London, Constantinople, and Paris are the only cities above 500,000). Step 6: the theme does not change any data. Wednesday's version also sized the dots by Playfair's circle area (size = area); that is one more aesthetic.
+
+---
+
+# Mapping vs. Setting
+
+`r s17_html`
+
+<script>
+(function () {
+  function buildGgs() {
+    document.querySelectorAll('.ggs, .lyrs').forEach(function (root) {
+      var d = root.getAttribute('data-dwell').split(',').map(Number);
+      window.isaStepper(root, { n: Number(root.getAttribute('data-n')), dwell: d });
+    });
+  }
+  buildGgs();
+  if (window.slideshow) { if (!window.ggsHooked) { window.ggsHooked = true; window.slideshow.on('afterShowSlide', buildGgs); } }
+})();
+</script>
+
+<div class="src" style="margin-top:6px;">Region: the <a href="https://unstats.un.org/unsd/methodology/m49/" target="_blank">UN M49</a> subregion of each city's present-day country (our addition to Playfair's data). #C3142D is Miami red.</div>
+
+???
+
+Two and a half minutes (24 to 26.5). The rule: inside aes() means "use this column"; outside aes() means "use this value for every mark". Step 1: color now carries data, so there is a legend. Step 2: a scale changes how the mapping is drawn, not what is mapped; Dark2 is a ColorBrewer qualitative palette (the slide from Part 1). Step 3: one constant color, no legend. Step 4: the mistake everyone makes once: the hex code becomes a one-value variable and ggplot2's default red-orange appears. If you ever see a legend with one entry that is your color code, this is why.
+
+---
+
+# Changing One Layer Changes the Chart
+
+`r s18_html`
+
+<script>
+(function () {
+  function buildGgs() {
+    document.querySelectorAll('.ggs, .lyrs').forEach(function (root) {
+      var d = root.getAttribute('data-dwell').split(',').map(Number);
+      window.isaStepper(root, { n: Number(root.getAttribute('data-n')), dwell: d });
+    });
+  }
+  buildGgs();
+  if (window.slideshow) { if (!window.ggsHooked) { window.ggsHooked = true; window.slideshow.on('afterShowSlide', buildGgs); } }
+})();
+</script>
+
+<div class="src" style="margin-top:6px;">Data: <code>data/playfair_data.csv</code> (population in thousands), from <a href="http://www.stat.uiowa.edu/~luke/data/Playfair" target="_blank">stat.uiowa.edu/~luke/data/Playfair</a>. Region: the <a href="https://unstats.un.org/unsd/methodology/m49/" target="_blank">UN M49</a> subregion of each city's present-day country (our addition).</div>
+
+???
+
+Two minutes (26.5 to 28.5). Each step changes one line of the step 0 code (not the previous step). Step 1: a dot chart. Step 2: a radial bar chart; ask which is easier to compare, the bars or this (position on a common scale beats angle and radius, Franconeri from Part 1). Step 3: one panel per region. In a chart menu these would be three different chart types; in the grammar each is one changed line.
+
+---
+
+# Describe a Chart in Grammar
+
+`r countdown(minutes = 4, seconds = 0, top = 0, font_size = "2em")`
+
+.panelset[
+
+.panel[.panel-name[Task]
+
+<div class="qbar" style="margin-top:6px; font-size:15px;"><b>Task.</b> In 4 minutes, describe this chart (from Wednesday) in the grammar of graphics: its data (what is one row?), aesthetics, geometries, facets, and any other layers you can see.</div>
+
+<img src="`r knitr::image_uri(cvd_task_file)`" alt="Penguin bill length vs flipper length by species, in four panels: a red/green palette and the Okabe-Ito palette, each under typical vision and simulated deuteranopia" style="display:block; height:318px; width:auto; margin:6px auto 0 auto;">
+
+]
+
+.panel[.panel-name[Your Answer]
+
+<div class="coach" data-activity="c16-describe" data-store="c16-describe" data-ideas="4">
+<textarea class="coach-ta" rows="5" spellcheck="true" placeholder="Type your description here." aria-label="Your description of the chart"></textarea>
+<div class="coach-foot"><span class="coach-status" role="status" aria-live="polite">Start typing. Your answer is checked when you pause.</span><button type="button" class="sc-btn sc-primary coach-go">Check my answer</button></div>
+<div class="coach-chips"></div>
+<div class="coach-hint" role="status" aria-live="polite"></div>
+</div>
+
+]
+
+.panel[.panel-name[Answer]
+
+<details class="answer-gate">
+<summary>Show the answer</summary>
+<div style="display:grid; grid-template-columns:minmax(0,0.92fr) minmax(0,1.08fr); gap:12px; margin-top:8px; align-items:start;">
+<div class="tbl-sm">
+<table>
+<thead><tr><th>Layer</th><th>In this chart</th></tr></thead>
+<tbody>
+<tr><td>Data</td><td>One row per penguin per panel: `r nrow(peng)` penguins, repeated in 4 panels (`r scales::comma(nrow(cvd))` rows). A second table of species means places the labels.</td></tr>
+<tr><td>Aesthetics</td><td>x = bill length, y = flipper length, color = the species color for that panel, label = species (for the labels).</td></tr>
+<tr><td>Geometries</td><td>Points (one per row) and labels (one per species).</td></tr>
+<tr><td>Facets</td><td>A grid: rows = palette, columns = vision.</td></tr>
+<tr><td>Other layers</td><td>Scales: the colors are used as stored. Labels: axis titles. Theme: theme_bw(). Coordinates: Cartesian (the default).</td></tr>
+</tbody>
+</table>
+</div>
+<div class="ans-code">`r hl_r(align_comments(cvd_code_txt), "54%")`</div>
+</div>
+</details>
+
+]
+
+.panel[.panel-name[Discussion]
+
+.can-edit.key-c16-grammar-discussion[
+- Edit me to include any notes/discussion
+]
+
+]
+
+]
+
+<script>
+(function () {
+  // Coach widget (Your Answer tab): sends the student's text to the game server's /api/coach.
+  // A ?coach= query on the deck URL points it at another server (for testing); the default is production.
+  var PROD = 'https://isa401-game-day.vercel.app/api/coach';
+  var MSG = { keep_going: 'Keep going.', more_detail: 'Add more detail.', revisit: 'Revisit an idea.', done: 'All the key ideas are there.',
+              busy: 'Many people are checking at once. Try again in a few seconds.',
+              down: 'The checker is unavailable right now. Compare with the Answer tab.',
+              short: 'Write a little more, then pause.', checking: 'Checking...', wait: 'Checking when you pause...',
+              start: 'Start typing. Your answer is checked when you pause.' };
+  function coachUrl() {
+    var o = null;
+    try { o = new URLSearchParams(window.location.search).get('coach'); } catch (e) { o = null; }
+    if (!o) { return PROD; }
+    if (o.indexOf('http') !== 0) { return PROD; }
+    if (o.indexOf('/api/coach') !== -1) { return o; }
+    return o.replace(/[/]$/, '') + '/api/coach';
+  }
+  function load(k) { try { return window.localStorage.getItem(k) || ''; } catch (e) { return ''; } }
+  function keep(k, v) { try { window.localStorage.setItem(k, v); } catch (e) {} }
+  function build(root) {
+    if (root.getAttribute('data-built')) { return; }
+    root.setAttribute('data-built', '1');
+    var ta = root.querySelector('.coach-ta'), status = root.querySelector('.coach-status');
+    var go = root.querySelector('.coach-go'), chips = root.querySelector('.coach-chips'), hint = root.querySelector('.coach-hint');
+    var act = root.getAttribute('data-activity'), key = root.getAttribute('data-store');
+    // seq numbers each request; a response is used only if no newer request was sent (stale ones are dropped).
+    // lastSent is the normalized text of the last request, so an unchanged answer is not sent again.
+    var seq = 0, timer = null, openHint = -1, lastSent = '', pending = false, shown = null;
+    function say(text, cls, keepIt) {
+      status.textContent = text; status.className = 'coach-status ' + (cls || '');
+      if (keepIt) { shown = [text, cls || '']; }
+    }
+    function norm(t) { return t.trim().toLowerCase().replace(/\s+/g, ' '); }
+    function drawChips(ideas) {
+      chips.textContent = '';
+      ideas.forEach(function (idea, i) {
+        var c = document.createElement('span');
+        c.className = idea.met ? 'coach-chip met' : 'coach-chip';
+        var lab = document.createElement('span');
+        lab.textContent = idea.met ? (idea.label || ('Idea ' + (i + 1))) : ('Idea ' + (i + 1));
+        c.appendChild(lab);
+        if (!idea.met) {
+          if (idea.hint) {
+            var q = document.createElement('button');
+            q.type = 'button'; q.textContent = '?'; q.title = 'Show a hint';
+            q.setAttribute('aria-label', 'Hint for idea ' + (i + 1));
+            q.addEventListener('click', function () {
+              if (openHint === i) { openHint = -1; hint.textContent = ''; hint.className = 'coach-hint'; return; }
+              openHint = i; hint.textContent = 'Hint for idea ' + (i + 1) + ': ' + idea.hint; hint.className = 'coach-hint on';
+            });
+            c.appendChild(q);
+          }
+        }
+        chips.appendChild(c);
+      });
+    }
+    function blank() {
+      var n = Number(root.getAttribute('data-ideas')) || 4, a = [];
+      for (var i = 0; i !== n; i = i + 1) { a.push({ met: false }); }
+      drawChips(a);
+    }
+    function paint(v) {
+      var ideas = Array.isArray(v.ideas) ? v.ideas : [];
+      if (ideas.length) { drawChips(ideas); }
+      openHint = -1; hint.textContent = ''; hint.className = 'coach-hint';
+      if (v.status === 'done') { say(MSG.done, 'done', true); return; }
+      say(v.note || MSG[v.status] || MSG.keep_going, v.status === 'revisit' ? 'revisit' : 'going', true);
+    }
+    function failed(msg, mine) {
+      if (mine !== seq) { return; }
+      pending = false; lastSent = '';
+      say(msg, 'err', true);
+    }
+    function check(force) {
+      clearTimeout(timer);
+      var text = ta.value.trim(), n = norm(text);
+      if (!(text.length >= 15)) { say(text ? MSG.short : MSG.start, '', true); return; }
+      if (n === lastSent) {
+        if (force !== true) {
+          if (pending) { say(MSG.checking, 'checking'); } else { if (shown) { say(shown[0], shown[1]); } }
+          return;
+        }
+      }
+      lastSent = n; seq = seq + 1; pending = true;
+      var mine = seq;
+      say(MSG.checking, 'checking');
+      fetch(coachUrl(), { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ activity: act, text: text }) })
+        .then(function (r) {
+          if (mine !== seq) { return null; }
+          if (r.status === 429) { failed(MSG.busy, mine); return null; }
+          if (!r.ok) { failed(MSG.down, mine); return null; }
+          return r.json();
+        })
+        .then(function (v) {
+          if (!v) { return; }
+          if (mine !== seq) { return; }
+          pending = false;
+          paint(v);
+        })
+        .catch(function () { failed(MSG.down, mine); });
+    }
+    ta.value = load(key);
+    blank();
+    say(MSG.start, '', true);
+    if (ta.value.trim()) { say('Your saved answer is back. Press Check my answer.', '', true); }
+    ta.addEventListener('input', function () {
+      keep(key, ta.value);
+      clearTimeout(timer);
+      say(MSG.wait, 'checking');
+      timer = setTimeout(check, 900);
+    });
+    go.addEventListener('click', function () { check(true); });
+    ['keydown', 'keypress', 'keyup'].forEach(function (t) { root.addEventListener(t, function (e) { e.stopPropagation(); }); });
+    ta.addEventListener('focus', function () { if (window.slideshow) { window.slideshow.pause(); } });
+    ta.addEventListener('blur', function () { if (window.slideshow) { window.slideshow.resume(); } });
+  }
+  function buildAll() { document.querySelectorAll('.coach').forEach(build); }
+  buildAll();
+  if (window.slideshow) { if (!window.coachHooked) { window.coachHooked = true; window.slideshow.on('afterShowSlide', buildAll); } }
+})();
+</script>
+
+???
+
+Four and a half minutes (28.5 to 33): four on the timer, then the answer. No R typing; students describe the chart in words. The Your Answer tab checks their text with the game server's coach (Jev) while they type: four idea chips (data, aesthetics, geometry, facets) turn green when an idea is there, and the "?" on an unmet chip shows a hint. If the checker is down, the tab says so and students compare with the Answer tab. For testing, add ?coach=http://127.0.0.1:4030 to the deck URL. Accept any wording that names the right column for each channel. The detail that surprises people: the data have each penguin four times, once per panel, because the facets split the rows by palette and vision. The color column already holds the simulated colors, so the scale uses them as they are (scale_color_identity).
+
+---
+
+class: tight
+
+# Refine a Draft
+
+`r s20_html`
+
+<script>
+(function () {
+  function buildGgs() {
+    document.querySelectorAll('.ggs, .lyrs').forEach(function (root) {
+      var d = root.getAttribute('data-dwell').split(',').map(Number);
+      window.isaStepper(root, { n: Number(root.getAttribute('data-n')), dwell: d });
+    });
+  }
+  buildGgs();
+  if (window.slideshow) { if (!window.ggsHooked) { window.ggsHooked = true; window.slideshow.on('afterShowSlide', buildGgs); } }
+})();
+</script>
+
+<div class="src" style="margin-top:6px;">Attendance: official box scores (`r rd_src`). Family Weekend (Oct 16-18, 2026): <a href="https://miamioh.edu/news/2026/10/family-weekend-puts-focus-on-miami-traditions-oct-16-18.html" target="_blank">Miami University News</a>.</div>
+
+???
+
+Two minutes (33 to 35). Step 0: ask the room for two or three changes before showing any code. Step 1: the default answers none of the questions a reader has (which game, when, how many). Step 2: every change is one layer: aesthetics (date order, highlight), geometry (value labels), scales (colors, commas), labels (a title that states the finding), theme. The scope is four home games through Oct 17; Saturday's Family Weekend game against Akron drew 18,515, slightly more than Connecticut (18,180). This sets up the game: it is about Miami football. Data file: data/redhawks_home_attendance_2013_2026.csv (one row per home game, 2013 to 2026, each with its box-score source_url).
+
+---
+
+class: inverse, center, middle
+
+# Part 3: Game Day at Yager
+
+```{r data_part345, include=FALSE}
+# ---- Part 4: Exam 01 item analysis (Canvas export; exams graded as of Oct 14, 2026) ----
+# Only the score range and percent of points per question are shown. No median, mean, or counts.
+ia = readr::read_csv("../../docs/assignments/Exam 01/results/exam01_item_analysis_graded_as_of_2026-10-14.csv",
+                     show_col_types = FALSE)
+ex_hi = ia$QuizHighScore[1]
+ex_lo = ia$QuizLowScore[1]
+stopifnot(ex_lo == 42, ex_hi == 100)
+items = ia |>
+  dplyr::filter(!is.na(Title)) |>
+  dplyr::mutate(pct = 100 * MeanEarnedPoints / PossiblePoints) |>
+  dplyr::arrange(pct)
+stopifnot(nrow(items) == 13, sum(items$PossiblePoints) == 25)
+low3 = items |> dplyr::slice(1:3)
+stopifnot(identical(low3$Title, c("Q1: Penguins", "Q12: LLMs and private data", "Q11: Extracting structure from text")))
+# the exam's own question titles (the Canvas export uses short names)
+ex_title = c("Q1: What is one row?", "Q12: LLMs and private data", "Q11: Extracting structure from text")
+ex_pct = function(title) round(items$pct[items$Title == title])
+ex_pts = function(title) items$PossiblePoints[items$Title == title]
+
+# Q12: share of graded exams with full credit, and the most common partial score
+q12 = jsonlite::fromJSON(items$AnswerFrequencies[items$Title == "Q12: LLMs and private data"])$scores
+q12_full = sum(q12$count[q12$score == 1]) / sum(q12$count)
+q12_part = q12[q12$score > 0 & q12$score < 1, ]
+q12_mode = q12_part$score[which.max(q12_part$count)]
+stopifnot(q12_full < 0.5, q12_mode == 0.5)
+
+# ---- Q1: penguin captures (the exam file) ----
+penguins = readr::read_csv("../../data/penguin_captures.csv", show_col_types = FALSE)
+q1_rows = penguins |> dplyr::count(species)
+q1_birds = penguins |> dplyr::distinct(species, band) |> dplyr::count(species)
+rows_of = function(s) q1_rows$n[q1_rows$species == s]
+birds_of = function(s) q1_birds$n[q1_birds$species == s]
+stopifnot(nrow(penguins) == 344,
+          rows_of("Adelie") == 152, rows_of("Gentoo") == 124, rows_of("Chinstrap") == 68,
+          birds_of("Adelie") == 80, birds_of("Gentoo") == 95, birds_of("Chinstrap") == 45,
+          sum(q1_birds$n) == 220, dplyr::n_distinct(penguins$band) == 220,
+          q1_birds$species[which.max(q1_birds$n)] == "Gentoo",
+          max(table(penguins$band)) == 3)
+q1_code = "penguins |> dplyr::distinct(species, band) |> dplyr::count(species)"
+q1_out = paste(utils::capture.output(print(eval(parse(text = q1_code)))), collapse = "\n")
+# five real rows: one band captured in three years and one band captured in two years
+caps = penguins |> dplyr::add_count(band, name = "captures")
+b3 = caps |> dplyr::filter(captures == 3) |> dplyr::arrange(band) |> dplyr::slice(1)
+b2 = caps |> dplyr::filter(captures == 2, species != b3$species) |> dplyr::arrange(band) |> dplyr::slice(1)
+five = penguins |>
+  dplyr::filter(band %in% c(b3$band, b2$band)) |>
+  dplyr::arrange(match(band, c(b3$band, b2$band)), year) |>
+  dplyr::select(band, species, island, year, body_mass)
+stopifnot(nrow(five) == 5)
+five_html = five |>
+  dplyr::mutate(band = ifelse(band == b3$band,
+                              paste0("<b style='color:#c3142d;'>", band, "</b>"),
+                              paste0("<b style='color:#0072B2;'>", band, "</b>"))) |>
+  tbl(align = c("l", "l", "l", "r", "r"))
+```
+
+<style>
+/* deck 16, Parts 3 to 5 */
+.gd-row { margin-bottom:7px; }
+.flow5 { display:flex; align-items:stretch; gap:6px; margin-top:16px; }
+.flow5 .card { flex:1; }
+.flow5 .cb { font-size:14.5px; line-height:1.5; }
+.flow5 .ar { align-self:center; color:#c3142d; font-size:22px; font-weight:700; }
+.src a { color:#c3142d !important; }
+.pill { display:inline-block; padding:2px 10px; border-radius:999px; background:#fdf2f2; border:1px solid #c3142d; color:#c3142d; font-size:13px; font-weight:600; margin:3px 4px 3px 0; }
+.hand6 { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:12px; margin-top:10px; }
+.hand6 .cb { font-size:14.5px; line-height:1.5; }
+.tl { position:relative; display:grid; grid-template-columns:repeat(6, minmax(0,1fr)); gap:10px; margin-top:22px; }
+.tl::before { content:""; position:absolute; left:6%; right:6%; top:8px; height:3px; background:#d1d5db; }
+.tl-i { position:relative; text-align:center; }
+.tl-dot { position:relative; z-index:1; width:19px; height:19px; box-sizing:border-box; border-radius:50%; background:#ffffff; border:3px solid #585E60; margin:0 auto; }
+.tl-i.r .tl-dot { background:#c3142d; border-color:#c3142d; }
+.tl-d { font-weight:700; font-size:15.5px; margin-top:8px; color:#1b1b1b; }
+.tl-i.r .tl-d { color:#c3142d; }
+.tl-t { font-size:13.5px; line-height:1.45; color:#1b1b1b; margin-top:5px; text-align:left; background:#ffffff; border:1px solid #e5e7eb; border-radius:8px; padding:7px 9px; }
+.pct { font-size:30px; font-weight:700; color:#c3142d; line-height:1.1; }
+.pbar { height:12px; background:#e5e7eb; border-radius:6px; overflow:hidden; margin:6px 0 8px 0; }
+.pbar span { display:block; height:100%; background:#c3142d; }
+.flow-q12 { display:flex; align-items:stretch; gap:6px; margin-top:12px; }
+.flow-q12 .card { flex:1; }
+.flow-q12 .cb { font-size:14.5px; line-height:1.5; }
+.flow-q12 .ar { align-self:center; text-align:center; color:#c3142d; font-size:12.5px; font-weight:700; line-height:1.25; flex:0 0 96px; }
+.flow-q12 .ar span { display:block; font-size:22px; }
+.q11 .rcode { margin:6px 0 !important; padding-top:8px !important; }
+.q11 .xaringanextra-clipboard-button, .q1 .xaringanextra-clipboard-button { display:none !important; }
+.q1 .rcode, .q1 .rout { margin:6px 0 !important; padding-top:8px !important; }
+</style>
+
+???
+
+No time of its own. Part 3 runs 20 minutes (35 to 55).
+
+---
+
+# Game Day at Yager
+
+<div style="display:grid; grid-template-columns:1fr 1.05fr; gap:16px; margin-top:10px;">
+<div class="card"><div class="ch">How to play</div><div class="cb" style="font-size:15px; line-height:1.5;">
+<div class="gd-row"><b>1.</b> You joined at the start of class. If you did not, scan your section's code now.</div>
+<div class="gd-row"><b>2.</b> Each question appears on the screen. Answer on your phone.</div>
+<div class="gd-row"><b>3.</b> A right answer earns points, and a faster right answer earns more. Every question is worth double points (up to 2,000).</div>
+<div class="gd-row"><b>4.</b> Two questions ask you to type a short answer. They are scored by the ideas you include, not by speed.</div>
+<div class="gd-row"><b>5.</b> 14 questions: four quarters and a two-minute drill.</div>
+<div style="color:#585E60; margin-top:10px;">Points count for nothing: no grade and no bonus. The screen shows only your first name and seat.</div>
+</div></div>
+<div class="card"><div class="ch gray">Join</div><div class="cb">
+<div class="qr-pair">
+<div class="qr-box"><div class="sec">Section A <span>(8:30 AM)</span></div><img src="`r knitr::image_uri(qr_path('A'))`" alt="QR code for the Section A game link"><div class="url"><a href="https://isa401-game-day.vercel.app/?section=A" target="_blank">isa401-game-day.vercel.app/?section=A</a></div></div>
+<div class="qr-box"><div class="sec">Section B <span>(10:05 AM)</span></div><img src="`r knitr::image_uri(qr_path('B'))`" alt="QR code for the Section B game link"><div class="url"><a href="https://isa401-game-day.vercel.app/?section=B" target="_blank">isa401-game-day.vercel.app/?section=B</a></div></div>
+</div>
+<div style="font-size:14px; margin-top:10px;">Enter your <b>preferred first name</b> and <b>last initial</b>, then <b>tap your seat</b> (or <b>Joining remotely</b>).</div>
+</div></div>
+</div>
+
+<div class="lesson" style="margin-top:14px;"><b class="r">20 minutes.</b> The questions cover Wednesday and today: distortion, data-ink, data types, encodings, color, and the grammar of graphics.</div>
+
+???
+
+Twenty minutes (35 to 55), about 18 minutes of play.
+
+Host view: https://isa401-game-day.vercel.app/host?section=A for Section A and https://isa401-game-day.vercel.app/host?section=B for Section B. Admin key: from Fadel's notes (not in this public deck).
+
+Run book: Space does the next step (open, close, reveal, next). Keys: O open, C close, R reveal, N next, B break, E end the game (twice if before the last question), J rejudge (use it if "Reviewing answers" stays up on an open question), X reset (press twice; it starts a new run), M mute, F full screen, H hide the controls. Breaks after quarters 1 to 3: 30 to 45 seconds each. Questions 4 and 14 are the typed (open) questions; Jev judges them when they close, so the screen shows "Reviewing answers" for a few seconds. Leave the final podium up for a moment, then move to the project slide.
+
+---
+
+# The Class Project
+
+<div class="flow5">
+<div class="card"><div class="ch">1 &nbsp; Question</div><div class="cb">A research question or business problem your team finds interesting.</div></div>
+<div class="ar">&rarr;</div>
+<div class="card"><div class="ch">2 &nbsp; Data</div><div class="cb">At least <b>3 real-world sources</b> and <b>2 methods</b>: web scraping, APIs, LLM extraction. Not Kaggle.</div></div>
+<div class="ar">&rarr;</div>
+<div class="card"><div class="ch">3 &nbsp; R pipeline</div><div class="cb">Acquire, clean, merge, and validate in <b>R</b>, in a <b>GitHub repository</b>.</div></div>
+<div class="ar">&rarr;</div>
+<div class="card"><div class="ch">4 &nbsp; Dashboard</div><div class="cb"><b>Tableau</b> (Storyboard) or <b>Power BI</b>, built on your merged data.</div></div>
+<div class="ar">&rarr;</div>
+<div class="card"><div class="ch">5 &nbsp; Presentations</div><div class="cb">A <b>technical video</b> (8 to 12 min) and an <b>in-class talk</b> (8 to 9 min).</div></div>
+</div>
+
+<div style="display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:14px; margin-top:14px;">
+<div class="card"><div class="ch">Start now</div><div class="cb" style="font-size:15px; line-height:1.55;"><b>1.</b> Form a team of 3 (4 at most) on the <a href="https://miamioh.instructure.com/courses/258169/groups#tab-59773" target="_blank"><b>Canvas Groups page</b></a>.<br><b>2.</b> One teammate opens the <a href="https://github.com/fmegahed/isa401_project_template" target="_blank"><b>project template</b></a>, clicks <b>Use this template</b>, and adds the others as collaborators. Everyone clones the new repository.<br><b>3.</b> Suggested check-in, <b>Fri Oct 30</b> (not a deadline): your topic and planned sources.</div></div>
+<div class="card"><div class="ch">Hand in by Fri Dec 4, 11:59 PM</div><div class="cb" style="font-size:15px; line-height:1.55;"><b>Team:</b> one link, your repository. Its README links the dashboard, the video, and each member.<br><b>Each of you:</b> add the project to your portfolio and update your skills.<br><b>Presentations</b>, FSB 2050: Section B Wed Dec 9, 10:15 AM; Section A Fri Dec 11, 8:00 AM.</div></div>
+</div>
+
+<div class="src" style="margin-top:10px;">Full guidelines, past projects, and Spring 2026 storyboards: the <a href="https://miamioh.instructure.com/courses/258169/assignments/3622330" target="_blank">Project page on Canvas</a>.</div>
+
+???
+
+Three minutes (55 to 58). Read the strip left to right: a question, data they collect themselves, a reproducible R pipeline, and a dashboard that communicates. Steps 2 and 3 were Phase I; step 4 starts Wednesday with the first dashboard lab. Then the two cards. Start now: the Canvas Groups page for teams, and the template repository (use the template, do not fork it: commits in a fork do not count on their GitHub profiles). Hand in: one team link, the repository, whose README is the index; and each student updates their portfolio from Assignment 02 with the project and their skills. Everything else (the data requirements, validation table, both presentations, ChatISA Project Assistant, booking a meeting) is on the Project page; point them there and to the Spring 2026 storyboards for ideas.
+
+---
+
+class: inverse, center, middle
+
+# Part 4: Exam 01 Review
+
+???
+
+No time of its own. Part 4 and the recap run 22 minutes (58 to 80). The project is one slide now, so there is time to take questions on each of the three exam questions. Show only the range and percent of points. Do not mention the median, the mean, or how many students took the exam.
+
+---
+
+# Exam 01 at a Glance
+
+<div class="lesson" style="margin-top:4px;"><b class="r">Scores ranged from `r ex_lo`% to `r ex_hi`%.</b> <span style="color:#585E60;">Based on exams graded as of Oct 14, 2026.</span></div>
+
+<div style="font-size:16px; margin-top:14px;">Six questions showed a real AI answer. In five of them, the AI was wrong in a way you only catch by checking.</div>
+
+<div class="tbl-sm" style="margin-top:8px;">
+<table>
+<thead><tr><th>Question</th><th>The AI answer</th><th>What checking shows</th></tr></thead>
+<tbody>
+<tr><td>Q1: What is one row?</td><td>Two models counted rows as penguins: Adelie had the most.</td><td>One row is one capture. Counting bands gives 220 penguins; Gentoo had the most.</td></tr>
+<tr><td>Q3: One vector, one type</td><td>ChatGPT said the code prints 7.</td><td>Run it: it prints 0, because the vector is text.</td></tr>
+<tr><td>Q4: Nested JSON</td><td>Both models' code looked for a buildings element.</td><td><code>names(campus)</code> shows there is no buildings element.</td></tr>
+<tr><td>Q6: Calling an API</td><td>One model filtered on <code>crash_date</code>; the other's code counts rows (2,400 in July), but each row is a person.</td><td>The column is <code>crashdate</code>. The 2,400 rows are people; there were 1,166 crashes.</td></tr>
+<tr><td>Q11: Extracting structure from text</td><td>ChatGPT's ellmer code named no model.</td><td>With the class key, it does not run until the model is named.</td></tr>
+<tr><td>Q10: dplyr</td><td>Gemma said the result has 12 rows.</td><td>Correct. This was the one AI answer that was right.</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="src" style="margin-top:8px;">Score range: <a href="https://miamioh.instructure.com/courses/258169" target="_blank">Canvas</a> item analysis (instructor view), based on exams graded as of Oct 14, 2026. Questions and answers: the Exam 01 answer key (instructor view on <a href="https://miamioh.instructure.com/courses/258169" target="_blank">Canvas</a>). Q6 counts: the <a href="https://data.cincinnati-oh.gov/resource/rvmt-pkmq.json" target="_blank">Cincinnati traffic crash API</a>, July 2026.</div>
+
+???
+
+Two minutes (58 to 60). The range is all we show: 42% to 100%, based on exams graded as of Oct 14. No median, no mean, no counts. The theme of the exam: an AI answer can look complete and still be wrong. In each row, one check (run the code, read the names, ask what a row is) finds the problem. Q10 is there on purpose: checking also tells you when the AI is right.
+
+---
+
+# The Three Lowest-Scoring Questions
+
+<div style="font-size:16px; margin-top:6px;">Percent of possible points earned on each question: the three lowest of the 13.</div>
+
+<div style="display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:14px; margin-top:12px;">
+<div class="card"><div class="ch">`r ex_title[1]`</div><div class="cb" style="font-size:15px;"><div class="pct">`r ex_pct(low3$Title[1])`%</div><div class="pbar"><span style="width:`r ex_pct(low3$Title[1])`%;"></span></div>Worth `r ex_pts(low3$Title[1])` points.<br><br>Two AI models counted rows as penguins. Was that right?</div></div>
+<div class="card"><div class="ch">`r ex_title[2]`</div><div class="cb" style="font-size:15px;"><div class="pct">`r ex_pct(low3$Title[2])`%</div><div class="pbar"><span style="width:`r ex_pct(low3$Title[2])`%;"></span></div>Worth `r ex_pts(low3$Title[2])` point.<br><br>How do you analyze a table with an LLM without sending it the rows?</div></div>
+<div class="card"><div class="ch">`r ex_title[3]`</div><div class="cb" style="font-size:15px;"><div class="pct">`r ex_pct(low3$Title[3])`%</div><div class="pbar"><span style="width:`r ex_pct(low3$Title[3])`%;"></span></div>Worth `r ex_pts(low3$Title[3])` points.<br><br>Why does ChatGPT's ellmer code fail with the class key?</div></div>
+</div>
+
+<div class="lesson" style="margin-top:16px;">The next three slides go through each one.</div>
+
+<div class="src" style="margin-top:8px;">Based on exams graded as of Oct 14, 2026. Percent = points earned on the question across graded exams &divide; points possible on it (<a href="https://miamioh.instructure.com/courses/258169" target="_blank">Canvas</a> item analysis, instructor view).</div>
+
+???
+
+One and a half minutes (60 to 61.5). These are percent of possible points per question, computed in the deck from the Canvas item analysis export. Do not read out any other statistic.
+
+---
+
+# Q1: What Is One Row?
+
+<div class="q1" style="display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px; margin-top:6px;">
+<div class="card"><div class="ch gray">What the two AI models said</div><div class="cb" style="font-size:14.5px;">
+<div><b>Grok:</b> Adelie `r rows_of("Adelie")`, Chinstrap `r rows_of("Chinstrap")`, Gentoo `r rows_of("Gentoo")`. Adelie had the most.</div>
+<div style="margin-top:4px;"><b>Second model</b> (OpenAI, via an ellmer API call) ran <code>table(d$species)</code> and agreed.</div>
+<div style="margin-top:10px; font-weight:700;">Five real rows of the file</div>
+<div class="tbl-sm">
+`r five_html`
+</div>
+<div style="color:#585E60; font-size:13.5px;">Band <b style="color:#c3142d;">`r as.character(b3$band)`</b> is one penguin caught in three years; band <b style="color:#0072B2;">`r as.character(b2$band)`</b> is one penguin caught twice.</div>
+</div></div>
+<div class="card"><div class="ch">Count penguins, not rows</div><div class="cb" style="font-size:14.5px;">
+<div>One row is <b>one capture</b> of a banded penguin. A penguin is one band.</div>
+`r hl_r(q1_code, "68%")`
+`r hl_out(q1_out, "68%")`
+<div><b>`r sum(q1_birds$n)` penguins</b> (`r nrow(penguins)` rows). <b>Gentoo</b> had the most, not Adelie.</div>
+<div style="margin-top:8px;">Both models counted the same rows, so their agreement did not check anything.</div>
+</div></div>
+</div>
+
+<div class="src" style="margin-top:8px;">Data: <a href="https://raw.githubusercontent.com/fmegahed/isa401/main/data/penguin_captures.csv" target="_blank"><code>data/penguin_captures.csv</code></a> (the Exam 01 file). The counts on this slide are computed from it.</div>
+
+???
+
+Five and a half minutes (61.5 to 67). Ask first: what is one row of this file? The band column is the clue: the same band appears in up to three years. Then the one line: distinct() keeps one row per penguin (species and band), and count() counts them: 80 Adelie, 95 Gentoo, 45 Chinstrap. The second model ran code, which sounds like checking, but it ran the same row count. The same question applies to every project dataset.
+
+---
+
+# Q12: Keep the Rows Away From the LLM
+
+<div class="qbar" style="margin-top:6px;"><b>In short.</b> In one sentence, describe the general approach that lets you analyze a table with an LLM without sending it the raw data.</div>
+
+<div class="flow-q12">
+<div class="card"><div class="ch gray">Your data</div><div class="cb">The rows stay on your computer.</div></div>
+<div class="ar"><span>&rarr;</span>schema only</div>
+<div class="card"><div class="ch">The LLM</div><div class="cb">Sees column names and types, and writes a query (SQL or R code).</div></div>
+<div class="ar"><span>&rarr;</span>the query</div>
+<div class="card"><div class="ch gray">Your computer</div><div class="cb">Runs the query on the data locally and shows you the result.</div></div>
+</div>
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px;">
+<div class="steprow red" style="font-size:15px; color:#1b1b1b;"><b>Half credit:</b> only the schema (column names and types) goes to the model, not the rows.</div>
+<div class="steprow red" style="font-size:15px; color:#1b1b1b;"><b>Half credit:</b> the code the model writes runs locally, where the data stay.</div>
+</div>
+
+<div class="lesson" style="margin-top:14px;">Full credit needed both halves. Fewer than half of graded exams earned full credit; the most common partial score was half credit. <span style="color:#585E60;">Based on exams graded as of Oct 14, 2026.</span></div>
+
+???
+
+Four and a half minutes (67 to 71.5). Most partial answers had one half: they said "send only the column names" but not where the query runs, or the reverse. This is how querychat worked in the Job Scout Chat app: the model saw the table's schema, wrote SQL, and the SQL ran in the app. The statement about full and partial credit is computed in the deck from the Canvas item analysis.
+
+---
+
+# Q11: Name the Model
+
+<div class="qbar" style="margin-top:6px;"><b>The question.</b> ChatGPT's ellmer code does not run with the class key. Why not, and which one line fixes it?</div>
+
+<div class="q11" style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:10px;">
+<div class="card"><div class="ch gray">As written</div><div class="cb" style="font-size:15px;">
+`r hl_r('chat <- ellmer::chat_openai()', "80%")`
+No model is named, so ellmer uses its default model. The class key only allows the class model, so a call that names no model is refused.
+</div></div>
+<div class="card"><div class="ch">The fix</div><div class="cb" style="font-size:15px;">
+`r hl_r('chat <- ellmer::chat_openai(model = "gpt-5.6-luna")', "80%")`
+With the class model named, the code runs and returns the listing's fields: a mansion that sleeps 19, with 9 bedrooms.
+</div></div>
+</div>
+
+<div class="lesson" style="margin-top:16px;"><b class="r">When code fails, look for a default you did not choose.</b> Here it was the model. If ChatGPT's code ran as written for you, there was no fault to find, and you received full credit.</div>
+
+???
+
+Four and a half minutes (71.5 to 76). Per the answer key, the failure depends on the class key being limited to the class model; anyone whose code ran as written received full credit for the question.
+
+---
+
+# Below 80%? Come Talk to Me
+
+<div style="display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:16px; margin-top:16px;">
+<div class="card"><div class="ch">Book a time</div><div class="cb" style="font-size:16px; line-height:1.6;"><a href="https://calendly.com/fmegahed" target="_blank"><b>Automated Scheduler for Office Hours</b> <span style="color:#c3142d;">(Calendly)</span></a><br>Mondays and Wednesdays, 12:45 to 3:00 PM, in FSB 2004 or on Zoom. Book at least 2 hours ahead.</div></div>
+<div class="card"><div class="ch gray">What we will do</div><div class="cb" style="font-size:16px; line-height:1.6;">Go through your exam one question at a time, and make a plan for Exam 02 (Mon Nov 16).<br>If none of the times work, email me and we will find another time.</div></div>
+</div>
+
+<div class="lesson" style="margin-top:20px;"><b class="r">If your Exam 01 score is below 80%,</b> please book a meeting.</div>
+
+???
+
+Two minutes (76 to 78). This is the offer from Wednesday. Office hours and the booking rule are from the Canvas home page and course guide.
+
+---
+
+class: inverse, center, middle
+
+# Recap
+
+???
+
+No time of its own. The recap runs 2 minutes (78 to 80), inside Part 4's 22 minutes.
+
+---
+
+# Summary of Main Points
+
+By now, you should be able to do the following:
+
+- **Apply** the grammar of graphics using ggplot2: every chart has data, aesthetics, and a geometry; facets, statistics, coordinates, scales, and a theme are added with <b>+</b> and have defaults.
+
+- **Map** data types to visual encodings in code: a column inside aes() is mapped to a channel, a value outside aes() is set for every mark, and the color scale should match the data type (qualitative for nominal data, sequential or diverging for ordered values).
+
+- **Refine** charts with labels, scales, and themes: a title that states the finding, axis labels with units, direct labels where they help, and a theme for the parts that do not show data.
+
+- **Critique** and improve draft visualizations by changing one layer at a time, and check what one row is before you count or chart it.
+
+???
+
+One minute (78 to 79). One bullet per learning objective. The last bullet ties the grammar to the exam review: checking what a row is comes before any chart.
+
+---
+
+# Before Next Class
+
+<div class="lesson" style="margin-top:6px;"><b class="r">Wednesday, Oct 21: Lab: Tableau + Power BI.</b> We import data, build common charts with filters, and make a multi-view dashboard in both tools.</div>
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px;">
+<div class="card">
+  <div class="ch">Suggested</div>
+  <div class="cb" style="font-size:14.5px; line-height:1.6;">
+    <div>Wickham, Çetinkaya-Rundel, and Grolemund, <i>R for Data Science</i> (2e): <a href="https://r4ds.hadley.nz/data-visualize" target="_blank"><b>ch. 1, Data visualization</b></a>.</div>
+    <div style="color:#585E60;">Builds a ggplot one layer at a time, as we did today with Playfair's cities.</div>
+    <div style="margin-top:10px;">Healy, <i>Data Visualization: A Practical Introduction</i>: <a href="https://socviz.co/03-ggplot-basics.html" target="_blank"><b>ch. 3, Make a Plot</b></a>.</div>
+    <div style="color:#585E60;">Free online. A second explanation of mappings and geoms in ggplot2.</div>
+  </div>
+</div>
+<div class="card">
+  <div class="ch gray">Skim if curious</div>
+  <div class="cb" style="font-size:14.5px; line-height:1.6;">
+    <div>Wickham, H. (2010). <a href="https://doi.org/10.1198/jcgs.2009.07098" target="_blank"><b>A Layered Grammar of Graphics</b></a>. <i>Journal of Computational and Graphical Statistics</i>, 19(1), 3-28.</div>
+    <div style="color:#585E60;">The paper behind ggplot2's layers.</div>
+  </div>
+</div>
+</div>
+
+<script>
+(function () {
+  // Password gate for the answer boxes (class answer-gate). The password is fall2026; case and spaces are ignored.
+  // Light gate only: the password is stored as a 32-bit FNV-1a hash so it is not readable in
+  // the page source, but anyone determined can open the box from DevTools. sessionStorage
+  // remembers an unlock for the rest of the browser session, so one password opens every box.
+  var HASH = "806d8122";
+  var KEY = "isa401_gate_16";
+  function fnv(str) {
+    var x = 0x811c9dc5;
+    for (var i = 0; i !== str.length; i = i + 1) { x ^= str.charCodeAt(i); x = Math.imul(x, 16777619) >>> 0; }
+    return ("0000000" + x.toString(16)).slice(-8);
+  }
+  function unlocked() { try { return sessionStorage.getItem(KEY) === "1"; } catch (e) { return false; } }
+  function remember() { try { sessionStorage.setItem(KEY, "1"); } catch (e) {} }
+
+  function arm(d) {
+    if (d.getAttribute("data-gated")) { return; }
+    d.setAttribute("data-gated", "1");
+    var prompt = null;
+    d.addEventListener("toggle", function () {
+      if (!d.open) { return; }   // closing (including our own d.open = false below) needs nothing
+      if (unlocked()) { if (prompt) { prompt.remove(); prompt = null; } return; }
+      d.open = false;
+      if (prompt) { prompt.querySelector("input").focus(); return; }
+      prompt = document.createElement("div");
+      prompt.setAttribute("style", "display:flex; align-items:center; gap:8px; margin:6px 0 0 0; font-size:13px;");
+      prompt.innerHTML = "<span style='color:#585E60;'>Password</span>" +
+        "<input type='password' autocomplete='off' style='font-family:Source Code Pro, monospace; font-size:13px; padding:4px 8px; border:1px solid #d1d5db; border-radius:6px; width:140px;'>" +
+        "<button type='button' style='background:#c3142d; color:#fff; border:0; border-radius:6px; padding:5px 14px; font-weight:700; font-size:13px; cursor:pointer;'>Unlock</button>" +
+        "<span class='gate-msg' style='color:#c3142d;'></span>";
+      d.parentNode.insertBefore(prompt, d.nextSibling);
+      var input = prompt.querySelector("input");
+      var msg = prompt.querySelector(".gate-msg");
+      // keep remark's keyboard shortcuts (f, p, digits) from firing while typing: same
+      // pause/resume pattern xaringanExtra uses for its editable fields
+      ["keydown", "keypress", "keyup"].forEach(function (t) { input.addEventListener(t, function (e) { e.stopPropagation(); }); });
+      input.addEventListener("focus", function () { if (window.slideshow) { window.slideshow.pause(); } });
+      input.addEventListener("blur", function () { if (window.slideshow) { window.slideshow.resume(); } });
+      function tryIt() {
+        if (fnv(input.value.toLowerCase().split(" ").join("")) === HASH) { remember(); prompt.remove(); prompt = null; d.open = true; }
+        else { msg.textContent = "Not it."; input.select(); }
+      }
+      prompt.querySelector("button").addEventListener("click", tryIt);
+      input.addEventListener("keydown", function (e) { if (e.key === "Enter") { tryIt(); } });
+      input.focus();
+    });
+  }
+  function armAll() { document.querySelectorAll("details.answer-gate").forEach(arm); }
+  armAll();
+  if (window.slideshow) { if (!window.answerGateHooked) { window.answerGateHooked = true; window.slideshow.on("afterShowSlide", armAll); } }
+})();
+</script>
+
+
+???
+
+One minute (79 to 80). Wednesday is the first dashboard lab, and it is also the first step toward the project dashboard. The readings are optional: the R4DS chapter repeats today in code; Healy is a second explanation; Wickham (2010) is the paper behind the layers. Total for the deck: 80 minutes.

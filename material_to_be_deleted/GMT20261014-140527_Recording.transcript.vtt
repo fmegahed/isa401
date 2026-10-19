@@ -1,0 +1,1874 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:04.270
+Fadel Megahed: Okay, good morning, everybody, I hope…
+
+2
+00:00:07.200 --> 00:00:15.500
+Fadel Megahed: You guys are doing well. We will, today we will kind of pivot to talk about kind of the basis of
+
+3
+00:00:17.250 --> 00:00:21.339
+Fadel Megahed: Data visualization, as I've mentioned in the beginning of the class.
+
+4
+00:00:21.510 --> 00:00:41.369
+Fadel Megahed: This is kind of a class which has three different classes kind of combined in one class. So, the first phase when we, kind of used a lot of R, kind of the focus there was on getting data from different data sources and having it in a shape that allows us to visualize that data.
+
+5
+00:00:41.390 --> 00:00:45.490
+Fadel Megahed: That was kind of the focus of that first part of the class.
+
+6
+00:00:45.600 --> 00:00:52.040
+Fadel Megahed: And I said, like, as I teach each of these three, kind of.
+
+7
+00:00:52.470 --> 00:01:02.240
+Fadel Megahed: phases, I'm going to be kind of teaching them a little differently. So, in the second phase, which we're in, I'll be rarely touching, kind of, codes.
+
+8
+00:01:02.240 --> 00:01:12.499
+Fadel Megahed: There is going to be some code discussions on Monday. There is going to be some, where I'm going to sprinkle in some R packages that can kind of embed in Power BI visualizations.
+
+9
+00:01:12.590 --> 00:01:18.869
+Fadel Megahed: But on the exam, I don't necessarily expect you to write anything. There is something that I want to hide.
+
+10
+00:01:19.330 --> 00:01:31.079
+Fadel Megahed: As I've promised, I've also said that for those of you who kind of left the exam a little bit early, I've mentioned to some of you that my plan is to, by the end of day today, to have given you all the grades.
+
+11
+00:01:31.330 --> 00:01:40.039
+Fadel Megahed: I think I'm on track. I graded like 50 or 51 exams. I have 17 more to go so most of you in here should have received your grades.
+
+12
+00:01:40.210 --> 00:01:49.870
+Fadel Megahed: The current average is about an 81 or 82%. And if you score below an 80%, I would like to talk to you kind of about what you've mentioned.
+
+13
+00:01:50.720 --> 00:02:00.520
+Fadel Megahed: But that's kind of where we are, with exam one. With exam two, I'm gonna focus a lot on computational parts. When I was walking around.
+
+14
+00:02:01.080 --> 00:02:07.100
+Fadel Megahed: kind of an exam I saw. Some of you were using AI, which is obviously allowed. I saw most of you preferred
+
+15
+00:02:07.580 --> 00:02:20.350
+Fadel Megahed: So I'm just gonna put every single question in Exam 2, just chase, put it in ChatGPT, give you the answer, and be like, okay, no longer need to use ChatGPT, here's the answer from ChatGPT, and we're gonna talk about it.
+
+16
+00:02:20.470 --> 00:02:27.109
+Fadel Megahed: In exam 2, I'll focus more on interpretation of charts, which is not everything I'm gonna do in class.
+
+17
+00:02:27.180 --> 00:02:41.399
+Fadel Megahed: There's also going to be, hey, I'm needing to visualize a data set in either Tableau or Power BI, one of the software that was talked about, and I want to make sure that you're not making errors in doing that. So that's going to be, something that I want to emphasize.
+
+18
+00:02:41.870 --> 00:02:48.059
+Fadel Megahed: For… for… for… for class, I've also, if you looked at our modules.
+
+19
+00:02:53.310 --> 00:02:56.340
+Fadel Megahed: If you go to modules, you're gonna see that there are 3 assignments.
+
+20
+00:02:56.390 --> 00:03:14.690
+Fadel Megahed: That I kind of posted. I'm gonna actually push Assignment 8, and I'm gonna make it on the 21st as well, because with the other section, we've not finished that. Assignments 9 and 10 are kind of like an honor code assignment. I'm gonna ask you to do something, I'm not gonna check your answer, you told me to do it, you're gonna get it.
+
+21
+00:03:14.780 --> 00:03:26.039
+Fadel Megahed: So there's essentially for assignment 9 and assignment 10. There's a single question. Can you watch these figures and understand them? If the answer is, if the answer is, no, we don't have to submit it to you.
+
+22
+00:03:26.250 --> 00:03:38.880
+Fadel Megahed: I'm kind of linking to Fablo has tutorials that are part of the learning on on the system that you can see on the websites. I'm intentionally kind of tagging an older version of the
+
+23
+00:03:39.610 --> 00:03:53.920
+Fadel Megahed: training material, because they went in a little bit more depth than some of the newer versions, so that's kind of by design. So you're going to see me kind of linking to a slightly older version of the notes. But again, this assignment will be pushed, these two assignments.
+
+24
+00:03:53.930 --> 00:04:00.689
+Fadel Megahed: will take time not to complete, but to actually do things that would make you so. It's just a yes or no question.
+
+25
+00:04:01.300 --> 00:04:05.680
+Fadel Megahed: And then, if you were to go into your.
+
+26
+00:04:07.480 --> 00:04:10.739
+Fadel Megahed: I don't know if this… let me see… this is how you see it.
+
+27
+00:04:17.720 --> 00:04:28.179
+Fadel Megahed: So if you were to go into your Assignments tab, you're gonna see that I already kind of implemented the rule that is in the syllabus, so I said the assignment is worth 10% of your grade.
+
+28
+00:04:28.180 --> 00:04:37.790
+Fadel Megahed: And I dropped the lowest 3 assignments. So this is something that, right now, your assignment grade, given that we have more than 3 assignments submitted, should, be reflecting that.
+
+29
+00:04:40.320 --> 00:04:49.089
+Fadel Megahed: And then Monday, I'll talk a little bit more, once I finish grading, kind of, the exam for everybody, I'll talk a little bit more about, kind of, some of the things that people missed on the exam in Clemson.
+
+30
+00:04:49.550 --> 00:04:54.289
+Fadel Megahed: Okay, that's fine loaded, so I don't need this.
+
+31
+00:04:54.490 --> 00:05:10.330
+Fadel Megahed: So, okay, so from here, let's talk about the fundamentals of data visualization. A lot of the things that I talk about in this track are things that are rehashing some of the ideas you've seen before, but I will also be trying to
+
+32
+00:05:12.370 --> 00:05:22.450
+Fadel Megahed: change some of the bad habits that you may have had from using software that is not optimal for data visualization. To be specific, Excel.
+
+33
+00:05:22.670 --> 00:05:35.469
+Fadel Megahed: has pretty bad defaults in some of the visuals that impact, kind of, your, what is acceptable, and I'm gonna try to kind of tweak that so that you can kind of make charts that are more effective.
+
+34
+00:05:35.780 --> 00:05:44.719
+Fadel Megahed: Again, the idea behind making a visual loaded chart is, you should be able to get insights from it easier and quicker by looking at it.
+
+35
+00:05:45.230 --> 00:05:47.690
+Fadel Megahed: So that's something that I want to consider.
+
+36
+00:05:48.250 --> 00:06:08.250
+Fadel Megahed: Okay, so you can see, kind of, before we start today, there is no RMD, we're not going to be OpenR today, and I'll be talking about, kind of things that hopefully would be helpful, and then I will ask you, there's going to be an activity where I'm going to ask you to sketch stuff on a piece of paper. I have some paper with me.
+
+37
+00:06:08.290 --> 00:06:12.869
+Fadel Megahed: And I'm gonna try to do this throughout, kind of, this phase.
+
+38
+00:06:12.960 --> 00:06:30.220
+Fadel Megahed: To make sure that you're thinking about what to do, because when you're using software, you click on a button, and it makes some decisions for you. If you haven't thought about it, and you're like, okay, this looks good, that applies to Tableau, that applies to Power BI, that applies to throwing a data set into,
+
+39
+00:06:30.220 --> 00:06:34.200
+Fadel Megahed: Claude or Gemini or ChatGPT and getting an answer back.
+
+40
+00:06:34.500 --> 00:06:43.760
+Fadel Megahed: And I want to make sure that even if you're using AI, you're getting the answer that you want, not that the first answer is correct. There is a difference between, both.
+
+41
+00:06:45.260 --> 00:06:50.799
+Fadel Megahed: Okay, so what in the second phase, which focuses on data visualization.
+
+42
+00:06:50.930 --> 00:06:54.839
+Fadel Megahed: I'm making, 3 assumptions coming into the States.
+
+43
+00:06:55.120 --> 00:06:59.209
+Fadel Megahed: One is, you have all the data that you wanted to have.
+
+44
+00:06:59.860 --> 00:07:03.240
+Fadel Megahed: Two is you have it in a tidy format.
+
+45
+00:07:03.600 --> 00:07:08.390
+Fadel Megahed: Which is the format that we've talked about, at, Wednesday's class.
+
+46
+00:07:08.530 --> 00:07:13.459
+Fadel Megahed: Which means that every row contains a single observation.
+
+47
+00:07:13.640 --> 00:07:18.939
+Fadel Megahed: Every column contains a single variable, but regulation means every cell is
+
+48
+00:07:19.550 --> 00:07:29.980
+Fadel Megahed: containing a single piece of information. If your data set is not tidy. That's not data set that would be easy to kind of analyze and
+
+49
+00:07:30.090 --> 00:07:33.669
+Fadel Megahed: Tableau or Power BI. So this is something that I want to have.
+
+50
+00:07:34.170 --> 00:07:39.949
+Fadel Megahed: for some of the other software that we talk about. So like data wrapper and forest.
+
+51
+00:07:40.070 --> 00:07:48.709
+Fadel Megahed: These… in some cases, you would want to have data sets that are wide, so you're going to have to kind of make sure that your data set is ready for that.
+
+52
+00:07:48.970 --> 00:07:59.040
+Fadel Megahed: This is about, you know, 5 weeks of class, that ends with Exam 2. Exam 2 is not cumulative, it only focuses on
+
+53
+00:07:59.070 --> 00:08:18.070
+Fadel Megahed: the things we've talked about in Phase 2. The only pieces of information that are going to be relevant from the first phase is what is my unit of analysis, what is the idea of data encoding, and making sure that you have the data in a format that you can consume in some sort of a visualization.
+
+54
+00:08:20.750 --> 00:08:34.019
+Fadel Megahed: Okay, so for today, we're gonna primarily focus… I don't… if I'm kind of using the other, section as kind of a measuring stick, we're gonna be primarily focusing on some of the principles of graphical excellence.
+
+55
+00:08:34.020 --> 00:08:41.179
+Fadel Megahed: And we're going to be, maybe we're going to start touching a little bit of visual encoding, but maybe not finish that idea.
+
+56
+00:08:41.970 --> 00:08:54.839
+Fadel Megahed: If you look at the schedule, I have kind of the fundamentals of data visualization split over today's class and Monday's class, and that's by design, because I knew from the beginning that in one of the classes, I want to talk a little bit more about the exam as well.
+
+57
+00:08:55.690 --> 00:09:10.270
+Fadel Megahed: Okay, so from a graphical excellence point of view, and again, from a me teaching this phase kind of point of view, I'm going to be talking a lot, I'm not going to be using R, and I'm going to ask you to really critically think about data that is
+
+58
+00:09:10.350 --> 00:09:12.510
+Fadel Megahed: I've been presenting to you in visuals.
+
+59
+00:09:12.550 --> 00:09:23.279
+Fadel Megahed: I will pull data from both sides of the political aisle. This is not a political science class, I have no training in politics, I don't really care who you vote for.
+
+60
+00:09:23.280 --> 00:09:34.789
+Fadel Megahed: But the idea is I want you to be able to consume data that is presented in the news media in a way that corresponds to somebody who has a major or minor business sale. So that's really my input.
+
+61
+00:09:35.260 --> 00:09:51.160
+Fadel Megahed: So I'm gonna start by kind of showing you three such examples. So, these are examples that, were shown in the media. This is one example that talks about, and I don't… I kind of didn't want to do this, so let me…
+
+62
+00:09:57.250 --> 00:10:06.249
+Fadel Megahed: Okay, let me… now I think I can talk about it, or if not, I can open it from a different browser. I can do that too. So we have the defense budget.
+
+63
+00:10:06.540 --> 00:10:11.099
+Fadel Megahed: You have for Russia versus Ukraine, you have the White House.
+
+64
+00:10:11.150 --> 00:10:23.429
+Fadel Megahed: chart that they made about economic growth, and we have a Fox News, kind of chart that talks about, kind of, the percentage of Americans who identify as Christians between
+
+65
+00:10:23.430 --> 00:10:33.390
+Fadel Megahed: 2009 and 2019. I'll give you 5 minutes to think about these three charts. These charts have one or two major issues that, make them
+
+66
+00:10:35.270 --> 00:10:43.669
+Fadel Megahed: not the best, I'm just gonna leave it there. So I want you to kind of think about these, and then we'll be… I'll give you 5 minutes, and then we will discuss this as a class.
+
+67
+00:11:16.210 --> 00:11:16.990
+Fadel Megahed: Thanks, Nothing.
+
+68
+00:11:17.430 --> 00:11:18.160
+Fadel Megahed: Okay.
+
+69
+00:11:22.840 --> 00:11:32.369
+Fadel Megahed: Yeah. And I like the the rendering of the page took a while. I don't really know. That's that's probably so. If you can't see it.
+
+70
+00:11:44.010 --> 00:11:44.770
+Fadel Megahed: Okay.
+
+71
+00:13:16.590 --> 00:13:17.290
+Fadel Megahed: What was it?
+
+72
+00:14:32.510 --> 00:14:34.200
+Fadel Megahed: 50 minutes.
+
+73
+00:14:36.280 --> 00:14:38.030
+Fadel Megahed: Oh, it was… basically.
+
+74
+00:14:38.190 --> 00:14:41.279
+Fadel Megahed: You to answer question 3.
+
+75
+00:14:42.100 --> 00:14:45.879
+Fadel Megahed: I think I've done it.
+
+76
+00:14:48.010 --> 00:14:53.440
+Fadel Megahed: Okay, so the typing one down, so I'm gonna use that as a cue that we can kind of talk about it.
+
+77
+00:14:53.840 --> 00:14:57.179
+Fadel Megahed: Nick, do you want to take a stab at the first question?
+
+78
+00:14:57.390 --> 00:15:06.449
+Fadel Megahed: Yeah, I would say a bigger problem is, the sizes of the boxes aren't proportional to the numbers.
+
+79
+00:15:18.290 --> 00:15:22.970
+Fadel Megahed: Okay, so… So, that's… that's a correct statement.
+
+80
+00:15:23.310 --> 00:15:25.150
+Fadel Megahed: So let's think about what?
+
+81
+00:15:25.630 --> 00:15:31.509
+Fadel Megahed: So the size of the boxes are not proportional to the numbers. So in plain English.
+
+82
+00:15:31.660 --> 00:15:41.670
+Fadel Megahed: Russia spends about… in 2020, they were spending about $60 billion for the military defense, or military budget.
+
+83
+00:15:41.790 --> 00:15:53.239
+Fadel Megahed: And Ukraine was spending about $4.3 billion. If I'm doing, kind of, that math in my head, that's kind of a ratio of 1 to 15 ballpark.
+
+84
+00:15:53.420 --> 00:15:56.080
+Fadel Megahed: So we would expect
+
+85
+00:15:56.320 --> 00:16:03.329
+Fadel Megahed: Russia's box to be 15 times larger than that of the Ukraine, but obviously, visually, that's not good.
+
+86
+00:16:03.660 --> 00:16:08.579
+Fadel Megahed: So the reason that's not happening is, again, I did not make the chart.
+
+87
+00:16:08.980 --> 00:16:14.449
+Fadel Megahed: I'm gonna make now an assumption that, say, that they kind of intended to draw it to scale.
+
+88
+00:16:14.900 --> 00:16:19.830
+Fadel Megahed: What happened from here is that the use The lens…
+
+89
+00:16:20.080 --> 00:16:24.090
+Fadel Megahed: Or the width, whatever term you want to use, of the… of the box.
+
+90
+00:16:24.420 --> 00:16:27.970
+Fadel Megahed: To… to encode the military spending.
+
+91
+00:16:28.280 --> 00:16:30.429
+Fadel Megahed: So if I'm using that as a measure.
+
+92
+00:16:30.710 --> 00:16:39.940
+Fadel Megahed: Then probably saying that This is 4.3 2.
+
+93
+00:16:40.890 --> 00:16:43.340
+Fadel Megahed: and this is 4.3 2.
+
+94
+00:16:43.540 --> 00:16:46.989
+Fadel Megahed: So I'm gonna have 15 such segments here.
+
+95
+00:16:48.020 --> 00:16:57.700
+Fadel Megahed: Where… that would be true. So if I'm putting these boxes side by side, this would probably be a true statement under the assumption that they do this to scale.
+
+96
+00:16:58.110 --> 00:17:16.249
+Fadel Megahed: However, the reason we all think, and we… and it's true that this is an awful chart, is people don't see witnesses. We see the area that was kind of used. So this area is over 200 times larger than this area, while the…
+
+97
+00:17:17.060 --> 00:17:20.229
+Fadel Megahed: The budget is only 15 times, small.
+
+98
+00:17:20.390 --> 00:17:23.969
+Fadel Megahed: So that's kind of what… whatever way that I actually want to think of it.
+
+99
+00:17:24.180 --> 00:17:31.809
+Fadel Megahed: So, the issue is we perceive areas, and they encoded the data using the length or width of the box.
+
+100
+00:17:32.050 --> 00:17:36.510
+Fadel Megahed: And because of that, this chart looks like it's an office.
+
+101
+00:17:36.970 --> 00:17:38.949
+Fadel Megahed: And I agree it was kind of mixing.
+
+102
+00:17:39.470 --> 00:17:42.950
+Fadel Megahed: Any, any questions about… this specific chart.
+
+103
+00:17:44.930 --> 00:17:46.829
+Fadel Megahed: Thumbs up if we're following.
+
+104
+00:17:47.320 --> 00:17:48.740
+Fadel Megahed: Yeah. Okay.
+
+105
+00:17:49.520 --> 00:17:51.280
+Fadel Megahed: So
+
+106
+00:17:52.270 --> 00:18:06.069
+Fadel Megahed: I should have asked Charlie that before. So, Charlie, you're a… what major are you in? Analytics. Okay, so we're not asking an econ person on this, which, you know, we'll take both sides of the question. So, Charlie, what do you think of that part?
+
+107
+00:18:06.720 --> 00:18:20.140
+Fadel Megahed: I think it's bad, because they added, like, 5.5 as, like, another bar, so it's, like, not pushing the other, house. Yeah, so… so what Charlie's highlighting is kind of this discrepancy here.
+
+108
+00:18:23.390 --> 00:18:29.439
+Fadel Megahed: The bars were… or the, kind of, the increments for the markers were going by 1%.
+
+109
+00:18:30.100 --> 00:18:34.929
+Fadel Megahed: And for some unknown reason, Between 5 and 6, it jumps by half.
+
+110
+00:18:35.360 --> 00:18:38.799
+Fadel Megahed: And when you do this, this looks…
+
+111
+00:18:38.910 --> 00:18:50.319
+Fadel Megahed: a little bit larger than a chart. So this is, obviously an issue here. For me, this is one of the worst charts of all time, in the sense of, I don't actually know how you make this mistake.
+
+112
+00:18:50.380 --> 00:19:04.129
+Fadel Megahed: Like, in the prior chart, you can at least logically think about, here's kind of what went into the process of, yeah, they encoded lens, then when you think about it, we perceive areas, it happens. Like, you can kind of give them the benefit of the doubt.
+
+113
+00:19:04.150 --> 00:19:17.489
+Fadel Megahed: For this one, it's like, this has to be intentional. I mean, like, there is no other way of explaining this, but this has to be intentional. So the big issue here, was that the Y
+
+114
+00:19:17.970 --> 00:19:28.340
+Fadel Megahed: Access… Scale doesn't… consist… Equal increments, something along these lines.
+
+115
+00:19:38.800 --> 00:19:47.320
+Fadel Megahed: by 1% until 5%, which… Then was incremented.
+
+116
+00:19:48.060 --> 00:20:02.550
+Fadel Megahed: by half, And then… This makes… the recovery in 2021 appear larger… Manager.
+
+117
+00:20:03.040 --> 00:20:07.900
+Fadel Megahed: And I linked to the original post.
+
+118
+00:20:09.350 --> 00:20:11.580
+Fadel Megahed: People obviously bash them for it.
+
+119
+00:20:11.890 --> 00:20:23.020
+Fadel Megahed: And then they, you can see the archived version of the White House then kind of made the right chart. So you can kind of see that they ended up kind of fixing this.
+
+120
+00:20:23.070 --> 00:20:42.769
+Fadel Megahed: But this was kind of one of these, like, things that I really didn't, like, know how they did this. There are other issues there, so you can kind of… if you're thinking about it purely from an economics perspective, this is looking at year-over-year GDP growth. Obviously, when you have COVID as
+
+121
+00:20:42.920 --> 00:21:00.039
+Fadel Megahed: special circumstances in 2020, we would suppose once we start to cover in October, anyways, you're going to do well. So it's kind of, you're not comparing apples to apples. Economy was not the same. In 2020, there was a lot of businesses that were shut down. So from a storytelling point of view.
+
+122
+00:21:00.620 --> 00:21:09.159
+Fadel Megahed: and I'm not an Econ person. I wouldn't necessarily put much weight on a year after something that happened once in 100 years.
+
+123
+00:21:09.280 --> 00:21:14.629
+Fadel Megahed: So this is, you can have some things, but again, in politics, you can kind of
+
+124
+00:21:14.650 --> 00:21:33.529
+Fadel Megahed: tweak kind of the, you know, big benefits that may not be yours, but, like, from a data visualization point of view, this is just an all. And that's kind of what I'm going to focus on in this class. I'm not an economics person, I'm not a political scientist, I don't care who you guys vote for, I just want you to consume this type of data well.
+
+125
+00:21:33.820 --> 00:21:37.459
+Fadel Megahed: Okay, Peter, talk to me about the shark.
+
+126
+00:21:37.620 --> 00:21:54.139
+Fadel Megahed: Big one is that the scale is off. You know, this is in reality that it's 12% drop, but it's perceived to be, like, a 60% drop just because the scale is only showing 20%, 78 to 58.
+
+127
+00:22:00.040 --> 00:22:04.230
+Fadel Megahed: Okay, and the solution for this, and this is a common issue in Barker.
+
+128
+00:22:04.480 --> 00:22:13.540
+Fadel Megahed: Whether you're looking at population of people, or whether you're looking at percentages and things like that. If you don't start your bar chart at 0.
+
+129
+00:22:13.560 --> 00:22:24.970
+Fadel Megahed: the size of the effect that happens in the data, the 12% drop from 77 to 65 is going to be a much larger because
+
+130
+00:22:25.230 --> 00:22:29.750
+Fadel Megahed: So, the fix for this would be…
+
+131
+00:22:36.260 --> 00:22:43.809
+Fadel Megahed: Okay, and then the other thing, which for me was weird, and I didn't mention that to the first section, so I should mention it again on Monday.
+
+132
+00:22:44.800 --> 00:22:53.199
+Fadel Megahed: So I grew up in Egypt. I'm bilingual. In Arabic we write from right to left. In English we write from left to right.
+
+133
+00:22:53.310 --> 00:22:58.010
+Fadel Megahed: I thought it's a very odd choice that the Y-axis labels are on the right side.
+
+134
+00:22:58.250 --> 00:23:04.960
+Fadel Megahed: Umm that for me was kind of weird. Walking around. I didn't see anybody who kind of mentioned this.
+
+135
+00:23:05.090 --> 00:23:10.150
+Fadel Megahed: But for me, that's a weird choice. Again, it's not… doesn't really impact, necessarily.
+
+136
+00:23:10.260 --> 00:23:23.419
+Fadel Megahed: the data maybe impact how people read it, because what we're used to kind of looking at the percentages here and then going here. For me, that choice was a little bit odd towards something that is kind of, you know, what the guys are thought of.
+
+137
+00:23:23.810 --> 00:23:26.310
+Fadel Megahed: So.
+
+138
+00:23:26.980 --> 00:23:36.939
+Fadel Megahed: Again, but the main issue here is obviously scale. So, across the three charts, the common theme is all of them distorted the date.
+
+139
+00:23:37.480 --> 00:23:45.590
+Fadel Megahed: And all of them distorted the data differently. In the first one, you're encoding the widths of the box.
+
+140
+00:23:45.870 --> 00:23:51.930
+Fadel Megahed: And people see the area, so that is maybe a not intentional issue.
+
+141
+00:23:52.130 --> 00:23:56.130
+Fadel Megahed: In the second chart, you distorted the y-axis.
+
+142
+00:23:56.330 --> 00:23:59.960
+Fadel Megahed: Which made that bar to appear larger than it should.
+
+143
+00:24:00.240 --> 00:24:04.280
+Fadel Megahed: And then in the third chart, and that's a common issue in bar charts.
+
+144
+00:24:04.560 --> 00:24:08.820
+Fadel Megahed: That, given that you did not start the data at zero.
+
+145
+00:24:08.910 --> 00:24:21.239
+Fadel Megahed: the percent drop in the data did not match what visually people are going to see. So when people are going to see this, they're going to act to, oh, 2009 was very large, 2019 is much smaller.
+
+146
+00:24:21.240 --> 00:24:33.140
+Fadel Megahed: So a huge kind of discrepancy happened. And again, I'm not saying whether this is not practically or not significant. I'm just saying from a data point of view, what we see is not necessarily consistent with the virus.
+
+147
+00:24:33.390 --> 00:24:48.230
+Fadel Megahed: So this is something to note. In kind of these two cases, the defense budget and the Fox News kind of piece, they had some good things. Like, here they showed the numbers.
+
+148
+00:24:48.300 --> 00:24:52.189
+Fadel Megahed: So I didn't necessarily have to guess that this is 77%.
+
+149
+00:24:52.230 --> 00:25:10.360
+Fadel Megahed: I might have said it's 74, I might have said it's 76. They kind of reduce, kind of, the burden on me as a reader of the chart, or as a viewer of the show, to kind of see that. And then in Russia's defense budget, again, there is a caption that kind of captures what they want you to kind of see from the chart.
+
+150
+00:25:10.370 --> 00:25:29.169
+Fadel Megahed: that, you know, the national balance is overwhelmingly in Russia's favor, and their spending is this much, and Ukraine was much less than a tenth of that amount, and that's kind of a very descriptive caption that is not leaving room for interpretation for the chart, which I think is good.
+
+151
+00:25:29.170 --> 00:25:45.739
+Fadel Megahed: For those of you who do consulting or are interested in consulting, that's typically something you guys do when you're making consulting-type slide deck. You're trying to guide the viewer of the deck to the conclusions that you want them to get. You don't leave them to make, kind of, their own conclusions.
+
+152
+00:25:45.750 --> 00:25:59.070
+Fadel Megahed: Here, they were really emphasizing 2021, so they used… I was walking around, somebody had, you know, they had different, kind of colors, and they didn't really give you a legend for the colors.
+
+153
+00:25:59.070 --> 00:26:13.109
+Fadel Megahed: But it was just kind of, like, trying to show discrepancy. Here is when Biden became president, and we can kind of see this white, big kind of jump, and it looks much larger than all the other years.
+
+154
+00:26:13.370 --> 00:26:28.000
+Fadel Megahed: But again, they were not really emphasizing the values of the other ears, they just wanted to show that they're smaller, and that's partially why it's not labeled. So, from a storytelling point of view, you can kind of see the storytelling aspect of the choices they made.
+
+155
+00:26:28.000 --> 00:26:41.170
+Fadel Megahed: for, colors, and the fact that they're only given a value here to highlight this is when Biden became president, but then obviously from a, kind of a data integrity point of view, by messing up the y-axis scale.
+
+156
+00:26:43.050 --> 00:26:45.650
+Fadel Megahed: That took away a lot from that message.
+
+157
+00:26:48.300 --> 00:26:50.060
+Fadel Megahed: Okay,
+
+158
+00:26:51.620 --> 00:27:03.460
+Fadel Megahed: So, in the 19… I think 19th, and then early 2000s, Edward Tufte was kind of one of the most influential people in
+
+159
+00:27:03.520 --> 00:27:13.329
+Fadel Megahed: the field of data visualization. He had, kind of a book that was called The Visual Display of Quantitative Information. I believe the first version of that was
+
+160
+00:27:13.740 --> 00:27:20.230
+Fadel Megahed: Even in the 1980s. And he kind of gave 9 guidelines for people when they're making trucks.
+
+161
+00:27:20.990 --> 00:27:31.139
+Fadel Megahed: I want to emphasize that these are guidelines, so I'm not going to say that you have to agree with these all the time, but they're kind of nice to think about, so that's kind of what I'm going to try to show.
+
+162
+00:27:33.470 --> 00:27:36.820
+Fadel Megahed: So, the first part is actually showing the data.
+
+163
+00:27:36.930 --> 00:27:41.540
+Fadel Megahed: So, for example, summaries of the data alone are not necessarily affected.
+
+164
+00:27:41.760 --> 00:27:51.570
+Fadel Megahed: So this is something that, you can kind of see from these parts here. So the chart on the left captures a regression line, it captures for my data set.
+
+165
+00:27:51.700 --> 00:28:08.789
+Fadel Megahed: I had the mean of the y-axis to be, or the y-values to be 7.5, and the correlation between, Y and X to be 0.82. And we, based on that, we fitted this nice-looking, regression line through your base.
+
+166
+00:28:09.150 --> 00:28:10.050
+Fadel Megahed: Umm.
+
+167
+00:28:11.680 --> 00:28:24.099
+Fadel Megahed: With this correlation, you would tend to think that this is probably a reasonable thing to do, but correlation is not a measure of… it's a linear measure of the relationship between two variables.
+
+168
+00:28:24.100 --> 00:28:34.860
+Fadel Megahed: So if you were to plot this, you're gonna see that that line is actually not a good line to represent the data. The trend there is nonlinear, so you should not fit a linear line through there.
+
+169
+00:28:35.010 --> 00:28:42.419
+Fadel Megahed: So this is something that, by showing the data, we were able to kind of capture a little bit more value from, what we're seeing.
+
+170
+00:28:42.740 --> 00:28:45.559
+Fadel Megahed: The second kind of.
+
+171
+00:28:46.100 --> 00:29:00.790
+Fadel Megahed: kind of guideline is, you know, we would like to focus on the substance, so the actual data, so doing kind of Peter's numbers, the 77 versus 65%, rather than all the aesthetics in the chart.
+
+172
+00:29:00.990 --> 00:29:07.109
+Fadel Megahed: So in this example, for the Russian, kind of, defense budget.
+
+173
+00:29:07.240 --> 00:29:10.390
+Fadel Megahed: It's gonna have some colors. You're gonna add some background.
+
+174
+00:29:10.450 --> 00:29:29.190
+Fadel Megahed: But this is easier on the eye. It allows you to clearly see that this number is about 15 times larger than another number, and from that point of view, this is a better chart. So the better is the one that had the plain bars, and that's something that is important.
+
+175
+00:29:29.540 --> 00:29:46.949
+Fadel Megahed: You also don't want to distort what the data has to say, so I just want to tell you in the Fox News kind of example, the data really goes below, like, if you're thinking about how this should be inputted, the data should go below these, like, active locations, because you should be drawing it as zero.
+
+176
+00:29:46.950 --> 00:29:59.850
+Fadel Megahed: So if you were to sort it at 0 instead of the 58%, you can kind of tell the relative differences between these 2 data points. So this is something to emphasize.
+
+177
+00:30:00.190 --> 00:30:06.810
+Fadel Megahed: And then this chart is problematic. The one on the left is problematic and for many reasons.
+
+178
+00:30:06.820 --> 00:30:21.660
+Fadel Megahed: So I, I have two things that I've mentioned on day one of class, where I told you, like, I have a strong opinion about. One is pie charts, for the most part, are not very effective, and then the second is 3D charts are not very good.
+
+179
+00:30:21.710 --> 00:30:27.860
+Fadel Megahed: I will add to that a third one, which is you shouldn't be using bar charts when you're looking at needs.
+
+180
+00:30:28.490 --> 00:30:38.549
+Fadel Megahed: And the reason for that is when you're looking at the mean, you're looking at an average of some data. So there's going to be some spread. There's going to be some distribution behind that data.
+
+181
+00:30:38.940 --> 00:30:42.780
+Fadel Megahed: And for this mean
+
+182
+00:30:42.920 --> 00:30:49.160
+Fadel Megahed: as people. When we're looking at these bar charts, we tend to think that the height of the bar is kind of the end of it.
+
+183
+00:30:49.550 --> 00:30:50.819
+Fadel Megahed: And this is not true.
+
+184
+00:30:50.970 --> 00:31:02.300
+Fadel Megahed: And given that this is the mean of data, it would be better to capture that in Peter's, like, in the target on the right, I'm showing not just the… the bill.
+
+185
+00:31:02.330 --> 00:31:07.149
+Fadel Megahed: The flipper lens are actually, which is I'm showing here on the y-axis.
+
+186
+00:31:07.160 --> 00:31:21.230
+Fadel Megahed: I can also capture how it relates to the bill lens. I can show you, here's all the data points that we have for the Adelies. I can show you, here is all the data points that we have for the shin straps, and here is all the data points that we have for the Gentos.
+
+187
+00:31:21.230 --> 00:31:30.940
+Fadel Megahed: And then I can show you the mean overlaid on top of that. So you can kind of see the spread, you can kind of see a little bit more information. It's using about the same amount of space.
+
+188
+00:31:31.010 --> 00:31:39.639
+Fadel Megahed: This… this chart provides a much better story than the chart, and then this chart is also slightly.
+
+189
+00:31:40.410 --> 00:31:47.489
+Fadel Megahed: deceiving in the sense of when you do a mean bar chart you don't think about that. There's going to be variability.
+
+190
+00:31:52.420 --> 00:32:03.559
+Fadel Megahed: So, we would want to make, kind of, larger datasets coherent. There is a number of different ways of doing that, but again, you need to think about, kind of, how we do that from a storytelling point of view.
+
+191
+00:32:03.620 --> 00:32:13.920
+Fadel Megahed: You want people to be able to compare different pieces of data, so again, if I go back to the penguins dataset, these penguins live on different islands.
+
+192
+00:32:14.090 --> 00:32:23.679
+Fadel Megahed: So these are kind of the name of the islands on top. Pie charts are not the most descriptive. They're not very good, because we don't have the same starting point.
+
+193
+00:32:23.740 --> 00:32:43.549
+Fadel Megahed: If I were to provide the same starting point, now I can kind of look at how the number of penguins vary across islands. I can also see how they vary across species. So, the orange is Adelies, the green is Gentos, so the first island has a lot more Gentos than it has
+
+194
+00:32:43.550 --> 00:32:55.350
+Fadel Megahed: Adelies, the first island does not have any chinstrap versus the second one does, so this is kind of a better way to kind of capture this type of information.
+
+195
+00:32:55.800 --> 00:33:10.600
+Fadel Megahed: You want to be able to look at multiple levels of detail. So in the next example, I'm looking at a classical time series dataset. So this is kind of the air passengers data, by Vox and Jenkins.
+
+196
+00:33:10.610 --> 00:33:22.669
+Fadel Megahed: And it looks at the number of air passengers in the US between 1949 and 61, if I'm not mistaken. And this captures the Erie plant.
+
+197
+00:33:22.670 --> 00:33:31.600
+Fadel Megahed: But if you overlay on top of that the monthly trend, which is another level of detail, you can see, yes, that the number of people flying have increased.
+
+198
+00:33:31.690 --> 00:33:50.479
+Fadel Megahed: But it also ebbs and flows according to the season, so more people travel around Christmas period than they do in September, for example. So this is something that, showing the monthly seasonality on adds a little bit more information in the same chart.
+
+199
+00:33:51.020 --> 00:34:02.789
+Fadel Megahed: The next one is really important, and this is really important in the age of AI, because I think that, for the most part, you can put the data set in an AI
+
+200
+00:34:02.920 --> 00:34:07.219
+Fadel Megahed: Fatbot, or whatever, or codex or plot code, and ask it to make a result.
+
+201
+00:34:07.720 --> 00:34:11.220
+Fadel Megahed: And 9 times out of 10, it's gonna do something that is least.
+
+202
+00:34:12.659 --> 00:34:13.560
+Fadel Megahed: But…
+
+203
+00:34:14.300 --> 00:34:21.159
+Fadel Megahed: that it do the thing you want. And that's the part that I think is important. Like, this is where.
+
+204
+00:34:21.280 --> 00:34:23.520
+Fadel Megahed: How many of you heard about the term bike coding?
+
+205
+00:34:24.750 --> 00:34:37.019
+Fadel Megahed: Okay, so if you revive code in a game, a lot of the things you see online, you look at it and you're like, wow. But like when you think about kind of what they're reviving, where they're using kind of an AI agent.
+
+206
+00:34:37.199 --> 00:34:43.139
+Fadel Megahed: the example I'm mentioning right now to make a game, you don't even have solicitations. Just make me a game that does X.
+
+207
+00:34:43.540 --> 00:34:48.800
+Fadel Megahed: Anything that it does, you don't have a bar, so anything that it does may look impressive.
+
+208
+00:34:49.159 --> 00:35:01.010
+Fadel Megahed: The same was Make Me a Chart. It did make a chart, the chart render. There are some colors in it that looks reasonable, but it doesn't necessarily mean that that's the chart that is best.
+
+209
+00:35:01.120 --> 00:35:03.080
+Fadel Megahed: for the use case that you want.
+
+210
+00:35:03.410 --> 00:35:14.019
+Fadel Megahed: So this is something that I think is important. You need to think about, why am I building this chart? I want you to think about this in the exercise that I'm going to do in a couple of minutes.
+
+211
+00:35:14.040 --> 00:35:27.760
+Fadel Megahed: Why am I building the chart? Is this chart a reasonable representation of the data? Is it going to show what I want it to show? Because that kind of helps you select the right type of chart, and the right type of how do I present data within that chart.
+
+212
+00:35:28.050 --> 00:35:40.330
+Fadel Megahed: If I just want to show values, a table is reasonable, but if I want to show a little bit more than values, then, you know, a chart might be helpful, but you need to think about why am I doing it? Like, what is the purpose behind doing this?
+
+213
+00:35:40.630 --> 00:35:49.049
+Fadel Megahed: And then… This is kind of my typical kind of statement about, don't make
+
+214
+00:35:49.480 --> 00:35:54.369
+Fadel Megahed: the viewer in your presentation, the the user of your dashboard
+
+215
+00:35:54.610 --> 00:35:58.620
+Fadel Megahed: Try to not make them draw their own conclusions.
+
+216
+00:35:58.920 --> 00:36:06.039
+Fadel Megahed: very loosely like you need to give them guidance on what you want them to see. So if you're putting a chart presentation deck.
+
+217
+00:36:06.300 --> 00:36:18.529
+Fadel Megahed: I would really say, here's the chart, here's what I want you to conclude from it. These two things need to be kind of put together. So this is something that I think you need to kind of think about.
+
+218
+00:36:19.680 --> 00:36:20.660
+Fadel Megahed: So
+
+219
+00:36:20.840 --> 00:36:33.609
+Fadel Megahed: For kind of showing the data, one of the kind of popular examples was done by Frank M. Scombe in, the American Statistician, about 60-ish kind of years ago.
+
+220
+00:36:33.840 --> 00:36:49.620
+Fadel Megahed: And essentially at the time he was just trying to make a case for, you know, when people are doing some math and you're doing some summaries or fitting in regression, that tends to be perceived as a fancier way of analyzing the data and just compare to something.
+
+221
+00:36:50.000 --> 00:36:58.509
+Fadel Megahed: And he was trying to make the case that, you know, in many cases, you need both the calculations as well as the graphs to get, kind of, the full picture.
+
+222
+00:36:58.690 --> 00:37:10.600
+Fadel Megahed: I believe, and from my understanding of being this department for 10 years, that this is something that we tried to emphasize in 2025, and I'm going to try to give you kind of an example that maybe you can kind of feed into that what we had.
+
+223
+00:37:10.750 --> 00:37:12.340
+Fadel Megahed: As you're thinking about that.
+
+224
+00:37:12.590 --> 00:37:23.860
+Fadel Megahed: So, from the original Anscombe paper, he constructed 4 artificial datasets, where he was kind of giving you 4 pairs of X and Y.
+
+225
+00:37:24.230 --> 00:37:37.760
+Fadel Megahed: And he constructed it in such a way that the means, the standard deviations of both X and Y, as well as the correlation, are the same across the four datasets to at least two dozen.
+
+226
+00:37:38.420 --> 00:37:49.610
+Fadel Megahed: So that's kind of how the dataset looks like. Each dataset contained 11 observations, so if you look at it, each dataset contained 11 observations, and they're kind of in this report.
+
+227
+00:37:49.680 --> 00:38:05.409
+Fadel Megahed: Tables are not really that helpful, but something that you can maybe quickly see, that for the first data set, the X was almost always 8, with the exception of one value, and the Y was varying with these different values.
+
+228
+00:38:05.750 --> 00:38:08.419
+Fadel Megahed: So now, if you were to plot this.
+
+229
+00:38:09.500 --> 00:38:14.809
+Fadel Megahed: you're going to see that the 4 data sets represented 4 very different relationships in the day.
+
+230
+00:38:15.000 --> 00:38:27.039
+Fadel Megahed: For the first one, yes, the X and Y relationship could be kind of… well, I can model Y as a linear function of X. That regression line
+
+231
+00:38:27.520 --> 00:38:28.190
+Fadel Megahed: Thanks.
+
+232
+00:38:28.600 --> 00:38:43.489
+Fadel Megahed: For the second data set, this is not a linear relationship. I should not fit a linear line through the data. You couldn't necessarily see that from the table, and you couldn't see that from the summary statistics of the plot makes that clear.
+
+233
+00:38:43.590 --> 00:39:01.100
+Fadel Megahed: For the third data set, you could argue that there is a linear relationship, it's just not that slope, and due to that outlier, you ended up having that weird line. And for the first data set, really, irrespective of the value of X, we got different Y values.
+
+234
+00:39:01.610 --> 00:39:08.930
+Fadel Megahed: And X tended to be 8 all the time. With the exception of that one different value that led to
+
+235
+00:39:09.140 --> 00:39:17.159
+Fadel Megahed: this kind of data to look like that. But again, in that fourth example, again, fitting that regression line through this data is
+
+236
+00:39:17.390 --> 00:39:19.529
+Fadel Megahed: Really, you shouldn't really be doing.
+
+237
+00:39:21.140 --> 00:39:22.670
+Fadel Megahed: Okay, so…
+
+238
+00:39:23.100 --> 00:39:32.020
+Fadel Megahed: you know, 40, 50 years later, people are like, we can do better than this. We can kind of construct data sets mathematically using maps.
+
+239
+00:39:32.280 --> 00:39:35.770
+Fadel Megahed: In a way that we can create different shapes.
+
+240
+00:39:36.050 --> 00:39:39.930
+Fadel Megahed: And these different shapes are going to be having the same
+
+241
+00:39:40.490 --> 00:39:56.419
+Fadel Megahed: and Y mean to two different places, X and Y standard deviation to the different places, and the same correlation. To get everything from a dinosaur to two petaled lines, to a star, to a circle, or an ellipse, to a donut, all under kind of the same
+
+242
+00:39:56.420 --> 00:40:09.959
+Fadel Megahed: And I just want you to kind of keep this visual in mind to know that, you know, statistical summaries alone are not gonna be able to kind of capture this. So this is something that I just want you to know and keep in the back of your head.
+
+243
+00:40:11.160 --> 00:40:24.350
+Fadel Megahed: Okay, so now, I'm gonna try to remove some of the bad habits from you, so we're gonna… I'm gonna give you 5 minutes. In this 5 minutes, I want you to sketch a better chart.
+
+244
+00:40:24.480 --> 00:40:40.889
+Fadel Megahed: Not a bubble chart, based on this data. I did upload this dataset on Canvas, so I really told that you wanted to get it, but then I was like, I don't want you to use R today at all. So I kind of uploaded that dataset on Canvas, but my preference is I want you to do no song.
+
+245
+00:40:41.090 --> 00:40:58.930
+Fadel Megahed: I want you to look at this data, pick 5, 6, 7 cities, maybe more if you want it, and make a chart that is better than the chart that was done by William Playfair. He did this chart, I think, in the 1800s, and
+
+246
+00:40:59.060 --> 00:41:14.649
+Fadel Megahed: we obviously have a little bit better ability to lose. So I will, if you need paper, I have some paper, I have a couple of pens, I don't have a ton of pens, but I can kind of fast paper it around, and I'm going to ask you to look at that data and kind of think about
+
+247
+00:41:14.650 --> 00:41:25.789
+Fadel Megahed: how you want to visualize that. Put your name on, the paper. I'm gonna take a few samples, and I'm gonna sold it.
+
+248
+00:41:28.430 --> 00:41:29.560
+Fadel Megahed: volunteer.
+
+249
+00:41:30.030 --> 00:41:31.890
+Fadel Megahed: of the Browns alone.
+
+250
+00:41:36.480 --> 00:41:37.569
+Fadel Megahed: That's my support.
+
+251
+00:41:52.400 --> 00:41:54.429
+Fadel Megahed: I was on the same one.
+
+252
+00:41:55.830 --> 00:41:57.620
+Fadel Megahed: I was wrong that he was doing that.
+
+253
+00:41:58.120 --> 00:42:00.460
+Fadel Megahed: Now, recess.
+
+254
+00:42:01.110 --> 00:42:05.950
+Fadel Megahed: So I'll give you 5 minutes, and then we will talk about this collectively at the class.
+
+255
+00:42:08.200 --> 00:42:23.049
+Fadel Megahed: Yes. Again, do not… you don't have to draw all 22 cities. I don't… in fact, I don't want you necessarily to do that, but I want you to be intentional about the chart, and the sketching of the chart, and how you're making things.
+
+256
+00:42:52.910 --> 00:42:53.610
+Fadel Megahed: What is this?
+
+257
+00:48:09.050 --> 00:48:12.349
+Fadel Megahed: We all can go to our names on the phone.
+
+258
+00:48:12.790 --> 00:48:16.040
+Fadel Megahed: kind of feel that can kind of bring it back. That would be beneficial as well.
+
+259
+00:50:05.550 --> 00:50:06.860
+Fadel Megahed: But I'm doing like that.
+
+260
+00:50:11.540 --> 00:50:12.290
+Fadel Megahed: Okay.
+
+261
+00:51:34.770 --> 00:51:43.029
+Fadel Megahed: Okay, I took some samples of this is not great.
+
+262
+00:51:43.280 --> 00:51:46.489
+Fadel Megahed: Time to identify different ways of doing things.
+
+263
+00:51:55.500 --> 00:51:57.260
+Fadel Megahed: Okay.
+
+264
+00:52:01.970 --> 00:52:03.679
+Fadel Megahed: So I tried to group these.
+
+265
+00:52:40.340 --> 00:52:43.299
+Fadel Megahed: So this is one example that I saw.
+
+266
+00:52:44.480 --> 00:52:51.730
+Fadel Megahed: Which… has this example Similar to it as well.
+
+267
+00:52:52.250 --> 00:52:58.480
+Fadel Megahed: You can kind of get the idea. I'm not necessarily… Okay.
+
+268
+00:52:59.440 --> 00:53:02.549
+Fadel Megahed: So this is one of these examples that I would consider.
+
+269
+00:53:04.010 --> 00:53:06.169
+Fadel Megahed: Bad Excel helps.
+
+270
+00:53:06.710 --> 00:53:09.850
+Fadel Megahed: When you're doing this by hand.
+
+271
+00:53:10.430 --> 00:53:17.750
+Fadel Megahed: Writing on a slanted angle is not a natural thing to do, and that's kind of part of the reason I asked to do this by hand.
+
+272
+00:53:18.020 --> 00:53:23.449
+Fadel Megahed: And then, when you're reading the chart, you have to kind of, like, tilt your head to be able to read it.
+
+273
+00:53:23.610 --> 00:53:26.920
+Fadel Megahed: So this is kind of a bad Excel habit.
+
+274
+00:53:27.090 --> 00:53:30.520
+Fadel Megahed: There is no reason why you should do this when you're doing it by hand.
+
+275
+00:53:30.700 --> 00:53:34.070
+Fadel Megahed: and you should be intentional. If excel
+
+276
+00:53:34.900 --> 00:53:42.730
+Fadel Megahed: ChatGPT, Claude, whatever, gave you a chart that looks like this, and you're like, I don't… I don't want to do this. This is something that I don't want to do.
+
+277
+00:53:42.880 --> 00:53:48.419
+Fadel Megahed: Both of them had good things, like, and I'm kind of trying as much as possible not to show people's names.
+
+278
+00:53:48.560 --> 00:54:02.960
+Fadel Megahed: Because I'm not, like, I appreciate, kind of, you guys kind of volunteering to show this. But it's essentially, you know, you're showing the data value, so I don't have to guess them. In the chart on the right.
+
+279
+00:54:03.320 --> 00:54:08.140
+Fadel Megahed: The student who did that was intentional about how
+
+280
+00:54:08.850 --> 00:54:20.669
+Fadel Megahed: they wanted to show the cities. So, on the x-axis, these are shown in a descending order, by order of population, I presume.
+
+281
+00:54:22.430 --> 00:54:27.869
+Fadel Megahed: Yeah, so they have London to be larger than Constantinople, which I think it's the other way around, but…
+
+282
+00:54:28.320 --> 00:54:34.750
+Fadel Megahed: I could be wrong. But again, like, their bars are going in a descending order down, which I think this is kind of helpful.
+
+283
+00:54:34.990 --> 00:54:39.330
+Fadel Megahed: So, so this is, again, the issue here is the slanted
+
+284
+00:54:40.650 --> 00:54:45.619
+Fadel Megahed: The same issue I've seen with other students as well.
+
+285
+00:54:46.150 --> 00:54:54.389
+Fadel Megahed: So, these are variants of the same idea. There are some different level of details in each of them.
+
+286
+00:54:54.950 --> 00:54:59.590
+Fadel Megahed: So when you're looking at that chart.
+
+287
+00:54:59.920 --> 00:55:06.310
+Fadel Megahed: Again… London, Bosnia, noble Paris, Naples, and so on and so forth, are
+
+288
+00:55:06.930 --> 00:55:18.229
+Fadel Megahed: vertical. Again, no reason to make that a vertical kind of choice. We have another student who did something similar, but they showed something that I thought was interesting.
+
+289
+00:55:18.340 --> 00:55:20.280
+Fadel Megahed: So walking around.
+
+290
+00:55:21.040 --> 00:55:24.330
+Fadel Megahed: And I don't know if this is a function of…
+
+291
+00:55:25.060 --> 00:55:28.199
+Fadel Megahed: That you're drawing this by hand or not.
+
+292
+00:55:28.260 --> 00:55:44.410
+Fadel Megahed: there was… there were absolutely no maps across the 20-some students that I saw here. This is the only student who tried to kind of get in the idea behind the map, it doesn't show here, but he was kind of starting to…
+
+293
+00:55:44.410 --> 00:56:02.099
+Fadel Megahed: essentially color code, kind of, the different bars, or kind of shade them in a way, using patterns to be able to say, is this a Northern European city, is it a Southern, is it Western, and so on and so forth, as a way of trying to capture, kind of, geographic.
+
+294
+00:56:02.140 --> 00:56:03.100
+Fadel Megahed: Congregations.
+
+295
+00:56:03.190 --> 00:56:09.320
+Fadel Megahed: So, when I… when I kind of was talking about the principles of excellent charts.
+
+296
+00:56:09.460 --> 00:56:17.090
+Fadel Megahed: One of the statements that I've made was you have to be intentional about why you're making the chart. What is the purpose behind the chart?
+
+297
+00:56:17.230 --> 00:56:24.399
+Fadel Megahed: So, if you're interested to see, is there the relationship between the location of the city.
+
+298
+00:56:25.000 --> 00:56:26.540
+Fadel Megahed: and its population.
+
+299
+00:56:27.220 --> 00:56:37.520
+Fadel Megahed: then having that to be, on a map would help. If you're thinking in the US, we have a lot of the bigger cities are towards the coast.
+
+300
+00:56:37.840 --> 00:56:42.400
+Fadel Megahed: Where… compared to kind of the middle of the country.
+
+301
+00:56:42.430 --> 00:56:46.270
+Fadel Megahed: maybe New York, Boston, Los Angeles, San Francisco.
+
+302
+00:56:46.300 --> 00:57:05.840
+Fadel Megahed: Seattle. A lot of our bigger cities tend to be on the coast. There is obviously some exceptions, but again, like, if you're trying to kind of think about what drives where people decide to live, this might be interesting. If we kind of dig that up in Europe, obviously you have kind of the English Channel, you have the Mediterranean.
+
+303
+00:57:05.900 --> 00:57:18.209
+Fadel Megahed: You have the ocean, you have rivers, which kind of might kind of say where people live, but this is something weather, so these are things that you can kind of consider as you're looking at that.
+
+304
+00:57:20.410 --> 00:57:22.829
+Fadel Megahed: If you wanted to do a vertical chart.
+
+305
+00:57:23.700 --> 00:57:26.039
+Fadel Megahed: These two examples over here.
+
+306
+00:57:26.520 --> 00:57:28.479
+Fadel Megahed: Would be kind of my…
+
+307
+00:57:29.210 --> 00:57:35.990
+Fadel Megahed: preferred way of doing it if you're doing a vertical chart. Like, you… you can have the name of the city.
+
+308
+00:57:36.610 --> 00:57:43.999
+Fadel Megahed: written horizontally, so I don't have to like slant my head to read it. And these are 2 examples where that was being done.
+
+309
+00:57:44.160 --> 00:57:49.019
+Fadel Megahed: And… If you think you're gonna run out of real estate.
+
+310
+00:57:51.040 --> 00:57:53.559
+Fadel Megahed: The alternative would be to…
+
+311
+00:57:54.320 --> 00:58:01.369
+Fadel Megahed: do a horizontal bar chart. You can kind of take that same exact idea. You can sort.
+
+312
+00:58:01.480 --> 00:58:10.779
+Fadel Megahed: them in a descending order. But instead of putting them on the X location, you're gonna put them on the Y location, and that allows you to read the names in a little bit.
+
+313
+00:58:10.870 --> 00:58:30.819
+Fadel Megahed: So again, the reason I asked you to do this manually is you actually went ahead and made every single decision about how you're encoding the data, how you're sorting the data, whether you're shading the bars or not, how you're putting the text on the x-axis, how you're putting the text on the y-axis.
+
+314
+00:58:30.820 --> 00:58:38.049
+Fadel Megahed: How you're presenting the numbers. These are decisions that you've made on your own with no software involved.
+
+315
+00:58:38.110 --> 00:58:43.840
+Fadel Megahed: And that's why I wanted to do this. I wanted you to really think about every single choice you've made.
+
+316
+00:58:43.930 --> 00:58:56.500
+Fadel Megahed: And how can you make this step? And that's kind of what we're going to be kind of focusing on for the next 5 weeks. It's kind of making you intentional about, I'm making the choice. Even if you want to use AI, I don't really care, but, like.
+
+317
+00:58:57.010 --> 00:59:02.260
+Fadel Megahed: I'm gonna ask AI to give me the chart that I want, not the chart that it suggests, because I know.
+
+318
+00:59:02.440 --> 00:59:21.330
+Fadel Megahed: And that's kind of the attitude that I want you to have from this. Again, none of the concepts that I've talked about is neither of it, so these are things that should be immediately available once we start talking about it. But the purpose behind the next 5 weeks is to put that front and center in your mind, so that you're making these decisions. Does that seem fair enough?
+
+319
+00:59:22.070 --> 00:59:28.470
+Fadel Megahed: I will return these at the next kind of break, and let's kind of move on and talk about…
+
+320
+00:59:29.850 --> 00:59:30.940
+Fadel Megahed: Oh.
+
+321
+00:59:31.950 --> 00:59:32.720
+Fadel Megahed: Okay.
+
+322
+00:59:35.510 --> 00:59:38.540
+Fadel Megahed: Let's move on and talk about.
+
+323
+00:59:39.680 --> 00:59:43.820
+Fadel Megahed: data distortion as well. So when you look at this.
+
+324
+00:59:45.440 --> 00:59:52.180
+Fadel Megahed: This is a chart that has 3 bad things.
+
+325
+00:59:52.610 --> 00:59:56.539
+Fadel Megahed: So obviously, the pictures of the people in the mining world.
+
+326
+00:59:56.690 --> 01:00:05.170
+Fadel Megahed: That makes you not focus on the number. So if we kind of say focus on substance, not kind of the other things, this is an issue.
+
+327
+01:00:05.510 --> 01:00:11.160
+Fadel Megahed: From kind of a… Analyzing or dissecting this kind of chart.
+
+328
+01:00:11.350 --> 01:00:17.210
+Fadel Megahed: We can think about it as 3 panels of bar charts that are put side by side.
+
+329
+01:00:17.710 --> 01:00:20.590
+Fadel Megahed: When we think about it in that way.
+
+330
+01:00:21.010 --> 01:00:23.920
+Fadel Megahed: Our… the way our brain works as humans.
+
+331
+01:00:24.220 --> 01:00:28.409
+Fadel Megahed: is I'm gonna say I'm gonna compare this bar.
+
+332
+01:00:28.880 --> 01:00:33.749
+Fadel Megahed: was this bar, potentially, and I'm gonna compare that highest bar here
+
+333
+01:00:34.070 --> 01:00:39.090
+Fadel Megahed: with the bar that I have here. So that's one sort of comparison that I'm gonna make.
+
+334
+01:00:39.280 --> 01:00:44.780
+Fadel Megahed: And then the other comparison that I'm going to make is within a panel, I can take a value like this one.
+
+335
+01:00:46.670 --> 01:00:49.600
+Fadel Megahed: And compare it with a value like that.
+
+336
+01:00:51.490 --> 01:00:53.969
+Fadel Megahed: So, from the red lines and the orange circles.
+
+337
+01:00:54.450 --> 01:00:57.140
+Fadel Megahed: It should be immediately apparent.
+
+338
+01:00:57.280 --> 01:01:06.689
+Fadel Megahed: that they did not use, and based on the red lines, they did not use the same Y-axis scale across the 3 men.
+
+339
+01:01:07.010 --> 01:01:17.060
+Fadel Megahed: So that 7 million looks very similar in height to the 1.6 million, and that looks similar to the 1.2 million. So that's going to be kind of one of the first conclusions you make.
+
+340
+01:01:17.230 --> 01:01:21.260
+Fadel Megahed: And then, within a panel, From the orange circles.
+
+341
+01:01:24.430 --> 01:01:29.140
+Fadel Megahed: what they're doing is absolutely nonsense. I mean, there is really no other way of saying this, but, like.
+
+342
+01:01:29.470 --> 01:01:31.949
+Fadel Megahed: You know, this is a loss of $11,000.
+
+343
+01:01:32.520 --> 01:01:35.109
+Fadel Megahed: This is the process of 1.6 5.
+
+344
+01:01:36.050 --> 01:01:37.100
+Fadel Megahed: And…
+
+345
+01:01:38.490 --> 01:01:45.649
+Fadel Megahed: If I'm drawing this, I would expect that this is zero, so in 1970, it would be zero, zero would be going on the negative side.
+
+346
+01:01:46.050 --> 01:01:57.330
+Fadel Megahed: and the 1.6 to be on the positive side, but they're both on the positive side, and you're really not going to be able to see that number as much, and it's not going to add to the risk of victims. Or that different loss.
+
+347
+01:01:58.060 --> 01:02:06.690
+Fadel Megahed: So this is something that again, 3 issues. One is the picture is taken away from you looking at the data. And then.
+
+348
+01:02:06.850 --> 01:02:22.710
+Fadel Megahed: Because we're putting the charts side by side, we, as humans, we would tend to compare them. But you can't really compare them because they're not on the same scale. And then within a panel, when you're comparing bars within a panel, it's also deceiving in the sense of.
+
+349
+01:02:23.780 --> 01:02:27.929
+Fadel Megahed: you know, the scales don't really make a lot of sense. This is…
+
+350
+01:02:28.160 --> 01:02:45.870
+Fadel Megahed: 7 million, this is 6.8, maybe this might be… again, I don't think that the 1974 is twice as big as 1970, but obviously this is not as bad as when you compare 1973 to 1970 for the income counterpart.
+
+351
+01:02:45.960 --> 01:02:52.110
+Fadel Megahed: So this is something I just want to highlight 3 issues in the chart, and I want you to be able to kind of understand.
+
+352
+01:02:53.810 --> 01:03:10.379
+Fadel Megahed: Again, staying with, kind of, bar charts, again, this is a business chart that we can kind of just improve by changing the scale. Again, the same kind of issue that you're seeing here. The y-axis should not really have the label on the right. I don't really understand why they do this.
+
+353
+01:03:10.440 --> 01:03:14.919
+Fadel Megahed: And this would be kind of a better representation of the same chart.
+
+354
+01:03:15.500 --> 01:03:20.489
+Fadel Megahed: So, from here, if we want to quantify The amount of distortion.
+
+355
+01:03:20.990 --> 01:03:23.920
+Fadel Megahed: There is this idea of the life act.
+
+356
+01:03:24.080 --> 01:03:37.009
+Fadel Megahed: And in the Lie factor, we're essentially trying to quantify the amount of kind of building on the comment that Peter mentioned would like to, in the numerator we have the size of the effect shown in the graphic.
+
+357
+01:03:37.140 --> 01:03:53.809
+Fadel Megahed: And in the denominator, we have the size of the effect shown in the data. So in the graphic, here, this is looking at MPG, kind of the CAFE standards for vehicles, in the US, and that was looking at data between 1978 and 1985.
+
+358
+01:03:54.000 --> 01:04:13.969
+Fadel Megahed: And they're kind of trying to be full, kind of making this visualization, so since this has to do with roads and, kind of, vehicles, they said we're going to showcase that as a perspective with, kind of, the road. So in 1978, when that was kind of printed in that magazine, this was about
+
+359
+01:04:14.230 --> 01:04:19.450
+Fadel Megahed: Where do I have that? About 0.6 inches, kind of, long over white.
+
+360
+01:04:19.670 --> 01:04:25.560
+Fadel Megahed: And then, in 1985, That was about 5.3 inches.
+
+361
+01:04:26.290 --> 01:04:43.999
+Fadel Megahed: But the relationship between the 27.5 and 18, that's essentially a, not as big as increase as these numbers. So if we kind of try to quantify it, you know, this is the percent change in, in the data.
+
+362
+01:04:44.240 --> 01:04:46.240
+Fadel Megahed: So it's about 53%.
+
+363
+01:04:46.530 --> 01:05:04.610
+Fadel Megahed: increase, and then in the graphic. It's about 783%. So if you're thinking about this, you know, the life factor here is quite larger than 1, so they're exaggerating kind of that impact. That's something that I want to kind of quantify.
+
+364
+01:05:04.950 --> 01:05:06.720
+Fadel Megahed: From…
+
+365
+01:05:07.130 --> 01:05:22.459
+Fadel Megahed: from the distortion kind of piece, I just want to make sure that, you know, we want to make sure that the data is labeled cleanly. So again, not having weird things like the, White House… the White House kind of bar chart.
+
+366
+01:05:22.580 --> 01:05:27.800
+Fadel Megahed: You're using the right scales. So if we're thinking about a bar chart, we're starting at 0.
+
+367
+01:05:28.000 --> 01:05:36.650
+Fadel Megahed: We want to make sure that, essentially, we're not exaggerating any effects. Yes. Do we need control, or… Oh, yeah, yeah, I forgot about that, yeah, sorry, yeah.
+
+368
+01:05:39.230 --> 01:05:46.430
+Fadel Megahed: I mean, on a positive note, you saw what I'm talking about really well. On a negative note, you had no ability to write notes.
+
+369
+01:05:49.510 --> 01:05:52.550
+Fadel Megahed: I'll tab… Go.
+
+370
+01:05:53.140 --> 01:05:54.100
+Fadel Megahed: here.
+
+371
+01:05:56.460 --> 01:05:57.920
+Fadel Megahed: Appreciate the comment.
+
+372
+01:06:00.450 --> 01:06:01.160
+Fadel Megahed: Okay.
+
+373
+01:06:01.360 --> 01:06:02.250
+Fadel Megahed: We're good.
+
+374
+01:06:05.610 --> 01:06:06.620
+Fadel Megahed: Thank you, Ben.
+
+375
+01:06:14.740 --> 01:06:20.920
+Fadel Megahed: If there's any part that you guys want me to repeat so that you take notes, or… Okay.
+
+376
+01:06:27.190 --> 01:06:42.600
+Fadel Megahed: So, yeah, we want to make sure that, you're also focusing on the data, not on, you know, the aesthetic standard. So these are 3 things that I think would be quite helpful to kind of keep in mind as we're looking at these types of things.
+
+377
+01:06:43.680 --> 01:06:52.490
+Fadel Megahed: Okay, so from here, we're gonna kind of pivot to talk about some of the theory aspects relating to data graphics.
+
+378
+01:06:52.820 --> 01:06:59.279
+Fadel Megahed: One of the aspects that I want to highlight is that idea of Data Inc.
+
+379
+01:06:59.390 --> 01:07:05.700
+Fadel Megahed: And Data Inc. is essentially the things that we can't remove from a chart, because if you were to remove them.
+
+380
+01:07:06.210 --> 01:07:07.800
+Fadel Megahed: You're gonna lose some information.
+
+381
+01:07:08.080 --> 01:07:10.219
+Fadel Megahed: So these are things that are essential.
+
+382
+01:07:10.480 --> 01:07:17.510
+Fadel Megahed: On the flip side of that, or kind of… kind of the… on the opposite side of that, is the idea of charge junk.
+
+383
+01:07:17.670 --> 01:07:23.090
+Fadel Megahed: So, charge junk is the ink that you could remove, that if you remove it, you don't remove any.
+
+384
+01:07:23.770 --> 01:07:40.320
+Fadel Megahed: So, you can kind of think about Data Inc. and Sharjung to be, complementary or kind of contradictory ideas. Sharjung is, essentially the things that, you can, that cause distraction.
+
+385
+01:07:40.320 --> 01:07:53.659
+Fadel Megahed: and that if you were to remove them from the chart, you lose no information. Data ink is things that are essential to the chart that if you were to remove them you lose them. So that's kind of the discrepancy or the difference between those.
+
+386
+01:07:53.870 --> 01:08:04.679
+Fadel Megahed: When we talk about this idea of focusing on the data and avoiding short junk, this is really an idea that is, subjective.
+
+387
+01:08:04.780 --> 01:08:19.160
+Fadel Megahed: So, in my opinion, there are things that you can do to make it better, but you don't have to go, kind of, all the way to, kind of, removing all the charts, because then the charts are going to look a little bit unorthodox, they're going to be weird for
+
+388
+01:08:19.200 --> 01:08:28.329
+Fadel Megahed: For most groups. So in this example, I do believe that most of you are going to agree that these grid lines are not necessarily something that we need.
+
+389
+01:08:28.540 --> 01:08:34.660
+Fadel Megahed: We can kind of live without the grid lines. You'd rather lose information if you remove the grid.
+
+390
+01:08:35.160 --> 01:08:42.499
+Fadel Megahed: And then on the same token, you can remove that teal or new kind of, background.
+
+391
+01:08:42.630 --> 01:08:56.130
+Fadel Megahed: And actually, if you were to remove that background from a human kind of perception point of view, that would be better, because that dark gray or black on white is going to have a better contrast than the blue on… or the gray on blue.
+
+392
+01:08:56.500 --> 01:08:59.069
+Fadel Megahed: So this is kind of a better visual.
+
+393
+01:08:59.439 --> 01:09:03.520
+Fadel Megahed: For me, these 2 things are probably things that I would kind of say.
+
+394
+01:09:03.830 --> 01:09:06.160
+Fadel Megahed: University, most people are gonna…
+
+395
+01:09:06.560 --> 01:09:22.750
+Fadel Megahed: gonna agree with. I'm not saying everybody you can agree with, but universally, I think the majority of people are gonna say, okay, these are things that I think, you know, make the chart better. When we remove the grid lines, and when we remove that blue background, this becomes more clear, and I didn't really lose that connection.
+
+396
+01:09:23.109 --> 01:09:38.039
+Fadel Megahed: Everything from this step onwards is an opinion of somebody. I, for one, for example, don't think there is anything wrong with keeping the part of that, but if you want to kind of go, like, full Edward Tulsi kind of approach, you would remove
+
+397
+01:09:38.590 --> 01:09:42.789
+Fadel Megahed: The axes. So you would remove all kind of axes that you have.
+
+398
+01:09:42.950 --> 01:09:47.269
+Fadel Megahed: And, you will also remove these sticks, that we have.
+
+399
+01:09:47.350 --> 01:10:03.489
+Fadel Megahed: Because from a purely theoretical point of view, again, you have the same amount of information in the chart. You reduce, kind of, things that do not really add value. But in my opinion, anything
+
+400
+01:10:03.610 --> 01:10:05.460
+Fadel Megahed: in that vein.
+
+401
+01:10:05.640 --> 01:10:10.649
+Fadel Megahed: I think anything here, most people would consider to be a matter of sorts.
+
+402
+01:10:10.910 --> 01:10:19.380
+Fadel Megahed: So this is kind of the idea behind sharjunk, is we want to remove things that, distract from the message, and that will be one such example.
+
+403
+01:10:20.860 --> 01:10:26.230
+Fadel Megahed: So there are some other kind of design considerations that you should have.
+
+404
+01:10:26.510 --> 01:10:32.550
+Fadel Megahed: So, conceptually, a lot of people tend to see that
+
+405
+01:10:32.790 --> 01:10:39.119
+Fadel Megahed: aesthetically pleasing things, are gonna be perceived to be more useful than kind of a boring chart.
+
+406
+01:10:39.330 --> 01:10:48.679
+Fadel Megahed: That doesn't necessarily mean that that sentiment is true, but a lot of people would have that sentiment. You know, this looks nicer than something else, so it must be better.
+
+407
+01:10:48.960 --> 01:10:54.299
+Fadel Megahed: style. So this is something that I don't… I don't know if I've mentioned or not.
+
+408
+01:10:54.590 --> 01:10:58.030
+Fadel Megahed: Did I show you making… how to make graphs in Shadow Isaac?
+
+409
+01:10:59.040 --> 01:11:04.289
+Fadel Megahed: No? Okay. So, one of the design decisions I've made in Shad ISA
+
+410
+01:11:04.900 --> 01:11:09.549
+Fadel Megahed: Was if you are using, kind of, Coding Tutor as an example.
+
+411
+01:11:09.900 --> 01:11:11.639
+Fadel Megahed: And you want to make a chart.
+
+412
+01:11:12.040 --> 01:11:19.799
+Fadel Megahed: So I had, kind of, my opinionated opinion about how the park should look like, and the fact that we're Miami University, what color it should be.
+
+413
+01:11:20.220 --> 01:11:34.150
+Fadel Megahed: So, in the design of ChatISA, in the system prompt that I have for that API call, obviously ChatISA is a little bit talkative, so that will take a little bit of time. So, my default example here would be.
+
+414
+01:11:37.900 --> 01:11:40.199
+Fadel Megahed: So let us use R to plot.
+
+415
+01:11:40.910 --> 01:11:45.939
+Fadel Megahed: the MPG plot a histogram, let's say.
+
+416
+01:11:47.840 --> 01:11:50.480
+Fadel Megahed: of the Mpg. Column.
+
+417
+01:11:51.590 --> 01:11:58.920
+Fadel Megahed: from the built-in mt. Cars.
+
+418
+01:12:00.090 --> 01:12:01.100
+Fadel Megahed: data set.
+
+419
+01:12:08.380 --> 01:12:12.369
+Fadel Megahed: In an attempt to reduce, kind of, the number of questions, I've used R before.
+
+420
+01:12:15.850 --> 01:12:21.450
+Fadel Megahed: And this is for… my data visualization course.
+
+421
+01:12:22.660 --> 01:12:23.980
+Fadel Megahed: Other than the first.
+
+422
+01:12:24.200 --> 01:12:29.570
+Fadel Megahed: class that asked me I've used auto before, I believe, and which classes?
+
+423
+01:12:30.710 --> 01:12:34.330
+Fadel Megahed: And again, I don't collect that information, like, if you look at your history, you're gonna see.
+
+424
+01:12:41.170 --> 01:12:43.130
+Fadel Megahed: Yes, I understand.
+
+425
+01:12:44.450 --> 01:12:49.510
+Fadel Megahed: What a histogram is!
+
+426
+01:12:58.500 --> 01:12:59.460
+Fadel Megahed: So
+
+427
+01:13:00.300 --> 01:13:07.110
+Fadel Megahed: Again, it's AI, so you're never fully sure what you're gonna get, but at least when I did something similar to that in the first section.
+
+428
+01:13:07.500 --> 01:13:09.009
+Fadel Megahed: It made.
+
+429
+01:13:09.270 --> 01:13:11.070
+Fadel Megahed: A chart for me.
+
+430
+01:13:11.540 --> 01:13:14.169
+Fadel Megahed: Here is the code for the chart.
+
+431
+01:13:14.970 --> 01:13:23.140
+Fadel Megahed: And, If I run it… This is actually a quite different title.
+
+432
+01:13:37.330 --> 01:13:46.830
+Fadel Megahed: So it asked whether the distribution looked… Symmetric or tilted.
+
+433
+01:13:47.790 --> 01:13:55.720
+Fadel Megahed: So that it can kind of update the tile. So, what do you guys think? Tilted or symmetric?
+
+434
+01:14:06.080 --> 01:14:13.539
+Fadel Megahed: So is this failed, or is that, like, a symmetric distribution? I'm gonna take whatever answer you give me in face value, because
+
+435
+01:14:14.230 --> 01:14:16.880
+Fadel Megahed: You could argue if you're changing the bins, that might look different.
+
+436
+01:14:28.450 --> 01:14:30.359
+Fadel Megahed: Thurman, do you want to take a stab at this?
+
+437
+01:14:35.670 --> 01:14:36.520
+Fadel Megahed: Okay?
+
+438
+01:14:37.320 --> 01:14:39.139
+Fadel Megahed: Tess, do you want to take a stab at this?
+
+439
+01:14:41.590 --> 01:14:47.490
+Fadel Megahed: Is it, like, a bell-shaped curve, or is it… not so much.
+
+440
+01:14:50.420 --> 01:14:51.220
+Fadel Megahed: Okay.
+
+441
+01:14:51.480 --> 01:15:09.340
+Fadel Megahed: Okay, so you can make an argument that it's skewed, and I think that's a reasonable argument. We have more cars in the 15 to 10, or maybe in the 15 range than we have in the middle. We also have some cars in the tail here that
+
+442
+01:15:09.840 --> 01:15:22.129
+Fadel Megahed: might kind of influence how we interpret that. I, again, I… I'm not gonna make this a class on how you, interpret the shape of this specific histogram with that number of bins.
+
+443
+01:15:22.660 --> 01:15:23.979
+Fadel Megahed: I'm gonna say.
+
+444
+01:15:25.020 --> 01:15:30.650
+Fadel Megahed: looks like it might be skewed. But that's what you guys told me.
+
+445
+01:15:32.860 --> 01:15:34.430
+Fadel Megahed: So let's see what happens here.
+
+446
+01:15:34.870 --> 01:15:35.840
+Fadel Megahed: So
+
+447
+01:15:43.760 --> 01:15:48.910
+Fadel Megahed: I'm not gonna continue with this, but again, like, the decision that I've made when this was built.
+
+448
+01:15:49.140 --> 01:15:51.949
+Fadel Megahed: Is the choice of colors are not random.
+
+449
+01:15:52.520 --> 01:16:11.330
+Fadel Megahed: So, it's using this color, which is essentially the Miami red color, as kind of the default setting. And I told it that I want you to also give descriptive titles and subtitles for the charts, so that people… so you can kind of communicate some of this.
+
+450
+01:16:11.530 --> 01:16:28.320
+Fadel Megahed: What you're going to see in exam 2 is some of these decisions, like the title, the interpretation of the chart, is not going to always be true. And then if you were running this as we were doing it together, obviously because this is AI, even though we're using the same exact model. You might have got titled.
+
+451
+01:16:28.460 --> 01:16:34.779
+Fadel Megahed: from the beginning, like, if Minehead gave you a title, that kind of chain of conversation, will, look different.
+
+452
+01:16:34.880 --> 01:16:41.460
+Fadel Megahed: So, again, the decisions that I've made as I'm using AI is I want you to give me a descriptive title.
+
+453
+01:16:41.550 --> 01:16:59.449
+Fadel Megahed: I want you to maintain the Miami seam whenever possible, so use, kind of, this red color for things that have a single color. For things that have multiple colors, I gave it, you know, if it's less than 4, I want you to pick from these. If it's between 5 and 12, I want you to pick from these.
+
+454
+01:16:59.450 --> 01:17:12.379
+Fadel Megahed: These are decisions that I've made to try to kind of communicate, you know, use things that are human-friendly, use things that relay that we're in Miami, and try to make the visuals a little bit better than whatever the focus is.
+
+455
+01:17:12.440 --> 01:17:19.679
+Fadel Megahed: So these are things that, again, as you're working with AI, and I'm not saying you should or you shouldn't work with AI, but if you end up working with AI.
+
+456
+01:17:19.860 --> 01:17:28.530
+Fadel Megahed: you can dictate how the AI behaves, and this is something that I want you to. You're not. Essentially, Chat Gpt is not your boss.
+
+457
+01:17:28.720 --> 01:17:38.929
+Fadel Megahed: It's a tool that you're using to achieve things that you want, maybe quicker. So, since it's your tool, you're the boss, you decide on how things come out.
+
+458
+01:17:39.080 --> 01:17:58.369
+Fadel Megahed: You decide on what type, you know, I could have specified when I look at this and be like, change the number of bins to 6 and show me what happens. You have to make some of these decisions. What the tool allows you is it allows you to iterate faster, but it doesn't necessarily mean that it's right, and that's something that I want you to keep in mind.
+
+459
+01:17:58.550 --> 01:18:03.009
+Fadel Megahed: So, for the remaining, kind of, 2 minutes.
+
+460
+01:18:03.140 --> 01:18:15.260
+Fadel Megahed: I just wanna, highlight that chart junk is not always bad. So, like, for example, if I ask you about the chart that we've done, that we analyzed in the first half of the semester, the Washington Post.
+
+461
+01:18:15.430 --> 01:18:18.149
+Fadel Megahed: kind of $100 in family money.
+
+462
+01:18:18.290 --> 01:18:24.849
+Fadel Megahed: was that sentence? I think many of you are gonna be like, yeah, the $100 stacks where they were kind of taking the
+
+463
+01:18:25.390 --> 01:18:39.749
+Fadel Megahed: essentially how the government is spending, how much they have in debt, and they translated that into what an average family spends. So again, it has some char junk. The use of a 3D representation for the bar chart is not the most effective.
+
+464
+01:18:39.750 --> 01:18:52.430
+Fadel Megahed: I would have probably had a better way of just doing a regular bar, but that made it memorable, and because it's memorable, I can kind of refer to it, you know, 15 classes later, and some of you will have some idea of what I'm talking about.
+
+465
+01:18:52.990 --> 01:19:01.900
+Fadel Megahed: So I will… I will stop here. I think this is not a bad stop. It ends part two. The assignment that is due on Monday, I'll push that for a week.
+
+466
+01:19:01.950 --> 01:19:11.580
+Fadel Megahed: For the 17 of you who was in and got grades on exam 2, that should happen tonight. I did grade all the prior assignments as well, so you should have seen comments about all the prior assignments.
+
+467
+01:19:11.580 --> 01:19:25.550
+Fadel Megahed: If you lost points, you're gonna see comments. If you didn't lose points, you're not gonna see comments. And then, if you scored below an 80%, I would love to talk to you, sometime after hours, if my office hours don't work, shoot me an email, and we'll find some time to talk, next week.
+
+468
+01:19:25.560 --> 01:19:27.509
+Fadel Megahed: Thank you guys, and have fun.
+

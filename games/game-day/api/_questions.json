@@ -1,0 +1,235 @@
+[
+ {
+  "id": "fox-lie-meaning",
+  "quarter": 1,
+  "kind": "choice",
+  "seconds": 30,
+  "options": 4,
+  "answer": 1
+ },
+ {
+  "id": "russia-squares",
+  "quarter": 1,
+  "kind": "choice",
+  "seconds": 30,
+  "options": 4,
+  "answer": 2
+ },
+ {
+  "id": "possession-baseline",
+  "quarter": 1,
+  "kind": "choice",
+  "seconds": 30,
+  "options": 4,
+  "answer": 0
+ },
+ {
+  "id": "miners-open",
+  "quarter": 1,
+  "kind": "open",
+  "seconds": 90,
+  "rubric": {
+   "prompt": "This chart is redrawn from a mining company's annual report. What is misleading about it, and how would you fix it?",
+   "context": "A redrawn chart from a mining company's annual report, in three side-by-side panels titled 'Operating revenues', 'Net income (loss)' and 'Exploration and development expenditures'. Each panel has five gray bars for 1970 to 1974 (labeled '70 to '74), with the dollar value printed above each bar. There is no y-axis and no zero line. Values: operating revenues $3,549,385, $4,520,362, $4,916,444, $6,814,503, $7,382,599; net income $(11,014), $397,747, $521,943, $1,647,001, $1,435,102; exploration $351,341, $85,149, $75,243, $329,421, $1,226,007. In every panel the tallest bar ($7,382,599, $1,647,001 and $1,226,007) is drawn at exactly the same height, and the shortest bar in every panel is still about 30% as tall as the tallest, so bar heights are not proportional to the values. In the net income panel, the 1970 value is a loss printed as $(11,014), but its bar points upward from the bottom like the profits, about 30% as tall as the $1,647,001 bar.",
+   "ideas": [
+    {
+     "label": "The 1970 loss is drawn as a positive bar",
+     "hint": "Read the 1970 label in the net income panel. Which way does its bar point?",
+     "ask": "Does the student's answer say that the 1970 net income is a loss (a negative value) but its bar is drawn upward like a profit or positive value?",
+     "yes": "The answer states or clearly paraphrases that the 1970 net income is a loss (a negative value) but its bar is drawn upward like a profit or positive value.",
+     "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+    },
+    {
+     "label": "Bar heights are not proportional: no zero baseline or common scale",
+     "hint": "Compare $75,243 with $351,341, or the tallest bars of the three panels.",
+     "ask": "Does the student's answer say that the bar heights are not proportional to the dollar values, because the bars do not start at a zero baseline or the panels do not share one scale (for example, bars for very different amounts look about the same height)?",
+     "yes": "The answer states or clearly paraphrases that the bar heights are not proportional to the dollar values, because the bars do not start at a zero baseline or the panels do not share one scale (for example, bars for very different amounts look about the same height).",
+     "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+    },
+    {
+     "label": "A concrete fix",
+     "hint": "Say how you would redraw it.",
+     "ask": "Does the student's answer say that a concrete way to redraw the chart, such as starting every bar at a zero baseline, drawing the loss as a bar below or to the left of zero, adding a value axis that starts at zero, putting all panels on one common scale, or switching to horizontal bars so the dollar labels read left to right?",
+     "yes": "The answer states or clearly paraphrases that a concrete way to redraw the chart, such as starting every bar at a zero baseline, drawing the loss as a bar below or to the left of zero, adding a value axis that starts at zero, putting all panels on one common scale, or switching to horizontal bars so the dollar labels read left to right.",
+     "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+    }
+   ],
+   "wrong": [
+    {
+     "ask": "Does the student's answer claim that nothing is misleading because every bar has its dollar value printed on it?",
+     "yes": "The answer asserts that nothing is misleading because every bar has its dollar value printed on it.",
+     "no": "The answer does not assert this. It may not mention it, or may reject it.",
+     "msg": "The printed values do not fix the drawing: readers see the bar heights first."
+    }
+   ]
+  },
+  "model": [
+   {
+    "head": "What misleads",
+    "items": [
+     "The bars do not start at zero, so heights are not proportional to the dollars: $75,243 looks almost as tall as $351,341.",
+     "The 1970 net loss of $11,014 is drawn as an upward bar, like a profit.",
+     "Each panel has its own hidden scale: the tallest bars ($7.38M, $1.65M, $1.23M) are drawn the same height, so comparisons across panels mislead.",
+     "There is no value axis, so the size of a bar means nothing without its printed label.",
+     "The dollar labels run sideways, which makes them hard to read."
+    ]
+   },
+   {
+    "head": "Fixes",
+    "items": [
+     "Start every bar at zero on a labeled dollar axis.",
+     "Draw the 1970 loss below (or left of) zero.",
+     "Show each panel's scale, or put the panels on one common axis to compare across them.",
+     "Use horizontal bars so the dollar labels read left to right."
+    ]
+   }
+  ],
+  "code": null,
+  "fix": "charts/miners_fix.svg"
+ },
+ {
+  "id": "roster-nominal",
+  "quarter": 2,
+  "kind": "choice",
+  "seconds": 30,
+  "options": 4,
+  "answer": 2
+ },
+ {
+  "id": "class-year-type",
+  "quarter": 2,
+  "kind": "choice",
+  "seconds": 20,
+  "options": 4,
+  "answer": 1
+ },
+ {
+  "id": "ratio-vs-interval",
+  "quarter": 2,
+  "kind": "choice",
+  "seconds": 30,
+  "options": 4,
+  "answer": 1
+ },
+ {
+  "id": "data-ink",
+  "quarter": 2,
+  "kind": "choice",
+  "seconds": 30,
+  "options": 4,
+  "answer": 3
+ },
+ {
+  "id": "best-channel",
+  "quarter": 3,
+  "kind": "choice",
+  "seconds": 20,
+  "options": 4,
+  "answer": 2
+ },
+ {
+  "id": "diverging-palette",
+  "quarter": 3,
+  "kind": "choice",
+  "seconds": 20,
+  "options": 4,
+  "answer": 2
+ },
+ {
+  "id": "red-green",
+  "quarter": 3,
+  "kind": "choice",
+  "seconds": 30,
+  "options": 4,
+  "answer": 3
+ },
+ {
+  "id": "fill-mapping",
+  "quarter": 4,
+  "kind": "choice",
+  "seconds": 30,
+  "options": 4,
+  "answer": 0
+ },
+ {
+  "id": "coord-change",
+  "quarter": 4,
+  "kind": "choice",
+  "seconds": 30,
+  "options": 4,
+  "answer": 3
+ },
+ {
+  "id": "describe-open",
+  "quarter": 5,
+  "kind": "open",
+  "seconds": 90,
+  "rubric": {
+   "prompt": "Describe this chart in grammar-of-graphics terms: the aesthetic mappings, the geom, and one more layer.",
+   "context": "A horizontal bar chart titled 'Miami point differential by game, 2026'. The data are Miami's seven 2026 football games through Oct 17, one row per game. Each bar is one game: the opponent (Pittsburgh, Holy Cross, Cincinnati, Connecticut, Bowling Green, Massachusetts, Akron, in date order from top to bottom) is on the y-axis, and the bar length along the x-axis is the point differential, Miami points minus opponent points (from -45 at Pittsburgh to +38 against Holy Cross). Bars are filled by site, with a legend titled 'site': Miami red for home games and gray for away games. Bowling Green was a home loss and Massachusetts an away win, so fill does not show the result. A vertical line marks zero. The chart is split into two panels (facets) by conference game: 'Non-conference' (first four games) and 'MAC' (last three). In ggplot2 terms: aes(x = margin, y = opponent, fill = site) + geom_col() + geom_vline(xintercept = 0) + facet_grid(conference ~ .) + scale_fill_manual().",
+   "ideas": [
+    {
+     "label": "Mappings: point differential, opponent, site",
+     "hint": "What sets bar length, what sets the position on the other axis, and what sets the color?",
+     "ask": "Does the student's answer say that at least two of these aesthetic mappings: the point differential (Miami points minus opponent points) mapped to the bar length or x-axis, the opponent or game mapped to the y-axis, and the site (home or away) mapped to the fill color?",
+     "yes": "The answer states or clearly paraphrases that at least two of these aesthetic mappings: the point differential (Miami points minus opponent points) mapped to the bar length or x-axis, the opponent or game mapped to the y-axis, and the site (home or away) mapped to the fill color.",
+     "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+    },
+    {
+     "label": "Geom: bars",
+     "hint": "What kind of mark draws each game?",
+     "ask": "Does the student's answer say that the geom (the geometric object or mark) is bars, for example geom_col or geom_bar?",
+     "yes": "The answer states or clearly paraphrases that the geom (the geometric object or mark) is bars, for example geom_col or geom_bar.",
+     "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+    },
+    {
+     "label": "One more layer, named specifically",
+     "hint": "Look at the panels, the colors and the line at zero.",
+     "ask": "Does the student's answer say that a specific additional layer that is actually in this chart, such as facets that split the games into non-conference and MAC panels, a fill scale that sets red for home and gray for away, or a vertical reference line at zero?",
+     "yes": "The answer states or clearly paraphrases that a specific additional layer that is actually in this chart, such as facets that split the games into non-conference and MAC panels, a fill scale that sets red for home and gray for away, or a vertical reference line at zero.",
+     "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+    }
+   ],
+   "wrong": [
+    {
+     "ask": "Does the student's answer claim that the fill color shows whether Miami won or lost the game?",
+     "yes": "The answer asserts that the fill color shows whether Miami won or lost the game.",
+     "no": "The answer does not assert this. It may not mention it, or may reject it.",
+     "msg": "Check the legend: fill shows home or away. Bowling Green was a home loss."
+    }
+   ]
+  },
+  "model": [
+   {
+    "head": "Data",
+    "items": [
+     "Miami's 2026 games through Oct 17, one row per game."
+    ]
+   },
+   {
+    "head": "Mappings (aes)",
+    "items": [
+     "x = point differential (Miami points minus opponent points)",
+     "y = opponent",
+     "fill = site (home or away), not win or loss: Bowling Green was a home loss"
+    ]
+   },
+   {
+    "head": "Geom",
+    "items": [
+     "Bars (geom_col)"
+    ]
+   },
+   {
+    "head": "More layers",
+    "items": [
+     "Facets: separate panels for non-conference and MAC games",
+     "A reference line at zero (geom_vline)",
+     "A fill scale: red for home, gray for away"
+    ]
+   }
+  ],
+  "code": "ggplot(games, aes(x = margin, y = opponent, fill = site)) + geom_col() + geom_vline(xintercept = 0) + facet_grid(conference ~ .)",
+  "fix": null
+ }
+]

@@ -1,0 +1,9 @@
+{
+  "name": "isa401-game-day",
+  "private": true,
+  "description": "Game Day at Yager: Kahoot-style class game for ISA 401 (Class 16)",
+  "scripts": {
+    "test": "node --test tests/",
+    "dev": "node dev/server.js"
+  }
+}

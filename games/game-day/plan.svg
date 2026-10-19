@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 640" class="plan" role="img" aria-label="Plan of FSB 2050: six tables of seven seats in three rows">
+<style>
+  .plan .wall { fill: none; stroke: #4b5563; stroke-width: 4; }
+  .plan .table { fill: #f3f4f6; stroke: #9ca3af; stroke-width: 1.5; }
+  .plan .label { font: 600 13px "Segoe UI", Helvetica, Arial, sans-serif; fill: #6b7280; letter-spacing: .06em; text-transform: uppercase; }
+  .plan .rowlabel { font: 600 12px "Segoe UI", Helvetica, Arial, sans-serif; fill: #9ca3af; text-anchor: middle; }
+  .plan .fixture { fill: #e5e7eb; stroke: #9ca3af; stroke-width: 1.5; }
+  .plan .seat .chair { fill: #FFFFFF; stroke: #9ca3af; stroke-width: 1.5; }
+  .plan .seat .screen { fill: #d1d5db; stroke: #9ca3af; stroke-width: 1; }
+  .plan .seat .id { font: 700 12.5px "Segoe UI", Helvetica, Arial, sans-serif; fill: #444; text-anchor: middle; pointer-events: none; }
+  .plan .seat { cursor: pointer; }
+  .plan .seat:hover .chair { stroke: #C41230; stroke-width: 2.5; }
+  .plan .seat.picked .chair { fill: #EFDB72; stroke: #b9a53d; }
+  .plan .seat.l1 .chair { fill: #EFDB72; stroke: #C41230; stroke-width: 3; }
+  .plan .seat.l2 .chair { fill: #C41230; stroke: #8B0E20; }
+  .plan .seat.l2 .id { fill: #fff; }
+  .plan .seat.l3 .chair { fill: #C41230; stroke: #000000; stroke-width: 3; }
+  .plan .seat.l3 .id { fill: #fff; }
+  .plan .seat.done .chair { fill: #000000; stroke: #000000; }
+  .plan .seat.done .id { fill: #fff; }
+  .plan .seat.mine .chair { stroke-dasharray: 4 3; }
+  .plan .table.lit { fill: #EFDB72; stroke: #C41230; stroke-width: 2.5; }
+  .plan .seat.here .chair { fill: #f3f4f6; stroke: #9ca3af; stroke-dasharray: 4 3; }
+  .plan .rank { font: 700 13px "Segoe UI", Helvetica, Arial, sans-serif; fill: #fff; text-anchor: middle; pointer-events: none; }
+</style>
+<rect class="wall" x="40" y="40" width="820" height="560" rx="6"/>
+<line x1="70" y1="40" x2="120" y2="40" stroke="#ffffff" stroke-width="6"/>
+<path d="M70 40 a50 50 0 0 1 50 50" fill="none" stroke="#4b5563" stroke-width="2"/>
+<text class="label" x="95" y="112" text-anchor="middle">Door</text>
+<line x1="780" y1="40" x2="830" y2="40" stroke="#ffffff" stroke-width="6"/>
+<path d="M830 40 a50 50 0 0 0 -50 50" fill="none" stroke="#4b5563" stroke-width="2"/>
+<text class="label" x="805" y="112" text-anchor="middle">Door</text>
+<rect class="fixture" x="215" y="34" width="210" height="12" rx="3"/>
+<rect class="fixture" x="520" y="34" width="210" height="12" rx="3"/>
+<text class="label" x="320" y="70" text-anchor="middle">Screen</text>
+<text class="label" x="625" y="70" text-anchor="middle">Screen</text>
+<rect class="fixture" x="196" y="82" width="56" height="34" rx="4"/>
+<text class="label" x="224" y="136" text-anchor="middle">Podium</text>
+<rect x="80" y="594" width="250" height="12" fill="#dbeafe" stroke="#60a5fa" stroke-width="1.5"/>
+<text class="label" x="205" y="586" text-anchor="middle">Windows</text>
+<rect x="570" y="594" width="250" height="12" fill="#dbeafe" stroke="#60a5fa" stroke-width="1.5"/>
+<text class="label" x="695" y="586" text-anchor="middle">Windows</text>
+<text class="rowlabel" x="450" y="229">1</text>
+<rect class="table" data-table="L1" x="64" y="185" width="360" height="24" rx="4"/>
+<g class="seat" data-seat="L1-1"><rect class="screen" x="77" y="188" width="22" height="10" rx="2"/><circle class="chair" cx="88" cy="235" r="21"/><text class="id" x="88" y="239.5">L1-1</text></g>
+<g class="seat" data-seat="L1-2"><rect class="screen" x="129" y="188" width="22" height="10" rx="2"/><circle class="chair" cx="140" cy="235" r="21"/><text class="id" x="140" y="239.5">L1-2</text></g>
+<g class="seat" data-seat="L1-3"><rect class="screen" x="181" y="188" width="22" height="10" rx="2"/><circle class="chair" cx="192" cy="235" r="21"/><text class="id" x="192" y="239.5">L1-3</text></g>
+<g class="seat" data-seat="L1-4"><rect class="screen" x="233" y="188" width="22" height="10" rx="2"/><circle class="chair" cx="244" cy="235" r="21"/><text class="id" x="244" y="239.5">L1-4</text></g>
+<g class="seat" data-seat="L1-5"><rect class="screen" x="285" y="188" width="22" height="10" rx="2"/><circle class="chair" cx="296" cy="235" r="21"/><text class="id" x="296" y="239.5">L1-5</text></g>
+<g class="seat" data-seat="L1-6"><rect class="screen" x="337" y="188" width="22" height="10" rx="2"/><circle class="chair" cx="348" cy="235" r="21"/><text class="id" x="348" y="239.5">L1-6</text></g>
+<g class="seat" data-seat="L1-7"><rect class="screen" x="389" y="188" width="22" height="10" rx="2"/><circle class="chair" cx="400" cy="235" r="21"/><text class="id" x="400" y="239.5">L1-7</text></g>
+<rect class="table" data-table="R1" x="476" y="185" width="360" height="24" rx="4"/>
+<g class="seat" data-seat="R1-1"><rect class="screen" x="489" y="188" width="22" height="10" rx="2"/><circle class="chair" cx="500" cy="235" r="21"/><text class="id" x="500" y="239.5">R1-1</text></g>
+<g class="seat" data-seat="R1-2"><rect class="screen" x="541" y="188" width="22" height="10" rx="2"/><circle class="chair" cx="552" cy="235" r="21"/><text class="id" x="552" y="239.5">R1-2</text></g>
+<g class="seat" data-seat="R1-3"><rect class="screen" x="593" y="188" width="22" height="10" rx="2"/><circle class="chair" cx="604" cy="235" r="21"/><text class="id" x="604" y="239.5">R1-3</text></g>
+<g class="seat" data-seat="R1-4"><rect class="screen" x="645" y="188" width="22" height="10" rx="2"/><circle class="chair" cx="656" cy="235" r="21"/><text class="id" x="656" y="239.5">R1-4</text></g>
+<g class="seat" data-seat="R1-5"><rect class="screen" x="697" y="188" width="22" height="10" rx="2"/><circle class="chair" cx="708" cy="235" r="21"/><text class="id" x="708" y="239.5">R1-5</text></g>
+<g class="seat" data-seat="R1-6"><rect class="screen" x="749" y="188" width="22" height="10" rx="2"/><circle class="chair" cx="760" cy="235" r="21"/><text class="id" x="760" y="239.5">R1-6</text></g>
+<g class="seat" data-seat="R1-7"><rect class="screen" x="801" y="188" width="22" height="10" rx="2"/><circle class="chair" cx="812" cy="235" r="21"/><text class="id" x="812" y="239.5">R1-7</text></g>
+<text class="rowlabel" x="450" y="374">2</text>
+<rect class="table" data-table="L2" x="64" y="330" width="360" height="24" rx="4"/>
+<g class="seat" data-seat="L2-1"><rect class="screen" x="77" y="333" width="22" height="10" rx="2"/><circle class="chair" cx="88" cy="380" r="21"/><text class="id" x="88" y="384.5">L2-1</text></g>
+<g class="seat" data-seat="L2-2"><rect class="screen" x="129" y="333" width="22" height="10" rx="2"/><circle class="chair" cx="140" cy="380" r="21"/><text class="id" x="140" y="384.5">L2-2</text></g>
+<g class="seat" data-seat="L2-3"><rect class="screen" x="181" y="333" width="22" height="10" rx="2"/><circle class="chair" cx="192" cy="380" r="21"/><text class="id" x="192" y="384.5">L2-3</text></g>
+<g class="seat" data-seat="L2-4"><rect class="screen" x="233" y="333" width="22" height="10" rx="2"/><circle class="chair" cx="244" cy="380" r="21"/><text class="id" x="244" y="384.5">L2-4</text></g>
+<g class="seat" data-seat="L2-5"><rect class="screen" x="285" y="333" width="22" height="10" rx="2"/><circle class="chair" cx="296" cy="380" r="21"/><text class="id" x="296" y="384.5">L2-5</text></g>
+<g class="seat" data-seat="L2-6"><rect class="screen" x="337" y="333" width="22" height="10" rx="2"/><circle class="chair" cx="348" cy="380" r="21"/><text class="id" x="348" y="384.5">L2-6</text></g>
+<g class="seat" data-seat="L2-7"><rect class="screen" x="389" y="333" width="22" height="10" rx="2"/><circle class="chair" cx="400" cy="380" r="21"/><text class="id" x="400" y="384.5">L2-7</text></g>
+<rect class="table" data-table="R2" x="476" y="330" width="360" height="24" rx="4"/>
+<g class="seat" data-seat="R2-1"><rect class="screen" x="489" y="333" width="22" height="10" rx="2"/><circle class="chair" cx="500" cy="380" r="21"/><text class="id" x="500" y="384.5">R2-1</text></g>
+<g class="seat" data-seat="R2-2"><rect class="screen" x="541" y="333" width="22" height="10" rx="2"/><circle class="chair" cx="552" cy="380" r="21"/><text class="id" x="552" y="384.5">R2-2</text></g>
+<g class="seat" data-seat="R2-3"><rect class="screen" x="593" y="333" width="22" height="10" rx="2"/><circle class="chair" cx="604" cy="380" r="21"/><text class="id" x="604" y="384.5">R2-3</text></g>
+<g class="seat" data-seat="R2-4"><rect class="screen" x="645" y="333" width="22" height="10" rx="2"/><circle class="chair" cx="656" cy="380" r="21"/><text class="id" x="656" y="384.5">R2-4</text></g>
+<g class="seat" data-seat="R2-5"><rect class="screen" x="697" y="333" width="22" height="10" rx="2"/><circle class="chair" cx="708" cy="380" r="21"/><text class="id" x="708" y="384.5">R2-5</text></g>
+<g class="seat" data-seat="R2-6"><rect class="screen" x="749" y="333" width="22" height="10" rx="2"/><circle class="chair" cx="760" cy="380" r="21"/><text class="id" x="760" y="384.5">R2-6</text></g>
+<g class="seat" data-seat="R2-7"><rect class="screen" x="801" y="333" width="22" height="10" rx="2"/><circle class="chair" cx="812" cy="380" r="21"/><text class="id" x="812" y="384.5">R2-7</text></g>
+<text class="rowlabel" x="450" y="519">3</text>
+<rect class="table" data-table="L3" x="64" y="475" width="360" height="24" rx="4"/>
+<g class="seat" data-seat="L3-1"><rect class="screen" x="77" y="478" width="22" height="10" rx="2"/><circle class="chair" cx="88" cy="525" r="21"/><text class="id" x="88" y="529.5">L3-1</text></g>
+<g class="seat" data-seat="L3-2"><rect class="screen" x="129" y="478" width="22" height="10" rx="2"/><circle class="chair" cx="140" cy="525" r="21"/><text class="id" x="140" y="529.5">L3-2</text></g>
+<g class="seat" data-seat="L3-3"><rect class="screen" x="181" y="478" width="22" height="10" rx="2"/><circle class="chair" cx="192" cy="525" r="21"/><text class="id" x="192" y="529.5">L3-3</text></g>
+<g class="seat" data-seat="L3-4"><rect class="screen" x="233" y="478" width="22" height="10" rx="2"/><circle class="chair" cx="244" cy="525" r="21"/><text class="id" x="244" y="529.5">L3-4</text></g>
+<g class="seat" data-seat="L3-5"><rect class="screen" x="285" y="478" width="22" height="10" rx="2"/><circle class="chair" cx="296" cy="525" r="21"/><text class="id" x="296" y="529.5">L3-5</text></g>
+<g class="seat" data-seat="L3-6"><rect class="screen" x="337" y="478" width="22" height="10" rx="2"/><circle class="chair" cx="348" cy="525" r="21"/><text class="id" x="348" y="529.5">L3-6</text></g>
+<g class="seat" data-seat="L3-7"><rect class="screen" x="389" y="478" width="22" height="10" rx="2"/><circle class="chair" cx="400" cy="525" r="21"/><text class="id" x="400" y="529.5">L3-7</text></g>
+<rect class="table" data-table="R3" x="476" y="475" width="360" height="24" rx="4"/>
+<g class="seat" data-seat="R3-1"><rect class="screen" x="489" y="478" width="22" height="10" rx="2"/><circle class="chair" cx="500" cy="525" r="21"/><text class="id" x="500" y="529.5">R3-1</text></g>
+<g class="seat" data-seat="R3-2"><rect class="screen" x="541" y="478" width="22" height="10" rx="2"/><circle class="chair" cx="552" cy="525" r="21"/><text class="id" x="552" y="529.5">R3-2</text></g>
+<g class="seat" data-seat="R3-3"><rect class="screen" x="593" y="478" width="22" height="10" rx="2"/><circle class="chair" cx="604" cy="525" r="21"/><text class="id" x="604" y="529.5">R3-3</text></g>
+<g class="seat" data-seat="R3-4"><rect class="screen" x="645" y="478" width="22" height="10" rx="2"/><circle class="chair" cx="656" cy="525" r="21"/><text class="id" x="656" y="529.5">R3-4</text></g>
+<g class="seat" data-seat="R3-5"><rect class="screen" x="697" y="478" width="22" height="10" rx="2"/><circle class="chair" cx="708" cy="525" r="21"/><text class="id" x="708" y="529.5">R3-5</text></g>
+<g class="seat" data-seat="R3-6"><rect class="screen" x="749" y="478" width="22" height="10" rx="2"/><circle class="chair" cx="760" cy="525" r="21"/><text class="id" x="760" y="529.5">R3-6</text></g>
+<g class="seat" data-seat="R3-7"><rect class="screen" x="801" y="478" width="22" height="10" rx="2"/><circle class="chair" cx="812" cy="525" r="21"/><text class="id" x="812" y="529.5">R3-7</text></g>
+<text class="label" x="450" y="632" text-anchor="middle" style="text-transform:none; letter-spacing:0;">Plan of FSB 2050. Front of the room at the top; seats count 1 to 7 from left to right. Not to scale.</text>
+</svg>

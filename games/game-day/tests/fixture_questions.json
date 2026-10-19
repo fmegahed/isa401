@@ -1,0 +1,66 @@
+[
+  {
+    "id": "fx1",
+    "kind": "choice",
+    "quarter": 1,
+    "seconds": 20,
+    "options": 4,
+    "answer": 2
+  },
+  {
+    "id": "fx2",
+    "kind": "choice",
+    "quarter": 1,
+    "seconds": 30,
+    "options": 4,
+    "answer": 0
+  },
+  {
+    "id": "fx3",
+    "kind": "open",
+    "quarter": 2,
+    "seconds": 90,
+    "rubric": {
+      "prompt": "A bar chart shows a loss as a positive bar. What is misleading, and how would you fix it?",
+      "context": "A bar chart of net income by year. The 2019 value is a loss of 11,014 but its bar points up like the others.",
+      "ideas": [
+        {
+          "label": "The loss is drawn as a gain",
+          "ask": "Does the answer say that the negative value (the loss) is drawn as a positive bar?",
+          "yes": "The answer states or clearly paraphrases that the loss is drawn as if it were positive.",
+          "no": "The answer does not say this, is too vague to tell, or says the opposite."
+        },
+        {
+          "label": "Draw it below a zero baseline",
+          "ask": "Does the answer say the fix is to draw the loss below a zero baseline (a bar going down)?",
+          "yes": "The answer states or clearly paraphrases that the loss should go below zero.",
+          "no": "The answer does not say this, is too vague to tell, or says the opposite."
+        }
+      ],
+      "wrong": [
+        {
+          "ask": "Does the answer claim the problem is the colors of the bars?",
+          "yes": "The answer asserts the problem is the bar colors.",
+          "no": "The answer does not assert this.",
+          "msg": "Color is not the problem here. Look at the direction of the bars."
+        }
+      ]
+    },
+    "model": [
+      {
+        "head": "What misleads",
+        "items": [
+          "STRONG ANSWER: the loss is drawn up."
+        ]
+      },
+      {
+        "head": "Fixes",
+        "items": [
+          "Draw the loss below zero."
+        ]
+      }
+    ],
+    "code": null,
+    "fix": "charts/fx3_fix.svg"
+  }
+]

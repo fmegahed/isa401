@@ -526,6 +526,24 @@ knitr::include_graphics('../../figures/terrible_fox_christian.jpg')
 
 ]
 
+.panel[.panel-name[Answer]
+
+<details class="answer-gate">
+<summary>Show the answer</summary>
+<div class="tbl-sm" style="margin-top:10px;">
+<table>
+<thead><tr><th>Chart</th><th>Main issue</th></tr></thead>
+<tbody>
+<tr><td>Russia's Defense Budget</td><td>Each square's side is proportional to the budget, but we read area. The budgets differ by a factor of `r formatC(60.6 / 4.32, format = "f", digits = 1)`, so Russia's square looks about `r round((60.6 / 4.32)^2)` times larger.</td></tr>
+<tr><td>White House Growth</td><td>The y-axis steps by 1 up to 5% and then by 0.5, so the 2021 bar (5.7%) reaches where about 6.4% would sit on an even scale. The 2020 contraction right before it also gives the rebound context the chart leaves out.</td></tr>
+<tr><td>Fox News</td><td>The y-axis starts at 58, and its labels sit on the right side. 77% to 65% is a 12-percentage-point drop, a `r formatC(100 * 12 / 77, format = "f", digits = 1)`% decline, but the bars (19 vs. 7 units above 58) show a `r formatC(100 * 12 / 19, format = "f", digits = 0)`% drop. Bars should start at 0.</td></tr>
+</tbody>
+</table>
+</div>
+</details>
+
+]
+
 .panel[.panel-name[Discussion]
 
 .can-edit.key-c15-terrible-discussion[
@@ -538,7 +556,7 @@ knitr::include_graphics('../../figures/terrible_fox_christian.jpg')
 
 ???
 
-Seven minutes: five on the timer, two to collect answers. What to get from the room. Russia: the squares encode the values by area, so the reader compares areas, and we judge area poorly; a 14 times larger budget looks like a much larger gap. White House: the 2021 bar is the only white bar and carries a pin, while the 2020 contraction right before it gets no comment, so the 2021 rebound is presented without its context. Fox: the y-axis starts at 58, so 77 vs. 65 looks like a fall of more than half; the bars should start at 0. We come back to the axis problem with the lie factor.
+Seven minutes: five on the timer, two to collect answers. What to get from the room. Russia: the squares encode the values by area, so the reader compares areas, and we judge area poorly; a 14 times larger budget looks like a much larger gap. White House: the 2021 bar is the only white bar and carries a pin, while the 2020 contraction right before it gets no comment, so the 2021 rebound is presented without its context. Fox: the y-axis starts at 58 (its labels are on the right side), so 77 vs. 65 looks like a fall of more than half; 12 percentage points is a 15.6% decline; the bars should start at 0. We come back to the axis problem with the lie factor.
 
 ---
 
@@ -748,7 +766,7 @@ playfair |> dplyr::mutate(city = forcats::as_factor(city),
 
 ???
 
-Eight minutes: five to sketch, three to share. Ask for two or three sketches before opening My Solution. Point: in the bubble chart, the ranking of the 22 cities is hard to read because we compare circle areas; in the dot chart the same ranking is a position on one common axis.
+Eight minutes: five to sketch, three to share. Ask for two or three sketches before opening My Solution. Check the data before correcting a sketch: London (1,100K) is the largest city, ahead of Constantinople (900K). Point: in the bubble chart, the ranking of the 22 cities is hard to read because we compare circle areas; in the dot chart the same ranking is a position on one common axis.
 
 ---
 
@@ -1034,9 +1052,9 @@ Two minutes. The test question is the takeaway: if "twice as much" makes sense, 
 <thead><tr><th>Column</th><th>Type</th><th>Why</th></tr></thead>
 <tbody>
 <tr><td>Order ID</td><td>Nominal</td><td>A label. Order 6 is not "more" than order 3, and averaging IDs means nothing.</td></tr>
-<tr><td>Order Date, Ship Date</td><td>Interval</td><td>The difference (days to ship) is meaningful; a ratio of two dates is not.</td></tr>
+<tr><td>Order Date, Ship Date</td><td>Interval</td><td>The difference (days to ship) is meaningful; a ratio of two dates is not. "Quantitative" is also accepted.</td></tr>
 <tr><td>Order Priority</td><td>Ordinal</td><td>Urgent, high, medium, low has an order, but the gaps between levels are not equal amounts.</td></tr>
-<tr><td>Product Container</td><td>Nominal</td><td>Box sizes suggest an order, but a wrap bag has no place in it, so the column as a whole is a set of categories.</td></tr>
+<tr><td>Product Container</td><td>Nominal or ordinal</td><td>Small, medium, large, and jumbo box have an order, so ordinal can be argued. A wrap bag has no place in that order, so with it in the column, nominal is the safer answer.</td></tr>
 <tr><td>Product Cost</td><td>Ratio</td><td>$0 means no cost, so $40 is twice $20.</td></tr>
 </tbody>
 </table>
@@ -1057,7 +1075,7 @@ Two minutes. The test question is the takeaway: if "twice as much" makes sense, 
 
 ???
 
-Four minutes: two on the timer, two on the answer. Product Container is the one worth arguing about. Small, medium, large, and jumbo box are ordinal on their own; with the wrap bag included, nominal is the safer answer. The point is that the type comes from what the values mean, not from how they are stored (Order ID is a number but nominal).
+Four minutes: two on the timer, two on the answer. Product Container is the one worth arguing about: accept nominal or ordinal. Small, medium, large, and jumbo box are ordinal on their own; with the wrap bag included, nominal is the safer answer. For the dates, "quantitative" is accepted. The point is that the type comes from what the values mean, not from how they are stored (Order ID is a number but nominal).
 
 ---
 

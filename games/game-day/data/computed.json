@@ -1,0 +1,101 @@
+{
+  "fox": {
+    "v0": 77,
+    "v1": 65,
+    "base": 58,
+    "graphic_drop": 0.6316,
+    "data_drop": 0.1558,
+    "lie_factor": 4.05,
+    "trap": 5.26
+  },
+  "russia": {
+    "russia": 60.6,
+    "ukraine": 4.32,
+    "side_ratio": 14.03,
+    "area_ratio": 196.8,
+    "sqrt_ratio": 3.75
+  },
+  "possession": {
+    "miami": "27:56",
+    "akron": "32:04",
+    "data_ratio": 1.148,
+    "data_gap_pct": 14.8,
+    "drawn_ratio": 5.43,
+    "lie_factor": 29.9,
+    "date": "2026-10-17",
+    "opponent": "Akron",
+    "source_url": "https://miamiredhawks.com/sports/football/stats/2026/akron/boxscore/20842"
+  },
+  "miners": {
+    "tallest": [
+      "$7,382,599",
+      "$1,647,001",
+      "$1,226,007"
+    ],
+    "loss": "$(11,014)"
+  },
+  "roster": {
+    "cols": ["Jersey", "Position", "Class", "Height (in)", "Weight (lb)", "Home state"],
+    "rows": [
+      ["1", "Defensive Back", "Sr", "74", "208", "KY"],
+      ["8", "Defensive Back", "Fr", "70", "193", "OH"],
+      ["8", "Wide Receiver", "Jr", "69", "154", "GA"],
+      ["9", "Running Back", "Gr", "70", "229", "IN"],
+      ["22", "Defensive Line", "So", "76", "249", "OK"],
+      ["22", "Defensive Back", "Fr", "73", "194", "PA"]
+    ],
+    "class_levels": ["Fr", "Gr", "Jr", "So", "Sr"],
+    "source_url": "https://miamiredhawks.com/sports/football/roster/2025"
+  },
+  "stevens": {
+    "akron_att": 18515,
+    "hc_att": 11126,
+    "crowd_ratio": 1.66,
+    "akron_temp": 53,
+    "hc_temp": 76,
+    "temp_pct": 43,
+    "akron_url": "https://miamiredhawks.com/sports/football/stats/2026/akron/boxscore/20842",
+    "hc_url": "https://miamiredhawks.com/sports/football/stats/2026/holy-cross/boxscore/20837"
+  },
+  "ppg": {
+    "seasons": [2021, 2022, 2023, 2024, 2025],
+    "ppg": [28.9, 20.2, 25.6, 24.1, 23.5]
+  },
+  "margin": {
+    "min": -45,
+    "min_opp": "Pittsburgh",
+    "max": 38,
+    "max_opp": "Holy Cross"
+  },
+  "redgreen": {
+    "original": {
+      "W": "#00831C",
+      "L": "#C41230"
+    },
+    "deutan": {
+      "W": "#796D28",
+      "L": "#7C6F29"
+    },
+    "method": "colorspace::deutan (Machado et al. 2009 model, severity 1)"
+  },
+  "quarters": {
+    "miami": [7, 10, 10, 7],
+    "akron": [7, 0, 7, 0],
+    "source_url": "https://miamiredhawks.com/sports/football/stats/2026/akron/boxscore/20842"
+  },
+  "yards": {
+    "miami_rush": 324,
+    "miami_pass": 65,
+    "akron_rush": 81,
+    "akron_pass": 234
+  },
+  "describe": {
+    "n": 7,
+    "wins": 4,
+    "losses": 3,
+    "opponents": ["Pittsburgh", "Holy Cross", "Cincinnati", "Connecticut", "Bowling Green", "Massachusetts", "Akron"],
+    "margins": [-45, 38, -4, 3, -4, 1, 20],
+    "sites": ["away", "home", "away", "home", "home", "away", "home"],
+    "conf": ["Non-conference", "Non-conference", "Non-conference", "Non-conference", "MAC", "MAC", "MAC"]
+  }
+}

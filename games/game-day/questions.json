@@ -1,0 +1,275 @@
+[
+ {
+  "id": "fox-lie-meaning",
+  "quarter": 1,
+  "kind": "choice",
+  "seconds": 30,
+  "prompt": "This chart of U.S. adults who describe themselves as Christian has a lie factor of about 4. What does that mean?",
+  "chart": "charts/fox.svg",
+  "table": null,
+  "options": [
+   "The values are off by about 4 percentage points",
+   "The drop looks about 4 times as large as it really is",
+   "The chart shows the drop at about a quarter of its real size",
+   "About 4 of the values on the chart are wrong"
+  ],
+  "source": "Pew Research Center (2019), values shown in a Fox News chart with a y-axis from 58%; redrawn. https://www.pewresearch.org/religion/2019/10/17/in-u-s-decline-of-christianity-continues-at-rapid-pace/ ; https://video.foxnews.com/v/6274513508001"
+ },
+ {
+  "id": "russia-squares",
+  "quarter": 1,
+  "kind": "choice",
+  "seconds": 30,
+  "prompt": "Each square's side is proportional to the country's defense budget. By area, how many times larger does Russia's square look than Ukraine's?",
+  "chart": "charts/russia.svg",
+  "table": null,
+  "options": [
+   "About 14",
+   "About 4",
+   "About 200",
+   "About 10"
+  ],
+  "source": "Values printed on a squares chart shared by Cedric Scherer (2022), original outlet unclear; redrawn. https://x.com/CedScherer/status/1498593405408059394"
+ },
+ {
+  "id": "possession-baseline",
+  "quarter": 1,
+  "kind": "choice",
+  "seconds": 30,
+  "prompt": "This chart shows time of possession in Miami's Oct 17, 2026 game against Akron: Miami 27:56, Akron 32:04. What is the main problem with it?",
+  "chart": "charts/possession.svg",
+  "table": null,
+  "options": [
+   "The axis starts at 27:00, not at zero",
+   "Clock times are ordinal, so bars do not fit",
+   "No problem: Akron had the ball about 5 times as long",
+   "No problem: the times are printed on the bars"
+  ],
+  "source": "Miami vs Akron box score, Oct 17, 2026. https://miamiredhawks.com/sports/football/stats/2026/akron/boxscore/20842"
+ },
+ {
+  "id": "miners-open",
+  "quarter": 1,
+  "kind": "open",
+  "seconds": 90,
+  "prompt": "This chart is redrawn from a mining company's annual report. What is misleading about it, and how would you fix it?",
+  "chart": "charts/miners.svg",
+  "table": null,
+  "options": null,
+  "source": "Tufte, E. R. (2001). The Visual Display of Quantitative Information (2nd ed.), p. 54; redrawn without the photographs; bar heights approximate the original's distortion; values exact. https://www.edwardtufte.com/book/the-visual-display-of-quantitative-information/"
+ },
+ {
+  "id": "roster-nominal",
+  "quarter": 2,
+  "kind": "choice",
+  "seconds": 30,
+  "prompt": "Six rows of the 2025 RedHawks roster. Which column holds numbers but is nominal?",
+  "chart": null,
+  "table": {
+   "cols": [
+    "Jersey",
+    "Position",
+    "Class",
+    "Height (in)",
+    "Weight (lb)",
+    "Home state"
+   ],
+   "rows": [
+    [
+     "1",
+     "Defensive Back",
+     "Sr",
+     "74",
+     "208",
+     "KY"
+    ],
+    [
+     "8",
+     "Defensive Back",
+     "Fr",
+     "70",
+     "193",
+     "OH"
+    ],
+    [
+     "8",
+     "Wide Receiver",
+     "Jr",
+     "69",
+     "154",
+     "GA"
+    ],
+    [
+     "9",
+     "Running Back",
+     "Gr",
+     "70",
+     "229",
+     "IN"
+    ],
+    [
+     "22",
+     "Defensive Line",
+     "So",
+     "76",
+     "249",
+     "OK"
+    ],
+    [
+     "22",
+     "Defensive Back",
+     "Fr",
+     "73",
+     "194",
+     "PA"
+    ]
+   ]
+  },
+  "options": [
+   "Height (in)",
+   "Weight (lb)",
+   "Jersey",
+   "Class"
+  ],
+  "source": "Miami RedHawks 2025 football roster (names removed). https://miamiredhawks.com/sports/football/roster/2025"
+ },
+ {
+  "id": "class-year-type",
+  "quarter": 2,
+  "kind": "choice",
+  "seconds": 20,
+  "prompt": "The roster lists each player's class year as Fr, So, Jr, Sr or Gr. Which type of variable is class year?",
+  "chart": null,
+  "table": null,
+  "options": [
+   "Nominal",
+   "Ordinal",
+   "Interval",
+   "Ratio"
+  ],
+  "source": "Miami RedHawks 2025 football roster. https://miamiredhawks.com/sports/football/roster/2025 ; Stevens (1946), On the theory of scales of measurement. https://doi.org/10.1126/science.103.2684.677"
+ },
+ {
+  "id": "ratio-vs-interval",
+  "quarter": 2,
+  "kind": "choice",
+  "seconds": 30,
+  "prompt": "Akron game: 18,515 fans, 53 °F kickoff. Holy Cross game: 11,126 fans, 76 °F kickoff. Claim 1: the Akron crowd was 1.66 times the Holy Cross crowd. Claim 2: the Holy Cross kickoff was 43% hotter. Which claims are valid?",
+  "chart": null,
+  "table": null,
+  "options": [
+   "Both claims",
+   "Only claim 1",
+   "Only claim 2",
+   "Neither claim"
+  ],
+  "source": "Box scores: Akron, Oct 17, 2026 (the Family Weekend game) https://miamiredhawks.com/sports/football/stats/2026/akron/boxscore/20842 ; Holy Cross, Sept 12, 2026 https://miamiredhawks.com/sports/football/stats/2026/holy-cross/boxscore/20837 ; Family Weekend, Oct 16-18, 2026: https://miamioh.edu/news/2026/10/family-weekend-puts-focus-on-miami-traditions-oct-16-18.html"
+ },
+ {
+  "id": "data-ink",
+  "quarter": 2,
+  "kind": "choice",
+  "seconds": 30,
+  "prompt": "Which element of this chart is data-ink?",
+  "chart": "charts/chartjunk.svg",
+  "table": null,
+  "options": [
+   "The green field behind the bars",
+   "The thick white yard lines",
+   "The dark shadow beside each bar",
+   "The height of each red bar"
+  ],
+  "source": "Miami points per game by season, 2026 Football Record Book (Year-By-Year Records, printed p. 57). https://miamiredhawks.com/documents/2026/6/17/2026_FB_Record_Book.pdf"
+ },
+ {
+  "id": "best-channel",
+  "quarter": 3,
+  "kind": "choice",
+  "seconds": 20,
+  "prompt": "You want readers to compare Miami's points per game across seasons as accurately as possible. Which encoding should carry the values?",
+  "chart": null,
+  "table": null,
+  "options": [
+   "Angle of pie slices",
+   "Area of circles",
+   "Position along a common axis",
+   "Color intensity"
+  ],
+  "source": "Cleveland, W. S., and McGill, R. (1984). Graphical perception. Journal of the American Statistical Association, 79(387), 531-554. https://doi.org/10.1080/01621459.1984.10478080"
+ },
+ {
+  "id": "diverging-palette",
+  "quarter": 3,
+  "kind": "choice",
+  "seconds": 20,
+  "prompt": "You want to color each 2026 game by Miami's point differential, from -45 at Pittsburgh to +38 against Holy Cross. Which kind of palette fits?",
+  "chart": null,
+  "table": null,
+  "options": [
+   "Qualitative",
+   "Sequential",
+   "Diverging",
+   "One color for all games"
+  ],
+  "source": "Miami 2026 schedule and box scores, through Oct 17, 2026. https://miamiredhawks.com/sports/football/schedule/2026"
+ },
+ {
+  "id": "red-green",
+  "quarter": 3,
+  "kind": "choice",
+  "seconds": 30,
+  "prompt": "The left chart colors wins green and losses red. The right panel simulates how a reader with deuteranopia sees it. What is the best fix?",
+  "chart": "charts/redgreen.svg",
+  "table": null,
+  "options": [
+   "Use a brighter red for the losses",
+   "Make the bars wider so the colors show",
+   "Switch to a dark background",
+   "Use blue and orange, and label W or L"
+  ],
+  "source": "Miami 2026 schedule, through Oct 17, 2026 (https://miamiredhawks.com/sports/football/schedule/2026); simulation with colorspace::deutan (Machado, Oliveira and Fernandes, 2009, https://doi.org/10.1109/TVCG.2009.113)."
+ },
+ {
+  "id": "fill-mapping",
+  "quarter": 4,
+  "kind": "choice",
+  "seconds": 30,
+  "prompt": "In this chart, which variable is mapped to fill?",
+  "chart": "charts/fill.svg",
+  "table": null,
+  "options": [
+   "team",
+   "quarter",
+   "points",
+   "game date"
+  ],
+  "source": "Miami vs Akron box score, scoring by quarter, Oct 17, 2026. https://miamiredhawks.com/sports/football/stats/2026/akron/boxscore/20842"
+ },
+ {
+  "id": "coord-change",
+  "quarter": 4,
+  "kind": "choice",
+  "seconds": 30,
+  "prompt": "Chart B was made from the code for Chart A by changing one layer. Which layer?",
+  "chart": "charts/coord.svg",
+  "table": null,
+  "options": [
+   "geom",
+   "facet",
+   "aesthetic mapping",
+   "coord"
+  ],
+  "source": "Miami vs Akron box score, rushing and passing yards, Oct 17, 2026. https://miamiredhawks.com/sports/football/stats/2026/akron/boxscore/20842"
+ },
+ {
+  "id": "describe-open",
+  "quarter": 5,
+  "kind": "open",
+  "seconds": 90,
+  "prompt": "Describe this chart in grammar-of-graphics terms: the aesthetic mappings, the geom, and one more layer.",
+  "chart": "charts/describe.svg",
+  "table": null,
+  "options": null,
+  "source": "Miami 2026 schedule and box scores, through Oct 17, 2026. https://miamiredhawks.com/sports/football/schedule/2026"
+ }
+]

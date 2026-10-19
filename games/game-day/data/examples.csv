@@ -1,0 +1,20 @@
+example,panel,label,value,source_url,note
+fox,Christian share of U.S. adults (%),2009,77,https://www.pewresearch.org/religion/2019/10/17/in-u-s-decline-of-christianity-continues-at-rapid-pace/,Pew Research Center 2019; the Fox News chart (https://video.foxnews.com/v/6274513508001) drew these values with a y-axis starting at 58
+fox,Christian share of U.S. adults (%),2019,65,https://www.pewresearch.org/religion/2019/10/17/in-u-s-decline-of-christianity-continues-at-rapid-pace/,Pew Research Center 2019 (2018-2019 surveys)
+russia,Defense budget 2020 (US$ billion),Russia,60.6,https://x.com/CedScherer/status/1498593405408059394,value printed on the squares chart shared by Cedric Scherer; original outlet unclear
+russia,Defense budget 2020 (US$ billion),Ukraine,4.32,https://x.com/CedScherer/status/1498593405408059394,value printed on the squares chart shared by Cedric Scherer; original outlet unclear
+miners,Operating revenues,1970,3549385,"Tufte, E. R. (2001). The Visual Display of Quantitative Information (2nd ed.), Graphics Press, p. 54. https://www.edwardtufte.com/book/the-visual-display-of-quantitative-information/",value printed on the chart
+miners,Operating revenues,1971,4520362,"Tufte (2001), p. 54. https://www.edwardtufte.com/book/the-visual-display-of-quantitative-information/",value printed on the chart
+miners,Operating revenues,1972,4916444,"Tufte (2001), p. 54. https://www.edwardtufte.com/book/the-visual-display-of-quantitative-information/",value printed on the chart
+miners,Operating revenues,1973,6814503,"Tufte (2001), p. 54. https://www.edwardtufte.com/book/the-visual-display-of-quantitative-information/",value printed on the chart
+miners,Operating revenues,1974,7382599,"Tufte (2001), p. 54. https://www.edwardtufte.com/book/the-visual-display-of-quantitative-information/",value printed on the chart
+miners,Net income (loss),1970,-11014,"Tufte (2001), p. 54. https://www.edwardtufte.com/book/the-visual-display-of-quantitative-information/","printed as $(11,014), a loss, but drawn as a positive bar"
+miners,Net income (loss),1971,397747,"Tufte (2001), p. 54. https://www.edwardtufte.com/book/the-visual-display-of-quantitative-information/",value printed on the chart
+miners,Net income (loss),1972,521943,"Tufte (2001), p. 54. https://www.edwardtufte.com/book/the-visual-display-of-quantitative-information/",value printed on the chart
+miners,Net income (loss),1973,1647001,"Tufte (2001), p. 54. https://www.edwardtufte.com/book/the-visual-display-of-quantitative-information/",value printed on the chart
+miners,Net income (loss),1974,1435102,"Tufte (2001), p. 54. https://www.edwardtufte.com/book/the-visual-display-of-quantitative-information/",value printed on the chart
+miners,Exploration and development expenditures,1970,351341,"Tufte (2001), p. 54. https://www.edwardtufte.com/book/the-visual-display-of-quantitative-information/",value printed on the chart
+miners,Exploration and development expenditures,1971,85149,"Tufte (2001), p. 54. https://www.edwardtufte.com/book/the-visual-display-of-quantitative-information/",value printed on the chart
+miners,Exploration and development expenditures,1972,75243,"Tufte (2001), p. 54. https://www.edwardtufte.com/book/the-visual-display-of-quantitative-information/",value printed on the chart
+miners,Exploration and development expenditures,1973,329421,"Tufte (2001), p. 54. https://www.edwardtufte.com/book/the-visual-display-of-quantitative-information/",value printed on the chart
+miners,Exploration and development expenditures,1974,1226007,"Tufte (2001), p. 54. https://www.edwardtufte.com/book/the-visual-display-of-quantitative-information/",value printed on the chart

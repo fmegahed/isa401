@@ -1,0 +1,56 @@
+{
+  "c16-describe": {
+    "prompt": "Describe this chart in the grammar of graphics: its data (what is one row?), aesthetics, geometries, facets, and any other layers you can see.",
+    "context": "A ggplot2 scatter plot made from the Palmer penguins data (datasets::penguins in R, the 342 penguins with both measurements), repeated in four small panels so each penguin appears once in every panel (1,368 rows in all). The x axis is bill length (mm) and the y axis is flipper length (mm). Each point is one penguin, drawn with geom_point. A point's color is its species color (Adelie, Chinstrap, Gentoo) in that panel's palette, and each species also gets a text label (geom_label) near its average. The four panels form a 2 by 2 grid made with facet_grid(palette ~ vision): the rows are the palette (\"Red / green palette\" on top, \"Okabe-Ito palette\" below) and the columns are the vision type (\"Typical color vision\" on the left, \"Simulated deuteranopia\" on the right). The colors are used as stored (scale_color_identity), the axis titles are set with labs, the theme is theme_bw, and the coordinates are the default Cartesian ones. No bars, lines or areas are drawn.",
+    "ideas": [
+      {
+        "label": "Data: Palmer penguins, one row per penguin",
+        "hint": "What does each dot stand for? Name the data set it comes from.",
+        "ask": "Does the student's answer identify the data as the Palmer penguins measurements (penguin data, with one row or one point per penguin)?",
+        "yes": "The answer says the data are penguins or the Palmer penguins data set (penguin measurements), for example 'the penguins data', 'one row per penguin', or 'each point is a penguin'.",
+        "no": "The answer does not name penguins or the penguins data as the data, or names some other data."
+      },
+      {
+        "label": "Aesthetics: x = bill length, y = flipper length, color = species",
+        "hint": "Read the two axis titles, then ask what the colors tell apart inside one panel.",
+        "ask": "Does the student's answer give the aesthetic mappings: bill length on the x axis, flipper length on the y axis, and color showing the penguin species?",
+        "yes": "The answer maps bill length to x and flipper length to y, and says color shows the species (or the species color). Wording like 'bill length vs flipper length, colored by species' counts.",
+        "no": "The answer leaves out the x and y variables or the color mapping, swaps the axes, or says color shows something other than species."
+      },
+      {
+        "label": "Geometry: points (plus species labels)",
+        "hint": "What kind of mark stands for one penguin?",
+        "ask": "Does the student's answer say the geometry is points (a scatter plot, geom_point)?",
+        "yes": "The answer says the chart uses points, dots, geom_point, or calls it a scatter plot.",
+        "no": "The answer does not name points or a scatter plot as the geometry, or names a different geometry such as bars or lines."
+      },
+      {
+        "label": "Facets: rows = palette, columns = vision",
+        "hint": "Look at what changes from one small panel to the next, both down and across.",
+        "ask": "Does the student's answer say the chart is faceted (split into a grid of small panels) by the color palette and by the type of color vision?",
+        "yes": "The answer says the chart is split into panels or facets (for example facet_grid(palette ~ vision)) by both the palette (red/green versus Okabe-Ito) and the vision type (typical versus deuteranopia or color blindness). Rows and columns may be named either way.",
+        "no": "The answer does not mention facets or panels, or names only one of the two facet variables, or names other facet variables."
+      }
+    ],
+    "wrong": [
+      {
+        "ask": "Does the student's answer claim the chart's main geometry is bars, columns, a histogram, or lines?",
+        "yes": "The answer calls the chart a bar chart, column chart, histogram or line chart, or says the geometry is geom_bar, geom_col, geom_histogram or geom_line.",
+        "no": "The answer does not claim this. It may say points or scatter plot, or not mention the geometry.",
+        "msg": "Look again at the marks: how is each penguin drawn?"
+      },
+      {
+        "ask": "Does the student's answer claim that color is mapped to the palette or to the vision type (instead of the penguin species)?",
+        "yes": "The answer says the colors show which palette is used or which vision type is simulated, or maps color to the palette or vision variable.",
+        "no": "The answer does not claim this. It may say color shows species, or not mention color.",
+        "msg": "Check what the colors separate inside a single panel."
+      }
+    ],
+    "notes": {
+      "short": "Write a little more.",
+      "keep_going": "Start with the data and the axes, then work through the layers.",
+      "more_detail": "Good start. Use the hints to name the layers still missing.",
+      "done": "All four layers named: data, aesthetics, geometry and facets."
+    }
+  }
+}

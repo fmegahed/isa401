@@ -1,0 +1,702 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0d1310">
+<title>Game Day at Yager</title>
+<link rel="icon" href="favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --field: #0d1310; --surface: #161e1a; --surface2: #1e2823; --line: #2f3b35; --line2: #46544c;
+    --text: #f4f5f2; --muted: #a3ada7; --red: #C41230; --red-dark: #8f0d23; --right: #3e9e68; --white: #ffffff;
+    --display: "Oswald", "Arial Narrow", sans-serif; --body: "Source Sans 3", "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--field); color: var(--text); font-family: var(--body); font-size: 17px; line-height: 1.45; -webkit-text-size-adjust: 100%; }
+  body { min-height: 100vh; min-height: 100dvh; }
+  button, input, textarea { font: inherit; color: inherit; }
+  a { color: #f0a3ae; }
+  .wrap { max-width: 520px; margin: 0 auto; padding: 0 16px 40px; }
+
+  /* top bar */
+  header { position: sticky; top: 0; z-index: 3; background: var(--field); border-bottom: 1px solid var(--line); }
+  header .wrap { display: flex; align-items: center; gap: 10px; padding-top: 10px; padding-bottom: 10px; }
+  .brand { font-family: var(--display); font-weight: 600; letter-spacing: .06em; text-transform: uppercase; font-size: 17px; white-space: nowrap; }
+  .brand b { color: var(--red); font-weight: 700; }
+  .chip { font-family: var(--display); font-weight: 500; font-size: 13px; letter-spacing: .05em; text-transform: uppercase; border: 1px solid var(--line2); border-radius: 4px; padding: 1px 7px; color: var(--muted); white-space: nowrap; }
+  @media (max-width: 399px) { .brand b { display: none; } .brand { font-size: 16px; } .chip { font-size: 12px; padding: 1px 5px; } }
+  .me { margin-left: auto; text-align: right; font-size: 14px; line-height: 1.2; min-width: 0; }
+  .me .who { font-weight: 700; overflow-wrap: anywhere; }
+  .me .pts { color: var(--muted); font-variant-numeric: tabular-nums; }
+
+  .screen { display: none; padding-top: 18px; }
+  .screen.on { display: block; }
+  h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: .02em; margin: 0 0 10px; line-height: 1.1; }
+  h1 { font-size: 34px; text-transform: uppercase; }
+  h2 { font-size: 22px; }
+  .muted { color: var(--muted); }
+  .small { font-size: 14px; }
+  .note { border-left: 4px solid var(--red); background: var(--surface); padding: 10px 12px; border-radius: 4px; margin: 0 0 16px; }
+  .err { color: #ff8e9e; min-height: 1.4em; margin-top: 8px; font-size: 15px; }
+
+  /* join */
+  label.f { display: block; font-weight: 600; margin: 14px 0 6px; }
+  .in { width: 100%; background: var(--surface); border: 1.5px solid var(--line2); border-radius: 6px; padding: 12px 12px; font-size: 18px; }
+  .in:focus { outline: none; border-color: var(--red); box-shadow: 0 0 0 3px rgba(196,18,48,.25); }
+  .in.initial { width: 80px; text-align: center; text-transform: uppercase; font-weight: 700; }
+  .seg { display: flex; gap: 8px; flex-wrap: wrap; }
+  .seg button { flex: 1; min-height: 48px; background: var(--surface); border: 1.5px solid var(--line2); border-radius: 6px; font-weight: 700; cursor: pointer; padding: 6px 10px; }
+  .seg button.on { border-color: var(--red); background: var(--red); color: var(--white); }
+  .seg button:disabled { opacity: .5; }
+  .planbox { margin-top: 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 6px; }
+  #plan svg { width: 100%; height: auto; display: block; }
+  #plan .plan .wall { stroke: #5d6c64; }
+  #plan .plan .table, #plan .plan .fixture { fill: #26302b; stroke: #3f4c45; }
+  #plan .plan .label { fill: #8f9a94; font-family: var(--body); }
+  #plan .plan .rowlabel { fill: #8f9a94; font: 700 17px var(--body); }
+  #plan .plan line[stroke="#ffffff"] { stroke: var(--surface); }
+  #plan .plan rect[fill="#dbeafe"] { fill: #1d3042; stroke: #47698a; }
+  #plan .plan .seat .chair { fill: #1b2420; stroke: #7b8a82; stroke-width: 2; }
+  #plan .plan .seat .screen { fill: #3f4c45; stroke: none; }
+  #plan .plan .seat .id { fill: #e8ece9; font: 700 13px var(--body); }
+  #plan .plan .seat:hover .chair { stroke: var(--red); stroke-width: 3; }
+  #plan .plan .seat.mine .chair { fill: var(--red); stroke: var(--white); stroke-width: 3; stroke-dasharray: none; }
+  #plan .plan .seat.mine .id { fill: var(--white); }
+  .seatline { margin-top: 10px; font-weight: 700; }
+  .remote { width: 100%; margin-top: 10px; min-height: 52px; background: var(--surface); border: 1.5px solid var(--line2); border-radius: 6px; font-weight: 700; cursor: pointer; }
+  .remote.on { border-color: var(--red); background: var(--red); color: var(--white); }
+  .go { width: 100%; margin-top: 18px; min-height: 56px; border: 0; border-radius: 6px; background: var(--red); color: var(--white); font-family: var(--display); font-size: 21px; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; }
+  .joinsec { margin-top: 18px; font-weight: 700; color: var(--text); }
+  .joinsec + .go { margin-top: 8px; }
+  .go:disabled { background: #3a2a2d; color: #9a8a8d; cursor: default; }
+
+  /* status screens */
+  .big { font-family: var(--display); font-weight: 700; font-size: 44px; line-height: 1.05; text-transform: uppercase; margin: 6px 0 12px; }
+  .big.right { color: #6fd39a; } .big.wrong { color: #ff6b82; }
+  .rows { border-top: 1px solid var(--line); margin-top: 16px; }
+  .rows div { display: flex; justify-content: space-between; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .rows span:last-child { font-family: var(--display); font-weight: 600; font-size: 22px; font-variant-numeric: tabular-nums; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 14px; margin-top: 14px; }
+
+  /* question */
+  .qhead { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; }
+  .qmeta { font-family: var(--display); font-weight: 500; letter-spacing: .05em; text-transform: uppercase; font-size: 15px; color: var(--muted); }
+  .clock { font-family: var(--display); font-weight: 700; font-size: 38px; line-height: 1; font-variant-numeric: tabular-nums; }
+  .clock.low { color: #ff6b82; }
+  .bar { height: 4px; background: var(--line); margin: 8px 0 14px; border-radius: 2px; overflow: hidden; }
+  .bar i { display: block; height: 100%; width: 100%; background: var(--red); transform-origin: left center; }
+  .prompt { font-size: 19px; font-weight: 600; margin: 0 0 12px; overflow-wrap: break-word; }
+  .fig { background: var(--white); border-radius: 6px; padding: 4px; margin-bottom: 6px; }
+  .fig img { width: 100%; height: auto; display: block; }
+  .fig a { display: block; }
+  .figcap { font-size: 12.5px; color: var(--muted); margin: 2px 0 6px; }
+  .tbl { overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1px solid var(--line); border-radius: 6px; margin-bottom: 6px; }
+  .tbl table { border-collapse: collapse; width: 100%; font-size: 13.5px; line-height: 1.25; }
+  .tbl th, .tbl td { padding: 6px 5px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); }
+  .tbl th { background: var(--surface2); font-weight: 700; }
+  .src { font-size: 12.5px; color: var(--muted); margin: 4px 0 14px; overflow-wrap: anywhere; }
+  .opts { display: grid; gap: 10px; }
+  .opt { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 60px; text-align: left; background: var(--surface); border: 1.5px solid var(--line2); border-radius: 8px; padding: 10px 12px; cursor: pointer; }
+  .opt:active { border-color: var(--red); }
+  .opt .k { flex: none; width: 36px; height: 36px; border-radius: 4px; background: var(--red); color: var(--white); display: grid; place-items: center; font-family: var(--display); font-weight: 700; font-size: 20px; }
+  .opt .t { font-size: 17px; font-weight: 600; overflow-wrap: anywhere; }
+  .opt:disabled { opacity: .55; }
+  textarea.in { min-height: 170px; resize: vertical; font-size: 17px; line-height: 1.4; }
+  .count { text-align: right; font-size: 14px; color: var(--muted); margin-top: 4px; font-variant-numeric: tabular-nums; }
+  #conn { position: fixed; left: 0; right: 0; bottom: 0; z-index: 4; background: var(--red-dark); color: var(--white); text-align: center; font-size: 14px; padding: 6px 16px; display: none; }
+  #conn.on { display: block; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="brand">Game Day <b>at Yager</b></div>
+    <span class="chip" id="secchip">A</span>
+    <div class="me" id="mebox" hidden><div class="who" id="mewho"></div><div class="pts" id="mepts"></div></div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="screen" id="s-loading">
+    <h2>Connecting</h2>
+    <p class="muted">Finding the game for your section.</p>
+  </section>
+
+  <section class="screen" id="s-join">
+    <div class="note" id="joinmsg" hidden></div>
+    <h1>Join the game</h1>
+    <p class="muted small" style="margin:0;">The projector shows your first name and seat. Game points do not count toward your grade.</p>
+
+    <label class="f">Section</label>
+    <div class="seg" id="secseg">
+      <button type="button" data-sec="A">Section A</button>
+      <button type="button" data-sec="B">Section B</button>
+      <button type="button" data-sec="Z" id="secZ" hidden>Test Z</button>
+    </div>
+
+    <label class="f" for="first">Preferred first name</label>
+    <input class="in" id="first" maxlength="20" autocomplete="given-name" autocapitalize="words" spellcheck="false">
+
+    <label class="f" for="initial">Last initial</label>
+    <input class="in initial" id="initial" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" inputmode="text">
+
+    <label class="f">Your seat</label>
+    <div class="muted small">Front of the room (screens) is at the top. Row 1 is the front; seats count 1 to 7 from left to right.</div>
+    <div class="seg" id="sideseg" style="margin-top:8px;">
+      <button type="button" data-side="L">Left of the aisle</button>
+      <button type="button" data-side="R">Right of the aisle</button>
+    </div>
+    <div class="planbox"><div id="plan"></div></div>
+    <button type="button" class="remote" id="remote">Joining remotely</button>
+    <div class="seatline" id="seatline">No seat picked yet.</div>
+
+    <div class="joinsec" id="joinsec"></div>
+    <button type="button" class="go" id="joinbtn" disabled>Join</button>
+    <div class="err" id="joinerr" role="alert"></div>
+  </section>
+
+  <section class="screen" id="s-lobby">
+    <div class="qmeta" id="lobbysec"></div>
+    <h2 style="margin-top:8px;">You are in: <span id="lobbywho"></span></h2>
+    <p class="muted">Wait for kickoff. Keep this page open; questions appear here.</p>
+    <div class="rows"><div><span>Players joined</span><span id="lobbyn">0</span></div></div>
+    <p class="small" style="margin-top:18px;"><a href="#" id="changeseat">Change my seat</a></p>
+  </section>
+
+  <section class="screen" id="s-ready">
+    <div class="qmeta" id="readymeta"></div>
+    <div class="big">Get ready</div>
+    <p class="muted">The question opens on the projector and here at the same time.</p>
+  </section>
+
+  <section class="screen" id="s-question">
+    <div class="qhead">
+      <div class="qmeta" id="qmeta"></div>
+      <div class="clock" id="qclock" aria-live="off"></div>
+    </div>
+    <div class="bar"><i id="qbar"></i></div>
+    <p class="prompt" id="qprompt"></p>
+    <div id="qfig"></div>
+    <div class="src" id="qsrc"></div>
+    <div class="opts" id="qopts"></div>
+    <div id="qopen" hidden>
+      <label class="f" for="qtext" style="margin-top:0;">Your answer</label>
+      <textarea class="in" id="qtext" maxlength="600" spellcheck="true"></textarea>
+      <div class="count" id="qcount">0 / 600</div>
+      <button type="button" class="go" id="qsend" disabled>Lock in answer</button>
+    </div>
+    <div class="err" id="qerr" role="alert"></div>
+  </section>
+
+  <section class="screen" id="s-locked">
+    <div class="qhead">
+      <div class="qmeta" id="lockmeta"></div>
+      <div class="clock" id="lockclock"></div>
+    </div>
+    <div class="big">Answer locked</div>
+    <p id="lockpick"></p>
+    <p class="muted">Wait for the reveal on the projector.</p>
+  </section>
+
+  <section class="screen" id="s-timeup">
+    <div class="qmeta" id="timemeta"></div>
+    <div class="big">Time's up</div>
+    <p id="timemsg">No answer this time. Results come with the reveal.</p>
+  </section>
+
+  <section class="screen" id="s-result">
+    <div class="qmeta" id="resmeta"></div>
+    <div class="big" id="reshead"></div>
+    <p id="respick" class="muted"></p>
+    <div class="card" id="resnotebox" hidden><div class="small muted" style="margin-bottom:4px;">Feedback</div><div id="resnote"></div></div>
+    <div class="card" id="resmodelbox" hidden><div class="small muted" style="margin-bottom:4px;">A strong answer</div><div id="resmodel"></div></div>
+    <div class="rows">
+      <div><span>This question</span><span id="respts"></span></div>
+      <div><span>Your total</span><span id="restotal"></span></div>
+      <div><span>Your rank</span><span id="resrank"></span></div>
+    </div>
+  </section>
+
+  <section class="screen" id="s-break">
+    <div class="qmeta" id="brkmeta"></div>
+    <div class="big" id="brkhead"></div>
+    <p class="muted">Look up at the stands on the projector. The next question comes after the break.</p>
+    <div class="rows">
+      <div><span>Your total</span><span id="brktotal"></span></div>
+      <div><span>Your rank</span><span id="brkrank"></span></div>
+    </div>
+  </section>
+
+  <section class="screen" id="s-final">
+    <div class="qmeta">Final</div>
+    <div class="big" id="finhead"></div>
+    <div class="rows">
+      <div><span>Your total</span><span id="fintotal"></span></div>
+      <div><span>Your rank</span><span id="finrank"></span></div>
+    </div>
+    <p class="muted" style="margin-top:18px;">Thanks for playing. Game points do not count toward your grade.</p>
+  </section>
+
+</main>
+
+<div id="conn" role="status">Reconnecting to the game</div>
+
+<script type="module">
+const $ = (id) => document.getElementById(id);
+const KEY = "isa401-gameday";
+const LETTERS = "ABCDEFGH";
+const QUARTER = { 1: "First quarter", 2: "Second quarter", 3: "Third quarter", 4: "Fourth quarter", 5: "Two-minute drill" };
+const QUARTER_END = { 1: "End of the first quarter", 2: "Halftime", 3: "End of the third quarter", 4: "End of the fourth quarter", 5: "End of the drill" };
+const POLL_MS = 2000, PENDING_MS = 3000, MAX_TEXT = 600;
+const MSG_KICKED = "Someone else took that seat. Pick your seat again.";
+const MSG_RESET = "The host started a new game. Join again.";
+
+// ---------- storage: {section, playerId, runId}; storage may be blocked, so every access is guarded
+function load() { try { const v = JSON.parse(localStorage.getItem(KEY) || "null"); return v && typeof v === "object" ? v : null; } catch (e) { return null; } }
+function save() { try { localStorage.setItem(KEY, JSON.stringify({ section, playerId, runId })); } catch (e) {} }
+function wipe() { try { localStorage.removeItem(KEY); } catch (e) {} }
+
+const qs = new URLSearchParams(location.search);
+const urlSec = (qs.get("section") || "").toUpperCase();
+const stored = load();
+let section = /^[ABZ]$/.test(urlSec) ? urlSec : (stored && /^[AB]$/.test(stored.section) ? stored.section : "A");
+let playerId = null, runId = null;
+if (stored && stored.section === section && typeof stored.playerId === "string") { playerId = stored.playerId; runId = stored.runId ?? null; }
+
+let snap = null;          // last accepted /api/state snapshot
+let meData = null;        // last /api/me
+let meKey = "";           // runId|seq|phase|q that meData was fetched for
+let meGen = 0, pendingTimer = null;
+let offset = null;        // largest serverNow - Date.now() seen
+let kicked = false;       // show the join screen with a message
+let joining = false;
+let seat = null;          // seat picked on the join screen ("L2-3" or "remote")
+let side = "L";
+let questions = [];       // public questions.json (no answers)
+let fails = 0;
+const picks = {};         // "run:q" -> {label} once an answer is locked in this tab
+const sent = {};          // "run:q" -> "sending" | "done" | "closed" | "failed"
+const drafts = {};        // "run:q" -> open-answer draft
+let built = "";           // "run:q" the question screen was built for
+let current = "";         // visible screen id
+
+const same = (a, b) => String(a) === String(b);
+const fmt = (n) => Number(n || 0).toLocaleString("en-US");
+const seatName = (s) => s === "remote" ? "Remote" : s;
+const ordinal = (n) => { const s = ["th", "st", "nd", "rd"], v = n % 100; return n + (s[(v - 20) % 10] || s[v] || s[0]); };
+const plus = (n) => Number(n) > 0 ? "+" + fmt(n) : "0";
+const qkey = () => runId + ":" + (snap ? snap.q : 0);
+
+function calibrate(serverNow) {
+  if (typeof serverNow !== "number") return;
+  const d = serverNow - Date.now();
+  if (offset === null || d > offset) offset = d;
+}
+function remaining() {
+  if (!snap) return 0;
+  if (typeof snap.endsAt === "number" && offset !== null) return snap.endsAt - (Date.now() + offset);
+  return typeof snap.remainingMs === "number" ? snap.remainingMs : 0;
+}
+function clockText(ms) { const s = Math.max(0, Math.ceil(ms / 1000)); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); }
+
+function show(id) {
+  if (current === id) return;
+  current = id;
+  document.querySelectorAll(".screen").forEach((el) => el.classList.toggle("on", el.id === "s-" + id));
+  window.scrollTo(0, 0);
+}
+function setText(id, t) { const el = $(id); if (el.textContent !== t) el.textContent = t; }
+
+// the public question for the current q, only if it matches what the server says is open
+function pubQuestion() {
+  if (!snap || !snap.q) return null;
+  const p = questions[snap.q - 1];
+  if (!p || p.kind !== snap.kind) return null;
+  if (p.kind === "choice" && (!Array.isArray(p.options) || (snap.options && p.options.length !== snap.options))) return null;
+  return p;
+}
+function metaLine() {
+  if (!snap) return "";
+  const parts = ["Question " + snap.q + (snap.total ? " of " + snap.total : "")];
+  if (QUARTER[snap.quarter]) parts.push(QUARTER[snap.quarter]);
+  return parts.join(" · ");
+}
+
+// ---------- header
+function paintHeader() {
+  setText("secchip", section === "Z" ? "Test Z" : "Section " + section);
+  const you = meData && meData.you;
+  const inGame = !!(playerId && !kicked && you);
+  $("mebox").hidden = !inGame;
+  if (inGame) { setText("mewho", you.first); setText("mepts", seatName(you.seat) + " · " + fmt(you.points) + " pts"); }
+}
+function rankText(you) {
+  if (!you || you.rank == null) return "Not ranked yet";
+  const n = snap && snap.players;
+  return n && you.rank <= n ? you.rank + " of " + n : String(you.rank);
+}
+
+// ---------- render from the snapshot plus /api/me
+function render() {
+  paintHeader();
+  if (!playerId || kicked) { show("join"); return; }
+  if (!snap || !meData) { show("loading"); return; }
+  const s = snap, you = meData.you, k = qkey();
+  if (s.phase === "lobby") {
+    setText("lobbysec", section === "Z" ? "Test section Z" : "Section " + section);
+    setText("lobbywho", you.first + " · " + seatName(you.seat));
+    setText("lobbyn", fmt(s.players));
+    return show("lobby");
+  }
+  if (s.phase === "open" || s.phase === "closed") {
+    if (s.phase === "closed" && !s.opened) { setText("readymeta", metaLine()); return show("ready"); }
+    if (picks[k]) {
+      setText("lockmeta", metaLine());
+      setText("lockclock", s.phase === "open" ? clockText(remaining()) : "");
+      setText("lockpick", picks[k].label || "Your first answer counts.");
+      return show("locked");
+    }
+    if (s.phase === "open" && remaining() > 0 && sent[k] !== "closed") { buildQuestion(); tick(); return show("question"); }
+    setText("timemeta", metaLine());
+    setText("timemsg", sent[k] === "sending" ? "Sending your answer."
+      : sent[k] === "closed" ? "The question closed before your answer arrived. Results come with the reveal."
+      : sent[k] === "failed" ? "Your answer could not be sent. Results come with the reveal."
+      : "No answer this time. Results come with the reveal.");
+    return show("timeup");
+  }
+  if (s.phase === "reveal") return renderResult();
+  if (s.phase === "break") {
+    setText("brkmeta", QUARTER[s.quarter] || "Break");
+    setText("brkhead", QUARTER_END[s.quarter] || "Break");
+    setText("brktotal", fmt(you.points));
+    setText("brkrank", rankText(you));
+    return show("break");
+  }
+  if (s.phase === "final") {
+    setText("finhead", you.rank ? "You finished " + ordinal(you.rank) : "Final whistle");
+    setText("fintotal", fmt(you.points));
+    setText("finrank", rankText(you));
+    return show("final");
+  }
+}
+
+function renderResult() {
+  const s = snap, you = meData.you;
+  setText("resmeta", metaLine());
+  const fresh = same(meData.q, s.q) && ["reveal", "break", "final"].includes(meData.phase);
+  const last = fresh ? meData.last : null;
+  const pick = picks[qkey()];
+  setText("respick", s.kind === "choice" && pick && pick.label ? pick.label : "");
+  const head = $("reshead");
+  head.classList.remove("right", "wrong");
+  if (!last) { head.textContent = "Checking"; setText("respts", ""); }
+  else if (last.pending) { head.textContent = "Reviewing answers"; setText("respts", ""); }
+  else if (last.note === "No answer") { head.textContent = "No answer"; setText("respts", "0"); }
+  else if (s.kind === "open") {
+    const got = Number(last.points) > 0;
+    head.textContent = got ? "Points earned" : "No points";
+    head.classList.add(got ? "right" : "wrong");
+    setText("respts", plus(last.points));
+  } else {
+    head.textContent = last.correct ? "Right" : "Wrong";
+    head.classList.add(last.correct ? "right" : "wrong");
+    setText("respts", plus(last.points));
+  }
+  const note = last && !last.pending && last.note && last.note !== "No answer" ? String(last.note) : "";
+  $("resnotebox").hidden = !note;
+  setText("resnote", note);
+  const model = fresh && s.kind === "open" && meData.model ? meData.model : null;
+  $("resmodelbox").hidden = !model;
+  const mbox = $("resmodel"); mbox.replaceChildren();
+  if (Array.isArray(model)) {
+    // sections of bullets, e.g. What misleads / Fixes
+    for (const sec of model) {
+      const h = document.createElement("div"); h.className = "small muted"; h.style.margin = "8px 0 2px"; h.textContent = sec.head;
+      const ul = document.createElement("ul"); ul.style.margin = "0"; ul.style.paddingLeft = "20px";
+      for (const it of sec.items || []) { const li = document.createElement("li"); li.textContent = it; ul.appendChild(li); }
+      mbox.append(h, ul);
+    }
+  } else if (model) mbox.textContent = String(model);
+  setText("restotal", fmt(you.points));
+  setText("resrank", rankText(you));
+  show("result");
+}
+
+// ---------- the question screen is built once per question so a draft survives every poll
+function buildQuestion() {
+  const k = qkey();
+  if (built === k) return;
+  built = k;
+  const p = pubQuestion();
+  setText("qmeta", metaLine());
+  $("qprompt").textContent = p ? p.prompt : (snap.kind === "open" ? "Read the question on the projector, then type your answer." : "Read the question on the projector, then tap your answer.");
+  const fig = $("qfig"); fig.replaceChildren();
+  if (p && typeof p.chart === "string" && /^charts\/[\w.-]+\.svg$/.test(p.chart)) {
+    const box = document.createElement("div"); box.className = "fig";
+    const a = document.createElement("a"); a.href = p.chart; a.target = "_blank"; a.rel = "noopener";
+    const img = document.createElement("img"); img.src = p.chart; img.alt = "Chart for question " + snap.q + ". Tap to open it full size."; img.decoding = "async";
+    a.append(img); box.append(a);
+    const cap = document.createElement("div"); cap.className = "figcap"; cap.textContent = "Tap the chart to open it full size.";
+    fig.append(box, cap);
+  }
+  if (p && p.table && Array.isArray(p.table.cols)) {
+    const box = document.createElement("div"); box.className = "tbl";
+    const t = document.createElement("table"), hr = document.createElement("tr");
+    p.table.cols.forEach((c) => { const th = document.createElement("th"); th.textContent = c; hr.append(th); });
+    const th = document.createElement("thead"); th.append(hr); t.append(th);
+    const tb = document.createElement("tbody");
+    (p.table.rows || []).forEach((r) => { const tr = document.createElement("tr"); r.forEach((c) => { const td = document.createElement("td"); td.textContent = c; tr.append(td); }); tb.append(tr); });
+    t.append(tb); box.append(t); fig.append(box);
+  }
+  sourceLine(p && p.source);
+  const opts = $("qopts"); opts.replaceChildren();
+  $("qerr").textContent = "";
+  if (snap.kind === "choice") {
+    $("qopen").hidden = true;
+    const n = snap.options || (p ? p.options.length : 4);
+    for (let i = 0; i < n; i++) {
+      const b = document.createElement("button"); b.type = "button"; b.className = "opt";
+      const kk = document.createElement("span"); kk.className = "k"; kk.textContent = LETTERS[i];
+      const tt = document.createElement("span"); tt.className = "t"; tt.textContent = p ? String(p.options[i]) : "Option " + LETTERS[i];
+      b.append(kk, tt);
+      b.addEventListener("click", () => submit(i, "You picked " + LETTERS[i] + (p ? ": " + p.options[i] : "") + "."));
+      opts.append(b);
+    }
+  } else {
+    $("qopen").hidden = false;
+    const ta = $("qtext"); ta.value = drafts[k] || ""; countText();
+  }
+}
+function sourceLine(src) {
+  const el = $("qsrc"); el.replaceChildren();
+  if (!src) return;
+  el.append("Source: ");
+  String(src).split(/(https?:\/\/[^\s]+)/).forEach((part) => {
+    if (/^https?:\/\//.test(part)) {
+      const url = part.replace(/[.,;)]+$/, ""), tail = part.slice(url.length);
+      const a = document.createElement("a"); a.href = url; a.target = "_blank"; a.rel = "noopener"; a.textContent = url;
+      el.append(a, tail);
+    } else if (part) el.append(part);
+  });
+}
+function countText() {
+  const ta = $("qtext"); const n = ta.value.length;
+  setText("qcount", n + " / " + MAX_TEXT);
+  $("qsend").disabled = !ta.value.trim() || sent[qkey()] === "sending";
+  drafts[qkey()] = ta.value;
+}
+$("qtext").addEventListener("input", countText);
+$("qsend").addEventListener("click", () => { const t = $("qtext").value.trim(); if (t) submit(t, "Your answer is in."); });
+
+// ---------- answers: at most 3 calls per question (server limit); retry only on 429 or a network error
+const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+async function submit(answer, label) {
+  const k = qkey(), q = snap.q;
+  if (picks[k] || sent[k]) return;
+  sent[k] = "sending";
+  document.querySelectorAll("#qopts .opt").forEach((b) => (b.disabled = true));
+  $("qsend").disabled = true; $("qerr").textContent = "";
+  let outcome = "failed";
+  for (let attempt = 0; attempt < 3; attempt++) {
+    if (attempt) { $("qerr").textContent = "Sending again"; await wait(500 * attempt); }
+    try {
+      const r = await fetch("/api/answer", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ section, playerId, q, answer }) });
+      if (r.status === 429) continue;
+      const j = await r.json().catch(() => ({}));
+      if (j.ok) { outcome = "done"; break; }
+      if (j.reason === "duplicate") { outcome = "duplicate"; break; }
+      if (j.reason === "closed") { outcome = "closed"; break; }
+      outcome = "unknown"; break;
+    } catch (e) { /* network error: retry */ }
+  }
+  $("qerr").textContent = "";
+  if (outcome === "done") { picks[k] = { label }; sent[k] = "done"; }
+  else if (outcome === "duplicate") { picks[k] = { label: "Your first answer counts." }; sent[k] = "done"; }
+  else if (outcome === "unknown") { sent[k] = "failed"; meKey = ""; fetchMe(); }
+  else if (outcome === "failed" && qkey() === k && snap.phase === "open" && remaining() > 0) {
+    // network error or 429 with time left: let the player tap again
+    delete sent[k];
+    document.querySelectorAll("#qopts .opt").forEach((b) => (b.disabled = false));
+    countText();
+    $("qerr").textContent = "Could not send. Check your signal and tap again.";
+  }
+  else sent[k] = outcome;
+  render();
+}
+
+// ---------- countdown, plus an automatic send of a typed open answer when the clock runs out
+function tick() {
+  if (!snap || snap.phase !== "open") return;
+  const ms = remaining();
+  if (current === "question" || current === "") {
+    setText("qclock", clockText(ms));
+    $("qclock").classList.toggle("low", ms <= 5000);
+    const total = (snap.seconds || 30) * 1000;
+    $("qbar").style.transform = "scaleX(" + Math.max(0, Math.min(1, ms / total)).toFixed(4) + ")";
+  }
+  if (current === "locked") setText("lockclock", clockText(ms));
+  const k = qkey();
+  if (snap.kind === "open" && ms <= 300 && !sent[k] && !picks[k] && $("qtext").value.trim() && built === k) {
+    submit($("qtext").value.trim(), "Your answer was sent when time ran out.");
+    return;
+  }
+  if (ms <= 0 && current === "question") render();
+}
+setInterval(tick, 200);
+
+// ---------- network
+async function poll() {
+  const sec = section;
+  try {
+    const r = await fetch("/api/state?section=" + sec);
+    if (!r.ok) throw new Error("state " + r.status);
+    const s = await r.json();
+    if (sec !== section) return;   // the player switched section while this was in flight
+    fails = 0; $("conn").classList.remove("on");
+    calibrate(s.serverNow);
+    onSnapshot(s);
+  } catch (e) {
+    if (++fails >= 3) $("conn").classList.add("on");
+  }
+}
+function onSnapshot(s) {
+  // a cached snapshot can be older than one already seen; never step backwards within a run
+  // and a run number lower than one already seen is a stale cache entry from before a reset
+  // (/api/me, which is never cached, is the authority if the run number really went down)
+  if (snap && Number(s.runId) < Number(snap.runId)) return;
+  if (runId != null && Number(s.runId) < Number(runId)) return;
+  if (snap && same(snap.runId, s.runId) && (s.seq < snap.seq || (s.seq === snap.seq && s.serverNow < snap.serverNow))) return;
+  if (playerId && runId != null && Number(s.runId) > Number(runId)) { toJoin(MSG_RESET, true); snap = s; return; }
+  snap = s;
+  if (playerId && !kicked) {
+    const k = [s.runId, s.seq, s.phase, s.q].join("|");
+    if (k !== meKey) { meKey = k; fetchMe(); }
+  }
+  render();
+}
+async function fetchMe() {
+  if (!playerId) return;
+  const gen = ++meGen, sec = section;
+  try {
+    const r = await fetch("/api/me?section=" + sec + "&playerId=" + encodeURIComponent(playerId), { cache: "no-store" });
+    if (!r.ok) throw new Error("me " + r.status);
+    const m = await r.json();
+    if (gen !== meGen || sec !== section || !playerId) return;
+    calibrate(m.serverNow);
+    // /api/me is never cached, so any other run here is real: a reset, or a store that was wiped
+    if (runId != null && !same(m.runId, runId)) { toJoin(MSG_RESET, true); return; }
+    if (m.kicked) { toJoin(MSG_KICKED, false); return; }
+    meData = m;
+    clearTimeout(pendingTimer);
+    if (m.last && m.last.pending) pendingTimer = setTimeout(fetchMe, PENDING_MS);
+    render();
+  } catch (e) {
+    if (gen === meGen) { clearTimeout(pendingTimer); pendingTimer = setTimeout(fetchMe, PENDING_MS); }
+  }
+}
+
+// ---------- join screen
+function toJoin(msg, reset) {
+  const you = meData && meData.you;
+  if (you && !$("first").value) $("first").value = you.first;
+  if (reset) { playerId = null; runId = null; wipe(); }
+  kicked = !reset; meData = null; meKey = ""; seat = null; clearTimeout(pendingTimer);
+  $("joinmsg").textContent = msg; $("joinmsg").hidden = !msg;
+  paintSeat();
+  render();
+}
+function validName() { return $("first").value.trim().length > 0; }
+function validInitial() { return /^[A-Z]$/.test($("initial").value); }
+function paintJoin() { $("joinbtn").disabled = joining || !(validName() && validInitial() && seat); }
+function paintSeat() {
+  document.querySelectorAll("#plan .seat").forEach((g) => g.classList.toggle("mine", g.dataset.seat === seat));
+  $("remote").classList.toggle("on", seat === "remote");
+  setText("seatline", seat === "remote" ? "Joining remotely. The projector shows you as Remote." : seat ? "Seat " + seat : "No seat picked yet.");
+  paintJoin();
+}
+function setSide(sd) {
+  side = sd;
+  document.querySelectorAll("#sideseg button").forEach((b) => b.classList.toggle("on", b.dataset.side === sd));
+  const svg = $("plan").querySelector("svg");
+  if (svg) svg.setAttribute("viewBox", sd === "L" ? "40 30 425 582" : "435 30 425 582");
+}
+function setSection(sc) {
+  if (sc !== section) {
+    section = sc; playerId = null; runId = null; snap = null; meData = null; meKey = ""; kicked = false; meGen++; fails = 0;
+    clearTimeout(pendingTimer); $("joinmsg").hidden = true;
+    const st = load();
+    if (st && st.section === sc && typeof st.playerId === "string") { playerId = st.playerId; runId = st.runId ?? null; }
+    try { history.replaceState(null, "", location.pathname + "?section=" + sc); } catch (e) {}
+    poll();
+  }
+  $("secZ").hidden = section !== "Z";
+  document.querySelectorAll("#secseg button").forEach((b) => b.classList.toggle("on", b.dataset.sec === section));
+  setText("joinsec", section === "Z" ? "You are joining test section Z." : "You are joining Section " + section + ".");
+  paintHeader();
+}
+document.querySelectorAll("#secseg button").forEach((b) => b.addEventListener("click", () => { if (!playerId || kicked) setSection(b.dataset.sec); }));
+document.querySelectorAll("#sideseg button").forEach((b) => b.addEventListener("click", () => setSide(b.dataset.side)));
+$("first").addEventListener("input", paintJoin);
+$("initial").addEventListener("input", () => {
+  const el = $("initial"); const v = el.value.replace(/[^A-Za-z]/g, "").toUpperCase().slice(0, 1);
+  if (el.value !== v) el.value = v;
+  paintJoin();
+});
+$("remote").addEventListener("click", () => { seat = seat === "remote" ? null : "remote"; paintSeat(); });
+$("changeseat").addEventListener("click", (e) => { e.preventDefault(); toJoin("", false); });
+$("joinbtn").addEventListener("click", join);
+
+async function join() {
+  if (joining || $("joinbtn").disabled) return;
+  joining = true; paintJoin(); $("joinerr").textContent = "";
+  const body = { section, first: $("first").value.trim(), initial: $("initial").value, seat };
+  if (playerId) body.playerId = playerId;
+  try {
+    const r = await fetch("/api/join", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    const j = await r.json().catch(() => ({}));
+    if (r.status === 429) $("joinerr").textContent = "Too many joins right now. Wait a few seconds and tap Join again.";
+    else if (!r.ok || !j.playerId) $("joinerr").textContent = typeof j.error === "string" ? j.error : "Could not join. Try again.";
+    else {
+      playerId = j.playerId; runId = j.runId; kicked = false; save();
+      $("joinmsg").hidden = true; meData = null; meKey = "";
+      if (snap && !same(snap.runId, runId)) snap = null;
+      render();
+      await fetchMe();
+      poll();
+    }
+  } catch (e) {
+    $("joinerr").textContent = "No connection. Check your signal and tap Join again.";
+  }
+  joining = false; paintJoin();
+}
+
+// ---------- start
+async function start() {
+  setSection(section);
+  render();
+  const [qsRes, planRes] = await Promise.allSettled([
+    fetch("questions.json").then((r) => r.ok ? r.json() : []),
+    fetch("plan.svg").then((r) => r.ok ? r.text() : ""),
+  ]);
+  if (qsRes.status === "fulfilled" && Array.isArray(qsRes.value)) questions = qsRes.value;
+  if (planRes.status === "fulfilled" && planRes.value) {
+    $("plan").innerHTML = planRes.value;   // our own static file, not user text
+    $("plan").querySelectorAll(".seat").forEach((g) => g.addEventListener("click", () => { seat = g.dataset.seat; paintSeat(); }));
+  }
+  setSide(side);
+  paintSeat();
+  built = "";
+  if (playerId) fetchMe();
+  await poll();
+  (function loop() { setTimeout(async () => { await poll(); loop(); }, POLL_MS); })();
+}
+start();
+</script>
+</body>
+</html>
