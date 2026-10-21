@@ -107,3 +107,6 @@ speaker_notes/
 api_key.txt
 /lectures/12_structured_text_extraction/for_video
 /.playwright-mcp
+
+# BTS on-time exports (~85 MB each; shared with students via Canvas)
+data/T_ONTIME_*.csv
