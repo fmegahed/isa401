@@ -37,8 +37,8 @@ ISA 401 teaches the complete business intelligence pipeline: acquiring data from
 |:---:|:---:|:---|:---:|
 | **08** | Wed 10/14 | Fundamentals of Data Visualization | [Slides](http://fmegahed.github.io/isa401/fall2026/class15/15_fundamentals_data_viz.html) |
 | **09** | Mon 10/19 | Fundamentals of Data Visualization (Cont.) | [Slides](http://fmegahed.github.io/isa401/fall2026/class16/16_grammar_of_graphics.html) |
-| | Wed 10/21 | Lab: Tableau + Power BI | [PDF](lectures/17_lab_tableau_powerbi/17_tableau_powerbi_lab.pdf) |
-| **10** | Mon 10/26 | Lab: Flourish + DataWrapper | |
+| | Wed 10/21 | Lab: Tableau | [PDF](lectures/17_lab_tableau/17_tableau_lab.pdf) |
+| **10** | Mon 10/26 | Lab: Power BI | [PDF](lectures/18_lab_powerbi/18_powerbi_lab.pdf) |
 | | Wed 10/28 | Commonly Used Charts | |
 | **11** | Mon 11/02 | Visualizing Time Series | |
 | | Wed 11/04 | Spatial & Spatiotemporal Charts | |
