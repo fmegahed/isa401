@@ -1,0 +1,12 @@
+{
+  "name": "isa401-map-gallery",
+  "private": true,
+  "description": "Map Gallery: the Class 19 AI map challenge for ISA 401 (plan, build, submit with pins; voting and gallery later)",
+  "scripts": {
+    "test": "node --test \"tests/*.test.mjs\"",
+    "dev": "node dev/server.js"
+  },
+  "engines": {
+    "node": "24.x"
+  }
+}

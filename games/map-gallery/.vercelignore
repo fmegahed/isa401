@@ -1,0 +1,6 @@
+dev
+tests
+*.R
+.env*
+README*
+.vercel

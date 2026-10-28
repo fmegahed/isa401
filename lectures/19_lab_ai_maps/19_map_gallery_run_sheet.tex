@@ -1,0 +1,141 @@
+% Map Gallery: one-page run sheet for the Class 19 AI map challenge (instructor only).
+% It names the running-total trap and Butler County's numbers: keep it out of git until both
+% sections have played.
+\documentclass[9pt,letterpaper]{extarticle}
+
+\usepackage[margin=0.4in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{palatino,mathpazo}
+\usepackage{color}
+\usepackage{multicol}
+\usepackage{enumitem}
+\usepackage{tabularx}
+\usepackage{listings}
+\usepackage[colorlinks=true, urlcolor=cyan, linkcolor=cyan]{hyperref}
+\usepackage{url}
+\urlstyle{same}
+
+\definecolor{miami}{RGB}{195,20,45}
+\definecolor{soft}{RGB}{248,236,238}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\columnsep}{0.28in}
+\setlist{nosep, leftmargin=*, topsep=1pt}
+\lstset{basicstyle=\ttfamily\scriptsize, columns=fullflexible, frame=single, framesep=3pt, xleftmargin=3pt, xrightmargin=3pt}
+
+\newcommand{\hd}[1]{\par\smallskip{\color{miami}\large\bfseries #1}\par\vspace{1pt}}
+\newcommand{\key}[1]{\fbox{\ttfamily\bfseries\scriptsize #1}}
+\newcommand{\site}{isa401-map-gallery.vercel.app}
+
+\begin{document}
+
+\begin{center}
+	{\LARGE\bfseries Map Gallery: Run Sheet}\\[1pt]
+	{\large ISA 401, Class 19 (Wed Oct 28, 2026): the AI Map Challenge, then Flourish}
+\end{center}
+
+\vspace{-4pt}
+Students plan a map, build it with any AI chat tool, submit a screenshot with pinned features, vote in six blind matchups, and then you discuss the results together. Everything happens in class. Nothing counts toward grades. The AI grading runs during the vote, so the results are ready when it ends.
+
+\smallskip
+\begin{tabularx}{\textwidth}{@{}lX@{}}
+	\hline
+	\textbf{Section A} (8:30) & \url{https://\site/?section=A} \quad (students: own computer or lab PC; no QR code) \\
+	\textbf{Section B} (10:05) & \url{https://\site/?section=B} \\
+	\textbf{Projector} & \url{https://\site/host?section=A} (or \texttt{B}); \textbf{rehearsal:} section \texttt{Z} \\
+	\textbf{Admin key} & Game Day's \texttt{ADMIN\_KEY}; the projector asks once per browser tab. \\
+	\hline
+\end{tabularx}
+
+\raggedcolumns
+\begin{multicols}{2}
+
+\hd{1. Before class}
+\begin{itemize}
+	\item On Canvas, from \texttt{data/}:
+	\begin{itemize}
+		\item Part I: \texttt{ohio\_covid\_weekly.csv}, \texttt{ohio\_counties.geojson}
+		\item Flourish: \texttt{oews\_employment\_tech\_business.csv} (race),\\ \texttt{oews\_2025\_business\_occupations.csv} (table)
+		\item Datawrapper: \texttt{oews\_2025\_analytics\_salaries.csv}
+	\end{itemize}
+	\item Optional: rehearse on section Z with two devices, then \key{X}\key{X} there.
+\end{itemize}
+
+\hd{2. Before each section}
+Open the projector page and enter the key; \key{X}\key{X} (reset: the run number goes up and the lobby empties); \key{F} full screen. Music is on by default (Kevin MacLeod, credit on screen); \key{M} toggles it.
+
+\hd{3. Keys}
+\begin{tabularx}{\columnwidth}{@{}lX@{}}
+	\key{Space} & next step; the red dock button shows its name: \emph{Start the plan, Start the build, Start submitting, Start the vote, Show the results}, then the next results screen \\
+	\key{+}\ \key{-} & one minute more or less on the current clock \\
+	\key{C}\key{C} & end the current step now (twice within 3 s); then \key{Space} shows the results \\
+	\key{O} & reopen the vote after ending it \\
+	\key{$\rightarrow$}\ \key{$\leftarrow$} & results: next and previous screen; click a map for its plan, prompt, pins and AI checks; \key{Esc} back \\
+	\key{R} & reload the results (after late AI grading) \\
+	\key{X}\key{X}\ \key{M}\ \key{F}\ \key{H} & reset, music, full screen, hide the dock \\
+\end{tabularx}
+
+\hd{4. The flow (about 55 minutes, then Flourish)}
+\begin{tabularx}{\columnwidth}{@{}p{0.55in}@{}p{0.35in}@{}X@{}}
+	\textbf{Join} & 3 & ``Name, last initial, seat. Write down your code.'' \\
+	\textbf{Demo} & 5 & Your live ChatGPT loop (see 7). \\
+	\textbf{Plan} & 10 & ``No AI yet: plan the map and your first prompt.'' \\
+	\textbf{Build} & 15 & ``Any AI. Upload both files. Count your prompts. Paste and pin as you go.'' \\
+	\textbf{Submit} & 2 & ``Paste, pin 2 to 6 features, final prompt, Submit.'' \\
+	\textbf{Vote} & 6 & ``Six matchups, a minute each; click a map to enlarge it.'' \\
+	\textbf{Results} & 10+ & Title, 5 panels (guess, then answer), top 5, gallery. \\
+\end{tabularx}
+\par
+The dock shows ``AI grading: $n$ maps, $m$ plans left'' during the vote. If a results panel says maps are not graded yet, wait a few seconds and press \key{R}.
+
+\hd{5. Questions for the results}
+\begin{itemize}
+	\item \textbf{Tools:} who used what, and did the tool or the plan decide who won?
+	\item \textbf{Seats:} correlation, not cause: you chose your seat.
+	\item \textbf{Features:} which rubric features won votes (rate map, Butler captured, sequential scale, rate values, little junk)?
+	\item \textbf{Prompts:} did more iterations help, or did a good first prompt?
+	\item \textbf{Press Time check:} how many maps added up the running totals, and did their plans catch it?
+	\item \textbf{Top 5 and gallery:} open a winner: what did its plan say that yours did not?
+\end{itemize}
+
+\columnbreak
+
+\hd{6. If something goes wrong}
+\begin{itemize}
+	\item \textbf{Closed the tab or switched computers:} type the personal code in the box at the top of the join screen.
+	\item \textbf{``Screenshot too small'':} at least 600 $\times$ 400 px. Open the image full size in the chat, or download it and choose the file.
+	\item \textbf{``Check my pins'' fails:} it does not count against the 3 checks; they can still submit.
+	\item \textbf{Joined late (during the build):} they write a quick plan first, then build.
+	\item \textbf{Vote says ``not enough maps'':} it needs 3 maps in the section; it retries by itself.
+	\item \textbf{Projector asks for the key again:} it is a new tab; enter it once.
+\end{itemize}
+
+\hd{7. Your ChatGPT demo and better iterations}
+\colorbox{soft}{\parbox{\dimexpr\columnwidth-2\fboxsep}{%
+	\textbf{Before students plan,} demo the loop on another file (\texttt{data/playfair\_data.csv}), not the COVID file: ChatGPT may add up the running totals on screen and give away the trap. \textbf{At the Press Time panel,} type the lazy COVID prompt live (``map total COVID cases by Ohio county'') as the payoff.}}
+\smallskip
+Prompts that make iterations better (also good advice for students in the discussion):
+\begin{enumerate}[label=\arabic*.]
+	\item \textbf{Make it read the data first:} ``Before plotting, list the columns, their types, the date range, and what one row means. Is any column cumulative?''
+	\item \textbf{Ask for the number you will check:} ``Print Butler County's value.'' It should be 113,510 cases or about 29,627 per 100,000; anything in the millions means summed running totals.
+	\item \textbf{One change per prompt, named precisely:} ``Change only the legend title to `Cases per 100,000 residents'; keep everything else the same.''
+	\item \textbf{Say the encoding:} ``Sequential single-hue palette (Blues), light = low; outline Butler County in red and label its rate; remove the latitude/longitude axes and grid.''
+	\item \textbf{Say the words:} ``Title states the finding; subtitle gives the measure and dates; caption: Source: ohio\_covid\_weekly.csv.''
+	\item \textbf{Screenshot-ready:} ``12 $\times$ 8 inches, 150 dpi, white background''; then download the PNG instead of snipping.
+	\item \textbf{When it breaks:} paste the error and ask for the fix. If counties do not join: ``join on \texttt{NAMELSAD} = \texttt{county}''.
+\end{enumerate}
+
+\hd{8. After class, in R}
+\begin{lstlisting}
+url = paste0("https://isa401-map-gallery.vercel.app",
+             "/api/export?section=A")
+maps = httr2::request(url) |>
+  httr2::req_headers("x-admin-key" = Sys.getenv("MG_ADMIN_KEY")) |>
+  httr2::req_perform() |> httr2::resp_body_string() |>
+  readr::read_csv()
+\end{lstlisting}
+One row per student: plan, tool, model, prompts, pins, and the AI checks (\texttt{ai\_*} columns). Add \texttt{\&what=votes} for every matchup, \texttt{\&what=after} for the tool guesses and ``steal one idea'' lines. Add \texttt{MG\_ADMIN\_KEY} (Game Day's key) to the course \texttt{.Renviron} once.
+
+\end{multicols}
+
+\end{document}

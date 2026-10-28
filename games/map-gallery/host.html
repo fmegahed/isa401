@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Map Gallery · Projector</title>
+<link rel="icon" href="favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #ffffff; --text: #1b1b1b; --muted: #5d6366; --line: #dcdfe3; --red: #C3142D; --red-dark: #8B0E20; --ink: #102a4c; --yellow: #f2b705;
+    --body: "Archivo", "Segoe UI", Helvetica, Arial, sans-serif; --num: "IBM Plex Mono", Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text); font-family: var(--body); overflow: hidden; }
+  #viewport { position: fixed; inset: 0 0 56px 0; display: flex; align-items: center; justify-content: center; }
+  body.nodock #viewport { bottom: 0; }
+  #stage { width: 1600px; height: 900px; position: relative; transform-origin: center center; flex: none; background: #fff; }
+
+  header { position: absolute; left: 0; right: 0; top: 0; height: 104px; display: flex; align-items: center; padding: 0 48px; border-bottom: 2px solid var(--line); }
+  .brand .w { font-weight: 800; font-size: 40px; letter-spacing: -.01em; }
+  .brand .w b { color: var(--red); }
+  .brand .s { font-size: 17px; color: var(--muted); font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+  #label { margin: 0 auto; font-size: 22px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--ink); }
+  .cells { display: flex; gap: 14px; }
+  .cell { border: 1.5px solid var(--line); border-radius: 10px; padding: 8px 18px; min-width: 128px; text-align: center; }
+  .cell .k { font-size: 13px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+  .cell .v { font-family: var(--num); font-weight: 700; font-size: 34px; line-height: 1.1; }
+
+  .scene { position: absolute; left: 0; right: 0; top: 104px; bottom: 0; display: none; }
+  .scene.on { display: block; }
+
+  /* lobby */
+  #lobby { display: none; grid-template-columns: 560px 1fr; gap: 40px; padding: 36px 48px 40px; }
+  #lobby.on { display: grid; }
+  .lab { font-size: 16px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  #url { margin-top: 18px; font-family: var(--num); font-weight: 700; font-size: 40px; line-height: 1.3; border: 3px solid var(--line); border-radius: 14px; padding: 22px 24px; overflow-wrap: anywhere; }
+  #url .sec { color: var(--red); }
+  #lobbycount { margin-top: 22px; display: flex; align-items: baseline; gap: 14px; }
+  #lobbycount .n { font-family: var(--num); font-weight: 700; font-size: 84px; line-height: 1; color: var(--red); }
+  #lobbycount .t { font-size: 22px; font-weight: 700; }
+  .question { border: 3px solid #1d1d1f; border-radius: 14px; padding: 22px 28px; font-size: 38px; font-weight: 800; line-height: 1.2; }
+  #names { margin-top: 26px; display: flex; flex-wrap: wrap; gap: 10px; align-content: flex-start; max-height: 470px; overflow: hidden; }
+  #names span { background: #f4f5f7; border: 1.5px solid var(--line); border-radius: 999px; padding: 6px 16px; font-size: 22px; font-weight: 700; }
+  #names span.fresh { border-color: var(--red); }
+
+  /* clock scenes */
+  #clockscene { padding: 34px 48px 0; }
+  #step { font-size: 22px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--red); }
+  #steptitle { font-size: 64px; font-weight: 800; letter-spacing: -.01em; margin: 6px 0 0; line-height: 1.05; }
+  #stepline { font-size: 28px; color: var(--muted); margin-top: 14px; max-width: 980px; line-height: 1.3; }
+  #bigclock { position: absolute; right: 48px; top: 30px; font-family: var(--num); font-weight: 700; font-size: 220px; line-height: 1; letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
+  #bigclock.low { color: var(--red); }
+  #bigclock.over { color: #9ca3af; }
+  #tbar { position: absolute; left: 48px; right: 48px; top: 296px; height: 12px; background: #eceef1; border-radius: 6px; overflow: hidden; }
+  #tbar i { display: block; height: 100%; width: 100%; background: var(--red); transform-origin: left center; }
+  #counts { position: absolute; left: 48px; top: 350px; display: flex; gap: 28px; }
+  .bigcount { border: 2px solid var(--line); border-radius: 16px; padding: 18px 30px; min-width: 330px; }
+  .bigcount .n { font-family: var(--num); font-weight: 700; font-size: 96px; line-height: 1; }
+  .bigcount .n small { font-size: 40px; color: var(--muted); }
+  .bigcount .t { font-size: 22px; font-weight: 700; margin-top: 6px; color: var(--muted); }
+  .bigcount.hot .n { color: var(--red); }
+  #files { position: absolute; left: 48px; right: 48px; top: 560px; font-size: 24px; color: var(--muted); }
+  #files b { color: var(--text); font-family: var(--num); }
+  #nowplaying { position: absolute; left: 48px; right: 48px; bottom: 74px; font-size: 18px; color: var(--muted); display: flex; gap: 10px; align-items: center; }
+  #nowplaying .note { color: var(--red); font-size: 22px; }
+  #ticker { position: absolute; left: 0; right: 0; bottom: 0; height: 56px; background: var(--ink); color: #fff; display: flex; align-items: center; font-size: 22px; white-space: nowrap; overflow: hidden; }
+  #ticker .k { background: var(--yellow); color: var(--ink); font-weight: 800; letter-spacing: .08em; height: 100%; display: flex; align-items: center; padding: 0 22px; margin-right: 22px; }
+  #ticker .live { background: var(--red); color: #fff; font-weight: 800; letter-spacing: .1em; height: 100%; display: flex; align-items: center; padding: 0 16px; }
+
+  /* closed */
+  #closed { padding: 60px 48px; }
+  #closed h1 { font-size: 96px; margin: 0; letter-spacing: -.02em; }
+  #closed .rule { width: 160px; height: 8px; background: var(--red); margin: 22px 0 26px; }
+  #closed .t { font-size: 40px; }
+  #closed .t b { font-family: var(--num); }
+  #closed .v { margin-top: 34px; font-size: 30px; line-height: 1.4; max-width: 1200px; }
+
+  /* dock and key gate (as in Press Time) */
+  #dock { position: fixed; left: 0; right: 0; bottom: 0; height: 56px; background: #f4f5f7; border-top: 1px solid var(--line); display: flex; align-items: center; gap: 8px; padding: 0 12px; font-size: 14px; }
+  body.nodock #dock { display: none; }
+  #dock button { border: 1px solid #c9ced4; background: #fff; border-radius: 6px; padding: 6px 10px; cursor: pointer; font: 600 14px var(--body); }
+  #dock button:disabled { opacity: .4; cursor: default; }
+  #dock button.primary { background: var(--red); color: #fff; border-color: var(--red); }
+  #dock button.arm { background: #1d1d1f; color: #fff; }
+  #dock button.hot { border-color: var(--red); color: var(--red); }
+  #dock kbd { font-family: var(--num); font-size: 12px; background: rgba(0,0,0,.08); border-radius: 3px; padding: 0 5px; margin-right: 6px; }
+  #dock .st { margin-right: auto; display: flex; align-items: center; gap: 6px; color: var(--muted); }
+  #dock .dot { width: 9px; height: 9px; border-radius: 50%; background: #10b981; display: inline-block; }
+  #dock .dot.off { background: var(--red); }
+  #gate { position: fixed; inset: 0; background: rgba(255,255,255,.97); display: none; align-items: center; justify-content: center; z-index: 9; }
+  #gate.on { display: flex; }
+  #gate form { width: 460px; border: 1px solid var(--line); border-radius: 12px; padding: 24px; box-shadow: 0 10px 40px rgba(0,0,0,.08); }
+  #gate input { width: 100%; font: 18px var(--body); padding: 10px 12px; border: 1.5px solid #b8bec6; border-radius: 6px; margin: 10px 0; }
+  #gate button { font: 700 16px var(--body); background: var(--red); color: #fff; border: 0; border-radius: 6px; padding: 10px 18px; cursor: pointer; }
+  #gateerr { color: var(--red); min-height: 1.3em; margin-top: 8px; }
+
+  /* results (host-results.js) */
+  #results { padding: 18px 40px 0; }
+  #results .rp { height: 760px; display: flex; flex-direction: column; }
+  #results .rk { font-size: 18px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--red); }
+  #results h2 { font-size: 46px; margin: 4px 0 0; letter-spacing: -.01em; }
+  #results .rs { font-size: 20px; color: var(--muted); margin-top: 6px; }
+  #results .rbody { flex: 1; min-height: 0; margin-top: 18px; }
+  #results .rbody svg { width: 100%; height: auto; max-height: 560px; display: block; font-family: var(--body); }
+  #results .two { display: grid; grid-template-columns: 1.5fr 1fr; gap: 36px; align-items: center; height: 100%; }
+  #results .rside { border-left: 2px solid var(--line); padding-left: 28px; }
+  #results .rside .lab, #results .lab { font-size: 15px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: 10px 0 6px; }
+  #results .rside .row { display: flex; justify-content: space-between; font-size: 22px; padding: 7px 0; border-bottom: 1px solid #eee; }
+  #results .note { font-size: 17px; color: var(--muted); margin-top: 12px; }
+  #results .note.c { text-align: center; }
+  #results .rask .q { font-size: 40px; font-weight: 800; line-height: 1.2; }
+  #results .rask .q b { color: var(--red); }
+  #results .rask .h { font-size: 22px; color: var(--muted); margin-top: 14px; }
+  #results .dots { position: absolute; right: 40px; bottom: 14px; display: flex; gap: 6px; }
+  #results .dots i { width: 9px; height: 9px; border-radius: 50%; background: #dcdcd8; }
+  #results .dots i.on { background: var(--red); }
+  #results .rtitle { position: absolute; inset: 0; }
+  #results .rtitle .wall { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; padding: 8px; filter: blur(5px) grayscale(.4); opacity: .35; overflow: hidden; }
+  #results .rtitle .wall img { width: 100%; height: 100%; object-fit: cover; }
+  #results .rtitle .over { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; background: radial-gradient(ellipse at center, rgba(255,255,255,.95) 0%, rgba(255,255,255,.75) 65%, rgba(255,255,255,.4) 100%); }
+  #results .rtitle .kick { font-size: 20px; letter-spacing: .2em; color: var(--red); font-weight: 800; }
+  #results .rtitle h1 { font-size: 76px; margin: 10px 0; letter-spacing: -.02em; }
+  #results .rtitle h1 b { color: var(--red); }
+  #results .rtitle .q { font-size: 28px; color: var(--muted); margin-bottom: 30px; }
+  #results .rtitle .nums { display: flex; gap: 18px; }
+  #results .rtitle .nums div { border: 2px solid var(--line); border-radius: 12px; padding: 14px 28px; background: #fff; min-width: 170px; }
+  #results .rtitle .nums b { display: block; font-family: var(--num); font-size: 48px; color: var(--red); }
+  #results .rtitle .nums span { font-size: 18px; color: var(--muted); }
+  #results .hero { display: flex; gap: 60px; margin: 20px 0; }
+  #results .hero b { display: block; font-family: var(--num); font-size: 110px; line-height: 1; }
+  #results .hero.small b { font-size: 72px; }
+  #results .hero span { display: block; font-size: 24px; color: var(--muted); max-width: 560px; margin-top: 6px; }
+  #results .hero b.blue { color: #2a78d6; } #results .hero b.orange { color: #c2410c; }
+  #results .favs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; height: 100%; }
+  #results .fav, #results .gm { border: 2px solid var(--line); border-radius: 12px; background: #fff; padding: 10px; cursor: pointer; text-align: left; font-family: var(--body); position: relative; }
+  #results .fav:hover, #results .gm:hover { border-color: var(--red); }
+  #results .fav img { width: 100%; height: 420px; object-fit: contain; display: block; }
+  #results .fav .rank { position: absolute; top: 8px; left: 8px; width: 40px; height: 40px; border-radius: 50%; background: var(--red); color: #fff; font-weight: 800; font-size: 22px; display: grid; place-items: center; }
+  #results .fav .who b { display: block; font-size: 22px; margin-top: 8px; }
+  #results .fav .who span { display: block; font-size: 16px; color: var(--muted); }
+  #results .gal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; max-height: 600px; overflow-y: auto; }
+  #results .gm { padding: 6px; }
+  #results .gm img { width: 100%; height: 130px; object-fit: contain; display: block; }
+  #results .gm span { display: block; font-size: 14px; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #results .detail { display: grid; grid-template-columns: 1.25fr 1fr; gap: 28px; height: 770px; }
+  #results .dimg { display: flex; align-items: center; justify-content: center; cursor: zoom-out; }
+  #results .dwrap { position: relative; display: inline-block; }
+  #results .dwrap img { max-width: 860px; max-height: 740px; display: block; border: 1px solid var(--line); }
+  #results .pinlab { position: absolute; width: 34px; height: 34px; margin: -17px 0 0 -17px; border-radius: 50%; background: var(--red); color: #fff; font-weight: 800; display: grid; place-items: center; border: 2px solid #fff; box-shadow: 0 1px 6px rgba(0,0,0,.4); }
+  #results .dtext { overflow-y: auto; font-size: 18px; }
+  #results .dtext h2 { font-size: 40px; }
+  #results .dtext ol { margin: 4px 0; padding-left: 24px; }
+  #results .dtext .prompt { white-space: pre-wrap; background: #f6f6f4; border-radius: 8px; padding: 10px 12px; max-height: 170px; overflow-y: auto; }
+  #results .dtext dl { margin: 0; } #results .dtext dt { font-weight: 700; margin-top: 6px; } #results .dtext dd { margin: 0; }
+  #results .feats span { display: inline-block; border-radius: 999px; padding: 3px 12px; margin: 4px 6px 0 0; font-size: 15px; }
+  #results .feats .y { background: #e8f2fd; color: #184f95; } #results .feats .n { background: #f1f1ef; color: #8a8984; text-decoration: line-through; } #results .feats .bad { background: #fde8e8; color: #9b1c1c; font-weight: 700; }
+  #dock #gradest { color: var(--muted); font-size: 13px; }
+  #toast { position: fixed; left: 50%; top: 18px; transform: translateX(-50%); background: #1d1d1f; color: #fff; border-radius: 8px; padding: 10px 16px; font-size: 16px; display: none; z-index: 8; }
+  #toast.on { display: block; }
+  #codeform { position: fixed; right: 12px; bottom: 66px; background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 14px; box-shadow: 0 8px 30px rgba(0,0,0,.12); display: none; z-index: 7; width: 340px; font-size: 15px; }
+  #codeform.on { display: block; }
+  #codeform input { font: 16px var(--body); padding: 6px 8px; border: 1.5px solid #b8bec6; border-radius: 6px; margin: 4px 0; width: 100%; }
+  #codeform .out { font-family: var(--num); font-weight: 700; font-size: 26px; margin-top: 8px; }
+</style>
+</head>
+<body>
+<div id="viewport"><div id="stage">
+  <header>
+    <div class="brand"><div class="w">Map <b>Gallery</b></div><div class="s">ISA 401 &middot; Class 19 &middot; <b id="secname">Section A</b></div></div>
+    <div id="label">Lobby</div>
+    <div class="cells">
+      <div class="cell"><div class="k">In the game</div><div class="v" id="cv-in">0</div></div>
+      <div class="cell"><div class="k">Plans</div><div class="v" id="cv-plans">0</div></div>
+      <div class="cell"><div class="k">Maps</div><div class="v" id="cv-maps">0</div></div>
+    </div>
+  </header>
+
+  <section class="scene" id="lobby">
+    <div>
+      <div class="lab">Join on your computer or the lab PC</div>
+      <div id="url"><span id="url1">isa401-map-gallery.vercel.app</span><br><span>/?section=</span><span class="sec" id="url3">A</span></div>
+      <div id="lobbycount"><div class="n" id="lob-n">0</div><div class="t">in the game</div></div>
+    </div>
+    <div>
+      <div class="lab" style="margin-bottom:12px;">Today's question</div>
+      <div class="question">How did Butler County's COVID experience compare with the rest of Ohio?</div>
+      <div id="names"></div>
+    </div>
+  </section>
+
+  <section class="scene" id="clockscene">
+    <div id="step">Step 1 of 3</div>
+    <h1 id="steptitle">Plan</h1>
+    <div id="stepline"></div>
+    <div id="bigclock">7:00</div>
+    <div id="tbar"><i></i></div>
+    <div id="counts">
+      <div class="bigcount" id="bc1"><div class="n"><span id="bc1n">0</span><small> / <span id="bc1of">0</span></small></div><div class="t" id="bc1t">plans written</div></div>
+      <div class="bigcount" id="bc2"><div class="n"><span id="bc2n">0</span><small> / <span id="bc2of">0</span></small></div><div class="t" id="bc2t">maps submitted</div></div>
+    </div>
+    <div id="files">Files on Canvas: <b>ohio_covid_weekly.csv</b> and <b>ohio_counties.geojson</b></div>
+    <div id="nowplaying" hidden><span class="note">&#9835;</span><span id="nptext"></span></div>
+    <div id="ticker"><span class="live">LIVE</span><span class="k">UPDATE</span><span id="tickertext"></span></div>
+  </section>
+
+  <section class="scene" id="results"></section>
+
+  <section class="scene" id="closed">
+    <h1>That's a wrap</h1>
+    <div class="rule"></div>
+    <div class="t"><b id="cl-n">0</b> maps &middot; <b id="cl-v">0</b> votes</div>
+    <div class="v">Next: the results. Press Space.</div>
+  </section>
+</div></div>
+
+<div id="toast"></div>
+<div id="codeform">
+  <b>Personal code for a student who missed class</b>
+  <input id="cf-first" placeholder="First name" maxlength="20">
+  <input id="cf-initial" placeholder="Last initial" maxlength="1">
+  <div style="display:flex; gap:8px; margin-top:6px;"><button id="cf-go" type="button">Create code</button><button id="cf-close" type="button">Close</button></div>
+  <div class="out" id="cf-out"></div>
+</div>
+
+<div id="dock">
+  <div class="st"><span class="dot" id="netdot"></span><span id="netlbl">Connecting</span> <span id="gradest"></span></div>
+  <button id="b-primary" class="primary"><kbd>Space</kbd><span id="b-primary-t">Start the plan</span></button>
+  <button id="b-shorten"><kbd>-</kbd>1 min</button>
+  <button id="b-extend"><kbd>+</kbd>1 min</button>
+  <button id="b-close"><kbd>C</kbd><span id="b-close-t">End now</span></button>
+  <button id="b-reopen"><kbd>O</kbd>Reopen</button>
+  <button id="b-music"><kbd>M</kbd><span id="b-music-t">Music on</span></button>
+  <button id="b-fs"><kbd>F</kbd>Full screen</button>
+  <button id="b-hide"><kbd>H</kbd>Hide</button>
+  <button id="b-reset"><kbd>X</kbd><span id="b-reset-t">Reset</span></button>
+</div>
+
+<div id="gate"><form id="gateform">
+  <b style="font-size:20px;">Map Gallery projector</b>
+  <p id="gatep" style="color:#5d6366; margin:8px 0 0;"></p>
+  <input id="gatekey" type="password" autocomplete="off" placeholder="Admin key">
+  <button type="submit">Open</button>
+  <div id="gateerr"></div>
+</form></div>
+
+<audio id="audio" preload="auto"></audio>
+
+<script type="module">
+import { initResults } from "./host-results.js";
+const $ = (id) => document.getElementById(id);
+const qs = new URLSearchParams(location.search);
+const SECTION = /^[ABZ]$/.test((qs.get("section") || "").toUpperCase()) ? qs.get("section").toUpperCase() : "A";
+const SITE = location.host || "isa401-map-gallery.vercel.app";
+const KEY_STORE = "isa401-mapgallery-host";
+let KEY = "", B = null;
+
+// ---------- music: Kevin MacLeod (incompetech.com), CC BY 4.0; credit shown while a track plays
+const T = (title, file) => ({ title, file: "audio/" + file });
+const OPENER = T("Monkeys Spinning Monkeys", "monkeys-spinning-monkeys.mp3");
+const CALM = [T("Local Forecast - Elevator", "local-forecast-elevator.mp3"), T("Carefree", "carefree.mp3"), T("Wallpaper", "wallpaper.mp3"), T("Easy Lemon", "easy-lemon.mp3")];
+const HURRY = T("Sneaky Snitch", "sneaky-snitch.mp3");
+let musicOn = true, calmIdx = 0, playingTrack = null, musicPhase = null, hurried = false, blocked = false;
+const audio = $("audio");
+audio.volume = 0.55;
+function credit(t) { return "“" + t.title + "” Kevin MacLeod (incompetech.com) · Licensed under Creative Commons: By Attribution 4.0 License"; }
+function play(t, loop) {
+  playingTrack = t; audio.loop = Boolean(loop);
+  audio.src = t.file;
+  audio.play().then(() => { blocked = false; paintMusic(); }).catch(() => { blocked = true; paintMusic(); });
+  paintMusic();
+}
+function stopMusic() { audio.pause(); playingTrack = null; paintMusic(); }
+audio.addEventListener("ended", () => { if (playingTrack === HURRY) return; play(CALM[calmIdx++ % CALM.length]); });
+function paintMusic() {
+  $("b-music-t").textContent = musicOn ? "Music on" : "Music off";
+  $("b-music").classList.toggle("hot", musicOn);
+  const showing = musicOn && playingTrack && !audio.paused;
+  $("nowplaying").hidden = !(musicOn && playingTrack);
+  $("nptext").textContent = !playingTrack ? "" : blocked ? "Press M to start the music. " + credit(playingTrack) : credit(playingTrack);
+  if (!showing && !blocked) $("nowplaying").hidden = true;
+}
+const WORKING = ["plan", "build", "submit", "vote"];
+// called on every board and every clock tick: picks what should be playing for this phase
+function steerMusic() {
+  if (!B) return;
+  const ph = B.phase;
+  if (!musicOn || !WORKING.includes(ph)) { if (playingTrack) stopMusic(); musicPhase = ph; hurried = false; return; }
+  if (ph !== musicPhase) {
+    musicPhase = ph; hurried = false;
+    if (ph === "build") play(OPENER);                 // the build starts with the 2020 TikTok staple
+    else if (!playingTrack || playingTrack === HURRY) play(CALM[calmIdx++ % CALM.length]);
+  }
+  const left = remaining();
+  if (ph === "build" && left > 0 && left <= 120000 && !hurried) { hurried = true; play(HURRY, true); }
+  if (ph !== "build" && playingTrack === HURRY) play(CALM[calmIdx++ % CALM.length]);
+}
+function toggleMusic() {
+  if (blocked && playingTrack) { audio.play().then(() => { blocked = false; paintMusic(); }).catch(() => {}); return; }
+  musicOn = !musicOn; musicPhase = null;
+  if (!musicOn) stopMusic(); else steerMusic();
+  paintMusic();
+}
+
+// ---------- clock
+let offset = 0;
+function remaining() { return B && typeof B.endsAt === "number" ? B.endsAt - (Date.now() + offset) : 0; }
+function clockText(ms) { const s = Math.max(0, Math.ceil(ms / 1000)); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); }
+
+// ---------- rendering
+const STEPS = {
+  plan: { step: "Step 1 of 4", title: "Plan your map", line: "On the game site, before you open any AI tool: how will you make a good map, and how will you tell the AI?", c1: "plans written", c2: "maps submitted", hot: 1 },
+  build: { step: "Step 2 of 4", title: "Build it with AI", line: "Any AI chat tool. Upload both files, send your first prompt, and keep asking until it is your best map. Keep count of your prompts.", c1: "plans written", c2: "maps submitted", hot: 2 },
+  submit: { step: "Step 3 of 4", title: "Submit your map", line: "Screenshot the final figure (Win + Shift + S, or Cmd + Ctrl + Shift + 4 on a Mac), paste it, pin 2 to 6 features, add your final prompt, submit.", c1: "plans written", c2: "maps submitted", hot: 2 },
+  vote: { step: "Step 4 of 4", title: "Vote", line: "Six blind matchups, about a minute each: pick the map that better answers the question. Click a map to enlarge it. You never see your own.", c1: "maps in the vote", c2: "done voting", hot: 2 },
+};
+const LABEL = { lobby: "Lobby", plan: "Plan", build: "Build", submit: "Submit", vote: "Vote", closed: "Closed", results: "Results" };
+function scene(id) { document.querySelectorAll(".scene").forEach((s) => s.classList.toggle("on", s.id === id)); }
+let seenNames = new Set(), lastPhase = null;
+function render() {
+  if (!B) return;
+  $("secname").textContent = SECTION === "Z" ? "Test section Z" : "Section " + SECTION;
+  $("label").textContent = LABEL[B.phase] || B.phase;
+  const N = (B.players || []).length;
+  $("cv-in").textContent = N; $("cv-plans").textContent = B.planned || 0; $("cv-maps").textContent = B.submitted || 0;
+  if (B.phase === "lobby") {
+    scene("lobby");
+    $("lob-n").textContent = N;
+    const names = $("names"); names.replaceChildren();
+    for (const p of B.players || []) {
+      const s = document.createElement("span"); s.textContent = p.first;
+      const k = p.first + "|" + p.seat; if (!seenNames.has(k)) { s.className = "fresh"; seenNames.add(k); }
+      names.append(s);
+    }
+  } else if (STEPS[B.phase]) {
+    scene("clockscene");
+    const S = STEPS[B.phase];
+    $("step").textContent = S.step; $("steptitle").textContent = S.title; $("stepline").textContent = S.line;
+    const voting = B.phase === "vote";
+    $("bc1n").textContent = voting ? (B.submitted || 0) : (B.planned || 0); $("bc1of").textContent = N; $("bc1t").textContent = S.c1;
+    $("bc2n").textContent = voting ? (B.votersDone || 0) : (B.submitted || 0); $("bc2of").textContent = N; $("bc2t").textContent = S.c2;
+    $("bc1").classList.toggle("hot", S.hot === 1); $("bc2").classList.toggle("hot", S.hot === 2);
+    $("files").hidden = B.phase === "plan";
+    $("bc2").hidden = B.phase === "plan";
+  } else if (B.phase === "results") {
+    scene("results");
+    if (lastPhase !== "results") Res.enter();
+  } else {
+    scene("closed");
+    $("cl-n").textContent = B.submitted || 0; $("cl-v").textContent = B.votes || 0;
+  }
+  if (B.phase === "vote" && lastPhase !== "vote") Res.startGrading();   // grade during the vote
+  if (B.phase !== "results" && lastPhase === "results") Res.leave();
+  lastPhase = B.phase;
+  paintDock();
+  tick();
+}
+function tick() {
+  if (!B || !STEPS[B.phase]) return;
+  const ms = remaining();
+  $("bigclock").textContent = clockText(ms);
+  $("bigclock").classList.toggle("low", ms > 0 && ms <= 60000);
+  $("bigclock").classList.toggle("over", ms <= 0);
+  const total = B.startedAt && B.endsAt ? Math.max(1, B.endsAt - B.startedAt) : 1;
+  $("tbar").firstElementChild.style.transform = "scaleX(" + Math.max(0, Math.min(1, ms / total)).toFixed(4) + ")";
+  const N = (B.players || []).length;
+  const parts = B.phase === "vote"
+    ? [(B.votes || 0) + " votes cast", (B.votersDone || 0) + " of " + N + " done voting"]
+    : [(B.planned || 0) + " of " + N + " plans in", (B.submitted || 0) + " of " + N + " maps in"];
+  parts.push(ms > 0 ? clockText(ms) + " left in the " + B.phase : "the " + B.phase + " clock is up: finish and submit");
+  $("tickertext").textContent = parts.join("   •   ");
+  steerMusic();
+}
+setInterval(tick, 250);
+
+// ---------- dock and keys (one action at a time; Close and Reset need a second press within 3 s)
+const NEXT = { lobby: "plan", plan: "build", build: "submit", submit: "vote", vote: "results", closed: "results" };
+const PLABEL = { plan: "Start the plan", build: "Start the build", submit: "Start submitting", vote: "Start the vote", results: "Show the results" };
+function paintDock() {
+  const ph = B ? B.phase : "lobby";
+  const p = NEXT[ph];
+  if (ph === "results") { $("b-primary").disabled = false; $("b-primary-t").textContent = resultsLabel; }
+  else { $("b-primary").disabled = !p; $("b-primary-t").textContent = p ? PLABEL[p] : "Done"; }
+  $("b-extend").disabled = !STEPS[ph];
+  $("b-shorten").disabled = !STEPS[ph];
+  $("b-close").disabled = !(ph === "build" || ph === "submit" || ph === "vote");
+  $("b-reopen").disabled = ph !== "closed";
+}
+let busy = false, armed = null, armTimer = null, lastEnd = 0;
+const ARM = { reset: ["b-reset", "b-reset-t", "Reset", "Press again to reset"], close: ["b-close", "b-close-t", "End now", "Press again to end"] };
+function arm(a) { disarm(); armed = a; $(ARM[a][0]).classList.add("arm"); $(ARM[a][1]).textContent = ARM[a][3]; armTimer = setTimeout(disarm, 3000); }
+function disarm() { if (armed) { $(ARM[armed][0]).classList.remove("arm"); $(ARM[armed][1]).textContent = ARM[armed][2]; } armed = null; clearTimeout(armTimer); }
+function toast(msg) { $("toast").textContent = msg; $("toast").classList.add("on"); clearTimeout(toast.t); toast.t = setTimeout(() => $("toast").classList.remove("on"), 2500); }
+const tsig = (ms) => (window.AbortSignal && AbortSignal.timeout ? AbortSignal.timeout(ms) : undefined);
+async function act(action, extra) {
+  if (!KEY) { gate(""); return null; }
+  if (busy || Date.now() - lastEnd < 800) return null;
+  if (ARM[action]) { if (armed !== action) { arm(action); return null; } disarm(); } else if (armed) disarm();
+  busy = true;
+  try {
+    const r = await fetch("/api/host", { method: "POST", cache: "no-store", signal: tsig(8000), headers: { "content-type": "application/json", "x-admin-key": KEY }, body: JSON.stringify(Object.assign({ section: SECTION, action }, extra || {})) });
+    if (r.status === 403 || r.status === 429) { gate(r.status === 429 ? "Too many wrong keys from this address. Wait a minute." : "The key was not accepted."); return null; }
+    const j = await r.json();
+    if (j.error) toast("Server: " + j.error);
+    if (j.runId != null) ingest(j);
+    return j;
+  } catch (e) { toast("Could not reach the server. Try again."); return null; }
+  finally { busy = false; lastEnd = Date.now(); }
+}
+$("b-primary").addEventListener("click", (e) => { e.currentTarget.blur(); if (B && B.phase === "results") { Res.next(); return; } const p = B && NEXT[B.phase]; if (p) act(p); });
+$("b-extend").addEventListener("click", (e) => { e.currentTarget.blur(); act("extend"); });
+$("b-shorten").addEventListener("click", (e) => { e.currentTarget.blur(); act("shorten"); });
+$("b-close").addEventListener("click", (e) => { e.currentTarget.blur(); act("close"); });
+$("b-reopen").addEventListener("click", (e) => { e.currentTarget.blur(); act("reopen"); });
+$("b-reset").addEventListener("click", (e) => { e.currentTarget.blur(); act("reset"); });
+$("b-music").addEventListener("click", (e) => { e.currentTarget.blur(); toggleMusic(); });
+$("b-fs").addEventListener("click", (e) => { e.currentTarget.blur(); fullscreen(); });
+$("b-hide").addEventListener("click", (e) => { e.currentTarget.blur(); toggleDock(); });
+function fullscreen() { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen().catch(() => {}); }
+function toggleDock() { document.body.classList.toggle("nodock"); fit(); }
+function openCodeForm() { $("codeform").classList.add("on"); $("cf-out").textContent = ""; setTimeout(() => $("cf-first").focus(), 30); }
+$("cf-close").addEventListener("click", () => $("codeform").classList.remove("on"));
+$("cf-go").addEventListener("click", async () => {
+  const j = await act("code", { first: $("cf-first").value, initial: $("cf-initial").value });
+  if (j && j.newCode) { $("cf-out").textContent = j.newCode.first + " " + j.newCode.initial + ".: " + j.newCode.code; $("cf-first").value = ""; $("cf-initial").value = ""; }
+});
+document.addEventListener("keydown", (e) => {
+  if (e.target && /INPUT|TEXTAREA/.test(e.target.tagName)) return;
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  const k = e.key.toLowerCase();
+  const map = { "+": "extend", "=": "extend", "-": "shorten", "_": "shorten", c: "close", o: "reopen", x: "reset" };
+  if (e.repeat) { if (k === " " || map[k]) e.preventDefault(); return; }
+  if (B && B.phase === "results") {
+    if (k === " " || k === "spacebar" || e.key === "ArrowRight") { e.preventDefault(); Res.next(); return; }
+    if (e.key === "ArrowLeft") { e.preventDefault(); Res.prev(); return; }
+    if (e.key === "Escape") { Res.escape(); return; }
+    if (k === "r") { Res.reload(); return; }
+  }
+  if (k === " " || k === "spacebar") { e.preventDefault(); const p = B && NEXT[B.phase]; if (p) act(p); }
+  else if (map[k]) { e.preventDefault(); act(map[k]); }
+  else if (k === "m") toggleMusic();
+  else if (k === "f") fullscreen();
+  else if (k === "h") toggleDock();
+  else if (k === "n") { e.preventDefault(); openCodeForm(); }
+});
+
+// ---------- results screens (host-results.js)
+let resultsLabel = "Next";
+const Res = initResults({ $, getKey: () => KEY, section: SECTION, toast,
+  setGradeStatus: (t) => { $("gradest").textContent = t; }, setResultsLabel: (t) => { resultsLabel = t; paintDock(); } });
+
+// ---------- stage scaling
+function fit() {
+  const vp = $("viewport").getBoundingClientRect();
+  const s = Math.min(vp.width / 1600, vp.height / 900);
+  $("stage").style.transform = "scale(" + s + ")";
+}
+window.addEventListener("resize", fit);
+fit();
+
+// ---------- lobby join info
+$("url1").textContent = SITE; $("url3").textContent = SECTION;
+
+// ---------- polling and the key gate
+let inflight = false, timer = null;
+function setNet(ok) { $("netdot").classList.toggle("off", !ok); $("netlbl").textContent = "Section " + SECTION + " · run " + (B ? B.runId : "-") + (ok ? " · live" : " · offline, retrying"); }
+function ingest(j) {
+  if (typeof j.serverNow === "number") offset = j.serverNow - Date.now();
+  B = j; render(); setNet(true);
+}
+async function poll() {
+  if (inflight || busy || !KEY) return;
+  inflight = true;
+  try {
+    const r = await fetch("/api/board?section=" + SECTION, { cache: "no-store", signal: tsig(4000), headers: { "x-admin-key": KEY } });
+    if (r.status === 403 || r.status === 429) { gate(r.status === 429 ? "Too many wrong keys from this address. Wait a minute." : "The key was not accepted."); return; }
+    if (!r.ok) throw new Error(String(r.status));
+    const j = await r.json();
+    if (busy) return;
+    if (B && j.runId === B.runId && Number(j.seq) < Number(B.seq)) return;
+    ingest(j);
+  } catch (e) { setNet(false); }
+  finally { inflight = false; }
+}
+function startPolling() { $("gate").classList.remove("on"); poll(); clearInterval(timer); timer = setInterval(poll, 1500); }
+function gate(msg) {
+  clearInterval(timer); KEY = "";
+  try { sessionStorage.removeItem(KEY_STORE); } catch (e) {}
+  $("gatep").textContent = "Enter the admin key for section " + SECTION + ". It stays in this browser tab only.";
+  $("gateerr").textContent = msg || "";
+  $("gate").classList.add("on"); setTimeout(() => $("gatekey").focus(), 50);
+}
+$("gateform").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const k = $("gatekey").value.trim(); if (!k) return;
+  $("gateerr").textContent = "Checking";
+  try {
+    const r = await fetch("/api/board", { method: "POST", cache: "no-store", signal: tsig(8000), headers: { "content-type": "application/json" }, body: JSON.stringify({ section: SECTION, key: k }) });
+    if (r.status === 403) { $("gateerr").textContent = "That key did not work."; return; }
+    if (r.status === 429) { $("gateerr").textContent = "Too many tries from this address. Wait a minute."; return; }
+    if (!r.ok) { $("gateerr").textContent = "The server answered " + r.status + ". Try again."; return; }
+    KEY = k; try { sessionStorage.setItem(KEY_STORE, k); } catch (e2) {}
+    $("gatekey").value = ""; $("gateerr").textContent = "";
+    ingest(await r.json());
+    startPolling();
+  } catch (e3) { $("gateerr").textContent = "Could not reach the server."; }
+});
+B = { runId: "-", phase: "lobby", players: [], planned: 0, submitted: 0 };
+render();
+try { KEY = sessionStorage.getItem(KEY_STORE) || ""; } catch (e) { KEY = ""; }
+if (KEY) startPolling(); else gate("");
+paintMusic();
+</script>
+</body>
+</html>

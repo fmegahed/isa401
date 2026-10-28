@@ -1,0 +1,226 @@
+\documentclass[letterpaper,addpoints, 11pt]{exam}
+
+\usepackage{graphicx}
+\usepackage{amsmath, latexsym, color, graphicx, amssymb, bm, here, enumerate}
+\usepackage{epsf, epsfig, pifont,tikz,subfigure}
+\usepackage{graphics, calrsfs}
+\usepackage{times}
+\usepackage{fancybox,calc}
+\usepackage{palatino,mathpazo}
+\usepackage{amsfonts}
+\usepackage{wrapfig}
+\usepackage{multicol}
+\usepackage{sidecap}
+\usepackage[colorlinks=true, urlcolor=cyan, linkcolor=cyan]{hyperref}
+\usepackage{media9}
+\usepackage{mathtools}
+\usepackage{soul}
+\usepackage{enumitem}
+\usepackage[margin=0.5in, footskip=0.25in]{geometry}
+\usepackage{sectsty}
+\sectionfont{\centering}
+\renewcommand\thesection{\Roman{section}.}
+\renewcommand\thesubsection{\Alph{subsection}.}
+\renewcommand\thesubsubsection{\thesubsection \arabic{subsubsection}.}
+\usepackage{listings}
+\usepackage{caption}
+\DeclareCaptionFont{white}{\color{white}}
+\DeclareCaptionFormat{listing}{%
+	\parbox{\textwidth}{\colorbox{gray}{\parbox{\textwidth}{#1#2#3}}\vskip-4pt}}
+\captionsetup[lstlisting]{format=listing,labelfont=white,textfont=white}
+\lstset{frame=lrb,xleftmargin=\fboxsep,xrightmargin=-\fboxsep}
+\usepackage{url}
+\urlstyle{same}
+\usepackage{wasysym}
+\usepackage[export]{adjustbox}
+%_______________________________________________
+
+
+
+\begin{document}
+
+\begin{center}
+	\Large \textbf{ISA 401 - Business Intelligence \& Data Viz} \\
+	\Large \textbf{19: Lab --- Making Maps with AI, Flourish \& DataWrapper} \\
+\end{center}
+
+\begin{center}
+	\fbox{\fbox{\parbox{\textwidth}{\centering
+				\textbf{\large Learning Objectives for Today's Lab:}
+				\begin{enumerate}[label=(\Alph*), nosep, topsep=2pt]
+					\item \textbf{Plan} a visualization before prompting, and pass that plan to an \textbf{AI chat tool}.
+					\item \textbf{Iterate} with an AI tool and judge its output against your plan.
+					\item Learn from your classmates' maps through \textbf{blind head-to-head voting}.
+					\item Create an \textbf{animated bar chart race} and a \textbf{searchable table} in \textbf{Flourish}.
+					\item Create a clean, \textbf{annotated chart} in \textbf{DataWrapper} (if time permits).
+				\end{enumerate}
+			}}}
+\end{center}
+
+\begin{questions}
+
+
+\question[0] \textbf{The AI Map Challenge:} Last class, you mapped COVID-19 cases by Ohio county in Tableau. Today, an AI chat tool of your choice (ChatGPT, Claude, Gemini, Copilot, Grok, \ldots) makes the map, and \textbf{you direct it}. Everyone answers the same question:
+
+\begin{center}
+	\fbox{\parbox{0.9\textwidth}{\centering \large \textit{How did Butler County's COVID experience compare with the rest of Ohio?}}}
+\end{center}
+
+\noindent \textbf{Files (on Canvas):}
+\begin{itemize}[nosep]
+	\item \textit{ohio\_covid\_weekly.csv}: one row per Ohio county per week, March 2020 to December 2022. Columns: \texttt{date}, \texttt{state}, \texttt{county}, \texttt{population}, \texttt{confirmed\_cases}.
+	\item \textit{ohio\_counties.geojson}: the outlines of Ohio's 88 counties. Its \texttt{NAMELSAD} column (e.g., ``Butler County'') matches the CSV's \texttt{county} column.
+\end{itemize}
+
+\begin{enumerate}[label=(\Alph*)]
+	\item \underline{\textbf{Join (2 minutes):}} Open the game address shown on the projector on your own computer or the lab PC, enter your first name and last initial, and click your seat.
+
+	\item \underline{\textbf{Plan (10 minutes), before you open any AI tool:}} On the game site, write down your strategy for a good map and how you will pass it to the AI:
+	\vspace{-2mm}
+	\begin{multicols}{2}
+	\begin{itemize}[nosep]
+		\item Who is the map for; what is the takeaway?
+		\item What number will each county show, and when?
+		\item How will Butler County stand out?
+		\item Colors, legend, and a title idea.
+		\item One creative idea of your own.
+		\item Your first prompt for the AI.
+	\end{itemize}
+	\end{multicols}
+	\vspace{-3mm}
+	Your plan is locked when the build starts.
+
+	\item \underline{\textbf{Build (15 minutes):}} Open the AI chat tool of your choice, upload both files, and send your first prompt. Then look at what you get, compare it with your plan, and keep asking for changes until it is the \textbf{best map you can get}. \textbf{Keep count of the prompts you send.} When you are done, take a screenshot of the final figure only: \texttt{Win+Shift+S} on Windows, or \texttt{Cmd+Ctrl+Shift+4} on a Mac (it copies the screenshot). The submit form is open during the build, so paste and pin as you go.
+
+	\item \underline{\textbf{Submit (2 minutes):}} On the game site:
+	\begin{itemize}[nosep]
+		\item Paste your screenshot (\texttt{Ctrl+V}, or \texttt{Cmd+V} on a Mac).
+		\item Pick the AI tool, type the model its menu shows (``not sure'' is fine), and the number of prompts you sent.
+		\item \textbf{Pin your map's features:} click on the screenshot to drop a numbered pin on each feature you chose on purpose (2 to 6 pins). For each pin, pick its kind and write one line: \textit{what is it, and why did you do it?}
+		\item Paste your final prompt, optionally click ``Check my pins'', then click ``Submit map''.
+		\item \textbf{Save your personal code}: it brings you back to your map and results on any device.
+	\end{itemize}
+
+	\item \underline{\textbf{Vote (6 minutes, in class):}} You get \textbf{six blind matchups}, about a minute each: two classmates' maps side by side, no names, never your own. Click a map to enlarge it. Pick the one that better answers the question and tap what made it better; then name \textbf{one idea you would steal}. \textbf{Then we discuss the results together:} analytics, top maps and the gallery on the projector; on your screen, what the crowd told you.
+\end{enumerate}
+
+\newpage
+
+\question[0] \textbf{Flourish Activity:} Let us create an animated \textbf{bar chart race} and a searchable \textbf{interactive table} in Flourish (\url{https://flourish.studio/}).
+
+\begin{enumerate}[label=(\Alph*)]
+	\item \underline{\textbf{Setting Up Your Flourish Account:}}
+	\begin{itemize}[nosep]
+		\item Navigate to \url{https://flourish.studio/} and click ``Sign up free.''
+		\item Sign up with your \textbf{Miami University Google account} (or personal email).
+		\item \textbf{Note:} All visualizations on the free tier are \textbf{public}. Do not upload sensitive or proprietary data.
+	\end{itemize}
+
+	\bigskip
+	\item \underline{\textbf{Part 1 --- Bar Chart Race (Animated Visualization):}}
+
+	The \textit{oews\_employment\_tech\_business.csv} file (on Canvas) holds U.S. employment in 10 business analytics, information systems and cybersecurity occupations, from May 2019 to May 2025 (U.S. Bureau of Labor Statistics, Occupational Employment and Wage Statistics). The file is in wide format: one row per occupation, a \textbf{Category} column, and one column per year. A few of its rows:
+
+	\medskip
+	\begin{center}
+	\small
+	\begin{tabular}{l l r r r r}
+		\hline
+		\textbf{Occupation} & \textbf{Category} & \textbf{2019} & \textbf{2021} & \textbf{2023} & \textbf{2025} \\
+		\hline
+		Information Security Analysts & Cybersecurity & 125,570 & 157,220 & 175,350 & 190,650 \\
+		Computer and Information Systems Managers & Information systems & 433,960 & 485,190 & 592,600 & 670,570 \\
+		Data Scientists & Business analytics & 30,810 & 105,980 & 192,710 & 262,440 \\
+		Management Analysts & Business analytics & 709,750 & 768,450 & 838,140 & 898,280 \\
+		Accountants and Auditors & Business & 1,280,700 & 1,318,550 & 1,435,770 & 1,449,500 \\
+		\hline
+	\end{tabular}
+	\end{center}
+	\medskip
+
+	\noindent Follow these steps:
+	\begin{enumerate}[nosep, label=\arabic*.]
+		\item From your Flourish dashboard, click ``\textbf{New visualization}.''
+		\item Search for ``\textbf{Bar chart race}'' in the template gallery and select it.
+		\item Click the ``\textbf{Data}'' tab. \textbf{Replace the sample data:} click ``\textbf{Upload data}'' and upload the CSV file. Map the columns: \textbf{Label} = Occupation, \textbf{Categories} = Category, \textbf{Values} = the year columns.
+		\item Click the ``\textbf{Preview}'' tab to see your animated chart.
+		\item Customize it:
+		\begin{itemize}[nosep]
+			\item \textbf{Title:} ``U.S. Employment in Analytics, Information Systems and Cybersecurity Jobs, 2019--2025''
+			\item \textbf{Colors:} one color per category (cybersecurity, information systems, business analytics, business)
+			\item \textbf{Duration:} try 15 to 20 seconds for the 7 years; enable value labels
+			\item \textbf{Counter:} display the year prominently
+			\item \textbf{Footer:} ``Source: U.S. Bureau of Labor Statistics, OEWS (May of each year).'' In 2019--2020, Data Scientists are BLS's combined \emph{Data Scientists and Mathematical Science Occupations, All Other}.
+		\end{itemize}
+		\item Click ``\textbf{Play}'' to preview the full animation. Which occupation grew the fastest, and which shrank?
+		\item Click ``\textbf{Export \& publish}'' $\to$ ``\textbf{Publish to share and embed},'' and copy the \textbf{link}.
+	\end{enumerate}
+
+	\bigskip
+	\item \underline{\textbf{Part 2 --- Interactive Table:}}
+
+	The \textit{oews\_2025\_business\_occupations.csv} file (on Canvas) holds the U.S. Bureau of Labor Statistics' May 2025 employment and wage estimates (OEWS) for 23 business and analytics occupations: U.S. employment, the 25th percentile, median and 75th percentile of annual wages, and Ohio's employment and median wage.
+	\begin{enumerate}[nosep, label=\arabic*.]
+		\item From the Flourish dashboard, click ``\textbf{New visualization}'' and select the ``\textbf{Table}'' template.
+		\item Click the ``\textbf{Data}'' tab and upload the CSV. Check that the number columns are recognized as numbers.
+		\item Customize under ``\textbf{Preview}'':
+		\begin{itemize}[nosep]
+			\item \textbf{Search bar:} enabled, so users can search any occupation
+			\item \textbf{Sorting:} click column headers to sort; sort by \textbf{U.S. Median (\$)}, descending
+			\item \textbf{Number format:} dollar signs and thousands separators for the wage columns
+			\item \textbf{Styling:} header color, row striping, and rows per page (e.g., 10)
+		\end{itemize}
+		\item Which occupations pay more in Ohio than the U.S. median? Publish as before.
+	\end{enumerate}
+\end{enumerate}
+
+\newpage
+
+\question[0] \textbf{DataWrapper Activity (if time permits):} Let us create a clean, \textbf{annotated salary range chart} in DataWrapper (\url{https://www.datawrapper.de/}).
+
+\begin{enumerate}[label=(\Alph*)]
+	\item \underline{\textbf{Setting Up Your DataWrapper Account:}} Navigate to \url{https://www.datawrapper.de/}, sign up with your \textbf{Miami email}, and click ``\textbf{New Chart}.'' DataWrapper's workflow has 4 steps: (1) \textbf{Upload Data}, (2) \textbf{Check \& Describe}, (3) \textbf{Visualize}, (4) \textbf{Publish \& Embed}.
+
+	\bigskip
+	\item \underline{\textbf{Creating a Salary Range Chart:}} The \textit{oews\_2025\_analytics\_salaries.csv} file (on Canvas) holds the May 2025 annual wages for 8 analytics occupations, with the \textbf{official BLS occupation titles}:
+
+	\medskip
+	\begin{center}
+	\small
+	\begin{tabular}{l r r r}
+		\hline
+		\textbf{Occupation} & \textbf{25th Percentile (\$)} & \textbf{Median (\$)} & \textbf{75th Percentile (\$)} \\
+		\hline
+		Database Architects & 109,370 & 139,500 & 169,290 \\
+		Data Scientists & 85,660 & 120,230 & 158,880 \\
+		Computer Systems Analysts & 82,860 & 105,850 & 134,110 \\
+		Statisticians & 82,220 & 105,650 & 141,490 \\
+		Financial and Investment Analysts & 79,290 & 102,740 & 133,340 \\
+		Management Analysts & 77,950 & 101,860 & 133,370 \\
+		Operations Research Analysts & 68,360 & 88,940 & 125,990 \\
+		Market Research Analysts and Marketing Specialists & 58,350 & 78,760 & 108,310 \\
+		\hline
+	\end{tabular}
+	\end{center}
+	\medskip
+
+	\noindent Follow these steps:
+	\begin{enumerate}[nosep, label=\arabic*.]
+		\item \textbf{Upload Data:} upload the CSV.
+		\item \textbf{Check \& Describe:} verify that the three wage columns are recognized as numbers (not text).
+		\item \textbf{Visualize:} select the ``\textbf{Range Plot}'' (25th to 75th percentile range); show the median as a third dot or as a label.
+		\item Customize:
+		\begin{itemize}[nosep]
+			\item \textbf{Title:} ``Annual Wages for Analytics Occupations, May 2025''
+			\item \textbf{Description:} ``Middle 50\% of annual wages; dots mark the 25th and 75th percentiles''
+			\item \textbf{Source:} ``U.S. Bureau of Labor Statistics, Occupational Employment and Wage Statistics''
+			\item \textbf{Sort:} by median, descending
+			\item \textbf{Annotation:} add one note that states a takeaway (e.g., about the widest range)
+			\item \textbf{Number format:} dollar signs and thousands separators
+		\end{itemize}
+		\item Click ``\textbf{Publish}.'' DataWrapper gives you a \textbf{shareable link}, an \textbf{embed code}, and a \textbf{PNG download}.
+	\end{enumerate}
+\end{enumerate}
+
+\end{questions}
+\end{document}

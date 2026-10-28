@@ -1,0 +1,1099 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="robots" content="noindex">
+<title>Map Gallery</title>
+<link rel="icon" href="favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* white background (Fadel, Oct 27) with the Miami red of the other class games */
+    --bg: #ffffff; --surface: #ffffff; --surface2: #f7f7f8; --line: #dcdfe3; --line2: #b8bec6;
+    --text: #1b1b1b; --muted: #585E60; --red: #C3142D; --red-dark: #8B0E20; --right: #047857; --warn: #9a5b00; --white: #ffffff; --yellow: #EFDB72;
+    --body: "Archivo", "Segoe UI", Helvetica, Arial, sans-serif; --num: "IBM Plex Mono", Consolas, "Courier New", monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--body); font-size: 17px; line-height: 1.45; -webkit-text-size-adjust: 100%; }
+  body { min-height: 100vh; min-height: 100dvh; }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  a { color: var(--red); }
+  .wrap { max-width: 600px; margin: 0 auto; padding: 0 16px 48px; }
+  .wrap.wide { max-width: 1180px; }
+
+  header { position: sticky; top: 0; z-index: 3; background: var(--surface); border-bottom: 1px solid var(--line); }
+  header .wrap { display: flex; align-items: center; gap: 10px; padding-top: 10px; padding-bottom: 10px; max-width: 1180px; }
+  .brand { font-weight: 800; font-size: 21px; letter-spacing: -.01em; white-space: nowrap; }
+  .brand b { color: var(--red); }
+  .chip { font-weight: 600; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; border: 1px solid var(--line2); border-radius: 4px; padding: 1px 7px; color: var(--muted); white-space: nowrap; }
+  .me { margin-left: auto; display: flex; gap: 14px; align-items: center; font-size: 14px; line-height: 1.2; min-width: 0; }
+  .me[hidden] { display: none; }
+  .me .who { font-weight: 700; text-align: right; }
+  .me .seat { color: var(--muted); text-align: right; }
+  .codechip { font-family: var(--num); font-weight: 700; font-size: 15px; background: #1d1d1f; color: #fff; border-radius: 6px; padding: 4px 9px; letter-spacing: .08em; white-space: nowrap; }
+  .codechip span { font-family: var(--body); font-weight: 600; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: #bbb; margin-right: 6px; }
+
+  .screen { display: none; padding-top: 18px; }
+  .screen.on { display: block; }
+  h1, h2, h3 { font-weight: 800; letter-spacing: -.005em; margin: 0 0 10px; line-height: 1.15; }
+  h1 { font-size: 32px; } h2 { font-size: 22px; } h3 { font-size: 17px; }
+  .muted { color: var(--muted); } .small { font-size: 14px; }
+  .note { border-left: 4px solid var(--red); background: var(--surface2); padding: 10px 12px; border-radius: 4px; margin: 0 0 16px; }
+  .err { color: var(--red); min-height: 1.4em; margin-top: 8px; font-size: 15px; }
+  .ok { color: var(--right); font-weight: 600; }
+
+  /* join (from Press Time / Game Day) */
+  label.f { display: block; font-weight: 600; margin: 14px 0 6px; }
+  .in { width: 100%; background: var(--surface); border: 1.5px solid var(--line2); border-radius: 6px; padding: 10px 12px; font-size: 17px; }
+  .in:focus { outline: none; border-color: var(--red); box-shadow: 0 0 0 3px rgba(195,20,45,.15); }
+  .in.initial { width: 80px; text-align: center; text-transform: uppercase; font-weight: 700; }
+  textarea.in { resize: vertical; min-height: 64px; line-height: 1.4; }
+  .seg { display: flex; gap: 8px; flex-wrap: wrap; }
+  .seg button { flex: 1; min-height: 46px; background: var(--surface); border: 1.5px solid var(--line2); border-radius: 6px; font-weight: 700; cursor: pointer; padding: 6px 10px; }
+  .seg button.on { border-color: var(--red); background: var(--red); color: var(--white); }
+  .planbox { margin-top: 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 6px; }
+  #seatplan svg { width: 100%; height: auto; display: block; }
+  #seatplan .plan .seat { cursor: pointer; }
+  #seatplan .plan .seat .id { font: 700 13px var(--body); }
+  #seatplan .plan .seat:hover .chair { stroke: var(--red); stroke-width: 3; }
+  #seatplan .plan .seat.mine .chair { fill: var(--yellow); stroke: var(--red); stroke-width: 3; stroke-dasharray: none; }
+  .seatline { margin-top: 10px; font-weight: 700; }
+  .remote { width: 100%; margin-top: 10px; min-height: 50px; background: var(--surface); border: 1.5px solid var(--line2); border-radius: 6px; font-weight: 700; cursor: pointer; }
+  .remote.on { border-color: var(--red); background: var(--red); color: var(--white); }
+  .go { width: 100%; margin-top: 18px; min-height: 54px; border: 0; border-radius: 6px; background: var(--red); color: var(--white); font-weight: 700; font-size: 18px; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; }
+  .go:disabled { background: #e5e7eb; color: #9ca3af; cursor: default; }
+  .btn { border: 1.5px solid var(--red); color: var(--red); background: #fff; border-radius: 8px; min-height: 44px; padding: 0 18px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+  .btn.primary { background: var(--red); color: #fff; }
+  .btn:disabled { opacity: .45; cursor: default; }
+
+  /* clock row */
+  .runhead { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; margin-bottom: 4px; }
+  .kicker { font-weight: 700; letter-spacing: .12em; text-transform: uppercase; font-size: 13px; color: var(--muted); }
+  .clock { font-family: var(--num); font-weight: 700; font-size: 44px; line-height: 1; font-variant-numeric: tabular-nums; letter-spacing: -.03em; }
+  .clock.low { color: var(--red); }
+  .bar { height: 5px; background: var(--line); margin: 10px 0 14px; border-radius: 3px; overflow: hidden; }
+  .bar i { display: block; height: 100%; width: 100%; background: var(--red); transform-origin: left center; }
+  .question { border: 2px solid #1d1d1f; border-radius: 8px; padding: 12px 16px; font-size: 19px; font-weight: 700; text-align: center; margin: 8px 0 16px; }
+
+  /* plan */
+  .pf { margin-bottom: 4px; }
+  .pf label { display: block; font-weight: 700; margin: 14px 0 6px; }
+  .saveline { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 18px; }
+  .saved { font-size: 14px; color: var(--muted); }
+  .lockbox { background: var(--surface2); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; }
+  .lockbox dt { font-weight: 700; font-size: 13px; color: var(--muted); margin-top: 8px; }
+  .lockbox dd { margin: 2px 0 0; white-space: pre-wrap; }
+
+  /* work (build and submit) */
+  .work { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(300px, 1fr); gap: 20px; align-items: start; }
+  @media (max-width: 900px) { .work { grid-template-columns: 1fr; } }
+  .meta { display: grid; grid-template-columns: 1fr 1.2fr 0.6fr 1.5fr; gap: 10px; margin-bottom: 14px; }
+  @media (max-width: 900px) { .meta { grid-template-columns: 1fr 1fr; } }
+  .fld label { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin-bottom: 4px; font-weight: 700; }
+  .fld label em { text-transform: none; letter-spacing: 0; font-style: normal; font-weight: 400; color: #8a8f93; }
+  .fld .in { font-size: 15px; padding: 8px 10px; }
+  #drop { border: 2px dashed var(--line2); border-radius: 8px; padding: 34px 16px; text-align: center; background: var(--surface2); }
+  #drop.over { border-color: var(--red); background: #fdf2f2; }
+  #drop .big { font-weight: 800; font-size: 22px; }
+  kbd { font-family: var(--body); font-weight: 700; background: #eef0f2; border-radius: 4px; padding: 1px 7px; border: 1px solid var(--line); }
+  .pickfile { display: inline-flex; align-items: center; min-height: 42px; padding: 0 16px; border: 1.5px dashed var(--line2); border-radius: 6px; cursor: pointer; font-weight: 700; background: #fff; margin-top: 10px; }
+  .pickfile input { display: none; }
+  .shot { position: relative; border: 1px solid var(--line2); border-radius: 8px; overflow: hidden; cursor: crosshair; background: #fff; user-select: none; }
+  .shot img { display: block; width: 100%; height: auto; }
+  .shot .replace { position: absolute; top: 8px; right: 8px; font-size: 12px; background: rgba(255,255,255,.94); border: 1px solid var(--line2); border-radius: 6px; padding: 3px 9px; color: var(--muted); cursor: pointer; }
+  .shot .help { position: absolute; right: 8px; bottom: 8px; font-size: 12px; background: rgba(29,29,31,.86); color: #fff; border-radius: 6px; padding: 4px 9px; pointer-events: none; }
+  .shot.moving { outline: 3px solid var(--yellow); }
+  .pin { position: absolute; width: 28px; height: 28px; margin: -14px 0 0 -14px; border-radius: 50%; background: var(--red); color: #fff; font-weight: 800; font-size: 14px; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; box-shadow: 0 1px 6px rgba(0,0,0,.45); pointer-events: none; }
+  .pin.hot { background: #1d1d1f; }
+  .pinshead h3 { margin: 0 0 2px; }
+  .prow { display: grid; grid-template-columns: 28px 1fr auto; gap: 8px; align-items: start; padding: 10px 0; border-top: 1px solid var(--line); }
+  .prow .n { width: 24px; height: 24px; border-radius: 50%; background: var(--red); color: #fff; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; margin-top: 4px; }
+  .prow select { margin-bottom: 6px; width: 100%; }
+  .prow .acts { display: flex; flex-direction: column; gap: 4px; }
+  .prow .acts button { border: 1px solid var(--line2); background: #fff; border-radius: 6px; font-size: 12px; padding: 3px 8px; cursor: pointer; color: var(--muted); }
+  .prow .acts button:hover { border-color: var(--red); color: var(--red); }
+  .prow .res { grid-column: 2 / 4; font-size: 13px; }
+  .prow .res.yes { color: var(--right); } .prow .res.no { color: var(--warn); }
+  .count { font-size: 12px; color: var(--muted); margin-top: 6px; }
+  .bottom { margin-top: 16px; }
+  .btns { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 10px; }
+  .checkbox { margin-top: 14px; border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; }
+  .checkbox .feat span { display: inline-block; border-radius: 99px; padding: 2px 10px; margin: 4px 6px 0 0; font-size: 13px; background: #eef6f0; color: var(--right); }
+  .checkbox .feat span.no { background: #f3f3f5; color: #8a8f93; }
+  .donebar { margin-top: 14px; border-radius: 8px; padding: 12px 14px; background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; }
+  .myplan summary { cursor: pointer; font-weight: 700; margin: 6px 0 10px; }
+  .copyrow { display: flex; gap: 8px; align-items: flex-start; }
+  .copyrow pre { flex: 1; margin: 0; white-space: pre-wrap; font-family: var(--body); background: var(--surface2); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; font-size: 14px; }
+  .spin { display: inline-block; width: 15px; height: 15px; border: 3px solid var(--line2); border-top-color: var(--red); border-radius: 50%; animation: sp .8s linear infinite; vertical-align: -2px; margin-right: 8px; }
+  @keyframes sp { to { transform: rotate(360deg); } }
+  .bigcode { font-family: var(--num); font-weight: 700; font-size: 40px; letter-spacing: .14em; background: #1d1d1f; color: #fff; display: inline-block; padding: 8px 18px; border-radius: 10px; margin: 6px 0 10px; }
+  /* vote */
+  .vhead { display: flex; gap: 14px; align-items: baseline; flex-wrap: wrap; margin-bottom: 10px; }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 760px) { .pair { grid-template-columns: 1fr; } }
+  .vside { display: flex; flex-direction: column; gap: 8px; }
+  .vimg { display: block; padding: 0; border: 1px solid var(--line2); border-radius: 8px; background: #fff; cursor: zoom-in; overflow: hidden; }
+  .vimg img { display: block; width: 100%; height: min(56vh, 520px); object-fit: contain; background: #fff; }
+  .vimg:hover { border-color: var(--red); }
+  .vside .pick { width: 100%; min-height: 48px; font-size: 17px; }
+  .vside.chosen .vimg { outline: 4px solid var(--red); }
+  .tie { text-align: center; margin-top: 10px; }
+  #reasonbox { margin-top: 14px; border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; }
+  #reasons { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  #reasons button { border: 1.5px solid var(--line2); background: #fff; border-radius: 999px; padding: 6px 14px; cursor: pointer; font-weight: 600; }
+  #reasons button:hover { border-color: var(--red); color: var(--red); }
+  #reasons button.skip { color: var(--muted); }
+  #seenmaps { display: flex; flex-wrap: wrap; gap: 8px; }
+  #seenmaps button { width: 150px; height: 104px; padding: 0; border: 2px solid var(--line); border-radius: 6px; background: #fff; cursor: pointer; overflow: hidden; }
+  #seenmaps button img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  #seenmaps button.on { border-color: var(--red); outline: 3px solid rgba(195,20,45,.25); }
+  .two { display: grid; grid-template-columns: 220px 1fr; gap: 10px; }
+  @media (max-width: 600px) { .two { grid-template-columns: 1fr; } }
+  .minehead { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 28px; align-items: start; margin: 10px 0 24px; }
+  @media (max-width: 760px) { .minehead { grid-template-columns: 1fr; } }
+  .mineimg { width: 100%; border: 1px solid var(--line2); border-radius: 8px; }
+  .minerec { font-size: 40px; font-weight: 800; margin: 4px 0 10px; }
+  .beatgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  @media (max-width: 760px) { .beatgrid { grid-template-columns: 1fr; } }
+  .beat { border: 1px solid var(--line); border-radius: 8px; padding: 10px; }
+  .beat img { width: 100%; cursor: zoom-in; border-radius: 4px; }
+  .beat .who { font-weight: 700; margin: 8px 0; font-size: 19px; }
+  .beat ol { margin: 4px 0 8px; padding-left: 20px; font-size: 15px; }
+  .beat .fp { white-space: pre-wrap; font-family: var(--body); font-size: 14px; background: var(--surface2); border-radius: 6px; padding: 8px; margin: 4px 0 0; }
+  .resumebox { margin-top: 16px; border: 1px solid var(--line); background: var(--surface2); border-radius: 8px; padding: 12px 14px; }
+  .resumerow { display: flex; gap: 10px; margin-top: 8px; }
+  .resumerow .in { width: 160px; text-transform: uppercase; font-family: var(--num); font-weight: 700; letter-spacing: .12em; }
+  #lightbox { position: fixed; inset: 0; z-index: 9; background: rgba(15,15,18,.92); display: flex; align-items: center; justify-content: center; flex-direction: column; cursor: zoom-out; }
+  #lightbox[hidden] { display: none; }
+  #lightbox img { max-width: 96vw; max-height: 90vh; background: #fff; border-radius: 6px; }
+  #lightbox .lbhint { color: #ddd; font-size: 14px; margin-top: 8px; }
+  #conn { position: fixed; left: 0; right: 0; bottom: 0; z-index: 4; background: var(--red-dark); color: var(--white); text-align: center; font-size: 14px; padding: 6px 16px; display: none; }
+  #conn.on { display: block; }
+
+  /* no page scroll on a 1080p lab screen (Fadel, Oct 27): every screen fits the window */
+  #main { padding-bottom: 6px; }
+  /* elements shown and hidden with the hidden attribute keep it even where a display rule is set */
+  [hidden] { display: none !important; }
+  header .wrap { padding-top: 6px; padding-bottom: 6px; }
+  .screen { padding-top: 10px; }
+  .wrap.wide { max-width: 1500px; }
+  .runhead { display: flex; align-items: center; gap: 18px; margin-bottom: 2px; }
+  .runhead h1 { font-size: 24px; margin: 2px 0 0; }
+  .runhead .clock { font-size: 40px; margin-left: auto; }
+  .bar { margin: 6px 0 10px; }
+  .qline { flex: 1; text-align: center; border: 2px solid #1d1d1f; border-radius: 8px; padding: 6px 12px; font-weight: 700; font-size: 16px; }
+  .howto { flex: 1; font-size: 14px; color: var(--muted); line-height: 1.35; }
+  .vcount { font-weight: 800; font-size: 18px; white-space: nowrap; }
+  .joingrid { display: grid; grid-template-columns: minmax(300px, 440px) minmax(0, 1fr); gap: 40px; align-items: start; }
+  .joinseat .seg button { min-height: 40px; }
+  .joinseat .planbox { text-align: center; }
+  #seatplan svg { height: calc(100vh - 230px); min-height: 300px; width: auto; max-width: 100%; display: inline-block; }
+  .joinseat .remote { min-height: 40px; margin-top: 8px; }
+  .namerow { display: grid; grid-template-columns: 1fr 90px; gap: 12px; }
+  .namerow .in.initial { width: 100%; }
+  .joinform .go { margin-top: 12px; }
+  .pgrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px 18px; }
+  .pgrid .pf label { font-size: 14px; margin: 8px 0 4px; min-height: 2.6em; display: flex; align-items: flex-end; }
+  .pgrid .pf.wide { grid-column: span 2; }
+  .pgrid textarea.in { font-size: 15px; padding: 8px 10px; min-height: 0; resize: none; }
+  .saveline { margin-top: 12px; }
+  .work { grid-template-columns: minmax(0, 1.5fr) minmax(360px, 1fr); gap: 22px; }
+  .work .left { min-width: 0; }
+  #drop { height: calc(100vh - 210px); min-height: 280px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .shot { display: inline-block; max-width: 100%; vertical-align: top; }
+  .shot img { width: auto; height: auto; max-width: 100%; max-height: calc(100vh - 210px); }
+  .meta { grid-template-columns: 1fr 1fr; gap: 8px 10px; margin-bottom: 8px; }
+  .pinshead { display: flex; flex-direction: column; gap: 2px; }
+  .pinshead h3 { margin: 4px 0 0; }
+  #rows { margin-top: 4px; }
+  .prow { grid-template-columns: 24px 150px minmax(0, 1fr) 22px auto; gap: 6px; align-items: center; padding: 5px 0; }
+  .prow .n { margin-top: 0; }
+  .prow select, .prow input { margin: 0; font-size: 13px; padding: 6px 7px; }
+  .prow .ck { font-weight: 800; text-align: center; }
+  .prow .ck.yes { color: var(--right); } .prow .ck.no { color: var(--warn); }
+  .prow .acts { flex-direction: row; gap: 4px; }
+  .btns { margin-top: 8px; }
+  .checknote { margin-top: 6px; font-size: 14px; border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; }
+  .donebar { margin-top: 8px; padding: 8px 12px; font-size: 14px; }
+  #planmodal { position: fixed; inset: 0; z-index: 9; background: rgba(15,15,18,.55); display: flex; align-items: center; justify-content: center; }
+  #planmodal[hidden] { display: none; }
+  #planmodal .pm { background: #fff; border-radius: 12px; padding: 18px 22px; width: min(820px, 92vw); max-height: 88vh; overflow: auto; }
+  #planmodal .pmhead { display: flex; justify-content: space-between; align-items: center; }
+  #planmodal dt { font-weight: 700; font-size: 13px; color: var(--muted); margin-top: 8px; }
+  #planmodal dd { margin: 2px 0 0; white-space: pre-wrap; }
+  .vimg img { height: calc(100vh - 272px); min-height: 240px; }
+  .vside .pick { min-height: 44px; }
+  .tie { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 8px; }
+  .tie[hidden] { display: none; }
+  #reasonbox { margin-top: 6px; padding: 4px 10px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  #reasons button { padding: 4px 12px; }
+  #reasonbox[hidden] { display: none; }
+  #reasons { margin-top: 0; }
+  .minegrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; align-items: start; margin-top: 6px; }
+  .minecol img { width: 100%; max-height: calc(100vh - 380px); object-fit: contain; border: 1px solid var(--line2); border-radius: 8px; background: #fff; display: block; cursor: zoom-in; }
+  .minecol h3 { margin: 0 0 6px; font-size: 16px; }
+  .minecol .minerec { font-size: 30px; margin: 8px 0 4px; }
+  .minecol p { margin: 4px 0; font-size: 15px; }
+  .minecol ol { margin: 4px 0 6px; padding-left: 20px; font-size: 14px; }
+  .minecol .fp { white-space: pre-wrap; font-family: var(--body); font-size: 13px; background: var(--surface2); border-radius: 6px; padding: 6px 8px; margin: 2px 0 0;
+    display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+  @media (max-width: 900px) {
+    .joingrid, .pgrid, .minegrid { grid-template-columns: 1fr; }
+    .pgrid .pf.wide { grid-column: auto; }
+    .runhead { flex-wrap: wrap; }
+    #seatplan svg { height: auto; width: 100%; }
+    .shot img, .vimg img, #drop { max-height: none; height: auto; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="brand">Map <b>Gallery</b></div>
+    <span class="chip" id="secchip">A</span>
+    <div class="me" id="mebox" hidden>
+      <div><div class="who" id="mewho"></div><div class="seat" id="meseat"></div></div>
+      <div class="codechip" title="Your personal code: if you switch computers or close this tab, type it on the join screen to pick up where you left off"><span>Your code</span><b id="mecode"></b></div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap" id="main">
+
+  <section class="screen" id="s-loading">
+    <h2>Connecting</h2>
+    <p class="muted">Finding the game for your section.</p>
+  </section>
+
+  <section class="screen" id="s-join">
+    <div class="joingrid">
+      <div class="joinform">
+        <div class="note" id="joinmsg" hidden></div>
+        <h1>Join the AI Map Challenge</h1>
+        <p class="muted small" style="margin:0;">Nothing here counts toward your grade. Your name stays hidden until Fadel reveals the gallery.</p>
+        <label class="f">Section</label>
+        <div class="seg" id="secseg">
+      <button type="button" data-sec="A">Section A</button>
+      <button type="button" data-sec="B">Section B</button>
+      <button type="button" data-sec="Z" id="secZ" hidden>Test Z</button>
+    </div>
+        <div class="namerow">
+          <div><label class="f" for="first">Preferred first name</label><input class="in" id="first" maxlength="20" autocomplete="given-name" autocapitalize="words" spellcheck="false"></div>
+          <div><label class="f" for="initial">Last initial</label><input class="in initial" id="initial" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false"></div>
+        </div>
+        <div class="seatline" id="seatline">No seat picked yet.</div>
+        <button type="button" class="go" id="joinbtn" disabled>Join</button>
+        <div class="err" id="joinerr" role="alert"></div>
+        <div class="resumebox">
+      <b>Already joined on another computer, or closed the tab?</b>
+      <div class="muted small">Type your personal code (6 letters and digits) to pick up where you left off: your plan, your map, your votes and your results.</div>
+      <div class="resumerow"><input class="in" id="rcode" maxlength="6" placeholder="ABC123" autocomplete="off" autocapitalize="characters" spellcheck="false"><button type="button" class="btn" id="rbtn">Continue</button></div>
+      <div class="err" id="rerr" role="alert"></div>
+    </div>
+      </div>
+      <div class="joinseat">
+        <label class="f" style="margin-top:0;">Your seat <span class="muted small" style="font-weight:400;">(screens at the top; row 1 is the front; seats 1 to 7 from left to right)</span></label>
+        <div class="seg" id="sideseg">
+          <button type="button" data-side="L">Left of the aisle</button>
+          <button type="button" data-side="R">Right of the aisle</button>
+        </div>
+        <div class="planbox"><div id="seatplan"></div></div>
+        <button type="button" class="remote" id="remote">Joining remotely</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen" id="s-lobby">
+    <div class="kicker" id="lobbysec"></div>
+    <h2 style="margin-top:8px;">You are in, <span id="lobbywho"></span>.</h2>
+    <p>This is your <b>personal code</b>. Write it down or take a photo. If you switch computers or close this tab, type it on the join screen to pick up where you left off.</p>
+    <div class="bigcode" id="lobbycode"></div>
+    <p class="muted">Wait for the plan to start. Do not open any AI tool yet.</p>
+    <p class="small" style="margin-top:18px;"><a href="#" id="changeseat">Change my seat</a></p>
+  </section>
+
+  <section class="screen" id="s-plan">
+    <div class="runhead">
+      <div><div class="kicker" id="plankick">Step 1 of 4 &middot; Plan</div><h1>Your strategy</h1></div>
+      <div class="qline">How did Butler County's COVID experience compare with the rest of Ohio?</div>
+      <div class="clock" id="pclock">10:00</div>
+    </div>
+    <div class="bar"><i id="pbar"></i></div>
+    <p class="muted small" id="planintro" style="margin:0 0 6px;">Before you open any AI tool, write down how you will make a good map and how you will pass that to the AI. Short answers are fine. Your plan is saved as you type and locks when the build starts.</p>
+    <div id="planform">
+      <div class="pgrid">
+        <div class="pf"><label for="p-audience">Who is this map for, and what should they take away?</label><textarea class="in" id="p-audience" data-f="audience" maxlength="400" rows="2"></textarea></div>
+        <div class="pf"><label for="p-measure">What number will each county show? (the measure)</label><textarea class="in" id="p-measure" data-f="measure" maxlength="400" rows="2"></textarea></div>
+        <div class="pf"><label for="p-period">What time period?</label><textarea class="in" id="p-period" data-f="period" maxlength="200" rows="2"></textarea></div>
+        <div class="pf"><label for="p-butler">How will Butler County stand out against the rest of Ohio?</label><textarea class="in" id="p-butler" data-f="butler" maxlength="400" rows="2"></textarea></div>
+        <div class="pf"><label for="p-colors">Colors and legend</label><textarea class="in" id="p-colors" data-f="colors" maxlength="400" rows="2"></textarea></div>
+        <div class="pf"><label for="p-title">Title idea</label><textarea class="in" id="p-title" data-f="title" maxlength="200" rows="2"></textarea></div>
+        <div class="pf"><label for="p-creative">One creative idea of your own</label><textarea class="in" id="p-creative" data-f="creative" maxlength="400" rows="5"></textarea></div>
+        <div class="pf wide"><label for="p-prompt">Your first prompt: how you will tell the AI all of this</label><textarea class="in" id="p-prompt" data-f="prompt" maxlength="4000" rows="5"></textarea></div>
+      </div>
+      <div class="saveline">
+        <button type="button" class="btn primary" id="planfinal">My plan is ready</button>
+        <span class="saved" id="plansaved"></span>
+        <span class="err" id="planerr" role="alert" style="margin:0;"></span>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen" id="s-work">
+    <div class="runhead">
+      <div><div class="kicker" id="workkick">Step 2 of 4 &middot; Build</div><h1 id="worktitle">Build your map</h1></div>
+      <div class="howto" id="workintro">Upload <b>ohio_covid_weekly.csv</b> and <b>ohio_counties.geojson</b> (Canvas) to any AI chat &middot; <b>keep count of your prompts</b> &middot; screenshot the final figure (<kbd>Win</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd>; Mac: <kbd>Cmd</kbd>+<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>4</kbd>) and paste it here.</div>
+      <button type="button" class="btn" id="planbtn">Your plan</button>
+      <div class="clock" id="wclock">15:00</div>
+    </div>
+    <div class="bar"><i id="wbar"></i></div>
+    <div class="work">
+      <div class="left">
+        <div id="drop">
+          <div class="big">Paste your map with <kbd>Ctrl</kbd> + <kbd>V</kbd> <span class="muted" style="font-size:16px;font-weight:600;">(Mac: <kbd>Cmd</kbd> + <kbd>V</kbd>)</span></div>
+          <div class="muted small" style="margin-top:6px;">right after the screenshot shortcut, or drag an image here, or</div>
+          <label class="pickfile"><input type="file" id="shotfile" accept="image/png,image/jpeg,image/webp">Choose an image file</label>
+          <div class="muted small" style="margin-top:12px;">At least 600 &times; 400 pixels. If your snip is too small, open the image full size in the chat (or download it and choose the file).</div>
+        </div>
+        <div class="shot" id="shot" hidden>
+          <img id="shotimg" alt="Your map">
+          <div id="pinlayer"></div>
+          <span class="replace" id="replace">Replace screenshot</span>
+          <span class="help" id="shothelp">Click a feature to pin it</span>
+        </div>
+        <div class="err" id="shoterr" role="alert"></div>
+      </div>
+      <div class="right">
+        <div class="meta">
+          <div class="fld"><label for="tool">AI tool</label><select class="in" id="tool"><option value="">Pick one</option></select></div>
+          <div class="fld"><label for="model">Model <em>("not sure" is fine)</em></label><input class="in" id="model" maxlength="60"></div>
+          <div class="fld" id="otherwrap" hidden><label for="toolother">Tool name</label><input class="in" id="toolother" maxlength="40"></div>
+          <div class="fld"><label for="prompts">Prompts sent</label><input class="in" id="prompts" type="number" min="1" max="300" inputmode="numeric"></div>
+          <div class="fld"><label for="share">Chat share link <em>(optional)</em></label><input class="in" id="share" maxlength="300" placeholder="https://..."></div>
+        </div>
+        <div class="pinshead"><h3>Your map's features</h3><span class="muted small">Click the map to pin 2 to 6 things you chose on purpose; give each a kind and say what it is and why.</span></div>
+        <div id="rows"></div>
+        <div class="count" id="count"></div>
+        <div class="fld" style="margin-top:8px;"><label for="final">Your final prompt <em>(the last one you sent)</em></label><textarea class="in" id="final" rows="2" maxlength="4000"></textarea></div>
+        <div class="btns">
+          <button type="button" class="btn" id="checkbtn">Check my pins</button>
+          <button type="button" class="btn primary" id="submitbtn">Submit map</button>
+          <span class="small muted" id="btnnote"></span>
+        </div>
+        <div class="err" id="suberr" role="alert"></div>
+        <div class="checknote" id="checknote" hidden></div>
+        <div class="donebar" id="donebar" hidden></div>
+      </div>
+    </div>
+    <div id="planmodal" hidden><div class="pm"><div class="pmhead"><h2>Your plan (locked)</h2><button type="button" class="btn" id="planclose">Close</button></div><dl id="plandl"></dl></div></div>
+  </section>
+
+  <section class="screen" id="s-vote">
+    <div class="runhead">
+      <div><div class="kicker">Step 4 of 4 &middot; Vote</div><h1>Which map answers it better?</h1></div>
+      <div class="qline">How did Butler County's COVID experience compare with the rest of Ohio?</div>
+      <div class="vcount" id="vcount">Matchup 1 of 6</div>
+      <div class="clock" id="vclock">6:00</div>
+    </div>
+    <div class="bar"><i id="vbar"></i></div>
+    <div id="votebody" hidden>
+      <div class="pair">
+        <div class="vside"><button type="button" class="vimg" data-side="L" aria-label="Enlarge the left map"><img id="imgL" alt="Left map"></button><button type="button" class="btn primary pick" data-choice="L">Left map is better</button></div>
+        <div class="vside"><button type="button" class="vimg" data-side="R" aria-label="Enlarge the right map"><img id="imgR" alt="Right map"></button><button type="button" class="btn primary pick" data-choice="R">Right map is better</button></div>
+      </div>
+      <div class="tie"><span class="muted small">Names are hidden, and you never see your own map. Click a map to enlarge it.</span><button type="button" class="btn" data-choice="T">Too close to call</button></div>
+      <div id="reasonbox" hidden>
+        <b>What made the <span id="reasonside"></span> map better?</b> <span class="muted small">One tap, or skip.</span>
+        <div id="reasons"></div>
+      </div>
+    </div>
+    <div id="votewait" hidden><p class="muted" id="votewaittext">Getting your next matchup...</p></div>
+    <div id="afterbox" hidden>
+      <h2>Two quick ones before you go</h2>
+      <label class="f" for="guess">Which AI tool do you think made the best maps today?</label>
+      <select class="in" id="guess" style="max-width:320px;"><option value="">Pick one (optional)</option></select>
+      <label class="f">Steal one idea: click a map you saw that has an idea you would borrow.</label>
+      <div id="seenmaps"></div>
+      <div id="stealform" hidden>
+        <div class="two" style="margin-top:10px;"><select class="in" id="stealkind"><option value="">What kind of idea?</option></select><input class="in" id="stealtext" maxlength="140" placeholder="The idea, in one line"></div>
+      </div>
+      <div class="btns" style="margin-top:14px;"><button type="button" class="btn primary" id="aftersend">Send</button><button type="button" class="btn" id="afterskip">Skip</button></div>
+    </div>
+    <div id="votedone" hidden>
+      <h2>Thanks, your votes are in.</h2>
+      <p>Look up: the results come on the projector as soon as the vote ends, and your own results appear on this page. (If you close this tab, your code <b id="donecode"></b> brings you back.)</p>
+      <button type="button" class="btn" id="moremore">Vote on 6 more</button>
+    </div>
+    <div class="err" id="voteerr" role="alert"></div>
+  </section>
+
+  <section class="screen" id="s-results">
+    <div class="runhead"><div><div class="kicker">Results</div><h1>What the crowd told you</h1></div><div class="howto">The class results are on the projector. This page is only yours.</div></div>
+    <div id="mine"><p class="muted">Loading your results...</p></div>
+  </section>
+
+  <section class="screen" id="s-closed">
+    <div class="kicker" id="closedsec"></div>
+    <h1 style="margin-top:8px;">That's a wrap</h1>
+    <p id="closedwhat"></p>
+    <p>The results come on the projector next, and your own results will appear on this page.</p>
+    <p class="muted">If you close this tab, your personal code brings you back:</p>
+    <div class="bigcode" id="closedcode"></div>
+  </section>
+
+</main>
+
+<div id="lightbox" hidden><img id="lbimg" alt="Enlarged map"><div class="lbhint">Click anywhere or press Esc to close</div></div>
+<div id="conn" role="status">Reconnecting to the game</div>
+
+<script type="module">
+const $ = (id) => document.getElementById(id);
+const KEY = "isa401-mapgallery";
+const POLL_MS = 2000;
+const MAX_SIDE = 1600, MAX_URL = 1_200_000, MIN_W = 600, MIN_H = 400;
+const TOOLS = ["ChatGPT", "Claude", "Gemini", "Microsoft Copilot", "Grok", "Meta AI", "DeepSeek", "Other"];
+const KINDS = ["What it shows (measure)", "Butler", "Color", "Title or text", "Legend", "Change over time", "Something creative"];
+const PLAN_FIELDS = ["audience", "measure", "period", "butler", "colors", "title", "creative", "prompt"];
+const PLAN_LABELS = { audience: "Audience and takeaway", measure: "Measure", period: "Time period", butler: "How Butler stands out", colors: "Colors and legend", title: "Title idea", creative: "Creative idea", prompt: "First prompt" };
+const MSG_KICKED = "Someone else took that seat. Pick your seat again.";
+const MSG_RESET = "The host started a new game. Join again.";
+
+// ---------- storage: {section, playerId, runId}; a separate draft of the map form per player
+function load(k) { try { const v = JSON.parse(localStorage.getItem(k) || "null"); return v && typeof v === "object" ? v : null; } catch (e) { return null; } }
+function store(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } }
+function wipe(k) { try { localStorage.removeItem(k); } catch (e) {} }
+const save = () => store(KEY, { section, playerId, runId });
+const draftKey = () => KEY + ":draft:" + section + ":" + runId + ":" + playerId;
+
+const qs = new URLSearchParams(location.search);
+const urlSec = (qs.get("section") || "").toUpperCase();
+const stored = load(KEY);
+let section = /^[ABZ]$/.test(urlSec) ? urlSec : (stored && /^[AB]$/.test(stored.section) ? stored.section : "A");
+let playerId = null, runId = null;
+if (stored && stored.section === section && typeof stored.playerId === "string") { playerId = stored.playerId; runId = stored.runId ?? null; }
+
+let snap = null, meData = null, meKey = "", meGen = 0, offset = null;
+let kicked = false, joining = false, seat = null, side = "L", fails = 0, current = "";
+// the map form
+let img = null;            // {url, w, h}
+let pins = [];             // {x, y, kind, text} with x, y as fractions of the image
+let moving = -1;           // index of the pin being moved, or -1
+let lastCheck = null;      // {seen, features, pinsKey}
+let busySubmit = false, busyCheck = false;
+
+const same = (a, b) => String(a) === String(b);
+const seatName = (s) => s === "remote" ? "Remote" : s;
+function calibrate(serverNow) { if (typeof serverNow !== "number") return; const d = serverNow - Date.now(); if (offset === null || d > offset) offset = d; }
+function remaining() { return snap && typeof snap.endsAt === "number" ? snap.endsAt - (Date.now() + (offset || 0)) : 0; }
+function clockText(ms) { const s = Math.max(0, Math.ceil(ms / 1000)); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); }
+function show(id) {
+  if (current === id) return;
+  current = id;
+  document.querySelectorAll(".screen").forEach((el) => el.classList.toggle("on", el.id === "s-" + id));
+  $("main").classList.toggle("wide", ["work", "vote", "results", "join", "plan"].includes(id));
+  window.scrollTo(0, 0);
+}
+function setText(id, t) { const el = $(id); if (el.textContent !== t) el.textContent = t; }
+
+// ---------- rendering
+function paintHeader() {
+  setText("secchip", section === "Z" ? "Test Z" : "Section " + section);
+  const you = meData && meData.you;
+  $("mebox").hidden = !you;
+  if (you) { setText("mewho", you.first + " " + you.initial + "."); setText("meseat", seatName(you.seat)); setText("mecode", you.code || ""); }
+}
+function needsPlan() {
+  const ph = snap && snap.phase;
+  if (ph === "plan") return true;
+  // a late joiner writes a quick plan first, and moves on once it is saved as ready
+  const p = meData && meData.plan;
+  return (ph === "build" || ph === "submit") && meData && !meData.sub && (!p || (p.late && !p.final));
+}
+function render() {
+  paintHeader();
+  if (!snap) return show("loading");
+  if (!playerId || kicked) return show("join");
+  if (!meData || !meData.you) return show("loading");
+  const ph = snap.phase, you = meData.you;
+  if (ph === "lobby") {
+    setText("lobbysec", section === "Z" ? "Test section Z" : "Section " + section);
+    setText("lobbywho", you.first);
+    setText("lobbycode", you.code || "");
+    return show("lobby");
+  }
+  if (needsPlan()) { paintPlanForm(); return show("plan"); }
+  if (ph === "build" || ph === "submit") { paintWork(); return show("work"); }
+  if (ph === "vote") { show("vote"); startVoting(); return; }
+  voteFor = "";                        // a reopened vote starts fresh
+  if (ph === "results") { show("results"); loadMine(); return; }
+  mineFor = "";
+  setText("closedsec", section === "Z" ? "Test section Z" : "Section " + section);
+  setText("closedcode", you.code || "");
+  const sub = meData.sub;
+  setText("closedwhat", sub ? "Your map is in (" + sub.tool + (sub.model ? ", " + sub.model : "") + ", " + sub.prompts + " prompts, " + sub.pins.length + " pins)." : "No map was submitted from this browser.");
+  show("closed");
+}
+function tick() {
+  if (!snap) return;
+  const ms = remaining();
+  const total = snap.startedAt && snap.endsAt ? Math.max(1, snap.endsAt - snap.startedAt) : 1;
+  const frac = "scaleX(" + Math.max(0, Math.min(1, ms / total)).toFixed(4) + ")";
+  if (current === "plan") { setText("pclock", clockText(ms)); $("pclock").classList.toggle("low", ms <= 60000); $("pbar").style.transform = frac; }
+  if (current === "work") { setText("wclock", clockText(ms)); $("wclock").classList.toggle("low", ms <= 60000); $("wbar").style.transform = frac; }
+  if (current === "vote") { setText("vclock", clockText(ms)); $("vclock").classList.toggle("low", ms <= 60000); $("vbar").style.transform = frac; }
+}
+setInterval(tick, 250);
+
+// ---------- vote: six blind matchups (images come from /api/vimg, only for maps you were shown)
+let voteState = "", currentMatch = null, pendingChoice = null, voteBusy = false, stealImg = null, voteFor = "";
+const imgUrl = (id) => "/api/vimg?section=" + section + "&playerId=" + encodeURIComponent(playerId) + "&id=" + id;
+function votePane(which) {
+  for (const id of ["votebody", "votewait", "afterbox", "votedone"]) $(id).hidden = id !== which;
+  voteState = which;
+}
+function startVoting() {
+  const k = section + ":" + runId + ":" + playerId;
+  if (voteFor === k) return;          // already running for this player and run
+  voteFor = k;
+  loadMatch(false);
+}
+async function loadMatch(more) {
+  setText("voteerr", "");
+  votePane("votewait"); setText("votewaittext", "Getting your next matchup...");
+  try {
+    const r = await fetch("/api/match?section=" + section + "&playerId=" + encodeURIComponent(playerId) + (more ? "&more=1" : ""), { cache: "no-store" });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) { setText("votewaittext", typeof j.error === "string" ? j.error : "Could not get a matchup."); if (r.status !== 409) setTimeout(() => loadMatch(more), 3000); return; }
+    if (j.status === "match") return showMatch(j.match);
+    if (j.status === "not_enough") { setText("votewaittext", "Not enough maps yet. Trying again in a few seconds."); setTimeout(() => loadMatch(more), 4000); return; }
+    showAfter(j.seen || []);
+  } catch (e) { setText("votewaittext", "No connection. Trying again..."); setTimeout(() => loadMatch(more), 3000); }
+}
+function showMatch(m) {
+  currentMatch = m; pendingChoice = null;
+  setText("vcount", "Matchup " + m.n + " of " + m.total);
+  $("imgL").src = imgUrl(m.left); $("imgR").src = imgUrl(m.right);
+  document.querySelectorAll(".vside").forEach((el) => el.classList.remove("chosen"));
+  $("reasonbox").hidden = true;
+  document.querySelector("#votebody .tie").hidden = false;
+  document.querySelectorAll("#votebody .pick, #votebody .tie button").forEach((b) => (b.disabled = false));
+  votePane("votebody");
+}
+const KIND_SHORT = { "What it shows (measure)": "What it shows", "Butler": "Butler stands out", "Color": "Colors", "Title or text": "Title or text", "Legend": "Legend", "Change over time": "Change over time", "Something creative": "Something creative" };
+(function buildReasons() {
+  const box = $("reasons");
+  for (const k of KINDS) { const b = document.createElement("button"); b.type = "button"; b.textContent = KIND_SHORT[k] || k; b.addEventListener("click", () => sendVote(pendingChoice, k)); box.append(b); }
+  const sk = document.createElement("button"); sk.type = "button"; sk.className = "skip"; sk.textContent = "Skip"; sk.addEventListener("click", () => sendVote(pendingChoice, null)); box.append(sk);
+})();
+document.querySelectorAll("#votebody .pick").forEach((b) => b.addEventListener("click", () => {
+  if (!currentMatch || voteBusy) return;
+  pendingChoice = b.dataset.choice;
+  document.querySelectorAll(".vside").forEach((el, i) => el.classList.toggle("chosen", (i === 0 ? "L" : "R") === pendingChoice));
+  setText("reasonside", pendingChoice === "L" ? "left" : "right");
+  document.querySelector("#votebody .tie").hidden = true;
+  $("reasonbox").hidden = false;
+  $("reasonbox").scrollIntoView({ block: "nearest", behavior: "smooth" });
+}));
+document.querySelector("#votebody .tie button").addEventListener("click", () => sendVote("T", null));
+async function sendVote(choice, reason) {
+  if (!currentMatch || voteBusy || !choice) return;
+  voteBusy = true;
+  document.querySelectorAll("#votebody .pick, #votebody .tie button").forEach((b) => (b.disabled = true));
+  try {
+    const r = await post("/api/vote", { matchId: currentMatch.id, choice, reason });
+    if (!r.ok) setText("voteerr", typeof r.j.error === "string" ? r.j.error : "That vote did not count. Try again.");
+  } catch (e) { setText("voteerr", "No connection. Your vote may not have counted."); }
+  voteBusy = false;
+  window.scrollTo(0, 0);
+  loadMatch(false);
+}
+function showAfter(seen) {
+  if (voteState === "votedone") return;
+  if (voteState === "afterbox") return;
+  stealImg = null; $("stealform").hidden = true;
+  const box = $("seenmaps"); box.replaceChildren();
+  for (const id of seen.slice(-12)) {
+    const b = document.createElement("button"); b.type = "button";
+    const im = document.createElement("img"); im.src = imgUrl(id); im.alt = "A map you saw"; b.append(im);
+    b.addEventListener("click", () => { stealImg = id; box.querySelectorAll("button").forEach((x) => x.classList.toggle("on", x === b)); $("stealform").hidden = false; $("stealtext").focus(); });
+    box.append(b);
+  }
+  votePane("afterbox");
+}
+TOOLS.forEach((t) => { if (t === "Other") return; const o = document.createElement("option"); o.value = t; o.textContent = t; $("guess").append(o); });
+KINDS.forEach((k) => { const o = document.createElement("option"); o.value = k; o.textContent = k; $("stealkind").append(o); });
+function finishVoting() { setText("donecode", (meData && meData.you && meData.you.code) || ""); votePane("votedone"); }
+$("afterskip").addEventListener("click", finishVoting);
+$("aftersend").addEventListener("click", async () => {
+  const body = {};
+  if ($("guess").value) body.guess = $("guess").value;
+  if (stealImg && $("stealkind").value && $("stealtext").value.trim()) body.steal = { img: stealImg, kind: $("stealkind").value, text: $("stealtext").value };
+  else if (stealImg) { setText("voteerr", "Pick the kind of idea and write it in one line, or skip."); return; }
+  if (!body.guess && !body.steal) { finishVoting(); return; }
+  try {
+    const r = await post("/api/after", body);
+    if (!r.ok) { setText("voteerr", typeof r.j.error === "string" ? r.j.error : "That did not save. Try again or skip."); return; }
+  } catch (e) { setText("voteerr", "No connection. Try again or skip."); return; }
+  setText("voteerr", ""); finishVoting();
+});
+$("moremore").addEventListener("click", () => loadMatch(true));
+// enlarge a map: click it; click anywhere or press Esc to close
+document.querySelectorAll(".vimg").forEach((b) => b.addEventListener("click", () => {
+  const src = (b.dataset.side === "L" ? $("imgL") : $("imgR")).src;
+  if (!src) return;
+  $("lbimg").src = src; $("lightbox").hidden = false;
+}));
+$("lightbox").addEventListener("click", () => { $("lightbox").hidden = true; });
+
+// ---------- results: a student's own record (GET /api/mine), shown once Fadel puts the results up
+let mineFor = "";
+function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+async function loadMine() {
+  const k = section + ":" + runId + ":" + playerId;
+  if (mineFor === k) return;
+  mineFor = k;
+  const box = $("mine");
+  try {
+    const r = await fetch("/api/mine?section=" + section + "&playerId=" + encodeURIComponent(playerId), { cache: "no-store" });
+    const j = await r.json();
+    if (!r.ok) { box.replaceChildren(el("p", "muted", typeof j.error === "string" ? j.error : "Could not load your results.")); mineFor = ""; return; }
+    if (!j.hasMap) { box.replaceChildren(el("p", null, "You did not submit a map, so there is no record to show. Look at the projector for the class results.")); return; }
+    const grid = el("div", "minegrid");
+    const col = el("div", "minecol");
+    const im = el("img"); im.src = imgUrl(j.imgId); im.alt = "Your map";
+    im.addEventListener("click", () => { $("lbimg").src = im.src; $("lightbox").hidden = false; });
+    col.append(el("h3", null, "Your map"), im, el("div", "minerec", j.wins + " won · " + j.losses + " lost" + (j.ties ? " · " + j.ties + " too close" : "")));
+    const reasons = Object.entries(j.reasons || {}).sort((x, y) => y[1] - x[1]);
+    col.append(el("p", null, reasons.length ? "When voters picked your map, they said: " + reasons.map(([k2, n]) => (KIND_SHORT[k2] || k2) + (n > 1 ? " ×" + n : "")).join(", ") + "." : "Voters did not tap a reason when they picked your map."));
+    if (j.borrowedKinds && j.borrowedKinds.length) col.append(el("p", null, j.borrowedKinds.length + " classmate" + (j.borrowedKinds.length > 1 ? "s" : "") + " would borrow from your map: " + j.borrowedKinds.map((x) => KIND_SHORT[x] || x).join(", ") + "."));
+    grid.append(col);
+    const beat = j.beatenBy || [];
+    beat.forEach((bm, i) => {
+      const c = el("div", "minecol");
+      const bi = el("img"); bi.src = imgUrl(bm.imgId); bi.alt = "A map that beat yours";
+      bi.addEventListener("click", () => { $("lbimg").src = bi.src; $("lightbox").hidden = false; });
+      c.append(el("h3", null, (i ? "Also beat yours: " : "Beat yours most often: ") + bm.first + " " + bm.initial + ". (" + bm.tool + ", " + bm.times + "×)"), bi);
+      const ol = el("ol");
+      for (const pn of bm.pins || []) ol.append(el("li", null, pn.kind + ": " + pn.text));
+      c.append(el("div", "kicker", "Their pins"), ol, el("div", "kicker", "Their final prompt"), el("pre", "fp", bm.finalPrompt || ""));
+      grid.append(c);
+    });
+    if (!beat.length) grid.append(el("div", "minecol", "No map beat yours head to head."));
+    const parts = [grid];
+    box.replaceChildren(...parts);
+  } catch (e) { mineFor = ""; box.replaceChildren(el("p", "muted", "No connection. Reload the page to try again.")); }
+}
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") $("lightbox").hidden = true; });
+
+// ---------- plan
+let planFilled = false, planDirty = false, planTimer = null, planSaving = false;
+function planValues() { const o = {}; document.querySelectorAll("#planform [data-f]").forEach((el) => { o[el.dataset.f] = el.value; }); return o; }
+function paintPlanForm() {
+  const late = snap.phase !== "plan";
+  setText("plankick", late ? "Before you build" : "Step 1 of 4 · Plan");
+  $("pclock").hidden = late; $("pbar").parentElement.hidden = late;
+  setText("planintro", late
+    ? "You joined after the plan time. Write a quick plan first: how you will make a good map and how you will pass that to the AI. Then click the button to start building."
+    : "Before you open any AI tool, write down how you will make a good map and how you will pass that to the AI. Short answers are fine. Your plan is saved as you type and locks when the build starts.");
+  setText("planfinal", late ? "Save my plan and start building" : (meData.plan && meData.plan.final ? "Plan saved as ready" : "My plan is ready"));
+  if (!planFilled && meData.plan) {
+    planFilled = true;
+    for (const f of PLAN_FIELDS) { const el = $("p-" + f); if (el && !el.value) el.value = meData.plan[f] || ""; }
+    setText("plansaved", "Saved " + new Date(meData.plan.savedAt).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }));
+  }
+}
+async function savePlan(final) {
+  if (planSaving) { planDirty = true; return; }
+  planSaving = true; planDirty = false;
+  try {
+    const r = await post("/api/plan", { plan: planValues(), final });
+    if (r.ok) { setText("plansaved", (final ? "Saved as ready " : "Draft saved ") + new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" })); setText("planerr", ""); }
+    else if (r.status !== 400 || final) setText("planerr", typeof r.j.error === "string" ? r.j.error : "Could not save. Try again.");
+    if (final || r.status === 409) await fetchMe();
+  } catch (e) { setText("planerr", "No connection. Your text is still here; it will save when the connection is back."); planDirty = true; }
+  planSaving = false;
+  if (planDirty) schedulePlanSave();
+}
+function schedulePlanSave() { clearTimeout(planTimer); planTimer = setTimeout(() => savePlan(false), 1500); }
+document.querySelectorAll("#planform [data-f]").forEach((el) => el.addEventListener("input", () => { planDirty = true; schedulePlanSave(); }));
+$("planfinal").addEventListener("click", () => { clearTimeout(planTimer); savePlan(true); });
+
+function paintPlanLocked() {
+  const p = meData && meData.plan;
+  $("planbtn").hidden = !p;
+  if (!p) return;
+  const dl = $("plandl");
+  if (dl.dataset.at === String(p.savedAt)) return;
+  dl.dataset.at = String(p.savedAt);
+  dl.replaceChildren();
+  for (const f of PLAN_FIELDS) {
+    if (!p[f]) continue;
+    const dt = document.createElement("dt"); dt.textContent = PLAN_LABELS[f];
+    const dd = document.createElement("dd");
+    if (f === "prompt") {
+      const row = document.createElement("div"); row.className = "copyrow";
+      const pre = document.createElement("pre"); pre.textContent = p[f];
+      const b = document.createElement("button"); b.type = "button"; b.className = "btn"; b.textContent = "Copy";
+      b.addEventListener("click", async () => { try { await navigator.clipboard.writeText(p[f]); b.textContent = "Copied"; setTimeout(() => (b.textContent = "Copy"), 1500); } catch (e) {} });
+      row.append(pre, b); dd.append(row);
+    } else dd.textContent = p[f];
+    dl.append(dt, dd);
+  }
+}
+
+// ---------- work: the map form
+function paintWork() {
+  const ph = snap.phase;
+  setText("workkick", ph === "submit" ? "Step 3 of 4 · Submit" : "Step 2 of 4 · Build");
+  setText("worktitle", ph === "submit" ? "Submit your map" : "Build your map");
+  paintPlanLocked();
+  const sub = meData.sub;
+  $("donebar").hidden = !sub;
+  if (sub) setText("donebar", "Submitted at " + new Date(sub.submittedAt).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) + ". You can change anything and submit again until the vote starts.");
+  setText("btnnote", meData.checksLeft != null ? meData.checksLeft + " check" + (meData.checksLeft === 1 ? "" : "s") + " left" : "");
+  $("checkbtn").disabled = busyCheck || !img || pins.length < 1 || meData.checksLeft === 0;
+}
+function fillForm() {
+  // restore from this browser's draft first, then from the server's copy of the last submission
+  const d = load(draftKey());
+  const sub = meData && meData.sub;
+  const src = d || (sub ? { tool: sub.tool, toolOther: sub.toolOther, model: sub.model, prompts: sub.prompts, share: sub.share, final: sub.finalPrompt, pins: sub.pins } : null);
+  if (!src) return;
+  $("tool").value = src.tool || ""; $("toolother").value = src.toolOther || ""; $("model").value = src.model || "";
+  $("prompts").value = src.prompts || ""; $("share").value = src.share || ""; $("final").value = src.final || "";
+  pins = Array.isArray(src.pins) ? src.pins.map((p) => ({ x: p.x, y: p.y, kind: p.kind || "", text: p.text || "" })) : [];
+  if (d && d.img && d.img.url) img = d.img;
+  paintTool(); paintShot(); paintPins();
+}
+let formFilledFor = "";
+function saveDraft() {
+  if (!playerId) return;
+  const d = { tool: $("tool").value, toolOther: $("toolother").value, model: $("model").value, prompts: $("prompts").value, share: $("share").value, final: $("final").value, pins, img };
+  if (!store(draftKey(), d)) { d.img = null; store(draftKey(), d); }   // storage full: keep the text, not the image
+}
+TOOLS.forEach((t) => { const o = document.createElement("option"); o.value = t; o.textContent = t; $("tool").append(o); });
+function paintTool() { $("otherwrap").hidden = $("tool").value !== "Other"; }
+["tool", "toolother", "model", "prompts", "share", "final"].forEach((id) => $(id).addEventListener("input", () => { paintTool(); saveDraft(); }));
+
+function paintShot() {
+  $("drop").hidden = Boolean(img);
+  $("shot").hidden = !img;
+  if (img && $("shotimg").src !== img.url) $("shotimg").src = img.url;
+  $("shot").classList.toggle("moving", moving >= 0);
+  setText("shothelp", moving >= 0 ? "Click where pin " + (moving + 1) + " should go" : pins.length >= 6 ? "6 pins is the most" : "Click a feature to pin it");
+  $("pinlayer").replaceChildren(...pins.map((p, i) => {
+    const d = document.createElement("div");
+    d.className = "pin" + (i === moving ? " hot" : "");
+    d.style.left = (p.x * 100) + "%"; d.style.top = (p.y * 100) + "%"; d.textContent = String(i + 1);
+    return d;
+  }));
+}
+const pinsKey = () => JSON.stringify(pins.map((p) => [p.x, p.y, p.kind, p.text]));
+function paintPins(focusLast) {
+  const rows = $("rows");
+  rows.replaceChildren(...pins.map((p, i) => {
+    const row = document.createElement("div"); row.className = "prow";
+    const n = document.createElement("div"); n.className = "n"; n.textContent = String(i + 1);
+    const sel = document.createElement("select"); sel.className = "in";
+    const o0 = document.createElement("option"); o0.value = ""; o0.textContent = "Kind of feature"; sel.append(o0);
+    KINDS.forEach((k) => { const o = document.createElement("option"); o.value = k; o.textContent = k; sel.append(o); });
+    sel.value = p.kind || "";
+    sel.addEventListener("change", () => { pins[i].kind = sel.value; saveDraft(); });
+    const inp = document.createElement("input"); inp.className = "in"; inp.maxLength = 90; inp.placeholder = "What is it, and why did you do it?"; inp.value = p.text || "";
+    inp.addEventListener("input", () => { pins[i].text = inp.value; saveDraft(); });
+    const ck = document.createElement("div"); ck.className = "ck";
+    if (lastCheck && lastCheck.pinsKey === pinsKey() && i < lastCheck.seen.length) {
+      ck.className = "ck " + (lastCheck.seen[i] ? "yes" : "no"); ck.textContent = lastCheck.seen[i] ? "✓" : "?";
+      ck.title = lastCheck.seen[i] ? "The checker can see this." : "Not found near the pin. Move the pin, or reword it.";
+    }
+    const acts = document.createElement("div"); acts.className = "acts";
+    const mv = document.createElement("button"); mv.type = "button"; mv.textContent = i === moving ? "Cancel" : "Move";
+    mv.addEventListener("click", () => { moving = moving === i ? -1 : i; paintShot(); paintPins(); });
+    const rm = document.createElement("button"); rm.type = "button"; rm.textContent = "Remove";
+    rm.addEventListener("click", () => { pins.splice(i, 1); moving = -1; saveDraft(); paintShot(); paintPins(); });
+    acts.append(mv, rm);
+    row.append(n, sel, inp, ck, acts);
+    return row;
+  }));
+  setText("count", pins.length + " of 6 pins" + (pins.length < 2 ? " · add at least 2" : ""));
+  paintCheckNote();
+  if (focusLast) { const ins = rows.querySelectorAll("input"); if (ins.length) ins[ins.length - 1].focus(); }
+  if (meData && current === "work") paintWork();
+}
+$("shot").addEventListener("click", (e) => {
+  if (e.target.closest(".replace")) return;
+  const b = $("shotimg").getBoundingClientRect();
+  const x = Math.min(1, Math.max(0, (e.clientX - b.left) / b.width)), y = Math.min(1, Math.max(0, (e.clientY - b.top) / b.height));
+  const r4 = (v) => Math.round(v * 10000) / 10000;
+  if (moving >= 0) { pins[moving].x = r4(x); pins[moving].y = r4(y); moving = -1; saveDraft(); paintShot(); paintPins(); return; }
+  if (pins.length >= 6) return;
+  pins.push({ x: r4(x), y: r4(y), kind: "", text: "" });
+  saveDraft(); paintShot(); paintPins(true);
+});
+$("replace").addEventListener("click", () => { $("shotfile").click(); });
+
+// ---------- screenshots: shrink to at most 1,600 px and about 1.2 MB as a JPEG data URL
+async function toImage(blob) {
+  const im = await new Promise((res, rej) => { const u = URL.createObjectURL(blob); const i = new Image(); i.onload = () => { URL.revokeObjectURL(u); res(i); }; i.onerror = () => { URL.revokeObjectURL(u); rej(new Error("not an image")); }; i.src = u; });
+  let scale = Math.min(1, MAX_SIDE / Math.max(im.naturalWidth, im.naturalHeight)), quality = 0.88, url = "", w = 0, h = 0;
+  for (let i = 0; i < 8; i++) {
+    const c = document.createElement("canvas");
+    w = c.width = Math.max(1, Math.round(im.naturalWidth * scale)); h = c.height = Math.max(1, Math.round(im.naturalHeight * scale));
+    const g = c.getContext("2d"); g.fillStyle = "#ffffff"; g.fillRect(0, 0, w, h); g.drawImage(im, 0, 0, w, h);
+    url = c.toDataURL("image/jpeg", quality);
+    if (url.length <= MAX_URL) break;
+    if (quality > 0.72) quality -= 0.08; else scale *= 0.85;
+  }
+  return { url, w, h };
+}
+async function takeImage(blob) {
+  if (!blob || !/^image\//.test(blob.type)) { setText("shoterr", "That is not an image. Use a PNG or JPEG screenshot."); return; }
+  if (current !== "work") return;
+  setText("shoterr", "");
+  try {
+    const dims = await new Promise((res, rej) => { const u = URL.createObjectURL(blob); const i = new Image(); i.onload = () => { URL.revokeObjectURL(u); res([i.naturalWidth, i.naturalHeight]); }; i.onerror = () => { URL.revokeObjectURL(u); rej(new Error("not an image")); }; i.src = u; });
+    if (dims[0] < MIN_W || dims[1] < MIN_H) { setText("shoterr", "That screenshot is too small (" + dims[0] + " × " + dims[1] + " pixels; at least " + MIN_W + " × " + MIN_H + "). Open the image full size in the chat, or download it and choose the file, then try again."); return; }
+    if (Math.max(dims[0], dims[1]) / Math.min(dims[0], dims[1]) > 3) { setText("shoterr", "That screenshot is a very thin strip. Snip the whole figure and try again."); return; }
+    const fresh = await toImage(blob);
+    const replacing = Boolean(img);
+    img = fresh; lastCheck = null;
+    if (replacing && pins.length) setText("shoterr", "New screenshot in. Check that your pins still sit on the right features (use Move).");
+    saveDraft(); paintShot(); paintPins();
+  } catch (e) { setText("shoterr", "That image could not be opened. Try another screenshot."); }
+}
+document.addEventListener("paste", (e) => {
+  const it = [...((e.clipboardData && e.clipboardData.items) || [])].find((x) => x.kind === "file" && /^image\//.test(x.type));
+  if (!it || current !== "work") return;
+  e.preventDefault();
+  takeImage(it.getAsFile());
+});
+const drop = $("drop");
+["dragenter", "dragover"].forEach((t) => drop.addEventListener(t, (e) => { e.preventDefault(); drop.classList.add("over"); }));
+["dragleave", "drop"].forEach((t) => drop.addEventListener(t, (e) => { e.preventDefault(); drop.classList.remove("over"); }));
+drop.addEventListener("drop", (e) => takeImage(e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]));
+$("shotfile").addEventListener("change", () => { takeImage($("shotfile").files && $("shotfile").files[0]); $("shotfile").value = ""; });
+
+// the screenshot with numbered pins drawn on it, for the checker
+async function withPins() {
+  const im = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = img.url; });
+  const c = document.createElement("canvas"); c.width = img.w; c.height = img.h;
+  const g = c.getContext("2d"); g.drawImage(im, 0, 0);
+  const r = Math.max(12, Math.round(Math.min(img.w, img.h) * 0.022));
+  pins.forEach((p, i) => {
+    const x = p.x * img.w, y = p.y * img.h;
+    g.beginPath(); g.arc(x, y, r, 0, 2 * Math.PI); g.fillStyle = "#C3142D"; g.fill(); g.lineWidth = Math.max(2, r / 5); g.strokeStyle = "#ffffff"; g.stroke();
+    g.fillStyle = "#ffffff"; g.font = "bold " + Math.round(r * 1.1) + "px Arial"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(String(i + 1), x, y + 1);
+  });
+  let q = 0.85, url = c.toDataURL("image/jpeg", q);
+  while (url.length > 1_500_000 && q > 0.5) { q -= 0.1; url = c.toDataURL("image/jpeg", q); }
+  return url;
+}
+
+$("checkbtn").addEventListener("click", async () => {
+  setText("suberr", "");
+  if (!img) { setText("suberr", "Paste a screenshot of your map first."); return; }
+  if (!pins.length || pins.some((p) => !p.text.trim())) { setText("suberr", "Write a sentence for every pin first."); return; }
+  busyCheck = true; paintWork();
+  $("btnnote").replaceChildren(Object.assign(document.createElement("span"), { className: "spin" }), document.createTextNode("Checking (about 10 seconds)..."));
+  const key = pinsKey();
+  try {
+    const r = await post("/api/check", { image: await withPins(), pins: pins.map((p) => ({ kind: p.kind, text: p.text })) });
+    if (r.ok && r.j.status === "ok") {
+      lastCheck = { seen: r.j.seen, pinsKey: key };
+    } else if (r.ok && r.j.status === "service_error") setText("suberr", "The checker did not answer. It did not count against your checks. You can still submit.");
+    else setText("suberr", typeof r.j.error === "string" ? r.j.error : "The check did not work. You can still submit.");
+  } catch (e) { setText("suberr", "No connection. Try again."); }
+  busyCheck = false;
+  await fetchMe();
+  paintPins();
+});
+
+$("submitbtn").addEventListener("click", async () => {
+  if (busySubmit) return;
+  setText("suberr", "");
+  const tool = $("tool").value;
+  const problems = [];
+  if (!img) problems.push("paste a screenshot of your map");
+  if (!tool) problems.push("pick the AI tool");
+  if (tool === "Other" && !$("toolother").value.trim()) problems.push("type the tool's name");
+  if (!(Number($("prompts").value) >= 1)) problems.push("enter how many prompts you sent");
+  if (pins.length < 2) problems.push("pin at least 2 features");
+  if (pins.some((p) => !p.kind || !p.text.trim())) problems.push("give every pin a kind and a sentence");
+  if (!$("final").value.trim()) problems.push("paste your final prompt");
+  if (problems.length) { setText("suberr", "Before you submit: " + problems.join("; ") + "."); return; }
+  busySubmit = true; $("submitbtn").disabled = true;
+  $("btnnote").replaceChildren(Object.assign(document.createElement("span"), { className: "spin" }), document.createTextNode("Submitting..."));
+  try {
+    const r = await post("/api/submit", {
+      image: img.url, w: img.w, h: img.h, tool, toolOther: $("toolother").value, model: $("model").value,
+      prompts: Number($("prompts").value), share: $("share").value.trim(), finalPrompt: $("final").value, pins,
+    });
+    if (r.ok) { setText("suberr", ""); }
+    else if (r.status === 413) setText("suberr", "That image is too large. Snip a smaller area and paste again.");
+    else setText("suberr", typeof r.j.error === "string" ? r.j.error : "Your map was not accepted. Try again.");
+  } catch (e) { setText("suberr", "No connection. Click Submit map again."); }
+  busySubmit = false; $("submitbtn").disabled = false;
+  await fetchMe();
+});
+
+function paintCheckNote() {
+  const fresh = lastCheck && lastCheck.pinsKey === pinsKey();
+  $("checknote").hidden = !fresh;
+  if (!fresh) return;
+  const yes = lastCheck.seen.filter(Boolean).length, no = lastCheck.seen.length - yes;
+  setText("checknote", "Checker: ✓ " + yes + " seen" + (no ? " · ? " + no + " not found near its pin (move it or reword it, then check again or just submit)" : "") + ".");
+}
+$("planbtn").addEventListener("click", () => { paintPlanLocked(); $("planmodal").hidden = false; });
+$("planclose").addEventListener("click", () => { $("planmodal").hidden = true; });
+$("planmodal").addEventListener("click", (e) => { if (e.target === $("planmodal")) $("planmodal").hidden = true; });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") $("planmodal").hidden = true; });
+
+// ---------- network
+async function poll() {
+  const sec = section;
+  try {
+    const r = await fetch("/api/state?section=" + sec);
+    if (!r.ok) throw new Error("state " + r.status);
+    const s = await r.json();
+    if (sec !== section) return;
+    fails = 0; $("conn").classList.remove("on");
+    calibrate(s.serverNow);
+    onSnapshot(s);
+  } catch (e) { if (++fails >= 3) $("conn").classList.add("on"); }
+}
+function onSnapshot(s) {
+  if (snap && Number(s.runId) < Number(snap.runId)) return;
+  if (runId != null && Number(s.runId) < Number(runId)) return;
+  if (snap && same(snap.runId, s.runId) && (s.seq < snap.seq || (s.seq === snap.seq && s.serverNow < snap.serverNow))) return;
+  if (playerId && runId != null && Number(s.runId) > Number(runId)) { toJoin(MSG_RESET, true); snap = s; return; }
+  snap = s;
+  if (playerId && !kicked) { const k = [s.runId, s.seq, s.phase].join("|"); if (k !== meKey) { meKey = k; fetchMe(); } }
+  render();
+}
+async function fetchMe() {
+  if (!playerId) return;
+  const gen = ++meGen, sec = section;
+  try {
+    const r = await fetch("/api/me?section=" + sec + "&playerId=" + encodeURIComponent(playerId), { cache: "no-store" });
+    if (!r.ok) throw new Error("me " + r.status);
+    const m = await r.json();
+    if (gen !== meGen || sec !== section || !playerId) return;
+    calibrate(m.serverNow);
+    if (runId != null && !same(m.runId, runId)) { toJoin(MSG_RESET, true); return; }
+    if (m.kicked) { toJoin(MSG_KICKED, false); return; }
+    meData = m;
+    const k = section + ":" + runId + ":" + playerId;
+    if (formFilledFor !== k) { formFilledFor = k; fillForm(); }
+    render();
+  } catch (e) { if (gen === meGen) setTimeout(fetchMe, 3000); }
+}
+async function post(path, body) {
+  const r = await fetch(path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(Object.assign({ section, playerId }, body)) });
+  const j = await r.json().catch(() => ({}));
+  return { status: r.status, ok: r.ok, j };
+}
+
+// ---------- join screen (from Press Time)
+function toJoin(msg, reset) {
+  const you = meData && meData.you;
+  if (you && !$("first").value) $("first").value = you.first;
+  if (reset) { playerId = null; runId = null; wipe(KEY); }
+  kicked = !reset; meData = null; meKey = ""; seat = null; formFilledFor = ""; planFilled = false;
+  $("joinmsg").textContent = msg; $("joinmsg").hidden = !msg;
+  paintSeat(); render();
+}
+function paintJoin() { $("joinbtn").disabled = joining || !($("first").value.trim() && /^[A-Z]$/.test($("initial").value) && seat); }
+function paintSeat() {
+  document.querySelectorAll("#seatplan .seat").forEach((g) => g.classList.toggle("mine", g.dataset.seat === seat));
+  $("remote").classList.toggle("on", seat === "remote");
+  setText("seatline", seat === "remote" ? "Joining remotely." : seat ? "Seat " + seat : "No seat picked yet.");
+  paintJoin();
+}
+function setSide(sd) {
+  side = sd;
+  document.querySelectorAll("#sideseg button").forEach((b) => b.classList.toggle("on", b.dataset.side === sd));
+  const svg = $("seatplan").querySelector("svg");
+  if (svg) svg.setAttribute("viewBox", sd === "L" ? "40 30 425 582" : "435 30 425 582");
+}
+function setSection(sc) {
+  if (sc !== section) {
+    section = sc; playerId = null; runId = null; snap = null; meData = null; meKey = ""; kicked = false; meGen++; fails = 0;
+    $("joinmsg").hidden = true;
+    const st = load(KEY);
+    if (st && st.section === sc && typeof st.playerId === "string") { playerId = st.playerId; runId = st.runId ?? null; }
+    try { history.replaceState(null, "", location.pathname + "?section=" + sc); } catch (e) {}
+    poll();
+  }
+  $("secZ").hidden = section !== "Z";
+  document.querySelectorAll("#secseg button").forEach((b) => b.classList.toggle("on", b.dataset.sec === section));
+  paintHeader();
+}
+document.querySelectorAll("#secseg button").forEach((b) => b.addEventListener("click", () => { if (!playerId || kicked) setSection(b.dataset.sec); }));
+document.querySelectorAll("#sideseg button").forEach((b) => b.addEventListener("click", () => setSide(b.dataset.side)));
+$("first").addEventListener("input", paintJoin);
+$("initial").addEventListener("input", () => { const el = $("initial"); const v = el.value.replace(/[^A-Za-z]/g, "").toUpperCase().slice(0, 1); if (el.value !== v) el.value = v; paintJoin(); });
+$("remote").addEventListener("click", () => { seat = seat === "remote" ? null : "remote"; paintSeat(); });
+$("changeseat").addEventListener("click", (e) => { e.preventDefault(); toJoin("", false); });
+$("joinbtn").addEventListener("click", join);
+// the personal code: the same player on another computer, or after closing the tab
+async function resumeWithCode() {
+  const code = $("rcode").value.trim().toUpperCase();
+  setText("rerr", "");
+  if (!/^[A-Z0-9]{6}$/.test(code)) { setText("rerr", "A code has 6 letters and digits."); return; }
+  try {
+    const r = await fetch("/api/resume", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ code }) });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) { setText("rerr", typeof j.error === "string" ? j.error : "That code did not work."); return; }
+    if (j.section !== section) setSection(j.section);
+    playerId = j.playerId; runId = j.runId; kicked = false; save();
+    $("joinmsg").hidden = true; meData = null; meKey = ""; formFilledFor = ""; planFilled = false; $("rcode").value = "";
+    render(); await fetchMe(); poll();
+  } catch (e) { setText("rerr", "No connection. Try again."); }
+}
+$("rbtn").addEventListener("click", resumeWithCode);
+$("rcode").addEventListener("keydown", (e) => { if (e.key === "Enter") resumeWithCode(); });
+async function join() {
+  if (joining || $("joinbtn").disabled) return;
+  joining = true; paintJoin(); $("joinerr").textContent = "";
+  const body = { section, first: $("first").value.trim(), initial: $("initial").value, seat };
+  if (playerId) body.playerId = playerId;
+  try {
+    const r = await fetch("/api/join", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    const j = await r.json().catch(() => ({}));
+    if (r.status === 429) $("joinerr").textContent = "Too many joins right now. Wait a few seconds and click Join again.";
+    else if (!r.ok || !j.playerId) $("joinerr").textContent = typeof j.error === "string" ? j.error : "Could not join. Try again.";
+    else {
+      playerId = j.playerId; runId = j.runId; kicked = false; save();
+      $("joinmsg").hidden = true; meData = null; meKey = "";
+      if (snap && !same(snap.runId, runId)) snap = null;
+      render(); await fetchMe(); poll();
+    }
+  } catch (e) { $("joinerr").textContent = "No connection. Check the network and click Join again."; }
+  joining = false; paintJoin();
+}
+
+// ---------- start
+async function start() {
+  setSection(section);
+  render();
+  try {
+    const r = await fetch("plan.svg");
+    if (r.ok) {
+      $("seatplan").innerHTML = await r.text();   // our own static file, not user text
+      $("seatplan").querySelectorAll(".seat").forEach((g) => g.addEventListener("click", () => { seat = g.dataset.seat; paintSeat(); }));
+    }
+  } catch (e) {}
+  setSide(side); paintSeat();
+  if (playerId) fetchMe();
+  await poll();
+  (function loop() { setTimeout(async () => { await poll(); loop(); }, POLL_MS); })();
+}
+start();
+</script>
+</body>
+</html>
