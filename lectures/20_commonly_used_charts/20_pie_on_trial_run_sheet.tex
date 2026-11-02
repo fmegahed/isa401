@@ -1,0 +1,111 @@
+% Pie on Trial: one-page run sheet for the Class 20 phone game (instructor only).
+\documentclass[10pt,letterpaper]{article}
+
+\usepackage[margin=0.45in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{palatino,mathpazo}
+\usepackage{color}
+\usepackage{multicol}
+\usepackage{enumitem}
+\usepackage{tabularx}
+\usepackage[colorlinks=true, urlcolor=cyan, linkcolor=cyan]{hyperref}
+\usepackage{url}
+\urlstyle{same}
+
+\definecolor{miami}{RGB}{195,20,45}
+\definecolor{soft}{RGB}{248,236,238}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\columnsep}{0.3in}
+\setlist{nosep, leftmargin=*, topsep=1pt}
+
+\newcommand{\hd}[1]{\par\medskip{\color{miami}\large\bfseries #1}\par\vspace{2pt}}
+\newcommand{\key}[1]{\fbox{\ttfamily\bfseries\footnotesize #1}}
+\newcommand{\site}{isa401-pie-on-trial.vercel.app}
+
+\begin{document}
+
+\begin{center}
+	{\LARGE\bfseries Pie on Trial: Run Sheet}\\[2pt]
+	{\large ISA 401, Class 20 (Mon Nov 2, 2026): the two-minute phone game, before the pie slides}
+\end{center}
+
+\vspace{-2pt}
+Students see the three datasets from ``Pie Charts are Awful By Design'' as pies, then as bars, and tap the largest with 15 seconds per chart. The projector then shows how the class answered, pie next to bars. There are no names, seats or points, and nothing counts toward grades.
+
+\medskip
+\begin{tabularx}{\textwidth}{@{}lX@{}}
+	\hline
+	\textbf{Students, section A} (8:30) & \url{https://\site/?section=A} \quad (QR on the deck's Pie on Trial slide and in the lobby) \\
+	\textbf{Students, section B} (10:05) & \url{https://\site/?section=B} \\
+	\textbf{Projector} & \url{https://\site/host?section=A} \quad (or \texttt{B}) \\
+	\textbf{Rehearsal} & \url{https://\site/host?section=A&demo=1} \quad (a simulated class: no key, no writes) \\
+	\textbf{Test section} & \url{https://\site/?section=Z} \quad and \quad \url{https://\site/host?section=Z} \\
+	\textbf{Admin key} & Game Day's \texttt{ADMIN\_KEY}; the projector page asks for it once per browser tab. \\
+	\hline
+\end{tabularx}
+
+\raggedcolumns
+\begin{multicols}{2}
+
+\hd{1. Before each section}
+\begin{enumerate}
+	\item Open the projector page for the section and enter the key.
+	\item Press \key{X} \key{X} (reset): the run number goes up and the lobby is empty.
+	\item \key{F} full screen. Leave the lobby up while students scan the code.
+\end{enumerate}
+
+\hd{2. When to play}
+Right after the \textit{Part 3: Proportions} divider, on the Pie on Trial slide, and \textbf{before any pie slide}: the slides that follow show the same data. About five minutes: two of play, then the reveal.
+
+\hd{3. Keys}
+\begin{tabularx}{\columnwidth}{@{}lX@{}}
+	\key{Space} or \key{$\rightarrow$} & next step (its label is on the red dock button) \\
+	\key{B} or \key{$\leftarrow$} & back, inside the reveal \\
+	\key{X} \key{X} & reset (twice within 3 s); phones return to waiting \\
+	\key{M} & music on or off (projector only; plays while the charts run) \\
+	\key{F} \key{H} & full screen, hide the dock \\
+\end{tabularx}
+
+\hd{4. The flow}
+\key{Space} start $\rightarrow$ students play $\rightarrow$ \key{Space} stop and reveal $\rightarrow$ \key{Space} through exhibits 2 and 3 $\rightarrow$ \key{Space} verdict $\rightarrow$ back to the deck.
+\begin{itemize}
+	\item The count on the projector shows who has finished. A phone joins the count after its first answer or timeout, so wait about 15 seconds before trusting the total.
+	\item Six charts take at most 90 seconds.
+	\item Revealing early is safe: phones stop, and students keep the answers they gave.
+\end{itemize}
+
+\columnbreak
+
+\hd{5. What students do}
+Scan the code and wait. When the charts start, tap the largest slice or bar, or its letter (a to e). At the reveal, each phone shows that student's own score: right on pies and right on bars, out of 3 each.
+
+\hd{6. Answer key}
+\colorbox{soft}{\parbox{\dimexpr\columnwidth-2\fboxsep}{%
+	\begin{tabularx}{\linewidth}{@{}lXl@{}}
+		\textbf{Charts} & \textbf{a, b, c, d, e (each sums to 100)} & \textbf{Largest} \\
+		1 and 4: rising & 16, 18, 20, 22, 24 & \textbf{e} \\
+		2 and 5: flat & 20, 19, 21, 20, 20 & \textbf{c} \\
+		3 and 6: falling & 23, 22, 20, 18, 17 & \textbf{a} \\
+	\end{tabularx}}}
+
+\hd{7. How to read the results}
+\begin{itemize}
+	\item Percent right is the phones that tapped the largest, out of all phones shown that chart. Running out of time counts as not right.
+	\item \textbf{Say both caveats, which are on the verdict screen:} bars always come second, so they get practice, and the slices are close on purpose. Pies do better when the differences are large.
+	\item The verdict title follows the data, even if pies win or the two tie. Then click on to the pie slides.
+\end{itemize}
+
+\hd{8. If something goes wrong}
+\begin{itemize}
+	\item \textbf{Phone reloads mid-game:} it resumes at the next chart.
+	\item \textbf{Scans after the reveal:} the phone says the round has finished.
+	\item \textbf{``Scan the QR code again'':} the address lost its section; use the QR code.
+	\item \textbf{``One answer may not have counted'':} that phone lost its connection; it can keep playing.
+	\item \textbf{Key screen says the server had a problem:} the key is fine. Reload once; if it persists, skip to the pie slides, which work without the game.
+	\item \textbf{Projector asks for the key again:} it is a new tab; enter the key once.
+\end{itemize}
+
+\end{multicols}
+
+\end{document}

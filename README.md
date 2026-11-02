@@ -39,8 +39,8 @@ ISA 401 teaches the complete business intelligence pipeline: acquiring data from
 | **09** | Mon 10/19 | Fundamentals of Data Visualization (Cont.) | [Slides](http://fmegahed.github.io/isa401/fall2026/class16/16_grammar_of_graphics.html) |
 | | Wed 10/21 | Lab: Tableau | [PDF](lectures/17_lab_tableau/17_tableau_lab.pdf) |
 | **10** | Mon 10/26 | Lab: Power BI | [PDF](lectures/18_lab_powerbi/18_powerbi_lab.pdf) |
-| | Wed 10/28 | Commonly Used Charts | |
-| **11** | Mon 11/02 | Visualizing Time Series | |
+| | Wed 10/28 | Lab: AI Maps | [PDF](lectures/19_lab_ai_maps/19_ai_maps_lab.pdf) |
+| **11** | Mon 11/02 | Commonly Used Charts | [Slides](http://fmegahed.github.io/isa401/fall2026/class20/20_commonly_used_charts.html) |
 | | Wed 11/04 | Spatial & Spatiotemporal Charts | |
 | **12** | Mon 11/09 | Visualizing High-Dimensional Data | |
 | | Wed 11/11 | Business Reporting | |
@@ -60,7 +60,7 @@ ISA 401 teaches the complete business intelligence pipeline: acquiring data from
 
 ## Practice Site and Class Games
 
-Five small web apps go with the lectures. Each one runs in a browser with nothing to install, and none of them is graded.
+Eight small web apps go with the lectures. Each one runs in a browser with nothing to install, and none of them is graded.
 
 | Class | What | What students do | Source |
 |:---:|:---|:---|:---:|
@@ -69,6 +69,9 @@ Five small web apps go with the lectures. Each one runs in a browser with nothin
 | Classes 11 and 12 | [**Salvage Run**](https://isa401-salvage.vercel.app) | Scrape a registry of 400 ships spread over eight pages: pick a CSS selector, work out how the address changes, and loop over every page. | [`games/salvage-run`](games/salvage-run) |
 | Class 13, and before each exam | [**ISA 401 Review**](https://isa401-review.vercel.app) | For each unit: watch a one-minute narrated recap, explain the idea in their own words and see which key ideas they covered as they type, fix R code that runs in the browser, and read real output. Each question links to real job postings that ask for the skill. | [`games/exam-review`](games/exam-review) |
 | Class 16 | [**Game Day at Yager**](https://isa401-game-day.vercel.app) | Answer 14 questions on their phones, Kahoot style, from their seat on a map of FSB 2050: distortion, data-ink, data types, encodings, color, and the grammar of graphics, told with Miami RedHawks football data. Two typed answers are checked against key ideas, and each reveal shows a strong answer. | [`games/game-day`](games/game-day) |
+| Class 18 | [**Press Time**](https://isa401-press-time.vercel.app) | Race for 15 minutes to build a Tableau map of COVID cases by county and a table of Ohio county populations, then submit the workbook and screenshots. AI reads the screenshots for Butler County's two numbers, and the projector shows seat maps of who got each part right. | Not in this repository |
+| Class 19 | [**Map Gallery**](https://isa401-map-gallery.vercel.app) | Plan a map of Butler County's COVID experience, build it with any AI chat tool, submit a screenshot, and vote in six blind matchups between classmates' maps. A personal code brings them back to their map and results. | [`games/map-gallery`](games/map-gallery) |
+| Class 20 | [**Pie on Trial**](https://isa401-pie-on-trial.vercel.app/?section=Z) | Tap the largest slice or bar on six charts, with 15 seconds each: three datasets as pies, then the same three as bars. The projector shows how the class answered, pie next to bars. | [`games/pie-on-trial`](games/pie-on-trial) |
 
 How the review site works, and whose ideas and tools it rests on, is on its [landing page](https://isa401-review.vercel.app) and under [Acknowledgments](#acknowledgments).
 
@@ -79,10 +82,10 @@ How the review site works, and whose ideas and tools it rests on, is on its [lan
 ```
 ├── apps/                  # Shiny apps used in class
 ├── dashboards/            # Job Market Explorer (template, standalone build, data + build docs)
-├── data/                  # Course datasets (Cincinnati crashes, ChatISA Job Scout, Airbnb extracts)
+├── data/                  # Course datasets (Cincinnati crashes, ChatISA Job Scout, Airbnb extracts, Ohio COVID, BLS wages)
 ├── docs/                  # Canvas pages, assignments (one folder per HW), planning documents
 ├── figures/               # Figures used across the slide decks (TikZ sources + images)
-├── games/                 # The review site and the four class games (each deploys to Vercel)
+├── games/                 # The review site and the class games (each deploys to Vercel)
 ├── lectures/              # xaringan slide decks, one folder per class
 ├── notebooklm_summaries/  # Sources for the AI recap videos and podcasts
 ├── old/                   # Materials from previous offerings

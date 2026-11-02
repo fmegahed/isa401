@@ -306,3 +306,62 @@ test("tiny screenshots are refused", async () => {
   assert.equal((await G.submit(goodSub(a.playerId, { w: 300, h: 200 }), 100)).status, 400);
   assert.equal((await G.submit(goodSub(a.playerId, { w: 640, h: 420 }), 100)).status, 200);
 });
+
+test("gotorun returns to an earlier run with its data, closed, and reset never reuses a run", async () => {
+  const p = await joined("Maya", "L1-1");
+  await G.join({ section: "Z", first: "Omar", initial: "k", seat: "L1-2" });
+  await host("reset");
+  await joined("Tester", "R1-1");
+  const stay = await G.getState({ section: "Z" });
+  assert.equal(stay.body.runId, 2);
+  assert.equal(stay.body.players, 1);
+
+  const back = await host("gotorun", { run: 1 });
+  assert.equal(back.status, 200);
+  assert.equal(back.body.runId, 1);
+  assert.equal(back.body.phase, "closed");
+  const st = await G.getState({ section: "Z" });
+  assert.equal(st.body.runId, 1);
+  assert.equal(st.body.players, 2);
+  assert.equal(st.body.phase, "closed");
+  assert.ok(p.playerId);
+
+  const res = await host("results");
+  assert.equal(res.body.phase, "results");
+  const again = await host("gotorun", { run: 1 });       // reloading the link changes nothing
+  assert.equal(again.body.phase, "results");
+
+  const fresh = await host("reset");                     // run 2 still has its player, so skip past it
+  assert.equal(fresh.body.runId, 3);
+  const two = await host("gotorun", { run: 2 });
+  assert.equal(two.body.runId, 2);
+  assert.equal((await G.getState({ section: "Z" })).body.players, 1);
+});
+
+test("gotorun refuses a bad run, an empty run and a wrong key", async () => {
+  await joined();
+  assert.equal((await host("gotorun", { run: 9 })).status, 400);
+  assert.equal((await host("gotorun", { run: 0 })).status, 400);
+  assert.equal((await host("gotorun", { run: "x" })).status, 400);
+  await host("reset");
+  await host("reset");
+  assert.equal((await host("gotorun", { run: 2 })).status, 400);   // nobody ever joined run 2
+  assert.equal((await host("gotorun", { run: 1, key: "wrong" })).status, 403);
+  assert.equal((await G.getState({ section: "Z" })).body.runId, 3);
+});
+
+test("once results are up, a new join is refused so it cannot take a seat from a student with a map", async () => {
+  const a = await joined("Maya", "L1-1");
+  await host("plan");
+  await host("build");
+  assert.equal((await G.submit(goodSub(a.playerId))).status, 200);
+  await host("vote");
+  assert.equal((await host("results")).body.phase, "results");
+  const late = await G.join({ section: "Z", first: "Maya", initial: "q", seat: "L1-1" });
+  assert.equal(late.status, 409);
+  assert.match(late.body.error, /personal code/);
+  const back = await G.join({ section: "Z", first: "Maya", initial: "q", seat: "L1-1", playerId: a.playerId });
+  assert.equal(back.status, 200);                        // the same browser still gets back in
+  assert.equal((await G.mine({ section: "Z", playerId: a.playerId })).body.hasMap, true);
+  assert.equal((await G.resume({ code: a.code })).status, 200);
+});

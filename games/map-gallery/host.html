@@ -470,6 +470,16 @@ function setNet(ok) { $("netdot").classList.toggle("off", !ok); $("netlbl").text
 function ingest(j) {
   if (typeof j.serverNow === "number") offset = j.serverNow - Date.now();
   B = j; render(); setNet(true);
+  goToWantedRun();
+}
+// /host?section=A&run=1 goes back to that run once when the page opens (admin key required).
+let wantRun = /^\d+$/.test(qs.get("run") || "") ? Number(qs.get("run")) : null;
+async function goToWantedRun() {
+  if (wantRun == null) return;
+  if (B.runId === wantRun) { wantRun = null; return; }
+  if (busy) return;
+  const run = wantRun, j = await act("gotorun", { run });
+  if (j) { wantRun = null; if (j.runId === run) toast("Now on run " + run + ". Press Results when you are ready."); }
 }
 async function poll() {
   if (inflight || busy || !KEY) return;

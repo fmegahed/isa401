@@ -433,7 +433,7 @@
   </section>
 
   <section class="screen" id="s-results">
-    <div class="runhead"><div><div class="kicker">Results</div><h1>What the crowd told you</h1></div><div class="howto">The class results are on the projector. This page is only yours.</div></div>
+    <div class="runhead"><div><div class="kicker">Results</div><h1>What the crowd told you</h1></div><div class="howto">This page is only yours.</div></div>
     <div id="mine"><p class="muted">Loading your results...</p></div>
   </section>
 
@@ -662,7 +662,7 @@ async function loadMine() {
     const r = await fetch("/api/mine?section=" + section + "&playerId=" + encodeURIComponent(playerId), { cache: "no-store" });
     const j = await r.json();
     if (!r.ok) { box.replaceChildren(el("p", "muted", typeof j.error === "string" ? j.error : "Could not load your results.")); mineFor = ""; return; }
-    if (!j.hasMap) { box.replaceChildren(el("p", null, "You did not submit a map, so there is no record to show. Look at the projector for the class results.")); return; }
+    if (!j.hasMap) { box.replaceChildren(el("p", null, "You did not submit a map, so there is no record to show.")); return; }
     const grid = el("div", "minegrid");
     const col = el("div", "minecol");
     const im = el("img"); im.src = imgUrl(j.imgId); im.alt = "Your map";

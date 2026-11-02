@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex, nofollow">
+<title>Pie on Trial: projector</title>
+<link rel="icon" href="favicon.png">
+<style>
+  :root { --ink: #1b1b1b; --muted: #585E60; --line: #d1d5db; --red: #C3142D; --gray: #9ca3af; --soft: #f3f4f6; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: #fff; color: var(--ink); font-family: "Segoe UI", Helvetica, Arial, sans-serif; overflow: hidden; }
+  #viewport { position: fixed; inset: 0 0 44px 0; overflow: hidden; }
+  body.nodock #viewport { bottom: 0; }
+  #stage { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 0 0; padding: 44px 64px; }
+  .scene { display: none; height: 100%; }
+  .scene.on { display: block; }
+  .kicker { font-weight: 800; font-size: 26px; letter-spacing: .05em; text-transform: uppercase; color: var(--red); }
+  h1 { font-size: 66px; line-height: 1.1; margin: 8px 0 18px; }
+  .big { font-size: 34px; line-height: 1.35; }
+  .muted { color: var(--muted); }
+
+  /* lobby */
+  .lobby { display: grid; grid-template-columns: 1fr 560px; gap: 60px; align-items: center; height: 100%; }
+  .lobby img { width: 520px; height: 520px; display: block; margin: 0 auto; image-rendering: pixelated; }
+  .lobby .addr { text-align: center; font-size: 27px; margin-top: 14px; word-break: break-all; }
+
+  /* play */
+  .count { font-size: 200px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+  .count small { font-size: 60px; font-weight: 600; color: var(--muted); }
+  .progress { height: 26px; border-radius: 13px; background: #e5e7eb; overflow: hidden; margin-top: 30px; }
+  .progress i { display: block; height: 100%; background: var(--red); width: 0; transition: width .5s; }
+
+  /* verdict for one dataset: the chart, then how the class answered */
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 10px; }
+  .side { border: 1px solid var(--line); border-radius: 12px; padding: 20px 28px; }
+  .side h2 { font-size: 36px; margin: 0; display: flex; justify-content: space-between; align-items: baseline; }
+  .side h2 b { font-size: 60px; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .inner { display: grid; grid-template-columns: 470px 1fr; gap: 26px; align-items: center; margin-top: 12px; }
+  .inner svg { width: 470px; height: 470px; display: block; }
+  .rows { display: grid; gap: 22px; }
+  .row { display: grid; grid-template-columns: 30px 1fr 48px; gap: 10px; align-items: center; font-size: 32px; font-weight: 700; }
+  .row .track { height: 52px; background: var(--soft); border-radius: 0 4px 4px 0; }
+  .row .fill { height: 100%; background: var(--gray); border-radius: 0 4px 4px 0; min-width: 2px; transition: width .6s; }
+  .row.right .fill { background: var(--red); }
+  .row .n { text-align: right; font-variant-numeric: tabular-nums; }
+  .row.out { color: var(--muted); font-weight: 600; grid-template-columns: 1fr 48px; font-size: 24px; }
+  .takeaway { margin-top: 24px; font-size: 32px; line-height: 1.3; border-left: 8px solid var(--red); padding: 12px 24px; background: #fdf2f2; border-radius: 8px; }
+
+  /* verdict: percent right, pies next to bars */
+  table.verdict { border-collapse: collapse; width: 100%; font-size: 44px; margin-top: 16px; }
+  table.verdict th { text-align: right; font-size: 30px; color: var(--muted); font-weight: 700; padding: 10px 24px; border-bottom: 3px solid var(--ink); }
+  table.verdict th:first-child, table.verdict td:first-child { text-align: left; }
+  table.verdict td { padding: 18px 24px; border-bottom: 1px solid var(--line); text-align: right; font-variant-numeric: tabular-nums; }
+  table.verdict tr.all td { font-weight: 800; border-bottom: 0; font-size: 56px; }
+
+  /* dock */
+  #dock { position: fixed; left: 0; right: 0; bottom: 0; height: 44px; display: flex; gap: 10px; align-items: center; padding: 0 12px; background: #1f2937; color: #e5e7eb; font-size: 14px; }
+  body.nodock #dock { display: none; }
+  #dock button { background: #374151; border: 0; color: #fff; border-radius: 5px; padding: 6px 12px; font: inherit; cursor: pointer; }
+  #dock button.go { background: var(--red); font-weight: 700; }
+  #dock .sp { margin-left: auto; }
+  #flash { color: #fca5a5; }
+  #demoflag { display: none; position: fixed; top: 12px; right: 16px; background: #1f2937; color: #fff; font-size: 18px; font-weight: 700; padding: 6px 14px; border-radius: 6px; z-index: 5; }
+  #gate { position: fixed; inset: 0; background: #fff; z-index: 9; display: none; align-items: center; justify-content: center; }
+  #gate.on { display: flex; }
+  #gate form { width: 360px; }
+  #gate input { width: 100%; font: inherit; font-size: 20px; padding: 10px 12px; border: 2px solid var(--line); border-radius: 6px; margin: 10px 0; }
+  #gate button { font: inherit; font-size: 18px; font-weight: 700; padding: 10px 18px; background: var(--red); color: #fff; border: 0; border-radius: 6px; cursor: pointer; }
+</style>
+</head>
+<body>
+<div id="viewport"><div id="stage">
+  <div class="scene" id="v-lobby"><div class="lobby">
+    <div>
+      <div class="kicker" id="seclabel"></div>
+      <h1>Pie on Trial</h1>
+      <p class="big">Scan the code. You get six charts and 15 seconds each.<br>Tap the <b>largest</b> slice or bar, or its letter.</p>
+      <p class="big muted">No names, no seats, no points. Your eyes are the evidence.</p>
+    </div>
+    <div><img id="qr" alt="QR code to join"><div class="addr" id="addr"></div></div>
+  </div></div>
+
+  <div class="scene" id="v-play">
+    <div class="kicker">The trial is on</div>
+    <h1>Eyes on your phone</h1>
+    <div class="count"><span id="done">0</span> <small>of <span id="players">0</span> finished</small></div>
+    <div class="progress"><i id="prog"></i></div>
+    <div class="muted" id="credit" style="font-size:22px; margin-top:26px;"></div>
+  </div>
+
+  <div class="scene" id="v-set">
+    <div class="kicker" id="set-kicker"></div>
+    <h1 id="set-title"></h1>
+    <div class="pair" id="set-pair"></div>
+    <div class="takeaway" id="set-note"></div>
+  </div>
+
+  <div class="scene" id="v-verdict">
+    <div class="kicker">The verdict</div>
+    <h1 id="verdict-title"></h1>
+    <table class="verdict" id="verdict-table"></table>
+    <div class="takeaway" id="verdict-note"></div>
+  </div>
+</div></div>
+
+<div id="dock">
+  <button class="go" id="go">Start</button>
+  <button id="back">Back</button>
+  <span id="status"></span>
+  <span id="flash"></span>
+  <span class="sp">Space next &middot; B back &middot; X X reset &middot; M music &middot; F full screen &middot; H hide dock</span>
+  <button id="music">Music on</button>
+  <button id="reset">Reset</button>
+</div>
+<audio id="audio" preload="auto" loop></audio>
+<div id="demoflag">Simulated class</div>
+<div id="gate"><form id="gateform">
+  <b>Admin key</b>
+  <input id="key" type="password" autocomplete="off" autofocus>
+  <button>Open</button>
+  <div id="gateerr" style="color:#C3142D;margin-top:8px;"></div>
+</form></div>
+
+<script src="data.js"></script>
+<script>
+(function () {
+  var params = new URLSearchParams(location.search);
+  var section = (params.get("section") || "A").toUpperCase();
+  var demo = params.get("demo") === "1";
+  var $ = function (id) { return document.getElementById(id); };
+  var STORE = "pt_admin_key";
+  function getKey() { try { return sessionStorage.getItem(STORE) || ""; } catch (e) { return window._k || ""; } }
+  function setKey(k) { try { sessionStorage.setItem(STORE, k); } catch (e) { window._k = k; } }
+
+  // scale the 1920x1080 stage to the window
+  function fit() {
+    var v = $("viewport"), s = Math.min(v.clientWidth / 1920, v.clientHeight / 1080);
+    $("stage").style.transform = "translate(" + (v.clientWidth - 1920 * s) / 2 + "px," + (v.clientHeight - 1080 * s) / 2 + "px) scale(" + s + ")";
+  }
+  addEventListener("resize", fit);
+  document.addEventListener("fullscreenchange", fit);
+
+  $("seclabel").textContent = section === "Z" ? "Test section" : "Section " + section;
+  if (section === "Z") $("qr").style.display = "none"; else $("qr").src = "images/qr_" + section + ".png";
+  $("addr").textContent = location.host + "/?section=" + section;
+
+  var board = { phase: "lobby", hist: PT.CHARTS.map(function () { return [0, 0, 0, 0, 0]; }), timedOut: PT.CHARTS.map(function () { return 0; }), players: 0, done: 0, runId: 0 };
+  var step = 0;   // inside the reveal: 0-2 are the datasets, 3 is the verdict
+
+  // ---------- music, on the projector only, while the charts run. Kevin MacLeod (incompetech.com), CC BY 4.0;
+  // the credit shows while it plays. Start is a key press, so the browser lets it play; after a reload
+  // mid-game it may not, and the credit then says to press M.
+  var audio = $("audio"), musicOn = true, blocked = false;
+  audio.volume = 0.55;
+  function paintMusic() {
+    $("music").textContent = musicOn ? "Music on" : "Music off";
+    $("credit").textContent = !musicOn ? "" : (blocked ? "Press M to start the music. " : "") +
+      "“Sneaky Snitch” Kevin MacLeod (incompetech.com) · Licensed under Creative Commons: By Attribution 4.0 License";
+  }
+  function steerMusic() {
+    var playing = board.phase === "play";
+    if (!musicOn || !playing) {
+      if (!audio.paused) audio.pause();
+      if (!playing && audio.currentTime) audio.currentTime = 0;   // the next section starts from the top
+      blocked = false;
+    } else if (audio.paused && !blocked) {
+      if (!audio.getAttribute("src")) audio.src = "audio/sneaky-snitch.mp3";
+      var p = audio.play();
+      if (p && p.catch) p.then(function () { blocked = false; paintMusic(); }).catch(function () { blocked = true; paintMusic(); });
+    }
+    paintMusic();
+  }
+  function toggleMusic() {
+    if (blocked) blocked = false; else musicOn = !musicOn;
+    steerMusic();
+  }
+
+  function responses(i) {   // everyone shown chart i, including anyone who ran out of time
+    return board.hist[i].reduce(function (a, b) { return a + b; }, 0) + board.timedOut[i];
+  }
+  function right(i) { return board.hist[i][PT.CHARTS[i].answer]; }
+  function pct(a, b) { return b ? Math.round(100 * a / b) + "%" : "n/a"; }
+
+  function sideHTML(i) {
+    var c = PT.CHARTS[i], max = Math.max(1, Math.max.apply(null, board.hist[i]));
+    var rows = board.hist[i].map(function (n, j) {
+      return '<div class="row' + (j === c.answer ? " right" : "") + '"><span>' + PT.LETTERS[j] + '</span>' +
+        '<div class="track"><div class="fill" style="width:' + (100 * n / max) + '%"></div></div><span class="n">' + n + "</span></div>";
+    }).join("");
+    rows += '<div class="row out"><span>Ran out of time</span><span class="n">' + board.timedOut[i] + "</span></div>";
+    return '<div class="side"><h2>' + (c.form === "pie" ? "As a pie" : "As bars") + " <b>" + pct(right(i), responses(i)) + "</b></h2>" +
+      '<div class="muted" style="font-size:24px;">picked ' + PT.LETTERS[c.answer] + ", the largest</div>" +
+      '<div class="inner">' + PT.chartSVG(c) + '<div class="rows">' + rows + "</div></div></div>";
+  }
+  function renderSet(d) {
+    var data = PT.DATASETS[d], v = data.values;
+    $("set-kicker").textContent = "Exhibit " + (d + 1) + " of 3: the same numbers, twice";
+    var p = pct(right(d), responses(d)), b = pct(right(d + 3), responses(d + 3));
+    $("set-title").textContent = "Pie: " + p + " right. Bars: " + b + " right.";
+    $("set-pair").innerHTML = sideHTML(d) + sideHTML(d + 3);
+    var sorted = v.slice().sort(function (x, y) { return y - x; });
+    $("set-note").innerHTML = "The values: " + v.map(function (x, i) { return PT.LETTERS[i] + " = " + x + "%"; }).join(", ") +
+      ". The largest beats the runner-up by " + (sorted[0] - sorted[1]) + " point" + (sorted[0] - sorted[1] === 1 ? "" : "s") + ".";
+  }
+  function totals(from) {
+    var r = 0, n = 0;
+    for (var i = from; i < from + 3; i++) { r += right(i); n += responses(i); }
+    return { r: r, n: n };
+  }
+  function renderVerdict() {
+    var rows = PT.DATASETS.map(function (d, i) {
+      return "<tr><td>" + d.label + "</td><td>" + pct(right(i), responses(i)) + "</td><td>" + pct(right(i + 3), responses(i + 3)) + "</td></tr>";
+    }).join("");
+    var P = totals(0), B = totals(3), pp = P.n ? P.r / P.n : 0, bp = B.n ? B.r / B.n : 0;
+    $("verdict-table").innerHTML = "<tr><th>Dataset</th><th>Picked the largest on the pie</th><th>Picked the largest on the bars</th></tr>" + rows +
+      '<tr class="all"><td>All three</td><td>' + pct(P.r, P.n) + "</td><td>" + pct(B.r, B.n) + "</td></tr>";
+    $("verdict-title").textContent = !P.n ? "No answers yet" : bp > pp ? "Your bars beat your pies" : bp < pp ? "Your pies beat your bars" : "A tie";
+    $("verdict-note").innerHTML = "<b>Read this with care:</b> bars always came second, so you had practice, and these slices are close on purpose. " +
+      "When the differences are large, a pie does better. Counts are everyone shown the chart, including anyone who ran out of time.";
+  }
+  function render() {
+    var p = board.phase;
+    document.querySelectorAll(".scene").forEach(function (s) { s.classList.remove("on"); });
+    if (p === "lobby") { $("v-lobby").classList.add("on"); $("go").textContent = "Start"; }
+    else if (p === "play") {
+      $("v-play").classList.add("on");
+      $("done").textContent = board.done; $("players").textContent = board.players;
+      $("prog").style.width = (board.players ? 100 * board.done / board.players : 0) + "%";
+      $("go").textContent = "Stop and reveal";
+    } else if (step < 3) {
+      $("v-set").classList.add("on"); renderSet(step);
+      $("go").textContent = step < 2 ? "Next exhibit" : "Verdict";
+    } else { $("v-verdict").classList.add("on"); renderVerdict(); $("go").textContent = "Done: back to the slides"; }
+    $("status").textContent = (demo ? "Demo" : "Section " + section) + " | run " + board.runId + " | " + board.players + " playing";
+    steerMusic();
+  }
+
+  // ---------- rehearsal without a server: 35 simulated phones, labeled on screen
+  var fakeDone = 0;
+  function fakeBoard() {
+    var odds = [[.1, .1, .15, .25, .4], [.2, .2, .25, .2, .15], [.35, .3, .15, .1, .1], [.01, .01, .02, .06, .9], [.08, .04, .78, .05, .05], [.86, .1, .02, .01, .01]];
+    return odds.map(function (o) { return o.map(function (x) { return Math.round(x * 33); }); });
+  }
+  function demoAct(a) {
+    if (a === "reset") { board.phase = "lobby"; board.players = 0; board.done = 0; board.runId++; board.hist = PT.CHARTS.map(function () { return [0, 0, 0, 0, 0]; }); board.timedOut = PT.CHARTS.map(function () { return 0; }); step = 0; }
+    else if (board.phase === "lobby") { board.phase = "play"; board.players = 35; fakeDone = 0; }
+    else if (board.phase === "play") { board.phase = "reveal"; board.done = 35; board.hist = fakeBoard(); board.timedOut = [2, 3, 2, 0, 0, 0]; step = 0; }
+    render();
+  }
+
+  // ---------- server
+  function flash(t) { $("flash").textContent = t || ""; }
+  function act(action) {
+    if (demo) return demoAct(action);
+    return fetch("/api/host", { method: "POST", headers: { "Content-Type": "application/json", "x-admin-key": getKey() }, body: JSON.stringify({ section: section, action: action }) })
+      .then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.error || "Failed"); return j; }); })
+      .then(function (j) { apply(j); flash(""); }).catch(function (e) { flash(e.message); });
+  }
+  function apply(j) {
+    if (j.phase === "reveal" && board.phase !== "reveal") step = 0;
+    if (j.phase !== "reveal") step = 0;
+    board = j; render();
+  }
+  function poll() {
+    if (demo) { if (board.phase === "play") { fakeDone = Math.min(35, fakeDone + 3); board.done = fakeDone; render(); } return; }
+    if (!getKey()) return;
+    fetch("/api/board?section=" + section, { headers: { "x-admin-key": getKey() } })
+      .then(function (r) { if (r.status === 403) { $("gate").classList.add("on"); throw new Error("key"); } return r.json(); })
+      .then(function (j) { if (j && j.phase) { apply(j); flash(""); } })
+      .catch(function (e) { if (e.message !== "key") flash("Lost the server. Retrying."); });
+  }
+
+  // ---------- controls: an action that crosses to the reveal asks for nothing more; reset needs two presses
+  var lastReset = 0, busy = 0;
+  function next() {
+    var now = Date.now();
+    if (now - busy < 600) return;
+    busy = now;
+    if (board.phase === "reveal") { if (step < 3) { step++; render(); } return; }
+    act("advance");
+  }
+  function back() { if (board.phase === "reveal" && step > 0) { step--; render(); } }
+  function resetPress() {
+    var now = Date.now();
+    if (now - lastReset < 3000) { lastReset = 0; flash(""); act("reset"); }
+    else { lastReset = now; flash("Press reset again within 3 seconds"); }
+  }
+  $("go").addEventListener("click", next);
+  $("back").addEventListener("click", back);
+  $("reset").addEventListener("click", resetPress);
+  $("music").addEventListener("click", function (e) { e.currentTarget.blur(); toggleMusic(); });
+  addEventListener("keydown", function (e) {
+    if (e.target && e.target.tagName === "INPUT") return;
+    var k = e.key.toLowerCase();
+    if (k === " ") { e.preventDefault(); next(); }
+    else if (k === "b" || k === "arrowleft") back();
+    else if (k === "arrowright") next();
+    else if (k === "x") resetPress();
+    else if (k === "m") toggleMusic();
+    else if (k === "f") { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen(); }
+    else if (k === "h") { document.body.classList.toggle("nodock"); fit(); }
+  });
+  $("gateform").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var k = $("key").value;
+    fetch("/api/board?section=" + section, { headers: { "x-admin-key": k } }).then(function (r) {
+      if (r.status === 403) { $("gateerr").textContent = "The key was not accepted."; return; }
+      if (r.status === 429) { $("gateerr").textContent = "Too many wrong keys. Wait a minute."; return; }
+      if (!r.ok) { $("gateerr").textContent = "The key is fine, but the game server had a problem."; return; }
+      setKey(k); $("gate").classList.remove("on"); $("gateerr").textContent = "";
+      return r.json().then(apply);
+    }).catch(function () { $("gateerr").textContent = "Could not reach the server."; });
+  });
+
+  fit();
+  if (demo) { $("demoflag").style.display = "block"; render(); }
+  else if (!getKey()) { $("gate").classList.add("on"); render(); }
+  else { render(); poll(); }
+  setInterval(poll, 1500);
+})();
+</script>
+</body>
+</html>

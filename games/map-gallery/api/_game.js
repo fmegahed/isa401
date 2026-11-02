@@ -140,7 +140,7 @@ function parseState(raw) { return Object.assign({}, LOBBY, parseJSON(raw) || {})
 async function readCur(s) {
   const h = parseHash(await store.redis("HGETALL", K.cur(s)), false);
   if (h.run == null) await store.redis("HSETNX", K.cur(s), "run", "1");
-  return { run: Number(h.run) || 1, st: parseState(h.state), players: Math.max(0, Number(h.players) || 0), kicks: Number(h.kicks) || 0 };
+  return { run: Number(h.run) || 1, maxRun: Number(h.maxRun) || 0, st: parseState(h.state), players: Math.max(0, Number(h.players) || 0), kicks: Number(h.kicks) || 0 };
 }
 function saveState(s, st) { return store.redis("HSET", K.cur(s), "state", JSON.stringify(st)); }
 const seqOf = (cur) => (cur.st.seq || 0) + cur.kicks;
@@ -171,6 +171,9 @@ async function join(body) {
     if (!prev) pid = null;
   }
   if (!prev && cur.st.phase === "closed") return fail(409, "Submissions are closed for this section.");
+  // Once results are up, a new join could take the seat of a student who has a map (even the same
+  // student on another computer) and lock that record, so only the personal code gets back in.
+  if (!prev && cur.st.phase === "results") return fail(409, "This round has ended. Enter your personal code to see your results.");
   if (!pid) pid = crypto.randomBytes(12).toString("base64url");
   const code = prev && prev.code ? prev.code : await newCode({ s, run, pid });
 
@@ -701,10 +704,22 @@ async function host(body, ip) {
   let changed = true, extra = null;
 
   if (action === "reset") {
+    // past the highest run ever used, so a reset after going back to an old run never lands on a used one
     await store.pipe([
-      ["HINCRBY", K.cur(s), "run", 1],
-      ["HSET", K.cur(s), "state", JSON.stringify(Object.assign({}, LOBBY, { seq: (st.seq || 0) + 1 })), "players", 0, "kicks", 0],
+      ["HSET", K.cur(s), "run", Math.max(cur.run, cur.maxRun) + 1, "state", JSON.stringify(Object.assign({}, LOBBY, { seq: (st.seq || 0) + 1 })), "players", 0, "kicks", 0],
     ]);
+    return ok(publicBoard(await buildBoard(s)));
+  }
+  if (action === "gotorun") {
+    // back to an earlier run, with nothing deleted. It opens as closed, so the results stay hidden until
+    // the host presses Results. Asking for the run already current changes nothing.
+    const run = Number(body.run), top = Math.max(cur.run, cur.maxRun);
+    if (!Number.isInteger(run) || run < 1 || run > top) return fail(400, "No such run.");
+    if (run === cur.run) return ok(publicBoard(await buildBoard(s)));
+    const players = Object.values(parseHash(await store.redis("HGETALL", K.players(s, run)))).filter((p) => p && !p.kicked);
+    if (!players.length) return fail(400, "That run has no players.");
+    await store.redis("HSET", K.cur(s), "run", run, "maxRun", top, "players", players.length, "kicks", 0,
+      "state", JSON.stringify(Object.assign({}, LOBBY, { phase: "closed", startedAt: t, endsAt: t, seq: (st.seq || 0) + 1 })));
     return ok(publicBoard(await buildBoard(s)));
   }
   const startClock = (ph) => Object.assign(st, { phase: ph, startedAt: t, endsAt: t + CLOCKS[ph] });

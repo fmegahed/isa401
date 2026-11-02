@@ -1,0 +1,9 @@
+{
+  "name": "isa401-pie-on-trial",
+  "private": true,
+  "description": "Pie on Trial: a two-minute perception game for ISA 401 (Class 20)",
+  "scripts": {
+    "test": "node --test tests/game.test.mjs",
+    "dev": "node dev/server.js"
+  }
+}

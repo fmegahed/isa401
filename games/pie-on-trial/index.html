@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="robots" content="noindex, nofollow">
+<title>Pie on Trial</title>
+<link rel="icon" href="favicon.png">
+<style>
+  :root { --ink: #1b1b1b; --muted: #585E60; --line: #d1d5db; --red: #C3142D; --tint: #fdf2f2; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #fff; color: var(--ink); font-family: "Segoe UI", Helvetica, Arial, sans-serif; font-size: 17px; line-height: 1.4; -webkit-text-size-adjust: 100%; }
+  .wrap { max-width: 480px; margin: 0 auto; padding: 12px 16px 24px; }
+  .brand { font-weight: 800; font-size: 15px; letter-spacing: .04em; text-transform: uppercase; color: var(--red); display: flex; justify-content: space-between; }
+  .brand span { color: var(--muted); font-weight: 600; text-transform: none; letter-spacing: 0; }
+  .screen { display: none; margin-top: 14px; }
+  .screen.on { display: block; }
+  h1 { font-size: 27px; line-height: 1.15; margin: 0 0 10px; }
+  .muted { color: var(--muted); }
+  .note { border-left: 5px solid var(--red); background: var(--tint); border-radius: 6px; padding: 10px 12px; margin-top: 12px; }
+  .prompt { font-weight: 700; font-size: 19px; }
+  .chart svg { display: block; width: 100%; max-width: 330px; height: auto; margin: 8px auto 0; }
+  .chart .opt { cursor: pointer; }
+  .chart.locked .opt { cursor: default; }
+  .chart .picked .mark { stroke: var(--red); stroke-width: 7; }
+  .clock { height: 8px; border-radius: 4px; background: #e5e7eb; overflow: hidden; margin-top: 8px; }
+  .clock i { display: block; height: 100%; background: var(--red); width: 100%; transform-origin: left; }
+  .opts { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 12px; }
+  .opts button { min-height: 58px; border: 2px solid var(--line); border-radius: 8px; background: #fff; font: inherit; font-size: 24px; font-weight: 700; color: var(--ink); cursor: pointer; touch-action: manipulation; }
+  .opts button.on { border-color: var(--red); background: var(--red); color: #fff; }
+  .opts button:disabled { cursor: default; }
+  .score { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+  .score div { border: 1px solid var(--line); border-radius: 8px; padding: 12px; text-align: center; }
+  .score b { display: block; font-size: 36px; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .err { color: var(--red); font-size: 15px; min-height: 1.3em; margin-top: 8px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">Pie on Trial <span id="progress"></span></div>
+
+  <div class="screen" id="s-wait">
+    <h1>You're in.</h1>
+    <p class="muted">No name, no seat, no points. Leave this page open: the charts start when the class starts.</p>
+    <div class="note"><b>Your job:</b> you get 15 seconds per chart. Tap the <b>largest</b> slice or bar, or its letter. Go with your eyes, no measuring.</div>
+  </div>
+
+  <div class="screen" id="s-chart">
+    <div class="prompt">Which is the largest?</div>
+    <div class="clock"><i id="bar"></i></div>
+    <div class="chart" id="chart"></div>
+    <div class="opts" id="opts"></div>
+    <div class="err" id="err" role="alert"></div>
+  </div>
+
+  <div class="screen" id="s-done">
+    <h1>Done. Eyes up.</h1>
+    <p class="muted">Your answers are in. Look at the projector while the rest of the class finishes.</p>
+  </div>
+
+  <div class="screen" id="s-reveal">
+    <h1>How your eyes did</h1>
+    <div class="score">
+      <div><b id="sc-pie">0/3</b>right on pies</div>
+      <div><b id="sc-bar">0/3</b>right on bars</div>
+    </div>
+    <p class="note">Same three datasets both times. Only the chart changed.</p>
+  </div>
+
+  <div class="screen" id="s-late">
+    <h1>This round has finished.</h1>
+    <p class="muted">Look at the projector to see how the class did.</p>
+  </div>
+
+  <div class="screen" id="s-bad">
+    <h1>Scan the QR code again.</h1>
+    <p class="muted">This address has no section in it.</p>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script>
+(function () {
+  var section = (new URLSearchParams(location.search).get("section") || "").toUpperCase();
+  var $ = function (id) { return document.getElementById(id); };
+  function show(id) {
+    document.querySelectorAll(".screen").forEach(function (s) { s.classList.toggle("on", s.id === id); });
+  }
+  if (["A", "B", "Z"].indexOf(section) < 0) { show("s-bad"); return; }
+
+  // Saved on the phone so a reload resumes at the next chart. Storage can be blocked; the game still runs.
+  var KEY = "pt_" + section;
+  function load() { try { return JSON.parse(localStorage.getItem(KEY)) || null; } catch (e) { return null; } }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(me)); } catch (e) { /* private window */ } }
+  function newId() {
+    var a = new Uint8Array(12); crypto.getRandomValues(a);
+    return Array.from(a, function (b) { return b.toString(16).padStart(2, "0"); }).join("");
+  }
+  var me = load() || { id: newId(), run: null, answers: {} };
+  var run = null, phase = null, current = null, timer = null, deadline = 0;
+
+  function nextChart() {
+    return PT.CHARTS.filter(function (c) { return me.answers[c.n] === undefined; })[0] || null;
+  }
+  function send(chart, answer, tries) {
+    fetch("/api/answer", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ section: section, playerId: me.id, runId: run, chart: chart, answer: answer }),
+    }).then(function (r) { if (!r.ok) throw new Error("status " + r.status); $("err").textContent = ""; })
+      .catch(function () {
+        if (tries > 0) setTimeout(function () { send(chart, answer, tries - 1); }, 1200);
+        else $("err").textContent = "Your phone lost the connection. One answer may not have counted.";
+      });
+  }
+  function record(answer) {
+    var c = current;
+    if (!c) return;
+    current = null;
+    clearInterval(timer);
+    me.answers[c.n] = answer; save();
+    send(c.n, answer, 4);
+    if (answer >= 0) {
+      $("opts").children[answer].classList.add("on");
+      var picked = $("chart").querySelector('[data-opt="' + answer + '"]');
+      picked.classList.add("picked");
+      picked.parentNode.appendChild(picked);   // so its outline sits above the neighboring slices
+    }
+    $("chart").classList.add("locked");
+    Array.from($("opts").children).forEach(function (b) { b.disabled = true; });
+    setTimeout(step, answer >= 0 ? 350 : 0);
+  }
+  function step() {
+    if (phase !== "play") return;
+    var c = nextChart();
+    if (!c) { $("progress").textContent = ""; show("s-done"); return; }
+    current = c;
+    $("progress").textContent = "Chart " + c.n + " of " + PT.CHARTS.length;
+    $("chart").innerHTML = PT.chartSVG(c);
+    $("chart").classList.remove("locked");
+    $("opts").innerHTML = "";
+    PT.LETTERS.forEach(function (l, i) {
+      var b = document.createElement("button");
+      b.textContent = l; b.type = "button";
+      b.addEventListener("click", function () { record(i); });
+      $("opts").appendChild(b);
+    });
+    show("s-chart");
+    deadline = Date.now() + PT.SECONDS * 1000;
+    timer = setInterval(function () {
+      var left = deadline - Date.now();
+      $("bar").style.transform = "scaleX(" + Math.max(0, left / (PT.SECONDS * 1000)) + ")";
+      if (left <= 0) record(-1);
+    }, 80);
+  }
+  // A tap on a slice or bar counts the same as its letter. record() ignores taps once a chart is answered.
+  $("chart").addEventListener("click", function (e) {
+    var g = e.target.closest ? e.target.closest("[data-opt]") : null;
+    if (g) record(Number(g.getAttribute("data-opt")));
+  });
+  function score(form) {
+    var right = PT.CHARTS.filter(function (c) { return c.form === form && me.answers[c.n] === c.answer; }).length;
+    return right + "/3";
+  }
+  function apply(s) {
+    if (s.runId !== me.run) { me = { id: me.id, run: s.runId, answers: {} }; save(); clearInterval(timer); current = null; }
+    var changed = s.phase !== phase;
+    run = s.runId; phase = s.phase;
+    if (!changed) return;
+    clearInterval(timer); current = null; $("progress").textContent = "";
+    if (phase === "lobby") show("s-wait");
+    else if (phase === "play") step();
+    else if (Object.keys(me.answers).length === 0) show("s-late");
+    else { $("sc-pie").textContent = score("pie"); $("sc-bar").textContent = score("bar"); show("s-reveal"); }
+  }
+  function poll() {
+    fetch("/api/state?section=" + section).then(function (r) { return r.json(); })
+      .then(function (s) { if (s && s.phase) apply(s); }).catch(function () { /* next poll retries */ });
+  }
+  show("s-wait");
+  poll();
+  setInterval(poll, 2000);
+})();
+</script>
+</body>
+</html>
