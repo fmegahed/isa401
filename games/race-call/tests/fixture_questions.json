@@ -1,0 +1,6 @@
+[
+ {"id": "t1", "block": 1, "seconds": 20, "options": 4, "answer": 1, "call": "Call one", "takeaway": "Takeaway one.", "reveal": "charts/r-aaaaaaaaaaaa.svg", "revealAnim": null},
+ {"id": "t2", "block": 1, "seconds": 30, "options": 4, "answer": 3, "call": "Call two", "takeaway": "Takeaway two.", "reveal": null, "revealAnim": "ohio"},
+ {"id": "t3", "block": 2, "seconds": 20, "options": 4, "answer": 0, "call": "Call three", "takeaway": "Takeaway three.", "reveal": null, "revealAnim": null, "extra": "charts/r-bbbbbbbbbbbb.svg", "extraAnim": null, "extraCap": "Contrast caption three."},
+ {"id": "t4", "block": 2, "seconds": 20, "options": 4, "answer": 2, "call": "Call four", "takeaway": "Takeaway four.", "reveal": null, "revealAnim": null}
+]

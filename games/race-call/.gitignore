@@ -1,0 +1,14 @@
+.vercel
+.env*
+# answer-bearing files stay out of the public repo until after class
+content/
+reveal/
+api/_questions.json
+charts/r-*.svg
+# these also give answers away (README's race table, make_charts.R's stopifnot() checks, computed values)
+README.md
+make_charts.R
+data/computed.json
+
+.vercel
+.env*

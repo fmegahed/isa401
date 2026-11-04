@@ -1,0 +1,217 @@
+{
+ "blocks": {
+  "1": {
+   "name": "Early Returns",
+   "sub": "Commonly used charts"
+  },
+  "2": {
+   "name": "Time Series",
+   "sub": "Line charts, seasonality, calendars and motion"
+  },
+  "3": {
+   "name": "The Map Room",
+   "sub": "Spatial charts"
+  },
+  "4": {
+   "name": "Space and Time",
+   "sub": "Spatiotemporal charts"
+  }
+ },
+ "questions": [
+  {
+   "id": "exit-donut",
+   "block": 1,
+   "seconds": 20,
+   "prompt": "Election night 2024: the exit poll's most important issue, drawn the way it ran on TV. What kind of chart is this?",
+   "chart": "charts/q01_donut.svg",
+   "anim": null,
+   "options": [
+    "A pie chart",
+    "A donut chart",
+    "A stacked bar chart",
+    "A treemap"
+   ],
+   "source": "NBC News national exit poll, 2024 general election, most important issue (as shown on air): https://www.nbcnews.com/politics/2024-elections/exit-polls"
+  },
+  {
+   "id": "pie-channels",
+   "block": 1,
+   "seconds": 25,
+   "prompt": "Same chart: one nominal variable (the issue) and one quantitative variable (the share). Which encoding channels carry them?",
+   "chart": "charts/q01_donut.svg",
+   "anim": null,
+   "options": [
+    "Issue: color. Share: angle and area",
+    "Issue: position. Share: length",
+    "Issue: angle. Share: color",
+    "Issue: size. Share: position"
+   ],
+   "source": "NBC News national exit poll, 2024 general election, most important issue (as shown on air): https://www.nbcnews.com/politics/2024-elections/exit-polls"
+  },
+  {
+   "id": "ev-waterfall",
+   "block": 1,
+   "seconds": 25,
+   "prompt": "The Democratic ticket went from 306 electoral votes in 2020 to 226 in 2024. What kind of chart tells that story here?",
+   "chart": "charts/q03_waterfall.svg",
+   "anim": null,
+   "options": [
+    "A bar chart of separate totals",
+    "A waterfall chart",
+    "A stacked bar chart",
+    "A histogram"
+   ],
+   "source": "National Archives, Electoral College results 2020 and 2024: https://www.archives.gov/electoral-college/2020 https://www.archives.gov/electoral-college/2024 and Census 2020 apportionment: https://www.census.gov/data/tables/2020/dec/2020-apportionment-data.html"
+  },
+  {
+   "id": "two-points",
+   "block": 2,
+   "seconds": 25,
+   "prompt": "You have two values: the Republican ticket's electoral votes in 2020 (232) and 2024 (312). Which chart fits better?",
+   "chart": "charts/q04_two.svg",
+   "anim": null,
+   "options": [
+    "A: the bar chart",
+    "B: the line chart",
+    "Either: they say the same thing",
+    "Neither: use a pie chart"
+   ],
+   "source": "National Archives, Electoral College results 2020 and 2024: https://www.archives.gov/electoral-college/2020 https://www.archives.gov/electoral-college/2024 and Census 2020 apportionment: https://www.census.gov/data/tables/2020/dec/2020-apportionment-data.html"
+  },
+  {
+   "id": "air-annual",
+   "block": 2,
+   "seconds": 30,
+   "prompt": "International airline passengers per year, 1949 to 1960. From this chart alone, what can we conclude?",
+   "chart": "charts/q05_annual.svg",
+   "anim": null,
+   "options": [
+    "Air travel is seasonal",
+    "Air travel is cyclical",
+    "It grew by the same amount every year",
+    "None of the above"
+   ],
+   "source": "Box and Jenkins airline passengers, R datasets::AirPassengers: https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/AirPassengers.html"
+  },
+  {
+   "id": "one-year",
+   "block": 2,
+   "seconds": 25,
+   "prompt": "Indeed job postings in Ohio, 2022 only. They climb into spring, then fall. Does this chart show seasonality?",
+   "chart": "charts/q06_2022.svg",
+   "anim": null,
+   "options": [
+    "Yes: postings peak every spring",
+    "No: one year cannot show a pattern that repeats each year",
+    "Yes: the line goes up, then down",
+    "No: an index cannot be seasonal"
+   ],
+   "source": "Indeed Hiring Lab, Job Postings on Indeed in Ohio (IHLIDXUSOH), via FRED: https://fred.stlouisfed.org/series/IHLIDXUSOH"
+  },
+  {
+   "id": "calendar",
+   "block": 2,
+   "seconds": 30,
+   "prompt": "A calendar plot of traffic crashes per day in Cincinnati, 2025 (darker = more). Which pattern does it show best?",
+   "chart": "charts/q07_calendar.svg",
+   "anim": null,
+   "options": [
+    "Weekends are lighter: fewer crashes",
+    "Crashes rose steadily all year",
+    "July had the most crashes",
+    "Mondays have the most crashes"
+   ],
+   "source": "City of Cincinnati Open Data, Traffic Crash Reports (CPD), unique crashes per day: https://data.cincinnati-oh.gov/Safety/Traffic-Crash-Reports-CPD-/rvmt-pkmq"
+  },
+  {
+   "id": "motion",
+   "block": 2,
+   "seconds": 30,
+   "prompt": "A motion chart of 142 countries, 1952 to 2007: income, life expectancy, population, continent. What is time mapped to?",
+   "chart": null,
+   "anim": "gapminder",
+   "options": [
+    "The x-axis",
+    "Bubble size",
+    "Bubble color",
+    "The animation: each frame is a year"
+   ],
+   "source": "Gapminder data via the gapminder R package (Bryan): https://cran.r-project.org/package=gapminder"
+  },
+  {
+   "id": "choropleth",
+   "block": 3,
+   "seconds": 20,
+   "prompt": "2024 presidential results: each of the 3,153 counties is filled with the winner's color. What kind of map is this?",
+   "chart": "charts/q09_counties.svg",
+   "anim": null,
+   "options": [
+    "A choropleth map",
+    "A symbol (bubble) map",
+    "A cartogram",
+    "A dot density map"
+   ],
+   "source": "County results compiled by Tony McGovern: https://github.com/tonmcg/US_County_Level_Election_Results_08-24 and county outlines from the Urban Institute's urbnmapr: https://github.com/UrbanInstitute/urbnmapr"
+  },
+  {
+   "id": "land-vs-people",
+   "block": 3,
+   "seconds": 25,
+   "prompt": "Same map: red covers about 85% of the land shown. What share of the national vote did the red candidate get?",
+   "chart": "charts/q09_counties.svg",
+   "anim": null,
+   "options": [
+    "About 85%",
+    "About 70%",
+    "About 50%",
+    "About 35%"
+   ],
+   "source": "County results compiled by Tony McGovern: https://github.com/tonmcg/US_County_Level_Election_Results_08-24 and county outlines from the Urban Institute's urbnmapr: https://github.com/UrbanInstitute/urbnmapr"
+  },
+  {
+   "id": "ohio-palette",
+   "block": 3,
+   "seconds": 25,
+   "prompt": "Each Ohio county's 2024 margin runs from Harris +32 to Trump +69, and 0 is a tie. Which color scheme fits?",
+   "chart": "charts/q11_ohio.svg",
+   "anim": null,
+   "options": [
+    "Map A: nominal (unordered) colors",
+    "Map B: sequential, light to dark",
+    "Map C: diverging, two hues from a middle",
+    "Any of them: color is color"
+   ],
+   "source": "County results compiled by Tony McGovern: https://github.com/tonmcg/US_County_Level_Election_Results_08-24 and Ohio county outlines from the Census cartographic boundary file: https://www.census.gov/geographies/mapping-files/time-series/geo/cartographic-boundary.html"
+  },
+  {
+   "id": "barley",
+   "block": 4,
+   "seconds": 30,
+   "prompt": "Barley yields at six Minnesota sites, 1931 vs 1932, both years in one panel per site. At five sites 1931 beat 1932. Which site flipped?",
+   "chart": "charts/q12_barley.svg",
+   "anim": null,
+   "options": [
+    "Waseca",
+    "Crookston",
+    "Morris",
+    "Duluth"
+   ],
+   "source": "Immer, Hayes and Powers (1934), as lattice::barley; Cleveland, Visualizing Data (1993): https://search.r-project.org/CRAN/refmans/lattice/html/barley.html"
+  },
+  {
+   "id": "small-multiples",
+   "block": 4,
+   "seconds": 30,
+   "prompt": "Weekly COVID cases per 100,000 by Ohio county, six snapshots as small multiples. Compared with animating the same maps, small multiples are better at:",
+   "chart": "charts/q13_small.svg",
+   "anim": null,
+   "options": [
+    "Comparing dates side by side, without remembering frames",
+    "Showing each county's exact value",
+    "Fitting more counties on screen",
+    "Grabbing attention in a presentation"
+   ],
+   "source": "ISA 401 course data covid_cases_county.csv (the Class 18 and 19 file), Ohio counties by week; county outlines from the Census cartographic boundary file: https://www.census.gov/geographies/mapping-files/time-series/geo/cartographic-boundary.html"
+  }
+ ]
+}

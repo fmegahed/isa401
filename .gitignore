@@ -110,3 +110,6 @@ api_key.txt
 
 # BTS on-time exports (~85 MB each; shared with students via Canvas)
 data/T_ONTIME_*.csv
+
+# Race Call run sheet holds the answer key: keep it out of the public repo until after Class 21 (Nov 4, 2026)
+lectures/21_ts_spatial_and_spatiotemporal_charts/21_race_call_run_sheet.*

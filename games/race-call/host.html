@@ -1,0 +1,1509 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex, nofollow">
+<title>Race Call: the desk</title>
+<link rel="icon" href="favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #060d1a; --bg2: #0a1528; --panel: #0e1b33; --panel2: #13233f; --line: #1f3253; --line2: #2c4470;
+    --text: #f2f5fa; --muted: #93a4c2; --dim: #5d6f90;
+    --gold: #ffc21a; --gold2: #ffdb6e; --gold-deep: #b98500; --live: #e5283f; --slate: #3f4d68;
+    --o0: #e5283f; --o1: #1f8fff; --o2: #e8a100; --o3: #21a366;
+    --disp: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+    --body: "Source Sans 3", "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: #02060d; color: var(--text); font-family: var(--body); overflow: hidden; }
+  button { font: inherit; }
+
+  #viewport { position: fixed; left: 0; right: 0; top: 0; bottom: 48px; overflow: hidden; background: #02060d; }
+  body.nodock #viewport { bottom: 0; }
+  #stage { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 0 0; overflow: hidden;
+    background: radial-gradient(1400px 800px at 70% -10%, #15305c 0%, rgba(21,48,92,0) 60%), radial-gradient(1000px 700px at 0% 110%, #2a0f22 0%, rgba(42,15,34,0) 60%), var(--bg); }
+  /* studio texture: a faint dot grid and a slow light sweep */
+  #stage::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,.06) 1.2px, transparent 1.4px); background-size: 28px 28px; pointer-events: none; }
+  #stage::after { content: ""; position: absolute; top: -50%; bottom: -50%; width: 520px; left: -700px; background: linear-gradient(90deg, transparent, rgba(255,255,255,.035), transparent); transform: rotate(14deg); animation: sweep 14s linear infinite; pointer-events: none; }
+  @keyframes sweep { to { left: 2300px; } }
+
+  /* ---------- header ---------- */
+  #hdr { position: absolute; left: 0; right: 0; top: 0; height: 104px; display: grid; grid-template-columns: 560px 1fr 560px; align-items: center; padding: 0 36px; background: linear-gradient(180deg, #0b1a33, #071022); border-bottom: 3px solid var(--gold); z-index: 3; }
+  #logo { display: flex; align-items: center; gap: 18px; }
+  #logo .mark { width: 62px; height: 62px; border-radius: 10px; background: var(--gold); display: grid; place-items: center; box-shadow: 0 0 24px rgba(255,194,26,.35); }
+  #logo .mark svg { width: 40px; height: 40px; }
+  #logo .w { font-family: var(--disp); font-weight: 900; font-size: 50px; letter-spacing: .08em; line-height: .9; text-transform: uppercase; }
+  #logo .s { font-family: var(--disp); font-weight: 600; font-size: 20px; letter-spacing: .16em; color: var(--muted); text-transform: uppercase; margin-top: 6px; }
+  #logo .s b { color: var(--text); }
+  .livepill { display: inline-flex; align-items: center; gap: 8px; background: var(--live); color: #fff; font-family: var(--disp); font-weight: 800; font-size: 20px; letter-spacing: .14em; padding: 2px 12px 1px; border-radius: 4px; vertical-align: 6px; margin-left: 12px; }
+  .livepill i { width: 9px; height: 9px; border-radius: 50%; background: #fff; animation: blink 1.4s ease-in-out infinite; }
+  @keyframes blink { 50% { opacity: .2; } }
+  #center { text-align: center; min-width: 0; }
+  #raceLabel { font-family: var(--disp); font-weight: 800; font-size: 40px; letter-spacing: .06em; text-transform: uppercase; line-height: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #raceLabel .blk { color: var(--gold); }
+  #tracker { display: flex; justify-content: center; gap: 18px; margin-top: 12px; }
+  #tracker .grp { display: flex; gap: 5px; }
+  #tracker i { display: block; width: 34px; height: 14px; border-radius: 3px; border: 1.5px solid var(--line2); transition: background .6s, border-color .6s; }
+  #tracker i.done { background: var(--gold); border-color: var(--gold); }
+  #tracker i.cur { border-color: #fff; background: rgba(255,255,255,.25); animation: blink 1.2s ease-in-out infinite; }
+  #cells { display: flex; justify-content: flex-end; gap: 14px; }
+  .cell { background: rgba(0,0,0,.35); border: 1px solid var(--line2); border-radius: 8px; padding: 6px 18px 4px; min-width: 150px; text-align: center; }
+  .cell .k { font-family: var(--disp); font-size: 18px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .16em; line-height: 1.1; }
+  .cell .v { font-family: var(--disp); font-weight: 800; font-size: 50px; line-height: 1; font-variant-numeric: tabular-nums; }
+  .cell .v small { font-size: 26px; color: var(--muted); font-weight: 600; margin-left: 4px; }
+  #clockcell .v { font-size: 40px; padding-top: 6px; }
+
+  /* ---------- ticker ---------- */
+  #ticker { position: absolute; left: 0; right: 0; bottom: 0; height: 62px; display: flex; align-items: stretch; background: #040a14; border-top: 2px solid var(--line2); z-index: 3; overflow: hidden; }
+  #ticker .tag { flex: none; display: flex; align-items: center; padding: 0 22px; background: var(--live); font-family: var(--disp); font-weight: 900; font-size: 28px; letter-spacing: .12em; text-transform: uppercase; z-index: 1; box-shadow: 8px 0 20px rgba(0,0,0,.6); }
+  #crawlbox { flex: 1; overflow: hidden; position: relative; display: flex; align-items: center; }
+  #crawl { white-space: nowrap; font-size: 28px; font-weight: 600; will-change: transform; padding-left: 40px; }
+  #crawl span.it { margin-right: 70px; }
+  #crawl span.it b { color: var(--gold); font-family: var(--disp); font-weight: 800; letter-spacing: .05em; margin-right: 10px; text-transform: uppercase; font-size: 30px; }
+
+  #main { position: absolute; left: 0; right: 0; top: 104px; bottom: 62px; }
+  .scene { position: absolute; inset: 26px 36px 24px; display: none; }
+  .scene.on { display: grid; animation: scenein .5s ease; }
+  @keyframes scenein { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  .lab { font-family: var(--disp); font-size: 24px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: .16em; }
+  .lab b { color: var(--text); }
+  .panel { background: linear-gradient(180deg, rgba(19,35,63,.92), rgba(12,25,48,.92)); border: 1px solid var(--line2); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,.35); }
+  .note { font-size: 20px; color: var(--dim); }
+
+  /* ---------- the room (FSB 2050 seats) ---------- */
+  svg.room { display: block; width: 100%; height: auto; overflow: visible; }
+  .room .front { fill: #0b1830; stroke: var(--line2); stroke-width: 1.5; }
+  .room .fronttxt { font: 800 17px var(--disp); fill: var(--muted); text-anchor: middle; letter-spacing: .3em; }
+  .room .riser { fill: rgba(255,255,255,.025); stroke: var(--line); stroke-width: 1; }
+  .room .rowno { font: 800 22px var(--disp); fill: var(--dim); text-anchor: middle; }
+  .seat .box { fill: #0a1426; stroke: #22365a; stroke-width: 1.5; transition: fill .5s ease, stroke .5s ease, opacity .5s; }
+  .seat .nm { font-family: var(--disp); font-weight: 800; fill: #071022; text-anchor: middle; }
+  .seat .sid { font: 600 13px var(--body); fill: #3f5378; text-anchor: middle; }
+  .seat .dot { fill: var(--gold); fill-opacity: .85; stroke: #fff; stroke-width: 1.5; transition: r .9s cubic-bezier(.2,1.2,.4,1); }
+  .seat.filled .box { fill: #dfe7f5; stroke: #fff; }
+  .seat.filled .sid { fill: #51658a; }
+  .seat.answered .box { fill: #fff; stroke: #fff; filter: url(#glow); }
+  .seat.right .box { fill: var(--gold); stroke: var(--gold2); }
+  .seat.wrong .box { fill: var(--slate); stroke: #5d6c8a; }
+  .seat.wrong .nm { fill: #dfe5f1; }
+  .seat.none .box { fill: transparent; stroke: #4b5d80; stroke-dasharray: 5 4; }
+  .seat.none .nm { fill: #7d8db0; }
+  .seat.qall .box { fill: var(--gold); stroke: var(--gold2); }
+  .seat.qsome .box { fill: #b48a2a; stroke: #d7b25a; }
+  .seat.qnone .box { fill: var(--slate); stroke: #5d6c8a; }
+  .seat.qnone .nm { fill: #dfe5f1; }
+  .seat.c0 .box { fill: #2b3650; stroke: #3d4b6b; } .seat.c0 .nm { fill: #dfe5f1; }
+  .seat.c1 .box { fill: #5c4d2a; stroke: #6f5f36; } .seat.c1 .nm { fill: #f0e6cc; }
+  .seat.c2 .box { fill: #8f6d17; stroke: #a37e22; } .seat.c2 .nm { fill: #fff; }
+  .seat.c3 .box { fill: #c99412; stroke: #dca826; }
+  .seat.c4 .box { fill: #ffc21a; stroke: #ffe08a; }
+  .seat.sym .box { fill: transparent; stroke: #2c4470; stroke-dasharray: none; }
+  .seat.sym .nm { fill: #c8d3e8; }
+  .seat.pop .box { animation: pop .7s cubic-bezier(.2,1.4,.4,1); transform-box: fill-box; transform-origin: center; }
+  @keyframes pop { 0% { transform: scale(1); } 35% { transform: scale(1.25); } 100% { transform: scale(1); } }
+  .legend { display: flex; flex-wrap: wrap; gap: 10px 26px; font-size: 24px; color: var(--muted); align-items: center; }
+  .legend span { display: inline-flex; align-items: center; gap: 10px; }
+  .legend span b { color: var(--text); font-family: var(--disp); font-size: 32px; font-weight: 800; font-variant-numeric: tabular-nums; }
+  .legend i { width: 26px; height: 20px; border-radius: 4px; display: inline-block; }
+  .k-right { background: var(--gold); } .k-wrong { background: var(--slate); } .k-none { border: 2px dashed #4b5d80; }
+  .k-some { background: #b48a2a; } .k-join { background: #dfe7f5; } .k-ans { background: #fff; box-shadow: 0 0 10px #fff; }
+
+  /* ---------- lobby ---------- */
+  #lobby { grid-template-columns: 780px 1fr; gap: 56px; }
+  #lobL { display: flex; flex-direction: column; }
+  .kick { font-family: var(--disp); font-size: 28px; color: var(--gold); text-transform: uppercase; letter-spacing: .26em; font-weight: 800; }
+  .big { font-family: var(--disp); font-weight: 900; font-size: 112px; line-height: .9; text-transform: uppercase; letter-spacing: .01em; margin-top: 6px; }
+  .sub { font-size: 32px; color: var(--muted); margin-top: 12px; line-height: 1.3; }
+  #joinrow { display: flex; gap: 34px; align-items: center; margin-top: auto; }
+  #qrcard { flex: none; width: 330px; height: 330px; background: #fff; border-radius: 14px; padding: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 6px rgba(255,194,26,.35); }
+  #qrcard img { width: 100%; height: 100%; image-rendering: pixelated; display: block; }
+  #qrcard.noqr { background: var(--panel); color: var(--muted); font-size: 26px; text-align: center; padding: 30px; box-shadow: none; border: 1px dashed var(--line2); }
+  #url { font-family: var(--disp); font-weight: 700; font-size: 38px; line-height: 1.1; white-space: nowrap; }
+  #url .sec { color: var(--gold); font-weight: 900; }
+  #url .hint { display: block; font-family: var(--body); font-weight: 600; font-size: 24px; color: var(--muted); margin-top: 14px; }
+  #lobR { display: flex; flex-direction: column; min-height: 0; }
+  #lobR .hd { display: flex; align-items: baseline; justify-content: space-between; }
+  #lobcount { display: flex; align-items: baseline; gap: 16px; margin: 6px 0 14px; }
+  #lobcount .n { font-family: var(--disp); font-weight: 900; font-size: 120px; line-height: .9; color: var(--gold); font-variant-numeric: tabular-nums; }
+  #lobcount .t { font-size: 30px; color: var(--muted); line-height: 1.25; }
+  #lobcount .t b { color: var(--text); }
+  #room-lobby { position: relative; }
+  #emptycap { position: absolute; left: 0; right: 0; top: 52%; text-align: center; font-family: var(--disp); font-size: 42px; font-weight: 700; color: rgba(255,255,255,.5); letter-spacing: .04em; pointer-events: none; }
+  #remote { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 10px 12px; align-items: center; min-height: 50px; }
+  .chip { font-family: var(--disp); font-weight: 700; font-size: 28px; background: var(--panel2); border: 1px solid var(--line2); border-radius: 999px; padding: 2px 18px; line-height: 1.35; }
+  #remote .more { color: var(--muted); font-size: 24px; }
+
+  /* ---------- play ---------- */
+  #play { grid-template-columns: minmax(0, 1fr) 600px; gap: 34px; }
+  #qcol { display: flex; flex-direction: column; min-height: 0; min-width: 0; gap: 14px; }
+  #qhead { display: flex; align-items: center; gap: 16px; flex: none; }
+  #qhead .racechip { font-family: var(--disp); font-weight: 900; font-size: 30px; letter-spacing: .1em; background: var(--gold); color: #08101f; padding: 2px 14px 0; border-radius: 6px; text-transform: uppercase; }
+  #qhead .blk { font-family: var(--disp); font-weight: 700; font-size: 28px; letter-spacing: .12em; color: var(--muted); text-transform: uppercase; }
+  #prompt { font-size: 38px; line-height: 1.22; font-weight: 700; flex: none; }
+  #play.mode-reveal #prompt { font-size: 27px; font-weight: 600; color: #c8d3e8; }
+  #media { flex: 1 1 auto; min-height: 0; display: flex; gap: 18px; align-items: stretch; }
+  #mcard { position: relative; flex: 1 1 auto; min-width: 0; min-height: 0; background: #fff; border-radius: 12px; padding: 10px; display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: 0 12px 34px rgba(0,0,0,.45); }
+  /* the actual winner, stamped on the chart they answered about */
+  #play.mode-reveal #mcard { padding-top: 76px; }   /* a strip for the stamp, so it never covers the chart */
+  #mcard .wstamp { position: absolute; left: 12px; top: 10px; z-index: 2; display: flex; align-items: center; gap: 12px; background: var(--gold); color: #08101f; border-radius: 10px; padding: 6px 16px 6px 8px; box-shadow: 0 6px 22px rgba(0,0,0,.35); font-family: var(--disp); font-weight: 900; font-size: 30px; letter-spacing: .04em; text-transform: uppercase; max-width: 82%; animation: wst .5s .3s cubic-bezier(.3,1.6,.5,1) both; }
+  #mcard .wstamp small { display: block; font-size: 17px; letter-spacing: .16em; font-weight: 800; opacity: .8; }
+  #mcard .wstamp i { position: relative; flex: none; width: 46px; height: 46px; border-radius: 8px; display: grid; place-items: center; font-style: normal; }
+  #mcard .wstamp i b { position: absolute; right: 3px; bottom: 0; font-size: 14px; color: rgba(255,255,255,.9); }
+  #mcard .wstamp i svg { width: 26px; height: 26px; }
+  @keyframes wst { from { transform: scale(1.8) rotate(-4deg); opacity: 0; } to { transform: none; opacity: 1; } }
+  #mcard img { max-height: 100%; max-width: 100%; object-fit: contain; display: block; }
+  #mcard .rc-anim { width: 100%; height: 100%; display: block; }
+  #takeaway { display: none; flex: 0 0 440px; flex-direction: column; gap: 8px; padding: 18px 22px; border-left: 6px solid var(--gold); min-height: 0; overflow: hidden; }
+  #takeaway.hasx { flex-basis: 500px; }
+  #takeaway.hasx #ta-call { font-size: 38px; } #takeaway.hasx #ta-text { font-size: 23px; }
+  #ta-extra { display: none; margin-top: 6px; flex: 1 1 auto; min-height: 0; flex-direction: column; gap: 6px; }
+  #takeaway.hasx #ta-extra { display: flex; }
+  #ta-xcap { color: #dfe7f5; font-size: 20px; line-height: 1.25; font-weight: 600; }
+  #ta-xcap b { color: var(--gold); font-family: var(--disp); letter-spacing: .1em; text-transform: uppercase; font-size: 17px; display: block; }
+  #ta-xfig { flex: 1 1 auto; min-height: 120px; background: #fff; border-radius: 8px; padding: 6px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  #ta-xfig img { max-width: 100%; max-height: 100%; object-fit: contain; display: block; }
+  #ta-xfig .rc-anim { width: 100%; height: 100%; display: block; }
+  #play.mode-reveal #takeaway { display: flex; animation: slidein .7s .2s cubic-bezier(.2,1,.3,1) both; }
+  @keyframes slidein { from { opacity: 0; transform: translateX(30px); } }
+  #takeaway .lab { color: var(--gold); }
+  #ta-call { font-family: var(--disp); font-weight: 900; font-size: 46px; line-height: 1; text-transform: uppercase; color: var(--gold); }
+  #ta-text { font-size: 26px; line-height: 1.3; color: #e4eaf5; }
+  #source { font-size: 17px; color: var(--dim); line-height: 1.35; flex: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #source a { color: #8fa9d6; text-decoration: none; }
+  #opts { flex: none; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  #optwait { grid-column: 1 / -1; display: none; padding: 22px 26px; font-size: 30px; color: var(--muted); text-align: center; font-family: var(--disp); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+  #play.mode-pre #optwait { display: block; }
+  #play.mode-pre .opt { display: none; }
+  .opt { position: relative; display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; align-items: center; gap: 16px; background: var(--panel); border: 2px solid var(--line2); border-radius: 10px; padding: 10px 18px 10px 10px; min-height: 84px; overflow: hidden; transition: opacity .6s, border-color .6s, box-shadow .6s, transform .6s; }
+  .opt .lt { position: relative; z-index: 1; width: 60px; height: 60px; border-radius: 8px; display: grid; place-items: center; }
+  .opt .lt svg { width: 34px; height: 34px; }
+  .opt .lt b { position: absolute; right: 4px; bottom: 1px; font-family: var(--disp); font-weight: 900; font-size: 18px; color: rgba(255,255,255,.9); }
+  .opt .tx { position: relative; z-index: 1; font-size: 29px; line-height: 1.18; font-weight: 600; min-width: 0; }
+  .opt .ct { position: relative; z-index: 1; font-family: var(--disp); font-weight: 800; font-size: 40px; font-variant-numeric: tabular-nums; display: none; }
+  .opt .fill { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: rgba(255,255,255,.08); transition: width 1.1s cubic-bezier(.2,.9,.3,1); }
+  .bars .opt .ct { display: block; }
+  .rev .opt { opacity: .38; }
+  .rev .opt.ok { opacity: 1; border-color: var(--gold); box-shadow: 0 0 0 4px rgba(255,194,26,.25), 0 0 40px rgba(255,194,26,.35); transform: scale(1.02); }
+  .rev .opt.ok .fill { background: rgba(255,194,26,.22); }
+  .opt .bdg { display: none; margin-left: 12px; font-family: var(--disp); font-weight: 900; font-size: 19px; letter-spacing: .12em; padding: 1px 9px 0; border-radius: 4px; vertical-align: 4px; white-space: nowrap; }
+  .opt .bdg.on { display: inline-block; }
+  .opt .bdg.win { background: var(--gold); color: #08101f; }
+  .opt .bdg.proj { background: #dfe7f5; color: #08101f; }
+  .rev .opt .bdg.proj { background: var(--live); color: #fff; }
+  .rev .opt.ok .bdg.proj { background: #dfe7f5; color: #08101f; }
+  #play.mode-reveal .opt { min-height: 64px; padding-top: 6px; padding-bottom: 6px; }
+  #play.mode-reveal .opt .lt { width: 48px; height: 48px; }
+  #play.mode-reveal .opt .tx { font-size: 24px; }
+
+  #side { display: flex; flex-direction: column; gap: 18px; min-height: 0; }
+  #clockp { display: flex; align-items: center; gap: 22px; padding: 16px 22px; flex: none; }
+  #play.mode-reveal #clockp, #play.mode-closed #clockp { display: none; }
+  /* the room's projection (from the close on) and, at the reveal, the verdict against the actual winner */
+  #projp { display: none; padding: 14px 20px 16px; flex: none; border-left: 6px solid #dfe7f5; }
+  #play.mode-closed #projp, #play.mode-reveal #projp { display: block; }
+  #projp .row { display: flex; align-items: center; gap: 16px; margin-top: 8px; }
+  #projp .tile { flex: none; width: 64px; height: 64px; border-radius: 10px; display: grid; place-items: center; position: relative; }
+  #projp .tile svg { width: 36px; height: 36px; }
+  #projp .tile b { position: absolute; right: 4px; bottom: 1px; font-family: var(--disp); font-weight: 900; font-size: 18px; color: rgba(255,255,255,.9); }
+  #pj-text { font-family: var(--disp); font-weight: 900; font-size: 38px; line-height: 1.02; text-transform: uppercase; min-width: 0; }
+  #pj-sub { font-size: 22px; color: var(--muted); margin-top: 6px; }
+  #pj-verdict { display: none; margin-top: 12px; font-family: var(--disp); font-weight: 900; font-size: 34px; letter-spacing: .08em; text-transform: uppercase; padding: 4px 14px 2px; border-radius: 8px; text-align: center; }
+  #play.mode-reveal #pj-verdict { display: block; animation: wst .5s .5s cubic-bezier(.3,1.6,.5,1) both; }
+  #pj-verdict.ok { background: var(--gold); color: #08101f; }
+  #pj-verdict.upset { background: var(--live); color: #fff; }
+  #pj-verdict.none { background: var(--panel2); color: var(--muted); }
+  #ring { width: 170px; height: 170px; flex: none; position: relative; }
+  #ring > svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+  #ring .trk { fill: none; stroke: #0a1426; stroke-width: 14; }
+  #ring .arc { fill: none; stroke: #fff; stroke-width: 14; stroke-linecap: round; transition: stroke .3s; }
+  #ring.hot .arc { stroke: var(--live); }
+  #ring .num { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--disp); font-weight: 900; font-size: 76px; font-variant-numeric: tabular-nums; }
+  #ring.hot .num { color: #ff6b7d; }
+  #ring.done .arc { stroke: var(--gold); }
+  #ring .num svg { width: 76px; height: 76px; }
+  #clockcap { font-family: var(--disp); font-weight: 900; font-size: 46px; line-height: .95; text-transform: uppercase; letter-spacing: .03em; }
+  #clocksub { font-size: 22px; color: var(--muted); margin-top: 8px; }
+  #needlep { padding: 14px 20px 16px; flex: none; position: relative; }
+  /* at the reveal the room panel and verdict sit above, so the needle gets smaller to leave the seat map room */
+  #play.mode-reveal #needlep { padding: 8px 18px 10px; }
+  #play.mode-reveal #gauge { max-height: 128px; }
+  #play.mode-reveal #npct { font-size: 56px; } #play.mode-reveal #nlab { font-size: 24px; } #play.mode-reveal #nsub { font-size: 19px; }
+  #gauge { display: block; width: 100%; height: auto; max-height: 200px; }
+  #gauge .tk { stroke: #5d6f90; stroke-width: 3; }
+  #gauge .tl { font: 700 20px var(--disp); fill: #93a4c2; text-anchor: middle; }
+  #needle { transition: transform 1.6s cubic-bezier(.25,1.6,.4,1); transform-origin: 280px 250px; }
+  #needle.live { transition: transform .35s ease-out; }
+  #nstat { display: flex; align-items: baseline; justify-content: center; gap: 14px; margin-top: -6px; }
+  #npct { font-family: var(--disp); font-weight: 900; font-size: 74px; line-height: 1; font-variant-numeric: tabular-nums; }
+  #nlab { font-family: var(--disp); font-weight: 800; font-size: 28px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  #nsub { text-align: center; font-size: 22px; color: var(--muted); }
+  #roomp { padding: 12px 16px; flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 6px; }
+  #rm-play { flex: 1 1 auto; min-height: 0; display: flex; justify-content: center; }
+  #rm-play svg.room { height: 100%; width: auto; max-width: 100%; }
+  #streakbox { display: none; padding: 12px 18px; border-left: 6px solid var(--live); flex: none; }
+  #streakbox.on { display: block; animation: slidein .6s .6s both; }
+  #streakbox .lab { color: #ff8b9a; }
+  #streaklist { font-family: var(--disp); font-weight: 800; font-size: 30px; margin-top: 4px; }
+  #streaklist span { margin-right: 22px; } #streaklist small { color: var(--muted); font-weight: 600; font-size: 22px; margin-left: 6px; }
+
+  /* ---------- overlays: race card, the call ---------- */
+  #card { position: absolute; inset: 104px 0 62px; z-index: 6; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding-left: 160px; background: linear-gradient(100deg, rgba(6,13,26,.97) 55%, rgba(6,13,26,.88)); opacity: 0; pointer-events: none; transition: opacity .35s; overflow: hidden; }
+  #card.on { opacity: 1; }
+  #card .bar { position: absolute; left: 0; top: 0; bottom: 0; width: 26px; background: var(--gold); transform: scaleY(0); transform-origin: top; }
+  #card.on .bar { animation: grow .5s cubic-bezier(.2,1,.3,1) forwards; }
+  @keyframes grow { to { transform: scaleY(1); } }
+  #card .k { font-family: var(--disp); font-weight: 800; font-size: 40px; color: var(--gold); letter-spacing: .3em; text-transform: uppercase; }
+  #card h1 { font-family: var(--disp); font-weight: 900; font-size: 300px; line-height: .82; margin: 8px 0 0; text-transform: uppercase; letter-spacing: -.01em; }
+  #card h2 { font-family: var(--disp); font-weight: 700; font-size: 70px; margin: 18px 0 0; color: #dfe7f5; text-transform: uppercase; letter-spacing: .04em; }
+  #card.on .k, #card.on h1, #card.on h2 { animation: slidein .6s cubic-bezier(.2,1,.3,1) both; }
+  #card.on h1 { animation-delay: .08s; } #card.on h2 { animation-delay: .16s; }
+
+  #call { position: absolute; inset: 0; z-index: 7; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity .4s; background: rgba(4,8,16,.94); overflow: hidden; }
+  #call.on { opacity: 1; }
+  #call .stripes { position: absolute; inset: -20%; background: repeating-linear-gradient(115deg, rgba(229,40,63,.12) 0 60px, transparent 60px 140px); animation: stripes 1.4s linear infinite; }
+  @keyframes stripes { to { transform: translateX(150px); } }
+  #call .breaking { position: absolute; top: 150px; left: 0; right: 0; height: 96px; background: var(--live); display: flex; align-items: center; gap: 30px; padding-left: 80px; transform: translateX(-100%); box-shadow: 0 10px 40px rgba(229,40,63,.45); }
+  #call.on .breaking { animation: barin .55s cubic-bezier(.2,1,.3,1) forwards; }
+  @keyframes barin { to { transform: none; } }
+  #call .breaking b { font-family: var(--disp); font-weight: 900; font-size: 64px; letter-spacing: .1em; }
+  #call .breaking span { font-family: var(--disp); font-weight: 700; font-size: 40px; letter-spacing: .08em; text-transform: uppercase; opacity: .9; }
+  #call .proj { position: relative; font-family: var(--disp); font-weight: 800; font-size: 78px; letter-spacing: .34em; text-transform: uppercase; color: #dfe7f5; margin-top: 60px; white-space: nowrap; overflow: hidden; width: 0; text-align: left; }
+  #call.on .proj { animation: type .8s .45s steps(13) forwards; }
+  @keyframes type { to { width: 13em; } }   /* 13 letters at .34em spacing need about 12.5em */
+  #call .result { position: relative; display: flex; align-items: center; gap: 44px; margin-top: 56px; opacity: 0; transform: scale(.7); }
+  #call.on.stage2 .result { animation: callin .7s cubic-bezier(.2,1.5,.4,1) forwards; }
+  @keyframes callin { to { opacity: 1; transform: none; } }
+  #call .tile { width: 190px; height: 190px; border-radius: 18px; display: grid; place-items: center; box-shadow: 0 0 60px rgba(255,255,255,.18); }
+  #call .tile svg { width: 110px; height: 110px; }
+  #call .ctext { font-family: var(--disp); font-weight: 900; font-size: 150px; line-height: .9; text-transform: uppercase; color: var(--gold); max-width: 1300px; text-shadow: 0 0 50px rgba(255,194,26,.35); }
+  #call .ctext small { display: block; font-size: 46px; color: #dfe7f5; letter-spacing: .1em; margin-bottom: 8px; }
+  #call .stamp { position: absolute; right: -150px; top: -70px; font-family: var(--disp); font-weight: 900; font-size: 58px; color: var(--gold); border: 7px solid var(--gold); border-radius: 12px; padding: 2px 20px 0; transform: rotate(-12deg) scale(2.5); opacity: 0; letter-spacing: .12em; }
+  #call.on.stage2 .stamp { animation: stamp .45s .55s cubic-bezier(.3,1.6,.5,1) forwards; }
+  #call .stamp.upset { color: #ff5a6e; border-color: #ff5a6e; }
+  #call .stamp.none { color: var(--muted); border-color: var(--muted); }
+  @keyframes stamp { to { transform: rotate(-12deg) scale(1); opacity: 1; } }
+  #call .pct { position: relative; margin-top: 50px; font-size: 40px; color: var(--muted); opacity: 0; font-family: var(--disp); font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+  #call.on.stage2 .pct { animation: fadeup .6s .9s forwards; }
+  #call .pct b { color: #fff; font-size: 56px; }
+  #call .pct .up { display: block; margin-top: 10px; color: #ff8b9a; font-size: 34px; }
+  @keyframes fadeup { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+
+  /* ---------- break ---------- */
+  #brk { grid-template-columns: minmax(0, 1fr) 820px; gap: 56px; }
+  #lb { margin-top: 26px; display: flex; flex-direction: column; gap: 12px; }
+  .lbr { display: grid; grid-template-columns: 76px 110px minmax(0, 1fr) 230px; align-items: center; gap: 12px; padding: 10px 24px 10px 18px; height: 96px; animation: rowin .6s cubic-bezier(.2,1,.3,1) both; }
+  .lbr:first-child { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(255,194,26,.2), 0 10px 30px rgba(0,0,0,.35); }
+  @keyframes rowin { from { opacity: 0; transform: translateX(-24px); } to { opacity: 1; transform: none; } }
+  .lbr .rk { font-family: var(--disp); font-weight: 900; font-size: 62px; color: var(--muted); text-align: center; }
+  .lbr:first-child .rk { color: var(--gold); }
+  .lbr .mv { font-size: 22px; font-weight: 700; color: var(--muted); display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: .06em; }
+  .mv .tri { width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; }
+  .mv.up { color: var(--gold); } .mv.up .tri { border-bottom: 16px solid var(--gold); }
+  .mv.down { color: #8a9bbd; } .mv.down .tri { border-top: 16px solid #8a9bbd; }
+  .lbr .who { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .lbr .who .f { font-family: var(--disp); font-weight: 800; font-size: 54px; }
+  .lbr .who .st { font-size: 28px; color: var(--muted); margin-left: 14px; }
+  .lbr .pt { font-family: var(--disp); font-weight: 800; font-size: 58px; text-align: right; font-variant-numeric: tabular-nums; }
+  .rcol { display: flex; flex-direction: column; gap: 16px; min-height: 0; }
+  #tough { padding: 16px 22px 18px; margin-top: auto; }
+  #tough .row { display: flex; align-items: baseline; gap: 14px; margin-top: 4px; }
+  #tough .p { font-family: var(--disp); font-weight: 900; font-size: 70px; line-height: 1; color: #ff8b9a; }
+  #tough .of { font-size: 26px; color: var(--muted); }
+  #tough .c { font-size: 28px; margin-top: 6px; } #tough .c b { color: var(--gold); font-family: var(--disp); font-size: 34px; text-transform: uppercase; }
+
+  /* ---------- final ---------- */
+  #fin { grid-template-columns: 760px minmax(0, 1fr); gap: 50px; }
+  #podium { display: flex; align-items: flex-end; justify-content: center; gap: 22px; height: 470px; margin-top: 14px; border-bottom: 3px solid var(--line2); }
+  .pod { width: 230px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
+  .pod .pl { font-family: var(--disp); font-weight: 800; font-size: 30px; color: var(--muted); letter-spacing: .14em; }
+  .pod .f { font-family: var(--disp); font-weight: 900; font-size: 54px; line-height: 1.05; max-width: 230px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pod .st { font-size: 24px; color: var(--muted); }
+  .pod .pt { font-family: var(--disp); font-weight: 800; font-size: 40px; font-variant-numeric: tabular-nums; margin: 4px 0 10px; }
+  .pod .col { width: 100%; height: 0; background: linear-gradient(180deg, #7a5c0c, #3d2e06); border-radius: 8px 8px 0 0; transition: height 1.3s cubic-bezier(.2,.9,.25,1); }
+  .pod.p1 .col { background: linear-gradient(180deg, var(--gold), #a87700); box-shadow: 0 0 40px rgba(255,194,26,.35); }
+  #rest { margin-top: 14px; display: flex; gap: 34px; justify-content: center; font-size: 28px; color: var(--muted); }
+  #rest b { color: var(--text); font-family: var(--disp); font-size: 34px; }
+  #records { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 20px; }
+  #records .panel { padding: 12px 18px; }
+  #records .p { font-family: var(--disp); font-weight: 900; font-size: 52px; line-height: 1; }
+  #records .c { font-size: 22px; color: #dfe7f5; margin-top: 4px; line-height: 1.25; }
+  #finR { display: flex; flex-direction: column; gap: 12px; min-height: 0; }
+  #finR .hd { display: flex; justify-content: space-between; align-items: baseline; }
+  #maptitle { font-family: var(--disp); font-weight: 900; font-size: 58px; text-transform: uppercase; line-height: 1; }
+  #mapkind { font-family: var(--disp); font-weight: 800; font-size: 26px; color: #08101f; background: var(--gold); padding: 2px 12px 0; border-radius: 5px; letter-spacing: .1em; text-transform: uppercase; }
+  #mapcap { font-size: 24px; color: #c8d3e8; line-height: 1.35; }
+  #mapcap b { color: var(--gold); }
+  .ramp { display: flex; align-items: center; gap: 0; }
+  .ramp i { width: 70px; height: 22px; display: block; }
+  .ramp span { font-size: 20px; color: var(--muted); }
+  #finleg { display: flex; align-items: center; gap: 18px; font-size: 22px; color: var(--muted); flex-wrap: wrap; }
+
+  #toasts { position: absolute; right: 36px; bottom: 90px; z-index: 5; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; pointer-events: none; }
+  .toast { background: rgba(6,13,26,.96); border: 1px solid var(--line2); border-left: 6px solid var(--gold); border-radius: 8px; padding: 10px 20px; font-size: 26px; animation: tin .4s cubic-bezier(.2,1,.3,1); max-width: 900px; }
+  .toast b { font-family: var(--disp); font-weight: 800; font-size: 30px; }
+  .toast .m { color: var(--muted); }
+  .toast.out { animation: tout .4s ease forwards; }
+  @keyframes tin { from { opacity: 0; transform: translateX(30px); } }
+  @keyframes tout { to { opacity: 0; transform: translateY(10px); } }
+  #confetti { position: fixed; inset: 0; z-index: 8; pointer-events: none; }
+
+  /* ---------- host dock (not projected) ---------- */
+  #dock { position: fixed; left: 0; right: 0; bottom: 0; height: 48px; background: #03070e; border-top: 1px solid #16233a; display: flex; align-items: center; gap: 6px; padding: 0 12px; font-size: 14px; color: #b8c4da; z-index: 10; }
+  body.nodock #dock { display: none; }
+  #dock .st { display: flex; align-items: center; gap: 8px; margin-right: 10px; white-space: nowrap; }
+  #dock .dot { width: 9px; height: 9px; border-radius: 50%; background: #3fbf7f; }
+  #dock .dot.off { background: var(--live); }
+  #dock button { background: #0c1628; color: #d4ddee; border: 1px solid #22355a; border-radius: 5px; padding: 4px 9px; cursor: pointer; white-space: nowrap; }
+  #dock button:disabled { opacity: .33; cursor: default; }
+  #dock button kbd { font: 600 11px var(--body); color: #8a9bbd; border: 1px solid #2c4470; border-radius: 3px; padding: 0 4px; margin-right: 5px; }
+  #dock button.primary { background: var(--gold); border-color: var(--gold); color: #08101f; font-weight: 800; }
+  #dock button.primary kbd { color: #08101f; border-color: rgba(0,0,0,.4); }
+  #dock button.arm { background: #fff; color: #000; font-weight: 700; }
+  #dock button.hot { border-color: var(--gold); color: #fff; }
+  #dock .sp { flex: 1; }
+  #dock .demo { color: #e7c547; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+
+  #gate { position: fixed; inset: 0; z-index: 20; background: rgba(2,6,13,.92); display: none; align-items: center; justify-content: center; }
+  #gate.on { display: flex; }
+  #gate form { background: var(--panel); border: 1px solid var(--line2); border-radius: 10px; padding: 22px 24px; width: 380px; font-size: 16px; }
+  #gate h2 { margin: 0 0 6px; font-family: var(--disp); font-size: 28px; letter-spacing: .04em; text-transform: uppercase; }
+  #gate p { margin: 0 0 14px; color: var(--muted); font-size: 14px; line-height: 1.4; }
+  #gate input { width: 100%; font: inherit; padding: 9px 11px; background: #050b16; color: var(--text); border: 1px solid var(--line2); border-radius: 6px; }
+  #gate button { margin-top: 12px; width: 100%; font-weight: 800; padding: 9px; border: 0; border-radius: 6px; background: var(--gold); color: #08101f; cursor: pointer; }
+  #gate .err { color: #ff8b9a; min-height: 20px; margin-top: 8px; font-size: 14px; }
+</style>
+</head>
+<body>
+<noscript>This page needs JavaScript.</noscript>
+
+<div id="viewport"><div id="stage">
+  <header id="hdr">
+    <div id="logo">
+      <div class="mark"><svg viewBox="0 0 40 40"><path d="M7 21 L16 30 L33 10" fill="none" stroke="#08101f" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div><div class="w">Race Call<span class="livepill"><i></i>LIVE</span></div><div class="s">Election Night Chart Desk &middot; <b id="secname">Section A</b></div></div>
+    </div>
+    <div id="center"><div id="raceLabel">The polls are about to open</div><div id="tracker"></div></div>
+    <div id="cells">
+      <div class="cell"><div class="k">Analysts</div><div class="v" id="pv">0</div></div>
+      <div class="cell" id="clockcell"><div class="k">Eastern</div><div class="v" id="tod">--:--</div></div>
+    </div>
+  </header>
+
+  <div id="main">
+    <section class="scene" id="lobby">
+      <div id="lobL">
+        <div class="kick">Tonight on the desk</div>
+        <div class="big" id="lob-big">13 races.<br>Project every one.</div>
+        <div class="sub">Each race is a chart. Read it and make your projection on your phone. The room projects a winner; the answer key decides the actual winner. Right projections earn 1,000 to 2,000 points, faster earns more. Points count for nothing.</div>
+        <div id="joinrow">
+          <div id="qrcard"><img id="qr" alt="QR code for this section's game"></div>
+          <div id="url"><span id="url1">isa401-race-call.vercel.app</span><br><span>/?section=</span><span class="sec" id="url3">A</span><span class="hint">Scan, enter your first name, last initial and seat.</span></div>
+        </div>
+      </div>
+      <div id="lobR">
+        <div class="hd"><div class="lab">Analysts reporting: <b>FSB 2050</b></div><div class="legend" style="font-size:22px;"><span><i class="k-join"></i>Joined</span></div></div>
+        <div id="lobcount"><div class="n" id="lob-n">0</div><div class="t"><b>on the desk</b><br><span id="lob-sub">0 in seats, 0 remote</span></div></div>
+        <div id="room-lobby"><div id="rm-lobby"></div><div id="emptycap">Seats light up as analysts join</div></div>
+        <div id="remote"><span class="lab">Remote</span><span id="remote-list"></span></div>
+      </div>
+    </section>
+
+    <section class="scene" id="play">
+      <div id="qcol">
+        <div id="qhead"><span class="racechip" id="racechip">Race 1</span><span class="blk" id="blkname"></span></div>
+        <div id="prompt"></div>
+        <div id="media">
+          <div id="mcard"></div>
+          <div class="panel" id="takeaway"><div class="lab">Actual winner</div><div id="ta-call"></div><div class="lab" style="margin-top:6px;">Why</div><div id="ta-text"></div><div id="ta-extra"><div id="ta-xcap"></div><div id="ta-xfig"></div></div></div>
+        </div>
+        <div id="source"></div>
+        <div id="opts"><div class="panel" id="optwait">The choices appear when the polls open</div></div>
+      </div>
+      <div id="side">
+        <div class="panel" id="clockp">
+          <div id="ring"><svg viewBox="0 0 170 170"><circle class="trk" cx="85" cy="85" r="74"/><circle class="arc" id="arc" cx="85" cy="85" r="74" stroke-dasharray="465 465" stroke-dashoffset="0"/></svg><div class="num" id="secs">20</div></div>
+          <div><div id="clockcap">Polls open soon</div><div id="clocksub">Read the chart now</div></div>
+        </div>
+        <div class="panel" id="projp"><div class="lab" id="pj-lab">The room projects</div><div class="row"><div class="tile" id="pj-tile"></div><div id="pj-text"></div></div><div id="pj-sub"></div><div id="pj-verdict"></div></div>
+        <div class="panel" id="needlep">
+          <svg id="gauge" viewBox="0 0 560 270">
+            <defs>
+              <linearGradient id="gg" x1="0" x2="1"><stop offset="0" stop-color="#3f4d68"/><stop offset=".55" stop-color="#8f6d17"/><stop offset="1" stop-color="#ffc21a"/></linearGradient>
+              <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            </defs>
+            <path d="M 50 250 A 230 230 0 0 1 510 250" fill="none" stroke="url(#gg)" stroke-width="34"/>
+            <g id="ticks"></g>
+            <g id="needle"><path d="M 274 250 L 280 46 L 286 250 Z" fill="#fff" filter="url(#glow)"/><circle cx="280" cy="250" r="16" fill="#fff"/><circle cx="280" cy="250" r="7" fill="#08101f"/></g>
+          </svg>
+          <div id="nstat"><span id="npct">0%</span><span id="nlab">Reporting</span></div>
+          <div id="nsub">0 of 0 analysts</div>
+        </div>
+        <div class="panel" id="streakbox"><div class="lab">On a roll</div><div id="streaklist"></div></div>
+        <div class="panel" id="roomp">
+          <div style="display:flex; justify-content:space-between; align-items:baseline;"><span class="lab" id="roomlab">The room</span><span class="legend" id="roomleg" style="font-size:20px; gap:6px 16px;"></span></div>
+          <div id="rm-play"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="scene" id="brk">
+      <div>
+        <div class="kick">Results so far</div>
+        <div class="big" id="brk-h">After block 1</div>
+        <div class="sub" id="brk-s"></div>
+        <div id="lb"></div>
+        <div class="note" id="lbnote" style="margin-top:12px;"></div>
+      </div>
+      <div class="rcol">
+        <div class="lab" id="brk-lab">The block just finished, by seat</div>
+        <div id="rm-brk"></div>
+        <div class="legend" id="brkleg"></div>
+        <div class="note">Remote analysts are not on the map.</div>
+        <div class="panel" id="tough" hidden><div class="lab">Closest race so far</div><div class="row"><span class="p" id="t-p"></span><span class="of" id="t-of"></span></div><div class="c" id="t-c"></div></div>
+      </div>
+    </section>
+
+    <section class="scene" id="fin">
+      <div>
+        <div class="kick">Final results</div>
+        <div class="big" style="font-size:96px;">Top analysts</div>
+        <div id="podium"></div>
+        <div id="rest"></div>
+        <div id="records"></div>
+      </div>
+      <div id="finR">
+        <div class="hd"><div id="maptitle">The results map of the room</div><span id="mapkind">Choropleth</span></div>
+        <div id="rm-fin"></div>
+        <div id="finleg"></div>
+        <div id="mapcap"></div>
+      </div>
+    </section>
+  </div>
+
+  <footer id="ticker"><div class="tag">Desk notes</div><div id="crawlbox"><div id="crawl"></div></div></footer>
+
+  <div id="card"><div class="bar"></div><div class="k" id="card-k">Race</div><h1 id="card-h1"></h1><h2 id="card-h2"></h2></div>
+  <div id="call"><div class="stripes"></div>
+    <div class="breaking"><b>BREAKING</b><span id="call-race"></span></div>
+    <div class="proj">Actual winner</div>
+    <div class="result"><div class="tile" id="call-tile"></div><div class="ctext" id="call-text"></div><div class="stamp" id="call-stamp">CONFIRMED</div></div>
+    <div class="pct" id="call-pct"></div>
+  </div>
+  <div id="toasts"></div>
+</div></div>
+
+<canvas id="confetti"></canvas>
+
+<div id="dock">
+  <div class="st"><span class="dot" id="netdot"></span><span id="netlbl">Connecting</span></div>
+  <button id="b-primary" class="primary" title="Space: the next step"><kbd>Space</kbd><span id="b-primary-t">Next</span></button>
+  <button id="b-open"><kbd>O</kbd>Open polls</button>
+  <button id="b-close"><kbd>C</kbd>Close polls</button>
+  <button id="b-reveal"><kbd>R</kbd>Reveal winner</button>
+  <button id="b-next"><kbd>N</kbd>Next race</button>
+  <button id="b-break"><kbd>B</kbd>Results</button>
+  <button id="b-final"><kbd>E</kbd><span id="b-final-t">Final</span></button>
+  <button id="b-reset"><kbd>X</kbd><span id="b-reset-t">Reset</span></button>
+  <button id="b-view"><kbd>V</kbd>Map view</button>
+  <span class="demo" id="demolbl"></span>
+  <span class="sp"></span>
+  <button id="b-sound"><kbd>M</kbd><span id="b-sound-t">Sound on</span></button>
+  <button id="b-fs"><kbd>F</kbd>Full screen</button>
+  <button id="b-hide"><kbd>H</kbd>Hide</button>
+</div>
+
+<div id="gate"><form id="gateform" autocomplete="off">
+  <h2>Host key</h2>
+  <p id="gatep">Enter the admin key for this section. It stays in this browser tab only and is never put in the address.</p>
+  <input id="gatekey" type="password" aria-label="Admin key" autocomplete="off" spellcheck="false">
+  <button type="submit">Connect</button>
+  <div class="err" id="gateerr"></div>
+</form></div>
+
+<script src="anim.js"></script>
+<script>
+(async function () {
+  "use strict";
+  const $ = (id) => document.getElementById(id);
+  const qs = new URLSearchParams(location.search);
+  let SECTION = (qs.get("section") || "A").toUpperCase();
+  if (!/^[ABZ]$/.test(SECTION)) SECTION = "A";
+  const DEMO = qs.get("demo") === "1";
+  const LOAD_ID = Date.now().toString(36);
+  if (qs.has("key")) { qs.delete("key"); history.replaceState(null, "", location.pathname + "?" + qs.toString()); }
+  const KEY_STORE = "rc-host-key-" + SECTION;
+  const SITE = "isa401-race-call.vercel.app";
+  const LETTERS = "ABCD";
+  const OPT_COLORS = ["var(--o0)", "var(--o1)", "var(--o2)", "var(--o3)"];
+  const SHAPES = [
+    '<svg viewBox="0 0 40 40"><path d="M20 5 L36 34 H4 Z" fill="#fff"/></svg>',
+    '<svg viewBox="0 0 40 40"><path d="M20 3 L37 20 L20 37 L3 20 Z" fill="#fff"/></svg>',
+    '<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="16" fill="#fff"/></svg>',
+    '<svg viewBox="0 0 40 40"><rect x="5" y="5" width="30" height="30" rx="3" fill="#fff"/></svg>',
+  ];
+  const SEAT_IDS = [];
+  for (const side of ["L", "R"]) for (let r = 1; r <= 3; r++) for (let n = 1; n <= 7; n++) SEAT_IDS.push(side + r + "-" + n);
+  const fmtN = (v) => Math.round(v).toLocaleString("en-US");
+  const seatLabel = (seat) => (seat === "remote" ? "Remote" : seat);
+
+  // ---------- public questions (no answers in them) ----------
+  let BLOCKS = { 1: { name: "Block", sub: "" } };
+  let QS = [{ id: "s1", block: 1, seconds: 20, prompt: "Sample race: questions.json was not found.", chart: null, anim: null, options: ["One", "Two", "Three", "Four"], source: "" }];
+  try {
+    const r = await fetch("questions.json", { cache: "no-store" });
+    if (r.ok) { const j = await r.json(); if (j && Array.isArray(j.questions) && j.questions.length) { QS = j.questions; BLOCKS = j.blocks || BLOCKS; } }
+  } catch (e) {}
+  const QN = (n) => QS[n - 1] || null;
+  const firstOfBlock = {};
+  QS.forEach((q, i) => { if (firstOfBlock[q.block] == null) firstOfBlock[q.block] = i + 1; });
+  const blockName = (b) => (BLOCKS[b] ? BLOCKS[b].name : "");
+  $("lob-big").innerHTML = "";
+  $("lob-big").append(document.createTextNode(QS.length + " races."), document.createElement("br"), document.createTextNode("Project every one."));
+
+  // ---------- stage scaling ----------
+  function fit() {
+    const vp = $("viewport"), w = vp.clientWidth, h = vp.clientHeight;
+    const s = Math.min(w / 1920, h / 1080);
+    $("stage").style.transform = `translate(${Math.round((w - 1920 * s) / 2)}px, ${Math.round((h - 1080 * s) / 2)}px) scale(${s})`;
+  }
+  addEventListener("resize", fit); fit();
+
+  // ---------- time of day ----------
+  function tod() {
+    const t = new Date().toLocaleTimeString("en-US", { timeZone: "America/New_York", hour: "numeric", minute: "2-digit", second: "2-digit" });
+    $("tod").textContent = t.replace(/\s?[AP]M$/, "");
+  }
+  tod(); setInterval(tod, 1000);
+
+  // ---------- gauge ticks ----------
+  (function () {
+    const g = $("ticks");
+    for (let p = 0; p <= 100; p += 10) {
+      const a = Math.PI * (1 - p / 100), r1 = 254, r2 = p % 50 === 0 ? 278 : 268;
+      const l = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      l.setAttribute("x1", 280 + r1 * Math.cos(a)); l.setAttribute("y1", 250 - r1 * Math.sin(a));
+      l.setAttribute("x2", 280 + r2 * Math.cos(a)); l.setAttribute("y2", 250 - r2 * Math.sin(a)); l.setAttribute("class", "tk");
+      g.appendChild(l);
+      if (p % 25 === 0) {
+        const t = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        t.setAttribute("x", 280 + 172 * Math.cos(a)); t.setAttribute("y", 250 - 172 * Math.sin(a) + 7); t.setAttribute("class", "tl"); t.textContent = p + "%";
+        g.appendChild(t);
+      }
+    }
+  })();
+  let needleTarget = 0, needleLive = false;
+  function setNeedle(pct, live) {
+    needleTarget = Math.max(0, Math.min(100, pct));
+    needleLive = live;
+    $("needle").classList.toggle("live", !!live);
+    if (!live) $("needle").style.transform = `rotate(${-90 + 1.8 * needleTarget}deg)`;
+  }
+  // the jitter of a live needle: small random moves around the true share while the polls are open
+  setInterval(() => {
+    if (!needleLive) return;
+    const j = needleTarget + (Math.random() * 2 - 1) * Math.min(4, 1 + needleTarget * 0.05);
+    $("needle").style.transform = `rotate(${-90 + 1.8 * Math.max(0, Math.min(100, j))}deg)`;
+  }, 380);
+  setNeedle(0, false);
+
+  // ---------- the room (FSB 2050) ----------
+  const SVGNS = "http://www.w3.org/2000/svg";
+  function sv(tag, attrs, parent) { const e = document.createElementNS(SVGNS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
+  function makeRoom(hostEl, kind) {
+    const compact = kind === "compact", namesOnly = kind === "names";
+    const W = 1000, SW = 60, GAP = 6, AISLE = 48, M = 20;
+    const SH = compact ? 40 : namesOnly ? 70 : 86, ROWGAP = compact ? 54 : namesOnly ? 100 : 122, FRONT = compact ? 30 : 50, TOP = compact ? 48 : 86;
+    const H = TOP + 2 * ROWGAP + SH + 14;
+    const svg = sv("svg", { viewBox: `0 0 ${W} ${H}`, class: "room", role: "img", "aria-label": "FSB 2050 seat plan, front of the room at the top" });
+    const defs = sv("defs", {}, svg);
+    const f = sv("filter", { id: "glow" + kind + Math.random().toString(36).slice(2, 6), x: "-50%", y: "-50%", width: "200%", height: "200%" }, defs);
+    sv("feGaussianBlur", { stdDeviation: 4, result: "b" }, f); const mg = sv("feMerge", {}, f); sv("feMergeNode", { in: "b" }, mg); sv("feMergeNode", { in: "SourceGraphic" }, mg);
+    sv("rect", { x: M, y: 0, width: W - 2 * M, height: FRONT, rx: 6, class: "front" }, svg);
+    sv("text", { x: W / 2, y: FRONT / 2 + 6, class: "fronttxt" }, svg).textContent = "FRONT OF THE ROOM";
+    const seats = {}, sideW = 7 * SW + 6 * GAP;
+    for (let r = 1; r <= 3; r++) {
+      const y = TOP + (r - 1) * ROWGAP;
+      for (const [side, x0] of [["L", M], ["R", M + sideW + AISLE]]) {
+        sv("rect", { x: x0 - 6, y: y - 8, width: sideW + 12, height: SH + 16, rx: 8, class: "riser" }, svg);
+        for (let n = 1; n <= 7; n++) {
+          const id = side + r + "-" + n, x = x0 + (n - 1) * (SW + GAP);
+          const g = sv("g", { class: "seat", "data-seat": id }, svg);
+          const box = sv("rect", { x, y, width: SW, height: SH, rx: compact ? 5 : 8, class: "box" }, g);
+          const dot = sv("circle", { cx: x + SW / 2, cy: y + SH / 2, r: 0, class: "dot" }, g);
+          let nm = null;
+          if (namesOnly) nm = sv("text", { x: x + SW / 2, y: y + SH / 2 + 9, class: "nm" }, g);
+          else if (!compact) { nm = sv("text", { x: x + SW / 2, y: y + 44, class: "nm" }, g); sv("text", { x: x + SW / 2, y: y + 74, class: "sid" }, g).textContent = id; }
+          seats[id] = { g, box, dot, nm, cls: null, name: null, order: (side === "L" ? n - 1 : 7 + n - 1) + (r - 1) * 3 };
+        }
+      }
+      sv("text", { x: M + sideW + AISLE / 2, y: y + SH / 2 + 8, class: "rowno" }, svg).textContent = String(r);
+    }
+    hostEl.replaceChildren(svg);
+    return { svg, seats, big: namesOnly, pops: {} };
+  }
+  function fitName(el, name, big) {
+    const MAXW = big ? 50 : 54, MIN = big ? 15 : 13;
+    const width = (s, f) => { el.setAttribute("font-size", f); el.textContent = s; let w = 0; try { w = el.getComputedTextLength(); } catch (e) {} return w > 0 ? w : s.length * f * 0.42; };
+    let f = big ? 26 : 18, s = name, w = width(s, f);
+    if (w > MAXW) { f = Math.max(MIN, Math.floor(f * MAXW / w * 2) / 2); w = width(s, f); }
+    if (w > MAXW) { while (s.length > 1 && width(s + "…", f) > MAXW) s = s.slice(0, -1); s = s.trimEnd() + "…"; }
+    el.setAttribute("font-size", f); el.textContent = s;
+  }
+  // mode: join | answer | result; clsMap overrides per seat; dots: {seat: radius}
+  function paintRoom(S, b, mode, wave, clsMap, dots) {
+    const bySeat = {};
+    for (const p of b.players || []) if (p.seat && p.seat !== "remote") bySeat[p.seat] = p.first;
+    const answered = new Set(b.answeredSeats || []), res = b.seatResults || {}, now = Date.now();
+    for (const id of SEAT_IDS) {
+      const s = S.seats[id], name = bySeat[id] || null;
+      let cls = name ? "filled" : "";
+      if (mode === "answer" && name && answered.has(id)) cls = "answered";
+      if (mode === "result" && name) cls = (clsMap ? clsMap[id] : res[id]) || "none";
+      if (S.pops[id] && S.pops[id] > now) cls += " pop";
+      s.box.style.transitionDelay = wave ? (s.order * 36) + "ms" : "";
+      s.dot.style.transitionDelay = wave ? (s.order * 36) + "ms" : "";
+      if (s.cls !== cls) { s.g.setAttribute("class", ("seat " + cls).trim()); s.cls = cls; }
+      const r = dots && name ? dots[id] || 0 : 0;
+      if (s.dot.getAttribute("r") !== String(r)) s.dot.setAttribute("r", String(r));
+      if (s.nm && s.name !== name) { if (name) fitName(s.nm, name, S.big); else s.nm.textContent = ""; s.name = name; }
+    }
+  }
+  function popSeat(S, id) { S.pops[id] = Date.now() + 800; }
+  function legend(el, items) {
+    el.replaceChildren();
+    for (const [cls, n, w] of items) {
+      const sp = document.createElement("span"); const i = document.createElement("i"); i.className = cls;
+      sp.appendChild(i);
+      if (n != null) { const bb = document.createElement("b"); bb.textContent = n; sp.appendChild(bb); }
+      sp.appendChild(document.createTextNode(" " + w)); el.appendChild(sp);
+    }
+  }
+  function resultCounts(map) { const c = { right: 0, wrong: 0, none: 0 }; for (const v of Object.values(map || {})) if (c[v] != null) c[v]++; return c; }
+  const RM = { lobby: makeRoom($("rm-lobby"), "ids"), play: makeRoom($("rm-play"), "names"), brk: makeRoom($("rm-brk"), "names"), fin: makeRoom($("rm-fin"), "names") };
+  // the glow filter id differs per room; point the answered seats at their own filter
+  for (const k in RM) { const fid = RM[k].svg.querySelector("filter").id; const st = document.createElement("style"); st.textContent = `#rm-${k} .seat.answered .box { filter: url(#${fid}); }`; document.head.appendChild(st); }
+
+  // ---------- sound (WebAudio, synthesized) ----------
+  let AC = null, soundOn = true, bed = null;
+  function ac() { AC = AC || new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === "suspended") AC.resume(); return AC; }
+  function out() { const a = ac(); if (!out.g) { out.g = a.createGain(); out.g.gain.value = 0.9; out.g.connect(a.destination); } return out.g; }
+  function tone(freq, t0, dur, gain, type) {
+    const a = ac(), o = a.createOscillator(), g = a.createGain();
+    o.type = type || "sine"; o.frequency.value = freq;
+    g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(gain, t0 + 0.015); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    o.connect(g).connect(out()); o.start(t0); o.stop(t0 + dur + 0.05);
+  }
+  function noise(t0, dur, gain, f0, f1, q) {
+    const a = ac(), n = Math.floor(a.sampleRate * dur), buf = a.createBuffer(1, n, a.sampleRate), d = buf.getChannelData(0);
+    for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+    const s = a.createBufferSource(), f = a.createBiquadFilter(), g = a.createGain();
+    s.buffer = buf; f.type = "bandpass"; f.Q.value = q || 1; f.frequency.setValueAtTime(f0, t0); f.frequency.exponentialRampToValueAtTime(f1, t0 + dur);
+    g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(gain, t0 + dur * 0.85); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    s.connect(f).connect(g).connect(out()); s.start(t0); s.stop(t0 + dur + 0.02);
+  }
+  function brass(t0, dur, freqs, gain) {
+    const a = ac(), f = a.createBiquadFilter(), g = a.createGain();
+    f.type = "lowpass"; f.frequency.setValueAtTime(600, t0); f.frequency.exponentialRampToValueAtTime(3200, t0 + 0.12); f.frequency.exponentialRampToValueAtTime(1200, t0 + dur);
+    g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(gain, t0 + 0.04); g.gain.setValueAtTime(gain, t0 + dur * 0.6); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    f.connect(g).connect(out());
+    for (const fr of freqs) for (const det of [-6, 6]) { const o = a.createOscillator(); o.type = "sawtooth"; o.frequency.value = fr; o.detune.value = det; o.connect(f); o.start(t0); o.stop(t0 + dur + 0.05); }
+  }
+  function kick(t0, gain) {
+    const a = ac(), o = a.createOscillator(), g = a.createGain();
+    o.frequency.setValueAtTime(140, t0); o.frequency.exponentialRampToValueAtTime(45, t0 + 0.18);
+    g.gain.setValueAtTime(gain, t0); g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.25);
+    o.connect(g).connect(out()); o.start(t0); o.stop(t0 + 0.3);
+  }
+  function play(kind) {
+    if (!soundOn) return;
+    try {
+      const t = ac().currentTime;
+      if (kind === "roll") noise(t, 1.25, 0.35, 120, 260, 0.7);                                         // timpani-like build
+      else if (kind === "sting") { kick(t, 0.9); brass(t, 1.5, [196, 246.94, 293.66, 392], 0.09); tone(1567.98, t + 0.05, 1.2, 0.05, "triangle"); tone(2093, t + 0.12, 1.2, 0.03, "triangle"); }
+      else if (kind === "open") { tone(1046.5, t, 0.5, 0.12, "triangle"); tone(1318.5, t + 0.12, 0.7, 0.12, "triangle"); }
+      else if (kind === "close") { brass(t, 1.0, [130.81, 196], 0.08); kick(t, 0.6); }
+      else if (kind === "tick") tone(1500, t, 0.06, 0.07, "square");
+      else if (kind === "join") { tone(880, t, 0.3, 0.07); tone(1320, t + 0.06, 0.35, 0.05); }
+      else if (kind === "whoosh") noise(t, 0.55, 0.22, 400, 4000, 0.8);
+      else if (kind === "final") { [392, 523.25, 659.25, 783.99, 659.25, 783.99, 1046.5].forEach((f, i) => tone(f, t + i * 0.13, 0.6, 0.12, "triangle")); brass(t + 0.95, 1.8, [261.63, 329.63, 392, 523.25], 0.08); kick(t + 0.95, 0.9); }
+    } catch (e) {}
+  }
+  // a quiet news-desk pulse while the polls are open
+  function startBed() {
+    if (!soundOn || bed) return;
+    try {
+      const a = ac(); let next = a.currentTime + 0.05, beat = 0;
+      bed = setInterval(() => {
+        while (next < a.currentTime + 0.25) {
+          if (beat % 4 === 0) kick(next, 0.35);
+          noise(next, 0.05, 0.03, 7000, 9000, 2);
+          if (beat % 8 === 6) tone(beat % 16 === 6 ? 392 : 349.23, next, 0.18, 0.025, "triangle");
+          next += 0.25; beat++;
+        }
+      }, 60);
+    } catch (e) {}
+  }
+  function stopBed() { if (bed) { clearInterval(bed); bed = null; } }
+  function paintSound() { $("b-sound-t").textContent = soundOn ? "Sound on" : "Sound off"; $("b-sound").classList.toggle("hot", soundOn); }
+  function toggleSound() { soundOn = !soundOn; if (!soundOn) stopBed(); else if (B && B.phase === "open") startBed(); paintSound(); if (soundOn) play("join"); }
+
+  // ---------- toasts, confetti ----------
+  function toast(parts) {
+    const el = document.createElement("div"); el.className = "toast";
+    for (const [txt, cls] of parts) { const s = document.createElement(cls === "b" ? "b" : "span"); if (cls === "m") s.className = "m"; s.textContent = txt; el.appendChild(s); }
+    $("toasts").appendChild(el);
+    while ($("toasts").children.length > 2) $("toasts").firstChild.remove();
+    setTimeout(() => { el.classList.add("out"); setTimeout(() => el.remove(), 450); }, 4200);
+  }
+  function confetti() {
+    const cv = $("confetti"), ctx = cv.getContext("2d"); cv.width = innerWidth; cv.height = innerHeight;
+    const cols = ["#ffc21a", "#ffffff", "#ffdb6e", "#e5283f", "#1f8fff"]; const P = [];
+    for (let i = 0; i < 300; i++) P.push({ x: Math.random() * cv.width, y: -20 - Math.random() * cv.height * 0.7, w: 6 + Math.random() * 8, h: 8 + Math.random() * 10, c: cols[i % cols.length], vy: 2.4 + Math.random() * 3.4, vx: -1.2 + Math.random() * 2.4, r: Math.random() * Math.PI, vr: -0.15 + Math.random() * 0.3 });
+    const t0 = performance.now();
+    (function frame(now) {
+      ctx.clearRect(0, 0, cv.width, cv.height); let alive = false;
+      for (const p of P) { p.x += p.vx; p.y += p.vy; p.r += p.vr; if (p.y < cv.height + 20) alive = true; ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r); ctx.fillStyle = p.c; ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h); ctx.restore(); }
+      if (alive && now - t0 < 9000) requestAnimationFrame(frame); else ctx.clearRect(0, 0, cv.width, cv.height);
+    })(t0);
+  }
+  function countUp(el, from, to, ms, suffix) {
+    const t0 = performance.now(); suffix = suffix || "";
+    if (from === to) { el.textContent = fmtN(to) + suffix; return; }
+    (function f(now) { const k = Math.min(1, (now - t0) / ms), e = 1 - Math.pow(1 - k, 3); el.textContent = fmtN(from + (to - from) * e) + suffix; if (k < 1) requestAnimationFrame(f); })(t0);
+  }
+
+  // ---------- the room's projection: the most-picked option(s), from the close on ----------
+  function roomProj(h) {
+    h = Array.isArray(h) ? h : []; const n = h.reduce((x, y) => x + y, 0);
+    if (!n) return null;
+    const mx = Math.max(...h), top = h.map((c, i) => (c === mx ? i : -1)).filter((i) => i >= 0);
+    return { top, n, count: mx, share: mx / n };
+  }
+  // CONFIRMED when the room's (single) projection is the actual winner, UPSET otherwise, none when nobody answered
+  function verdictOf(h, correct) {
+    const pr = roomProj(h);
+    if (!pr) return { kind: "none", pr };
+    return { kind: pr.top.length === 1 && pr.top[0] === correct ? "ok" : "upset", pr };
+  }
+  const optText = (Q, i) => (Q && Q.options && Q.options[i]) || "";
+  function tileHTML(el, i) { el.innerHTML = SHAPES[i] || ""; el.style.background = OPT_COLORS[i] || "#444"; const b = document.createElement("b"); b.textContent = LETTERS[i]; el.appendChild(b); }
+
+  // ---------- race card (new race) and the actual winner (reveal) ----------
+  let cardTimer = null;
+  function showCard(n) {
+    const Q = QN(n); if (!Q) return;
+    const isFirst = firstOfBlock[Q.block] === n;
+    $("card-k").textContent = isFirst ? "Block " + Q.block + " · " + blockName(Q.block) : blockName(Q.block);
+    $("card-h1").textContent = "Race " + n;
+    $("card-h2").textContent = "of " + QS.length + (isFirst && BLOCKS[Q.block] && BLOCKS[Q.block].sub ? " · " + BLOCKS[Q.block].sub : "");
+    const el = $("card"); el.classList.remove("on"); void el.offsetWidth; el.classList.add("on");
+    play("whoosh");
+    clearTimeout(cardTimer); cardTimer = setTimeout(() => el.classList.remove("on"), isFirst ? 2300 : 1600);
+  }
+  let callTimers = [];
+  function showCall(b) {
+    const Q = QN(b.q), rv = b.reveal; if (!rv) return;
+    callTimers.forEach(clearTimeout); callTimers = [];
+    $("call-race").textContent = "Race " + b.q + " · " + blockName(Q ? Q.block : 0);
+    const tile = $("call-tile"); tile.innerHTML = SHAPES[rv.correct] || ""; tile.style.background = OPT_COLORS[rv.correct] || "#444";
+    const tx = $("call-text"); tx.replaceChildren();
+    const sm = document.createElement("small"); sm.textContent = "Answer " + LETTERS[rv.correct];
+    tx.append(sm, document.createTextNode(rv.call || optText(Q, rv.correct)));
+    const h = b.histogram || [], n = h.reduce((x, y) => x + y, 0), r = h[rv.correct] || 0, vd = verdictOf(h, rv.correct);
+    const stp = $("call-stamp"); stp.className = "stamp" + (vd.kind === "ok" ? "" : " " + vd.kind);
+    stp.textContent = vd.kind === "ok" ? "CONFIRMED" : vd.kind === "upset" ? "UPSET" : "NO PROJECTION";
+    const pc = $("call-pct"); pc.replaceChildren();
+    if (n) {
+      const bb = document.createElement("b"); bb.textContent = Math.round(100 * r / n) + "%";
+      pc.append(bb, document.createTextNode(" of the room projected it  ·  " + r + " of " + n));
+      if (vd.kind === "upset") { const u = document.createElement("span"); u.className = "up"; u.textContent = "The room projected " + vd.pr.top.map((i) => LETTERS[i] + " · " + optText(Q, i)).join(" and ") + " (" + Math.round(100 * vd.pr.share) + "%)"; pc.appendChild(u); }
+    } else pc.textContent = "No projections came in";
+    const el = $("call"); el.classList.remove("on", "stage2"); void el.offsetWidth; el.classList.add("on");
+    play("roll");
+    callTimers.push(setTimeout(() => { el.classList.add("stage2"); play("sting"); }, 1300));
+    callTimers.push(setTimeout(() => { el.classList.remove("on", "stage2"); }, 4300));
+  }
+  function skipOverlays() { callTimers.forEach(clearTimeout); callTimers = []; $("call").classList.remove("on", "stage2"); $("card").classList.remove("on"); }
+
+  // ---------- per-run memory (this tab): what each reveal showed ----------
+  const ss = { get(k) { try { return JSON.parse(sessionStorage.getItem(k)); } catch (e) { return null; } }, set(k, v) { try { sessionStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
+  const resKey = (runId) => "rc-host-res-" + SECTION + "-" + (DEMO ? "demo" + LOAD_ID + "-" : "") + runId;
+  function recordReveal(b) {
+    if (b.phase !== "reveal" || !(b.q > 0) || !b.reveal) return;
+    const k = resKey(b.runId), mem = ss.get(k) || {};
+    const h = b.histogram || [], n = h.reduce((x, y) => x + y, 0);
+    const rec = { n, share: n ? (h[b.reveal.correct] || 0) / n : null, correct: b.reveal.correct, call: b.reveal.call, takeaway: b.reveal.takeaway, verdict: verdictOf(h, b.reveal.correct).kind, seats: b.seatResults || {} };
+    if (JSON.stringify(mem[b.q]) !== JSON.stringify(rec)) { mem[b.q] = rec; ss.set(k, mem); }
+  }
+  const pkey = (p) => p.first + "|" + p.seat;
+
+  // ---------- ticker ----------
+  const BASE_NOTES = [
+    ["Tonight", "every race is a chart: read it, then make your projection on your phone"],
+    ["How it works", "the room projects a winner at the close; the answer key decides the actual winner"],
+    ["Scoring", "right projections earn 1,000 to 2,000 points, the faster the more. Points count for nothing"],
+    ["Sources", "every chart is drawn from real, cited data; sources sit under each chart"],
+    ["The needle", "while the polls are open it shows how much of the room has reported, not who is right"],
+  ];
+  let crawlSig = "", crawlX = 0, crawlW = 1;
+  function setCrawl(b) {
+    const mem = b && b.runId != null ? ss.get(resKey(b.runId)) || {} : {};
+    const items = [];
+    for (const [q, r] of Object.entries(mem).sort((a, b2) => Number(b2[0]) - Number(a[0])).slice(0, 5)) {
+      const pct = r.share == null ? "" : " · " + Math.round(100 * r.share) + "% projected it" + (r.verdict === "upset" ? " (upset)" : "");
+      items.push(["Race " + q + " winner", (r.call || "") + pct + ". " + (String(r.takeaway || "").split(/(?<=\.)\s/)[0] || "")]);
+    }
+    const all = items.concat(BASE_NOTES);
+    const sig = JSON.stringify(all);
+    if (sig === crawlSig) return;
+    crawlSig = sig;
+    const c = $("crawl"); c.replaceChildren();
+    for (let rep = 0; rep < 2; rep++) for (const [h, t] of all) { const s = document.createElement("span"); s.className = "it"; const bb = document.createElement("b"); bb.textContent = h; s.append(bb, document.createTextNode(t)); c.appendChild(s); }
+    crawlW = c.scrollWidth / 2;
+  }
+  (function crawl() {
+    let last = performance.now();
+    (function f(now) { const dt = now - last; last = now; crawlX -= dt * 0.09; if (-crawlX > crawlW) crawlX += crawlW; $("crawl").style.transform = `translateX(${crawlX.toFixed(1)}px)`; requestAnimationFrame(f); })(last);
+  })();
+
+  // ---------- render ----------
+  let B = null, offset = 0, scene = null, playKey = null, brkKey = null, finKey = null, revKey = null, mediaKey = null, anim = null, xKey = null, xanim = null;
+  let finView = "choro";
+  function sceneOf(b) { return b.phase === "lobby" ? "lobby" : b.phase === "break" ? "brk" : b.phase === "final" ? "fin" : "play"; }
+  function modeOf(b) { return b.phase === "open" ? "live" : b.phase === "reveal" ? "reveal" : (b.opened ? "closed" : "pre"); }
+  const isRevealed = (b) => b.phase === "reveal" || b.phase === "break" || b.phase === "final";
+
+  function renderHeader(b) {
+    $("secname").textContent = SECTION === "Z" ? "Test section Z" : "Section " + SECTION;
+    const Q = QN(b.q), bl = b.block || (Q && Q.block);
+    const lab = $("raceLabel"); lab.replaceChildren();
+    const add = (t, cls) => { const s = document.createElement("span"); if (cls) s.className = cls; s.textContent = t; lab.appendChild(s); };
+    if (b.phase === "lobby") add("The polls are about to open");
+    else if (b.phase === "final") add("Final results");
+    else if (b.phase === "break") { add("Results so far · "); add(blockName(bl), "blk"); }
+    else { add("Race " + b.q + " of " + (b.total || QS.length) + " · "); add(blockName(bl), "blk"); }
+    $("pv").textContent = String((b.players || []).length);
+    const tr = $("tracker"), total = b.total || QS.length;
+    if (tr.dataset.n !== String(total)) {
+      tr.replaceChildren(); tr.dataset.n = String(total);
+      let grp = null, lastB = null;
+      for (let i = 1; i <= total; i++) {
+        const q = QN(i), bk = q ? q.block : 0;
+        if (!grp || bk !== lastB) { grp = document.createElement("div"); grp.className = "grp"; tr.appendChild(grp); lastB = bk; }
+        const t = document.createElement("i"); t.dataset.n = i; grp.appendChild(t);
+      }
+    }
+    const done = b.phase === "final" ? (b.revealedQ || total) : (isRevealed(b) ? b.q : b.q - 1);
+    tr.querySelectorAll("i").forEach((t) => { const n = Number(t.dataset.n); t.className = n <= done ? "done" : (n === b.q && !["lobby", "final"].includes(b.phase) ? "cur" : ""); });
+  }
+
+  function renderLobby(b) {
+    const players = b.players || [], remote = players.filter((p) => p.seat === "remote");
+    $("lob-n").textContent = players.length;
+    $("lob-sub").textContent = (players.length - remote.length) + " in seats, " + remote.length + " remote";
+    $("emptycap").style.display = players.length - remote.length > 0 ? "none" : "block";
+    const list = $("remote-list"); list.replaceChildren();
+    const shown = remote.slice(-8);
+    if (!remote.length) { const s = document.createElement("span"); s.className = "more"; s.textContent = "Nobody yet"; list.appendChild(s); }
+    for (const p of shown) { const c = document.createElement("span"); c.className = "chip"; c.textContent = p.first; list.append(c, document.createTextNode(" ")); }
+    if (remote.length > shown.length) { const s = document.createElement("span"); s.className = "more"; s.textContent = "and " + (remote.length - shown.length) + " more"; list.appendChild(s); }
+    paintRoom(RM.lobby, b, "join", false);
+  }
+
+  const SITE_LABEL = [[/nbcnews\.com$/, "NBC News"], [/archives\.gov$/, "National Archives"], [/census\.gov$/, "U.S. Census Bureau"], [/r-project\.org$/, "R documentation"], [/stlouisfed\.org$/, "FRED"], [/cincinnati-oh\.gov$/, "Cincinnati Open Data"], [/cran\.r-project\.org$/, "CRAN"], [/github\.com$/, "GitHub"]];
+  function siteLabel(u) { const h = u.hostname.replace(/^www\./, ""); for (const [re, l] of SITE_LABEL) if (re.test(h)) return l; return h; }
+  function linkify(el, text) {
+    el.replaceChildren(); if (!text) return;
+    el.appendChild(document.createTextNode("Source: "));
+    const str = String(text), re = /https?:\/\/[^\s]+/g; let last = 0, m, prevLink = false;
+    while ((m = re.exec(str))) {
+      const raw = m[0].replace(/[).,;]+$/, ""); let before = str.slice(last, m.index).replace(/^[\s;,.)]+/, "").replace(/[\s;:,(]+$/, ""); last = m.index + m[0].length;
+      let u = null; try { u = new URL(raw); } catch (err) {}
+      if (!u || !/^https?:$/.test(u.protocol)) continue;
+      if (!before && prevLink && el.lastChild && el.lastChild.textContent === "(" + siteLabel(u) + ")") continue;
+      if (before) { el.appendChild(document.createTextNode((prevLink ? " · " : "") + before + " ")); }
+      else if (prevLink) el.appendChild(document.createTextNode(" · "));
+      const a = document.createElement("a"); a.href = u.href; a.target = "_blank"; a.rel = "noopener noreferrer"; a.textContent = "(" + siteLabel(u) + ")"; el.appendChild(a); prevLink = true;
+    }
+    const tail = str.slice(last).replace(/^[\s;,.)]+/, "").trim();
+    if (tail.length > 1) el.appendChild(document.createTextNode(" " + tail));
+  }
+
+  function setMedia(b, mode) {
+    const Q = QN(b.q), rv = mode === "reveal" ? b.reveal : null;
+    const want = rv && rv.anim ? "anim:" + rv.anim + ":rev" : rv && rv.chart ? "img:" + rv.chart : Q && Q.anim ? "anim:" + Q.anim : Q && Q.chart ? "img:" + Q.chart : "none";
+    const k = b.runId + ":" + b.q + ":" + want;
+    if (mediaKey === k) return;
+    mediaKey = k;
+    if (anim) { anim.stop(); anim = null; }
+    const mc = $("mcard"); mc.replaceChildren();
+    if (want.startsWith("img:")) { const img = document.createElement("img"); img.src = want.slice(4); img.alt = "Chart for race " + b.q; mc.appendChild(img); mc.style.display = "flex"; }
+    else if (want.startsWith("anim:")) { const kind = want.split(":")[1]; anim = window.RCAnim ? window.RCAnim.mount(mc, kind, { annotate: want.endsWith(":rev") }) : null; mc.style.display = "flex"; }
+    else mc.style.display = "none";
+  }
+  // the actual winner, stamped on the main chart at the reveal
+  function setStamp(b, mode) {
+    const mc = $("mcard"), old = mc.querySelector(".wstamp"), rv = mode === "reveal" ? b.reveal : null;
+    const sig = rv ? b.runId + ":" + b.q + ":" + rv.correct : "";
+    if (old && old.dataset.sig === sig) return;
+    if (old) old.remove();
+    if (!rv) return;
+    const Q = QN(b.q), st = document.createElement("div"); st.className = "wstamp"; st.dataset.sig = sig;
+    const t = document.createElement("i"); tileHTML(t, rv.correct);
+    const w = document.createElement("div"); const sm = document.createElement("small"); sm.textContent = "Actual winner";
+    w.append(sm, document.createTextNode(LETTERS[rv.correct] + " · " + (rv.call || optText(Q, rv.correct))));
+    st.append(t, w); mc.appendChild(st);
+  }
+  // the contrast chart (a better alternative, or what goes wrong), small and captioned in the Why panel
+  function setExtra(b, mode) {
+    const rv = mode === "reveal" ? b.reveal : null, has = !!(rv && (rv.extra || rv.extraAnim));
+    const k = has ? b.runId + ":" + b.q + ":" + (rv.extra || rv.extraAnim) : "";
+    $("takeaway").classList.toggle("hasx", has);
+    if (xKey === k) return;
+    xKey = k;
+    if (xanim) { xanim.stop(); xanim = null; }
+    const fig = $("ta-xfig"), cap = $("ta-xcap"); fig.replaceChildren(); cap.replaceChildren();
+    if (!has) return;
+    const lb = document.createElement("b"); lb.textContent = "For contrast"; cap.append(lb, document.createTextNode(rv.extraCap || ""));
+    if (rv.extra) { const img = document.createElement("img"); img.src = rv.extra; img.alt = rv.extraCap || "Contrast chart"; fig.appendChild(img); }
+    else if (window.RCAnim) xanim = window.RCAnim.mount(fig, rv.extraAnim, { annotate: true });
+  }
+
+  function buildQuestion(b) {
+    const Q = QN(b.q);
+    $("racechip").textContent = "Race " + b.q;
+    $("blkname").textContent = blockName(b.block || (Q && Q.block));
+    $("prompt").textContent = Q ? Q.prompt : "Race " + b.q;
+    linkify($("source"), Q && Q.source);
+    const box = $("opts"); box.querySelectorAll(".opt").forEach((e) => e.remove());
+    const opts = Q && Array.isArray(Q.options) ? Q.options : ["A", "B", "C", "D"];
+    opts.forEach((txt, i) => {
+      const row = document.createElement("div"); row.className = "opt"; row.dataset.i = i;
+      const fill = document.createElement("div"); fill.className = "fill";
+      const lt = document.createElement("div"); lt.className = "lt"; lt.style.background = OPT_COLORS[i]; lt.innerHTML = SHAPES[i]; const lb = document.createElement("b"); lb.textContent = LETTERS[i]; lt.appendChild(lb);
+      const tx = document.createElement("div"); tx.className = "tx"; tx.textContent = txt;
+      const ct = document.createElement("div"); ct.className = "ct"; ct.textContent = "0";
+      row.append(fill, lt, tx, ct); box.appendChild(row);
+    });
+  }
+
+  function renderPlay(b) {
+    const key = b.runId + ":" + b.q;
+    if (playKey !== key) { buildQuestion(b); playKey = key; revKey = null; }
+    const mode = modeOf(b), playEl = $("play");
+    for (const m of ["pre", "live", "closed", "reveal"]) playEl.classList.toggle("mode-" + m, m === mode);
+    setMedia(b, mode); setStamp(b, mode); setExtra(b, mode);
+    const players = (b.players || []).length, answered = b.answered || 0;
+    // the needle: reporting while the polls run, accuracy after the call
+    const h = b.histogram || [], n = h.reduce((x, y) => x + y, 0);
+    if (mode === "reveal" && b.reveal) {
+      const r = h[b.reveal.correct] || 0, pct = n ? 100 * r / n : 0;
+      setNeedle(pct, false);
+      $("nlab").textContent = "Projected right"; $("npct").textContent = Math.round(pct) + "%";
+      $("nsub").textContent = r + " of " + n + " projections matched the winner";
+    } else {
+      const pct = players ? 100 * answered / players : 0;
+      setNeedle(pct, mode === "live");
+      $("nlab").textContent = mode === "pre" ? "Reporting" : mode === "live" ? "Reporting" : "Reported";
+      $("npct").textContent = Math.round(pct) + "%";
+      $("nsub").textContent = answered + " of " + players + " analysts" + (mode === "closed" ? " · polls closed" : "");
+    }
+    // the room's projection (close) and the verdict against the actual winner (reveal)
+    if (mode === "closed" || mode === "reveal") {
+      const Q = QN(b.q), pr = roomProj(h), tile = $("pj-tile");
+      $("pj-lab").textContent = mode === "reveal" ? "The room projected" : "The room projects";
+      if (pr) {
+        tileHTML(tile, pr.top[0]); tile.style.display = "";
+        $("pj-text").textContent = pr.top.map((i) => LETTERS[i] + " · " + optText(Q, i)).join("  /  ") + (pr.top.length > 1 ? " (tie)" : "");
+        $("pj-sub").textContent = Math.round(100 * pr.share) + "% of the room · " + pr.count + " of " + pr.n + " projections";
+      } else { tile.style.display = "none"; $("pj-text").textContent = "No projection"; $("pj-sub").textContent = "Nobody reported before the polls closed"; }
+      const vEl = $("pj-verdict");
+      if (mode === "reveal" && b.reveal) {
+        const vd = verdictOf(h, b.reveal.correct); vEl.className = vd.kind;
+        vEl.textContent = vd.kind === "ok" ? "Projection confirmed" : vd.kind === "upset" ? "Upset: the winner is " + LETTERS[b.reveal.correct] : "Actual winner: " + LETTERS[b.reveal.correct];
+      } else { vEl.className = ""; vEl.textContent = ""; }
+    }
+    // options: bars from the close on; badges: the room's projection (close) and the actual winner (reveal)
+    const showBars = (mode === "closed" || mode === "reveal") && Array.isArray(b.histogram);
+    const opts = $("opts");
+    opts.classList.toggle("bars", showBars); opts.classList.toggle("rev", mode === "reveal");
+    const mx = Math.max(1, ...h);
+    opts.querySelectorAll(".opt").forEach((row) => {
+      const i = Number(row.dataset.i), c = h[i] || 0;
+      row.querySelector(".ct").textContent = c;
+      row.querySelector(".fill").style.width = (showBars ? 100 * c / mx : 0) + "%";
+      row.classList.toggle("ok", mode === "reveal" && b.correct === i);
+      const pr = showBars ? roomProj(h) : null, isProj = !!(pr && pr.top.includes(i)), isWin = mode === "reveal" && b.correct === i;
+      let bw = row.querySelector(".bdg.win"), bp = row.querySelector(".bdg.proj");
+      if (!bw) { bw = document.createElement("span"); bw.className = "bdg win"; bw.textContent = "WINNER"; bp = document.createElement("span"); bp.className = "bdg proj"; bp.textContent = "PROJECTED"; row.querySelector(".tx").append(bw, bp); }
+      bw.classList.toggle("on", isWin); bp.classList.toggle("on", isProj);
+    });
+    // takeaway
+    if (mode === "reveal" && b.reveal) { $("ta-call").textContent = LETTERS[b.reveal.correct] + " · " + (b.reveal.call || optText(QN(b.q), b.reveal.correct)); $("ta-text").textContent = b.reveal.takeaway || ""; }
+    // room
+    if (mode === "reveal") {
+      const rk = key + ":rev", wave = revKey !== rk; revKey = rk;
+      paintRoom(RM.play, b, "result", wave);
+      $("roomlab").textContent = "By seat";
+      const c = resultCounts(b.seatResults);
+      legend($("roomleg"), [["k-right", c.right, "right"], ["k-wrong", c.wrong, "wrong"], ["k-none", c.none, "none"]]);
+    } else {
+      paintRoom(RM.play, b, mode === "pre" ? "join" : "answer", false);
+      $("roomlab").textContent = mode === "pre" ? "The room" : "Reporting";
+      legend($("roomleg"), mode === "pre" ? [["k-join", null, "joined"]] : [["k-join", null, "joined"], ["k-ans", null, "reported"]]);
+    }
+    // streaks
+    const sb = $("streakbox"), list = $("streaklist");
+    const st = mode === "reveal" ? (b.streaks || []) : [];
+    sb.classList.toggle("on", st.length > 0);
+    const sig = JSON.stringify(st);
+    if (list.dataset.sig !== sig) {
+      list.dataset.sig = sig; list.replaceChildren();
+      for (const p of st) { const s = document.createElement("span"); s.textContent = p.first; const sm = document.createElement("small"); sm.textContent = seatLabel(p.seat) + " · " + p.n + " straight"; s.appendChild(sm); list.appendChild(s); }
+    }
+  }
+
+  function movementFor(b) {
+    const k = "rc-host-moves-" + SECTION + "-" + (DEMO ? "demo" + LOAD_ID + "-" : "") + b.runId;
+    const now = (b.top || []).map((p, i) => ({ k: pkey(p), r: i + 1 }));
+    let mem = ss.get(k) || {};
+    if (mem.q !== b.q) { mem = { q: b.q, base: mem.now || null, now }; ss.set(k, mem); }
+    return mem.base;
+  }
+  let shownPts = {};
+  function renderBreak(b) {
+    const Q = QN(b.q), bl = b.block || (Q && Q.block) || 1;
+    $("brk-h").textContent = "After block " + bl;
+    $("brk-s").textContent = blockName(bl) + (BLOCKS[bl] && BLOCKS[bl].sub ? ": " + BLOCKS[bl].sub.toLowerCase() : "");
+    const sig = b.runId + ":" + b.q + ":" + JSON.stringify(b.top || []);
+    const cls = {};
+    for (const [seat, t] of Object.entries(b.seatTotals || {})) cls[seat] = !t.answered ? "none" : t.right === t.of ? "qall" : t.right > 0 ? "qsome" : "qnone";
+    if (brkKey !== sig) {
+      const first = !brkKey || !brkKey.startsWith(b.runId + ":" + b.q + ":");
+      brkKey = sig;
+      const base = movementFor(b), lb = $("lb"); lb.replaceChildren();
+      (b.top || []).forEach((p, i) => {
+        const row = document.createElement("div"); row.className = "lbr panel"; row.style.animationDelay = (first ? i * 0.12 : 0) + "s";
+        const rk = document.createElement("div"); rk.className = "rk"; rk.textContent = i + 1;
+        const mv = document.createElement("div"); mv.className = "mv";
+        if (base) {
+          const was = base.find((x) => x.k === pkey(p));
+          if (!was) mv.textContent = "New";
+          else if (was.r > i + 1) { mv.classList.add("up"); const t = document.createElement("span"); t.className = "tri"; mv.append(t, document.createTextNode(String(was.r - (i + 1)))); }
+          else if (was.r < i + 1) { mv.classList.add("down"); const t = document.createElement("span"); t.className = "tri"; mv.append(t, document.createTextNode(String(i + 1 - was.r))); }
+          else mv.textContent = "Same";
+        }
+        const who = document.createElement("div"); who.className = "who";
+        const f = document.createElement("span"); f.className = "f"; f.textContent = p.first;
+        const st = document.createElement("span"); st.className = "st"; st.textContent = seatLabel(p.seat);
+        who.append(f, st);
+        const pt = document.createElement("div"); pt.className = "pt";
+        countUp(pt, shownPts[pkey(p)] || 0, p.points, 1400); shownPts[pkey(p)] = p.points;
+        row.append(rk, mv, who, pt); lb.appendChild(row);
+      });
+      if (!(b.top || []).length) { const d = document.createElement("div"); d.className = "sub"; d.textContent = "No points yet."; lb.appendChild(d); }
+      $("lbnote").textContent = base ? "Arrows show movement since the last results break." : "Movement shows from the next results break on.";
+      paintRoom(RM.brk, b, "result", first, cls);
+    } else paintRoom(RM.brk, b, "result", false, cls);
+    const c = { qall: 0, qsome: 0, qnone: 0, none: 0 }; for (const v of Object.values(cls)) c[v]++;
+    legend($("brkleg"), [["k-right", c.qall, "all right"], ["k-some", c.qsome, "some right"], ["k-wrong", c.qnone, "none right"], ["k-none", c.none, "no projections"]]);
+    // closest race so far: the lowest share right
+    const mem = ss.get(resKey(b.runId)) || {};
+    let best = null;
+    for (const [q, r] of Object.entries(mem)) if (Number(q) <= b.q && r.share != null && r.n > 0 && (!best || r.share < best.r.share)) best = { q: Number(q), r };
+    $("tough").hidden = !best;
+    if (best) {
+      $("t-p").textContent = Math.round(100 * best.r.share) + "%";
+      $("t-of").textContent = "projected race " + best.q + " right (" + best.r.n + " projections)";
+      const c2 = $("t-c"); c2.replaceChildren(); const bb = document.createElement("b"); bb.textContent = LETTERS[best.r.correct] + " · " + (best.r.call || "");
+      c2.append(document.createTextNode("Actual winner: "), bb);
+    }
+  }
+
+  const BINS = [[0, 0.2], [0.2, 0.4], [0.4, 0.6], [0.6, 0.8], [0.8, 1.01]];
+  function renderFinal(b) {
+    const top = (b.top || []).filter((p) => p.points > 0);
+    const sig = b.runId + ":" + JSON.stringify(top);
+    if (finKey !== sig) {
+      finKey = sig;
+      const pod = $("podium"); pod.replaceChildren();
+      const mx = Math.max(1, ...top.slice(0, 3).map((p) => p.points)), cols = [];
+      for (const i of [1, 0, 2]) {
+        const p = top[i], d = document.createElement("div"); d.className = "pod p" + (i + 1);
+        if (p) {
+          const pl = document.createElement("div"); pl.className = "pl"; pl.textContent = ["1ST", "2ND", "3RD"][i];
+          const f = document.createElement("div"); f.className = "f"; f.textContent = p.first;
+          const st = document.createElement("div"); st.className = "st"; st.textContent = seatLabel(p.seat);
+          const pt = document.createElement("div"); pt.className = "pt"; pt.textContent = "0";
+          const col = document.createElement("div"); col.className = "col";
+          d.append(pl, f, st, pt, col); cols.push([col, pt, p, i]);
+        }
+        pod.appendChild(d);
+      }
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        for (const [col, pt, p, i] of cols) { const delay = [900, 450, 0][i]; col.style.transitionDelay = delay + "ms"; col.style.height = Math.max(8, Math.round(300 * p.points / mx)) + "px"; setTimeout(() => countUp(pt, 0, p.points, 1300), delay); }
+      }));
+      const rest = $("rest"); rest.replaceChildren();
+      top.slice(3, 5).forEach((p, j) => { const s = document.createElement("span"); const b1 = document.createElement("b"); b1.textContent = (j + 4) + "  " + p.first; s.append(b1, document.createTextNode("  " + seatLabel(p.seat) + " · " + fmtN(p.points))); rest.appendChild(s); });
+      // landslide and closest race, from this tab's reveal memory
+      const mem = ss.get(resKey(b.runId)) || {}, rows = Object.entries(mem).filter(([, r]) => r.share != null && r.n > 0);
+      const rec = $("records"); rec.replaceChildren();
+      if (rows.length) {
+        const hi = rows.reduce((a, c) => (c[1].share > a[1].share ? c : a)), lo = rows.reduce((a, c) => (c[1].share < a[1].share ? c : a));
+        for (const [lab, [q, r], col] of [["Landslide", hi, "var(--gold)"], ["Closest race", lo, "#ff8b9a"]]) {
+          const pn = document.createElement("div"); pn.className = "panel";
+          const l = document.createElement("div"); l.className = "lab"; l.textContent = lab;
+          const p = document.createElement("div"); p.className = "p"; p.style.color = col; p.textContent = Math.round(100 * r.share) + "%";
+          const c = document.createElement("div"); c.className = "c"; c.textContent = "Race " + q + ": " + (r.call || "");
+          pn.append(l, p, c); rec.appendChild(pn);
+        }
+      }
+    }
+    paintFinMap(b, false);
+  }
+  function paintFinMap(b, wave) {
+    const tot = b.seatTotals || {};
+    const cls = {}, dots = {};
+    const maxPts = Math.max(1, ...Object.values(tot).map((t) => t.points || 0));
+    for (const [seat, t] of Object.entries(tot)) {
+      if (finView === "choro") {
+        if (!t.answered) { cls[seat] = "none"; continue; }
+        const share = t.right / Math.max(1, t.of);
+        cls[seat] = "c" + BINS.findIndex(([a, z]) => share >= a && share < z);
+      } else { cls[seat] = "sym"; dots[seat] = Math.round(34 * Math.sqrt((t.points || 0) / maxPts)); }
+    }
+    paintRoom(RM.fin, b, "result", wave, cls, dots);
+    const leg = $("finleg"), cap = $("mapcap"), total = b.revealedQ || b.total || QS.length;
+    leg.replaceChildren(); cap.replaceChildren();
+    if (finView === "choro") {
+      $("mapkind").textContent = "Choropleth";
+      const ramp = document.createElement("div"); ramp.className = "ramp";
+      ["#2b3650", "#5c4d2a", "#8f6d17", "#c99412", "#ffc21a"].forEach((c) => { const i = document.createElement("i"); i.style.background = c; ramp.appendChild(i); });
+      const l1 = document.createElement("span"); l1.textContent = "0%"; const l2 = document.createElement("span"); l2.textContent = "100%";
+      leg.append(document.createTextNode("Share of the " + total + " races each seat called right:"), l1, ramp, l2);
+      const b1 = document.createElement("b"); b1.textContent = "This is a choropleth.";
+      cap.append(b1, document.createTextNode(" Each seat is a region, shaded on a sequential scale. A big seat and a small seat get the same ink. Press V for the symbol map."));
+    } else {
+      $("mapkind").textContent = "Symbol map";
+      leg.append(document.createTextNode("Circle area = points earned (biggest: " + fmtN(maxPts) + ")"));
+      const b1 = document.createElement("b"); b1.textContent = "Same seats, now a symbol map.";
+      cap.append(b1, document.createTextNode(" Circle area shows an amount, so speed and accuracy both count. Choropleths suit rates; symbols suit counts and totals."));
+    }
+  }
+
+  function render(b, prev) {
+    renderHeader(b);
+    const sc = sceneOf(b), entering = sc !== scene;
+    if (entering) { document.querySelectorAll(".scene").forEach((s) => s.classList.toggle("on", s.id === sc)); scene = sc; if (sc !== "play" && anim) { anim.stop(); anim = null; mediaKey = null; } }
+    if (sc === "lobby") renderLobby(b);
+    else if (sc === "play") renderPlay(b);
+    else if (sc === "brk") renderBreak(b);
+    else if (sc === "fin") { renderFinal(b); if (entering && prev) { confetti(); play("final"); paintFinMap(b, true); } }
+    setCrawl(b);
+    paintDock(b);
+  }
+
+  let sounded = new Set(), toasted = new Set(), lastTick = null, cards = new Set(), calls = new Set();
+  function events(prev, b) {
+    if (!prev || prev.runId !== b.runId) return;
+    const before = new Set((prev.players || []).map(pkey));
+    const fresh = (b.players || []).filter((p) => !before.has(pkey(p)));
+    if (fresh.length) {
+      for (const p of fresh) if (p.seat !== "remote") { popSeat(RM.lobby, p.seat); popSeat(RM.play, p.seat); }
+      const news = fresh.filter((p) => !toasted.has(pkey(p))); news.forEach((p) => toasted.add(pkey(p)));
+      if (news.length && (b.phase === "lobby" || modeOf(b) === "pre")) {
+        news.slice(0, 2).forEach((p) => toast([[p.first, "b"], ["  " + seatLabel(p.seat), "m"], ["  joined the desk", "m"]]));
+        if (news.length > 2) toast([[String(news.length - 2), "b"], [" more joined", "m"]]);
+        play("join");
+      }
+    }
+    if (b.phase === "play" || sceneOf(b) === "play") {
+      const fresh2 = (b.answeredSeats || []).filter((s) => !(prev.answeredSeats || []).includes(s));
+      for (const s of fresh2) popSeat(RM.play, s);
+    }
+    const k = b.runId + ":" + b.q;
+    if (b.q > 0 && modeOf(b) === "pre" && !cards.has(k)) { cards.add(k); showCard(b.q); }
+    if (b.phase === "open" && !sounded.has("o" + k)) { sounded.add("o" + k); play("open"); startBed(); }
+    if (prev.phase === "open" && prev.q === b.q && b.phase !== "open") { stopBed(); if (!sounded.has("c" + k)) { sounded.add("c" + k); play("close"); } }
+    if (b.phase === "reveal" && b.reveal && !calls.has(k)) { calls.add(k); stopBed(); showCall(b); }
+  }
+
+  function ingest(j) {
+    if (!j || typeof j !== "object" || j.phase == null) return;
+    const prev = B;
+    if (prev && prev.runId !== j.runId) { shownPts = {}; sounded = new Set(); toasted = new Set(); cards = new Set(); calls = new Set(); playKey = null; brkKey = null; finKey = null; revKey = null; mediaKey = null; $("toasts").replaceChildren(); skipOverlays(); }
+    if (typeof j.serverNow === "number") offset = j.serverNow - Date.now();
+    B = j;
+    recordReveal(j);
+    events(prev, j);
+    render(j, prev);
+  }
+
+  // ---------- the clock (server-owned) ----------
+  const CIRC = 2 * Math.PI * 74;
+  setInterval(() => {
+    if (!B || scene !== "play") return;
+    const mode = modeOf(B), dur = (B.seconds || 30) * 1000;
+    let rem;
+    if (mode === "pre") { rem = dur; $("clockcap").textContent = "Polls open soon"; $("clocksub").textContent = "Read the chart now"; }
+    else if (mode === "live" && B.endsAt) {
+      rem = Math.max(0, B.endsAt - (Date.now() + offset));
+      const sec = Math.ceil(rem / 1000), k = B.runId + ":" + B.q;
+      $("clockcap").textContent = rem <= 0 ? "Polls closed" : "Polls are open";
+      $("clocksub").textContent = rem <= 0 ? "The room's projection is in" : "Make your projection on your phone";
+      if (sec <= 5 && sec >= 1 && lastTick !== k + ":" + sec) { lastTick = k + ":" + sec; play("tick"); }
+      if (rem <= 0 && !sounded.has("c" + k)) { sounded.add("c" + k); stopBed(); play("close"); }
+    } else { rem = 0; $("clockcap").textContent = mode === "reveal" ? "Winner revealed" : "Polls closed"; $("clocksub").textContent = mode === "reveal" ? "Space for the next race" : "Space reveals the actual winner"; }
+    const s = Math.ceil(rem / 1000);
+    $("ring").classList.toggle("done", mode === "reveal");
+    if (mode === "reveal") { if (!$("secs").querySelector("svg")) $("secs").innerHTML = '<svg viewBox="0 0 40 40"><path d="M7 21 L16 30 L33 10" fill="none" stroke="#ffc21a" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>'; }
+    else if ($("secs").textContent !== String(s)) $("secs").textContent = String(s);
+    $("arc").setAttribute("stroke-dashoffset", mode === "reveal" ? "0" : (CIRC * (1 - rem / dur)).toFixed(1));
+    $("arc").setAttribute("stroke-dasharray", CIRC.toFixed(1) + " " + CIRC.toFixed(1));
+    $("ring").classList.toggle("hot", mode === "live" && rem <= 5000 && rem > 0);
+  }, 100);
+
+  // ---------- host actions and the dock ----------
+  const ACTIONS = ["open", "close", "reveal", "next", "break", "final", "reset"];
+  function allowed(b) {
+    const m = b.phase === "lobby" ? "lobby" : b.phase === "break" ? "break" : b.phase === "final" ? "final" : modeOf(b);
+    const openedUnrevealed = m === "live" || m === "closed";
+    return { open: m === "lobby" || m === "pre", close: m === "live", reveal: m === "live" || m === "closed", next: m === "lobby" || m === "reveal" || m === "break", break: m === "reveal" && b.q < (b.total || QS.length), final: !openedUnrevealed && m !== "final", reset: true };
+  }
+  // Space: lobby -> race 1 on screen; pre -> open the polls; live -> close (the room's projection);
+  // closed -> reveal the actual winner;
+  // reveal -> results break at the end of a block (blocks 1-3), else next race; final after the last.
+  function primary(b) {
+    if (!b) return null;
+    const total = b.total || QS.length;
+    if (b.phase === "lobby") return "next";
+    if (b.phase === "final") return null;
+    if (b.phase === "break") return b.q >= total ? "final" : "next";
+    const m = modeOf(b);
+    if (m === "pre") return "open"; if (m === "live") return "close"; if (m === "closed") return "reveal";
+    if (m === "reveal") { if (b.q >= total) return "final"; const a = QN(b.q), n = QN(b.q + 1); return a && n && a.block !== n.block ? "break" : "next"; }
+    return null;
+  }
+  const PLABEL = { next: "Next race", open: "Open polls", close: "Close polls", reveal: "Reveal winner", break: "Results", final: "Final" };
+  let netOk = true;
+  function paintDock(b) {
+    const al = allowed(b);
+    for (const a of ACTIONS) { const el = $("b-" + a); if (el && a !== "reset") el.disabled = !al[a]; }
+    const p = primary(b);
+    $("b-primary").disabled = !p; $("b-primary-t").textContent = p ? PLABEL[p] : "Game over";
+    $("b-view").disabled = b.phase !== "final";
+    $("netlbl").textContent = (DEMO ? "Demo" : "Section " + SECTION) + " · run " + b.runId + (netOk ? " · live" : " · offline, retrying");
+  }
+  let busy = false, armedAct = null, armTimer = null, lastActEnd = 0, gen = 0;
+  const tsig = (ms) => (window.AbortSignal && AbortSignal.timeout ? AbortSignal.timeout(ms) : undefined);
+  const ARM = { reset: ["b-reset", "b-reset-t", "Reset", "Press again to reset"], final: ["b-final", "b-final-t", "Final", "Press again to end the night"] };
+  function needsArm(action) { return action === "reset" || (action === "final" && B && B.phase !== "final" && B.q < (B.total || QS.length)); }
+  function arm(action) { disarm(); armedAct = action; $(ARM[action][0]).classList.add("arm"); $(ARM[action][1]).textContent = ARM[action][3]; armTimer = setTimeout(disarm, 3000); }
+  function disarm() { if (armedAct) { $(ARM[armedAct][0]).classList.remove("arm"); $(ARM[armedAct][1]).textContent = ARM[armedAct][2]; } armedAct = null; clearTimeout(armTimer); }
+  async function act(action) {
+    if (!B) return;
+    if (!DEMO && !KEY) { gate(""); return; }
+    if (busy || Date.now() - lastActEnd < 800) return;
+    if (needsArm(action)) { if (armedAct !== action) { arm(action); return; } disarm(); } else if (armedAct) disarm();
+    if (!allowed(B)[action]) { toast([["Not now: ", "m"], [PLABEL[action] || action, "b"], [" does not fit this step", "m"]]); return; }
+    busy = true; gen++;
+    try {
+      let j;
+      if (DEMO) j = demo.host(action);
+      else {
+        const r = await fetch("/api/host", { method: "POST", cache: "no-store", signal: tsig(8000), headers: { "content-type": "application/json", "x-admin-key": KEY }, body: JSON.stringify({ section: SECTION, action }) });
+        if (r.status === 403 || r.status === 429) { gate(r.status === 429 ? "Too many wrong keys from this address. Wait a minute." : "The key was not accepted."); return; }
+        j = await r.json();
+      }
+      gen++;
+      if (j && j.error) toast([["Server: ", "m"], [String(j.error), "b"]]);
+      ingest(j);
+    } catch (e) { toast([["Could not reach the server. ", "b"], ["Try again.", "m"]]); }
+    finally { busy = false; lastActEnd = Date.now(); }
+  }
+  for (const a of ACTIONS) $("b-" + a).addEventListener("click", (e) => { e.currentTarget.blur(); act(a); });
+  $("b-primary").addEventListener("click", (e) => { e.currentTarget.blur(); const p = primary(B); if (p) act(p); });
+  function fullscreen() { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen().catch(() => {}); }
+  function toggleView() { if (!B || B.phase !== "final") return; finView = finView === "choro" ? "sym" : "choro"; play("whoosh"); paintFinMap(B, true); }
+  $("b-sound").addEventListener("click", (e) => { e.currentTarget.blur(); toggleSound(); });
+  $("b-fs").addEventListener("click", (e) => { e.currentTarget.blur(); fullscreen(); });
+  $("b-hide").addEventListener("click", (e) => { e.currentTarget.blur(); document.body.classList.toggle("nodock"); fit(); });
+  $("b-view").addEventListener("click", (e) => { e.currentTarget.blur(); toggleView(); });
+  document.addEventListener("keydown", (e) => {
+    if (e.target && /INPUT|TEXTAREA/.test(e.target.tagName)) return;
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    const k = e.key.toLowerCase();
+    const map = { o: "open", c: "close", r: "reveal", n: "next", b: "break", e: "final", x: "reset" };
+    if (e.repeat) { if (k === " " || map[k]) e.preventDefault(); return; }
+    if (k === " " || k === "spacebar" || k === "arrowright") { e.preventDefault(); const p = primary(B); if (p) act(p); }
+    else if (map[k]) { e.preventDefault(); act(map[k]); }
+    else if (k === "m") toggleSound();
+    else if (k === "f") fullscreen();
+    else if (k === "h") { document.body.classList.toggle("nodock"); fit(); }
+    else if (k === "v") toggleView();
+    else if (k === "escape") skipOverlays();
+  });
+  paintSound();
+
+  $("url1").textContent = SITE; $("url3").textContent = SECTION;
+  if (SECTION === "A" || SECTION === "B") { $("qr").src = "images/qr_" + SECTION + ".png"; $("qr").onerror = () => { $("qrcard").classList.add("noqr"); $("qrcard").textContent = "QR image missing. Use the address."; }; }
+  else { $("qrcard").classList.add("noqr"); $("qrcard").textContent = "Test section Z has no QR code. Use the address."; }
+
+  // ---------- demo: a simulated class on the real answer key (fetched once with the admin key), no writes ----------
+  let DEMO_KEY = null;
+  function makeDemo() {
+    let seed = 401;
+    const rand = () => { seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+    const hr = (str) => { let h = 2166136261; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return ((h >>> 0) % 100003) / 100003; };
+    const NAMES = ["Maya", "Jordan", "Ava", "Ethan", "Sofia", "Liam", "Grace", "Noah", "Chloe", "Mason", "Emma", "Lucas", "Olivia", "Caleb", "Harper", "Owen", "Zoe", "Nathan", "Lily", "Isaac", "Mary Katherine", "Alexandria", "Christopher", "Ben", "Priya", "Jae", "Mateo", "Hannah", "Wyatt", "Elena", "Sam", "Riley", "Drew", "Avery"];
+    const pool = SEAT_IDS.slice(); for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(rand() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
+    let roster = [], t0 = 0, A = {}, lb = {}, plans = {}, streak = {};
+    let st = { run: 1, phase: "lobby", q: 0, openedAt: null, closedAt: null, revealedQ: 0, seq: 0 };
+    function start() { t0 = Date.now(); A = {}; lb = {}; plans = {}; streak = {}; roster = NAMES.map((first, i) => ({ pid: "d" + i, first, seat: i < 31 ? pool[i] : "remote", joinAt: 600 + i * 420 + rand() * 500, skill: 0.4 + rand() * 0.5, pace: 0.15 + rand() * 0.75 })); roster.sort((a, b) => a.joinAt - b.joinAt); }
+    start();
+    const total = QS.length, now = () => Date.now();
+    const correctOf = (n) => (DEMO_KEY && DEMO_KEY[n - 1] ? Number(DEMO_KEY[n - 1].correct) : 0);
+    const active = () => roster.filter((p) => now() - t0 >= p.joinAt);
+    function view() {
+      let phase = st.phase, endsAt = null, remainingMs = null; const Q = QN(st.q);
+      if (phase === "open") { const e = st.openedAt + Q.seconds * 1000; if (now() < e) { endsAt = e; remainingMs = e - now(); } else { st.phase = phase = "closed"; st.closedAt = e; } }
+      return { phase, endsAt, remainingMs };
+    }
+    function materialize() {
+      const n = st.q; if (!n || st.openedAt == null) return;
+      const Q = QN(n), dur = Q.seconds * 1000, cutoff = Math.min(now(), st.closedAt != null ? st.closedAt : st.openedAt + dur);
+      const recs = A[n] = A[n] || {}; plans[n] = plans[n] || {};
+      for (const p of active()) {
+        if (recs[p.pid]) continue;
+        let pl = plans[n][p.pid];
+        if (!pl) { const r = (s) => hr(p.pid + ":" + n + ":" + s); pl = plans[n][p.pid] = { will: r("a") < 0.94, delay: Math.min(dur - 400, 1500 + (p.pace * 0.7 + r("b") * 0.3) * Math.min(dur * 0.6, 14000)), right: r("c") < p.skill, r }; }
+        if (!pl.will || st.openedAt + pl.delay > cutoff) continue;
+        const c = correctOf(n), wrong = (c + 1 + Math.floor(pl.r("w") * 3)) % 4;
+        recs[p.pid] = { answer: pl.right ? c : wrong, correct: pl.right, points: pl.right ? Math.round(2 * (1000 - 500 * pl.delay / dur)) : 0 };
+      }
+    }
+    function board(extra) {
+      const v = view(); materialize();
+      const Q = QN(st.q), players = active(), ids = new Set(players.map((p) => p.pid)), byId = Object.fromEntries(roster.map((p) => [p.pid, p]));
+      const recs = st.q ? A[st.q] || {} : {}, answeredIds = Object.keys(recs).filter((pid) => ids.has(pid));
+      const revealed = st.q > 0 && st.revealedQ === st.q, opened = st.openedAt != null;
+      let histogram = null;
+      if (Q && opened && v.phase !== "open") { histogram = [0, 0, 0, 0]; for (const pid of answeredIds) histogram[recs[pid].answer]++; }
+      let win = [];
+      if (v.phase === "reveal" && revealed) win = [st.q];
+      else if (v.phase === "break" && st.revealedQ > 0) win = QS.map((x, i) => i + 1).filter((n) => n <= st.revealedQ && QN(n).block === QN(st.revealedQ).block);
+      else if (v.phase === "final" && st.revealedQ > 0) win = QS.map((x, i) => i + 1).filter((n) => n <= st.revealedQ);
+      const seatResults = {}, seatTotals = {};
+      if (win.length) {
+        const need = Math.ceil(win.length / 2);
+        for (const p of players) {
+          if (p.seat === "remote") continue;
+          const mine = win.map((n) => (A[n] || {})[p.pid]).filter(Boolean), right = mine.filter((r) => r.correct).length;
+          seatResults[p.seat] = !mine.length ? "none" : right >= need ? "right" : "wrong";
+          seatTotals[p.seat] = { right, answered: mine.length, of: win.length, points: lb[p.pid] || 0 };
+        }
+      }
+      const top = Object.entries(lb).filter(([pid]) => ids.has(pid)).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([pid, pts]) => ({ first: byId[pid].first, seat: byId[pid].seat, points: pts }));
+      const streaks = ["reveal", "break", "final"].includes(v.phase) ? players.map((p) => ({ first: p.first, seat: p.seat, n: streak[p.pid] || 0 })).filter((x) => x.n >= 3).sort((a, b) => b.n - a.n).slice(0, 3) : [];
+      const c = Q ? correctOf(st.q) : null;
+      return Object.assign({
+        runId: st.run, phase: v.phase, q: st.q, endsAt: v.endsAt, serverNow: now(), remainingMs: v.remainingMs, seq: st.seq, revealedQ: st.revealedQ,
+        total, block: Q ? Q.block : null, seconds: Q ? Q.seconds : null, options: Q ? 4 : null, opened,
+        players: players.map((p) => ({ first: p.first, seat: p.seat })), answered: answeredIds.length,
+        answeredSeats: answeredIds.map((pid) => byId[pid].seat).filter((s) => s !== "remote"), histogram,
+        reveal: revealed && Q && DEMO_KEY ? Object.assign({}, DEMO_KEY[st.q - 1]) : null,
+        correct: revealed ? c : null, seatResults, seatTotals, top, streaks,
+      }, extra || {});
+    }
+    function host(action) {
+      const v = view(), opened = st.openedAt != null, revealed = st.q > 0 && st.revealedQ === st.q;
+      const bad = () => board({ error: "That step does not fit the current phase." });
+      switch (action) {
+        case "open": if (v.phase === "lobby") st.q = 1; else if (!(v.phase === "closed" && !opened)) return bad(); st.phase = "open"; st.openedAt = now(); st.closedAt = null; break;
+        case "close": if (v.phase !== "open") return bad(); st.phase = "closed"; st.closedAt = now(); break;
+        case "reveal":
+          if (!opened || revealed || !(v.phase === "open" || v.phase === "closed")) return bad();
+          if (st.closedAt == null) st.closedAt = now();
+          materialize(); st.phase = "reveal"; st.revealedQ = st.q;
+          for (const p of active()) { const r = (A[st.q] || {})[p.pid]; streak[p.pid] = r && r.correct ? (streak[p.pid] || 0) + 1 : 0; if (r && r.points) lb[p.pid] = (lb[p.pid] || 0) + r.points; }
+          break;
+        case "next": if (!["lobby", "reveal", "break"].includes(v.phase)) return bad(); if (st.q >= total) st.phase = "final"; else { st.q++; st.phase = "closed"; st.openedAt = null; st.closedAt = null; } break;
+        case "break": if (v.phase !== "reveal") return bad(); st.phase = "break"; break;
+        case "final": if (opened && !revealed && (v.phase === "open" || v.phase === "closed")) return bad(); st.phase = "final"; break;
+        case "reset": st = { run: st.run + 1, phase: "lobby", q: 0, openedAt: null, closedAt: null, revealedQ: 0, seq: 0 }; start(); break;
+        default: return bad();
+      }
+      st.seq++;
+      return board();
+    }
+    return { board, host };
+  }
+
+  // ---------- polling (admin, uncached) ----------
+  let KEY = "", inflight = false, timer = null;
+  const demo = DEMO ? makeDemo() : null;
+  if (DEMO) $("demolbl").textContent = "Demo: 34 simulated analysts on the real answer key. Nothing is saved.";
+  async function loadDemoKey(k) {
+    const r = await fetch("/api/host", { method: "POST", cache: "no-store", signal: tsig(8000), headers: { "content-type": "application/json", "x-admin-key": k }, body: JSON.stringify({ section: SECTION, action: "key" }) });
+    if (r.status === 403 || r.status === 429) return "The key was not accepted.";
+    if (!r.ok) return "The server answered " + r.status + ".";
+    const j = await r.json(); if (!j || !Array.isArray(j.key) || j.key.length !== QS.length) return "The answer key did not load.";
+    DEMO_KEY = j.key; return null;
+  }
+  function startDemo() { $("gate").classList.remove("on"); poll(); clearInterval(timer); timer = setInterval(poll, 1000); }
+  function setNet(ok) { netOk = ok; $("netdot").classList.toggle("off", !ok); if (B) paintDock(B); }
+  async function poll() {
+    if (inflight || busy) return;
+    if (DEMO) { if (DEMO_KEY) ingest(demo.board()); return; }
+    if (!KEY) return;
+    inflight = true; const g = gen;
+    try {
+      const r = await fetch("/api/board?section=" + SECTION, { cache: "no-store", signal: tsig(4000), headers: { "x-admin-key": KEY } });
+      if (r.status === 403 || r.status === 429) { gate(r.status === 429 ? "Too many wrong keys from this address. Wait a minute." : "The key was not accepted."); return; }
+      if (!r.ok) throw new Error(String(r.status));
+      const j = await r.json(); setNet(true);
+      if (g !== gen || busy) return;
+      if (B && j.runId === B.runId && Number(j.seq) < Number(B.seq)) return;
+      ingest(j);
+    } catch (e) { setNet(false); }
+    finally { inflight = false; }
+  }
+  function startPolling() { $("gate").classList.remove("on"); poll(); clearInterval(timer); timer = setInterval(poll, 1000); }
+  function gate(msg) {
+    clearInterval(timer); KEY = "";
+    try { sessionStorage.removeItem(KEY_STORE); } catch (e) {}
+    $("gatep").textContent = DEMO ? "The demo plays the real answers, so it needs the admin key. It stays in this browser tab only and is never put in the address." : "Enter the admin key for section " + SECTION + ". It stays in this browser tab only and is never put in the address.";
+    $("gateerr").textContent = msg || "";
+    $("gate").classList.add("on"); setTimeout(() => $("gatekey").focus(), 50);
+  }
+  $("gateform").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const k = $("gatekey").value.trim(); if (!k) return;
+    $("gateerr").textContent = "Checking";
+    try {
+      const r = await fetch("/api/board", { method: "POST", cache: "no-store", signal: tsig(8000), headers: { "content-type": "application/json" }, body: JSON.stringify({ section: SECTION, key: k }) });
+      if (r.status === 403) { $("gateerr").textContent = "That key did not work."; return; }
+      if (r.status === 429) { $("gateerr").textContent = "Too many tries from this address. Wait a minute."; return; }
+      if (!r.ok) { $("gateerr").textContent = "The server answered " + r.status + ". Try again."; return; }
+      if (DEMO) { const err = await loadDemoKey(k); if (err) { $("gateerr").textContent = err; return; } }
+      KEY = k; try { sessionStorage.setItem(KEY_STORE, k); } catch (e2) {}
+      $("gatekey").value = ""; $("gateerr").textContent = "";
+      if (DEMO) { startDemo(); return; }
+      ingest(await r.json()); startPolling();
+    } catch (e3) { $("gateerr").textContent = "Could not reach the server."; }
+  });
+
+  ingest({ runId: "-", phase: "lobby", q: 0, total: QS.length, players: [], answeredSeats: [], seatResults: {}, seatTotals: {}, top: [], streaks: [], opened: false });
+  try { KEY = sessionStorage.getItem(KEY_STORE) || ""; } catch (e) { KEY = ""; }
+  if (DEMO) { if (KEY) { loadDemoKey(KEY).then((err) => { if (err) gate(err); else startDemo(); }).catch(() => gate("Could not reach the server.")); } else gate(""); }
+  else if (KEY) startPolling(); else gate("");
+  window.__rc = { get B() { return B; }, showCall: () => B && showCall(B), skipOverlays };
+})();
+</script>
+</body>
+</html>

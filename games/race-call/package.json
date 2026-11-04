@@ -1,0 +1,9 @@
+{
+  "name": "isa401-race-call",
+  "private": true,
+  "description": "Race Call: election-night chart game for ISA 401 (Class 21)",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "dev": "node dev/server.js"
+  }
+}

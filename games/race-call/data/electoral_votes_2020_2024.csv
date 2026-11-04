@@ -1,0 +1,10 @@
+step,label,change,note,source_url
+start,2020 total,306,Democratic ticket (Biden-Harris) electoral votes in 2020,https://www.archives.gov/electoral-college/2020
+census,2020 census reapportionment,-3,"States the ticket won in 2020: CA, IL, MI, NY and PA lost one vote each; CO and OR gained one each",https://www.census.gov/data/tables/2020/dec/2020-apportionment-data.html
+state,AZ,-11,Flipped to the Republican ticket in 2024,https://www.archives.gov/electoral-college/2024
+state,GA,-16,Flipped to the Republican ticket in 2024,https://www.archives.gov/electoral-college/2024
+state,MI,-15,Flipped to the Republican ticket in 2024,https://www.archives.gov/electoral-college/2024
+state,NV,-6,Flipped to the Republican ticket in 2024,https://www.archives.gov/electoral-college/2024
+state,PA,-19,Flipped to the Republican ticket in 2024,https://www.archives.gov/electoral-college/2024
+state,WI,-10,Flipped to the Republican ticket in 2024,https://www.archives.gov/electoral-college/2024
+end,2024 total,226,Democratic ticket (Harris-Walz) electoral votes in 2024,https://www.archives.gov/electoral-college/2024
