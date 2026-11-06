@@ -1,0 +1,92 @@
+{
+ "x2-honest-ai": {
+  "prompt": "This bar chart shows the average attendance at Miami RedHawks home football games for each season from 2021 to 2026. Describe how attendance compares across these seasons. Please limit your answer to 30 words.",
+  "answer": "Average home attendance peaked at approximately 15,100 in 2022 and 2026. Attendance declined steadily from 2022 through 2025, reaching roughly 11,700, before rebounding sharply in 2026.",
+  "date": "November 4, 2026",
+  "seconds": 8
+ },
+ "x2-encodings-ai": {
+  "prompt": "This chart shows Miami University's football seasons from 2010 to 2025. List every variable shown in the chart and the visual encoding (channel) used for each one. Please limit your answer to 40 words.",
+  "answer": "Points scored per game: Horizontal position (x-axis).\n\nPoints allowed per game: Vertical position (y-axis).\n\nBowl game participation: Color (red/gray).\n\nMAC championship: Shape (triangle/circle).\n\nNumber of wins: Bubble size.\n\nSeason (year): One mark per season; not visually encoded.",
+  "date": "November 4, 2026",
+  "seconds": 9
+ },
+ "x2-color-ai": {
+  "prompt": "This heat map shows the average number of cars parked in a Miami University campus garage for each hour of the week. What type of color scheme does it use, and is that a good choice for this data? Please limit your answer to 30 words.",
+  "answer": "It uses a qualitative color scheme for ordered numerical data. This is inappropriate because colors lack a natural progression. A sequential color scheme would better communicate increasing parking occupancy.",
+  "date": "November 4, 2026",
+  "seconds": 8
+ },
+ "x2-common-ai": {
+  "prompt": "This stacked bar chart shows Farmer School of Business first-year students by intended major from 2022 to 2026. Which major grew the most from 2022 to 2026? Please limit your answer to 30 words.",
+  "answer": "Business Analytics grew the most, increasing from approximately 95 students in 2022 to 175 in 2026, a gain of 80 students.",
+  "date": "November 4, 2026",
+  "seconds": 8
+ },
+ "x2-time-ai": {
+  "prompt": "This line chart shows monthly visits to King Library at Miami University from January 2022 to October 2026. Describe the trend. Please limit your answer to 30 words.",
+  "answer": "Library visits show strong seasonal patterns, with sharp summer declines and peaks during academic semesters. Overall attendance gradually increases from 2022 to 2026, despite substantial monthly fluctuations.",
+  "date": "November 4, 2026",
+  "seconds": 8
+ },
+ "x2-maps-ai": {
+  "prompt": "This map shows how many Miami University alumni live in each Ohio county. Based on the map, where in Ohio is Miami University most popular? Please limit your answer to 30 words.",
+  "answer": "Miami University appears most popular in southwestern Ohio, particularly Butler and Hamilton counties, with another major concentration in central Ohio around Franklin County (Columbus).",
+  "date": "November 4, 2026",
+  "seconds": 8
+ },
+ "x2-many-ai": {
+  "prompt": "This chart shows daily meal swipes at four Miami University dining halls in September and October 2026. Compare the four dining halls: which one is busiest, and how do they differ? Please limit your answer to 30 words.",
+  "answer": "Western Dining Commons is busiest, followed by Garden Commons, Maplestreet Station, and Bell Tower Place. All four show substantial daily fluctuations, with Western experiencing the largest absolute swings.",
+  "date": "November 4, 2026",
+  "seconds": 8
+ },
+ "x2-data-weekend": {
+  "prompt": "This chart shows the number of maintenance requests submitted each day by students living in Miami University's residence halls. Describe the pattern in the chart. Please limit your answer to 30 words.",
+  "answer": "Maintenance requests follow a strong weekly pattern, with sharp spikes approximately every seven days, reaching 100–116 requests. On other days, requests remain relatively stable, generally between 25 and 45.",
+  "date": "November 4, 2026",
+  "seconds": 8
+ },
+ "x2-data-campus": {
+  "prompt": "This chart shows the number of students enrolled at each Miami University campus in Fall 2026, with the first rows of the file it was made from. Summarize what the chart shows. Please limit your answer to 30 words.",
+  "answer": "The chart shows Oxford dominating enrollment, followed by Hamilton and Middletown. However, totals are massively inflated because campus-wide enrollment was incorrectly summed across course sections.",
+  "date": "November 4, 2026",
+  "seconds": 8
+ },
+ "x2-data-crashes": {
+  "prompt": "This chart shows traffic crashes in Cincinnati in 2025 by day of the week, with a few rows of the file it was made from. On which day did the most crashes happen, and about how many crashes were there on that day? Please limit your answer to 30 words.",
+  "answer": "Friday had the most crashes, with approximately 4,921 recorded rows.",
+  "date": "November 4, 2026",
+  "seconds": 8
+ },
+ "x2-data-penguins": {
+  "prompt": "This scatter plot uses the penguins dataset that comes with R (the Palmer Station penguins). Describe the relationship between flipper length and body mass. Please limit your answer to 30 words.",
+  "answer": "The plot shows a negative relationship: penguins with longer flippers tend to have lower body mass. Gentoo penguins generally have longer flippers and lower body mass than other species.",
+  "date": "November 4, 2026",
+  "seconds": 8
+ },
+ "x2-build-ai": {
+  "prompt": "This file lists visits to Miami University's Recreation Center in September and October 2026 (simulated data), one row per visit. Make two charts: (1) the number of visits by facility, and (2) how visit length in minutes differs by visitor type.",
+  "answer": "The dataset contains 2,400 visits to Miami University's Recreation Center during September and October 2026.\n\nThe Main gym was the busiest facility, with 734 visits, followed by Fitness studios (567) and Courts (556).\n\nVisit duration also differed by visitor type. Undergraduates had the longest median visits (63 minutes), followed by graduate students (52 minutes) and faculty or staff (41 minutes).\n\n[Chart 1, shown above: Number of visits by facility]\n\n[Chart 2, shown above: Visit length by visitor type]\n\nThe second chart uses box plots to show differences in median visit length, variability, and unusually long visits—not just averages.",
+  "date": "November 4, 2026",
+  "seconds": 11
+ },
+ "x2-time-twopoint": {
+  "prompt": "This chart shows the number of first-year students at Miami University's Oxford campus. The data are simulated. Is a line chart a good choice for this data? Answer yes or no, then explain in under 30 words.",
+  "answer": "Yes. A line chart is appropriate for showing enrollment changes over time, although a bar chart might better emphasize differences between these three discrete annual observations.",
+  "date": "November 5, 2026",
+  "seconds": 7
+ },
+ "x2-time-uneven": {
+  "prompt": "This chart shows first-year applications to Miami University. The data are simulated. Describe the trend in applications shown in this chart. Please limit your answer to 30 words.",
+  "answer": "First-year applications increased from 17,645 in 2000 to 29,654 in 2026. Growth was strongest before 2020, followed by slower, more gradual increases through 2026.",
+  "date": "November 5, 2026",
+  "seconds": 7
+ },
+ "x2-data-flatlines": {
+  "prompt": "This line chart shows weekly running distance for 30 Miami University students in a 12-week running program in fall 2026, one line per student. The data are simulated. Describe the pattern you observe. Please limit your answer to 30 words.",
+  "answer": "Most students increased their weekly running distance over the 12 weeks. Starting around 5–15 miles, distances generally rose to 15–25 miles, with considerable individual variation and occasional declines.",
+  "date": "November 5, 2026",
+  "seconds": 8
+ }
+}

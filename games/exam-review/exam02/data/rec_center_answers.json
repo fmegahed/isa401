@@ -1,0 +1,14 @@
+{
+  "by_facility": {
+    "Main gym": 734,
+    "Fitness studios": 567,
+    "Courts": 556,
+    "Pool": 343,
+    "Climbing wall": 200
+  },
+  "median_minutes": {
+    "Faculty or staff": 41,
+    "Graduate": 52,
+    "Undergraduate": 63
+  }
+}

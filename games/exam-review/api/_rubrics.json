@@ -754,5 +754,804 @@
    }
   ],
   "wrong": []
+ },
+ "x2-honest-ai": {
+  "prompt": "<b>Do you agree with ChatGPT? What did it miss?</b> Look at how the chart is drawn, not only at the values. Answer in 2 or 3 sentences.",
+  "context": "A bar chart of average home attendance at Miami RedHawks football games: each bar is the average of that season's home games, about 11,700 (2021), 15,100 (2022), 13,400 (2023), 12,200 (2024), 11,700 (2025) and 15,100 (2026, four games so far). The y-axis starts at 11,000, not at zero, so the 2022 bar looks about six times as tall as the 2025 bar although 2022 is only about 30% higher. Bars are also a poor way to show averages (Class 20): a bar suggests every game sits inside it and hides how much the games varied. ChatGPT was asked: \"This bar chart shows the average attendance at Miami RedHawks home football games for each season from 2021 to 2026. Describe how attendance compares across these seasons. Please limit your answer to 30 words.\" ChatGPT answered: \"Average home attendance peaked at approximately 15,100 in 2022 and 2026. Attendance declined steadily from 2022 through 2025, reaching roughly 11,700, before rebounding sharply in 2026.\"",
+  "ideas": [
+   {
+    "label": "The y-axis starts at 11,000, not zero",
+    "ask": "Does the student's answer say that the chart's y-axis (the value axis) does not start at zero, for example that it starts at 11,000?",
+    "yes": "The answer states or clearly paraphrases that the chart's y-axis (the value axis) does not start at zero, for example that it starts at 11,000.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "So the differences look far bigger than they are",
+    "ask": "Does the student's answer say that the bars exaggerate the differences between seasons, so a change of about 30% (or a few thousand fans) looks much bigger than it really is?",
+    "yes": "The answer states or clearly paraphrases that the bars exaggerate the differences between seasons, so a change of about 30% (or a few thousand fans) looks much bigger than it really is.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "Bar charts should not be used for averages",
+    "ask": "Does the student's answer say that bar charts should not be used to show averages (here, the average attendance per season), for example that the averages would be better shown as points or with each game's attendance?",
+    "yes": "The answer states or clearly paraphrases that bar charts should not be used to show averages (here, the average attendance per season), for example that the averages would be better shown as points or with each game's attendance.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": [
+   {
+    "ask": "Does the student's answer claim that attendance in some season was several times (for example five or six times) what it was in another season?",
+    "yes": "The answer asserts that attendance in some season was several times (for example five or six times) what it was in another season.",
+    "no": "The answer does not assert this. It may not mention it, or may reject it.",
+    "msg": "Read the numbers: about 15,100 and 11,700. Is that several times?"
+   }
+  ]
+ },
+ "x2-honest-lie": {
+  "prompt": "Sales grew by 10%, but on the chart the second bar is drawn 50% taller than the first. What is the chart's lie factor, and what does that number tell a reader?",
+  "ideas": [
+   {
+    "label": "The lie factor is 5 (50% divided by 10%)",
+    "ask": "Does the student's answer say that the lie factor is 5 (50% divided by 10%)?",
+    "yes": "The answer states or clearly paraphrases that the lie factor is 5 (50% divided by 10%).",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "The chart makes the growth look five times as big as it is",
+    "ask": "Does the student's answer say that the chart exaggerates the change, making it look about five times bigger than it really is?",
+    "yes": "The answer states or clearly paraphrases that the chart exaggerates the change, making it look about five times bigger than it really is.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": [
+   {
+    "ask": "Does the student's answer claim that the lie factor is 0.2 or 40?",
+    "yes": "The answer asserts that the lie factor is 0.2 or 40.",
+    "no": "The answer does not assert this. It may not mention it, or may reject it.",
+    "msg": "The lie factor is the change shown divided by the change in the data."
+   }
+  ]
+ },
+ "x2-encodings-ai": {
+  "prompt": "<b>Check ChatGPT's list against the chart. Is it right?</b> Then pick one variable and say whether its channel suits its data type.",
+  "context": "A scatter plot with one point per Miami football season, 2010 to 2025. Points scored per game is on the x-axis, points allowed per game on the y-axis, the number of wins is the point size, whether the team played a bowl game is the color (red yes, gray no), and whether it was MAC champion is the shape (triangle yes, circle no). Every pair in ChatGPT's list is correct. ChatGPT was asked: \"This chart shows Miami University's football seasons from 2010 to 2025. List every variable shown in the chart and the visual encoding (channel) used for each one. Please limit your answer to 40 words.\" ChatGPT answered: \"Points scored per game: Horizontal position (x-axis).\n\nPoints allowed per game: Vertical position (y-axis).\n\nBowl game participation: Color (red/gray).\n\nMAC championship: Shape (triangle/circle).\n\nNumber of wins: Bubble size.\n\nSeason (year): One mark per season; not visually encoded.\"",
+  "ideas": [
+   {
+    "label": "ChatGPT's list checks out against the chart",
+    "ask": "Does the student's answer say that ChatGPT's list is right and names at least one specific variable-and-channel pair from the chart, such as points scored on the x-axis, wins shown by size, bowl game by color or MAC champion by shape?",
+    "yes": "The answer states or clearly paraphrases that ChatGPT's list is right and names at least one specific variable-and-channel pair from the chart, such as points scored on the x-axis, wins shown by size, bowl game by color or MAC champion by shape.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "A variable's type matched to its channel",
+    "ask": "Does the student's answer say that a specific variable's data type fits or does not fit its channel, for example that bowl game or MAC champion is a yes/no category that suits color or shape, or that wins is a number shown by size, which is harder to compare precisely than position?",
+    "yes": "The answer states or clearly paraphrases that a specific variable's data type fits or does not fit its channel, for example that bowl game or MAC champion is a yes/no category that suits color or shape, or that wins is a number shown by size, which is harder to compare precisely than position.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": [
+   {
+    "ask": "Does the student's answer claim that ChatGPT's list contains a mistake, such as a variable paired with the wrong channel or a variable it left out?",
+    "yes": "The answer asserts that ChatGPT's list contains a mistake, such as a variable paired with the wrong channel or a variable it left out.",
+    "no": "The answer does not assert this. It may not mention it, or may reject it.",
+    "msg": "Check each of the five pairs against the legends. They are all there."
+   }
+  ]
+ },
+ "x2-encodings-hue": {
+  "prompt": "Why is color hue (red, blue, green) a good channel for a team's conference but a poor channel for its points per game?",
+  "ideas": [
+   {
+    "label": "Hue has no order, so it fits categories like conference",
+    "ask": "Does the student's answer say that hue has no natural order (or tells categories apart), so it suits a nominal variable such as conference?",
+    "yes": "The answer states or clearly paraphrases that hue has no natural order (or tells categories apart), so it suits a nominal variable such as conference.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "Readers cannot see how much more one hue is; use position or length (or light to dark)",
+    "ask": "Does the student's answer say that for a number such as points, hue cannot show how much bigger one value is, so position, length or a light-to-dark scale works better?",
+    "yes": "The answer states or clearly paraphrases that for a number such as points, hue cannot show how much bigger one value is, so position, length or a light-to-dark scale works better.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": []
+ },
+ "x2-color-ai": {
+  "prompt": "<b>ChatGPT says this is a qualitative scheme on ordered data. Is it right?</b> Point to something in the chart that shows the problem.",
+  "context": "A heat map of the average number of cars parked in a campus garage for each weekday and hour from 6am to 11pm. The counts are binned into six ordered groups (0 to 100, 100 to 200, up to over 500), and each group gets an unrelated color: red for 0 to 100, blue, green, purple, orange, and brown for over 500. Red, which looks alarming, marks the emptiest hours (nights and weekends). ChatGPT was asked: \"This heat map shows the average number of cars parked in a Miami University campus garage for each hour of the week. What type of color scheme does it use, and is that a good choice for this data? Please limit your answer to 30 words.\" ChatGPT answered: \"It uses a qualitative color scheme for ordered numerical data. This is inappropriate because colors lack a natural progression. A sequential color scheme would better communicate increasing parking occupancy.\"",
+  "ideas": [
+   {
+    "label": "ChatGPT is right: unordered colors for ordered data",
+    "ask": "Does the student's answer say that ChatGPT is right that the chart uses qualitative (unrelated, unordered) colors for data that has an order?",
+    "yes": "The answer states or clearly paraphrases that ChatGPT is right that the chart uses qualitative (unrelated, unordered) colors for data that has an order.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "You cannot tell which hours are busiest without the legend (red means emptiest)",
+    "ask": "Does the student's answer say that the colors do not show which hours are fuller without checking the legend, for example that red marks the emptiest hours or that brown and orange cannot be ranked by eye?",
+    "yes": "The answer states or clearly paraphrases that the colors do not show which hours are fuller without checking the legend, for example that red marks the emptiest hours or that brown and orange cannot be ranked by eye.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": [
+   {
+    "ask": "Does the student's answer claim that a diverging color scheme would be the right choice for this chart?",
+    "yes": "The answer asserts that a diverging color scheme would be the right choice for this chart.",
+    "no": "The answer does not assert this. It may not mention it, or may reject it.",
+    "msg": "Diverging needs a meaningful middle. Is there one for a count of parked cars?"
+   }
+  ]
+ },
+ "x2-color-diverging": {
+  "prompt": "When is a diverging color scheme the right choice? Give an example of campus data where you would use one.",
+  "ideas": [
+   {
+    "label": "The data have a meaningful middle (zero, an average, a target)",
+    "ask": "Does the student's answer say that a diverging scheme needs a meaningful middle or reference point, such as zero, an average or a target?",
+    "yes": "The answer states or clearly paraphrases that a diverging scheme needs a meaningful middle or reference point, such as zero, an average or a target.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "Values go in two directions from it (above and below)",
+    "ask": "Does the student's answer say that the values go in two directions from that middle, above and below it (for example gains and losses)?",
+    "yes": "The answer states or clearly paraphrases that the values go in two directions from that middle, above and below it (for example gains and losses).",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": []
+ },
+ "x2-common-ai": {
+  "prompt": "<b>ChatGPT says Business Analytics grew the most. Do you agree?</b> Explain why this is harder to read from a stacked bar chart than, say, Accountancy's change.",
+  "context": "A stacked bar chart of Farmer School first-year students by intended major, 2022 to 2026. From the bottom: Accountancy (210 to 238), Business Analytics (95 to 176), Economics (about 120, flat), Finance (260 to 297) and Marketing (about 190, flat). Business Analytics, the second segment from the bottom, grew the most (about 80 students). ChatGPT's answer is correct. ChatGPT was asked: \"This stacked bar chart shows Farmer School of Business first-year students by intended major from 2022 to 2026. Which major grew the most from 2022 to 2026? Please limit your answer to 30 words.\" ChatGPT answered: \"Business Analytics grew the most, increasing from approximately 95 students in 2022 to 175 in 2026, a gain of 80 students.\"",
+  "ideas": [
+   {
+    "label": "ChatGPT is right: Business Analytics grew the most",
+    "ask": "Does the student's answer say that ChatGPT is right that Business Analytics grew the most?",
+    "yes": "The answer states or clearly paraphrases that ChatGPT is right that Business Analytics grew the most.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "Middle segments float, so you must subtract; Accountancy sits on the baseline",
+    "ask": "Does the student's answer say that the middle segments of a stacked bar, such as Business Analytics, do not start at the axis, so they are hard to read or compare?",
+    "yes": "The answer states or clearly paraphrases that the middle segments of a stacked bar, such as Business Analytics, do not start at the axis, so they are hard to read or compare.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": [
+   {
+    "ask": "Does the student's answer claim that Finance or Marketing grew the most?",
+    "yes": "The answer asserts that Finance or Marketing grew the most.",
+    "no": "The answer does not assert this. It may not mention it, or may reject it.",
+    "msg": "Measure each segment's own length, not how high its top edge reaches."
+   }
+  ]
+ },
+ "x2-common-pie": {
+  "prompt": "Pie on Trial showed the same three datasets as pies and then as bars. Why is it easier to find the largest value from bars than from pie slices?",
+  "ideas": [
+   {
+    "label": "Bars use length on a common baseline",
+    "ask": "Does the student's answer say that bars show values by length or position along a common baseline or axis?",
+    "yes": "The answer states or clearly paraphrases that bars show values by length or position along a common baseline or axis.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "People judge length better than angle or area",
+    "ask": "Does the student's answer say that people judge length or position more accurately than angle or area, which pie charts use?",
+    "yes": "The answer states or clearly paraphrases that people judge length or position more accurately than angle or area, which pie charts use.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": []
+ },
+ "x2-time-ai": {
+  "prompt": "<b>Do you agree with ChatGPT? What did it miss?</b> Then say how you would check its claim that visits are increasing.",
+  "context": "A line chart of monthly visits to King Library, January 2022 to October 2026. Visits peak during the semesters (about 60,000 to 85,000), drop sharply every June and July (about 11,000), and also dip every December (winter break, about 30,000 to 40,000). Each month is a little higher than the same month a year earlier. ChatGPT was asked: \"This line chart shows monthly visits to King Library at Miami University from January 2022 to October 2026. Describe the trend. Please limit your answer to 30 words.\" ChatGPT answered: \"Library visits show strong seasonal patterns, with sharp summer declines and peaks during academic semesters. Overall attendance gradually increases from 2022 to 2026, despite substantial monthly fluctuations.\"",
+  "ideas": [
+   {
+    "label": "It misses the December dip (winter break)",
+    "ask": "Does the student's answer say that visits also dip every December or over winter break, not only in the summer?",
+    "yes": "The answer states or clearly paraphrases that visits also dip every December or over winter break, not only in the summer.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "Check growth by comparing the same month across years",
+    "ask": "Does the student's answer say that to check the growth claim you compare the same month across years (for example each October) rather than neighboring months?",
+    "yes": "The answer states or clearly paraphrases that to check the growth claim you compare the same month across years (for example each October) rather than neighboring months.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": [
+   {
+    "ask": "Does the student's answer claim that library visits are declining over the period?",
+    "yes": "The answer asserts that library visits are declining over the period.",
+    "no": "The answer does not assert this. It may not mention it, or may reject it.",
+    "msg": "The drops come back every year. Compare the same month across years."
+   }
+  ]
+ },
+ "x2-time-twopoint": {
+  "prompt": "<b>Do you agree with ChatGPT? What did it miss?</b> Look at what was actually measured. Answer in 2 or 3 sentences.",
+  "context": "A line chart titled First-Year Students at Miami's Oxford Campus with only two measured points, Fall 2024 (4,052) and Fall 2026 (4,407), joined by a straight line. Fall 2025 is labeled on the x-axis but has no data point. With only two measurements, the line suggests a path through Fall 2025 that was never measured; two bars would compare the two values honestly. ChatGPT was asked: \"This chart shows the number of first-year students at Miami University's Oxford campus. The data are simulated. Is a line chart a good choice for this data? Answer yes or no, then explain in under 30 words.\" ChatGPT answered: \"Yes. A line chart is appropriate for showing enrollment changes over time, although a bar chart might better emphasize differences between these three discrete annual observations.\"",
+  "ideas": [
+   {
+    "label": "There are only two measurements, not three",
+    "ask": "Does the student's answer say that the chart has only two data points (Fall 2024 and Fall 2026)?",
+    "yes": "The answer states or clearly paraphrases that the chart has only two data points (Fall 2024 and Fall 2026).",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "So the line shows a Fall 2025 that was never measured; bars fit better",
+    "ask": "Does the student's answer say that a line is a poor choice here because it suggests a value or a path for Fall 2025 that was never measured?",
+    "yes": "The answer states or clearly paraphrases that a line is a poor choice here because it suggests a value or a path for Fall 2025 that was never measured.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": [
+   {
+    "ask": "Does the student's answer claim that Fall 2025 has a measured value of its own?",
+    "yes": "The answer asserts that Fall 2025 has a measured value of its own.",
+    "no": "The answer does not assert this. It may not mention it, or may reject it.",
+    "msg": "Is there a point above Fall 2025?"
+   }
+  ]
+ },
+ "x2-time-uneven": {
+  "prompt": "<b>Do you agree with ChatGPT? What did it miss?</b> Look at how the chart is drawn, not only at the values. Answer in 2 or 3 sentences.",
+  "context": "A line chart of first-year applications to Miami University with points for 2000 (17,645), 2010 (22,316), 2015 (24,653), 2020 (27,128) and every year from 2022 to 2026 (27,886, 28,233, 28,736, 29,314 and 29,654). Every year is drawn the same distance apart, although the gaps are 10, 5, 5, 2 and then 1 year. The early steps look steep only because they cover more years: per year, applications grew by about the same amount throughout (about 467 a year from 2000 to 2010 and about 440 a year from 2022 to 2026). ChatGPT was asked: \"This chart shows first-year applications to Miami University. The data are simulated. Describe the trend in applications shown in this chart. Please limit your answer to 30 words.\" ChatGPT answered: \"First-year applications increased from 17,645 in 2000 to 29,654 in 2026. Growth was strongest before 2020, followed by slower, more gradual increases through 2026.\"",
+  "ideas": [
+   {
+    "label": "The years are unevenly spaced but drawn the same distance apart",
+    "ask": "Does the student's answer say that the years on the x-axis are not evenly spaced (some steps cover 10 or 5 years, others 1 year) even though they are drawn the same distance apart?",
+    "yes": "The answer states or clearly paraphrases that the years on the x-axis are not evenly spaced (some steps cover 10 or 5 years, others 1 year) even though they are drawn the same distance apart.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "Per year, growth was about the same throughout",
+    "ask": "Does the student's answer say that per year, applications grew at about the same rate throughout, so growth did not really slow after 2020?",
+    "yes": "The answer states or clearly paraphrases that per year, applications grew at about the same rate throughout, so growth did not really slow after 2020.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": [
+   {
+    "ask": "Does the student's answer claim that growth slowed down after 2020?",
+    "yes": "The answer asserts that growth slowed down after 2020.",
+    "no": "The answer does not assert this. It may not mention it, or may reject it.",
+    "msg": "Compare the growth per year, not per step."
+   }
+  ]
+ },
+ "x2-time-anim": {
+  "prompt": "You want to show how the Gapminder countries moved from 1952 to 2007. When is an animation the better choice, and when are small multiples better?",
+  "ideas": [
+   {
+    "label": "Small multiples show every time point at once, so readers can compare without memory",
+    "ask": "Does the student's answer say that small multiples show all the time points at once, side by side?",
+    "yes": "The answer states or clearly paraphrases that small multiples show all the time points at once, side by side.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "Animation suits a presentation and shows motion, but is hard to compare carefully",
+    "ask": "Does the student's answer say that animation is the better choice for a presentation or for engaging an audience?",
+    "yes": "The answer states or clearly paraphrases that animation is the better choice for a presentation or for engaging an audience.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": []
+ },
+ "x2-maps-ai": {
+  "prompt": "<b>Do you agree with ChatGPT? What did it miss?</b> Say what this map really shows, and what you would need to answer the question.",
+  "context": "A choropleth map of Ohio's 88 counties, shaded by the number of Miami alumni living in each county (simulated counts). Franklin County (Columbus, about 1.3 million people) is darkest, then Hamilton and Cuyahoga, the other largest counties, then Butler. The counts mostly follow population. Per resident, Butler County has the highest share of alumni. ChatGPT was asked: \"This map shows how many Miami University alumni live in each Ohio county. Based on the map, where in Ohio is Miami University most popular? Please limit your answer to 30 words.\" ChatGPT answered: \"Miami University appears most popular in southwestern Ohio, particularly Butler and Hamilton counties, with another major concentration in central Ohio around Franklin County (Columbus).\"",
+  "ideas": [
+   {
+    "label": "The map shows counts, which mostly follow population",
+    "ask": "Does the student's answer say that the darkest counties are dark mainly because many people live there (the counts follow population)?",
+    "yes": "The answer states or clearly paraphrases that the darkest counties are dark mainly because many people live there (the counts follow population).",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "Popularity needs a rate: alumni per resident",
+    "ask": "Does the student's answer say that to judge where Miami is most popular you need a rate, such as alumni per resident or per 10,000 people, not a raw count?",
+    "yes": "The answer states or clearly paraphrases that to judge where Miami is most popular you need a rate, such as alumni per resident or per 10,000 people, not a raw count.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": [
+   {
+    "ask": "Does the student's answer claim that Franklin County is where Miami is most popular because it has the most alumni?",
+    "yes": "The answer asserts that Franklin County is where Miami is most popular because it has the most alumni.",
+    "no": "The answer does not assert this. It may not mention it, or may reject it.",
+    "msg": "Most alumni is not the same as most popular. How many people live in Franklin County?"
+   }
+  ]
+ },
+ "x2-maps-symbols": {
+  "prompt": "You want to map the number of Miami students from each Ohio county. Would you use a choropleth or proportional symbols, and why?",
+  "ideas": [
+   {
+    "label": "Proportional symbols suit counts",
+    "ask": "Does the student's answer say that proportional symbols (sized circles) suit counts or totals such as the number of students?",
+    "yes": "The answer states or clearly paraphrases that proportional symbols (sized circles) suit counts or totals such as the number of students.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "A choropleth of counts mostly shows population; choropleths are for rates",
+    "ask": "Does the student's answer say that shading counties by raw counts would mostly show where people live (population)?",
+    "yes": "The answer states or clearly paraphrases that shading counties by raw counts would mostly show where people live (population).",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": []
+ },
+ "x2-many-ai": {
+  "prompt": "<b>ChatGPT ranked the halls correctly. What did it miss about how this chart is drawn, and why does that matter?</b>",
+  "context": "Four small line charts (small multiples) of daily meal swipes, September and October 2026, one per dining hall. Each panel has its own y-axis: Bell Tower Place about 250 to 450, Maplestreet Station about 1,000 to 1,600, Garden Commons about 1,600 to 2,800, Western Dining Commons about 3,000 to 4,700. Because the axes differ, the four panels look alike, although Western serves about ten times as many swipes as Bell Tower. All four dip on weekends. ChatGPT was asked: \"This chart shows daily meal swipes at four Miami University dining halls in September and October 2026. Compare the four dining halls: which one is busiest, and how do they differ? Please limit your answer to 30 words.\" ChatGPT answered: \"Western Dining Commons is busiest, followed by Garden Commons, Maplestreet Station, and Bell Tower Place. All four show substantial daily fluctuations, with Western experiencing the largest absolute swings.\"",
+  "ideas": [
+   {
+    "label": "Each panel has its own y-axis",
+    "ask": "Does the student's answer say that the four panels do not share a y-axis (each panel has its own scale)?",
+    "yes": "The answer states or clearly paraphrases that the four panels do not share a y-axis (each panel has its own scale).",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "So the halls look alike although Western is about ten times Bell Tower",
+    "ask": "Does the student's answer say that because of the separate axes the halls look similar in size even though Western serves many times more swipes than Bell Tower (about ten times)?",
+    "yes": "The answer states or clearly paraphrases that because of the separate axes the halls look similar in size even though Western serves many times more swipes than Bell Tower (about ten times).",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": [
+   {
+    "ask": "Does the student's answer claim that the four dining halls are about equally busy?",
+    "yes": "The answer asserts that the four dining halls are about equally busy.",
+    "no": "The answer does not assert this. It may not mention it, or may reject it.",
+    "msg": "Read the numbers on each panel's y-axis."
+   }
+  ]
+ },
+ "x2-many-parcoord": {
+  "prompt": "In a parallel coordinates chart, what does one line stand for, and what does it mean when most lines cross each other between two neighboring axes?",
+  "ideas": [
+   {
+    "label": "One line is one observation (one row)",
+    "ask": "Does the student's answer say that one line is one observation, one row of the data (for example one car or one country)?",
+    "yes": "The answer states or clearly paraphrases that one line is one observation, one row of the data (for example one car or one country).",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "Crossing lines mean a negative relationship",
+    "ask": "Does the student's answer say that lines crossing between two axes show a negative relationship between those two variables (high on one, low on the other)?",
+    "yes": "The answer states or clearly paraphrases that lines crossing between two axes show a negative relationship between those two variables (high on one, low on the other).",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": []
+ },
+ "x2-data-weekend": {
+  "prompt": "<b>Do you agree with ChatGPT? What did it miss?</b> What would you ask before using these numbers?",
+  "context": "A daily bar chart of maintenance requests from students living in Miami residence halls, August 24 to November 1, 2026. Tuesday to Friday have about 25 to 45 requests, every Monday has about 100 to 116, and every Saturday and Sunday has exactly zero. Students live in the halls seven days a week, so zero requests on every weekend day is not believable: the requests are dated when staff process them, so the weekend's requests appear on Monday. ChatGPT was asked: \"This chart shows the number of maintenance requests submitted each day by students living in Miami University's residence halls. Describe the pattern in the chart. Please limit your answer to 30 words.\" ChatGPT answered: \"Maintenance requests follow a strong weekly pattern, with sharp spikes approximately every seven days, reaching 100–116 requests. On other days, requests remain relatively stable, generally between 25 and 45.\"",
+  "ideas": [
+   {
+    "label": "Every Saturday and Sunday shows zero requests",
+    "ask": "Does the student's answer say that the chart shows zero requests on Saturdays and Sundays (the weekends are empty)?",
+    "yes": "The answer states or clearly paraphrases that the chart shows zero requests on Saturdays and Sundays (the weekends are empty).",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "The pattern follows when requests are recorded, not when students submit them",
+    "ask": "Does the student's answer say that the zeros and the Monday spikes come from when the requests are recorded or processed (the office's or the reporting schedule), not from when students actually submit them?",
+    "yes": "The answer states or clearly paraphrases that the zeros and the Monday spikes come from when the requests are recorded or processed (the office's or the reporting schedule), not from when students actually submit them.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": [
+   {
+    "ask": "Does the student's answer claim that students actually submit no maintenance requests on weekends?",
+    "yes": "The answer asserts that students actually submit no maintenance requests on weekends.",
+    "no": "The answer does not assert this. It may not mention it, or may reject it.",
+    "msg": "Students live in the halls on weekends too. Do zero requests make sense?"
+   }
+  ]
+ },
+ "x2-data-flatlines": {
+  "prompt": "<b>Do you agree with ChatGPT? What did it miss?</b> What would you ask before using these numbers?",
+  "context": "A line chart of weekly miles run by 30 Miami students in a 12-week running program, one line per student. Most lines wiggle upward from about 5 to 15 miles in week 1 to about 15 to 25 miles by week 12. But 9 of the 30 lines go perfectly flat from some week between weeks 4 and 9 until week 12, at exactly the same value every week. Real weekly running varies, so the flat stretches mean those students stopped logging and the app repeated their last value. ChatGPT was asked: \"This line chart shows weekly running distance for 30 Miami University students in a 12-week running program in fall 2026, one line per student. The data are simulated. Describe the pattern you observe. Please limit your answer to 30 words.\" ChatGPT answered: \"Most students increased their weekly running distance over the 12 weeks. Starting around 5–15 miles, distances generally rose to 15–25 miles, with considerable individual variation and occasional declines.\"",
+  "ideas": [
+   {
+    "label": "Several lines go perfectly flat (the same miles every week)",
+    "ask": "Does the student's answer say that some students' lines are perfectly flat for several weeks, with exactly the same miles every week?",
+    "yes": "The answer states or clearly paraphrases that some students' lines are perfectly flat for several weeks, with exactly the same miles every week.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "Those weeks are repeated values, not real running",
+    "ask": "Does the student's answer say that the flat stretches are not real running but repeated values, for example because students stopped logging and the app carried their last value forward?",
+    "yes": "The answer states or clearly paraphrases that the flat stretches are not real running but repeated values, for example because students stopped logging and the app carried their last value forward.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": [
+   {
+    "ask": "Does the student's answer claim that the students with flat lines really ran the same distance every week?",
+    "yes": "The answer asserts that the students with flat lines really ran the same distance every week.",
+    "no": "The answer does not assert this. It may not mention it, or may reject it.",
+    "msg": "Real weekly running varies. What would produce exactly the same number every week?"
+   }
+  ]
+ },
+ "x2-data-campus": {
+  "prompt": "<b>ChatGPT says the totals are inflated. Is it right?</b> Use the rows under the chart to explain what went wrong, and how you would get the right number.",
+  "context": "A bar chart of students enrolled by Miami campus in Fall 2026: Oxford 59,740,200, Hamilton 1,762,800, Middletown 947,100. Under it, the first rows of course_sections_fall2026.csv: one row per course section, with columns section_id, campus, course and campus_enrollment, and every Oxford row repeats 19,240. The chart summed campus_enrollment over about 3,100 Oxford sections, so each total is the enrollment times the number of sections. ChatGPT was asked: \"This chart shows the number of students enrolled at each Miami University campus in Fall 2026, with the first rows of the file it was made from. Summarize what the chart shows. Please limit your answer to 30 words.\" ChatGPT answered: \"The chart shows Oxford dominating enrollment, followed by Hamilton and Middletown. However, totals are massively inflated because campus-wide enrollment was incorrectly summed across course sections.\"",
+  "ideas": [
+   {
+    "label": "Each row is a course section that repeats the campus total",
+    "ask": "Does the student's answer say that each row is a course section and the campus enrollment (19,240 for Oxford) is repeated on every row?",
+    "yes": "The answer states or clearly paraphrases that each row is a course section and the campus enrollment (19,240 for Oxford) is repeated on every row.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "Summing adds it once per section, so the totals are far too large",
+    "ask": "Does the student's answer say that adding up (summing) that column counts the enrollment once per section, so the totals are far too large (Oxford does not have about 60 million students)?",
+    "yes": "The answer states or clearly paraphrases that adding up (summing) that column counts the enrollment once per section, so the totals are far too large (Oxford does not have about 60 million students).",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "Take the value once per campus (MAX or AVG, not SUM)",
+    "ask": "Does the student's answer say that the fix is to take the enrollment once per campus, for example with MAX, MIN or AVG instead of SUM, or from a table with one row per campus?",
+    "yes": "The answer states or clearly paraphrases that the fix is to take the enrollment once per campus, for example with MAX, MIN or AVG instead of SUM, or from a table with one row per campus.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": [
+   {
+    "ask": "Does the student's answer claim that ChatGPT is wrong to say the totals are inflated?",
+    "yes": "The answer asserts that ChatGPT is wrong to say the totals are inflated.",
+    "no": "The answer does not assert this. It may not mention it, or may reject it.",
+    "msg": "Could Oxford have almost 60 million students?"
+   }
+  ]
+ },
+ "x2-data-crashes": {
+  "prompt": "<b>Do you agree with ChatGPT? What did it miss?</b> Use the rows under the chart.",
+  "context": "A bar chart titled Traffic crashes in Cincinnati by day of the week, 2025, with the y-axis labeled Number of crashes: Mon 4,136, Tue 4,539, Wed 4,833, Thu 4,682, Fri 4,921, Sat 3,831, Sun 3,183. The bars count rows of cincy_2025_crashes.csv. The rows shown under it repeat the same instanceid on three rows (a driver, an occupant, another driver) and another on two rows: one row is one person involved, not one crash. The file has 30,125 rows but 14,969 crashes; Friday had 2,409 crashes. ChatGPT was asked: \"This chart shows traffic crashes in Cincinnati in 2025 by day of the week, with a few rows of the file it was made from. On which day did the most crashes happen, and about how many crashes were there on that day? Please limit your answer to 30 words.\" ChatGPT answered: \"Friday had the most crashes, with approximately 4,921 recorded rows.\"",
+  "ideas": [
+   {
+    "label": "Each row is a person involved, not a crash (the IDs repeat)",
+    "ask": "Does the student's answer say that each row is one person involved in a crash rather than one crash, for example because the same crash ID repeats?",
+    "yes": "The answer states or clearly paraphrases that each row is one person involved in a crash rather than one crash, for example because the same crash ID repeats.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "So the bars overstate crashes: Friday had far fewer than 4,921",
+    "ask": "Does the student's answer say that 4,921 overstates the number of crashes on Friday (the real number of crashes is lower)?",
+    "yes": "The answer states or clearly paraphrases that 4,921 overstates the number of crashes on Friday (the real number of crashes is lower).",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "Count distinct crash IDs instead of rows",
+    "ask": "Does the student's answer say that the right count comes from counting distinct (unique) crash IDs rather than rows?",
+    "yes": "The answer states or clearly paraphrases that the right count comes from counting distinct (unique) crash IDs rather than rows.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": [
+   {
+    "ask": "Does the student's answer claim that there were about 4,921 crashes on Fridays?",
+    "yes": "The answer asserts that there were about 4,921 crashes on Fridays.",
+    "no": "The answer does not assert this. It may not mention it, or may reject it.",
+    "msg": "ChatGPT itself said rows. Is one row one crash?"
+   }
+  ]
+ },
+ "x2-data-penguins": {
+  "prompt": "<b>ChatGPT describes this plot accurately. Should you believe what it shows?</b> Compare it with what you saw about these penguins in Classes 15 and 16.",
+  "context": "A scatter plot labeled as the R penguins dataset, flipper length (mm) on x and body mass (g) on y, colored by species. It shows a strong negative relationship, with Gentoo penguins (longest flippers) the lightest. In the real penguins data, the relationship is strongly positive and Gentoo penguins are the heaviest. The data in this chart were altered (body mass reversed) for this example. ChatGPT was asked: \"This scatter plot uses the penguins dataset that comes with R (the Palmer Station penguins). Describe the relationship between flipper length and body mass. Please limit your answer to 30 words.\" ChatGPT answered: \"The plot shows a negative relationship: penguins with longer flippers tend to have lower body mass. Gentoo penguins generally have longer flippers and lower body mass than other species.\"",
+  "ideas": [
+   {
+    "label": "In the real data, longer flippers go with heavier penguins",
+    "ask": "Does the student's answer say that in the real penguins data the relationship is positive (longer flippers go with heavier penguins), or that Gentoo penguins are actually the heaviest?",
+    "yes": "The answer states or clearly paraphrases that in the real penguins data the relationship is positive (longer flippers go with heavier penguins), or that Gentoo penguins are actually the heaviest.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "So this data must be altered or wrong: check it first",
+    "ask": "Does the student's answer say that the data behind this chart look altered or wrong because they contradict the real dataset, so they should be checked before trusting the chart?",
+    "yes": "The answer states or clearly paraphrases that the data behind this chart look altered or wrong because they contradict the real dataset, so they should be checked before trusting the chart.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": [
+   {
+    "ask": "Does the student's answer claim that penguins with longer flippers really are lighter?",
+    "yes": "The answer asserts that penguins with longer flippers really are lighter.",
+    "no": "The answer does not assert this. It may not mention it, or may reject it.",
+    "msg": "Think back to the penguins in Classes 15 and 16. Which species was the heaviest?"
+   }
+  ]
+ },
+ "x2-build-ai": {
+  "prompt": "<b>ChatGPT made these two charts from the same file. Name one improvement for each chart, and say why it helps.</b>",
+  "context": "Two charts ChatGPT made from the Rec Center visits file. Chart 1: a sorted horizontal bar chart of visits by facility (Main gym 734, Fitness studios 567, Courts 556, Pool 343, Climbing wall 200), with Main gym in a dark highlight color and the others light, with no note saying why Main gym is highlighted; the title is generic ('Visits by facility'). Chart 2: a box plot of visit minutes by visitor type (undergraduate, graduate, faculty or staff), each box in a different shade although the shades only repeat the y-axis labels; the median labels ('63 min median') overlap the boxes and whiskers and are hard to read; the chart does not show how many visits each group has (undergraduates are most of the visits). ChatGPT was asked: \"This file lists visits to Miami University's Recreation Center in September and October 2026 (simulated data), one row per visit. Make two charts: (1) the number of visits by facility, and (2) how visit length in minutes differs by visitor type.\" ChatGPT answered: \"The dataset contains 2,400 visits to Miami University's Recreation Center during September and October 2026.\n\nThe Main gym was the busiest facility, with 734 visits, followed by Fitness studios (567) and Courts (556).\n\nVisit duration also differed by visitor type. Undergraduates had the longest median visits (63 minutes), followed by graduate students (52 minutes) and faculty or staff (41 minutes).\n\n[Chart 1, shown above: Number of visits by facility]\n\n[Chart 2, shown above: Visit length by visitor type]\n\nThe second chart uses box plots to show differences in median visit length, variability, and unusually long visits—not just averages.\"",
+  "ideas": [
+   {
+    "label": "A specific improvement to chart 1 (visits by facility)",
+    "ask": "Does the student's answer say that a specific, sensible improvement to the first chart (the bar chart of visits by facility), for example explaining or removing the highlight color on Main gym, or a title that states the finding?",
+    "yes": "The answer states or clearly paraphrases that a specific, sensible improvement to the first chart (the bar chart of visits by facility), for example explaining or removing the highlight color on Main gym, or a title that states the finding.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "A specific improvement to chart 2 (the box plot)",
+    "ask": "Does the student's answer say that a specific, sensible improvement to the second chart (the box plot of visit length), for example moving the median labels so they do not overlap the boxes, showing how many visits each group has, or dropping colors that only repeat the labels?",
+    "yes": "The answer states or clearly paraphrases that a specific, sensible improvement to the second chart (the box plot of visit length), for example moving the median labels so they do not overlap the boxes, showing how many visits each group has, or dropping colors that only repeat the labels.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": [
+   {
+    "ask": "Does the student's answer claim that the first chart should be turned into a pie chart?",
+    "yes": "The answer asserts that the first chart should be turned into a pie chart.",
+    "no": "The answer does not assert this. It may not mention it, or may reject it.",
+    "msg": "Five close values are easier to compare as bars on a common axis than as pie slices."
+   }
+  ]
+ },
+ "x2-build-nba": {
+  "kind": "build",
+  "numbers": [
+   {
+    "id": "centers",
+    "label": "Centers: 107 players",
+    "answer": 107,
+    "tol": 0,
+    "shown": "107 centers",
+    "msg": "Count each player once. Look at a player who was traded during the season.",
+    "wrong": [
+     {
+      "value": 141,
+      "tol": 0,
+      "msg": "141 counts rows, not players. A player traded during the season has a row for each team and one for the whole season, so count distinct players (COUNTD in Tableau, Distinct count in Power BI)."
+     }
+    ]
+   }
+  ],
+  "shots": [
+   {
+    "label": "A bar chart",
+    "ask": "Is `chart` a bar chart (bars whose lengths show the values)?",
+    "yes": "The chart is a bar chart: horizontal or vertical bars, one for each position.",
+    "no": "The chart is another kind of chart, such as a pie chart, a line chart, a table or a scatterplot."
+   },
+   {
+    "label": "Bars sorted by length",
+    "ask": "Are the bars in `chart` sorted by length, from longest to shortest or from shortest to longest?",
+    "yes": "The bar lengths step steadily down (or up): each bar is at least as long as the next one in the order shown.",
+    "no": "The bar lengths go up and down in no order, for example alphabetical order of the labels, or the chart has no bars."
+   },
+   {
+    "label": "A title that says what it shows",
+    "ask": "Does `chart` have a title that says what the chart shows?",
+    "yes": "There is a title above or on the chart that names what is shown, such as players by position.",
+    "no": "The chart has no title, or only a default title such as Sheet 1."
+   }
+  ],
+  "example": {
+   "src": "exam02/charts/build_nba_example.png",
+   "alt": "Sorted horizontal bar chart titled NBA Players by Position, 2025-26: SG 154, SF 113, C 107, PF 103, PG 98"
+  }
+ },
+ "x2-build-airbnb": {
+  "kind": "build",
+  "numbers": [
+   {
+    "id": "median_entire",
+    "label": "Median entire home: $208",
+    "answer": 208,
+    "tol": 0.5,
+    "shown": "$208 a night",
+    "msg": "Filter to Entire home/apt and take the median price.",
+    "wrong": [
+     {
+      "value": 264.2,
+      "tol": 1,
+      "msg": "That is the average. A few listings cost thousands of dollars a night and pull the average up; the question asks for the median."
+     }
+    ]
+   },
+   {
+    "id": "private_rooms",
+    "label": "Private rooms: 429",
+    "answer": 429,
+    "tol": 0,
+    "shown": "429 private room listings",
+    "msg": "Count the listings whose room_type is Private room.",
+    "wrong": []
+   }
+  ],
+  "shots": [
+   {
+    "label": "One dot per listing, placed by location",
+    "ask": "Does `chart` show many small points placed by location, as on a map (by latitude and longitude, or on a map background)?",
+    "yes": "The chart shows many dots spread over an area by their location, like a map of listings.",
+    "no": "The chart does not place individual points by location: for example it is a bar chart, a pie chart, a table, or a map of shaded areas with no individual points."
+   },
+   {
+    "label": "Colored by room type, with a legend",
+    "ask": "Are the points in `chart` colored by room type, with a legend that names the room types?",
+    "yes": "The points have different colors for different room types (such as Entire home/apt and Private room), and a legend explains the colors.",
+    "no": "All the points are one color, or there is no legend that names the room types, or there are no points."
+   },
+   {
+    "label": "A title that says what it shows",
+    "ask": "Does `chart` have a title that says what the chart shows?",
+    "yes": "There is a title above or on the chart that names what is shown, such as Airbnb listings in Columbus by room type.",
+    "no": "The chart has no title, or only a default title such as Sheet 1."
+   }
+  ],
+  "example": {
+   "src": "exam02/charts/build_airbnb_example.png",
+   "alt": "Map of Columbus Airbnb listings as dots by latitude and longitude, colored by room type with a legend"
+  }
+ },
+ "x2-build-salaries": {
+  "kind": "build",
+  "numbers": [
+   {
+    "id": "widest_spread",
+    "label": "Widest: Data Scientists, $73,220",
+    "answer": 73220,
+    "tol": 10,
+    "shown": "$73,220 (Data Scientists)",
+    "msg": "For each occupation, subtract its own 25th percentile from its own 75th percentile; then take the largest.",
+    "wrong": [
+     {
+      "value": 110940,
+      "tol": 10,
+      "msg": "That subtracts across two occupations (the highest 75th percentile minus the lowest 25th percentile). Do the subtraction within each occupation first."
+     }
+    ]
+   }
+  ],
+  "shots": [
+   {
+    "label": "A range for each occupation",
+    "ask": "Does `chart` show, for each occupation, a range from a low pay value to a high pay value (a bar or line that spans from one value to another)?",
+    "yes": "Each occupation has a bar or line segment that starts at one value and ends at another, showing a spread of pay, such as a floating bar or a dumbbell.",
+    "no": "Each occupation has only a single value, such as one bar that starts at zero or one dot, so no range is shown."
+   },
+   {
+    "label": "The median marked inside each range",
+    "ask": "Does `chart` mark a middle value, such as the median, inside each occupation's range with a separate dot, tick or line?",
+    "yes": "Inside each range there is a separate mark, such as a dot, tick or line, for a middle value.",
+    "no": "There is no separate middle mark inside the ranges, or there are no ranges."
+   },
+   {
+    "label": "Pay shown in dollars",
+    "ask": "Does `chart` show the pay values formatted as dollars (with a $ sign or the word dollars on the axis or labels)?",
+    "yes": "The axis labels, value labels or axis title show the pay as dollars, for example $100,000 or Annual pay (dollars).",
+    "no": "The numbers have no $ sign and nothing says they are dollars, or there are no pay values shown."
+   }
+  ],
+  "example": {
+   "src": "exam02/charts/build_salaries_example.png",
+   "alt": "Chart of eight analytics occupations, each with a pink bar from the 25th to the 75th percentile of pay and a red dot at the median, sorted by median"
+  }
+ },
+ "x2-build-flights": {
+  "kind": "build",
+  "numbers": [
+   {
+    "id": "no_arrival",
+    "label": "No arrival recorded: 467 flights",
+    "answer": 467,
+    "tol": 0,
+    "shown": "467 flights",
+    "msg": "Count the rows where arr_delay_min is empty.",
+    "wrong": []
+   },
+   {
+    "id": "american_late",
+    "label": "American: 22.7% late",
+    "answer": 22.7,
+    "tol": 0.15,
+    "shown": "22.7%",
+    "msg": "Late means arr_delay_min of 15 or more. Divide by American's flights that have an arrival delay recorded.",
+    "wrong": [
+     {
+      "value": 21.6,
+      "tol": 0.15,
+      "msg": "That counts cancelled and diverted flights as on time. They never arrived, so leave them out of the share."
+     }
+    ]
+   }
+  ],
+  "shots": [
+   {
+    "label": "A bar chart",
+    "ask": "Is `chart` a bar chart (bars whose lengths show the values)?",
+    "yes": "The chart is a bar chart: horizontal or vertical bars, one for each airline.",
+    "no": "The chart is another kind of chart, such as a pie chart, a line chart, a table or a scatterplot."
+   },
+   {
+    "label": "Bars sorted by length",
+    "ask": "Are the bars in `chart` sorted by length, from longest to shortest or from shortest to longest?",
+    "yes": "The bar lengths step steadily down (or up): each bar is at least as long as the next one in the order shown.",
+    "no": "The bar lengths go up and down in no order, for example alphabetical order of the labels, or the chart has no bars."
+   },
+   {
+    "label": "Shown in percent",
+    "ask": "Does `chart` show percentages (a percent axis or percent labels) rather than numbers of flights?",
+    "yes": "The axis or the labels show percentages, such as 20%, or shares such as 0.2.",
+    "no": "The axis or the labels show numbers of flights or another number that is not a percentage."
+   }
+  ],
+  "example": {
+   "src": "exam02/charts/build_flights_example.png",
+   "alt": "Sorted horizontal bar chart of the share of flights from Ohio arriving 15 or more minutes late by airline, August 2026, from Alaska (about 33%) down to JetBlue (about 17%)"
+  }
+ },
+ "x2-gd-miners-open": {
+  "prompt": "This chart is redrawn from a mining company's annual report. What is misleading about it, and how would you fix it?",
+  "context": "A redrawn chart from a mining company's annual report, in three side-by-side panels titled 'Operating revenues', 'Net income (loss)' and 'Exploration and development expenditures'. Each panel has five gray bars for 1970 to 1974 (labeled '70 to '74), with the dollar value printed above each bar. There is no y-axis and no zero line. Values: operating revenues $3,549,385, $4,520,362, $4,916,444, $6,814,503, $7,382,599; net income $(11,014), $397,747, $521,943, $1,647,001, $1,435,102; exploration $351,341, $85,149, $75,243, $329,421, $1,226,007. In every panel the tallest bar ($7,382,599, $1,647,001 and $1,226,007) is drawn at exactly the same height, and the shortest bar in every panel is still about 30% as tall as the tallest, so bar heights are not proportional to the values. In the net income panel, the 1970 value is a loss printed as $(11,014), but its bar points upward from the bottom like the profits, about 30% as tall as the $1,647,001 bar.",
+  "ideas": [
+   {
+    "label": "The 1970 loss is drawn as a positive bar",
+    "ask": "Does the student's answer say that the 1970 net income is a loss (a negative value) but its bar is drawn upward like a profit or positive value?",
+    "yes": "The answer states or clearly paraphrases that the 1970 net income is a loss (a negative value) but its bar is drawn upward like a profit or positive value.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "Bar heights are not proportional: no zero baseline or common scale",
+    "ask": "Does the student's answer say that the bar heights are not proportional to the dollar values, because the bars do not start at a zero baseline or the panels do not share one scale (for example, bars for very different amounts look about the same height)?",
+    "yes": "The answer states or clearly paraphrases that the bar heights are not proportional to the dollar values, because the bars do not start at a zero baseline or the panels do not share one scale (for example, bars for very different amounts look about the same height).",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "A concrete fix",
+    "ask": "Does the student's answer say that a concrete way to redraw the chart, such as starting every bar at a zero baseline, drawing the loss as a bar below or to the left of zero, adding a value axis that starts at zero, putting all panels on one common scale, or switching to horizontal bars so the dollar labels read left to right?",
+    "yes": "The answer states or clearly paraphrases that a concrete way to redraw the chart, such as starting every bar at a zero baseline, drawing the loss as a bar below or to the left of zero, adding a value axis that starts at zero, putting all panels on one common scale, or switching to horizontal bars so the dollar labels read left to right.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": [
+   {
+    "ask": "Does the student's answer claim that nothing is misleading because every bar has its dollar value printed on it?",
+    "yes": "The answer asserts that nothing is misleading because every bar has its dollar value printed on it.",
+    "no": "The answer does not assert this. It may not mention it, or may reject it.",
+    "msg": "The printed values do not fix the drawing: readers see the bar heights first."
+   }
+  ]
+ },
+ "x2-gd-describe-open": {
+  "prompt": "Describe this chart in grammar-of-graphics terms: the aesthetic mappings, the geom, and one more layer.",
+  "context": "A horizontal bar chart titled 'Miami point differential by game, 2026'. The data are Miami's seven 2026 football games through Oct 17, one row per game. Each bar is one game: the opponent (Pittsburgh, Holy Cross, Cincinnati, Connecticut, Bowling Green, Massachusetts, Akron, in date order from top to bottom) is on the y-axis, and the bar length along the x-axis is the point differential, Miami points minus opponent points (from -45 at Pittsburgh to +38 against Holy Cross). Bars are filled by site, with a legend titled 'site': Miami red for home games and gray for away games. Bowling Green was a home loss and Massachusetts an away win, so fill does not show the result. A vertical line marks zero. The chart is split into two panels (facets) by conference game: 'Non-conference' (first four games) and 'MAC' (last three). In ggplot2 terms: aes(x = margin, y = opponent, fill = site) + geom_col() + geom_vline(xintercept = 0) + facet_grid(conference ~ .) + scale_fill_manual().",
+  "ideas": [
+   {
+    "label": "Mappings: point differential, opponent, site",
+    "ask": "Does the student's answer say that at least two of these aesthetic mappings: the point differential (Miami points minus opponent points) mapped to the bar length or x-axis, the opponent or game mapped to the y-axis, and the site (home or away) mapped to the fill color?",
+    "yes": "The answer states or clearly paraphrases that at least two of these aesthetic mappings: the point differential (Miami points minus opponent points) mapped to the bar length or x-axis, the opponent or game mapped to the y-axis, and the site (home or away) mapped to the fill color.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "Geom: bars",
+    "ask": "Does the student's answer say that the geom (the geometric object or mark) is bars, for example geom_col or geom_bar?",
+    "yes": "The answer states or clearly paraphrases that the geom (the geometric object or mark) is bars, for example geom_col or geom_bar.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "One more layer, named specifically",
+    "ask": "Does the student's answer say that a specific additional layer that is actually in this chart, such as facets that split the games into non-conference and MAC panels, a fill scale that sets red for home and gray for away, or a vertical reference line at zero?",
+    "yes": "The answer states or clearly paraphrases that a specific additional layer that is actually in this chart, such as facets that split the games into non-conference and MAC panels, a fill scale that sets red for home and gray for away, or a vertical reference line at zero.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": [
+   {
+    "ask": "Does the student's answer claim that the fill color shows whether Miami won or lost the game?",
+    "yes": "The answer asserts that the fill color shows whether Miami won or lost the game.",
+    "no": "The answer does not assert this. It may not mention it, or may reject it.",
+    "msg": "Check the legend: fill shows home or away. Bowling Green was a home loss."
+   }
+  ]
  }
 }

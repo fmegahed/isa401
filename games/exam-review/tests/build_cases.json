@@ -1,0 +1,123 @@
+[
+ {
+  "id": "x2-build-nba",
+  "file": "tests/build_shots/nba_good.png",
+  "expect": [
+   1,
+   1,
+   1,
+   1
+  ],
+  "kind": "good"
+ },
+ {
+  "id": "x2-build-nba",
+  "file": "tests/build_shots/nba_unsorted_no_title.png",
+  "expect": [
+   1,
+   1,
+   0,
+   0
+  ],
+  "kind": "unsorted, no title"
+ },
+ {
+  "id": "x2-build-nba",
+  "file": "tests/build_shots/nba_pie.png",
+  "expect": [
+   1,
+   0,
+   0,
+   1
+  ],
+  "kind": "pie chart"
+ },
+ {
+  "id": "x2-build-nba",
+  "file": "tests/build_shots/not_a_chart.png",
+  "expect": [
+   0,
+   0,
+   0,
+   0
+  ],
+  "kind": "not a chart"
+ },
+ {
+  "id": "x2-build-airbnb",
+  "file": "tests/build_shots/airbnb_good.png",
+  "expect": [
+   1,
+   1,
+   1,
+   1
+  ],
+  "kind": "good"
+ },
+ {
+  "id": "x2-build-airbnb",
+  "file": "tests/build_shots/airbnb_map_one_color.png",
+  "expect": [
+   1,
+   1,
+   0,
+   1
+  ],
+  "kind": "one color"
+ },
+ {
+  "id": "x2-build-airbnb",
+  "file": "tests/build_shots/airbnb_bar_not_map.png",
+  "expect": [
+   1,
+   0,
+   0,
+   1
+  ],
+  "kind": "a bar chart, not a map"
+ },
+ {
+  "id": "x2-build-salaries",
+  "file": "tests/build_shots/salaries_good.png",
+  "expect": [
+   1,
+   1,
+   1,
+   1
+  ],
+  "kind": "good"
+ },
+ {
+  "id": "x2-build-salaries",
+  "file": "tests/build_shots/salaries_median_bars_only.png",
+  "expect": [
+   1,
+   0,
+   0,
+   1
+  ],
+  "kind": "median bars only (in dollars)"
+ },
+ {
+  "id": "x2-build-flights",
+  "file": "tests/build_shots/flights_good.png",
+  "expect": [
+   1,
+   1,
+   1,
+   1
+  ],
+  "kind": "good"
+ },
+ {
+  "id": "x2-build-flights",
+  "file": "tests/build_shots/flights_counts_unsorted.png",
+  "expect": [
+   1,
+   1,
+   0,
+   0
+  ],
+  "kind": "counts, unsorted"
+ }
+]

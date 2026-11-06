@@ -69,12 +69,6 @@ xaringanExtra::use_clipboard(button_text = paste0(fontawesome::fa("clipboard", f
 fig_dir = "../../figures/ts_spatial"
 dir.create(fig_dir, showWarnings = FALSE, recursive = TRUE)
 
-# ---- game QR codes: use the game's own images when they exist, else the copies in this folder ----
-qr_path = function(s) {
-  p = file.path("../../games/race-call/images", paste0("qr_", s, ".png"))
-  if (file.exists(p)) p else paste0("qr_", s, ".png")
-}
-
 # ---- Part 1: the Tableau lab's line chart (statewide daily new cases, ohio_covid.csv) ----
 ohio_covid = readr::read_csv("../../data/ohio_covid.csv", show_col_types = FALSE)
 ohio_daily = ohio_covid |>
@@ -166,15 +160,6 @@ guardian_url = "https://www.theguardian.com/us-news/ng-interactive/2026/nov/03/m
 .src a { color:#c3142d !important; }
 .xaringanextra-clipboard-button { display:none; }
 .rcode .xaringanextra-clipboard-button { display:block !important; }
-/* game join QR codes */
-.qr-pair { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:4px; }
-.qr-box { text-align:center; border:1px solid #e5e7eb; border-radius:8px; padding:8px 6px 6px 6px; background:#ffffff; }
-.qr-box .sec { font-weight:700; font-size:15px; color:#1b1b1b; }
-.qr-box .sec span { font-weight:400; color:#585E60; font-size:13px; }
-.qr-box img { display:block; width:180px; height:180px; margin:6px auto 4px auto; image-rendering:pixelated; }
-.qr-box .url { font-size:12.5px; white-space:nowrap; }
-.qr-box .url a { color:#1b1b1b; text-decoration:underline; text-decoration-color:#9ca3af; }
-.gd-row { margin-bottom:7px; }
 /* deck 21 */
 .q5l { font-size:15px; line-height:1.45; margin:9px 0; }
 .live-map { margin:8px 0 10px 0; border:2px dashed #c3142d; border-radius:8px; padding:14px 16px; background:#fff7f8; font-size:18px; text-align:center; }
@@ -190,11 +175,11 @@ guardian_url = "https://www.theguardian.com/us-news/ng-interactive/2026/nov/03/m
 <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:12px;">
 <div class="card">
   <div class="ch">1 &nbsp; Join today's Zoom</div>
-  <div class="cb" style="font-size:15px; line-height:1.55;">Use the Zoom link in the <a href="https://miamioh.instructure.com/courses/258169/modules/981092" target="_blank"><b>Week 0 Module</b></a> on Canvas. <b>Mute</b> your mic and <b>turn off</b> your video.<br><br><span style="color:#585E60;">There is no R to write today. Have Tableau and Power BI open if you want to follow the demos, and keep your phone handy for a game at the end.</span></div>
+  <div class="cb" style="font-size:15px; line-height:1.55;">Use the Zoom link in the <a href="https://miamioh.instructure.com/courses/258169/modules/981092" target="_blank"><b>Week 0 Module</b></a> on Canvas. <b>Mute</b> your mic and <b>turn off</b> your video.<br><br><span style="color:#585E60;">There is no R to write today. Have Tableau and Power BI open if you want to follow the demos.</span></div>
 </div>
 <div class="card">
   <div class="ch gray">2 &nbsp; Today's plan</div>
-  <div class="cb" style="font-size:15px; line-height:1.6;"><b>Part 1. Time:</b> line charts, calendar plots, and animated charts.<br><b>Part 2. Space:</b> choropleths, cartograms, and symbol maps, with last night's election maps.<br><b>Part 3. Space and time:</b> spatiotemporal maps, then a Tableau demo.<br><b>Part 4.</b> A phone game: <b>Race Call</b>.</div>
+  <div class="cb" style="font-size:15px; line-height:1.6;"><b>Part 1. Time:</b> line charts, calendar plots, and animated charts.<br><b>Part 2. Space:</b> choropleths, cartograms, and symbol maps, with last night's election maps.<br><b>Part 3. Space and time:</b> spatiotemporal maps, then a Tableau demo.</div>
 </div>
 </div>
 
@@ -426,7 +411,7 @@ Five minutes. Play from about 3:30 to 7:00, where the bubbles start moving. Answ
 
 ???
 
-One and a half minutes. Five encodings at once: this is why the next class (high-dimensional data) starts from here.
+One and a half minutes. Six variables at once (five encodings, plus one bubble per country): this is why the next class (high-dimensional data) starts from here.
 
 ---
 
@@ -436,6 +421,7 @@ One and a half minutes. Five encodings at once: this is why the next class (high
 <div><img src="`r knitr::image_uri(bubble_gif)`" alt="Animated bubble chart from 1952 to 2007: countries move up and to the right as GDP per capita and life expectancy rise; bubble size is population and color is continent" style="width:100%; border:1px solid #e5e7eb; border-radius:6px;"></div>
 <div>
 <div class="card"><div class="ch">Read it like Rosling</div><div class="cb" style="font-size:14.5px; line-height:1.6;">
+<div><b>each bubble:</b> a country</div>
 <div><b>x:</b> GDP per capita (log scale)</div>
 <div><b>y:</b> life expectancy</div>
 <div><b>area:</b> population</div>
@@ -734,30 +720,6 @@ Ten minutes. unique_count is COUNTD([Instanceid]): one crash has a row per perso
 
 ---
 
-# Race Call
-
-<div style="display:grid; grid-template-columns:1fr 1.05fr; gap:16px; margin-top:10px;">
-<div class="card"><div class="ch">How to play</div><div class="cb" style="font-size:15px; line-height:1.5;">
-<div class="gd-row"><b>1.</b> Scan your section's code, then enter your first name, last initial and seat.</div>
-<div class="gd-row"><b>2.</b> You are an analyst on the election-night chart desk. There are 13 races, and each one is a chart: a line, a calendar, an animation, or a map.</div>
-<div class="gd-row"><b>3.</b> Make your projection on your phone before the polls close. Faster right projections earn more points.</div>
-<div class="gd-row"><b>4.</b> The projector shows what the room projected, then the actual winner and why.</div>
-<div style="color:#585E60; margin-top:10px;">Points count for nothing. Nothing counts toward your grade.</div>
-</div></div>
-<div class="card"><div class="ch gray">Join</div><div class="cb">
-<div class="qr-pair">
-<div class="qr-box"><div class="sec">Section A <span>(8:30 AM)</span></div><img src="`r knitr::image_uri(qr_path('A'))`" alt="QR code for the Section A game link"><div class="url"><a href="https://isa401-race-call.vercel.app/?section=A" target="_blank">isa401-race-call.vercel.app/?section=A</a></div></div>
-<div class="qr-box"><div class="sec">Section B <span>(10:05 AM)</span></div><img src="`r knitr::image_uri(qr_path('B'))`" alt="QR code for the Section B game link"><div class="url"><a href="https://isa401-race-call.vercel.app/?section=B" target="_blank">isa401-race-call.vercel.app/?section=B</a></div></div>
-</div>
-</div></div>
-</div>
-
-???
-
-About ten minutes. Host view: https://isa401-race-call.vercel.app/host?section=A for Section A and https://isa401-race-call.vercel.app/host?section=B for Section B. Admin key: from Fadel's notes (not in this public deck). See games/race-call/README.md for the run book.
-
----
-
 class: inverse, center, middle
 
 # Recap
@@ -786,7 +748,7 @@ One minute.
 
 # Before Next Class
 
-<div class="lesson" style="margin-top:6px;"><b class="r">Monday, Nov 9:</b> Visualizing High-Dimensional Data. The motion bubble chart (five encodings at once) is where we start.</div>
+<div class="lesson" style="margin-top:6px;"><b class="r">Monday, Nov 9:</b> we start with <b>Race Call</b>, a phone game on today's charts, so bring your phone. Then Visualizing High-Dimensional Data, picking up from the motion bubble chart (six variables at once).</div>
 
 <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px;">
 <div class="card">
@@ -811,4 +773,4 @@ One minute.
 
 ???
 
-One minute. The readings are optional. Total for the deck: about 75 minutes with the game.
+One minute. The readings are optional. Total for the deck: about 65 minutes. Race Call moved to the start of Class 22.

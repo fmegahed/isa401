@@ -13,7 +13,8 @@ function loadEnv(file) {
 loadEnv(path.join(ROOT, ".env.local"));
 loadEnv(path.join(ROOT, "..", "..", ".Renviron"));
 process.env.ADMIN_KEY = process.env.ADMIN_KEY || "fall2026";
-const TYPES = { ".html": "text/html; charset=utf-8", ".js": "text/javascript", ".mjs": "text/javascript", ".json": "application/json", ".png": "image/png", ".csv": "text/csv; charset=utf-8", ".txt": "text/plain; charset=utf-8", ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", ".mp3": "audio/mpeg", ".woff2": "font/woff2" };
+const TYPES = { ".html": "text/html; charset=utf-8", ".js": "text/javascript", ".mjs": "text/javascript", ".json": "application/json", ".png": "image/png", ".csv": "text/csv; charset=utf-8", ".txt": "text/plain; charset=utf-8", ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", ".mp3": "audio/mpeg", ".woff2": "font/woff2",
+  ".mp4": "video/mp4", ".webm": "video/webm", ".svg": "image/svg+xml", ".pdf": "application/pdf" };
 
 http.createServer(async (req, res) => {
   const u = new URL(req.url, "http://x");
@@ -32,7 +33,16 @@ http.createServer(async (req, res) => {
   const blocked = ["/dev/", "/tests/", "/content/", "/api/"].some((d) => p.startsWith(d));
   if (blocked || !f.startsWith(ROOT) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { res.writeHead(404); return res.end("not found"); }
   // same isolation headers as vercel.json, so R can make network requests locally too
-  res.writeHead(200, { "Content-Type": TYPES[path.extname(f)] || "application/octet-stream", "Cache-Control": "no-store",
-    "Cross-Origin-Opener-Policy": "same-origin", "Cross-Origin-Embedder-Policy": "require-corp" });
+  const head = { "Content-Type": TYPES[path.extname(f)] || "application/octet-stream", "Cache-Control": "no-store", "Accept-Ranges": "bytes",
+    "Cross-Origin-Opener-Policy": "same-origin", "Cross-Origin-Embedder-Policy": "require-corp" };
+  // byte ranges, as Vercel serves them, so a recording can be sought in the browser
+  const size = fs.statSync(f).size, range = /^bytes=(\d*)-(\d*)$/.exec(req.headers.range || "");
+  if (range && (range[1] || range[2])) {
+    let start = range[1] ? Number(range[1]) : Math.max(0, size - Number(range[2])), end = range[1] && range[2] ? Math.min(Number(range[2]), size - 1) : size - 1;
+    if (start >= size || start > end) { res.writeHead(416, { "Content-Range": `bytes */${size}` }); return res.end(); }
+    res.writeHead(206, { ...head, "Content-Range": `bytes ${start}-${end}/${size}`, "Content-Length": end - start + 1 });
+    return fs.createReadStream(f, { start, end }).pipe(res);
+  }
+  res.writeHead(200, { ...head, "Content-Length": size });
   fs.createReadStream(f).pipe(res);
 }).listen(PORT, () => console.log("exam-review dev on http://localhost:" + PORT));

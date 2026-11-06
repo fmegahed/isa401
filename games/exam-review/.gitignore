@@ -3,3 +3,12 @@
 
 .vercel
 .env*
+# Race Call's answers stay out of git until Class 22 has ended (Mon Nov 9, 2026): the Exam 02
+# public file, the replay content and the copied Race Call charts all hold them. Remove these
+# three lines after that class.
+units_exam02.json
+content/exam02_replays.mjs
+exam02/replays/race-call/
+
+# silent recap previews (make_recap.mjs --preview): local only
+recap/preview/

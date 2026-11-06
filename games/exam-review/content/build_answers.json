@@ -1,0 +1,64 @@
+{
+  "x2-build-nba": [
+    {
+      "id": "centers",
+      "answer": 107,
+      "tol": 0,
+      "wrong": [
+        {
+          "value": 141,
+          "tol": 0
+        }
+      ]
+    }
+  ],
+  "x2-build-airbnb": [
+    {
+      "id": "median_entire",
+      "answer": 208,
+      "tol": 0.5,
+      "wrong": [
+        {
+          "value": 264.2,
+          "tol": 1
+        }
+      ]
+    },
+    {
+      "id": "private_rooms",
+      "answer": 429,
+      "tol": 0
+    }
+  ],
+  "x2-build-salaries": [
+    {
+      "id": "widest_spread",
+      "answer": 73220,
+      "tol": 10,
+      "wrong": [
+        {
+          "value": 110940,
+          "tol": 10
+        }
+      ]
+    }
+  ],
+  "x2-build-flights": [
+    {
+      "id": "no_arrival",
+      "answer": 467,
+      "tol": 0
+    },
+    {
+      "id": "american_late",
+      "answer": 22.7,
+      "tol": 0.15,
+      "wrong": [
+        {
+          "value": 21.6,
+          "tol": 0.15
+        }
+      ]
+    }
+  ]
+}

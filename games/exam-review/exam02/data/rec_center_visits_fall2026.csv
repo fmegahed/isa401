@@ -1,0 +1,2401 @@
+visit_id,date,facility,visitor_type,minutes
+V00001,2026-09-01,Pool,Graduate,57
+V00002,2026-09-01,Courts,Undergraduate,135
+V00003,2026-09-01,Climbing wall,Undergraduate,41
+V00004,2026-09-01,Pool,Undergraduate,29
+V00005,2026-09-01,Pool,Undergraduate,128
+V00006,2026-09-01,Main gym,Undergraduate,96
+V00007,2026-09-01,Pool,Faculty or staff,53
+V00008,2026-09-01,Courts,Graduate,30
+V00009,2026-09-01,Fitness studios,Graduate,80
+V00010,2026-09-01,Main gym,Undergraduate,56
+V00011,2026-09-01,Courts,Faculty or staff,41
+V00012,2026-09-01,Main gym,Undergraduate,81
+V00013,2026-09-01,Courts,Undergraduate,85
+V00014,2026-09-01,Courts,Undergraduate,55
+V00015,2026-09-01,Pool,Undergraduate,90
+V00016,2026-09-01,Courts,Undergraduate,50
+V00017,2026-09-01,Main gym,Undergraduate,44
+V00018,2026-09-01,Fitness studios,Faculty or staff,32
+V00019,2026-09-01,Main gym,Faculty or staff,40
+V00020,2026-09-01,Pool,Undergraduate,69
+V00021,2026-09-01,Main gym,Undergraduate,65
+V00022,2026-09-01,Fitness studios,Undergraduate,113
+V00023,2026-09-01,Courts,Undergraduate,66
+V00024,2026-09-01,Pool,Undergraduate,57
+V00025,2026-09-01,Courts,Graduate,51
+V00026,2026-09-01,Courts,Undergraduate,70
+V00027,2026-09-01,Main gym,Faculty or staff,26
+V00028,2026-09-01,Fitness studios,Faculty or staff,37
+V00029,2026-09-01,Main gym,Undergraduate,90
+V00030,2026-09-01,Fitness studios,Undergraduate,127
+V00031,2026-09-01,Main gym,Undergraduate,37
+V00032,2026-09-01,Pool,Undergraduate,111
+V00033,2026-09-01,Pool,Faculty or staff,37
+V00034,2026-09-01,Climbing wall,Undergraduate,48
+V00035,2026-09-01,Climbing wall,Undergraduate,59
+V00036,2026-09-01,Climbing wall,Undergraduate,97
+V00037,2026-09-01,Fitness studios,Undergraduate,96
+V00038,2026-09-01,Climbing wall,Undergraduate,45
+V00039,2026-09-02,Fitness studios,Undergraduate,63
+V00040,2026-09-02,Climbing wall,Undergraduate,116
+V00041,2026-09-02,Main gym,Faculty or staff,44
+V00042,2026-09-02,Courts,Undergraduate,100
+V00043,2026-09-02,Climbing wall,Undergraduate,96
+V00044,2026-09-02,Main gym,Undergraduate,58
+V00045,2026-09-02,Fitness studios,Graduate,36
+V00046,2026-09-02,Pool,Graduate,47
+V00047,2026-09-02,Courts,Undergraduate,48
+V00048,2026-09-02,Courts,Undergraduate,81
+V00049,2026-09-02,Courts,Undergraduate,55
+V00050,2026-09-02,Fitness studios,Graduate,134
+V00051,2026-09-02,Main gym,Undergraduate,41
+V00052,2026-09-02,Fitness studios,Undergraduate,78
+V00053,2026-09-02,Pool,Undergraduate,136
+V00054,2026-09-02,Main gym,Undergraduate,74
+V00055,2026-09-02,Main gym,Faculty or staff,56
+V00056,2026-09-02,Courts,Undergraduate,70
+V00057,2026-09-02,Main gym,Undergraduate,33
+V00058,2026-09-02,Main gym,Undergraduate,78
+V00059,2026-09-02,Fitness studios,Undergraduate,63
+V00060,2026-09-02,Main gym,Faculty or staff,49
+V00061,2026-09-02,Fitness studios,Faculty or staff,29
+V00062,2026-09-02,Courts,Undergraduate,142
+V00063,2026-09-02,Courts,Undergraduate,97
+V00064,2026-09-02,Main gym,Undergraduate,87
+V00065,2026-09-02,Fitness studios,Graduate,97
+V00066,2026-09-02,Main gym,Undergraduate,50
+V00067,2026-09-02,Fitness studios,Undergraduate,50
+V00068,2026-09-02,Courts,Undergraduate,90
+V00069,2026-09-02,Courts,Undergraduate,47
+V00070,2026-09-02,Main gym,Undergraduate,67
+V00071,2026-09-03,Climbing wall,Undergraduate,43
+V00072,2026-09-03,Fitness studios,Undergraduate,41
+V00073,2026-09-03,Fitness studios,Faculty or staff,53
+V00074,2026-09-03,Fitness studios,Undergraduate,63
+V00075,2026-09-03,Fitness studios,Undergraduate,123
+V00076,2026-09-03,Courts,Undergraduate,33
+V00077,2026-09-03,Courts,Graduate,78
+V00078,2026-09-03,Courts,Undergraduate,91
+V00079,2026-09-03,Main gym,Undergraduate,72
+V00080,2026-09-03,Main gym,Undergraduate,48
+V00081,2026-09-03,Fitness studios,Undergraduate,73
+V00082,2026-09-03,Fitness studios,Undergraduate,81
+V00083,2026-09-03,Main gym,Undergraduate,103
+V00084,2026-09-03,Pool,Undergraduate,57
+V00085,2026-09-03,Courts,Undergraduate,32
+V00086,2026-09-03,Main gym,Undergraduate,86
+V00087,2026-09-03,Main gym,Undergraduate,55
+V00088,2026-09-03,Main gym,Undergraduate,157
+V00089,2026-09-03,Fitness studios,Undergraduate,95
+V00090,2026-09-03,Main gym,Undergraduate,65
+V00091,2026-09-03,Main gym,Graduate,66
+V00092,2026-09-03,Main gym,Undergraduate,55
+V00093,2026-09-03,Main gym,Undergraduate,36
+V00094,2026-09-03,Main gym,Undergraduate,98
+V00095,2026-09-03,Fitness studios,Undergraduate,50
+V00096,2026-09-03,Main gym,Graduate,64
+V00097,2026-09-03,Main gym,Undergraduate,63
+V00098,2026-09-03,Climbing wall,Undergraduate,47
+V00099,2026-09-03,Courts,Graduate,136
+V00100,2026-09-03,Courts,Undergraduate,69
+V00101,2026-09-03,Fitness studios,Undergraduate,73
+V00102,2026-09-03,Courts,Undergraduate,115
+V00103,2026-09-03,Fitness studios,Undergraduate,56
+V00104,2026-09-03,Main gym,Faculty or staff,66
+V00105,2026-09-03,Fitness studios,Undergraduate,49
+V00106,2026-09-03,Courts,Undergraduate,110
+V00107,2026-09-03,Climbing wall,Graduate,40
+V00108,2026-09-03,Fitness studios,Graduate,46
+V00109,2026-09-03,Fitness studios,Undergraduate,42
+V00110,2026-09-03,Pool,Undergraduate,91
+V00111,2026-09-04,Pool,Undergraduate,79
+V00112,2026-09-04,Main gym,Undergraduate,64
+V00113,2026-09-04,Main gym,Undergraduate,99
+V00114,2026-09-04,Courts,Undergraduate,74
+V00115,2026-09-04,Fitness studios,Undergraduate,29
+V00116,2026-09-04,Main gym,Undergraduate,74
+V00117,2026-09-04,Climbing wall,Undergraduate,51
+V00118,2026-09-04,Fitness studios,Undergraduate,112
+V00119,2026-09-04,Pool,Faculty or staff,40
+V00120,2026-09-04,Courts,Undergraduate,45
+V00121,2026-09-04,Fitness studios,Graduate,53
+V00122,2026-09-04,Courts,Undergraduate,54
+V00123,2026-09-04,Courts,Undergraduate,62
+V00124,2026-09-04,Fitness studios,Undergraduate,53
+V00125,2026-09-04,Fitness studios,Undergraduate,60
+V00126,2026-09-04,Main gym,Undergraduate,64
+V00127,2026-09-04,Fitness studios,Undergraduate,101
+V00128,2026-09-04,Pool,Undergraduate,65
+V00129,2026-09-04,Fitness studios,Undergraduate,131
+V00130,2026-09-04,Pool,Faculty or staff,54
+V00131,2026-09-04,Courts,Graduate,51
+V00132,2026-09-04,Climbing wall,Graduate,40
+V00133,2026-09-04,Pool,Undergraduate,100
+V00134,2026-09-04,Main gym,Faculty or staff,38
+V00135,2026-09-04,Courts,Faculty or staff,27
+V00136,2026-09-04,Main gym,Undergraduate,59
+V00137,2026-09-04,Courts,Faculty or staff,34
+V00138,2026-09-04,Courts,Undergraduate,58
+V00139,2026-09-04,Courts,Faculty or staff,59
+V00140,2026-09-04,Main gym,Undergraduate,62
+V00141,2026-09-04,Main gym,Undergraduate,73
+V00142,2026-09-04,Pool,Graduate,33
+V00143,2026-09-04,Pool,Undergraduate,109
+V00144,2026-09-04,Fitness studios,Undergraduate,48
+V00145,2026-09-04,Climbing wall,Undergraduate,68
+V00146,2026-09-04,Main gym,Faculty or staff,36
+V00147,2026-09-04,Main gym,Undergraduate,49
+V00148,2026-09-04,Courts,Undergraduate,62
+V00149,2026-09-04,Main gym,Undergraduate,46
+V00150,2026-09-05,Fitness studios,Graduate,69
+V00151,2026-09-05,Main gym,Faculty or staff,56
+V00152,2026-09-05,Climbing wall,Graduate,20
+V00153,2026-09-05,Courts,Faculty or staff,48
+V00154,2026-09-05,Main gym,Faculty or staff,50
+V00155,2026-09-05,Pool,Undergraduate,88
+V00156,2026-09-05,Courts,Undergraduate,47
+V00157,2026-09-05,Main gym,Graduate,66
+V00158,2026-09-05,Pool,Faculty or staff,22
+V00159,2026-09-05,Fitness studios,Undergraduate,96
+V00160,2026-09-05,Main gym,Undergraduate,100
+V00161,2026-09-05,Pool,Undergraduate,86
+V00162,2026-09-05,Fitness studios,Undergraduate,88
+V00163,2026-09-05,Main gym,Undergraduate,68
+V00164,2026-09-05,Main gym,Undergraduate,49
+V00165,2026-09-05,Main gym,Faculty or staff,52
+V00166,2026-09-05,Climbing wall,Faculty or staff,72
+V00167,2026-09-05,Main gym,Undergraduate,68
+V00168,2026-09-05,Fitness studios,Undergraduate,78
+V00169,2026-09-05,Main gym,Undergraduate,59
+V00170,2026-09-05,Main gym,Undergraduate,42
+V00171,2026-09-05,Fitness studios,Faculty or staff,33
+V00172,2026-09-05,Main gym,Undergraduate,40
+V00173,2026-09-05,Climbing wall,Undergraduate,75
+V00174,2026-09-05,Courts,Undergraduate,39
+V00175,2026-09-05,Fitness studios,Undergraduate,34
+V00176,2026-09-05,Courts,Undergraduate,54
+V00177,2026-09-05,Main gym,Faculty or staff,16
+V00178,2026-09-05,Courts,Undergraduate,42
+V00179,2026-09-05,Pool,Undergraduate,43
+V00180,2026-09-05,Fitness studios,Undergraduate,55
+V00181,2026-09-05,Fitness studios,Undergraduate,67
+V00182,2026-09-05,Pool,Graduate,70
+V00183,2026-09-05,Courts,Faculty or staff,60
+V00184,2026-09-05,Fitness studios,Undergraduate,87
+V00185,2026-09-05,Main gym,Undergraduate,61
+V00186,2026-09-05,Courts,Graduate,55
+V00187,2026-09-05,Main gym,Undergraduate,41
+V00188,2026-09-06,Climbing wall,Undergraduate,76
+V00189,2026-09-06,Pool,Undergraduate,90
+V00190,2026-09-06,Fitness studios,Undergraduate,72
+V00191,2026-09-06,Courts,Undergraduate,73
+V00192,2026-09-06,Pool,Faculty or staff,58
+V00193,2026-09-06,Pool,Undergraduate,51
+V00194,2026-09-06,Pool,Undergraduate,93
+V00195,2026-09-06,Main gym,Undergraduate,69
+V00196,2026-09-06,Main gym,Faculty or staff,40
+V00197,2026-09-06,Pool,Faculty or staff,42
+V00198,2026-09-06,Pool,Undergraduate,81
+V00199,2026-09-06,Pool,Faculty or staff,36
+V00200,2026-09-06,Fitness studios,Undergraduate,110
+V00201,2026-09-06,Fitness studios,Undergraduate,78
+V00202,2026-09-06,Fitness studios,Undergraduate,45
+V00203,2026-09-06,Main gym,Undergraduate,72
+V00204,2026-09-06,Main gym,Faculty or staff,57
+V00205,2026-09-06,Main gym,Graduate,54
+V00206,2026-09-06,Courts,Undergraduate,41
+V00207,2026-09-06,Climbing wall,Undergraduate,92
+V00208,2026-09-06,Main gym,Undergraduate,50
+V00209,2026-09-06,Courts,Graduate,61
+V00210,2026-09-06,Main gym,Undergraduate,65
+V00211,2026-09-06,Courts,Graduate,76
+V00212,2026-09-06,Fitness studios,Undergraduate,48
+V00213,2026-09-06,Courts,Undergraduate,57
+V00214,2026-09-06,Pool,Undergraduate,62
+V00215,2026-09-06,Main gym,Undergraduate,54
+V00216,2026-09-06,Pool,Undergraduate,90
+V00217,2026-09-06,Main gym,Undergraduate,33
+V00218,2026-09-06,Fitness studios,Undergraduate,39
+V00219,2026-09-06,Main gym,Undergraduate,34
+V00220,2026-09-06,Fitness studios,Undergraduate,53
+V00221,2026-09-06,Main gym,Undergraduate,47
+V00222,2026-09-06,Main gym,Undergraduate,84
+V00223,2026-09-06,Courts,Undergraduate,132
+V00224,2026-09-06,Main gym,Undergraduate,40
+V00225,2026-09-06,Main gym,Undergraduate,83
+V00226,2026-09-06,Main gym,Undergraduate,33
+V00227,2026-09-06,Main gym,Graduate,43
+V00228,2026-09-06,Fitness studios,Undergraduate,110
+V00229,2026-09-06,Main gym,Graduate,63
+V00230,2026-09-06,Main gym,Faculty or staff,45
+V00231,2026-09-06,Main gym,Undergraduate,32
+V00232,2026-09-06,Courts,Graduate,121
+V00233,2026-09-06,Climbing wall,Undergraduate,39
+V00234,2026-09-06,Main gym,Graduate,35
+V00235,2026-09-06,Courts,Undergraduate,53
+V00236,2026-09-06,Fitness studios,Undergraduate,61
+V00237,2026-09-06,Pool,Undergraduate,133
+V00238,2026-09-06,Main gym,Undergraduate,76
+V00239,2026-09-06,Pool,Undergraduate,70
+V00240,2026-09-06,Pool,Undergraduate,84
+V00241,2026-09-06,Courts,Faculty or staff,48
+V00242,2026-09-06,Fitness studios,Undergraduate,83
+V00243,2026-09-06,Main gym,Undergraduate,64
+V00244,2026-09-06,Courts,Undergraduate,54
+V00245,2026-09-07,Pool,Graduate,38
+V00246,2026-09-07,Courts,Undergraduate,35
+V00247,2026-09-07,Courts,Undergraduate,69
+V00248,2026-09-07,Courts,Undergraduate,85
+V00249,2026-09-07,Courts,Undergraduate,42
+V00250,2026-09-07,Courts,Graduate,57
+V00251,2026-09-07,Main gym,Undergraduate,63
+V00252,2026-09-07,Main gym,Undergraduate,115
+V00253,2026-09-07,Pool,Undergraduate,48
+V00254,2026-09-07,Courts,Undergraduate,79
+V00255,2026-09-07,Climbing wall,Undergraduate,36
+V00256,2026-09-07,Fitness studios,Graduate,56
+V00257,2026-09-07,Courts,Undergraduate,39
+V00258,2026-09-07,Climbing wall,Undergraduate,29
+V00259,2026-09-07,Main gym,Undergraduate,78
+V00260,2026-09-07,Main gym,Undergraduate,59
+V00261,2026-09-07,Fitness studios,Undergraduate,71
+V00262,2026-09-07,Fitness studios,Undergraduate,42
+V00263,2026-09-07,Pool,Undergraduate,38
+V00264,2026-09-07,Main gym,Undergraduate,34
+V00265,2026-09-07,Main gym,Undergraduate,108
+V00266,2026-09-07,Courts,Undergraduate,46
+V00267,2026-09-07,Fitness studios,Faculty or staff,29
+V00268,2026-09-07,Climbing wall,Faculty or staff,40
+V00269,2026-09-07,Courts,Undergraduate,75
+V00270,2026-09-07,Main gym,Undergraduate,69
+V00271,2026-09-07,Main gym,Undergraduate,38
+V00272,2026-09-07,Main gym,Undergraduate,85
+V00273,2026-09-07,Fitness studios,Undergraduate,77
+V00274,2026-09-07,Courts,Graduate,30
+V00275,2026-09-07,Pool,Undergraduate,60
+V00276,2026-09-07,Courts,Undergraduate,97
+V00277,2026-09-07,Fitness studios,Undergraduate,47
+V00278,2026-09-07,Fitness studios,Undergraduate,46
+V00279,2026-09-07,Main gym,Undergraduate,59
+V00280,2026-09-07,Fitness studios,Undergraduate,40
+V00281,2026-09-07,Main gym,Undergraduate,68
+V00282,2026-09-07,Fitness studios,Undergraduate,57
+V00283,2026-09-08,Main gym,Undergraduate,115
+V00284,2026-09-08,Climbing wall,Undergraduate,75
+V00285,2026-09-08,Main gym,Undergraduate,66
+V00286,2026-09-08,Fitness studios,Undergraduate,129
+V00287,2026-09-08,Courts,Graduate,72
+V00288,2026-09-08,Pool,Undergraduate,60
+V00289,2026-09-08,Courts,Faculty or staff,71
+V00290,2026-09-08,Climbing wall,Undergraduate,58
+V00291,2026-09-08,Main gym,Undergraduate,111
+V00292,2026-09-08,Courts,Graduate,68
+V00293,2026-09-08,Fitness studios,Undergraduate,105
+V00294,2026-09-08,Fitness studios,Undergraduate,80
+V00295,2026-09-08,Main gym,Undergraduate,120
+V00296,2026-09-08,Climbing wall,Undergraduate,43
+V00297,2026-09-08,Fitness studios,Faculty or staff,38
+V00298,2026-09-08,Main gym,Graduate,33
+V00299,2026-09-08,Fitness studios,Undergraduate,38
+V00300,2026-09-08,Courts,Graduate,33
+V00301,2026-09-08,Courts,Undergraduate,56
+V00302,2026-09-08,Fitness studios,Undergraduate,63
+V00303,2026-09-08,Main gym,Undergraduate,79
+V00304,2026-09-08,Courts,Undergraduate,50
+V00305,2026-09-08,Main gym,Undergraduate,47
+V00306,2026-09-08,Pool,Undergraduate,45
+V00307,2026-09-08,Courts,Undergraduate,50
+V00308,2026-09-08,Courts,Undergraduate,65
+V00309,2026-09-08,Courts,Undergraduate,80
+V00310,2026-09-08,Pool,Faculty or staff,48
+V00311,2026-09-08,Courts,Undergraduate,63
+V00312,2026-09-08,Main gym,Graduate,28
+V00313,2026-09-08,Climbing wall,Undergraduate,47
+V00314,2026-09-08,Fitness studios,Graduate,60
+V00315,2026-09-08,Courts,Graduate,49
+V00316,2026-09-08,Courts,Undergraduate,99
+V00317,2026-09-08,Courts,Graduate,55
+V00318,2026-09-08,Fitness studios,Undergraduate,51
+V00319,2026-09-08,Main gym,Undergraduate,25
+V00320,2026-09-08,Main gym,Undergraduate,59
+V00321,2026-09-08,Pool,Undergraduate,39
+V00322,2026-09-08,Fitness studios,Undergraduate,47
+V00323,2026-09-08,Courts,Undergraduate,55
+V00324,2026-09-08,Fitness studios,Undergraduate,67
+V00325,2026-09-08,Main gym,Graduate,50
+V00326,2026-09-08,Fitness studios,Undergraduate,40
+V00327,2026-09-09,Fitness studios,Faculty or staff,35
+V00328,2026-09-09,Main gym,Undergraduate,42
+V00329,2026-09-09,Fitness studios,Graduate,45
+V00330,2026-09-09,Pool,Undergraduate,41
+V00331,2026-09-09,Courts,Undergraduate,53
+V00332,2026-09-09,Main gym,Undergraduate,53
+V00333,2026-09-09,Main gym,Graduate,30
+V00334,2026-09-09,Pool,Undergraduate,61
+V00335,2026-09-09,Main gym,Undergraduate,47
+V00336,2026-09-09,Courts,Undergraduate,39
+V00337,2026-09-09,Main gym,Undergraduate,83
+V00338,2026-09-09,Courts,Undergraduate,79
+V00339,2026-09-09,Main gym,Undergraduate,86
+V00340,2026-09-09,Courts,Graduate,68
+V00341,2026-09-09,Fitness studios,Undergraduate,77
+V00342,2026-09-09,Courts,Graduate,66
+V00343,2026-09-09,Courts,Undergraduate,51
+V00344,2026-09-09,Fitness studios,Undergraduate,152
+V00345,2026-09-09,Courts,Undergraduate,52
+V00346,2026-09-09,Pool,Undergraduate,102
+V00347,2026-09-09,Main gym,Undergraduate,98
+V00348,2026-09-09,Pool,Undergraduate,50
+V00349,2026-09-09,Fitness studios,Undergraduate,47
+V00350,2026-09-09,Fitness studios,Faculty or staff,21
+V00351,2026-09-09,Pool,Undergraduate,54
+V00352,2026-09-09,Courts,Undergraduate,51
+V00353,2026-09-09,Pool,Undergraduate,44
+V00354,2026-09-09,Courts,Undergraduate,65
+V00355,2026-09-09,Courts,Faculty or staff,35
+V00356,2026-09-09,Main gym,Undergraduate,58
+V00357,2026-09-09,Main gym,Faculty or staff,39
+V00358,2026-09-09,Main gym,Undergraduate,34
+V00359,2026-09-09,Courts,Undergraduate,71
+V00360,2026-09-09,Fitness studios,Undergraduate,33
+V00361,2026-09-09,Courts,Undergraduate,75
+V00362,2026-09-09,Courts,Undergraduate,52
+V00363,2026-09-09,Fitness studios,Undergraduate,61
+V00364,2026-09-09,Courts,Undergraduate,29
+V00365,2026-09-09,Courts,Undergraduate,48
+V00366,2026-09-09,Fitness studios,Undergraduate,88
+V00367,2026-09-09,Pool,Undergraduate,109
+V00368,2026-09-10,Climbing wall,Undergraduate,41
+V00369,2026-09-10,Main gym,Undergraduate,76
+V00370,2026-09-10,Main gym,Undergraduate,63
+V00371,2026-09-10,Pool,Graduate,75
+V00372,2026-09-10,Courts,Graduate,110
+V00373,2026-09-10,Fitness studios,Faculty or staff,94
+V00374,2026-09-10,Main gym,Undergraduate,51
+V00375,2026-09-10,Courts,Faculty or staff,41
+V00376,2026-09-10,Climbing wall,Undergraduate,37
+V00377,2026-09-10,Courts,Undergraduate,23
+V00378,2026-09-10,Courts,Undergraduate,60
+V00379,2026-09-10,Courts,Undergraduate,100
+V00380,2026-09-10,Fitness studios,Undergraduate,65
+V00381,2026-09-10,Fitness studios,Faculty or staff,40
+V00382,2026-09-10,Courts,Graduate,65
+V00383,2026-09-10,Fitness studios,Undergraduate,167
+V00384,2026-09-10,Courts,Undergraduate,63
+V00385,2026-09-10,Climbing wall,Undergraduate,61
+V00386,2026-09-10,Courts,Undergraduate,64
+V00387,2026-09-10,Main gym,Undergraduate,67
+V00388,2026-09-10,Main gym,Faculty or staff,37
+V00389,2026-09-10,Courts,Undergraduate,75
+V00390,2026-09-10,Main gym,Undergraduate,55
+V00391,2026-09-10,Main gym,Undergraduate,79
+V00392,2026-09-10,Pool,Undergraduate,55
+V00393,2026-09-10,Climbing wall,Graduate,53
+V00394,2026-09-10,Main gym,Undergraduate,75
+V00395,2026-09-10,Main gym,Undergraduate,96
+V00396,2026-09-10,Pool,Faculty or staff,48
+V00397,2026-09-10,Pool,Graduate,27
+V00398,2026-09-10,Main gym,Undergraduate,100
+V00399,2026-09-10,Fitness studios,Graduate,46
+V00400,2026-09-10,Fitness studios,Undergraduate,61
+V00401,2026-09-10,Main gym,Undergraduate,54
+V00402,2026-09-10,Courts,Undergraduate,108
+V00403,2026-09-10,Climbing wall,Undergraduate,60
+V00404,2026-09-10,Pool,Graduate,56
+V00405,2026-09-11,Climbing wall,Undergraduate,107
+V00406,2026-09-11,Climbing wall,Undergraduate,31
+V00407,2026-09-11,Courts,Undergraduate,48
+V00408,2026-09-11,Courts,Graduate,46
+V00409,2026-09-11,Fitness studios,Faculty or staff,22
+V00410,2026-09-11,Fitness studios,Undergraduate,57
+V00411,2026-09-11,Fitness studios,Graduate,80
+V00412,2026-09-11,Main gym,Undergraduate,62
+V00413,2026-09-11,Courts,Faculty or staff,37
+V00414,2026-09-11,Fitness studios,Undergraduate,31
+V00415,2026-09-11,Climbing wall,Faculty or staff,43
+V00416,2026-09-11,Courts,Undergraduate,72
+V00417,2026-09-11,Courts,Undergraduate,34
+V00418,2026-09-11,Fitness studios,Graduate,40
+V00419,2026-09-11,Courts,Undergraduate,45
+V00420,2026-09-11,Courts,Undergraduate,49
+V00421,2026-09-11,Climbing wall,Undergraduate,64
+V00422,2026-09-11,Courts,Graduate,33
+V00423,2026-09-11,Fitness studios,Undergraduate,62
+V00424,2026-09-11,Main gym,Undergraduate,37
+V00425,2026-09-11,Fitness studios,Undergraduate,32
+V00426,2026-09-11,Climbing wall,Undergraduate,104
+V00427,2026-09-11,Courts,Undergraduate,44
+V00428,2026-09-11,Courts,Undergraduate,72
+V00429,2026-09-11,Courts,Faculty or staff,27
+V00430,2026-09-11,Courts,Undergraduate,51
+V00431,2026-09-11,Pool,Undergraduate,102
+V00432,2026-09-11,Main gym,Undergraduate,39
+V00433,2026-09-11,Climbing wall,Undergraduate,93
+V00434,2026-09-11,Pool,Graduate,167
+V00435,2026-09-11,Fitness studios,Undergraduate,69
+V00436,2026-09-11,Main gym,Undergraduate,69
+V00437,2026-09-12,Courts,Undergraduate,40
+V00438,2026-09-12,Courts,Undergraduate,41
+V00439,2026-09-12,Climbing wall,Undergraduate,86
+V00440,2026-09-12,Pool,Undergraduate,168
+V00441,2026-09-12,Main gym,Undergraduate,94
+V00442,2026-09-12,Main gym,Undergraduate,41
+V00443,2026-09-12,Main gym,Faculty or staff,23
+V00444,2026-09-12,Main gym,Undergraduate,51
+V00445,2026-09-12,Fitness studios,Graduate,43
+V00446,2026-09-12,Pool,Undergraduate,60
+V00447,2026-09-12,Main gym,Faculty or staff,26
+V00448,2026-09-12,Climbing wall,Undergraduate,75
+V00449,2026-09-12,Fitness studios,Undergraduate,31
+V00450,2026-09-12,Fitness studios,Faculty or staff,18
+V00451,2026-09-12,Climbing wall,Undergraduate,75
+V00452,2026-09-12,Pool,Undergraduate,123
+V00453,2026-09-12,Fitness studios,Undergraduate,39
+V00454,2026-09-12,Pool,Undergraduate,44
+V00455,2026-09-12,Courts,Undergraduate,44
+V00456,2026-09-12,Courts,Undergraduate,34
+V00457,2026-09-12,Pool,Undergraduate,45
+V00458,2026-09-12,Courts,Faculty or staff,17
+V00459,2026-09-12,Courts,Undergraduate,68
+V00460,2026-09-12,Pool,Undergraduate,118
+V00461,2026-09-12,Main gym,Faculty or staff,20
+V00462,2026-09-12,Fitness studios,Undergraduate,178
+V00463,2026-09-12,Fitness studios,Undergraduate,37
+V00464,2026-09-12,Fitness studios,Undergraduate,37
+V00465,2026-09-12,Courts,Undergraduate,132
+V00466,2026-09-12,Climbing wall,Undergraduate,55
+V00467,2026-09-12,Courts,Undergraduate,108
+V00468,2026-09-12,Fitness studios,Undergraduate,82
+V00469,2026-09-12,Courts,Undergraduate,80
+V00470,2026-09-12,Main gym,Undergraduate,53
+V00471,2026-09-12,Fitness studios,Graduate,47
+V00472,2026-09-13,Main gym,Faculty or staff,28
+V00473,2026-09-13,Fitness studios,Graduate,98
+V00474,2026-09-13,Fitness studios,Faculty or staff,15
+V00475,2026-09-13,Pool,Undergraduate,40
+V00476,2026-09-13,Main gym,Undergraduate,90
+V00477,2026-09-13,Main gym,Undergraduate,48
+V00478,2026-09-13,Fitness studios,Undergraduate,101
+V00479,2026-09-13,Main gym,Faculty or staff,43
+V00480,2026-09-13,Fitness studios,Graduate,38
+V00481,2026-09-13,Fitness studios,Undergraduate,66
+V00482,2026-09-13,Fitness studios,Undergraduate,85
+V00483,2026-09-13,Pool,Undergraduate,133
+V00484,2026-09-13,Courts,Undergraduate,44
+V00485,2026-09-13,Main gym,Faculty or staff,50
+V00486,2026-09-13,Main gym,Undergraduate,106
+V00487,2026-09-13,Pool,Undergraduate,58
+V00488,2026-09-13,Main gym,Undergraduate,75
+V00489,2026-09-13,Fitness studios,Undergraduate,49
+V00490,2026-09-13,Fitness studios,Undergraduate,112
+V00491,2026-09-13,Fitness studios,Faculty or staff,60
+V00492,2026-09-13,Main gym,Undergraduate,78
+V00493,2026-09-13,Main gym,Graduate,47
+V00494,2026-09-13,Courts,Undergraduate,72
+V00495,2026-09-13,Fitness studios,Undergraduate,37
+V00496,2026-09-13,Climbing wall,Faculty or staff,25
+V00497,2026-09-13,Main gym,Undergraduate,68
+V00498,2026-09-13,Courts,Undergraduate,94
+V00499,2026-09-14,Climbing wall,Undergraduate,34
+V00500,2026-09-14,Courts,Undergraduate,50
+V00501,2026-09-14,Main gym,Undergraduate,74
+V00502,2026-09-14,Main gym,Graduate,62
+V00503,2026-09-14,Courts,Undergraduate,67
+V00504,2026-09-14,Main gym,Undergraduate,67
+V00505,2026-09-14,Fitness studios,Faculty or staff,33
+V00506,2026-09-14,Main gym,Undergraduate,56
+V00507,2026-09-14,Courts,Undergraduate,63
+V00508,2026-09-14,Main gym,Undergraduate,37
+V00509,2026-09-14,Pool,Undergraduate,93
+V00510,2026-09-14,Fitness studios,Graduate,32
+V00511,2026-09-14,Main gym,Undergraduate,73
+V00512,2026-09-14,Main gym,Undergraduate,51
+V00513,2026-09-14,Courts,Undergraduate,48
+V00514,2026-09-14,Main gym,Faculty or staff,27
+V00515,2026-09-14,Climbing wall,Undergraduate,45
+V00516,2026-09-14,Main gym,Undergraduate,95
+V00517,2026-09-14,Main gym,Undergraduate,82
+V00518,2026-09-14,Main gym,Undergraduate,31
+V00519,2026-09-14,Pool,Undergraduate,41
+V00520,2026-09-14,Main gym,Faculty or staff,24
+V00521,2026-09-14,Fitness studios,Undergraduate,85
+V00522,2026-09-14,Fitness studios,Undergraduate,41
+V00523,2026-09-14,Fitness studios,Undergraduate,50
+V00524,2026-09-14,Main gym,Graduate,72
+V00525,2026-09-14,Courts,Undergraduate,65
+V00526,2026-09-14,Pool,Graduate,29
+V00527,2026-09-14,Climbing wall,Undergraduate,96
+V00528,2026-09-14,Main gym,Undergraduate,94
+V00529,2026-09-14,Climbing wall,Undergraduate,94
+V00530,2026-09-14,Courts,Undergraduate,63
+V00531,2026-09-14,Climbing wall,Undergraduate,37
+V00532,2026-09-14,Courts,Undergraduate,59
+V00533,2026-09-14,Main gym,Undergraduate,29
+V00534,2026-09-14,Fitness studios,Undergraduate,68
+V00535,2026-09-14,Pool,Undergraduate,46
+V00536,2026-09-14,Pool,Undergraduate,46
+V00537,2026-09-14,Courts,Undergraduate,68
+V00538,2026-09-14,Fitness studios,Undergraduate,63
+V00539,2026-09-14,Fitness studios,Undergraduate,96
+V00540,2026-09-14,Pool,Undergraduate,30
+V00541,2026-09-14,Pool,Faculty or staff,59
+V00542,2026-09-14,Courts,Faculty or staff,20
+V00543,2026-09-14,Courts,Undergraduate,56
+V00544,2026-09-14,Fitness studios,Undergraduate,87
+V00545,2026-09-14,Fitness studios,Undergraduate,75
+V00546,2026-09-14,Climbing wall,Undergraduate,70
+V00547,2026-09-14,Climbing wall,Undergraduate,76
+V00548,2026-09-14,Fitness studios,Undergraduate,53
+V00549,2026-09-15,Main gym,Graduate,43
+V00550,2026-09-15,Pool,Undergraduate,36
+V00551,2026-09-15,Main gym,Undergraduate,32
+V00552,2026-09-15,Courts,Undergraduate,43
+V00553,2026-09-15,Fitness studios,Undergraduate,82
+V00554,2026-09-15,Courts,Undergraduate,42
+V00555,2026-09-15,Courts,Undergraduate,88
+V00556,2026-09-15,Courts,Undergraduate,81
+V00557,2026-09-15,Courts,Undergraduate,38
+V00558,2026-09-15,Fitness studios,Undergraduate,110
+V00559,2026-09-15,Main gym,Undergraduate,63
+V00560,2026-09-15,Main gym,Undergraduate,72
+V00561,2026-09-15,Main gym,Graduate,60
+V00562,2026-09-15,Main gym,Graduate,146
+V00563,2026-09-15,Pool,Undergraduate,33
+V00564,2026-09-15,Climbing wall,Undergraduate,37
+V00565,2026-09-15,Courts,Undergraduate,71
+V00566,2026-09-15,Fitness studios,Undergraduate,58
+V00567,2026-09-15,Fitness studios,Undergraduate,22
+V00568,2026-09-15,Climbing wall,Undergraduate,70
+V00569,2026-09-15,Climbing wall,Undergraduate,62
+V00570,2026-09-15,Fitness studios,Undergraduate,51
+V00571,2026-09-15,Climbing wall,Graduate,52
+V00572,2026-09-15,Fitness studios,Undergraduate,46
+V00573,2026-09-15,Courts,Undergraduate,75
+V00574,2026-09-15,Main gym,Undergraduate,41
+V00575,2026-09-15,Courts,Undergraduate,70
+V00576,2026-09-15,Fitness studios,Faculty or staff,64
+V00577,2026-09-15,Main gym,Graduate,28
+V00578,2026-09-15,Courts,Undergraduate,32
+V00579,2026-09-15,Main gym,Graduate,29
+V00580,2026-09-15,Climbing wall,Undergraduate,89
+V00581,2026-09-15,Courts,Graduate,82
+V00582,2026-09-15,Main gym,Faculty or staff,38
+V00583,2026-09-15,Climbing wall,Undergraduate,45
+V00584,2026-09-15,Climbing wall,Undergraduate,133
+V00585,2026-09-15,Courts,Undergraduate,65
+V00586,2026-09-15,Main gym,Undergraduate,58
+V00587,2026-09-15,Main gym,Undergraduate,64
+V00588,2026-09-15,Pool,Undergraduate,74
+V00589,2026-09-15,Main gym,Undergraduate,76
+V00590,2026-09-15,Courts,Graduate,70
+V00591,2026-09-15,Pool,Faculty or staff,39
+V00592,2026-09-16,Pool,Graduate,55
+V00593,2026-09-16,Courts,Undergraduate,34
+V00594,2026-09-16,Fitness studios,Undergraduate,41
+V00595,2026-09-16,Fitness studios,Undergraduate,86
+V00596,2026-09-16,Courts,Undergraduate,38
+V00597,2026-09-16,Pool,Undergraduate,44
+V00598,2026-09-16,Courts,Undergraduate,47
+V00599,2026-09-16,Courts,Undergraduate,90
+V00600,2026-09-16,Pool,Undergraduate,97
+V00601,2026-09-16,Courts,Undergraduate,48
+V00602,2026-09-16,Main gym,Faculty or staff,26
+V00603,2026-09-16,Pool,Undergraduate,95
+V00604,2026-09-16,Courts,Graduate,48
+V00605,2026-09-16,Fitness studios,Undergraduate,71
+V00606,2026-09-16,Fitness studios,Undergraduate,49
+V00607,2026-09-16,Main gym,Undergraduate,60
+V00608,2026-09-16,Main gym,Undergraduate,71
+V00609,2026-09-16,Fitness studios,Undergraduate,55
+V00610,2026-09-16,Courts,Graduate,53
+V00611,2026-09-16,Fitness studios,Undergraduate,82
+V00612,2026-09-16,Fitness studios,Graduate,56
+V00613,2026-09-16,Main gym,Undergraduate,49
+V00614,2026-09-16,Main gym,Faculty or staff,84
+V00615,2026-09-16,Courts,Undergraduate,62
+V00616,2026-09-16,Courts,Undergraduate,80
+V00617,2026-09-16,Pool,Undergraduate,88
+V00618,2026-09-16,Main gym,Undergraduate,81
+V00619,2026-09-16,Climbing wall,Undergraduate,72
+V00620,2026-09-16,Courts,Undergraduate,46
+V00621,2026-09-16,Main gym,Undergraduate,41
+V00622,2026-09-16,Pool,Undergraduate,51
+V00623,2026-09-16,Main gym,Undergraduate,46
+V00624,2026-09-16,Main gym,Undergraduate,63
+V00625,2026-09-16,Climbing wall,Undergraduate,92
+V00626,2026-09-16,Pool,Undergraduate,58
+V00627,2026-09-16,Main gym,Undergraduate,39
+V00628,2026-09-17,Pool,Faculty or staff,34
+V00629,2026-09-17,Fitness studios,Undergraduate,78
+V00630,2026-09-17,Fitness studios,Faculty or staff,43
+V00631,2026-09-17,Main gym,Undergraduate,66
+V00632,2026-09-17,Pool,Graduate,69
+V00633,2026-09-17,Main gym,Undergraduate,57
+V00634,2026-09-17,Fitness studios,Undergraduate,112
+V00635,2026-09-17,Climbing wall,Undergraduate,31
+V00636,2026-09-17,Fitness studios,Graduate,69
+V00637,2026-09-17,Main gym,Undergraduate,123
+V00638,2026-09-17,Courts,Undergraduate,67
+V00639,2026-09-17,Fitness studios,Undergraduate,70
+V00640,2026-09-17,Pool,Undergraduate,31
+V00641,2026-09-17,Pool,Undergraduate,47
+V00642,2026-09-17,Main gym,Faculty or staff,54
+V00643,2026-09-17,Fitness studios,Undergraduate,80
+V00644,2026-09-17,Climbing wall,Faculty or staff,66
+V00645,2026-09-17,Courts,Graduate,37
+V00646,2026-09-17,Pool,Undergraduate,57
+V00647,2026-09-17,Main gym,Undergraduate,46
+V00648,2026-09-17,Main gym,Graduate,39
+V00649,2026-09-17,Courts,Undergraduate,84
+V00650,2026-09-17,Main gym,Undergraduate,223
+V00651,2026-09-17,Fitness studios,Undergraduate,45
+V00652,2026-09-17,Fitness studios,Graduate,32
+V00653,2026-09-17,Main gym,Undergraduate,69
+V00654,2026-09-17,Fitness studios,Undergraduate,84
+V00655,2026-09-17,Courts,Graduate,65
+V00656,2026-09-17,Courts,Undergraduate,33
+V00657,2026-09-17,Climbing wall,Undergraduate,65
+V00658,2026-09-17,Fitness studios,Faculty or staff,47
+V00659,2026-09-17,Courts,Undergraduate,78
+V00660,2026-09-17,Main gym,Undergraduate,35
+V00661,2026-09-17,Fitness studios,Undergraduate,150
+V00662,2026-09-17,Pool,Undergraduate,87
+V00663,2026-09-17,Fitness studios,Undergraduate,64
+V00664,2026-09-17,Main gym,Undergraduate,66
+V00665,2026-09-17,Pool,Graduate,39
+V00666,2026-09-17,Fitness studios,Undergraduate,45
+V00667,2026-09-17,Main gym,Undergraduate,88
+V00668,2026-09-17,Fitness studios,Undergraduate,57
+V00669,2026-09-17,Fitness studios,Undergraduate,79
+V00670,2026-09-18,Fitness studios,Graduate,73
+V00671,2026-09-18,Courts,Undergraduate,90
+V00672,2026-09-18,Climbing wall,Undergraduate,61
+V00673,2026-09-18,Main gym,Undergraduate,80
+V00674,2026-09-18,Fitness studios,Faculty or staff,49
+V00675,2026-09-18,Pool,Undergraduate,43
+V00676,2026-09-18,Main gym,Faculty or staff,48
+V00677,2026-09-18,Pool,Undergraduate,83
+V00678,2026-09-18,Main gym,Undergraduate,48
+V00679,2026-09-18,Pool,Undergraduate,58
+V00680,2026-09-18,Climbing wall,Undergraduate,38
+V00681,2026-09-18,Main gym,Graduate,123
+V00682,2026-09-18,Main gym,Undergraduate,98
+V00683,2026-09-18,Fitness studios,Undergraduate,124
+V00684,2026-09-18,Fitness studios,Faculty or staff,38
+V00685,2026-09-18,Pool,Undergraduate,74
+V00686,2026-09-18,Courts,Undergraduate,94
+V00687,2026-09-18,Main gym,Undergraduate,48
+V00688,2026-09-18,Main gym,Undergraduate,70
+V00689,2026-09-18,Main gym,Graduate,48
+V00690,2026-09-18,Pool,Undergraduate,51
+V00691,2026-09-18,Main gym,Undergraduate,76
+V00692,2026-09-18,Pool,Undergraduate,66
+V00693,2026-09-18,Pool,Faculty or staff,35
+V00694,2026-09-18,Fitness studios,Undergraduate,33
+V00695,2026-09-18,Fitness studios,Undergraduate,62
+V00696,2026-09-18,Courts,Undergraduate,50
+V00697,2026-09-18,Main gym,Faculty or staff,57
+V00698,2026-09-18,Courts,Graduate,37
+V00699,2026-09-18,Pool,Undergraduate,96
+V00700,2026-09-18,Courts,Graduate,75
+V00701,2026-09-18,Courts,Undergraduate,97
+V00702,2026-09-18,Pool,Undergraduate,58
+V00703,2026-09-18,Climbing wall,Graduate,63
+V00704,2026-09-18,Main gym,Undergraduate,112
+V00705,2026-09-18,Main gym,Undergraduate,93
+V00706,2026-09-18,Main gym,Undergraduate,150
+V00707,2026-09-18,Fitness studios,Undergraduate,67
+V00708,2026-09-18,Courts,Faculty or staff,40
+V00709,2026-09-18,Main gym,Graduate,50
+V00710,2026-09-18,Main gym,Undergraduate,70
+V00711,2026-09-18,Courts,Undergraduate,47
+V00712,2026-09-18,Main gym,Undergraduate,32
+V00713,2026-09-19,Pool,Undergraduate,73
+V00714,2026-09-19,Fitness studios,Undergraduate,65
+V00715,2026-09-19,Fitness studios,Faculty or staff,122
+V00716,2026-09-19,Courts,Undergraduate,53
+V00717,2026-09-19,Fitness studios,Undergraduate,72
+V00718,2026-09-19,Main gym,Undergraduate,60
+V00719,2026-09-19,Climbing wall,Undergraduate,103
+V00720,2026-09-19,Pool,Undergraduate,69
+V00721,2026-09-19,Courts,Undergraduate,48
+V00722,2026-09-19,Courts,Undergraduate,51
+V00723,2026-09-19,Courts,Undergraduate,24
+V00724,2026-09-19,Main gym,Undergraduate,57
+V00725,2026-09-19,Fitness studios,Undergraduate,47
+V00726,2026-09-19,Courts,Graduate,47
+V00727,2026-09-19,Main gym,Undergraduate,46
+V00728,2026-09-19,Main gym,Undergraduate,106
+V00729,2026-09-19,Courts,Undergraduate,85
+V00730,2026-09-19,Fitness studios,Undergraduate,58
+V00731,2026-09-19,Main gym,Undergraduate,39
+V00732,2026-09-19,Main gym,Undergraduate,58
+V00733,2026-09-19,Main gym,Faculty or staff,49
+V00734,2026-09-19,Fitness studios,Undergraduate,100
+V00735,2026-09-19,Pool,Undergraduate,96
+V00736,2026-09-19,Fitness studios,Undergraduate,78
+V00737,2026-09-19,Fitness studios,Undergraduate,69
+V00738,2026-09-19,Courts,Undergraduate,57
+V00739,2026-09-19,Fitness studios,Undergraduate,69
+V00740,2026-09-19,Main gym,Undergraduate,66
+V00741,2026-09-19,Main gym,Undergraduate,88
+V00742,2026-09-19,Main gym,Undergraduate,55
+V00743,2026-09-19,Courts,Graduate,49
+V00744,2026-09-19,Main gym,Faculty or staff,38
+V00745,2026-09-19,Main gym,Faculty or staff,71
+V00746,2026-09-19,Fitness studios,Undergraduate,55
+V00747,2026-09-19,Courts,Undergraduate,34
+V00748,2026-09-19,Courts,Faculty or staff,61
+V00749,2026-09-19,Main gym,Undergraduate,89
+V00750,2026-09-19,Climbing wall,Faculty or staff,42
+V00751,2026-09-19,Climbing wall,Undergraduate,53
+V00752,2026-09-19,Main gym,Undergraduate,45
+V00753,2026-09-19,Main gym,Undergraduate,91
+V00754,2026-09-19,Main gym,Undergraduate,31
+V00755,2026-09-19,Pool,Undergraduate,67
+V00756,2026-09-20,Main gym,Undergraduate,49
+V00757,2026-09-20,Fitness studios,Undergraduate,81
+V00758,2026-09-20,Courts,Undergraduate,71
+V00759,2026-09-20,Main gym,Undergraduate,88
+V00760,2026-09-20,Fitness studios,Undergraduate,136
+V00761,2026-09-20,Pool,Undergraduate,52
+V00762,2026-09-20,Main gym,Graduate,52
+V00763,2026-09-20,Fitness studios,Undergraduate,94
+V00764,2026-09-20,Courts,Undergraduate,66
+V00765,2026-09-20,Pool,Undergraduate,59
+V00766,2026-09-20,Main gym,Undergraduate,125
+V00767,2026-09-20,Fitness studios,Undergraduate,109
+V00768,2026-09-20,Main gym,Undergraduate,111
+V00769,2026-09-20,Main gym,Undergraduate,96
+V00770,2026-09-20,Pool,Undergraduate,84
+V00771,2026-09-20,Main gym,Graduate,110
+V00772,2026-09-20,Fitness studios,Undergraduate,43
+V00773,2026-09-20,Main gym,Undergraduate,54
+V00774,2026-09-20,Main gym,Undergraduate,38
+V00775,2026-09-20,Main gym,Undergraduate,99
+V00776,2026-09-20,Courts,Undergraduate,36
+V00777,2026-09-20,Courts,Undergraduate,100
+V00778,2026-09-20,Courts,Undergraduate,52
+V00779,2026-09-20,Pool,Undergraduate,65
+V00780,2026-09-20,Courts,Graduate,54
+V00781,2026-09-20,Main gym,Undergraduate,59
+V00782,2026-09-20,Pool,Undergraduate,75
+V00783,2026-09-20,Courts,Undergraduate,60
+V00784,2026-09-20,Main gym,Faculty or staff,20
+V00785,2026-09-20,Main gym,Undergraduate,68
+V00786,2026-09-20,Fitness studios,Undergraduate,46
+V00787,2026-09-20,Main gym,Undergraduate,50
+V00788,2026-09-20,Fitness studios,Undergraduate,67
+V00789,2026-09-20,Fitness studios,Faculty or staff,54
+V00790,2026-09-20,Fitness studios,Graduate,32
+V00791,2026-09-20,Main gym,Undergraduate,36
+V00792,2026-09-20,Main gym,Undergraduate,60
+V00793,2026-09-20,Courts,Undergraduate,48
+V00794,2026-09-20,Fitness studios,Undergraduate,88
+V00795,2026-09-20,Fitness studios,Faculty or staff,77
+V00796,2026-09-20,Courts,Undergraduate,90
+V00797,2026-09-20,Fitness studios,Undergraduate,71
+V00798,2026-09-20,Fitness studios,Faculty or staff,41
+V00799,2026-09-20,Main gym,Undergraduate,75
+V00800,2026-09-20,Main gym,Faculty or staff,49
+V00801,2026-09-21,Courts,Undergraduate,76
+V00802,2026-09-21,Pool,Undergraduate,54
+V00803,2026-09-21,Courts,Undergraduate,69
+V00804,2026-09-21,Courts,Graduate,48
+V00805,2026-09-21,Main gym,Undergraduate,72
+V00806,2026-09-21,Main gym,Undergraduate,96
+V00807,2026-09-21,Fitness studios,Undergraduate,54
+V00808,2026-09-21,Main gym,Undergraduate,48
+V00809,2026-09-21,Courts,Undergraduate,126
+V00810,2026-09-21,Pool,Undergraduate,39
+V00811,2026-09-21,Courts,Graduate,35
+V00812,2026-09-21,Fitness studios,Undergraduate,57
+V00813,2026-09-21,Main gym,Undergraduate,56
+V00814,2026-09-21,Courts,Undergraduate,45
+V00815,2026-09-21,Main gym,Undergraduate,55
+V00816,2026-09-21,Main gym,Undergraduate,92
+V00817,2026-09-21,Main gym,Undergraduate,78
+V00818,2026-09-21,Pool,Graduate,48
+V00819,2026-09-21,Fitness studios,Graduate,33
+V00820,2026-09-21,Fitness studios,Undergraduate,35
+V00821,2026-09-21,Courts,Faculty or staff,58
+V00822,2026-09-21,Courts,Undergraduate,86
+V00823,2026-09-21,Main gym,Graduate,40
+V00824,2026-09-21,Main gym,Undergraduate,66
+V00825,2026-09-21,Main gym,Undergraduate,72
+V00826,2026-09-21,Fitness studios,Undergraduate,45
+V00827,2026-09-21,Pool,Undergraduate,53
+V00828,2026-09-21,Main gym,Undergraduate,49
+V00829,2026-09-21,Fitness studios,Undergraduate,61
+V00830,2026-09-21,Fitness studios,Undergraduate,49
+V00831,2026-09-21,Fitness studios,Undergraduate,63
+V00832,2026-09-21,Courts,Graduate,35
+V00833,2026-09-21,Fitness studios,Undergraduate,56
+V00834,2026-09-21,Climbing wall,Graduate,63
+V00835,2026-09-21,Fitness studios,Undergraduate,92
+V00836,2026-09-21,Climbing wall,Undergraduate,31
+V00837,2026-09-21,Courts,Undergraduate,116
+V00838,2026-09-21,Courts,Undergraduate,54
+V00839,2026-09-21,Courts,Undergraduate,46
+V00840,2026-09-21,Main gym,Undergraduate,39
+V00841,2026-09-21,Main gym,Undergraduate,57
+V00842,2026-09-21,Fitness studios,Graduate,60
+V00843,2026-09-21,Main gym,Undergraduate,77
+V00844,2026-09-21,Pool,Undergraduate,69
+V00845,2026-09-22,Pool,Undergraduate,63
+V00846,2026-09-22,Main gym,Graduate,23
+V00847,2026-09-22,Main gym,Undergraduate,71
+V00848,2026-09-22,Courts,Undergraduate,67
+V00849,2026-09-22,Fitness studios,Undergraduate,92
+V00850,2026-09-22,Climbing wall,Graduate,58
+V00851,2026-09-22,Fitness studios,Graduate,47
+V00852,2026-09-22,Courts,Faculty or staff,43
+V00853,2026-09-22,Main gym,Undergraduate,100
+V00854,2026-09-22,Fitness studios,Undergraduate,58
+V00855,2026-09-22,Pool,Undergraduate,59
+V00856,2026-09-22,Fitness studios,Undergraduate,137
+V00857,2026-09-22,Courts,Undergraduate,49
+V00858,2026-09-22,Courts,Undergraduate,76
+V00859,2026-09-22,Courts,Undergraduate,100
+V00860,2026-09-22,Pool,Undergraduate,65
+V00861,2026-09-22,Courts,Undergraduate,47
+V00862,2026-09-22,Courts,Undergraduate,71
+V00863,2026-09-22,Climbing wall,Undergraduate,55
+V00864,2026-09-22,Fitness studios,Graduate,45
+V00865,2026-09-22,Fitness studios,Graduate,75
+V00866,2026-09-22,Courts,Faculty or staff,25
+V00867,2026-09-22,Climbing wall,Graduate,29
+V00868,2026-09-22,Fitness studios,Undergraduate,71
+V00869,2026-09-22,Main gym,Undergraduate,77
+V00870,2026-09-22,Main gym,Undergraduate,69
+V00871,2026-09-22,Pool,Undergraduate,66
+V00872,2026-09-22,Main gym,Undergraduate,38
+V00873,2026-09-22,Main gym,Faculty or staff,41
+V00874,2026-09-22,Fitness studios,Undergraduate,79
+V00875,2026-09-22,Climbing wall,Undergraduate,39
+V00876,2026-09-22,Courts,Faculty or staff,52
+V00877,2026-09-22,Fitness studios,Undergraduate,66
+V00878,2026-09-22,Climbing wall,Undergraduate,50
+V00879,2026-09-22,Main gym,Graduate,44
+V00880,2026-09-22,Climbing wall,Undergraduate,66
+V00881,2026-09-22,Main gym,Undergraduate,81
+V00882,2026-09-22,Pool,Undergraduate,67
+V00883,2026-09-22,Main gym,Undergraduate,76
+V00884,2026-09-22,Main gym,Undergraduate,26
+V00885,2026-09-22,Fitness studios,Graduate,43
+V00886,2026-09-22,Main gym,Graduate,31
+V00887,2026-09-22,Courts,Graduate,71
+V00888,2026-09-22,Climbing wall,Undergraduate,91
+V00889,2026-09-22,Fitness studios,Undergraduate,55
+V00890,2026-09-22,Main gym,Undergraduate,57
+V00891,2026-09-22,Main gym,Graduate,69
+V00892,2026-09-22,Courts,Undergraduate,126
+V00893,2026-09-22,Fitness studios,Undergraduate,51
+V00894,2026-09-22,Pool,Undergraduate,42
+V00895,2026-09-22,Pool,Undergraduate,80
+V00896,2026-09-22,Courts,Undergraduate,98
+V00897,2026-09-23,Pool,Undergraduate,40
+V00898,2026-09-23,Courts,Faculty or staff,41
+V00899,2026-09-23,Courts,Undergraduate,63
+V00900,2026-09-23,Main gym,Undergraduate,70
+V00901,2026-09-23,Courts,Graduate,28
+V00902,2026-09-23,Fitness studios,Undergraduate,119
+V00903,2026-09-23,Fitness studios,Faculty or staff,29
+V00904,2026-09-23,Main gym,Undergraduate,67
+V00905,2026-09-23,Fitness studios,Undergraduate,48
+V00906,2026-09-23,Main gym,Undergraduate,39
+V00907,2026-09-23,Pool,Undergraduate,39
+V00908,2026-09-23,Fitness studios,Undergraduate,60
+V00909,2026-09-23,Fitness studios,Faculty or staff,22
+V00910,2026-09-23,Main gym,Faculty or staff,54
+V00911,2026-09-23,Climbing wall,Undergraduate,47
+V00912,2026-09-23,Courts,Undergraduate,41
+V00913,2026-09-23,Courts,Undergraduate,49
+V00914,2026-09-23,Main gym,Undergraduate,84
+V00915,2026-09-23,Courts,Undergraduate,36
+V00916,2026-09-23,Main gym,Undergraduate,49
+V00917,2026-09-23,Climbing wall,Graduate,45
+V00918,2026-09-23,Courts,Undergraduate,64
+V00919,2026-09-23,Main gym,Undergraduate,88
+V00920,2026-09-23,Fitness studios,Undergraduate,69
+V00921,2026-09-23,Main gym,Undergraduate,85
+V00922,2026-09-23,Courts,Undergraduate,84
+V00923,2026-09-23,Pool,Graduate,53
+V00924,2026-09-23,Main gym,Undergraduate,38
+V00925,2026-09-23,Fitness studios,Graduate,34
+V00926,2026-09-23,Courts,Undergraduate,66
+V00927,2026-09-23,Main gym,Graduate,51
+V00928,2026-09-23,Main gym,Graduate,52
+V00929,2026-09-23,Main gym,Undergraduate,38
+V00930,2026-09-23,Main gym,Undergraduate,41
+V00931,2026-09-23,Courts,Undergraduate,72
+V00932,2026-09-23,Pool,Faculty or staff,75
+V00933,2026-09-23,Climbing wall,Undergraduate,64
+V00934,2026-09-23,Main gym,Undergraduate,53
+V00935,2026-09-23,Fitness studios,Undergraduate,78
+V00936,2026-09-24,Main gym,Faculty or staff,31
+V00937,2026-09-24,Climbing wall,Undergraduate,79
+V00938,2026-09-24,Fitness studios,Undergraduate,69
+V00939,2026-09-24,Courts,Undergraduate,97
+V00940,2026-09-24,Fitness studios,Undergraduate,52
+V00941,2026-09-24,Main gym,Undergraduate,49
+V00942,2026-09-24,Fitness studios,Undergraduate,33
+V00943,2026-09-24,Fitness studios,Undergraduate,105
+V00944,2026-09-24,Main gym,Faculty or staff,52
+V00945,2026-09-24,Courts,Undergraduate,71
+V00946,2026-09-24,Pool,Undergraduate,57
+V00947,2026-09-24,Courts,Undergraduate,36
+V00948,2026-09-24,Main gym,Undergraduate,94
+V00949,2026-09-24,Courts,Undergraduate,47
+V00950,2026-09-24,Fitness studios,Undergraduate,65
+V00951,2026-09-24,Main gym,Undergraduate,59
+V00952,2026-09-24,Fitness studios,Undergraduate,65
+V00953,2026-09-24,Courts,Undergraduate,88
+V00954,2026-09-24,Main gym,Undergraduate,95
+V00955,2026-09-24,Pool,Undergraduate,53
+V00956,2026-09-24,Pool,Undergraduate,20
+V00957,2026-09-24,Main gym,Undergraduate,83
+V00958,2026-09-24,Climbing wall,Undergraduate,34
+V00959,2026-09-24,Pool,Faculty or staff,28
+V00960,2026-09-24,Main gym,Undergraduate,60
+V00961,2026-09-24,Pool,Undergraduate,58
+V00962,2026-09-24,Fitness studios,Undergraduate,49
+V00963,2026-09-24,Pool,Undergraduate,79
+V00964,2026-09-24,Courts,Undergraduate,32
+V00965,2026-09-24,Main gym,Undergraduate,72
+V00966,2026-09-24,Fitness studios,Undergraduate,129
+V00967,2026-09-25,Main gym,Undergraduate,43
+V00968,2026-09-25,Main gym,Faculty or staff,32
+V00969,2026-09-25,Fitness studios,Undergraduate,68
+V00970,2026-09-25,Courts,Undergraduate,82
+V00971,2026-09-25,Pool,Undergraduate,71
+V00972,2026-09-25,Main gym,Undergraduate,125
+V00973,2026-09-25,Pool,Undergraduate,42
+V00974,2026-09-25,Fitness studios,Undergraduate,54
+V00975,2026-09-25,Courts,Faculty or staff,49
+V00976,2026-09-25,Climbing wall,Undergraduate,85
+V00977,2026-09-25,Main gym,Undergraduate,82
+V00978,2026-09-25,Fitness studios,Undergraduate,77
+V00979,2026-09-25,Courts,Undergraduate,85
+V00980,2026-09-25,Courts,Undergraduate,59
+V00981,2026-09-25,Fitness studios,Undergraduate,72
+V00982,2026-09-25,Main gym,Graduate,41
+V00983,2026-09-25,Main gym,Undergraduate,101
+V00984,2026-09-25,Courts,Undergraduate,66
+V00985,2026-09-25,Courts,Undergraduate,63
+V00986,2026-09-25,Fitness studios,Undergraduate,50
+V00987,2026-09-25,Main gym,Undergraduate,102
+V00988,2026-09-25,Main gym,Undergraduate,45
+V00989,2026-09-25,Fitness studios,Undergraduate,69
+V00990,2026-09-25,Main gym,Undergraduate,45
+V00991,2026-09-25,Courts,Undergraduate,95
+V00992,2026-09-25,Main gym,Undergraduate,73
+V00993,2026-09-25,Fitness studios,Undergraduate,65
+V00994,2026-09-25,Courts,Undergraduate,43
+V00995,2026-09-25,Main gym,Undergraduate,70
+V00996,2026-09-25,Pool,Undergraduate,68
+V00997,2026-09-25,Main gym,Graduate,83
+V00998,2026-09-25,Main gym,Undergraduate,64
+V00999,2026-09-25,Main gym,Undergraduate,45
+V01000,2026-09-25,Fitness studios,Undergraduate,110
+V01001,2026-09-25,Courts,Undergraduate,62
+V01002,2026-09-25,Courts,Undergraduate,116
+V01003,2026-09-25,Main gym,Undergraduate,77
+V01004,2026-09-25,Fitness studios,Undergraduate,34
+V01005,2026-09-25,Pool,Faculty or staff,32
+V01006,2026-09-25,Main gym,Undergraduate,56
+V01007,2026-09-26,Fitness studios,Undergraduate,52
+V01008,2026-09-26,Courts,Graduate,30
+V01009,2026-09-26,Climbing wall,Undergraduate,79
+V01010,2026-09-26,Courts,Undergraduate,96
+V01011,2026-09-26,Main gym,Undergraduate,67
+V01012,2026-09-26,Main gym,Undergraduate,48
+V01013,2026-09-26,Courts,Undergraduate,32
+V01014,2026-09-26,Main gym,Undergraduate,90
+V01015,2026-09-26,Main gym,Undergraduate,53
+V01016,2026-09-26,Fitness studios,Undergraduate,54
+V01017,2026-09-26,Main gym,Undergraduate,128
+V01018,2026-09-26,Pool,Graduate,46
+V01019,2026-09-26,Fitness studios,Undergraduate,48
+V01020,2026-09-26,Pool,Undergraduate,43
+V01021,2026-09-26,Fitness studios,Undergraduate,69
+V01022,2026-09-26,Pool,Undergraduate,85
+V01023,2026-09-26,Pool,Graduate,41
+V01024,2026-09-26,Climbing wall,Undergraduate,72
+V01025,2026-09-26,Climbing wall,Graduate,48
+V01026,2026-09-26,Fitness studios,Undergraduate,42
+V01027,2026-09-26,Fitness studios,Undergraduate,50
+V01028,2026-09-26,Main gym,Undergraduate,67
+V01029,2026-09-26,Main gym,Undergraduate,125
+V01030,2026-09-26,Main gym,Faculty or staff,26
+V01031,2026-09-26,Courts,Undergraduate,92
+V01032,2026-09-26,Fitness studios,Undergraduate,34
+V01033,2026-09-26,Pool,Undergraduate,50
+V01034,2026-09-26,Fitness studios,Faculty or staff,36
+V01035,2026-09-27,Courts,Graduate,37
+V01036,2026-09-27,Main gym,Faculty or staff,39
+V01037,2026-09-27,Fitness studios,Undergraduate,79
+V01038,2026-09-27,Fitness studios,Undergraduate,103
+V01039,2026-09-27,Pool,Undergraduate,64
+V01040,2026-09-27,Main gym,Undergraduate,53
+V01041,2026-09-27,Climbing wall,Undergraduate,46
+V01042,2026-09-27,Courts,Undergraduate,72
+V01043,2026-09-27,Courts,Undergraduate,54
+V01044,2026-09-27,Pool,Undergraduate,51
+V01045,2026-09-27,Main gym,Undergraduate,62
+V01046,2026-09-27,Main gym,Undergraduate,76
+V01047,2026-09-27,Courts,Faculty or staff,17
+V01048,2026-09-27,Fitness studios,Undergraduate,82
+V01049,2026-09-27,Fitness studios,Undergraduate,96
+V01050,2026-09-27,Fitness studios,Undergraduate,127
+V01051,2026-09-27,Pool,Undergraduate,110
+V01052,2026-09-27,Main gym,Graduate,38
+V01053,2026-09-27,Main gym,Undergraduate,59
+V01054,2026-09-27,Fitness studios,Undergraduate,94
+V01055,2026-09-27,Courts,Undergraduate,50
+V01056,2026-09-27,Pool,Undergraduate,51
+V01057,2026-09-27,Courts,Undergraduate,48
+V01058,2026-09-27,Courts,Undergraduate,59
+V01059,2026-09-27,Main gym,Undergraduate,76
+V01060,2026-09-27,Climbing wall,Faculty or staff,15
+V01061,2026-09-27,Courts,Graduate,51
+V01062,2026-09-27,Fitness studios,Undergraduate,68
+V01063,2026-09-27,Pool,Faculty or staff,32
+V01064,2026-09-27,Climbing wall,Undergraduate,77
+V01065,2026-09-27,Pool,Undergraduate,41
+V01066,2026-09-27,Fitness studios,Faculty or staff,31
+V01067,2026-09-27,Climbing wall,Undergraduate,39
+V01068,2026-09-27,Climbing wall,Undergraduate,40
+V01069,2026-09-27,Pool,Graduate,66
+V01070,2026-09-27,Courts,Undergraduate,72
+V01071,2026-09-27,Climbing wall,Undergraduate,61
+V01072,2026-09-27,Courts,Undergraduate,42
+V01073,2026-09-27,Main gym,Undergraduate,65
+V01074,2026-09-28,Main gym,Faculty or staff,77
+V01075,2026-09-28,Courts,Undergraduate,33
+V01076,2026-09-28,Main gym,Undergraduate,34
+V01077,2026-09-28,Main gym,Undergraduate,54
+V01078,2026-09-28,Courts,Undergraduate,82
+V01079,2026-09-28,Main gym,Faculty or staff,36
+V01080,2026-09-28,Pool,Graduate,44
+V01081,2026-09-28,Main gym,Undergraduate,51
+V01082,2026-09-28,Main gym,Undergraduate,80
+V01083,2026-09-28,Courts,Graduate,120
+V01084,2026-09-28,Main gym,Graduate,77
+V01085,2026-09-28,Climbing wall,Undergraduate,77
+V01086,2026-09-28,Pool,Undergraduate,86
+V01087,2026-09-28,Courts,Undergraduate,43
+V01088,2026-09-28,Fitness studios,Undergraduate,111
+V01089,2026-09-28,Fitness studios,Graduate,35
+V01090,2026-09-28,Main gym,Undergraduate,48
+V01091,2026-09-28,Main gym,Undergraduate,57
+V01092,2026-09-28,Courts,Undergraduate,51
+V01093,2026-09-28,Fitness studios,Undergraduate,66
+V01094,2026-09-28,Courts,Undergraduate,80
+V01095,2026-09-28,Pool,Undergraduate,85
+V01096,2026-09-28,Main gym,Faculty or staff,35
+V01097,2026-09-28,Courts,Undergraduate,63
+V01098,2026-09-28,Pool,Undergraduate,35
+V01099,2026-09-28,Fitness studios,Undergraduate,45
+V01100,2026-09-28,Fitness studios,Undergraduate,85
+V01101,2026-09-28,Climbing wall,Undergraduate,71
+V01102,2026-09-28,Climbing wall,Faculty or staff,26
+V01103,2026-09-28,Main gym,Undergraduate,105
+V01104,2026-09-28,Courts,Undergraduate,22
+V01105,2026-09-28,Fitness studios,Undergraduate,63
+V01106,2026-09-28,Pool,Undergraduate,48
+V01107,2026-09-28,Courts,Graduate,57
+V01108,2026-09-28,Main gym,Undergraduate,76
+V01109,2026-09-28,Main gym,Graduate,40
+V01110,2026-09-28,Climbing wall,Faculty or staff,43
+V01111,2026-09-28,Climbing wall,Undergraduate,80
+V01112,2026-09-28,Fitness studios,Undergraduate,62
+V01113,2026-09-28,Courts,Graduate,122
+V01114,2026-09-28,Courts,Faculty or staff,23
+V01115,2026-09-28,Fitness studios,Faculty or staff,40
+V01116,2026-09-28,Main gym,Undergraduate,77
+V01117,2026-09-28,Courts,Undergraduate,90
+V01118,2026-09-29,Main gym,Undergraduate,32
+V01119,2026-09-29,Main gym,Undergraduate,49
+V01120,2026-09-29,Pool,Undergraduate,62
+V01121,2026-09-29,Climbing wall,Undergraduate,97
+V01122,2026-09-29,Climbing wall,Faculty or staff,47
+V01123,2026-09-29,Main gym,Undergraduate,59
+V01124,2026-09-29,Fitness studios,Graduate,79
+V01125,2026-09-29,Main gym,Undergraduate,52
+V01126,2026-09-29,Main gym,Undergraduate,34
+V01127,2026-09-29,Pool,Undergraduate,43
+V01128,2026-09-29,Courts,Undergraduate,46
+V01129,2026-09-29,Climbing wall,Undergraduate,75
+V01130,2026-09-29,Pool,Faculty or staff,61
+V01131,2026-09-29,Climbing wall,Graduate,42
+V01132,2026-09-29,Pool,Undergraduate,68
+V01133,2026-09-29,Main gym,Graduate,71
+V01134,2026-09-29,Fitness studios,Faculty or staff,65
+V01135,2026-09-29,Fitness studios,Faculty or staff,47
+V01136,2026-09-29,Courts,Undergraduate,87
+V01137,2026-09-29,Main gym,Undergraduate,80
+V01138,2026-09-29,Fitness studios,Undergraduate,32
+V01139,2026-09-29,Pool,Undergraduate,32
+V01140,2026-09-29,Fitness studios,Undergraduate,42
+V01141,2026-09-29,Climbing wall,Undergraduate,87
+V01142,2026-09-29,Courts,Undergraduate,63
+V01143,2026-09-29,Pool,Undergraduate,38
+V01144,2026-09-29,Fitness studios,Undergraduate,40
+V01145,2026-09-29,Climbing wall,Graduate,40
+V01146,2026-09-29,Courts,Undergraduate,39
+V01147,2026-09-29,Fitness studios,Undergraduate,57
+V01148,2026-09-29,Fitness studios,Faculty or staff,56
+V01149,2026-09-29,Fitness studios,Undergraduate,89
+V01150,2026-09-29,Main gym,Undergraduate,68
+V01151,2026-09-29,Courts,Undergraduate,71
+V01152,2026-09-29,Courts,Undergraduate,84
+V01153,2026-09-30,Courts,Undergraduate,48
+V01154,2026-09-30,Courts,Undergraduate,59
+V01155,2026-09-30,Main gym,Graduate,50
+V01156,2026-09-30,Pool,Undergraduate,27
+V01157,2026-09-30,Courts,Undergraduate,88
+V01158,2026-09-30,Main gym,Undergraduate,73
+V01159,2026-09-30,Courts,Undergraduate,84
+V01160,2026-09-30,Fitness studios,Faculty or staff,60
+V01161,2026-09-30,Fitness studios,Undergraduate,74
+V01162,2026-09-30,Pool,Undergraduate,39
+V01163,2026-09-30,Pool,Undergraduate,71
+V01164,2026-09-30,Fitness studios,Undergraduate,66
+V01165,2026-09-30,Courts,Undergraduate,68
+V01166,2026-09-30,Main gym,Undergraduate,92
+V01167,2026-09-30,Courts,Undergraduate,58
+V01168,2026-09-30,Courts,Faculty or staff,42
+V01169,2026-09-30,Courts,Undergraduate,40
+V01170,2026-09-30,Fitness studios,Undergraduate,47
+V01171,2026-09-30,Main gym,Graduate,108
+V01172,2026-09-30,Pool,Undergraduate,29
+V01173,2026-09-30,Pool,Undergraduate,22
+V01174,2026-09-30,Fitness studios,Faculty or staff,35
+V01175,2026-09-30,Fitness studios,Undergraduate,33
+V01176,2026-09-30,Fitness studios,Undergraduate,55
+V01177,2026-09-30,Fitness studios,Undergraduate,86
+V01178,2026-09-30,Fitness studios,Undergraduate,79
+V01179,2026-09-30,Fitness studios,Graduate,55
+V01180,2026-09-30,Fitness studios,Undergraduate,79
+V01181,2026-09-30,Fitness studios,Undergraduate,58
+V01182,2026-09-30,Courts,Undergraduate,73
+V01183,2026-09-30,Fitness studios,Undergraduate,53
+V01184,2026-09-30,Main gym,Undergraduate,63
+V01185,2026-09-30,Main gym,Undergraduate,34
+V01186,2026-09-30,Courts,Undergraduate,83
+V01187,2026-09-30,Climbing wall,Undergraduate,47
+V01188,2026-09-30,Main gym,Undergraduate,29
+V01189,2026-09-30,Courts,Undergraduate,42
+V01190,2026-09-30,Fitness studios,Faculty or staff,55
+V01191,2026-09-30,Pool,Graduate,42
+V01192,2026-09-30,Fitness studios,Faculty or staff,46
+V01193,2026-09-30,Pool,Undergraduate,37
+V01194,2026-10-01,Main gym,Undergraduate,27
+V01195,2026-10-01,Climbing wall,Undergraduate,70
+V01196,2026-10-01,Fitness studios,Undergraduate,26
+V01197,2026-10-01,Main gym,Undergraduate,74
+V01198,2026-10-01,Main gym,Undergraduate,55
+V01199,2026-10-01,Pool,Undergraduate,34
+V01200,2026-10-01,Fitness studios,Undergraduate,62
+V01201,2026-10-01,Courts,Undergraduate,50
+V01202,2026-10-01,Fitness studios,Undergraduate,54
+V01203,2026-10-01,Fitness studios,Undergraduate,80
+V01204,2026-10-01,Courts,Undergraduate,38
+V01205,2026-10-01,Main gym,Undergraduate,54
+V01206,2026-10-01,Fitness studios,Undergraduate,85
+V01207,2026-10-01,Courts,Undergraduate,42
+V01208,2026-10-01,Courts,Graduate,42
+V01209,2026-10-01,Climbing wall,Undergraduate,39
+V01210,2026-10-01,Fitness studios,Undergraduate,83
+V01211,2026-10-01,Pool,Undergraduate,52
+V01212,2026-10-01,Pool,Undergraduate,68
+V01213,2026-10-01,Fitness studios,Undergraduate,30
+V01214,2026-10-01,Fitness studios,Undergraduate,65
+V01215,2026-10-01,Fitness studios,Undergraduate,51
+V01216,2026-10-01,Courts,Graduate,74
+V01217,2026-10-01,Pool,Undergraduate,66
+V01218,2026-10-01,Fitness studios,Undergraduate,40
+V01219,2026-10-01,Courts,Undergraduate,63
+V01220,2026-10-01,Fitness studios,Undergraduate,54
+V01221,2026-10-01,Courts,Undergraduate,67
+V01222,2026-10-01,Courts,Undergraduate,56
+V01223,2026-10-01,Main gym,Graduate,25
+V01224,2026-10-01,Courts,Undergraduate,49
+V01225,2026-10-01,Courts,Undergraduate,36
+V01226,2026-10-01,Climbing wall,Undergraduate,59
+V01227,2026-10-01,Main gym,Undergraduate,62
+V01228,2026-10-01,Pool,Undergraduate,56
+V01229,2026-10-01,Pool,Undergraduate,28
+V01230,2026-10-01,Pool,Undergraduate,33
+V01231,2026-10-01,Courts,Undergraduate,66
+V01232,2026-10-01,Climbing wall,Undergraduate,50
+V01233,2026-10-01,Courts,Undergraduate,123
+V01234,2026-10-01,Pool,Undergraduate,82
+V01235,2026-10-01,Fitness studios,Undergraduate,157
+V01236,2026-10-01,Fitness studios,Undergraduate,40
+V01237,2026-10-01,Pool,Undergraduate,66
+V01238,2026-10-01,Courts,Undergraduate,81
+V01239,2026-10-01,Courts,Undergraduate,28
+V01240,2026-10-01,Pool,Undergraduate,27
+V01241,2026-10-01,Fitness studios,Undergraduate,92
+V01242,2026-10-01,Pool,Undergraduate,50
+V01243,2026-10-02,Main gym,Undergraduate,79
+V01244,2026-10-02,Fitness studios,Undergraduate,74
+V01245,2026-10-02,Courts,Undergraduate,44
+V01246,2026-10-02,Main gym,Undergraduate,94
+V01247,2026-10-02,Pool,Undergraduate,50
+V01248,2026-10-02,Fitness studios,Undergraduate,69
+V01249,2026-10-02,Main gym,Undergraduate,86
+V01250,2026-10-02,Pool,Undergraduate,71
+V01251,2026-10-02,Fitness studios,Undergraduate,81
+V01252,2026-10-02,Climbing wall,Undergraduate,71
+V01253,2026-10-02,Fitness studios,Undergraduate,39
+V01254,2026-10-02,Main gym,Undergraduate,110
+V01255,2026-10-02,Fitness studios,Undergraduate,59
+V01256,2026-10-02,Fitness studios,Graduate,35
+V01257,2026-10-02,Courts,Faculty or staff,27
+V01258,2026-10-02,Climbing wall,Graduate,60
+V01259,2026-10-02,Pool,Undergraduate,46
+V01260,2026-10-02,Main gym,Graduate,52
+V01261,2026-10-02,Courts,Undergraduate,79
+V01262,2026-10-02,Climbing wall,Undergraduate,41
+V01263,2026-10-02,Courts,Undergraduate,100
+V01264,2026-10-02,Fitness studios,Undergraduate,66
+V01265,2026-10-02,Climbing wall,Graduate,31
+V01266,2026-10-02,Courts,Undergraduate,109
+V01267,2026-10-02,Main gym,Undergraduate,79
+V01268,2026-10-02,Courts,Undergraduate,21
+V01269,2026-10-02,Climbing wall,Undergraduate,87
+V01270,2026-10-02,Fitness studios,Undergraduate,78
+V01271,2026-10-02,Fitness studios,Undergraduate,57
+V01272,2026-10-02,Main gym,Undergraduate,62
+V01273,2026-10-02,Fitness studios,Faculty or staff,36
+V01274,2026-10-02,Courts,Undergraduate,37
+V01275,2026-10-02,Fitness studios,Undergraduate,63
+V01276,2026-10-02,Fitness studios,Undergraduate,38
+V01277,2026-10-02,Main gym,Undergraduate,43
+V01278,2026-10-02,Courts,Undergraduate,44
+V01279,2026-10-03,Main gym,Undergraduate,135
+V01280,2026-10-03,Pool,Undergraduate,70
+V01281,2026-10-03,Pool,Undergraduate,51
+V01282,2026-10-03,Courts,Undergraduate,120
+V01283,2026-10-03,Main gym,Undergraduate,70
+V01284,2026-10-03,Pool,Undergraduate,107
+V01285,2026-10-03,Main gym,Undergraduate,114
+V01286,2026-10-03,Fitness studios,Undergraduate,40
+V01287,2026-10-03,Courts,Undergraduate,76
+V01288,2026-10-03,Fitness studios,Undergraduate,43
+V01289,2026-10-03,Fitness studios,Undergraduate,27
+V01290,2026-10-03,Courts,Faculty or staff,59
+V01291,2026-10-03,Courts,Faculty or staff,19
+V01292,2026-10-03,Courts,Undergraduate,97
+V01293,2026-10-03,Fitness studios,Undergraduate,55
+V01294,2026-10-03,Fitness studios,Undergraduate,61
+V01295,2026-10-03,Main gym,Faculty or staff,43
+V01296,2026-10-03,Courts,Graduate,35
+V01297,2026-10-03,Courts,Graduate,42
+V01298,2026-10-03,Courts,Undergraduate,45
+V01299,2026-10-03,Main gym,Undergraduate,35
+V01300,2026-10-03,Main gym,Undergraduate,41
+V01301,2026-10-03,Fitness studios,Undergraduate,50
+V01302,2026-10-03,Main gym,Undergraduate,37
+V01303,2026-10-03,Pool,Undergraduate,113
+V01304,2026-10-03,Fitness studios,Undergraduate,125
+V01305,2026-10-03,Courts,Graduate,90
+V01306,2026-10-03,Courts,Undergraduate,112
+V01307,2026-10-03,Fitness studios,Undergraduate,48
+V01308,2026-10-03,Main gym,Undergraduate,39
+V01309,2026-10-03,Pool,Undergraduate,59
+V01310,2026-10-03,Pool,Undergraduate,31
+V01311,2026-10-03,Main gym,Faculty or staff,52
+V01312,2026-10-03,Fitness studios,Undergraduate,77
+V01313,2026-10-03,Main gym,Undergraduate,64
+V01314,2026-10-03,Main gym,Undergraduate,96
+V01315,2026-10-03,Courts,Undergraduate,39
+V01316,2026-10-03,Pool,Undergraduate,55
+V01317,2026-10-04,Fitness studios,Faculty or staff,35
+V01318,2026-10-04,Main gym,Undergraduate,60
+V01319,2026-10-04,Fitness studios,Undergraduate,45
+V01320,2026-10-04,Pool,Undergraduate,64
+V01321,2026-10-04,Main gym,Undergraduate,72
+V01322,2026-10-04,Main gym,Undergraduate,83
+V01323,2026-10-04,Main gym,Graduate,59
+V01324,2026-10-04,Fitness studios,Undergraduate,81
+V01325,2026-10-04,Courts,Undergraduate,66
+V01326,2026-10-04,Main gym,Undergraduate,32
+V01327,2026-10-04,Climbing wall,Undergraduate,61
+V01328,2026-10-04,Courts,Undergraduate,54
+V01329,2026-10-04,Courts,Undergraduate,70
+V01330,2026-10-04,Main gym,Undergraduate,59
+V01331,2026-10-04,Fitness studios,Undergraduate,20
+V01332,2026-10-04,Fitness studios,Graduate,72
+V01333,2026-10-04,Courts,Undergraduate,43
+V01334,2026-10-04,Courts,Undergraduate,42
+V01335,2026-10-04,Pool,Undergraduate,51
+V01336,2026-10-04,Main gym,Undergraduate,35
+V01337,2026-10-04,Climbing wall,Undergraduate,42
+V01338,2026-10-04,Pool,Undergraduate,41
+V01339,2026-10-04,Climbing wall,Undergraduate,65
+V01340,2026-10-04,Fitness studios,Graduate,79
+V01341,2026-10-04,Main gym,Undergraduate,64
+V01342,2026-10-04,Fitness studios,Graduate,47
+V01343,2026-10-04,Courts,Undergraduate,47
+V01344,2026-10-04,Courts,Undergraduate,62
+V01345,2026-10-04,Main gym,Undergraduate,89
+V01346,2026-10-05,Pool,Graduate,93
+V01347,2026-10-05,Pool,Undergraduate,43
+V01348,2026-10-05,Courts,Undergraduate,78
+V01349,2026-10-05,Main gym,Undergraduate,81
+V01350,2026-10-05,Main gym,Undergraduate,52
+V01351,2026-10-05,Main gym,Undergraduate,36
+V01352,2026-10-05,Fitness studios,Undergraduate,50
+V01353,2026-10-05,Pool,Undergraduate,44
+V01354,2026-10-05,Main gym,Undergraduate,96
+V01355,2026-10-05,Courts,Undergraduate,66
+V01356,2026-10-05,Main gym,Undergraduate,91
+V01357,2026-10-05,Main gym,Undergraduate,121
+V01358,2026-10-05,Pool,Undergraduate,43
+V01359,2026-10-05,Main gym,Graduate,45
+V01360,2026-10-05,Main gym,Undergraduate,65
+V01361,2026-10-05,Main gym,Graduate,62
+V01362,2026-10-05,Courts,Undergraduate,108
+V01363,2026-10-05,Fitness studios,Undergraduate,53
+V01364,2026-10-05,Climbing wall,Undergraduate,36
+V01365,2026-10-05,Pool,Undergraduate,41
+V01366,2026-10-05,Courts,Graduate,52
+V01367,2026-10-05,Main gym,Graduate,31
+V01368,2026-10-05,Fitness studios,Undergraduate,51
+V01369,2026-10-05,Fitness studios,Graduate,45
+V01370,2026-10-05,Courts,Undergraduate,39
+V01371,2026-10-05,Pool,Undergraduate,57
+V01372,2026-10-05,Pool,Undergraduate,41
+V01373,2026-10-05,Fitness studios,Undergraduate,88
+V01374,2026-10-05,Courts,Undergraduate,81
+V01375,2026-10-05,Fitness studios,Undergraduate,93
+V01376,2026-10-05,Main gym,Undergraduate,20
+V01377,2026-10-05,Main gym,Faculty or staff,26
+V01378,2026-10-05,Courts,Undergraduate,167
+V01379,2026-10-06,Fitness studios,Undergraduate,84
+V01380,2026-10-06,Main gym,Undergraduate,82
+V01381,2026-10-06,Pool,Undergraduate,60
+V01382,2026-10-06,Fitness studios,Undergraduate,37
+V01383,2026-10-06,Fitness studios,Undergraduate,83
+V01384,2026-10-06,Fitness studios,Faculty or staff,48
+V01385,2026-10-06,Courts,Undergraduate,129
+V01386,2026-10-06,Fitness studios,Undergraduate,78
+V01387,2026-10-06,Main gym,Undergraduate,44
+V01388,2026-10-06,Fitness studios,Faculty or staff,41
+V01389,2026-10-06,Fitness studios,Undergraduate,32
+V01390,2026-10-06,Fitness studios,Undergraduate,94
+V01391,2026-10-06,Main gym,Undergraduate,90
+V01392,2026-10-06,Courts,Undergraduate,88
+V01393,2026-10-06,Fitness studios,Undergraduate,45
+V01394,2026-10-06,Courts,Faculty or staff,60
+V01395,2026-10-06,Courts,Undergraduate,55
+V01396,2026-10-06,Main gym,Undergraduate,57
+V01397,2026-10-06,Courts,Undergraduate,44
+V01398,2026-10-06,Main gym,Undergraduate,26
+V01399,2026-10-06,Fitness studios,Undergraduate,105
+V01400,2026-10-06,Courts,Undergraduate,65
+V01401,2026-10-06,Fitness studios,Undergraduate,72
+V01402,2026-10-06,Courts,Undergraduate,64
+V01403,2026-10-06,Main gym,Undergraduate,65
+V01404,2026-10-06,Fitness studios,Undergraduate,27
+V01405,2026-10-06,Pool,Faculty or staff,57
+V01406,2026-10-06,Fitness studios,Undergraduate,72
+V01407,2026-10-06,Courts,Undergraduate,189
+V01408,2026-10-06,Fitness studios,Undergraduate,88
+V01409,2026-10-06,Main gym,Undergraduate,63
+V01410,2026-10-06,Courts,Undergraduate,72
+V01411,2026-10-06,Pool,Undergraduate,71
+V01412,2026-10-06,Main gym,Undergraduate,55
+V01413,2026-10-06,Fitness studios,Undergraduate,54
+V01414,2026-10-06,Main gym,Undergraduate,45
+V01415,2026-10-06,Main gym,Graduate,95
+V01416,2026-10-06,Fitness studios,Undergraduate,79
+V01417,2026-10-06,Courts,Undergraduate,43
+V01418,2026-10-06,Pool,Undergraduate,51
+V01419,2026-10-06,Courts,Undergraduate,62
+V01420,2026-10-07,Climbing wall,Undergraduate,87
+V01421,2026-10-07,Main gym,Undergraduate,44
+V01422,2026-10-07,Courts,Undergraduate,73
+V01423,2026-10-07,Fitness studios,Undergraduate,102
+V01424,2026-10-07,Fitness studios,Undergraduate,137
+V01425,2026-10-07,Climbing wall,Undergraduate,82
+V01426,2026-10-07,Fitness studios,Undergraduate,120
+V01427,2026-10-07,Fitness studios,Undergraduate,84
+V01428,2026-10-07,Courts,Undergraduate,66
+V01429,2026-10-07,Courts,Faculty or staff,35
+V01430,2026-10-07,Main gym,Undergraduate,93
+V01431,2026-10-07,Main gym,Undergraduate,41
+V01432,2026-10-07,Main gym,Undergraduate,47
+V01433,2026-10-07,Fitness studios,Undergraduate,137
+V01434,2026-10-07,Fitness studios,Undergraduate,75
+V01435,2026-10-07,Fitness studios,Undergraduate,53
+V01436,2026-10-07,Main gym,Undergraduate,52
+V01437,2026-10-07,Pool,Undergraduate,86
+V01438,2026-10-07,Main gym,Undergraduate,55
+V01439,2026-10-07,Courts,Undergraduate,48
+V01440,2026-10-07,Pool,Undergraduate,40
+V01441,2026-10-07,Pool,Undergraduate,61
+V01442,2026-10-07,Courts,Undergraduate,62
+V01443,2026-10-07,Climbing wall,Undergraduate,38
+V01444,2026-10-07,Fitness studios,Graduate,50
+V01445,2026-10-07,Courts,Undergraduate,119
+V01446,2026-10-07,Main gym,Graduate,47
+V01447,2026-10-07,Main gym,Undergraduate,37
+V01448,2026-10-07,Main gym,Graduate,53
+V01449,2026-10-07,Courts,Faculty or staff,28
+V01450,2026-10-07,Courts,Undergraduate,45
+V01451,2026-10-07,Main gym,Undergraduate,46
+V01452,2026-10-07,Main gym,Undergraduate,56
+V01453,2026-10-07,Courts,Faculty or staff,59
+V01454,2026-10-07,Courts,Undergraduate,81
+V01455,2026-10-08,Fitness studios,Undergraduate,53
+V01456,2026-10-08,Main gym,Graduate,77
+V01457,2026-10-08,Main gym,Graduate,73
+V01458,2026-10-08,Pool,Undergraduate,53
+V01459,2026-10-08,Pool,Graduate,67
+V01460,2026-10-08,Climbing wall,Graduate,47
+V01461,2026-10-08,Main gym,Undergraduate,73
+V01462,2026-10-08,Main gym,Faculty or staff,77
+V01463,2026-10-08,Climbing wall,Undergraduate,45
+V01464,2026-10-08,Pool,Graduate,87
+V01465,2026-10-08,Fitness studios,Undergraduate,39
+V01466,2026-10-08,Fitness studios,Undergraduate,143
+V01467,2026-10-08,Fitness studios,Undergraduate,51
+V01468,2026-10-08,Main gym,Graduate,88
+V01469,2026-10-08,Fitness studios,Undergraduate,42
+V01470,2026-10-08,Pool,Undergraduate,37
+V01471,2026-10-08,Fitness studios,Undergraduate,77
+V01472,2026-10-08,Pool,Faculty or staff,53
+V01473,2026-10-08,Pool,Undergraduate,128
+V01474,2026-10-08,Fitness studios,Graduate,64
+V01475,2026-10-08,Main gym,Undergraduate,68
+V01476,2026-10-08,Fitness studios,Undergraduate,80
+V01477,2026-10-08,Main gym,Graduate,77
+V01478,2026-10-08,Fitness studios,Undergraduate,82
+V01479,2026-10-08,Main gym,Undergraduate,55
+V01480,2026-10-08,Pool,Undergraduate,54
+V01481,2026-10-08,Courts,Graduate,61
+V01482,2026-10-08,Fitness studios,Undergraduate,173
+V01483,2026-10-08,Main gym,Undergraduate,77
+V01484,2026-10-08,Fitness studios,Undergraduate,25
+V01485,2026-10-08,Main gym,Undergraduate,64
+V01486,2026-10-08,Main gym,Undergraduate,84
+V01487,2026-10-08,Fitness studios,Undergraduate,77
+V01488,2026-10-08,Main gym,Faculty or staff,24
+V01489,2026-10-08,Fitness studios,Undergraduate,92
+V01490,2026-10-08,Fitness studios,Undergraduate,51
+V01491,2026-10-08,Fitness studios,Undergraduate,61
+V01492,2026-10-08,Main gym,Undergraduate,149
+V01493,2026-10-08,Main gym,Undergraduate,70
+V01494,2026-10-08,Pool,Undergraduate,46
+V01495,2026-10-08,Pool,Undergraduate,56
+V01496,2026-10-08,Climbing wall,Undergraduate,71
+V01497,2026-10-08,Main gym,Undergraduate,67
+V01498,2026-10-08,Main gym,Undergraduate,42
+V01499,2026-10-08,Main gym,Undergraduate,74
+V01500,2026-10-08,Climbing wall,Undergraduate,56
+V01501,2026-10-08,Fitness studios,Undergraduate,39
+V01502,2026-10-08,Main gym,Undergraduate,65
+V01503,2026-10-08,Pool,Undergraduate,52
+V01504,2026-10-08,Main gym,Undergraduate,27
+V01505,2026-10-08,Main gym,Undergraduate,36
+V01506,2026-10-08,Fitness studios,Faculty or staff,23
+V01507,2026-10-08,Main gym,Undergraduate,109
+V01508,2026-10-08,Courts,Undergraduate,66
+V01509,2026-10-09,Pool,Graduate,51
+V01510,2026-10-09,Climbing wall,Undergraduate,73
+V01511,2026-10-09,Pool,Undergraduate,73
+V01512,2026-10-09,Main gym,Undergraduate,66
+V01513,2026-10-09,Climbing wall,Graduate,43
+V01514,2026-10-09,Pool,Undergraduate,59
+V01515,2026-10-09,Fitness studios,Undergraduate,81
+V01516,2026-10-09,Main gym,Undergraduate,54
+V01517,2026-10-09,Main gym,Undergraduate,54
+V01518,2026-10-09,Main gym,Undergraduate,71
+V01519,2026-10-09,Pool,Undergraduate,62
+V01520,2026-10-09,Pool,Undergraduate,64
+V01521,2026-10-09,Pool,Undergraduate,63
+V01522,2026-10-09,Pool,Undergraduate,124
+V01523,2026-10-09,Courts,Undergraduate,44
+V01524,2026-10-09,Pool,Undergraduate,41
+V01525,2026-10-09,Main gym,Graduate,83
+V01526,2026-10-09,Courts,Undergraduate,70
+V01527,2026-10-09,Pool,Undergraduate,40
+V01528,2026-10-09,Fitness studios,Undergraduate,26
+V01529,2026-10-09,Main gym,Undergraduate,46
+V01530,2026-10-09,Courts,Undergraduate,79
+V01531,2026-10-09,Fitness studios,Undergraduate,100
+V01532,2026-10-09,Main gym,Graduate,46
+V01533,2026-10-09,Main gym,Undergraduate,73
+V01534,2026-10-09,Fitness studios,Undergraduate,54
+V01535,2026-10-09,Fitness studios,Graduate,96
+V01536,2026-10-09,Courts,Undergraduate,74
+V01537,2026-10-09,Courts,Faculty or staff,72
+V01538,2026-10-09,Main gym,Graduate,67
+V01539,2026-10-09,Pool,Graduate,44
+V01540,2026-10-09,Main gym,Undergraduate,94
+V01541,2026-10-09,Main gym,Undergraduate,89
+V01542,2026-10-09,Main gym,Undergraduate,86
+V01543,2026-10-09,Pool,Undergraduate,141
+V01544,2026-10-09,Courts,Undergraduate,53
+V01545,2026-10-09,Fitness studios,Undergraduate,67
+V01546,2026-10-09,Pool,Undergraduate,67
+V01547,2026-10-09,Courts,Undergraduate,89
+V01548,2026-10-09,Pool,Graduate,54
+V01549,2026-10-09,Fitness studios,Graduate,36
+V01550,2026-10-09,Courts,Undergraduate,74
+V01551,2026-10-09,Courts,Graduate,71
+V01552,2026-10-09,Main gym,Undergraduate,51
+V01553,2026-10-10,Main gym,Undergraduate,90
+V01554,2026-10-10,Fitness studios,Undergraduate,81
+V01555,2026-10-10,Main gym,Undergraduate,37
+V01556,2026-10-10,Courts,Undergraduate,49
+V01557,2026-10-10,Fitness studios,Undergraduate,68
+V01558,2026-10-10,Fitness studios,Undergraduate,97
+V01559,2026-10-10,Courts,Undergraduate,101
+V01560,2026-10-10,Main gym,Undergraduate,69
+V01561,2026-10-10,Fitness studios,Undergraduate,50
+V01562,2026-10-10,Main gym,Faculty or staff,71
+V01563,2026-10-10,Main gym,Undergraduate,62
+V01564,2026-10-10,Fitness studios,Faculty or staff,43
+V01565,2026-10-10,Pool,Undergraduate,136
+V01566,2026-10-10,Fitness studios,Undergraduate,42
+V01567,2026-10-10,Pool,Graduate,163
+V01568,2026-10-10,Pool,Graduate,48
+V01569,2026-10-10,Courts,Undergraduate,49
+V01570,2026-10-10,Main gym,Undergraduate,51
+V01571,2026-10-10,Main gym,Faculty or staff,59
+V01572,2026-10-10,Main gym,Undergraduate,95
+V01573,2026-10-10,Fitness studios,Undergraduate,77
+V01574,2026-10-10,Courts,Undergraduate,41
+V01575,2026-10-10,Courts,Undergraduate,46
+V01576,2026-10-10,Fitness studios,Graduate,46
+V01577,2026-10-10,Fitness studios,Undergraduate,51
+V01578,2026-10-10,Fitness studios,Undergraduate,46
+V01579,2026-10-10,Fitness studios,Undergraduate,40
+V01580,2026-10-10,Courts,Undergraduate,76
+V01581,2026-10-10,Main gym,Undergraduate,73
+V01582,2026-10-10,Main gym,Graduate,39
+V01583,2026-10-10,Fitness studios,Undergraduate,55
+V01584,2026-10-10,Fitness studios,Graduate,50
+V01585,2026-10-10,Courts,Graduate,29
+V01586,2026-10-10,Fitness studios,Undergraduate,62
+V01587,2026-10-10,Climbing wall,Undergraduate,52
+V01588,2026-10-10,Courts,Undergraduate,48
+V01589,2026-10-10,Main gym,Undergraduate,53
+V01590,2026-10-10,Main gym,Undergraduate,74
+V01591,2026-10-10,Main gym,Graduate,29
+V01592,2026-10-10,Climbing wall,Undergraduate,50
+V01593,2026-10-10,Courts,Undergraduate,114
+V01594,2026-10-11,Climbing wall,Undergraduate,53
+V01595,2026-10-11,Courts,Faculty or staff,71
+V01596,2026-10-11,Pool,Graduate,50
+V01597,2026-10-11,Courts,Undergraduate,38
+V01598,2026-10-11,Pool,Undergraduate,60
+V01599,2026-10-11,Fitness studios,Undergraduate,69
+V01600,2026-10-11,Climbing wall,Undergraduate,136
+V01601,2026-10-11,Courts,Undergraduate,82
+V01602,2026-10-11,Main gym,Undergraduate,70
+V01603,2026-10-11,Pool,Undergraduate,108
+V01604,2026-10-11,Main gym,Graduate,97
+V01605,2026-10-11,Main gym,Undergraduate,75
+V01606,2026-10-11,Fitness studios,Undergraduate,76
+V01607,2026-10-11,Fitness studios,Undergraduate,50
+V01608,2026-10-11,Main gym,Undergraduate,60
+V01609,2026-10-11,Courts,Undergraduate,78
+V01610,2026-10-11,Courts,Undergraduate,79
+V01611,2026-10-11,Fitness studios,Undergraduate,110
+V01612,2026-10-11,Main gym,Undergraduate,78
+V01613,2026-10-11,Fitness studios,Undergraduate,122
+V01614,2026-10-11,Climbing wall,Undergraduate,88
+V01615,2026-10-11,Fitness studios,Undergraduate,50
+V01616,2026-10-11,Courts,Undergraduate,68
+V01617,2026-10-11,Courts,Undergraduate,46
+V01618,2026-10-11,Courts,Undergraduate,74
+V01619,2026-10-11,Fitness studios,Undergraduate,103
+V01620,2026-10-11,Courts,Undergraduate,23
+V01621,2026-10-11,Fitness studios,Undergraduate,65
+V01622,2026-10-11,Fitness studios,Graduate,26
+V01623,2026-10-11,Main gym,Undergraduate,82
+V01624,2026-10-11,Fitness studios,Undergraduate,141
+V01625,2026-10-11,Main gym,Undergraduate,63
+V01626,2026-10-11,Main gym,Undergraduate,67
+V01627,2026-10-11,Fitness studios,Undergraduate,36
+V01628,2026-10-12,Courts,Undergraduate,61
+V01629,2026-10-12,Fitness studios,Undergraduate,118
+V01630,2026-10-12,Main gym,Undergraduate,135
+V01631,2026-10-12,Fitness studios,Undergraduate,87
+V01632,2026-10-12,Pool,Undergraduate,49
+V01633,2026-10-12,Climbing wall,Undergraduate,85
+V01634,2026-10-12,Courts,Undergraduate,65
+V01635,2026-10-12,Courts,Undergraduate,45
+V01636,2026-10-12,Main gym,Graduate,88
+V01637,2026-10-12,Fitness studios,Undergraduate,68
+V01638,2026-10-12,Climbing wall,Undergraduate,68
+V01639,2026-10-12,Pool,Undergraduate,68
+V01640,2026-10-12,Pool,Undergraduate,72
+V01641,2026-10-12,Fitness studios,Undergraduate,41
+V01642,2026-10-12,Pool,Faculty or staff,67
+V01643,2026-10-12,Fitness studios,Faculty or staff,36
+V01644,2026-10-12,Courts,Undergraduate,62
+V01645,2026-10-12,Fitness studios,Undergraduate,30
+V01646,2026-10-12,Main gym,Faculty or staff,28
+V01647,2026-10-12,Fitness studios,Undergraduate,63
+V01648,2026-10-12,Courts,Undergraduate,25
+V01649,2026-10-12,Main gym,Undergraduate,55
+V01650,2026-10-12,Courts,Undergraduate,85
+V01651,2026-10-12,Main gym,Faculty or staff,94
+V01652,2026-10-12,Climbing wall,Graduate,66
+V01653,2026-10-12,Main gym,Undergraduate,75
+V01654,2026-10-12,Pool,Graduate,50
+V01655,2026-10-12,Pool,Undergraduate,88
+V01656,2026-10-12,Climbing wall,Undergraduate,23
+V01657,2026-10-12,Fitness studios,Graduate,75
+V01658,2026-10-12,Courts,Undergraduate,92
+V01659,2026-10-12,Main gym,Undergraduate,95
+V01660,2026-10-12,Fitness studios,Undergraduate,80
+V01661,2026-10-12,Courts,Undergraduate,52
+V01662,2026-10-12,Fitness studios,Undergraduate,64
+V01663,2026-10-12,Main gym,Undergraduate,48
+V01664,2026-10-12,Pool,Undergraduate,22
+V01665,2026-10-12,Climbing wall,Undergraduate,58
+V01666,2026-10-12,Courts,Undergraduate,77
+V01667,2026-10-12,Climbing wall,Undergraduate,53
+V01668,2026-10-12,Climbing wall,Undergraduate,41
+V01669,2026-10-12,Fitness studios,Undergraduate,57
+V01670,2026-10-12,Main gym,Undergraduate,68
+V01671,2026-10-12,Courts,Undergraduate,66
+V01672,2026-10-13,Courts,Undergraduate,35
+V01673,2026-10-13,Courts,Undergraduate,91
+V01674,2026-10-13,Pool,Faculty or staff,47
+V01675,2026-10-13,Main gym,Undergraduate,67
+V01676,2026-10-13,Main gym,Undergraduate,46
+V01677,2026-10-13,Pool,Undergraduate,37
+V01678,2026-10-13,Courts,Graduate,47
+V01679,2026-10-13,Main gym,Undergraduate,53
+V01680,2026-10-13,Fitness studios,Faculty or staff,85
+V01681,2026-10-13,Main gym,Undergraduate,55
+V01682,2026-10-13,Main gym,Undergraduate,109
+V01683,2026-10-13,Fitness studios,Undergraduate,31
+V01684,2026-10-13,Courts,Undergraduate,57
+V01685,2026-10-13,Main gym,Faculty or staff,27
+V01686,2026-10-13,Main gym,Undergraduate,76
+V01687,2026-10-13,Main gym,Undergraduate,30
+V01688,2026-10-13,Main gym,Graduate,57
+V01689,2026-10-13,Fitness studios,Undergraduate,79
+V01690,2026-10-13,Main gym,Undergraduate,45
+V01691,2026-10-13,Fitness studios,Undergraduate,57
+V01692,2026-10-13,Courts,Faculty or staff,62
+V01693,2026-10-13,Fitness studios,Faculty or staff,32
+V01694,2026-10-13,Courts,Undergraduate,52
+V01695,2026-10-13,Main gym,Undergraduate,102
+V01696,2026-10-13,Pool,Undergraduate,49
+V01697,2026-10-13,Main gym,Undergraduate,56
+V01698,2026-10-13,Fitness studios,Undergraduate,59
+V01699,2026-10-13,Main gym,Undergraduate,79
+V01700,2026-10-13,Climbing wall,Undergraduate,107
+V01701,2026-10-13,Courts,Undergraduate,63
+V01702,2026-10-13,Pool,Faculty or staff,67
+V01703,2026-10-13,Pool,Undergraduate,89
+V01704,2026-10-13,Pool,Undergraduate,49
+V01705,2026-10-13,Climbing wall,Graduate,43
+V01706,2026-10-13,Courts,Undergraduate,72
+V01707,2026-10-13,Main gym,Undergraduate,52
+V01708,2026-10-13,Main gym,Undergraduate,79
+V01709,2026-10-13,Climbing wall,Graduate,53
+V01710,2026-10-13,Main gym,Undergraduate,67
+V01711,2026-10-13,Pool,Undergraduate,54
+V01712,2026-10-14,Fitness studios,Undergraduate,24
+V01713,2026-10-14,Main gym,Undergraduate,130
+V01714,2026-10-14,Fitness studios,Undergraduate,57
+V01715,2026-10-14,Pool,Graduate,48
+V01716,2026-10-14,Main gym,Graduate,27
+V01717,2026-10-14,Main gym,Faculty or staff,68
+V01718,2026-10-14,Fitness studios,Undergraduate,93
+V01719,2026-10-14,Fitness studios,Undergraduate,62
+V01720,2026-10-14,Courts,Graduate,48
+V01721,2026-10-14,Climbing wall,Undergraduate,48
+V01722,2026-10-14,Courts,Undergraduate,80
+V01723,2026-10-14,Courts,Faculty or staff,26
+V01724,2026-10-14,Courts,Undergraduate,81
+V01725,2026-10-14,Courts,Graduate,55
+V01726,2026-10-14,Fitness studios,Graduate,38
+V01727,2026-10-14,Fitness studios,Undergraduate,87
+V01728,2026-10-14,Courts,Undergraduate,65
+V01729,2026-10-14,Courts,Graduate,73
+V01730,2026-10-14,Courts,Undergraduate,51
+V01731,2026-10-14,Climbing wall,Undergraduate,46
+V01732,2026-10-14,Pool,Undergraduate,40
+V01733,2026-10-14,Main gym,Undergraduate,78
+V01734,2026-10-14,Main gym,Undergraduate,55
+V01735,2026-10-14,Main gym,Undergraduate,29
+V01736,2026-10-14,Courts,Graduate,50
+V01737,2026-10-14,Courts,Undergraduate,77
+V01738,2026-10-14,Courts,Undergraduate,87
+V01739,2026-10-14,Main gym,Undergraduate,67
+V01740,2026-10-14,Fitness studios,Undergraduate,35
+V01741,2026-10-14,Main gym,Graduate,72
+V01742,2026-10-14,Fitness studios,Undergraduate,49
+V01743,2026-10-14,Main gym,Undergraduate,138
+V01744,2026-10-14,Main gym,Faculty or staff,59
+V01745,2026-10-14,Main gym,Undergraduate,101
+V01746,2026-10-14,Main gym,Faculty or staff,24
+V01747,2026-10-14,Courts,Graduate,94
+V01748,2026-10-14,Fitness studios,Undergraduate,53
+V01749,2026-10-14,Fitness studios,Undergraduate,48
+V01750,2026-10-14,Courts,Undergraduate,40
+V01751,2026-10-14,Pool,Graduate,74
+V01752,2026-10-14,Courts,Undergraduate,49
+V01753,2026-10-14,Main gym,Undergraduate,59
+V01754,2026-10-14,Courts,Undergraduate,47
+V01755,2026-10-15,Fitness studios,Undergraduate,82
+V01756,2026-10-15,Courts,Graduate,96
+V01757,2026-10-15,Main gym,Undergraduate,86
+V01758,2026-10-15,Fitness studios,Undergraduate,82
+V01759,2026-10-15,Fitness studios,Undergraduate,40
+V01760,2026-10-15,Courts,Undergraduate,36
+V01761,2026-10-15,Pool,Undergraduate,41
+V01762,2026-10-15,Main gym,Graduate,52
+V01763,2026-10-15,Main gym,Undergraduate,52
+V01764,2026-10-15,Courts,Graduate,50
+V01765,2026-10-15,Main gym,Graduate,50
+V01766,2026-10-15,Courts,Faculty or staff,47
+V01767,2026-10-15,Fitness studios,Undergraduate,50
+V01768,2026-10-15,Main gym,Undergraduate,80
+V01769,2026-10-15,Fitness studios,Undergraduate,53
+V01770,2026-10-15,Pool,Undergraduate,87
+V01771,2026-10-15,Main gym,Undergraduate,40
+V01772,2026-10-15,Main gym,Undergraduate,74
+V01773,2026-10-15,Fitness studios,Graduate,53
+V01774,2026-10-15,Pool,Faculty or staff,38
+V01775,2026-10-15,Main gym,Undergraduate,50
+V01776,2026-10-15,Pool,Undergraduate,64
+V01777,2026-10-15,Fitness studios,Undergraduate,33
+V01778,2026-10-15,Main gym,Undergraduate,43
+V01779,2026-10-15,Fitness studios,Undergraduate,58
+V01780,2026-10-15,Main gym,Graduate,44
+V01781,2026-10-15,Main gym,Undergraduate,87
+V01782,2026-10-15,Pool,Undergraduate,120
+V01783,2026-10-15,Fitness studios,Undergraduate,79
+V01784,2026-10-15,Pool,Graduate,40
+V01785,2026-10-15,Main gym,Undergraduate,65
+V01786,2026-10-15,Pool,Undergraduate,68
+V01787,2026-10-15,Courts,Undergraduate,101
+V01788,2026-10-15,Pool,Undergraduate,96
+V01789,2026-10-15,Pool,Undergraduate,56
+V01790,2026-10-15,Fitness studios,Undergraduate,49
+V01791,2026-10-15,Climbing wall,Undergraduate,95
+V01792,2026-10-15,Main gym,Graduate,40
+V01793,2026-10-16,Courts,Undergraduate,46
+V01794,2026-10-16,Fitness studios,Faculty or staff,54
+V01795,2026-10-16,Fitness studios,Undergraduate,47
+V01796,2026-10-16,Climbing wall,Undergraduate,90
+V01797,2026-10-16,Pool,Undergraduate,39
+V01798,2026-10-16,Courts,Undergraduate,49
+V01799,2026-10-16,Fitness studios,Undergraduate,55
+V01800,2026-10-16,Climbing wall,Faculty or staff,32
+V01801,2026-10-16,Main gym,Undergraduate,50
+V01802,2026-10-16,Fitness studios,Undergraduate,102
+V01803,2026-10-16,Main gym,Undergraduate,256
+V01804,2026-10-16,Climbing wall,Undergraduate,81
+V01805,2026-10-16,Main gym,Undergraduate,60
+V01806,2026-10-16,Courts,Undergraduate,80
+V01807,2026-10-16,Main gym,Undergraduate,68
+V01808,2026-10-16,Main gym,Undergraduate,151
+V01809,2026-10-16,Courts,Graduate,42
+V01810,2026-10-16,Main gym,Undergraduate,75
+V01811,2026-10-16,Climbing wall,Faculty or staff,49
+V01812,2026-10-16,Fitness studios,Undergraduate,49
+V01813,2026-10-16,Courts,Undergraduate,54
+V01814,2026-10-16,Main gym,Undergraduate,45
+V01815,2026-10-16,Pool,Undergraduate,42
+V01816,2026-10-16,Main gym,Undergraduate,34
+V01817,2026-10-16,Main gym,Faculty or staff,33
+V01818,2026-10-16,Main gym,Undergraduate,87
+V01819,2026-10-16,Courts,Undergraduate,54
+V01820,2026-10-16,Pool,Undergraduate,47
+V01821,2026-10-16,Main gym,Faculty or staff,48
+V01822,2026-10-16,Main gym,Graduate,49
+V01823,2026-10-16,Courts,Undergraduate,53
+V01824,2026-10-16,Main gym,Undergraduate,46
+V01825,2026-10-16,Main gym,Undergraduate,73
+V01826,2026-10-16,Fitness studios,Undergraduate,54
+V01827,2026-10-16,Main gym,Faculty or staff,41
+V01828,2026-10-16,Main gym,Undergraduate,29
+V01829,2026-10-16,Courts,Undergraduate,96
+V01830,2026-10-16,Main gym,Faculty or staff,51
+V01831,2026-10-16,Pool,Undergraduate,72
+V01832,2026-10-16,Main gym,Faculty or staff,52
+V01833,2026-10-16,Main gym,Graduate,72
+V01834,2026-10-16,Main gym,Undergraduate,36
+V01835,2026-10-16,Main gym,Undergraduate,108
+V01836,2026-10-16,Courts,Graduate,99
+V01837,2026-10-16,Pool,Undergraduate,17
+V01838,2026-10-16,Courts,Undergraduate,51
+V01839,2026-10-16,Courts,Faculty or staff,39
+V01840,2026-10-16,Fitness studios,Undergraduate,88
+V01841,2026-10-16,Fitness studios,Undergraduate,71
+V01842,2026-10-17,Main gym,Graduate,57
+V01843,2026-10-17,Courts,Undergraduate,38
+V01844,2026-10-17,Courts,Undergraduate,44
+V01845,2026-10-17,Courts,Graduate,77
+V01846,2026-10-17,Main gym,Graduate,63
+V01847,2026-10-17,Main gym,Undergraduate,57
+V01848,2026-10-17,Main gym,Undergraduate,43
+V01849,2026-10-17,Pool,Graduate,63
+V01850,2026-10-17,Courts,Undergraduate,82
+V01851,2026-10-17,Pool,Undergraduate,104
+V01852,2026-10-17,Climbing wall,Faculty or staff,44
+V01853,2026-10-17,Climbing wall,Undergraduate,68
+V01854,2026-10-17,Fitness studios,Undergraduate,46
+V01855,2026-10-17,Fitness studios,Faculty or staff,31
+V01856,2026-10-17,Main gym,Undergraduate,40
+V01857,2026-10-17,Fitness studios,Undergraduate,64
+V01858,2026-10-17,Courts,Faculty or staff,40
+V01859,2026-10-17,Pool,Undergraduate,58
+V01860,2026-10-17,Pool,Undergraduate,82
+V01861,2026-10-17,Courts,Graduate,68
+V01862,2026-10-17,Courts,Undergraduate,109
+V01863,2026-10-17,Courts,Undergraduate,48
+V01864,2026-10-17,Courts,Undergraduate,67
+V01865,2026-10-17,Main gym,Undergraduate,50
+V01866,2026-10-17,Main gym,Undergraduate,37
+V01867,2026-10-17,Courts,Undergraduate,120
+V01868,2026-10-17,Pool,Graduate,80
+V01869,2026-10-17,Main gym,Undergraduate,66
+V01870,2026-10-17,Pool,Undergraduate,63
+V01871,2026-10-17,Main gym,Graduate,120
+V01872,2026-10-17,Main gym,Undergraduate,114
+V01873,2026-10-17,Main gym,Undergraduate,32
+V01874,2026-10-17,Fitness studios,Undergraduate,37
+V01875,2026-10-17,Courts,Undergraduate,73
+V01876,2026-10-17,Courts,Faculty or staff,33
+V01877,2026-10-17,Main gym,Faculty or staff,35
+V01878,2026-10-17,Pool,Undergraduate,84
+V01879,2026-10-17,Main gym,Undergraduate,122
+V01880,2026-10-18,Pool,Undergraduate,28
+V01881,2026-10-18,Fitness studios,Undergraduate,30
+V01882,2026-10-18,Main gym,Undergraduate,55
+V01883,2026-10-18,Main gym,Faculty or staff,26
+V01884,2026-10-18,Fitness studios,Undergraduate,45
+V01885,2026-10-18,Climbing wall,Graduate,27
+V01886,2026-10-18,Climbing wall,Faculty or staff,48
+V01887,2026-10-18,Courts,Undergraduate,51
+V01888,2026-10-18,Courts,Undergraduate,64
+V01889,2026-10-18,Fitness studios,Faculty or staff,36
+V01890,2026-10-18,Main gym,Faculty or staff,35
+V01891,2026-10-18,Main gym,Undergraduate,78
+V01892,2026-10-18,Main gym,Undergraduate,71
+V01893,2026-10-18,Courts,Undergraduate,51
+V01894,2026-10-18,Courts,Undergraduate,38
+V01895,2026-10-18,Pool,Undergraduate,18
+V01896,2026-10-18,Main gym,Undergraduate,63
+V01897,2026-10-18,Climbing wall,Undergraduate,34
+V01898,2026-10-18,Fitness studios,Undergraduate,54
+V01899,2026-10-18,Courts,Faculty or staff,28
+V01900,2026-10-18,Climbing wall,Undergraduate,106
+V01901,2026-10-18,Fitness studios,Undergraduate,65
+V01902,2026-10-18,Pool,Undergraduate,64
+V01903,2026-10-18,Fitness studios,Undergraduate,53
+V01904,2026-10-18,Climbing wall,Graduate,105
+V01905,2026-10-18,Main gym,Graduate,68
+V01906,2026-10-18,Climbing wall,Undergraduate,153
+V01907,2026-10-18,Main gym,Undergraduate,74
+V01908,2026-10-18,Main gym,Undergraduate,37
+V01909,2026-10-18,Fitness studios,Undergraduate,54
+V01910,2026-10-18,Courts,Undergraduate,55
+V01911,2026-10-18,Main gym,Undergraduate,77
+V01912,2026-10-18,Courts,Undergraduate,107
+V01913,2026-10-18,Main gym,Graduate,27
+V01914,2026-10-18,Main gym,Undergraduate,97
+V01915,2026-10-18,Main gym,Undergraduate,74
+V01916,2026-10-18,Climbing wall,Undergraduate,43
+V01917,2026-10-19,Fitness studios,Undergraduate,93
+V01918,2026-10-19,Main gym,Undergraduate,36
+V01919,2026-10-19,Fitness studios,Undergraduate,44
+V01920,2026-10-19,Main gym,Undergraduate,135
+V01921,2026-10-19,Climbing wall,Undergraduate,67
+V01922,2026-10-19,Fitness studios,Graduate,54
+V01923,2026-10-19,Courts,Undergraduate,52
+V01924,2026-10-19,Main gym,Undergraduate,70
+V01925,2026-10-19,Main gym,Undergraduate,84
+V01926,2026-10-19,Climbing wall,Undergraduate,82
+V01927,2026-10-19,Main gym,Faculty or staff,53
+V01928,2026-10-19,Courts,Undergraduate,41
+V01929,2026-10-19,Fitness studios,Undergraduate,88
+V01930,2026-10-19,Pool,Undergraduate,79
+V01931,2026-10-19,Fitness studios,Faculty or staff,39
+V01932,2026-10-19,Main gym,Undergraduate,74
+V01933,2026-10-19,Courts,Undergraduate,45
+V01934,2026-10-19,Main gym,Undergraduate,37
+V01935,2026-10-19,Fitness studios,Undergraduate,56
+V01936,2026-10-19,Main gym,Undergraduate,64
+V01937,2026-10-19,Main gym,Undergraduate,99
+V01938,2026-10-19,Fitness studios,Graduate,62
+V01939,2026-10-19,Main gym,Graduate,45
+V01940,2026-10-19,Main gym,Undergraduate,73
+V01941,2026-10-19,Fitness studios,Undergraduate,91
+V01942,2026-10-19,Main gym,Undergraduate,33
+V01943,2026-10-19,Main gym,Undergraduate,44
+V01944,2026-10-19,Main gym,Undergraduate,68
+V01945,2026-10-19,Climbing wall,Undergraduate,101
+V01946,2026-10-19,Main gym,Undergraduate,78
+V01947,2026-10-19,Courts,Graduate,56
+V01948,2026-10-19,Climbing wall,Undergraduate,53
+V01949,2026-10-19,Climbing wall,Graduate,57
+V01950,2026-10-19,Courts,Undergraduate,99
+V01951,2026-10-20,Climbing wall,Undergraduate,42
+V01952,2026-10-20,Main gym,Graduate,73
+V01953,2026-10-20,Main gym,Graduate,49
+V01954,2026-10-20,Main gym,Undergraduate,73
+V01955,2026-10-20,Main gym,Undergraduate,61
+V01956,2026-10-20,Courts,Undergraduate,133
+V01957,2026-10-20,Climbing wall,Undergraduate,88
+V01958,2026-10-20,Main gym,Undergraduate,35
+V01959,2026-10-20,Fitness studios,Undergraduate,54
+V01960,2026-10-20,Main gym,Undergraduate,126
+V01961,2026-10-20,Main gym,Undergraduate,57
+V01962,2026-10-20,Courts,Faculty or staff,73
+V01963,2026-10-20,Fitness studios,Undergraduate,31
+V01964,2026-10-20,Main gym,Undergraduate,49
+V01965,2026-10-20,Courts,Undergraduate,33
+V01966,2026-10-20,Fitness studios,Undergraduate,52
+V01967,2026-10-20,Courts,Undergraduate,146
+V01968,2026-10-20,Courts,Graduate,53
+V01969,2026-10-20,Fitness studios,Undergraduate,46
+V01970,2026-10-20,Courts,Undergraduate,80
+V01971,2026-10-20,Courts,Undergraduate,64
+V01972,2026-10-20,Fitness studios,Undergraduate,70
+V01973,2026-10-20,Courts,Undergraduate,102
+V01974,2026-10-20,Fitness studios,Undergraduate,91
+V01975,2026-10-20,Pool,Undergraduate,82
+V01976,2026-10-20,Fitness studios,Undergraduate,95
+V01977,2026-10-20,Courts,Undergraduate,67
+V01978,2026-10-20,Courts,Undergraduate,50
+V01979,2026-10-20,Fitness studios,Undergraduate,49
+V01980,2026-10-20,Pool,Undergraduate,69
+V01981,2026-10-20,Fitness studios,Faculty or staff,37
+V01982,2026-10-21,Courts,Undergraduate,57
+V01983,2026-10-21,Fitness studios,Undergraduate,79
+V01984,2026-10-21,Climbing wall,Undergraduate,54
+V01985,2026-10-21,Main gym,Undergraduate,87
+V01986,2026-10-21,Fitness studios,Undergraduate,77
+V01987,2026-10-21,Main gym,Undergraduate,90
+V01988,2026-10-21,Pool,Undergraduate,74
+V01989,2026-10-21,Courts,Undergraduate,112
+V01990,2026-10-21,Pool,Faculty or staff,42
+V01991,2026-10-21,Main gym,Undergraduate,94
+V01992,2026-10-21,Main gym,Graduate,52
+V01993,2026-10-21,Courts,Undergraduate,64
+V01994,2026-10-21,Main gym,Faculty or staff,26
+V01995,2026-10-21,Courts,Undergraduate,147
+V01996,2026-10-21,Courts,Undergraduate,61
+V01997,2026-10-21,Courts,Undergraduate,52
+V01998,2026-10-21,Main gym,Undergraduate,57
+V01999,2026-10-21,Main gym,Undergraduate,55
+V02000,2026-10-21,Courts,Undergraduate,40
+V02001,2026-10-21,Climbing wall,Graduate,96
+V02002,2026-10-21,Courts,Undergraduate,67
+V02003,2026-10-21,Courts,Undergraduate,48
+V02004,2026-10-21,Fitness studios,Undergraduate,65
+V02005,2026-10-21,Main gym,Undergraduate,39
+V02006,2026-10-21,Fitness studios,Undergraduate,79
+V02007,2026-10-21,Main gym,Undergraduate,79
+V02008,2026-10-21,Courts,Undergraduate,38
+V02009,2026-10-21,Main gym,Graduate,69
+V02010,2026-10-21,Main gym,Undergraduate,49
+V02011,2026-10-21,Fitness studios,Undergraduate,59
+V02012,2026-10-21,Main gym,Undergraduate,34
+V02013,2026-10-21,Main gym,Undergraduate,64
+V02014,2026-10-21,Main gym,Undergraduate,39
+V02015,2026-10-21,Fitness studios,Faculty or staff,35
+V02016,2026-10-21,Main gym,Undergraduate,50
+V02017,2026-10-21,Main gym,Undergraduate,108
+V02018,2026-10-21,Pool,Undergraduate,72
+V02019,2026-10-21,Main gym,Faculty or staff,32
+V02020,2026-10-21,Fitness studios,Undergraduate,28
+V02021,2026-10-21,Courts,Undergraduate,131
+V02022,2026-10-21,Climbing wall,Undergraduate,52
+V02023,2026-10-21,Climbing wall,Faculty or staff,63
+V02024,2026-10-21,Pool,Undergraduate,25
+V02025,2026-10-21,Climbing wall,Graduate,48
+V02026,2026-10-21,Pool,Faculty or staff,29
+V02027,2026-10-22,Climbing wall,Undergraduate,66
+V02028,2026-10-22,Main gym,Undergraduate,51
+V02029,2026-10-22,Pool,Undergraduate,42
+V02030,2026-10-22,Courts,Undergraduate,73
+V02031,2026-10-22,Pool,Undergraduate,110
+V02032,2026-10-22,Main gym,Graduate,28
+V02033,2026-10-22,Main gym,Undergraduate,69
+V02034,2026-10-22,Main gym,Undergraduate,100
+V02035,2026-10-22,Fitness studios,Undergraduate,38
+V02036,2026-10-22,Courts,Undergraduate,24
+V02037,2026-10-22,Main gym,Undergraduate,57
+V02038,2026-10-22,Pool,Undergraduate,52
+V02039,2026-10-22,Climbing wall,Undergraduate,70
+V02040,2026-10-22,Pool,Undergraduate,85
+V02041,2026-10-22,Climbing wall,Undergraduate,36
+V02042,2026-10-22,Main gym,Graduate,31
+V02043,2026-10-22,Fitness studios,Undergraduate,86
+V02044,2026-10-22,Fitness studios,Undergraduate,68
+V02045,2026-10-22,Courts,Faculty or staff,68
+V02046,2026-10-22,Pool,Undergraduate,49
+V02047,2026-10-22,Fitness studios,Undergraduate,39
+V02048,2026-10-22,Main gym,Undergraduate,72
+V02049,2026-10-22,Main gym,Undergraduate,48
+V02050,2026-10-22,Fitness studios,Graduate,46
+V02051,2026-10-22,Pool,Faculty or staff,57
+V02052,2026-10-22,Courts,Undergraduate,88
+V02053,2026-10-22,Courts,Undergraduate,39
+V02054,2026-10-22,Main gym,Undergraduate,60
+V02055,2026-10-22,Pool,Undergraduate,48
+V02056,2026-10-22,Courts,Undergraduate,48
+V02057,2026-10-22,Main gym,Undergraduate,55
+V02058,2026-10-22,Main gym,Undergraduate,83
+V02059,2026-10-22,Courts,Undergraduate,50
+V02060,2026-10-22,Fitness studios,Undergraduate,40
+V02061,2026-10-22,Main gym,Graduate,92
+V02062,2026-10-22,Main gym,Undergraduate,116
+V02063,2026-10-22,Main gym,Undergraduate,78
+V02064,2026-10-22,Fitness studios,Undergraduate,70
+V02065,2026-10-22,Fitness studios,Undergraduate,59
+V02066,2026-10-22,Main gym,Undergraduate,136
+V02067,2026-10-22,Fitness studios,Undergraduate,37
+V02068,2026-10-23,Main gym,Undergraduate,86
+V02069,2026-10-23,Climbing wall,Undergraduate,37
+V02070,2026-10-23,Climbing wall,Undergraduate,83
+V02071,2026-10-23,Fitness studios,Undergraduate,60
+V02072,2026-10-23,Courts,Undergraduate,80
+V02073,2026-10-23,Main gym,Faculty or staff,49
+V02074,2026-10-23,Courts,Undergraduate,34
+V02075,2026-10-23,Fitness studios,Undergraduate,129
+V02076,2026-10-23,Main gym,Graduate,19
+V02077,2026-10-23,Fitness studios,Undergraduate,89
+V02078,2026-10-23,Main gym,Faculty or staff,32
+V02079,2026-10-23,Pool,Faculty or staff,40
+V02080,2026-10-23,Main gym,Undergraduate,49
+V02081,2026-10-23,Courts,Undergraduate,114
+V02082,2026-10-23,Pool,Undergraduate,47
+V02083,2026-10-23,Main gym,Undergraduate,74
+V02084,2026-10-23,Courts,Undergraduate,72
+V02085,2026-10-23,Courts,Undergraduate,55
+V02086,2026-10-23,Climbing wall,Undergraduate,66
+V02087,2026-10-23,Pool,Undergraduate,110
+V02088,2026-10-23,Pool,Undergraduate,57
+V02089,2026-10-23,Climbing wall,Undergraduate,54
+V02090,2026-10-23,Courts,Undergraduate,67
+V02091,2026-10-23,Climbing wall,Graduate,67
+V02092,2026-10-23,Courts,Undergraduate,65
+V02093,2026-10-23,Main gym,Undergraduate,92
+V02094,2026-10-23,Courts,Undergraduate,48
+V02095,2026-10-23,Fitness studios,Undergraduate,83
+V02096,2026-10-23,Courts,Undergraduate,118
+V02097,2026-10-23,Pool,Graduate,98
+V02098,2026-10-23,Climbing wall,Faculty or staff,29
+V02099,2026-10-23,Main gym,Faculty or staff,44
+V02100,2026-10-23,Pool,Graduate,49
+V02101,2026-10-23,Climbing wall,Undergraduate,94
+V02102,2026-10-23,Main gym,Undergraduate,64
+V02103,2026-10-23,Main gym,Faculty or staff,53
+V02104,2026-10-24,Main gym,Faculty or staff,39
+V02105,2026-10-24,Main gym,Undergraduate,128
+V02106,2026-10-24,Fitness studios,Undergraduate,39
+V02107,2026-10-24,Main gym,Undergraduate,131
+V02108,2026-10-24,Courts,Undergraduate,95
+V02109,2026-10-24,Courts,Undergraduate,141
+V02110,2026-10-24,Pool,Undergraduate,88
+V02111,2026-10-24,Courts,Undergraduate,41
+V02112,2026-10-24,Climbing wall,Undergraduate,72
+V02113,2026-10-24,Courts,Undergraduate,74
+V02114,2026-10-24,Pool,Undergraduate,88
+V02115,2026-10-24,Main gym,Undergraduate,34
+V02116,2026-10-24,Pool,Undergraduate,49
+V02117,2026-10-24,Main gym,Undergraduate,54
+V02118,2026-10-24,Fitness studios,Undergraduate,44
+V02119,2026-10-24,Courts,Undergraduate,106
+V02120,2026-10-24,Pool,Undergraduate,81
+V02121,2026-10-24,Fitness studios,Faculty or staff,33
+V02122,2026-10-24,Main gym,Undergraduate,28
+V02123,2026-10-24,Fitness studios,Undergraduate,34
+V02124,2026-10-24,Pool,Undergraduate,53
+V02125,2026-10-24,Fitness studios,Undergraduate,51
+V02126,2026-10-24,Fitness studios,Undergraduate,103
+V02127,2026-10-24,Fitness studios,Undergraduate,34
+V02128,2026-10-24,Pool,Graduate,30
+V02129,2026-10-24,Main gym,Undergraduate,52
+V02130,2026-10-24,Fitness studios,Faculty or staff,73
+V02131,2026-10-24,Main gym,Undergraduate,78
+V02132,2026-10-24,Fitness studios,Undergraduate,115
+V02133,2026-10-24,Climbing wall,Undergraduate,54
+V02134,2026-10-24,Courts,Undergraduate,63
+V02135,2026-10-24,Main gym,Undergraduate,88
+V02136,2026-10-24,Fitness studios,Undergraduate,130
+V02137,2026-10-24,Courts,Undergraduate,128
+V02138,2026-10-24,Courts,Undergraduate,47
+V02139,2026-10-24,Main gym,Undergraduate,62
+V02140,2026-10-24,Courts,Undergraduate,38
+V02141,2026-10-24,Courts,Undergraduate,44
+V02142,2026-10-24,Fitness studios,Graduate,37
+V02143,2026-10-24,Main gym,Faculty or staff,17
+V02144,2026-10-24,Main gym,Undergraduate,39
+V02145,2026-10-24,Main gym,Undergraduate,56
+V02146,2026-10-24,Main gym,Undergraduate,78
+V02147,2026-10-25,Courts,Undergraduate,54
+V02148,2026-10-25,Fitness studios,Graduate,80
+V02149,2026-10-25,Main gym,Undergraduate,121
+V02150,2026-10-25,Courts,Undergraduate,51
+V02151,2026-10-25,Fitness studios,Undergraduate,61
+V02152,2026-10-25,Courts,Graduate,46
+V02153,2026-10-25,Fitness studios,Undergraduate,55
+V02154,2026-10-25,Courts,Undergraduate,67
+V02155,2026-10-25,Pool,Undergraduate,128
+V02156,2026-10-25,Fitness studios,Undergraduate,57
+V02157,2026-10-25,Courts,Faculty or staff,67
+V02158,2026-10-25,Climbing wall,Undergraduate,57
+V02159,2026-10-25,Pool,Undergraduate,52
+V02160,2026-10-25,Climbing wall,Undergraduate,36
+V02161,2026-10-25,Main gym,Undergraduate,45
+V02162,2026-10-25,Main gym,Undergraduate,41
+V02163,2026-10-25,Courts,Faculty or staff,30
+V02164,2026-10-25,Pool,Graduate,44
+V02165,2026-10-25,Pool,Undergraduate,54
+V02166,2026-10-25,Pool,Undergraduate,33
+V02167,2026-10-25,Main gym,Undergraduate,67
+V02168,2026-10-25,Main gym,Undergraduate,103
+V02169,2026-10-25,Main gym,Graduate,93
+V02170,2026-10-25,Fitness studios,Faculty or staff,49
+V02171,2026-10-25,Main gym,Undergraduate,81
+V02172,2026-10-25,Main gym,Undergraduate,48
+V02173,2026-10-25,Fitness studios,Undergraduate,50
+V02174,2026-10-25,Fitness studios,Undergraduate,36
+V02175,2026-10-25,Main gym,Undergraduate,102
+V02176,2026-10-25,Climbing wall,Undergraduate,44
+V02177,2026-10-25,Courts,Undergraduate,67
+V02178,2026-10-25,Courts,Undergraduate,59
+V02179,2026-10-25,Climbing wall,Undergraduate,85
+V02180,2026-10-25,Main gym,Undergraduate,99
+V02181,2026-10-25,Main gym,Undergraduate,26
+V02182,2026-10-25,Fitness studios,Undergraduate,54
+V02183,2026-10-25,Fitness studios,Faculty or staff,50
+V02184,2026-10-25,Courts,Faculty or staff,31
+V02185,2026-10-25,Courts,Undergraduate,69
+V02186,2026-10-26,Courts,Undergraduate,68
+V02187,2026-10-26,Pool,Faculty or staff,50
+V02188,2026-10-26,Pool,Undergraduate,57
+V02189,2026-10-26,Climbing wall,Undergraduate,102
+V02190,2026-10-26,Main gym,Undergraduate,88
+V02191,2026-10-26,Courts,Undergraduate,42
+V02192,2026-10-26,Climbing wall,Undergraduate,57
+V02193,2026-10-26,Main gym,Undergraduate,85
+V02194,2026-10-26,Pool,Undergraduate,48
+V02195,2026-10-26,Climbing wall,Undergraduate,70
+V02196,2026-10-26,Courts,Undergraduate,135
+V02197,2026-10-26,Fitness studios,Undergraduate,53
+V02198,2026-10-26,Main gym,Graduate,80
+V02199,2026-10-26,Pool,Undergraduate,61
+V02200,2026-10-26,Fitness studios,Undergraduate,63
+V02201,2026-10-26,Fitness studios,Graduate,65
+V02202,2026-10-26,Climbing wall,Undergraduate,49
+V02203,2026-10-26,Main gym,Graduate,56
+V02204,2026-10-26,Fitness studios,Undergraduate,99
+V02205,2026-10-26,Fitness studios,Undergraduate,71
+V02206,2026-10-26,Courts,Undergraduate,64
+V02207,2026-10-26,Climbing wall,Undergraduate,36
+V02208,2026-10-26,Climbing wall,Undergraduate,64
+V02209,2026-10-26,Pool,Undergraduate,61
+V02210,2026-10-26,Courts,Undergraduate,63
+V02211,2026-10-26,Courts,Undergraduate,100
+V02212,2026-10-26,Pool,Undergraduate,55
+V02213,2026-10-26,Pool,Undergraduate,45
+V02214,2026-10-26,Courts,Undergraduate,92
+V02215,2026-10-26,Main gym,Undergraduate,111
+V02216,2026-10-26,Courts,Undergraduate,58
+V02217,2026-10-26,Fitness studios,Undergraduate,66
+V02218,2026-10-27,Fitness studios,Undergraduate,65
+V02219,2026-10-27,Fitness studios,Undergraduate,72
+V02220,2026-10-27,Pool,Undergraduate,52
+V02221,2026-10-27,Pool,Undergraduate,62
+V02222,2026-10-27,Courts,Undergraduate,43
+V02223,2026-10-27,Courts,Undergraduate,33
+V02224,2026-10-27,Main gym,Undergraduate,89
+V02225,2026-10-27,Courts,Graduate,35
+V02226,2026-10-27,Pool,Undergraduate,46
+V02227,2026-10-27,Main gym,Undergraduate,42
+V02228,2026-10-27,Main gym,Faculty or staff,82
+V02229,2026-10-27,Fitness studios,Undergraduate,56
+V02230,2026-10-27,Main gym,Undergraduate,80
+V02231,2026-10-27,Main gym,Undergraduate,51
+V02232,2026-10-27,Main gym,Undergraduate,65
+V02233,2026-10-27,Courts,Undergraduate,107
+V02234,2026-10-27,Pool,Graduate,29
+V02235,2026-10-27,Courts,Undergraduate,61
+V02236,2026-10-27,Fitness studios,Undergraduate,61
+V02237,2026-10-27,Fitness studios,Graduate,38
+V02238,2026-10-27,Main gym,Undergraduate,34
+V02239,2026-10-27,Pool,Faculty or staff,33
+V02240,2026-10-27,Fitness studios,Undergraduate,66
+V02241,2026-10-27,Fitness studios,Undergraduate,111
+V02242,2026-10-27,Fitness studios,Undergraduate,74
+V02243,2026-10-27,Main gym,Undergraduate,38
+V02244,2026-10-27,Main gym,Undergraduate,71
+V02245,2026-10-27,Climbing wall,Undergraduate,42
+V02246,2026-10-27,Courts,Undergraduate,34
+V02247,2026-10-27,Fitness studios,Graduate,89
+V02248,2026-10-27,Main gym,Undergraduate,101
+V02249,2026-10-27,Main gym,Undergraduate,32
+V02250,2026-10-27,Main gym,Undergraduate,72
+V02251,2026-10-27,Courts,Undergraduate,35
+V02252,2026-10-27,Pool,Undergraduate,49
+V02253,2026-10-27,Fitness studios,Undergraduate,43
+V02254,2026-10-27,Main gym,Undergraduate,108
+V02255,2026-10-27,Courts,Undergraduate,78
+V02256,2026-10-27,Courts,Undergraduate,56
+V02257,2026-10-27,Fitness studios,Undergraduate,202
+V02258,2026-10-28,Main gym,Graduate,57
+V02259,2026-10-28,Main gym,Undergraduate,55
+V02260,2026-10-28,Climbing wall,Undergraduate,52
+V02261,2026-10-28,Main gym,Undergraduate,33
+V02262,2026-10-28,Pool,Undergraduate,69
+V02263,2026-10-28,Main gym,Undergraduate,51
+V02264,2026-10-28,Fitness studios,Undergraduate,63
+V02265,2026-10-28,Pool,Undergraduate,58
+V02266,2026-10-28,Courts,Faculty or staff,59
+V02267,2026-10-28,Fitness studios,Faculty or staff,53
+V02268,2026-10-28,Courts,Undergraduate,41
+V02269,2026-10-28,Fitness studios,Undergraduate,45
+V02270,2026-10-28,Courts,Undergraduate,87
+V02271,2026-10-28,Main gym,Undergraduate,51
+V02272,2026-10-28,Fitness studios,Undergraduate,68
+V02273,2026-10-28,Main gym,Undergraduate,71
+V02274,2026-10-28,Pool,Undergraduate,89
+V02275,2026-10-28,Pool,Undergraduate,91
+V02276,2026-10-28,Main gym,Undergraduate,92
+V02277,2026-10-28,Courts,Undergraduate,66
+V02278,2026-10-28,Fitness studios,Undergraduate,68
+V02279,2026-10-28,Main gym,Undergraduate,69
+V02280,2026-10-28,Main gym,Undergraduate,50
+V02281,2026-10-28,Fitness studios,Undergraduate,61
+V02282,2026-10-28,Main gym,Undergraduate,62
+V02283,2026-10-28,Pool,Undergraduate,75
+V02284,2026-10-28,Courts,Undergraduate,141
+V02285,2026-10-28,Fitness studios,Faculty or staff,35
+V02286,2026-10-28,Fitness studios,Undergraduate,38
+V02287,2026-10-29,Main gym,Undergraduate,93
+V02288,2026-10-29,Main gym,Graduate,71
+V02289,2026-10-29,Main gym,Undergraduate,128
+V02290,2026-10-29,Climbing wall,Undergraduate,112
+V02291,2026-10-29,Main gym,Undergraduate,58
+V02292,2026-10-29,Fitness studios,Graduate,70
+V02293,2026-10-29,Main gym,Undergraduate,40
+V02294,2026-10-29,Main gym,Undergraduate,30
+V02295,2026-10-29,Courts,Graduate,40
+V02296,2026-10-29,Main gym,Undergraduate,55
+V02297,2026-10-29,Climbing wall,Undergraduate,57
+V02298,2026-10-29,Main gym,Undergraduate,76
+V02299,2026-10-29,Pool,Graduate,85
+V02300,2026-10-29,Courts,Undergraduate,60
+V02301,2026-10-29,Fitness studios,Undergraduate,105
+V02302,2026-10-29,Main gym,Undergraduate,30
+V02303,2026-10-29,Main gym,Undergraduate,66
+V02304,2026-10-29,Courts,Undergraduate,116
+V02305,2026-10-29,Pool,Undergraduate,48
+V02306,2026-10-29,Main gym,Faculty or staff,81
+V02307,2026-10-29,Main gym,Undergraduate,123
+V02308,2026-10-29,Climbing wall,Undergraduate,141
+V02309,2026-10-29,Courts,Undergraduate,45
+V02310,2026-10-29,Courts,Faculty or staff,90
+V02311,2026-10-29,Fitness studios,Undergraduate,64
+V02312,2026-10-29,Pool,Undergraduate,62
+V02313,2026-10-29,Climbing wall,Graduate,45
+V02314,2026-10-29,Pool,Undergraduate,54
+V02315,2026-10-29,Main gym,Undergraduate,71
+V02316,2026-10-29,Main gym,Graduate,44
+V02317,2026-10-29,Fitness studios,Undergraduate,75
+V02318,2026-10-29,Courts,Undergraduate,34
+V02319,2026-10-29,Fitness studios,Undergraduate,118
+V02320,2026-10-29,Pool,Undergraduate,88
+V02321,2026-10-29,Courts,Undergraduate,69
+V02322,2026-10-29,Fitness studios,Undergraduate,96
+V02323,2026-10-29,Main gym,Undergraduate,56
+V02324,2026-10-29,Main gym,Undergraduate,59
+V02325,2026-10-29,Main gym,Graduate,70
+V02326,2026-10-29,Pool,Graduate,63
+V02327,2026-10-29,Fitness studios,Undergraduate,80
+V02328,2026-10-29,Fitness studios,Undergraduate,86
+V02329,2026-10-29,Main gym,Faculty or staff,34
+V02330,2026-10-29,Fitness studios,Undergraduate,96
+V02331,2026-10-30,Courts,Undergraduate,109
+V02332,2026-10-30,Fitness studios,Undergraduate,70
+V02333,2026-10-30,Fitness studios,Undergraduate,57
+V02334,2026-10-30,Pool,Faculty or staff,69
+V02335,2026-10-30,Fitness studios,Undergraduate,114
+V02336,2026-10-30,Main gym,Faculty or staff,46
+V02337,2026-10-30,Main gym,Undergraduate,60
+V02338,2026-10-30,Main gym,Undergraduate,120
+V02339,2026-10-30,Pool,Undergraduate,69
+V02340,2026-10-30,Main gym,Undergraduate,58
+V02341,2026-10-30,Courts,Undergraduate,36
+V02342,2026-10-30,Pool,Undergraduate,61
+V02343,2026-10-30,Fitness studios,Undergraduate,60
+V02344,2026-10-30,Pool,Undergraduate,38
+V02345,2026-10-30,Pool,Undergraduate,87
+V02346,2026-10-30,Courts,Undergraduate,62
+V02347,2026-10-30,Main gym,Undergraduate,30
+V02348,2026-10-30,Climbing wall,Faculty or staff,76
+V02349,2026-10-30,Courts,Undergraduate,76
+V02350,2026-10-30,Pool,Undergraduate,69
+V02351,2026-10-30,Courts,Undergraduate,74
+V02352,2026-10-30,Main gym,Undergraduate,79
+V02353,2026-10-30,Main gym,Faculty or staff,35
+V02354,2026-10-30,Fitness studios,Undergraduate,50
+V02355,2026-10-30,Fitness studios,Graduate,22
+V02356,2026-10-30,Courts,Undergraduate,88
+V02357,2026-10-31,Main gym,Graduate,70
+V02358,2026-10-31,Fitness studios,Undergraduate,48
+V02359,2026-10-31,Courts,Graduate,73
+V02360,2026-10-31,Climbing wall,Undergraduate,96
+V02361,2026-10-31,Main gym,Undergraduate,51
+V02362,2026-10-31,Courts,Undergraduate,61
+V02363,2026-10-31,Main gym,Undergraduate,42
+V02364,2026-10-31,Courts,Undergraduate,50
+V02365,2026-10-31,Fitness studios,Undergraduate,71
+V02366,2026-10-31,Courts,Undergraduate,56
+V02367,2026-10-31,Fitness studios,Undergraduate,68
+V02368,2026-10-31,Main gym,Undergraduate,49
+V02369,2026-10-31,Main gym,Graduate,60
+V02370,2026-10-31,Main gym,Undergraduate,36
+V02371,2026-10-31,Fitness studios,Undergraduate,37
+V02372,2026-10-31,Pool,Undergraduate,50
+V02373,2026-10-31,Pool,Undergraduate,98
+V02374,2026-10-31,Fitness studios,Undergraduate,76
+V02375,2026-10-31,Fitness studios,Undergraduate,22
+V02376,2026-10-31,Pool,Undergraduate,54
+V02377,2026-10-31,Main gym,Undergraduate,67
+V02378,2026-10-31,Main gym,Undergraduate,52
+V02379,2026-10-31,Climbing wall,Graduate,68
+V02380,2026-10-31,Fitness studios,Undergraduate,52
+V02381,2026-10-31,Fitness studios,Undergraduate,31
+V02382,2026-10-31,Fitness studios,Undergraduate,61
+V02383,2026-10-31,Main gym,Undergraduate,46
+V02384,2026-10-31,Main gym,Undergraduate,49
+V02385,2026-10-31,Pool,Undergraduate,81
+V02386,2026-10-31,Main gym,Faculty or staff,67
+V02387,2026-10-31,Fitness studios,Undergraduate,65
+V02388,2026-10-31,Pool,Faculty or staff,28
+V02389,2026-10-31,Courts,Undergraduate,47
+V02390,2026-10-31,Main gym,Undergraduate,74
+V02391,2026-10-31,Main gym,Graduate,59
+V02392,2026-10-31,Main gym,Undergraduate,53
+V02393,2026-10-31,Courts,Undergraduate,38
+V02394,2026-10-31,Courts,Undergraduate,41
+V02395,2026-10-31,Fitness studios,Faculty or staff,42
+V02396,2026-10-31,Climbing wall,Undergraduate,64
+V02397,2026-10-31,Pool,Faculty or staff,64
+V02398,2026-10-31,Courts,Undergraduate,51
+V02399,2026-10-31,Main gym,Undergraduate,21
+V02400,2026-10-31,Courts,Undergraduate,51
