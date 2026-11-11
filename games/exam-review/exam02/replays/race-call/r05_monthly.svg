@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='576.00pt' height='360.00pt' viewBox='0 0 576.00 360.00'>
+<g class='svglite'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
+<defs>
+  <clipPath id='cpMC4wMHw1NzYuMDB8MC4wMHwzNjAuMDA='>
+    <rect x='0.00' y='0.00' width='576.00' height='360.00' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMC4wMHw1NzYuMDB8MC4wMHwzNjAuMDA=)'>
+<rect x='0.00' y='0.00' width='576.00' height='360.00' style='stroke-width: 1.75; stroke: none; fill: #FFFFFF;' />
+</g>
+<defs>
+  <clipPath id='cpNjUuMTl8NTYwLjA2fDYyLjMyfDMyNi42NQ=='>
+    <rect x='65.19' y='62.32' width='494.87' height='264.32' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpNjUuMTl8NTYwLjA2fDYyLjMyfDMyNi42NQ==)'>
+<polyline points='65.19,270.10 560.06,270.10 ' style='stroke-width: 1.75; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='65.19,177.32 560.06,177.32 ' style='stroke-width: 1.75; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='65.19,84.54 560.06,84.54 ' style='stroke-width: 1.75; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='87.68,326.65 87.68,62.32 ' style='stroke-width: 1.75; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='163.19,326.65 163.19,62.32 ' style='stroke-width: 1.75; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='238.69,326.65 238.69,62.32 ' style='stroke-width: 1.75; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='314.20,326.65 314.20,62.32 ' style='stroke-width: 1.75; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='389.70,326.65 389.70,62.32 ' style='stroke-width: 1.75; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='465.21,326.65 465.21,62.32 ' style='stroke-width: 1.75; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='540.71,326.65 540.71,62.32 ' style='stroke-width: 1.75; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='87.68,310.92 90.83,308.14 93.98,301.64 97.12,303.04 100.27,306.75 103.41,300.25 106.56,294.22 109.71,294.22 112.85,299.79 116.00,307.67 119.14,314.63 122.29,308.14 125.44,309.53 128.58,304.43 131.73,297.47 134.87,300.25 138.02,304.89 141.17,293.76 144.31,284.02 147.46,284.02 150.60,289.58 153.75,301.18 156.90,309.99 160.04,297.93 163.19,295.61 166.34,293.29 169.48,280.31 172.63,287.26 175.77,283.09 178.92,280.31 182.07,270.56 185.21,270.56 188.36,277.52 191.50,287.73 194.65,295.15 197.80,285.87 200.94,283.55 204.09,279.38 207.23,273.35 210.38,278.91 213.53,277.99 216.67,261.75 219.82,256.18 222.96,250.62 226.11,265.92 229.26,274.27 232.40,283.09 235.55,272.88 238.69,271.96 241.84,271.96 244.99,253.40 248.13,253.86 251.28,256.65 254.42,250.15 257.57,240.41 260.72,236.70 263.86,252.94 267.01,265.00 270.15,279.38 273.30,269.64 276.45,268.24 279.59,275.67 282.74,253.86 285.88,257.57 289.03,254.33 292.18,240.41 295.32,222.78 298.47,226.96 301.61,242.73 304.76,256.65 307.91,268.71 311.05,256.65 314.20,250.62 317.34,254.79 320.49,239.02 323.64,238.09 326.78,237.63 329.93,216.75 333.07,194.02 336.22,201.91 339.37,218.14 342.51,235.77 345.66,252.94 348.80,233.92 351.95,231.13 355.10,234.38 358.24,215.82 361.39,217.68 364.53,215.36 367.68,189.38 370.83,171.29 373.97,175.00 377.12,198.20 380.26,220.93 383.41,237.16 386.56,220.93 389.70,216.75 392.85,223.25 395.99,197.73 399.14,201.44 402.29,198.20 405.43,167.12 408.58,147.17 411.72,146.24 414.87,175.47 418.02,201.91 421.16,221.39 424.31,207.01 427.45,205.16 430.60,215.36 433.75,194.95 436.89,201.44 440.04,194.49 443.19,161.09 446.33,135.11 449.48,128.61 452.62,175.47 455.77,196.34 458.92,219.07 462.06,206.55 465.21,195.88 468.35,204.23 471.50,174.54 474.65,179.18 477.79,168.04 480.94,143.92 484.08,108.67 487.23,103.56 490.38,148.10 493.52,174.07 496.67,194.95 499.81,175.00 502.96,169.44 506.11,181.50 509.25,168.51 512.40,149.02 515.54,143.92 518.69,114.70 521.84,74.34 524.98,81.76 528.13,127.22 531.27,149.02 534.42,181.96 537.57,162.48 ' style='stroke-width: 2.13; stroke: #2E4A7D; stroke-linecap: butt;' />
+<circle cx='106.56' cy='294.22' r='3.57' style='stroke-width: 1.16; stroke: #E8A317; fill: #E8A317;' />
+<circle cx='144.31' cy='284.02' r='3.57' style='stroke-width: 1.16; stroke: #E8A317; fill: #E8A317;' />
+<circle cx='182.07' cy='270.56' r='3.57' style='stroke-width: 1.16; stroke: #E8A317; fill: #E8A317;' />
+<circle cx='219.82' cy='256.18' r='3.57' style='stroke-width: 1.16; stroke: #E8A317; fill: #E8A317;' />
+<circle cx='257.57' cy='240.41' r='3.57' style='stroke-width: 1.16; stroke: #E8A317; fill: #E8A317;' />
+<circle cx='295.32' cy='222.78' r='3.57' style='stroke-width: 1.16; stroke: #E8A317; fill: #E8A317;' />
+<circle cx='333.07' cy='194.02' r='3.57' style='stroke-width: 1.16; stroke: #E8A317; fill: #E8A317;' />
+<circle cx='370.83' cy='171.29' r='3.57' style='stroke-width: 1.16; stroke: #E8A317; fill: #E8A317;' />
+<circle cx='408.58' cy='147.17' r='3.57' style='stroke-width: 1.16; stroke: #E8A317; fill: #E8A317;' />
+<circle cx='446.33' cy='135.11' r='3.57' style='stroke-width: 1.16; stroke: #E8A317; fill: #E8A317;' />
+<circle cx='484.08' cy='108.67' r='3.57' style='stroke-width: 1.16; stroke: #E8A317; fill: #E8A317;' />
+<circle cx='521.84' cy='74.34' r='3.57' style='stroke-width: 1.16; stroke: #E8A317; fill: #E8A317;' />
+</g>
+<g clip-path='url(#cpMC4wMHw1NzYuMDB8MC4wMHwzNjAuMDA=)'>
+<text x='57.12' y='275.25' text-anchor='end' style='font-size: 14.40px;fill: #1B1B1B; font-family: "Arial";' textLength='24.00px' lengthAdjust='spacingAndGlyphs'>200</text>
+<text x='57.12' y='182.47' text-anchor='end' style='font-size: 14.40px;fill: #1B1B1B; font-family: "Arial";' textLength='24.00px' lengthAdjust='spacingAndGlyphs'>400</text>
+<text x='57.12' y='89.70' text-anchor='end' style='font-size: 14.40px;fill: #1B1B1B; font-family: "Arial";' textLength='24.00px' lengthAdjust='spacingAndGlyphs'>600</text>
+<text x='87.68' y='345.02' text-anchor='middle' style='font-size: 14.40px;fill: #1B1B1B; font-family: "Arial";' textLength='32.00px' lengthAdjust='spacingAndGlyphs'>1949</text>
+<text x='163.19' y='345.02' text-anchor='middle' style='font-size: 14.40px;fill: #1B1B1B; font-family: "Arial";' textLength='32.00px' lengthAdjust='spacingAndGlyphs'>1951</text>
+<text x='238.69' y='345.02' text-anchor='middle' style='font-size: 14.40px;fill: #1B1B1B; font-family: "Arial";' textLength='32.00px' lengthAdjust='spacingAndGlyphs'>1953</text>
+<text x='314.20' y='345.02' text-anchor='middle' style='font-size: 14.40px;fill: #1B1B1B; font-family: "Arial";' textLength='32.00px' lengthAdjust='spacingAndGlyphs'>1955</text>
+<text x='389.70' y='345.02' text-anchor='middle' style='font-size: 14.40px;fill: #1B1B1B; font-family: "Arial";' textLength='32.00px' lengthAdjust='spacingAndGlyphs'>1957</text>
+<text x='465.21' y='345.02' text-anchor='middle' style='font-size: 14.40px;fill: #1B1B1B; font-family: "Arial";' textLength='32.00px' lengthAdjust='spacingAndGlyphs'>1959</text>
+<text x='540.71' y='345.02' text-anchor='middle' style='font-size: 14.40px;fill: #1B1B1B; font-family: "Arial";' textLength='32.00px' lengthAdjust='spacingAndGlyphs'>1961</text>
+<text transform='translate(24.84,194.49) rotate(-90)' text-anchor='middle' style='font-size: 18.00px;fill: #1B1B1B; font-family: "Arial";' textLength='195.17px' lengthAdjust='spacingAndGlyphs'>Passengers (thousands)</text>
+<text x='11.96' y='50.20' style='font-size: 15.00px;fill: #585E60; font-family: "Arial";' textLength='293.41px' lengthAdjust='spacingAndGlyphs'>Gold = July. The swings grow with the trend.</text>
+<text x='11.96' y='26.28' style='font-size: 20.00px; font-weight: bold;fill: #1B1B1B; font-family: "Arial";' textLength='496.97px' lengthAdjust='spacingAndGlyphs'>The same data by month: a summer peak every year</text>
+</g>
+</g>
+</svg>

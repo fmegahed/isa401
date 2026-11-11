@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='576.00pt' height='360.00pt' viewBox='0 0 576.00 360.00'>
+<g class='svglite'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
+<defs>
+  <clipPath id='cpMC4wMHw1NzYuMDB8MC4wMHwzNjAuMDA='>
+    <rect x='0.00' y='0.00' width='576.00' height='360.00' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMC4wMHw1NzYuMDB8MC4wMHwzNjAuMDA=)'>
+<rect x='0.00' y='0.00' width='576.00' height='360.00' style='stroke-width: 1.75; stroke: none; fill: #FFFFFF;' />
+</g>
+<defs>
+  <clipPath id='cpNDQuMDJ8NTYwLjA2fDYyLjMyfDMyNi42NQ=='>
+    <rect x='44.02' y='62.32' width='516.03' height='264.32' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpNDQuMDJ8NTYwLjA2fDYyLjMyfDMyNi42NQ==)'>
+<polyline points='44.02,326.65 560.06,326.65 ' style='stroke-width: 1.75; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='44.02,251.13 560.06,251.13 ' style='stroke-width: 1.75; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='44.02,175.61 560.06,175.61 ' style='stroke-width: 1.75; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='44.02,100.08 560.06,100.08 ' style='stroke-width: 1.75; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='106.57,326.65 106.57,62.32 ' style='stroke-width: 1.75; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='204.31,326.65 204.31,62.32 ' style='stroke-width: 1.75; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='302.04,326.65 302.04,62.32 ' style='stroke-width: 1.75; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='399.78,326.65 399.78,62.32 ' style='stroke-width: 1.75; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='497.51,326.65 497.51,62.32 ' style='stroke-width: 1.75; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='106.57,151.44 497.51,91.02 ' style='stroke-width: 3.41; stroke: #D33A3A; stroke-linecap: butt;' />
+<circle cx='106.57' cy='151.44' r='4.85' style='stroke-width: 1.16; stroke: #D33A3A; fill: #D33A3A;' />
+<circle cx='497.51' cy='91.02' r='4.85' style='stroke-width: 1.16; stroke: #D33A3A; fill: #D33A3A;' />
+<text x='106.57' y='139.22' text-anchor='middle' style='font-size: 17.07px; font-weight: bold; font-family: "Arial";' textLength='28.45px' lengthAdjust='spacingAndGlyphs'>232</text>
+<text x='497.51' y='78.80' text-anchor='middle' style='font-size: 17.07px; font-weight: bold; font-family: "Arial";' textLength='28.45px' lengthAdjust='spacingAndGlyphs'>312</text>
+<circle cx='302.04' cy='121.23' r='8.60' style='stroke-width: 2.27; stroke: #1B1B1B; fill: #FFFFFF;' />
+<polygon points='196.34,233.75 407.75,233.75 407.64,233.75 408.07,233.73 408.49,233.64 408.89,233.49 409.26,233.28 409.59,233.01 409.88,232.69 410.11,232.32 410.27,231.93 410.38,231.51 410.41,231.09 410.41,231.09 410.41,195.65 410.41,195.65 410.38,195.22 410.27,194.80 410.11,194.41 409.88,194.05 409.59,193.73 409.26,193.45 408.89,193.24 408.49,193.09 408.07,193.00 407.75,192.98 196.34,192.98 196.66,193.00 196.23,192.99 195.80,193.04 195.39,193.16 195.01,193.34 194.65,193.58 194.34,193.88 194.09,194.22 193.89,194.60 193.75,195.01 193.68,195.43 193.67,195.65 193.67,231.09 193.68,230.87 193.68,231.30 193.75,231.72 193.89,232.13 194.09,232.51 194.34,232.85 194.65,233.15 195.01,233.39 195.39,233.58 195.80,233.70 196.23,233.75 ' style='stroke-width: 0.87; fill: #FFF4D6;' />
+<text x='302.04' y='208.01' text-anchor='middle' style='font-size: 14.80px; font-family: "Arial";' textLength='207.86px' lengthAdjust='spacingAndGlyphs'>The line claims about 272 votes</text>
+<text x='302.04' y='229.31' text-anchor='middle' style='font-size: 14.80px; font-family: "Arial";' textLength='197.19px' lengthAdjust='spacingAndGlyphs'>in 2022. No election was held.</text>
+<line x1='302.04' y1='194.49' x2='302.04' y2='128.78' style='stroke-width: 1.75; stroke: #1B1B1B; stroke-linecap: butt;' />
+<polyline points='306.36,136.26 302.04,128.78 297.72,136.26 ' style='stroke-width: 1.75; stroke: #1B1B1B; stroke-linecap: butt;' />
+</g>
+<g clip-path='url(#cpMC4wMHw1NzYuMDB8MC4wMHwzNjAuMDA=)'>
+<text x='35.96' y='331.80' text-anchor='end' style='font-size: 14.40px;fill: #1B1B1B; font-family: "Arial";' textLength='8.00px' lengthAdjust='spacingAndGlyphs'>0</text>
+<text x='35.96' y='256.28' text-anchor='end' style='font-size: 14.40px;fill: #1B1B1B; font-family: "Arial";' textLength='24.00px' lengthAdjust='spacingAndGlyphs'>100</text>
+<text x='35.96' y='180.76' text-anchor='end' style='font-size: 14.40px;fill: #1B1B1B; font-family: "Arial";' textLength='24.00px' lengthAdjust='spacingAndGlyphs'>200</text>
+<text x='35.96' y='105.24' text-anchor='end' style='font-size: 14.40px;fill: #1B1B1B; font-family: "Arial";' textLength='24.00px' lengthAdjust='spacingAndGlyphs'>300</text>
+<text x='106.57' y='345.02' text-anchor='middle' style='font-size: 14.40px;fill: #1B1B1B; font-family: "Arial";' textLength='32.00px' lengthAdjust='spacingAndGlyphs'>2020</text>
+<text x='204.31' y='345.02' text-anchor='middle' style='font-size: 14.40px;fill: #1B1B1B; font-family: "Arial";' textLength='32.00px' lengthAdjust='spacingAndGlyphs'>2021</text>
+<text x='302.04' y='345.02' text-anchor='middle' style='font-size: 14.40px;fill: #1B1B1B; font-family: "Arial";' textLength='32.00px' lengthAdjust='spacingAndGlyphs'>2022</text>
+<text x='399.78' y='345.02' text-anchor='middle' style='font-size: 14.40px;fill: #1B1B1B; font-family: "Arial";' textLength='32.00px' lengthAdjust='spacingAndGlyphs'>2023</text>
+<text x='497.51' y='345.02' text-anchor='middle' style='font-size: 14.40px;fill: #1B1B1B; font-family: "Arial";' textLength='32.00px' lengthAdjust='spacingAndGlyphs'>2024</text>
+<text x='11.96' y='50.20' style='font-size: 15.00px;fill: #585E60; font-family: "Arial";' textLength='361.92px' lengthAdjust='spacingAndGlyphs'>Two separate measurements: compare them with bars</text>
+<text x='11.96' y='26.28' style='font-size: 20.00px; font-weight: bold;fill: #1B1B1B; font-family: "Arial";' textLength='382.80px' lengthAdjust='spacingAndGlyphs'>A line implies values between the points</text>
+</g>
+</g>
+</svg>

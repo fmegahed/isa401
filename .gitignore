@@ -114,8 +114,7 @@ data/T_ONTIME_*.csv
 # Race Call run sheet holds the answer key: keep it out of the public repo until after Class 22 (Nov 9, 2026)
 lectures/22_high_dimensional_charts/22_race_call_run_sheet.*
 
-# Class 23 (Wed Nov 11, 2026): the decks, the run sheet and games/flight-plan may be committed like the
-# other games (Fadel, Nov 10: students won't look at the repo during class). LaTeX build files stay out.
+# Class 23 (Wed Nov 11, 2026): the run sheet's LaTeX build files stay out.
 lectures/23_business_reporting/23_flight_plan_run_sheet.aux
 lectures/23_business_reporting/23_flight_plan_run_sheet.log
 lectures/23_business_reporting/23_flight_plan_run_sheet.out

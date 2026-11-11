@@ -3,6 +3,8 @@
 
 ISA 401 teaches the complete business intelligence pipeline: acquiring data from anywhere (files, APIs, web scraping, and LLM-based extraction), transforming messy inputs into tidy, validated datasets in R, and turning them into insight through visualization, dashboards, and exploratory data mining. The course is taught hands-on in a lab, with AI tools (via [ChatISA](https://chatisa.fsb.miamioh.edu)) woven into how we explore, verify, and communicate with data. By the end of the semester, students build a portfolio that takes real-world data from raw source to business decision.
 
+**Video:** [AI Augmented Learning in ISA 401 at Miami University](https://youtu.be/S8IHsr_fdBg)
+
 **On this page:** [Schedule and slides](#schedule) · [Practice site and class games](#practice-site-and-class-games) · [Repository layout](#repository-layout) · [Acknowledgments](#acknowledgments) · [Previous versions](#previous-versions)
 
 ---

@@ -1,0 +1,217 @@
+{
+ "game-day:fox-lie-meaning": {
+  "right": 0.727,
+  "n": 44,
+  "top": 0
+ },
+ "game-day:russia-squares": {
+  "right": 0.727,
+  "n": 44,
+  "top": 0
+ },
+ "game-day:possession-baseline": {
+  "right": 0.841,
+  "n": 44,
+  "top": 1
+ },
+ "game-day:miners-open": {
+  "right": 0.75,
+  "n": 44,
+  "top": null
+ },
+ "game-day:roster-nominal": {
+  "right": 0.886,
+  "n": 44,
+  "top": 3
+ },
+ "game-day:class-year-type": {
+  "right": 0.568,
+  "n": 44,
+  "top": 0
+ },
+ "game-day:ratio-vs-interval": {
+  "right": 0.674,
+  "n": 43,
+  "top": 0
+ },
+ "game-day:data-ink": {
+  "right": 0.3,
+  "n": 40,
+  "top": 0
+ },
+ "game-day:best-channel": {
+  "right": 0.884,
+  "n": 43,
+  "top": 3
+ },
+ "game-day:diverging-palette": {
+  "right": 0.619,
+  "n": 42,
+  "top": 0
+ },
+ "game-day:red-green": {
+  "right": 0.952,
+  "n": 42,
+  "top": 2
+ },
+ "game-day:fill-mapping": {
+  "right": 0.214,
+  "n": 42,
+  "top": 2
+ },
+ "game-day:coord-change": {
+  "right": 0.25,
+  "n": 44,
+  "top": 0
+ },
+ "game-day:describe-open": {
+  "right": 0.805,
+  "n": 41,
+  "top": null
+ },
+ "race-call:exit-donut": {
+  "right": 0.783,
+  "n": 46,
+  "top": 0
+ },
+ "race-call:pie-channels": {
+  "right": 0.681,
+  "n": 47,
+  "top": 3
+ },
+ "race-call:ev-waterfall": {
+  "right": 0.915,
+  "n": 47,
+  "top": 0
+ },
+ "race-call:two-points": {
+  "right": 0.745,
+  "n": 47,
+  "top": 1
+ },
+ "race-call:air-annual": {
+  "right": 0.804,
+  "n": 46,
+  "top": 1
+ },
+ "race-call:one-year": {
+  "right": 0.935,
+  "n": 46,
+  "top": 3
+ },
+ "race-call:calendar": {
+  "right": 0.844,
+  "n": 45,
+  "top": 1
+ },
+ "race-call:motion": {
+  "right": 0.936,
+  "n": 47,
+  "top": 0
+ },
+ "race-call:choropleth": {
+  "right": 0.66,
+  "n": 47,
+  "top": 2
+ },
+ "race-call:land-vs-people": {
+  "right": 0.609,
+  "n": 46,
+  "top": 0
+ },
+ "race-call:ohio-palette": {
+  "right": 0.8,
+  "n": 45,
+  "top": 1
+ },
+ "race-call:barley": {
+  "right": 0.848,
+  "n": 46,
+  "top": 3
+ },
+ "race-call:small-multiples": {
+  "right": 0.848,
+  "n": 46,
+  "top": 1
+ },
+ "press-time:q1": {
+  "right": 0.14,
+  "n": 43,
+  "top": null
+ },
+ "press-time:q2": {
+  "right": 0.047,
+  "n": 43,
+  "top": 53038207
+ },
+ "press-time:q3": {
+  "right": 0.116,
+  "n": 43,
+  "top": 391946082
+ },
+ "press-time:all": {
+  "right": 0,
+  "n": 43,
+  "top": null
+ },
+ "map-gallery:running_total_mistake": {
+  "right": 0.105,
+  "n": 38,
+  "top": null
+ },
+ "map-gallery:running_total_by_number": {
+  "right": 0.105,
+  "n": 38,
+  "top": null
+ },
+ "map-gallery:rate_map": {
+  "right": 0.579,
+  "n": 38,
+  "top": null
+ },
+ "map-gallery:descriptive_title": {
+  "right": 0.895,
+  "n": 38,
+  "top": null
+ },
+ "map-gallery:butler_captured": {
+  "right": 1,
+  "n": 38,
+  "top": null
+ },
+ "map-gallery:scale_appropriate": {
+  "right": 0.842,
+  "n": 38,
+  "top": null
+ },
+ "map-gallery:time_shown": {
+  "right": 0.289,
+  "n": 38,
+  "top": null
+ },
+ "map-gallery:extra_panels_appropriate": {
+  "right": 0.974,
+  "n": 38,
+  "top": null
+ },
+ "map-gallery:source_caption": {
+  "right": 0.447,
+  "n": 38,
+  "top": null
+ },
+ "map-gallery:emphasis_text": {
+  "right": 0.395,
+  "n": 38,
+  "top": null
+ },
+ "map-gallery:personalized": {
+  "right": 1,
+  "n": 38,
+  "top": null
+ },
+ "map-gallery:rate_values_shown": {
+  "right": 0.579,
+  "n": 38,
+  "top": null
+ }
+}
