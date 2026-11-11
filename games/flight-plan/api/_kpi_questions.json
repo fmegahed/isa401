@@ -1,0 +1,75 @@
+{
+  "_note": "Server-only. Every Jev question and every feedback sentence students can see, in one place. Feedback is about measurability only (Fadel, Nov 10: design-phase feedback stays silent on whether a KPI matters to the goal, and never comments on the plane design).",
+  "activity": "Over 15 to 20 minutes, a team designs the best paper plane that can consistently hit a target (an X drawn on the whiteboard) from 6 feet away, using any material brought to class. Each team throws three times. The team lists operational KPIs (about how they make it) and product or client KPIs (about what the client gets).",
+  "nouls": {
+    "measurable_in_class": {
+      "ask": "Could the team measure `kpi` during class with what is in the room: a photo of the whiteboard, a stopwatch, a count of people or materials, or a tape measure?",
+      "yes": "The definition names something that can be timed, counted or measured in class with those tools.",
+      "no": "It needs equipment or data that is not in the room, or it is an opinion with no stated way to measure it (for example \"looks cool\")."
+    },
+    "two_people_same_number": {
+      "ask": "Would two classmates who follow the definition of `kpi` get the same number?",
+      "yes": "The definition says exactly what is measured and how (from where to where, or what is counted), so two people would agree.",
+      "no": "The definition is vague (for example \"accuracy: how accurate it is\" or \"fast\"), so two people could get different numbers."
+    },
+    "names_unit": {
+      "ask": "Does the definition of `kpi` say what unit it is measured in (for example inches, seconds, minutes, sheets, people or a percent)?",
+      "yes": "A unit is named or obvious from a count (for example \"number of sheets\").",
+      "no": "No unit is named and none is implied."
+    },
+    "is_about_landing_near_x": {
+      "ask": "Is `kpi` about how close the throws land to the X on the whiteboard?",
+      "yes": "It measures distance from the X, hits near the X, or landing position relative to the X.",
+      "no": "It measures something else, such as time, cost, people, looks, or how far or long the plane flies."
+    },
+    "says_how_miss_counts": {
+      "ask": "Does the definition of `kpi` say how a throw that misses the whiteboard counts?",
+      "yes": "It says what happens to a throw that misses the board (for example a penalty distance, dropped, or the team loses).",
+      "no": "It does not mention throws that miss the board."
+    },
+    "fits_any": {
+      "ask": "Does `kpi` measure one of the things listed for the question about which measure it is?",
+      "yes": "One of the listed measures describes it well.",
+      "no": "None of the listed measures fits it."
+    },
+    "states_summary": {
+      "ask": "Does the definition of `kpi` say how the three throws are turned into one number (for example their average, the best throw, the worst throw, or the share within some distance)?",
+      "yes": "It names how the three throws are combined.",
+      "no": "It does not say how the throws are combined."
+    },
+    "combines_measures": {
+      "ask": "Does `kpi` combine two or more different measures into one (for example distance and time together)?",
+      "yes": "It mixes two or more different things into one number or rule.",
+      "no": "It measures one thing."
+    }
+  },
+  "choices": {
+    "summary": {
+      "ask": "How does the definition of `kpi` turn the three throws into one number?",
+      "options": {
+        "average": "The average (mean) distance from the X over the throws.",
+        "median": "The middle distance of the three throws.",
+        "closest": "The single best (closest) throw.",
+        "farthest": "The worst (farthest) throw, so the team is only as good as its worst throw.",
+        "hit_rate": "The share or count of throws within some distance of the X, or inside a zone.",
+        "spread": "How tightly the throws cluster together, wherever they land."
+      }
+    },
+    "miss_rule": {
+      "ask": "According to the definition of `kpi`, how does a throw that misses the whiteboard count?",
+      "options": {
+        "fixed_penalty": "It counts as a set penalty distance (for example 48 inches) or a maximum value.",
+        "worst_landed": "It counts the same as the team's worst throw that did land.",
+        "dropped": "It is ignored and only the throws that landed are scored.",
+        "automatic_last": "The team loses or ranks last."
+      }
+    }
+  },
+  "catalogAsk": "Which of these measures is `kpi`?",
+  "sentences": {
+    "measurable_in_class": "How would you measure this in class, and with what?",
+    "two_people_same_number": "Two people could get different numbers from this. Say exactly what you measure and how.",
+    "names_unit": "Name the unit (inches, seconds, sheets, people, percent...).",
+    "says_how_miss_counts": "Say how a throw that misses the board counts."
+  }
+}

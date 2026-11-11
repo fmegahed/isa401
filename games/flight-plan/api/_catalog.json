@@ -1,0 +1,22 @@
+{
+  "_note": "Server-only. The KPIs Jev matches each team's KPI rows to. Relevance labels are Fadel's table from Nov 10, 2026 (tied | supports | client | not_tied | process | other). Relevance is never shown before the kpis phase and is never asked of Jev: code looks it up here.",
+  "items": [
+    { "id": "accuracy", "type": "product", "relevance": "tied", "name": "Accuracy: distance to the X", "desc": "How close the throws land to the X on the whiteboard, summarized in any way (average, median, best, worst distance)." },
+    { "id": "spread", "type": "product", "relevance": "tied", "name": "Consistency or spread", "desc": "How tightly the throws cluster together or how much they vary, wherever they land. Not how close they are to the X." },
+    { "id": "hit_rate", "type": "product", "relevance": "tied", "name": "Hit rate", "desc": "The share or count of throws that land within some distance of the X or inside a target zone." },
+    { "id": "reaches_board", "type": "product", "relevance": "tied", "name": "Reaches the board", "desc": "Whether or how often a throw reaches or hits the whiteboard at all." },
+    { "id": "durability", "type": "product", "relevance": "supports", "name": "Durability", "desc": "Whether the plane survives repeated throws without repair or loses its shape." },
+    { "id": "skill_to_throw", "type": "product", "relevance": "supports", "name": "Skill needed to throw", "desc": "How easy the plane is to throw well, or whether anyone could throw it, or how much it depends on the thrower." },
+    { "id": "unit_cost", "type": "product", "relevance": "client", "name": "Unit cost", "desc": "The materials in one finished plane (sheets, clips, tape) or its price. Not everything used while developing it." },
+    { "id": "aesthetics", "type": "product", "relevance": "client", "name": "Aesthetics", "desc": "How the plane looks: appearance, neatness, style, design appeal." },
+    { "id": "speed_flight", "type": "product", "relevance": "not_tied", "name": "Speed, flight time or distance flown", "desc": "How fast it flies, how long it stays in the air, or how far it can fly." },
+    { "id": "weight", "type": "product", "relevance": "not_tied", "name": "Weight", "desc": "How heavy or light the plane is." },
+    { "id": "cycle_time", "type": "operational", "relevance": "process", "name": "Cycle time", "desc": "The time it takes to build one plane, from start to ready. Not the pace required by demand." },
+    { "id": "takt_time", "type": "operational", "relevance": "process", "name": "Takt time", "desc": "The pace demand requires: available time divided by the number of planes needed. Not how long one plane actually takes." },
+    { "id": "lead_time", "type": "operational", "relevance": "process", "name": "Lead time", "desc": "Total time from the start of design (including testing) to a throw-ready plane." },
+    { "id": "people", "type": "operational", "relevance": "process", "name": "People involved", "desc": "How many people work on building or throwing, or labor hours." },
+    { "id": "cost_resources", "type": "operational", "relevance": "process", "name": "Cost of resources", "desc": "Everything used to develop and build, including scrapped prototypes and wasted paper." },
+    { "id": "prototypes", "type": "operational", "relevance": "process", "name": "Prototypes or iterations", "desc": "How many versions or test builds the team made before the final plane." },
+    { "id": "training_time", "type": "operational", "relevance": "process", "name": "Training time", "desc": "Practice time needed to get the thrower or builder ready." }
+  ]
+}

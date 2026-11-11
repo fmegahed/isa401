@@ -1,0 +1,8 @@
+carrier,departures,ontime_dep_pct,avg_dep_delay_min,arrivals,avg_arr_delay_min,airline
+DL,2970,78.5,14.2,2969,13.9,Delta
+AA,1897,75.5,21.7,1898,16.5,American
+UA,1242,81.6,15.9,1241,12.2,United
+G4,724,78.4,15.2,724,23.8,Allegiant
+WN,533,71.4,16.3,533,12,Southwest
+F9,433,71.1,21.2,432,13.9,Frontier
+AS,111,74.3,14.4,110,-3.1,Alaska

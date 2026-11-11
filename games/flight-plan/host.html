@@ -1,0 +1,750 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flight Plan · Projector</title>
+<link rel="icon" href="data:,">
+<style>
+  :root { --red: #C3142D; --red-soft: #fff5f6; --ink: #1b1b1b; --muted: #585E60; --line: #e5e7eb; --bg: #fafafa; --ok: #166534; }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink); background: var(--bg); }
+  button { font: inherit; cursor: pointer; }
+  .btn { border: 0; border-radius: 9px; padding: 9px 14px; font-weight: 700; background: var(--red); color: #fff; font-size: 15px; }
+  .btn.ghost { background: #fff; color: var(--red); border: 1.5px solid var(--red); }
+  .btn.gray { background: #eef0f2; color: var(--ink); }
+  .btn.big { font-size: 22px; padding: 14px 26px; }
+  .btn:disabled { opacity: .4; cursor: default; }
+  input, select { font: inherit; font-size: 15px; padding: 6px 8px; border: 1px solid #d1d5db; border-radius: 7px; }
+  .bar { display: flex; gap: 8px; align-items: center; padding: 8px 14px; background: #fff; border-bottom: 1px solid var(--line); flex-wrap: wrap; position: sticky; top: 0; z-index: 20; }
+  .brand { font-weight: 800; font-size: 18px; margin-right: 8px; } .brand b { color: var(--red); }
+  .chips { display: flex; gap: 4px; }
+  .chip { padding: 5px 10px; border-radius: 999px; border: 1.5px solid var(--line); background: #fff; font-weight: 700; font-size: 13px; color: var(--muted); }
+  .chip.on { border-color: var(--red); color: var(--red); background: var(--red-soft); }
+  .chip.done { color: var(--ink); }
+  .grow { flex: 1; }
+  .status { font-size: 13px; color: var(--muted); }
+  .err { color: var(--red); font-weight: 700; }
+  main { padding: 18px 22px 60px; }
+  h1.stage { font-size: 40px; margin: 6px 0 4px; letter-spacing: -.02em; }
+  h2 { margin: 6px 0; }
+  .sub { color: var(--muted); font-size: 18px; margin: 0 0 14px; }
+  .grid { display: grid; gap: 14px; }
+  .g3 { grid-template-columns: repeat(3, 1fr); } .g2 { grid-template-columns: 1fr 1fr; }
+  .card { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 16px; }
+  .tile h3 { margin: 0 0 6px; font-size: 26px; } .tile .k { color: var(--muted); font-size: 16px; }
+  .tile.ready { border-color: #86efac; }
+  .huge { font-size: 160px; font-weight: 900; color: var(--red); text-align: center; font-variant-numeric: tabular-nums; line-height: 1; margin: 10px 0; }
+  .addr { font-size: 46px; font-weight: 800; text-align: center; margin: 20px 0 6px; }
+  .addr small { display: block; font-size: 20px; color: var(--muted); font-weight: 600; }
+  .chipm { display: inline-flex; align-items: center; gap: 6px; padding: 3px 12px; border-radius: 999px; border: 1.5px solid var(--line); background: #fff; font-weight: 800; font-size: 18px; }
+  .sym { font-size: 24px; line-height: 1; }
+  .bars .b { display: grid; grid-template-columns: 330px 1fr 50px; gap: 10px; align-items: center; margin: 6px 0; font-size: 17px; }
+  .bars .fill { height: 22px; background: var(--red); border-radius: 4px; }
+  .bars .lead .fill { background: var(--red); } .bars .b:not(.lead) .fill { background: #cbd5e1; }
+  .def { border-left: 4px solid var(--red); padding: 4px 10px; margin: 8px 0; }
+  .def .n { font-weight: 800; } .def .t { color: #333; }
+  .pill { font-size: 12px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; padding: 2px 8px; border-radius: 999px; background: #f3f4f6; color: var(--muted); }
+  .rank { display: grid; grid-template-columns: 60px 1fr auto auto; gap: 14px; align-items: center; padding: 12px 10px; border-bottom: 1px solid #f1f5f9; font-size: 24px; }
+  .rank .n { font-weight: 900; color: var(--muted); }
+  .rank.win { background: var(--red-soft); border-radius: 10px; } .rank.win .n { color: var(--red); }
+  .rank.inst { background: #fffbeb; border-radius: 10px; }
+  table.t { width: 100%; border-collapse: collapse; font-size: 16px; }
+  table.t th { text-align: left; font-size: 12.5px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); border-bottom: 1px solid var(--line); padding: 6px; }
+  table.t td { border-bottom: 1px solid #f1f5f9; padding: 7px 6px; vertical-align: top; }
+  /* photo editor */
+  .photoWrap { position: relative; display: inline-block; max-width: 100%; user-select: none; touch-action: none; }
+  .photoWrap img { display: block; max-width: 100%; max-height: 72vh; border-radius: 10px; }
+  .photoWrap svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .handle { cursor: grab; }
+  .mk text { font-weight: 900; paint-order: stroke; stroke: #fff; stroke-width: 4px; }
+  .mk.sel circle { stroke: #f59e0b; stroke-width: 4; }
+  .counts { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0; }
+  .cnt { padding: 4px 10px; border-radius: 8px; background: #f3f4f6; font-weight: 700; }
+  .cnt.bad { background: #fef3c7; color: #92400e; } .cnt.good { background: #dcfce7; color: var(--ok); }
+  .meas { font-size: 22px; font-weight: 800; margin: 8px 0; min-height: 30px; }
+  .modal { position: fixed; inset: 0; background: rgba(0,0,0,.35); display: flex; align-items: center; justify-content: center; z-index: 50; }
+  .modal .card { width: min(560px, 92vw); max-height: 88vh; overflow: auto; }
+  label.f { display: block; font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin: 10px 0 4px; }
+  .finale { text-align: center; }
+  .finale h1 { font-size: 64px; margin: 10px 0; }
+  .finale p { font-size: 26px; margin: 8px auto; max-width: 1000px; }
+  .gif { width: 480px; height: 300px; border: 0; border-radius: 12px; }
+  .bucket { border-radius: 10px; padding: 10px; margin: 6px 0; }
+  .bucket.tied { background: #dcfce7; } .bucket.supports { background: #ecfccb; } .bucket.client { background: #fef9c3; } .bucket.not_tied { background: #fee2e2; } .bucket.process { background: #e0e7ff; } .bucket.other { background: #f3f4f6; }
+  .hidden { display: none !important; }
+  kbd { font-size: 11px; border: 1px solid rgba(255,255,255,.6); border-radius: 4px; padding: 0 4px; color: #fff; }
+</style>
+</head>
+<body>
+<div id="keyModal" class="modal hidden"><div class="card">
+  <h2>Projector key</h2><p class="status">Type the admin key once. It stays in this browser tab only.</p>
+  <input id="keyIn" type="password" autocomplete="off" style="width:100%">
+  <div style="margin-top:10px" class="row"><button class="btn" id="keyGo">Open</button> <span class="err" id="keyErr"></span></div>
+</div></div>
+
+<div id="setModal" class="modal hidden"><div class="card">
+  <h2>Settings</h2>
+  <label class="f">Marker colors (comma separated)</label><input id="sColors" style="width:100%">
+  <label class="f">Symbols (comma separated)</label><input id="sSymbols" style="width:100%">
+  <div class="grid g3" style="margin-top:6px">
+    <div><label class="f">X width (inches)</label><input id="sX" type="number" step="0.25" min="1" max="60" style="width:100%"></div>
+    <div><label class="f">Miss penalty (in)</label><input id="sPen" type="number" min="1" max="200" style="width:100%"></div>
+    <div><label class="f">Hit within (in)</label><input id="sHit" type="number" min="1" max="60" style="width:100%"></div>
+  </div>
+  <div style="margin-top:14px; display:flex; gap:8px; flex-wrap:wrap">
+    <button class="btn" id="sSave">Save</button><button class="btn gray" id="sClose">Close</button>
+    <span class="grow"></span><button class="btn ghost" id="exportBtn">Export CSV</button><button class="btn ghost" id="recapBtn">Publish recap</button>
+  </div>
+  <p class="status" style="margin-top:10px">Publish recap after section B ends: it sends the full recap to every phone in this section.</p>
+</div></div>
+
+<div class="bar">
+  <span class="brand">Flight <b>Plan</b></span>
+  <div class="chips" id="secChips"></div>
+  <div class="chips" id="phaseChips"></div>
+  <button class="btn" id="nextBtn">Next <kbd>Space</kbd></button>
+  <span class="grow"></span>
+  <span class="status" id="status"></span>
+  <button class="btn gray" id="musicBtn" title="Pick the Rocky files from M:">Music</button>
+  <button class="btn gray" id="muteBtn">Mute</button>
+  <button class="btn gray" id="setBtn">Settings</button>
+  <button class="btn gray" id="resetBtn">Reset</button>
+  <input type="file" id="musicFiles" accept="audio/*" multiple class="hidden">
+</div>
+<main id="main"></main>
+
+<script>
+(function () {
+  "use strict";
+  var qs = new URLSearchParams(location.search);
+  var section = (qs.get("section") || "A").toUpperCase();
+  var KEYK = "fp_admin_key";
+  var markerEdit = null, ovS = "", ovM = "", board = null, lastSig = "", lastPhase = null, busy = false, photoCache = {}, editor = null, measureTeam = null, rulerOn = false;
+  var STEPS = ["lobby", "design", "vote", "throws", "check", "reveal", "kpis"];
+  var NAMES = { lobby: "Lobby", design: "Design", vote: "Vote", throws: "Throws", check: "Check", reveal: "Reveal", kpis: "KPIs" };
+  var SYM = { circle: "●", triangle: "▲", square: "■", star: "★", diamond: "◆", heart: "♥", cross: "✚", dot: "•" };
+  var COLORCSS = { black: "#111", blue: "#1d4ed8", red: "#C3142D", green: "#15803d", purple: "#7e22ce", orange: "#ea580c", brown: "#78350f" };
+  var SUMMARY = { average: "Average distance", median: "Median distance", closest: "Closest throw", farthest: "Farthest throw", hit_rate: "Hit rate within N in", spread: "Spread (cluster)" };
+  var MISS = { fixed_penalty: "Fixed penalty (P in)", worst_landed: "Team's worst landed throw", dropped: "Dropped", automatic_last: "Team ranks last" };
+
+  function $(id) { return document.getElementById(id); }
+  function U(k) { return (board && board.ui && board.ui[k]) || ""; }
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  function key() { try { return sessionStorage.getItem(KEYK) || ""; } catch (e) { return ""; } }
+  function setStatus(t, bad) { var s = $("status"); s.textContent = t || ""; s.className = "status" + (bad ? " err" : ""); }
+  function hostCall(action, extra) {
+    return fetch("/api/host", { method: "POST", headers: { "Content-Type": "application/json", "x-admin-key": key() },
+      body: JSON.stringify(Object.assign({ section: section, action: action }, extra || {})) })
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { j._status = r.status; return j; }); })
+      .then(function (j) {
+        if (j._status === 403 || j._status === 429) { try { sessionStorage.removeItem(KEYK); } catch (e) {} askKey(j.error); throw new Error("key"); }
+        if (j.state) {
+          var sig = JSON.stringify(Object.assign({}, j, { now: 0, _status: 0 }));
+          if (action !== "board" || sig !== lastSig) { lastSig = sig; board = j; render(); }
+        }
+        if (j.error) setStatus(j.error, true); else if (action !== "board") setStatus("");
+        return j;
+      });
+  }
+  function askKey(msg) { $("keyModal").classList.remove("hidden"); $("keyErr").textContent = msg || ""; $("keyIn").focus(); }
+  $("keyGo").onclick = function () { try { sessionStorage.setItem(KEYK, $("keyIn").value.trim()); } catch (e) {} $("keyModal").classList.add("hidden"); poll(); };
+  $("keyIn").addEventListener("keydown", function (e) { if (e.key === "Enter") $("keyGo").click(); });
+
+  function fmt(score, summary) { if (score == null) return "—"; return summary === "hit_rate" ? Math.round(score * 100) + "%" : score.toFixed(1) + " in"; }
+  function label(map, k, st) { return (map[k] || k).replace("N in", (st.settings.hitN) + " in").replace("P in", (st.settings.penaltyIn) + " in"); }
+  function markerChip(pair, big) {
+    var c = el("span", "chipm"); if (!pair) { c.textContent = "no marker"; return c; }
+    var p = pair.split("|"), s = el("span", "sym", SYM[p[1]] || p[1]); s.style.color = COLORCSS[p[0]] || p[0];
+    c.appendChild(s); c.appendChild(document.createTextNode(p[0] + " " + p[1])); if (big) c.style.fontSize = "26px";
+    return c;
+  }
+  function teamPair(team) {
+    if (team === "INSTRUCTOR") return board.state.instructor ? board.state.instructor.color + "|" + board.state.instructor.symbol : "black|dot";
+    var t = board.teams.find(function (x) { return x.team === team; }); return t && t.marker;
+  }
+
+  // ---------- top bar
+  function drawBar() {
+    var sc = $("secChips"); sc.textContent = "";
+    ["A", "B", "Z"].forEach(function (s) { var b = el("button", "chip" + (s === section ? " on" : ""), s); b.onclick = function () { location.search = "?section=" + s; }; sc.appendChild(b); });
+    var pc = $("phaseChips"); pc.textContent = "";
+    var ph = board ? board.state.phase : "lobby", list = STEPS.slice();
+    if (board && (board.state.instructor || board.state.firstTeam || ph === "instructor")) list.splice(6, 0, "instructor");
+    list.forEach(function (p) {
+      var b = el("button", "chip" + (p === ph ? " on" : STEPS.indexOf(p) < STEPS.indexOf(ph) ? " done" : ""), NAMES[p] || U("extra"));
+      b.onclick = function () { goPhase(p); }; pc.appendChild(b);
+    });
+  }
+  function countsOk() { var rv = $("revealBtn"); return !rv || !rv.disabled; }
+  function goPhase(p) {
+    var st = board.state;
+    if (p === "reveal") {
+      if (board.results) return hostCall("phase", { to: "reveal" });
+      if (st.phase === "check" && !countsOk()) return setStatus("Counts don't match. Fix the marks, or tick Override counts.", true);
+      return doReveal();
+    }
+    if (p === "instructor") { if (st.instructor || st.firstTeam) return hostCall("phase", { to: "instructor" }); if (board.results) return openExtra(); return; }
+    hostCall("phase", { to: p });
+  }
+  function nextStep() {
+    if (!board) return;
+    var st = board.state, ph = st.phase, i = STEPS.indexOf(ph);
+    if (ph === "vote" && !st.lockedRule) return hostCall("lockVote").then(function (j) { if (j && !j.error) goPhase("throws"); });
+    if (ph === "check") return goPhase("reveal");
+    if (ph === "reveal") { if (st.instructor || st.firstTeam) return goPhase(st.instructorResult || st.firstTeam ? "kpis" : "instructor"); return openExtra(); }
+    if (ph === "instructor") { if (st.instructorResult || st.firstTeam) return goPhase("kpis"); return setStatus("Score your throws first.", true); }
+    if (i >= 0 && i < STEPS.length - 1) goPhase(STEPS[i + 1]);
+  }
+  $("nextBtn").onclick = nextStep;
+  document.addEventListener("keydown", function (e) {
+    var tag = (document.activeElement && document.activeElement.tagName) || "";
+    if (e.code === "Space" && !/INPUT|TEXTAREA|SELECT/.test(tag)) { e.preventDefault(); if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); nextStep(); }
+    if ((e.key === "Delete" || e.key === "Backspace") && editor && editor.sel != null && !/INPUT|TEXTAREA/.test(tag)) { editor.marks.splice(editor.sel, 1); editor.sel = null; editor.dirty = true; drawEditor(); }
+  });
+  var resetArmed = 0;
+  $("resetBtn").onclick = function () {
+    if (Date.now() - resetArmed < 3000) { resetArmed = 0; $("resetBtn").textContent = "Reset"; editor = null; hostCall("reset"); return; }
+    resetArmed = Date.now(); $("resetBtn").textContent = "Press again to reset";
+    setTimeout(function () { $("resetBtn").textContent = "Reset"; }, 3000);
+  };
+  $("setBtn").onclick = function () {
+    var s = board.state.settings; $("sColors").value = s.colors.join(", "); $("sSymbols").value = s.symbols.join(", ");
+    $("sX").value = s.xWidthIn; $("sPen").value = s.penaltyIn; $("sHit").value = s.hitN; $("setModal").classList.remove("hidden");
+  };
+  $("sClose").onclick = function () { $("setModal").classList.add("hidden"); };
+  $("sSave").onclick = function () {
+    var split = function (v) { return v.split(",").map(function (x) { return x.trim(); }).filter(Boolean); };
+    hostCall("settings", { colors: split($("sColors").value), symbols: split($("sSymbols").value), xWidthIn: Number($("sX").value), penaltyIn: Number($("sPen").value), hitN: Number($("sHit").value) })
+      .then(function () { $("setModal").classList.add("hidden"); });
+  };
+  $("recapBtn").onclick = function () { if (confirm("Publish the recap to every phone in section " + section + "? Do this only after section B has finished.")) hostCall("publishRecap", { on: true }); };
+  $("exportBtn").onclick = function () {
+    fetch("/api/export?section=" + section, { headers: { "x-admin-key": key() } }).then(function (r) { return r.blob(); }).then(function (b) {
+      var a = document.createElement("a"); a.href = URL.createObjectURL(b); a.download = "flight_plan_" + section + ".csv"; a.click();
+    });
+  };
+
+  // ---------- render by phase
+  function render() {
+    drawBar();
+    var st = board.state, m = $("main");
+    if (st.phase !== lastPhase) { cueFor(st.phase, lastPhase); lastPhase = st.phase; m.textContent = ""; editor = editor && editor.phase === st.phase ? editor : null; }
+    var ph = st.phase;
+    if (ph === "lobby") drawLobby(m);
+    else if (ph === "design") drawDesign(m);
+    else if (ph === "vote") drawVote(m);
+    else if (ph === "throws") drawThrows(m);
+    else if (ph === "check") drawCheck(m, "teams");
+    else if (ph === "reveal") drawReveal(m);
+    else if (ph === "instructor") drawExtra(m);
+    else if (ph === "kpis") drawKpis(m);
+  }
+  function stage(m, title, sub) {
+    var box = m.querySelector("#stage");
+    if (!box) { box = el("div"); box.id = "stage"; m.appendChild(box); }
+    box.textContent = ""; box.appendChild(el("h1", "stage", title)); if (sub) box.appendChild(el("p", "sub", sub));
+    return box;
+  }
+
+  function drawLobby(m) {
+    var box = stage(m, "Flight Plan", "Join on your phone. Your team is your seating row.");
+    var a = el("div", "addr", location.host + "/?section=" + section); a.appendChild(el("small", null, "Section " + section)); box.appendChild(a);
+    var g = el("div", "grid g3"); box.appendChild(g);
+    ["L1", "L2", "L3", "R1", "R2", "R3"].forEach(function (t) {
+      var tm = board.teams.find(function (x) { return x.team === t; });
+      var c = el("div", "card tile"); c.appendChild(el("h3", null, "Team " + t));
+      c.appendChild(el("div", "k", tm ? tm.members.map(function (x) { return x.first + " " + x.initial + "."; }).join(", ") : "nobody yet"));
+      g.appendChild(c);
+    });
+  }
+
+  var clockIv = null;
+  function drawDesign(m) {
+    var st = board.state, box = stage(m, "Design your plane", "17 minutes. Notes, KPIs, your marker, then compile and save your brief.");
+    var big = el("div", "huge"); big.id = "bigclock"; box.appendChild(big);
+    var r = el("div"); r.style.textAlign = "center";
+    var minus = el("button", "btn gray", "− 1 min"), plus = el("button", "btn gray", "+ 1 min");
+    minus.onclick = function () { hostCall("timer", { deltaMs: -60000 }); }; plus.onclick = function () { hostCall("timer", { deltaMs: 60000 }); };
+    r.appendChild(minus); r.appendChild(document.createTextNode(" ")); r.appendChild(plus); box.appendChild(r);
+    var g = el("div", "grid g3"); g.style.marginTop = "16px"; box.appendChild(g);
+    board.teams.forEach(function (t) {
+      var c = el("div", "card tile" + (t.brief && t.marker ? " ready" : ""));
+      c.appendChild(el("h3", null, "Team " + t.team));
+      c.appendChild(el("div", "k", t.members.length + " people · " + t.notes + " notes · brief " + (t.brief ? "✓" : "—")));
+      var mm = el("div"); mm.style.marginTop = "6px"; mm.appendChild(markerChip(t.marker)); c.appendChild(mm);
+      g.appendChild(c);
+    });
+    clearInterval(clockIv);
+    var skew = board.now - Date.now();
+    function paint() {
+      var b = $("bigclock"); if (!b || !board.state.endsAt) return;
+      var left = Math.max(0, board.state.endsAt - (Date.now() + skew)), mm = Math.floor(left / 60000), ss = Math.floor(left / 1000) % 60;
+      b.textContent = mm + ":" + (ss < 10 ? "0" : "") + ss;
+      if (left === 0 && !b.dataset.done) { b.dataset.done = "1"; fadeOut(); }
+    }
+    paint(); clockIv = setInterval(paint, 250);
+  }
+
+  function drawVote(m) {
+    var st = board.state, box = stage(m, "Agree on accuracy", "Each team's definition, then one vote each on your phone.");
+    var g = el("div", "grid g2"); box.appendChild(g);
+    var left = el("div", "card"); left.appendChild(el("h2", null, "How each team defined accuracy")); g.appendChild(left);
+    board.teams.forEach(function (t) {
+      var ks = ((t.brief && t.brief.kpis) || []).map(function (k, i) { return { k: k, i: i }; }).filter(function (x) { return x.k.type === "product"; });
+      var d = el("div", "def"); d.appendChild(el("div", "n", "Team " + t.team));
+      if (!ks.length) d.appendChild(el("div", "t status", "No product KPI saved."));
+      ks.slice(0, 3).forEach(function (x) {
+        var k = x.k, line = el("div", "t", k.name + ": " + k.definition);
+        var mt = board.match && board.match[t.team] && board.match[t.team][x.i];
+        if (mt && mt.summary && mt.isAccuracy) { line.appendChild(document.createTextNode("  ")); line.appendChild(el("span", "pill", "→ " + label(SUMMARY, mt.summary, st) + (mt.miss && mt.miss !== "not_stated" ? " · miss: " + label(MISS, mt.miss, st) : ""))); }
+        d.appendChild(line);
+      });
+      left.appendChild(d);
+    });
+    var right = el("div", "card"); g.appendChild(right);
+    right.appendChild(el("h2", null, "Votes (" + board.tally.n + ")"));
+    [["summary", SUMMARY, "Summarize the three throws"], ["miss", MISS, "A throw that misses the board"]].forEach(function (q) {
+      right.appendChild(el("label", "f", q[2]));
+      var counts = board.tally[q[0]] || {}, max = Math.max.apply(null, [1].concat(Object.values(counts)));
+      var lead = Object.keys(counts).sort(function (a, b) { return counts[b] - counts[a]; })[0];
+      var bars = el("div", "bars");
+      Object.keys(q[1]).forEach(function (k) {
+        var b = el("div", "b" + (k === lead ? " lead" : "")); b.appendChild(el("span", null, label(q[1], k, st)));
+        var f = el("div", "fill"); f.style.width = Math.round(100 * (counts[k] || 0) / max) + "%"; var w = el("div"); w.appendChild(f); b.appendChild(w);
+        b.appendChild(el("b", null, String(counts[k] || 0))); bars.appendChild(b);
+      });
+      right.appendChild(bars);
+    });
+    var row = el("div"); row.style.marginTop = "12px";
+    var selS = el("select"), selM = el("select");
+    [[selS, SUMMARY], [selM, MISS]].forEach(function (p) { var o = el("option", null, "(class vote)"); o.value = ""; p[0].appendChild(o);
+      Object.keys(p[1]).forEach(function (k) { var op = el("option", null, label(p[1], k, st)); op.value = k; p[0].appendChild(op); }); });
+    selS.value = ovS; selM.value = ovM; selS.onchange = function () { ovS = selS.value; }; selM.onchange = function () { ovM = selM.value; };
+    var lock = el("button", "btn big", st.lockedRule ? "Re-lock" : "Lock the rule");
+    lock.onclick = function () { hostCall("lockVote", { summary: selS.value || undefined, miss: selM.value || undefined }); };
+    row.appendChild(lock); row.appendChild(document.createTextNode(" Override: ")); row.appendChild(selS); row.appendChild(document.createTextNode(" ")); row.appendChild(selM);
+    right.appendChild(row);
+    if (st.lockedRule) right.appendChild(el("p", "meas", "Locked: " + label(SUMMARY, st.lockedRule.summary, st) + " · miss: " + label(MISS, st.lockedRule.miss, st)));
+  }
+
+  function drawThrows(m) {
+    var st = board.state, cur = st.current;
+    var box = stage(m, cur ? "Team " + cur + " is up" : "Throws", st.lockedRule ? "Rule: " + label(SUMMARY, st.lockedRule.summary, st) + " · a miss: " + label(MISS, st.lockedRule.miss, st) : "Lock the rule before the first throw.");
+    if (cur) { var c = el("div"); c.style.margin = "0 0 14px"; c.appendChild(markerChip(teamPair(cur), true)); box.appendChild(c); }
+    var tbl = el("table", "t"), hr = el("tr");
+    ["", "Order", "Team", "Marker", "Throw 1", "Throw 2", "Throw 3", ""].forEach(function (h) { hr.appendChild(el("th", null, h)); }); tbl.appendChild(hr);
+    (st.order || []).forEach(function (t, i) {
+      var tr = el("tr"); if (t === cur) tr.style.background = "var(--red-soft)";
+      var mv = el("td"); var up = el("button", "btn gray", "↑"), dn = el("button", "btn gray", "↓");
+      up.onclick = function () { var o = st.order.slice(); if (i > 0) { o.splice(i - 1, 0, o.splice(i, 1)[0]); hostCall("order", { teams: o }); } };
+      dn.onclick = function () { var o = st.order.slice(); if (i < o.length - 1) { o.splice(i + 1, 0, o.splice(i, 1)[0]); hostCall("order", { teams: o }); } };
+      mv.appendChild(up); mv.appendChild(dn); tr.appendChild(mv);
+      tr.appendChild(el("td", null, String(i + 1))); tr.appendChild(el("td", null, "Team " + t));
+      var mk = el("td"); tr.appendChild(mk);
+      if (markerEdit === t) {
+        // Inline editor: pairs held by other teams (or by you) are disabled; the server checks again.
+        var taken = board.teams.filter(function (x) { return x.team !== t && x.marker; }).map(function (x) { return x.marker; });
+        if (st.instructor) taken.push(st.instructor.color + "|" + st.instructor.symbol);
+        var cur2 = (teamPair(t) || "|").split("|");
+        var sc = el("select"), ss = el("select");
+        st.settings.colors.forEach(function (x) { var o = el("option", null, x); o.value = x; sc.appendChild(o); });
+        function fillSym() {
+          ss.textContent = "";
+          st.settings.symbols.forEach(function (x) { var o = el("option", null, x + (taken.indexOf(sc.value + "|" + x) >= 0 ? " (taken)" : "")); o.value = x; o.disabled = taken.indexOf(sc.value + "|" + x) >= 0; ss.appendChild(o); });
+        }
+        sc.value = cur2[0] || st.settings.colors[0]; fillSym(); if (cur2[1]) ss.value = cur2[1]; sc.onchange = fillSym;
+        var ok = el("button", "btn", "Apply"), no = el("button", "btn gray", "Cancel");
+        ok.onclick = function () { hostCall("setMarker", { team: t, color: sc.value, symbol: ss.value }).then(function (j) { if (!j.error) { markerEdit = null; render(); } }); };
+        no.onclick = function () { markerEdit = null; render(); };
+        [sc, ss, ok, no].forEach(function (x) { mk.appendChild(x); mk.appendChild(document.createTextNode(" ")); });
+      } else {
+        var chip = markerChip(teamPair(t)); if (!teamPair(t)) { chip.style.background = "#fef3c7"; chip.style.borderColor = "#f59e0b"; }
+        var ch = el("button", "btn gray", "Change"); ch.style.marginLeft = "6px"; ch.onclick = function () { markerEdit = t; render(); };
+        mk.appendChild(chip); mk.appendChild(ch);
+      }
+      var th = board.throws[t] || [false, false, false];
+      [0, 1, 2].forEach(function (k) {
+        var td = el("td"), b = el("button", th[k] ? "btn" : "btn gray", th[k] ? "missed board" : "on the board");
+        b.onclick = function () { hostCall("miss", { team: t, i: k, missed: !th[k] }); }; td.appendChild(b); tr.appendChild(td);
+      });
+      var go = el("td"), gb = el("button", "btn ghost", "Up now"); gb.onclick = function () { hostCall("current", { team: t }); }; go.appendChild(gb); tr.appendChild(go);
+      tbl.appendChild(tr);
+    });
+    box.appendChild(tbl);
+    var none = (st.order || []).filter(function (t) { return !teamPair(t); });
+    if (none.length) box.appendChild(el("p", "err", "No marker yet: " + none.map(function (t) { return "Team " + t; }).join(", ") + ". Press Change to set one."));
+    var nx = el("button", "btn big", "Next team"); nx.style.marginTop = "14px";
+    nx.onclick = function () { var o = st.order, i = o.indexOf(cur); hostCall("current", { team: o[i + 1] || null }); };
+    box.appendChild(nx);
+    box.appendChild(el("p", "status", "When every team has thrown, photograph the board with the phone camera page (snap) and press Next."));
+  }
+
+  // ---------- photos
+  function latestPhoto(kind) { var ps = (board.photos || []).filter(function (p) { return p.kind === kind; }); return ps[ps.length - 1] || null; }
+  function photoUrl(id) {
+    if (photoCache[id]) return Promise.resolve(photoCache[id]);
+    return fetch("/api/image?section=" + section + "&id=" + encodeURIComponent(id), { headers: { "x-admin-key": key() } })
+      .then(function (r) { if (!r.ok) throw new Error("image"); return r.blob(); })
+      .then(function (b) { photoCache[id] = URL.createObjectURL(b); return photoCache[id]; });
+  }
+
+  // ---------- the mark editor (check phase and the instructor's photo)
+  function defaultX() { return { cx: 0.5, cy: 0.5, lx: 0.45, ly: 0.5, rx: 0.55, ry: 0.5 }; }
+  function drawCheck(m, kind) {
+    var st = board.state, ph = latestPhoto(kind);
+    var title = kind === "teams" ? "Check the marks" : U("title2");
+    if (!editor || editor.kind !== kind || (ph && editor.photoId !== ph.id && !editor.dirty)) {
+      var saved = board.marks && board.marks[kind];
+      var useSaved = saved && ph && saved.photoId === ph.id;
+      editor = { kind: kind, phase: st.phase, photoId: ph ? ph.id : null, w: ph ? ph.w : null, h: ph ? ph.h : null,
+        X: useSaved ? saved.X : defaultX(), marks: useSaved ? saved.marks.slice() : [], sel: null, dirty: false, adding: null, src: null };
+      m.textContent = "";
+    }
+    var box = stage(m, title, ph ? "Drag the X and each mark onto the board. Pick a team, then click the photo to add a mark. Select a mark and press Delete to remove it." : "Waiting for the photo from the phone camera page (" + (kind === "teams" ? "first photo" : "second photo") + ").");
+    if (!ph) return;
+    var tools = el("div"); tools.style.marginBottom = "8px";
+    var ai = el("button", "btn ghost", "Pre-fill with AI"); ai.onclick = function () { prefill(ai); };
+    var teams = kind === "teams" ? (st.order.length ? st.order : board.teams.map(function (t) { return t.team; })) : ["INSTRUCTOR"];
+    tools.appendChild(ai); tools.appendChild(document.createTextNode("  Add for: "));
+    teams.forEach(function (t) {
+      var b = el("button", "chip" + (editor.adding === t ? " on" : "")); b.appendChild(markerChip(teamPair(t)));
+      b.title = t; b.onclick = function () { editor.adding = editor.adding === t ? null : t; drawEditor(); render(); };
+      tools.appendChild(b);
+    });
+    box.appendChild(tools);
+    var counts = el("div", "counts"); counts.id = "counts"; box.appendChild(counts);
+    var wrap = el("div", "photoWrap"); wrap.id = "pwrap"; var img = el("img"); img.id = "pimg"; img.alt = "Board photo"; wrap.appendChild(img);
+    var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg"); svg.id = "psvg"; wrap.appendChild(svg); box.appendChild(wrap);
+    var row = el("div"); row.style.marginTop = "10px";
+    var save = el("button", "btn big", "Save marks"); save.onclick = function () { saveMarks(); };
+    row.appendChild(save);
+    if (kind === "teams") {
+      var ov = el("label"); var cb = el("input"); cb.type = "checkbox"; cb.id = "override"; ov.appendChild(cb); ov.appendChild(document.createTextNode(" Override counts ")); row.appendChild(document.createTextNode("  ")); row.appendChild(ov);
+      var rv = el("button", "btn big", "Reveal"); rv.id = "revealBtn"; rv.onclick = function () { saveMarks().then(doReveal); }; row.appendChild(rv);
+    } else {
+      var sc = el("button", "btn big", U("score")); sc.onclick = function () { saveMarks().then(function () { return hostCall("instructorScore"); }).then(function (j) { if (j && j.state && j.state.instructorResult) outcomeCue(j.state.instructorResult.wins ? "up" : "down"); }); };
+      row.appendChild(document.createTextNode("  ")); row.appendChild(sc);
+      [0, 1, 2].forEach(function (k) { var th = board.throws.INSTRUCTOR || []; var b = el("button", th[k] ? "btn" : "btn gray", "Throw " + (k + 1) + (th[k] ? ": missed" : ": on board")); b.onclick = function () { hostCall("miss", { team: "INSTRUCTOR", i: k, missed: !th[k] }); }; row.appendChild(document.createTextNode(" ")); row.appendChild(b); });
+    }
+    box.appendChild(row);
+    photoUrl(ph.id).then(function (u) { img.src = u; img.onload = function () { if (!editor.w) { editor.w = img.naturalWidth; editor.h = img.naturalHeight; } drawEditor(); }; }).catch(function () { setStatus("Could not load the photo.", true); });
+    drawEditor();
+  }
+  function svgEl(tag, attrs) { var e = document.createElementNS("http://www.w3.org/2000/svg", tag); for (var k in attrs) e.setAttribute(k, attrs[k]); return e; }
+  function drawEditor() {
+    var svg = $("psvg"), img = $("pimg"); if (!svg || !img || !editor) return;
+    var W = img.clientWidth, H = img.clientHeight; if (!W) return;
+    svg.setAttribute("viewBox", "0 0 " + W + " " + H); svg.textContent = "";
+    var X = editor.X;
+    svg.appendChild(svgEl("line", { x1: X.lx * W, y1: X.ly * H, x2: X.rx * W, y2: X.ry * H, stroke: "#f59e0b", "stroke-width": 3, "stroke-dasharray": "6 4" }));
+    [["cx", "cy", 12, "#C3142D", "X center"], ["lx", "ly", 8, "#f59e0b", "X left tip"], ["rx", "ry", 8, "#f59e0b", "X right tip"]].forEach(function (h) {
+      var c = svgEl("circle", { cx: X[h[0]] * W, cy: X[h[1]] * H, r: h[2], fill: "none", stroke: h[3], "stroke-width": 4, class: "handle" });
+      c.appendChild(svgEl("title", {})).textContent = h[4];
+      drag(c, function (x, y) { X[h[0]] = x; X[h[1]] = y; });
+      svg.appendChild(c);
+    });
+    editor.marks.forEach(function (mk, i) {
+      var g = svgEl("g", { class: "mk handle" + (editor.sel === i ? " sel" : "") });
+      var pair = (teamPair(mk.team) || "black|dot").split("|");
+      g.appendChild(svgEl("circle", { cx: mk.x * W, cy: mk.y * H, r: 15, fill: "rgba(255,255,255,.55)", stroke: "#111", "stroke-width": 1.5 }));
+      var t = svgEl("text", { x: mk.x * W, y: mk.y * H + 8, "text-anchor": "middle", "font-size": 24, fill: COLORCSS[pair[0]] || pair[0] }); t.textContent = SYM[pair[1]] || "?"; g.appendChild(t);
+      var lab = svgEl("text", { x: mk.x * W + 18, y: mk.y * H - 12, "font-size": 14, fill: "#111" }); lab.textContent = mk.team === "INSTRUCTOR" ? U("me") : mk.team; g.appendChild(lab);
+      g.addEventListener("pointerdown", function () { editor.sel = i; });
+      drag(g, function (x, y) { mk.x = x; mk.y = y; });
+      svg.appendChild(g);
+    });
+    svg.onclick = function (e) {
+      if (e.target !== svg || !editor.adding) return;
+      var r = svg.getBoundingClientRect();
+      editor.marks.push({ team: editor.adding, x: (e.clientX - r.left) / r.width, y: (e.clientY - r.top) / r.height }); editor.dirty = true; drawEditor();
+    };
+    // counts per team
+    var cnt = $("counts"); if (!cnt) return; cnt.textContent = "";
+    var allOk = true;
+    var teams = editor.kind === "teams" ? (board.state.order.length ? board.state.order : board.teams.map(function (t) { return t.team; })) : ["INSTRUCTOR"];
+    teams.forEach(function (t) {
+      var n = editor.marks.filter(function (x) { return x.team === t; }).length, miss = (board.throws[t] || []).filter(Boolean).length, want = 3 - miss;
+      var ok = n === want; if (!ok) allOk = false;
+      cnt.appendChild(el("span", "cnt " + (ok ? "good" : "bad"), (t === "INSTRUCTOR" ? U("meCount") : t) + ": " + n + " of " + want + (miss ? " (" + miss + " missed)" : "")));
+    });
+    var rv = $("revealBtn"), ov = $("override");
+    if (rv) { rv.disabled = !(allOk || (ov && ov.checked)); if (ov) ov.onchange = function () { rv.disabled = !(allOk || ov.checked); }; }
+  }
+  function drag(node, set) {
+    node.addEventListener("pointerdown", function (e) {
+      e.stopPropagation(); e.preventDefault();
+      var svg = $("psvg"), r = svg.getBoundingClientRect();
+      function mv(ev) { set(Math.min(1, Math.max(0, (ev.clientX - r.left) / r.width)), Math.min(1, Math.max(0, (ev.clientY - r.top) / r.height))); editor.dirty = true; drawEditor(); }
+      function up() { window.removeEventListener("pointermove", mv); window.removeEventListener("pointerup", up); }
+      window.addEventListener("pointermove", mv); window.addEventListener("pointerup", up);
+    });
+  }
+  window.addEventListener("resize", function () { drawEditor(); drawMeasure(); });
+  function saveMarks() {
+    if (!editor || !editor.photoId) return Promise.resolve();
+    var img = $("pimg");
+    return hostCall("marks", { kind: editor.kind, photoId: editor.photoId, imgW: editor.w || img.naturalWidth, imgH: editor.h || img.naturalHeight, X: editor.X, marks: editor.marks })
+      .then(function (j) { if (!j.error) { editor.dirty = false; setStatus("Marks saved."); } return j; });
+  }
+  function prefill(btn) {
+    btn.disabled = true; btn.textContent = "Reading the photo…";
+    fetch("/api/vision", { method: "POST", headers: { "Content-Type": "application/json", "x-admin-key": key() }, body: JSON.stringify({ section: section, photoId: editor.photoId, kind: editor.kind }) })
+      .then(function (r) { return r.json().then(function (j) { j._status = r.status; return j; }); })
+      .then(function (j) {
+        btn.disabled = false; btn.textContent = "Pre-fill with AI";
+        if (j._status !== 200) { setStatus((j.error || "AI could not read the photo") + ". Place the marks by hand.", true); return; }
+        if (j.X) editor.X = j.X;
+        editor.marks = (j.marks || []).slice(); editor.dirty = true; drawEditor();
+        setStatus("AI placed " + editor.marks.length + " marks. Check each one before saving.");
+      }).catch(function () { btn.disabled = false; btn.textContent = "Pre-fill with AI"; setStatus("AI unavailable. Place the marks by hand.", true); });
+  }
+  function doReveal() {
+    var p = editor && editor.dirty ? saveMarks() : Promise.resolve();
+    return p.then(function () { return hostCall("reveal"); }).then(function (j) { if (j && !j.error) { measureTeam = null; } });
+  }
+
+  // ---------- reveal: ranking, show the measurement, tape, ruler, winner brief, what-if
+  function drawReveal(m) {
+    var st = board.state, res = board.results;
+    if (!res) { stage(m, "Reveal", "No results yet."); return; }
+    var box = stage(m, res.winner ? "Team " + res.winner.team + " wins" : "Results", "Rule: " + label(SUMMARY, res.rule.summary, st) + " · a miss: " + label(MISS, res.rule.miss, st));
+    var g = el("div", "grid g2"); box.appendChild(g);
+    var left = el("div", "card"); g.appendChild(left);
+    res.ranking.forEach(function (r) {
+      var d = el("div", "rank" + (res.winner && r.team === res.winner.team ? " win" : ""));
+      d.appendChild(el("span", "n", r.last ? "—" : "#" + r.rank)); d.appendChild(el("span", null, "Team " + r.team));
+      var mc = el("span"); mc.appendChild(markerChip(teamPair(r.team))); d.appendChild(mc);
+      d.appendChild(el("b", null, r.last ? "last" : fmt(r.score, res.rule.summary)));
+      d.style.cursor = "pointer"; d.onclick = function () { measureTeam = r.team; render(); };
+      left.appendChild(d);
+    });
+    if (res.tapeNote) left.appendChild(el("p", "err", res.tapeNote));
+    if (!(st.instructor || st.firstTeam)) {
+      var ib = el("button", "btn gray", U("extra")); ib.style.marginTop = "12px"; ib.onclick = function () { openExtra(); }; left.appendChild(ib);
+    }
+    var right = el("div", "card"); g.appendChild(right);
+    if (measureTeam) { right.style.gridColumn = "1 / -1"; g.insertBefore(right, left); }
+    var top = el("div"); var smb = el("button", "btn", "Show the measurement"); smb.onclick = function () { measureTeam = measureTeam || (res.winner && res.winner.team) || res.ranking[0].team; render(); animateMeasure(); };
+    var rb = el("button", "btn gray", rulerOn ? "Ruler: on" : "Ruler"); rb.onclick = function () { rulerOn = !rulerOn; ruler = []; render(); };
+    top.appendChild(smb); top.appendChild(document.createTextNode(" ")); top.appendChild(rb);
+    top.appendChild(document.createTextNode("  Team: "));
+    var sel = el("select"); res.ranking.forEach(function (r) { var o = el("option", null, r.team); o.value = r.team; sel.appendChild(o); });
+    sel.value = measureTeam || (res.winner && res.winner.team) || res.ranking[0].team; sel.onchange = function () { measureTeam = sel.value; render(); };
+    top.appendChild(sel); right.appendChild(top);
+    var meas = el("div", "meas"); meas.id = "measText"; right.appendChild(meas);
+    var wrap = el("div", "photoWrap"); wrap.id = "mwrap"; var img = el("img"); img.id = "mimg"; img.alt = "Board photo"; wrap.appendChild(img);
+    var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg"); svg.id = "msvg"; wrap.appendChild(svg); right.appendChild(wrap);
+    if (res.snapshot && res.snapshot.photoId) photoUrl(res.snapshot.photoId).then(function (u) { img.src = u; img.onload = drawMeasure; });
+    // tape boxes for the selected team
+    var team = sel.value, ent = res.entries.find(function (e) { return e.team === team; });
+    if (ent) {
+      var tt = el("table", "t"), hr = el("tr"); ["Throw", "Photo", "Tape (in)", ""].forEach(function (h) { hr.appendChild(el("th", null, h)); }); tt.appendChild(hr);
+      ent.throws.forEach(function (th) {
+        var tr = el("tr"); tr.appendChild(el("td", null, String(th.i + 1))); tr.appendChild(el("td", null, th.photoIn.toFixed(1) + " in"));
+        var td = el("td"), inp = el("input"); inp.type = "number"; inp.step = "0.1"; inp.min = "0"; inp.style.width = "90px"; inp.value = th.tapeIn == null ? "" : th.tapeIn; td.appendChild(inp); tr.appendChild(td);
+        var td2 = el("td"), b = el("button", "btn gray", "Apply"); b.onclick = function () { hostCall("tape", { team: team, i: th.i, inches: inp.value === "" ? null : Number(inp.value) }); }; td2.appendChild(b); tr.appendChild(td2);
+        tt.appendChild(tr);
+      });
+      if (ent.misses) { var trm = el("tr"); trm.appendChild(el("td", null, "")); trm.appendChild(el("td", null, ent.misses + " missed the board")); tt.appendChild(trm); }
+      right.appendChild(tt);
+    }
+    // winner brief + what-if
+    var g2 = el("div", "grid g2"); g2.style.marginTop = "14px"; box.appendChild(g2);
+    var wb = el("div", "card"); g2.appendChild(wb);
+    if (res.winner) {
+      var b = board.teams.find(function (t) { return t.team === res.winner.team; }); var brief = (b && b.brief) || res.winner.brief;
+      wb.appendChild(el("h2", null, "Team " + res.winner.team + "'s brief"));
+      if (brief) {
+        wb.appendChild(el("label", "f", "How they decided on the design")); wb.appendChild(el("p", null, brief.design_process || "—"));
+        wb.appendChild(el("label", "f", "Who built and who throws")); wb.appendChild(el("p", null, brief.builder_choice || "—"));
+        var kt = el("table", "t"), kh = el("tr"); ["Type", "KPI", "Definition", "Their number"].forEach(function (h) { kh.appendChild(el("th", null, h)); }); kt.appendChild(kh);
+        (brief.kpis || []).forEach(function (k) { var tr = el("tr"); [k.type === "operational" ? "Operational" : "Product", k.name, k.definition, k.our_number].forEach(function (v) { tr.appendChild(el("td", null, v || "")); }); kt.appendChild(tr); });
+        wb.appendChild(kt);
+      } else wb.appendChild(el("p", "status", "No brief saved."));
+    }
+    var wi = el("div", "card"); g2.appendChild(wi); wi.appendChild(el("h2", null, "Would the winner change?"));
+    var t = el("table", "t"), h = el("tr"); h.appendChild(el("th", null, "Team")); Object.keys(SUMMARY).forEach(function (k) { h.appendChild(el("th", null, label(SUMMARY, k, st))); }); t.appendChild(h);
+    res.ranking.forEach(function (r) { var tr = el("tr"); tr.appendChild(el("td", null, r.team)); Object.keys(SUMMARY).forEach(function (k) { var x = (res.whatIf[k] || []).find(function (y) { return y.team === r.team; }); var td = el("td", null, x ? (x.last ? "last" : "#" + x.rank) : ""); if (x && x.rank === 1 && !x.last) { td.style.fontWeight = "900"; td.style.color = "var(--red)"; } tr.appendChild(td); }); t.appendChild(tr); });
+    wi.appendChild(t);
+  }
+  var ruler = [], measStep = 99;
+  function animateMeasure() { measStep = 0; drawMeasure(); var iv = setInterval(function () { measStep++; drawMeasure(); if (measStep > 5) clearInterval(iv); }, 1300); }
+  function drawMeasure() {
+    var res = board && board.results, svg = $("msvg"), img = $("mimg"); if (!res || !svg || !img || !img.clientWidth) return;
+    var W = img.clientWidth, H = img.clientHeight, snap = res.snapshot, X = snap.X; svg.setAttribute("viewBox", "0 0 " + W + " " + H); svg.textContent = "";
+    var team = measureTeam || (res.winner && res.winner.team) || res.ranking[0].team, ent = res.entries.find(function (e) { return e.team === team; });
+    var pair = (teamPair(team) || "black|dot").split("|"), col = COLORCSS[pair[0]] || pair[0];
+    var txt = $("measText"), lines = [];
+    // step 0: scale bar along the X's arms
+    svg.appendChild(svgEl("line", { x1: X.lx * W, y1: X.ly * H, x2: X.rx * W, y2: X.ry * H, stroke: "#f59e0b", "stroke-width": 5 }));
+    svg.appendChild(svgEl("circle", { cx: X.cx * W, cy: X.cy * H, r: 6, fill: "#C3142D" }));
+    var scaleTxt = "X width = " + board.state.settings.xWidthIn + " in, so 1 in = " + res.pxPerInch.toFixed(1) + " px";
+    var used = [];
+    (ent ? ent.throws : []).forEach(function (th, k) {
+      var d = th.tapeIn != null ? th.tapeIn : th.photoIn; used.push(d);
+      if (measStep < k + 1) return;
+      var ln = svgEl("line", { x1: X.cx * W, y1: X.cy * H, x2: th.x * W, y2: th.y * H, stroke: col, "stroke-width": 4 }); svg.appendChild(ln);
+      svg.appendChild(svgEl("circle", { cx: th.x * W, cy: th.y * H, r: 9, fill: "none", stroke: col, "stroke-width": 3 }));
+      var ang = Math.atan2(th.y * H - X.cy * H, th.x * W - X.cx * W);
+      var t = svgEl("text", { x: th.x * W + Math.cos(ang) * 22, y: th.y * H + Math.sin(ang) * 22 + 8, "text-anchor": Math.cos(ang) < 0 ? "end" : "start", "font-size": 22, "font-weight": 900, fill: col, "paint-order": "stroke", stroke: "#fff", "stroke-width": 5 });
+      t.textContent = d.toFixed(1) + " in" + (th.tapeIn != null ? " (tape)" : ""); svg.appendChild(t);
+    });
+    var r = res.rule, misses = ent ? ent.misses : 0, s = board.state.settings;
+    var missTxt = misses ? (r.miss === "fixed_penalty" ? " + " + misses + " miss × " + (res.penaltyUsed || r.penaltyIn) + " in" : r.miss === "worst_landed" ? " + " + misses + " miss at the worst landed throw" : r.miss === "dropped" ? " (" + misses + " miss dropped)" : " (a miss: ranks last)") : "";
+    var rank = res.ranking.find(function (x) { return x.team === team; });
+    var nums = used.map(function (v) { return v.toFixed(1); }).join(", ");
+    var how = { average: "average of " + nums + missTxt, median: "middle of " + nums + missTxt, closest: "closest of " + nums + missTxt, farthest: "farthest of " + nums + missTxt,
+      hit_rate: "throws within " + r.hitN + " in among " + nums + missTxt, spread: "average distance of the marks from their own center" + missTxt }[r.summary];
+    txt.textContent = measStep === 0 ? scaleTxt : measStep <= used.length ? scaleTxt : "Team " + team + ": " + how + " = " + (rank && !rank.last ? fmt(rank.score, r.summary) : "ranks last");
+    // ruler
+    if (rulerOn) {
+      svg.onclick = function (e) { var b = svg.getBoundingClientRect(); ruler.push({ x: (e.clientX - b.left) / b.width, y: (e.clientY - b.top) / b.height }); if (ruler.length > 2) ruler = ruler.slice(-1); drawMeasure(); };
+      ruler.forEach(function (p) { svg.appendChild(svgEl("circle", { cx: p.x * W, cy: p.y * H, r: 6, fill: "#0ea5e9" })); });
+      if (ruler.length === 2) {
+        var a = ruler[0], b2 = ruler[1];
+        svg.appendChild(svgEl("line", { x1: a.x * W, y1: a.y * H, x2: b2.x * W, y2: b2.y * H, stroke: "#0ea5e9", "stroke-width": 4 }));
+        var inch = Math.hypot((b2.x - a.x) * snap.imgW, (b2.y - a.y) * snap.imgH) / res.pxPerInch;
+        var rt = svgEl("text", { x: (a.x + b2.x) / 2 * W + 8, y: (a.y + b2.y) / 2 * H - 8, "font-size": 22, "font-weight": 900, fill: "#0369a1", "paint-order": "stroke", stroke: "#fff", "stroke-width": 5 });
+        rt.textContent = "ruler: " + inch.toFixed(1) + " in"; svg.appendChild(rt);
+      }
+    } else svg.onclick = null;
+  }
+
+  // ---------- instructor
+  function openExtra() {
+    var st = board.state, taken = board.teams.map(function (t) { return t.marker; }).filter(Boolean);
+    var mo = el("div", "modal"), c = el("div", "card"); mo.appendChild(c); document.body.appendChild(mo);
+    c.appendChild(el("h2", null, U("extra")));
+    c.appendChild(el("label", "f", U("markerLabel")));
+    var selC = el("select"), selS = el("select");
+    st.settings.colors.forEach(function (x) { var o = el("option", null, x); o.value = x; selC.appendChild(o); });
+    st.settings.symbols.forEach(function (x) { var o = el("option", null, x); o.value = x; selS.appendChild(o); });
+    var free = null; st.settings.colors.some(function (cc) { return st.settings.symbols.some(function (ss) { if (taken.indexOf(cc + "|" + ss) < 0) { free = [cc, ss]; return true; } return false; }); });
+    if (free) { selC.value = free[0]; selS.value = free[1]; }
+    c.appendChild(selC); c.appendChild(document.createTextNode(" ")); c.appendChild(selS);
+    var go = el("button", "btn big", U("start")); go.style.marginTop = "10px";
+    go.onclick = function () { hostCall("instructor", { color: selC.value, symbol: selS.value }).then(function (j) { if (!j.error) { mo.remove(); cueStop(); } }); };
+    c.appendChild(el("div")).appendChild(go);
+    c.appendChild(el("label", "f", U("firstLabel")));
+    var boxes = el("div"); boxes.style.margin = "4px 0 8px";
+    board.teams.forEach(function (t) {
+      var lab = el("label"); lab.style.marginRight = "14px"; lab.style.fontSize = "17px";
+      var cb = el("input"); cb.type = "checkbox"; cb.value = t.team; cb.style.marginRight = "4px";
+      lab.appendChild(cb); lab.appendChild(document.createTextNode("Team " + t.team)); boxes.appendChild(lab);
+    });
+    var fb = el("button", "btn ghost", U("first"));
+    fb.onclick = function () {
+      var teams = Array.prototype.slice.call(boxes.querySelectorAll("input:checked")).map(function (x) { return x.value; });
+      if (!teams.length) { setStatus("Tick at least one team.", true); return; }
+      hostCall("firstTeam", { teams: teams }).then(function () { mo.remove(); outcomeCue("up"); });
+    };
+    c.appendChild(boxes); c.appendChild(fb);
+    var cl = el("button", "btn gray", "Cancel"); cl.style.marginTop = "12px"; cl.onclick = function () { mo.remove(); }; c.appendChild(el("div")).appendChild(cl);
+  }
+  function drawExtra(m) {
+    var st = board.state, R = board.reveal;
+    if (st.firstTeam && R) {
+      var ft = [].concat(st.firstTeam), names = ft.length === 1 ? "Team " + ft[0] : "Teams " + ft.slice(0, -1).join(", ") + " and " + ft[ft.length - 1];
+      return drawFinale(m, R.text.first, R.gifs.up, names);
+    }
+    if (st.instructorResult && R) {
+      var ir = st.instructorResult, rule = board.results.rule;
+      var head = (ir.wins ? R.text.up : R.text.down);
+      return drawFinale(m, head, ir.wins ? R.gifs.up : R.gifs.down,
+        U("myScore") + ": " + fmt(ir.score, rule.summary) + (ir.best ? " · best team (" + ir.best.team + "): " + fmt(ir.best.score, rule.summary) : ""));
+    }
+    drawCheck(m, "instructor");
+  }
+  function drawFinale(m, text, gif, scoreLine) {
+    var box = stage(m, "", ""); box.textContent = "";
+    var d = el("div", "finale"); box.appendChild(d);
+    var f = document.createElement("iframe"); f.className = "gif"; f.src = "https://giphy.com/embed/" + gif; f.title = "GIF"; f.setAttribute("allowfullscreen", "");
+    d.appendChild(f); d.appendChild(el("h1", null, text.title));
+    if (scoreLine) d.appendChild(el("p", "status", scoreLine));
+    text.lines.forEach(function (l) { d.appendChild(el("p", null, l)); });
+    var ir = board.state.instructorResult;
+    if (ir && !board.state.firstTeam) { var again = el("button", "btn gray", U("editMine")); again.onclick = function () { board.state.instructorResult = null; editor = null; drawCheck($("main"), "instructor"); }; d.appendChild(again); }
+  }
+
+  // ---------- KPIs: every team's KPIs sorted by how they tie to the goal, with the reference column
+  function drawKpis(m) {
+    var R = board.reveal, box = stage(m, U("kpiTitle"), U("kpiSub"));
+    var g = el("div", "grid g3"); box.appendChild(g);
+    var order = ["tied", "supports", "client", "not_tied", "process", "other"];
+    board.teams.forEach(function (t) {
+      var c = el("div", "card"); c.appendChild(el("h2", null, "Team " + t.team)); g.appendChild(c);
+      var ks = (t.brief && t.brief.kpis) || [], mt = (board.match && board.match[t.team]) || [];
+      if (!ks.length) { c.appendChild(el("p", "status", "No KPIs saved.")); return; }
+      var groups = {};
+      ks.forEach(function (k, i) { var b = (mt[i] && mt[i].relevance) || "other"; (groups[b] = groups[b] || []).push({ k: k, m: mt[i] }); });
+      order.forEach(function (b) {
+        if (!groups[b]) return;
+        var bx = el("div", "bucket " + b); bx.appendChild(el("b", null, U("b_" + b)));
+        groups[b].forEach(function (x) {
+          var line = el("div", null, x.k.name + (x.k.our_number ? " (" + x.k.our_number + ")" : ""));
+          var ref = R && x.m && x.m.item && R.refRow[x.m.item];
+          if (ref) { line.appendChild(document.createTextNode("  ")); line.appendChild(el("span", "pill", U("refPill") + ": " + ref)); }
+          bx.appendChild(line);
+        });
+        c.appendChild(bx);
+      });
+    });
+    var rc = el("button", "btn ghost", board.state.recap ? "Recap published" : "Publish recap (after section B)"); rc.style.marginTop = "14px";
+    rc.disabled = board.state.recap; rc.onclick = function () { $("recapBtn").click(); }; box.appendChild(rc);
+  }
+
+  // ---------- music: Fadel's own files from M:, kept in this browser (IndexedDB); nothing is uploaded
+  var audio = new Audio(), muted = false, files = {}, playlist = [], plIdx = 0, fadeIv = null;
+  audio.addEventListener("ended", function () { if (playlist.length > 1 || (playlist.length === 1 && playlist.loop)) { plIdx = (plIdx + 1) % playlist.length; playUrl(playlist[plIdx]); } });
+  function idb(fn) {
+    var rq = indexedDB.open("fp-music", 1);
+    rq.onupgradeneeded = function () { rq.result.createObjectStore("files"); };
+    rq.onsuccess = function () { fn(rq.result); };
+  }
+  function loadMusic() {
+    try { idb(function (db) { var tx = db.transaction("files", "readonly"), os = tx.objectStore("files"), rq = os.openCursor(); rq.onsuccess = function () { var c = rq.result; if (c) { files[c.key] = URL.createObjectURL(c.value); c.continue(); } else musicLabel(); }; }); } catch (e) {}
+  }
+  function musicLabel() { var n = Object.keys(files).length; $("musicBtn").textContent = n ? "Music (" + n + ")" : "Music"; }
+  $("musicBtn").onclick = function () { $("musicFiles").click(); };
+  $("musicFiles").onchange = function () {
+    var fs = Array.prototype.slice.call(this.files || []);
+    try { idb(function (db) { var tx = db.transaction("files", "readwrite"), os = tx.objectStore("files"); fs.forEach(function (f) { os.put(f, f.name); files[f.name] = URL.createObjectURL(f); }); tx.oncomplete = musicLabel; }); }
+    catch (e) { fs.forEach(function (f) { files[f.name] = URL.createObjectURL(f); }); musicLabel(); }
+  };
+  function track(word) { var k = Object.keys(files).find(function (n) { return n.toLowerCase().indexOf(word) >= 0; }); return k ? files[k] : null; }
+  function anyTrack() { var k = Object.keys(files); return k.length ? files[k[0]] : null; }
+  function playUrl(u) { if (!u) return; clearInterval(fadeIv); audio.src = u; audio.volume = muted ? 0 : 1; audio.play().catch(function () {}); }
+  function playList(list, loop) { playlist = list.filter(Boolean); playlist.loop = loop; plIdx = 0; if (playlist.length) playUrl(playlist[0]); }
+  function fadeOut() { clearInterval(fadeIv); fadeIv = setInterval(function () { audio.volume = Math.max(0, audio.volume - 0.07); if (audio.volume <= 0.01) { clearInterval(fadeIv); audio.pause(); playlist = []; } }, 100); }
+  function cueStop() { clearInterval(fadeIv); audio.pause(); playlist = []; }
+  function cueFor(ph, prev) {
+    if (prev === null) return;   // no music on page load
+    var gonna = track("gonna fly now"), going = track("going the distance");
+    if (ph === "design") playList([gonna || anyTrack(), going], true);
+    else if (ph === "throws") playList([going || anyTrack(), gonna], true);
+    else if (ph === "reveal") { playList([track("fanfare")], false); }
+    else if (ph === "instructor") cueStop();
+    else fadeOut();
+  }
+  function outcomeCue(kind) { if (kind === "up") playList([track("final bell")], false); else cueStop(); }
+  $("muteBtn").onclick = function () { muted = !muted; audio.volume = muted ? 0 : 1; $("muteBtn").textContent = muted ? "Unmute" : "Mute"; };
+
+  // ---------- loop
+  function poll() {
+    if (!key()) { askKey(); return; }
+    if (busy) return; busy = true;
+    hostCall("board").catch(function () {}).then(function () { busy = false; });
+  }
+  loadMusic();
+  poll();
+  setInterval(function () {
+    // Don't repaint over a mark being edited: the editor redraws itself.
+    if (editor && editor.dirty && board && (board.state.phase === "check" || board.state.phase === "instructor")) return;
+    poll();
+  }, 2000);
+})();
+</script>
+</body>
+</html>

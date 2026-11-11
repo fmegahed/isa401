@@ -1,0 +1,493 @@
+---
+title: "ISA 401: Business Intelligence & Data Visualization"
+subtitle: "23b: After the Paper Airplanes"
+author: '<br>Fadel M. Megahed, PhD <br><br> Raymond E. Glos Professor in Business <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("linkedin"), fill = "white")` @Fadel Megahed](https://www.linkedin.com/in/fadel-megahed-289046b4) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
+date: "Fall 2026"
+output:
+  xaringan::moon_reader:
+    self_contained: true
+    css: [default, "../../style_files/fonts.css", "../../style_files/my-theme.css", "../../style_files/code-tomorrow-night-bright.css"]
+    lib_dir: libs
+    mathjax: null
+    nature:
+      highlightStyle: magula
+      highlightLines: true
+      highlightLanguage: ["r"]
+      countIncrementalSlides: false
+      ratio: "16:9"
+    includes:
+      in_header: "../../style_files/header.html"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache = FALSE,
+                      echo = FALSE,
+                      warning = FALSE,
+                      message = FALSE,
+                      progress = FALSE,
+                      verbose = FALSE,
+                      dev = 'png',
+                      fig.height = 3,
+                      dpi = 300,
+                      fig.align = 'center')
+
+options(htmltools.dir.version = FALSE, width = 52)
+
+miamired = '#C3142D'
+
+if(require(pacman)==FALSE) install.packages("pacman")
+if(require(devtools)==FALSE) install.packages("devtools")
+if(require(xaringanExtra)==FALSE) devtools::install_github("gadenbuie/xaringanExtra")
+
+pacman::p_load(tidyverse, magrittr, janitor, # data analysis pkgs
+               ggtext, # for the colored words in the chart subtitle
+               fontawesome, xaringanExtra) # for slides
+
+ggplot2::theme_set(ggplot2::theme_bw(base_size = 12))
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+if(require(xaringanthemer) == FALSE) install.packages("xaringanthemer")
+library(xaringanthemer)
+
+style_mono_accent(base_color = "#84d6d3",
+                  base_font_size = "20px")
+
+xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "tachyons", "panelset", "broadcast", "share_again", "search", "fit_screen", "editable"))
+```
+
+```{r data_deck, include=FALSE}
+raw_url = function(f) paste0('https://raw.githubusercontent.com/fmegahed/isa401/main/data/', f)
+jobs_file = 'class23_jobs_snapshot_2026-11-10.csv'
+skills_file = 'class23_skill_counts_2026-11-10.csv'
+jobs_link = paste0("<a href='", raw_url(jobs_file), "' target='_blank'>", raw_url(jobs_file), "</a>")
+skills_link = paste0("<a href='", raw_url(skills_file), "' target='_blank'>", raw_url(skills_file), "</a>")
+
+# ---- news snippets: cropped screenshots of the public press releases (saved in figures/) ----
+snap = function(f, alt, cls = "") {
+  p = file.path('figures', f)
+  stopifnot(file.exists(p))
+  paste0("<img class='snap ", cls, "' src='", knitr::image_uri(p), "' alt='", alt, "'>")
+}
+
+# ---- baggage claim: two looping scenes, 1 second = 1 minute ----
+# Fix 1: 1 min walking + 7 min standing. Fix 2: the walk is six times longer (about 6 min), bags still at about 8 min.
+bag_T = 11          # seconds per loop: 8 minutes of story plus a 3-second hold
+step_px = 55        # pixels walked per minute (same walking speed in both scenes)
+min_px = 47.5       # bar pixels per minute
+stand_share = round(100 * 7 / 8)
+bag_scene = function(id, walk) {
+  x0 = 34; y = 58; path_px = walk * step_px; cx = x0 + path_px; bar_y = 104; bar_end = x0 + 8 * min_px
+  p = function(t) sprintf("%.2f%%", 100 * t / bag_T)
+  counter_kf = purrr::map_chr(0:8, function(i) {
+    body = if (i == 0) paste0("0% {opacity:1} ", p(1), " {opacity:0} 100% {opacity:0}")
+      else if (i == 8) paste0("0% {opacity:0} ", p(8), " {opacity:1} 100% {opacity:1}")
+      else paste0("0% {opacity:0} ", p(i), " {opacity:1} ", p(i + 1), " {opacity:0} 100% {opacity:0}")
+    paste0("@keyframes ", id, "c", i, " {", body, "} #", id, " .c", i, " {animation:", id, "c", i, " ", bag_T, "s step-end infinite;}")
+  })
+  css = paste0(
+    "@keyframes ", id, "walk {0% {transform:translateX(0px)} ", p(walk), " {transform:translateX(", path_px, "px)} 100% {transform:translateX(", path_px, "px)}}",
+    "@keyframes ", id, "col {0% {fill:#585E60} ", p(walk), " {fill:#c3142d} 100% {fill:#c3142d}}",
+    "@keyframes ", id, "bw {0% {transform:scaleX(0)} ", p(walk), " {transform:scaleX(1)} 100% {transform:scaleX(1)}}",
+    "@keyframes ", id, "bs {0% {transform:scaleX(0)} ", p(walk), " {transform:scaleX(0)} ", p(8), " {transform:scaleX(1)} 100% {transform:scaleX(1)}}",
+    "@keyframes ", id, "bag {0% {opacity:0} ", p(8), " {opacity:1} 100% {opacity:1}}",
+    "#", id, " .walker {animation:", id, "walk ", bag_T, "s linear infinite, ", id, "col ", bag_T, "s step-end infinite;}",
+    "#", id, " .bw {transform-box:fill-box; transform-origin:left center; animation:", id, "bw ", bag_T, "s linear infinite;}",
+    "#", id, " .bs {transform-box:fill-box; transform-origin:left center; animation:", id, "bs ", bag_T, "s linear infinite;}",
+    "#", id, " .bag {animation:", id, "bag ", bag_T, "s step-end infinite;}",
+    "#", id, " .cnt {opacity:0;}",
+    paste(counter_kf, collapse = ""))
+  ticks = paste0(purrr::map_chr(0:8, function(i)
+    paste0("<text x='", x0 + i * min_px, "' y='", bar_y + 30, "' font-size='10.5' fill='#585E60' text-anchor='middle'>", i, "</text>")), collapse = "")
+  counters = paste0(purrr::map_chr(0:8, function(i)
+    paste0("<text class='cnt c", i, "' x='", bar_end, "' y='24' font-size='19' font-weight='700' fill='#1b1b1b' text-anchor='end'>", i, " min</text>")), collapse = "")
+  paste0(
+    "<style>", css, "</style>",
+    "<svg id='", id, "' viewBox='0 0 440 142' width='100%' role='img' aria-label='Animation: a passenger walks ", walk, " minute(s) from the gate to baggage claim, then stands until the bags arrive at minute 8'>",
+    "<rect x='6' y='40' width='28' height='36' rx='3' fill='#e5e7eb'/><text x='20' y='92' font-size='11' fill='#585E60' text-anchor='middle'>Gate</text>",
+    "<line x1='", x0, "' y1='", y, "' x2='", cx, "' y2='", y, "' stroke='#9ca3af' stroke-width='2' stroke-dasharray='4 4'/>",
+    "<rect x='", cx, "' y='40' width='52' height='36' rx='18' fill='#ffffff' stroke='#585E60' stroke-width='2'/>",
+    "<text x='", cx + 26, "' y='92' font-size='11' fill='#585E60' text-anchor='middle'>Bags</text>",
+    "<g class='bag'><rect x='", cx + 18, "' y='50' width='16' height='13' rx='2' fill='#1b1b1b'/><rect x='", cx + 23, "' y='46' width='6' height='5' rx='1' fill='none' stroke='#1b1b1b' stroke-width='1.6'/></g>",
+    "<circle class='walker' cx='", x0, "' cy='", y, "' r='8' fill='#585E60'/>",
+    counters,
+    "<rect x='", x0, "' y='10' width='11' height='11' fill='#9ca3af'/><text x='", x0 + 16, "' y='20' font-size='11.5' fill='#585E60'>walking</text>",
+    "<rect x='", x0 + 72, "' y='10' width='11' height='11' fill='#c3142d'/><text x='", x0 + 88, "' y='20' font-size='11.5' fill='#585E60'>standing and waiting</text>",
+    "<rect x='", x0, "' y='", bar_y, "' width='", 8 * min_px, "' height='16' fill='#f3f4f6'/>",
+    "<rect class='bw' x='", x0, "' y='", bar_y, "' width='", walk * min_px, "' height='16' fill='#9ca3af'/>",
+    "<rect class='bs' x='", x0 + walk * min_px, "' y='", bar_y, "' width='", (8 - walk) * min_px, "' height='16' fill='#c3142d'/>",
+    ticks, "<text x='", bar_end + 6, "' y='", bar_y + 30, "' font-size='10.5' fill='#585E60'>min</text>",
+    "</svg>")
+}
+scene_1 = bag_scene("bagA", 1)
+scene_2 = bag_scene("bagB", 6)
+
+# ---- the jobs snapshot (pulled Nov 10, 2026 from the fantastic.jobs API; quotes are verbatim) ----
+jobs = readr::read_csv(file.path('../../data', jobs_file), show_col_types = FALSE)
+skills = readr::read_csv(file.path('../../data', skills_file), show_col_types = FALSE)
+stopifnot(nrow(jobs) == 12, all(jobs$date_pulled == as.Date("2026-11-10")))
+
+kfmt = function(x) paste0("$", sub("\\.0$", "", format(round(x / 1000, 1), nsmall = 1, trim = TRUE)), "K")
+
+job = function(emp, tier_name = "apply_now") {
+  r = jobs |> dplyr::filter(employer == emp, tier == tier_name)
+  stopifnot(nrow(r) == 1)
+  r
+}
+
+# "City, State, United States" -> "City, ST"
+city_st = function(loc) {
+  parts = stringr::str_split(loc, ", ")
+  purrr::map_chr(parts, function(x) paste0(x[1], ", ", state.abb[match(x[2], state.name)]))
+}
+
+# ---- a job posting quote ----
+nexus = job("Nexus Intelligence")
+stopifnot(nexus$quote == "At home in ambiguity: you'd rather figure out the right thing to build than be handed a spec.")
+
+# ---- share of this week's entry-level postings that mention each skill ----
+n_total = skills$count[skills$query == "" | is.na(skills$query)]
+stopifnot(length(n_total) == 1, n_total == 2409)
+tool_skills = c("SQL", "Python", "Tableau", "Power BI", "Generative AI / LLMs")
+skill_plot = skills |>
+  dplyr::filter(!is.na(query), query != "", skill != "Excel") |>   # Excel dropped: the full-text search stems "excellent" to "excel"
+  dplyr::mutate(kind = ifelse(skill %in% tool_skills, "tool", "framing"),
+                pct = count / n_total,
+                skill = forcats::fct_reorder(skill, pct))
+stopifnot(nrow(skill_plot) == 10, sum(skill_plot$kind == "tool") == 5)
+cnt = setNames(skill_plot$count, as.character(skill_plot$skill))
+ratio_sql = cnt[["Problem solving"]] / cnt[["SQL"]]
+ratio_py = cnt[["Problem solving"]] / cnt[["Python"]]
+stopifnot(round(ratio_sql) == round(ratio_py))
+ratio = round(ratio_sql)
+skill_finding = paste0("This week, employers asked for problem solving about ", ratio, "x as often as SQL or Python")
+
+# ---- quotes from entry-level postings: verbatim fragments, each checked against the posting's quote ----
+moto = job("Motorola Solutions")
+picks = tibble::tribble(
+  ~employer,              ~role,                                         ~fragment,                                                                                                                       ~key,                                       ~lead, ~tail,
+  "Booz Allen Hamilton",  "Shared Services Data Analyst",                "Translate ambiguous or evolving business questions into structured data solutions and visual narratives.",                      "ambiguous or evolving business questions", "",    "",
+  "EY",                   "EY-Parthenon Associate, Corporate Finance",   "Outstanding critical thinking skills with the ability to solve unstructured problems.",                                         "solve unstructured problems",              "",    "",
+  "Deloitte",             "Business Analyst, Functional Transformation", "Investigate business and client issues, clarify root causes,",                                                                  "clarify root causes",                      "",    " &hellip;",
+  "PwC",                  "Tax Associate, Summer/Fall 2027",             "anticipate the needs of your teams and clients, embrace ambiguity, ask questions,",                                             "embrace ambiguity, ask questions",         "&hellip; ", " &hellip;",
+  "Salesforce",           "AI Product Associate Analyst, Early Talent",  "sit in on discovery sessions, and participate in meetings to help gather business needs and requirements for AI-powered workflows.", "gather business needs",              "&hellip; ", ""
+) |>
+  dplyr::left_join(jobs |> dplyr::filter(tier == "apply_now") |> dplyr::select(employer, quote, salary, url, location), by = "employer")
+stopifnot(nrow(picks) == 5, all(stringr::str_detect(picks$quote, stringr::fixed(picks$fragment))),
+          all(stringr::str_detect(picks$fragment, stringr::fixed(picks$key))))
+
+sal_range = function(s) {
+  v = readr::parse_number(stringr::str_split_1(stringr::str_remove(s, " USD/year"), "-"))
+  paste0(kfmt(v[1]), "&ndash;", kfmt(v[2]))
+}
+picks = picks |>
+  dplyr::mutate(q = paste0("“", lead, stringr::str_replace(fragment, stringr::fixed(key), paste0("<b>", key, "</b>")), tail, "”"),
+                pay = purrr::map_chr(salary, sal_range))
+jobs_rows = paste0("<tr><td><a href='", picks$url, "' target='_blank'><b>", picks$employer, "</b></a><br><span class='role'>", picks$role,
+                   ", ", city_st(picks$location), "</span></td><td class='q'>", picks$q, "</td><td class='pay'>", picks$pay, "</td></tr>", collapse = "")
+jobs_table = paste0("<table class='jobs'><thead><tr><th style='width:30%'>Employer and role (0-2 years)</th><th>From the posting</th><th style='width:14%'>Posted range</th></tr></thead><tbody>",
+                    jobs_rows, "</tbody></table>")
+
+# ---- salary ranges: annual ranges as printed in the postings (hourly and unlisted ranges left out) ----
+short_role = c("Booz Allen Hamilton|apply_now" = "Booz Allen, Data Analyst",
+               "EY|apply_now" = "EY-Parthenon, Associate",
+               "Deloitte|apply_now" = "Deloitte, Business Analyst",
+               "PwC|apply_now" = "PwC, Tax Associate",
+               "Regions|apply_now" = "Regions, Development Program Analyst",
+               "Salesforce|apply_now" = "Salesforce, AI Product Associate Analyst",
+               "OpenAI|where_it_leads" = "OpenAI, Forward Deployed Engineer",
+               "Salesforce|where_it_leads" = "Salesforce, Forward Deployed Engineer",
+               "Deloitte|where_it_leads" = "Deloitte, Forward Deployed Engineer")
+pay = jobs |>
+  dplyr::filter(stringr::str_detect(salary, "USD/year")) |>
+  dplyr::mutate(lo = readr::parse_number(stringr::str_extract(salary, "^[0-9,]+")),
+                hi = readr::parse_number(stringr::str_extract(salary, "(?<=-)[0-9,]+")),
+                label = paste0(unname(short_role[paste(employer, tier, sep = "|")]), " (", city_st(location), ")"),
+                tier = factor(tier, levels = c("apply_now", "where_it_leads"),
+                              labels = c("Entry level\n(0-2 yrs)", "Forward deployed\n(2-10 yrs)")))
+stopifnot(nrow(pay) == 9, !any(is.na(pay$label)), !any(stringr::str_detect(pay$label, "NA")), !any(is.na(pay$lo)), !any(is.na(pay$hi)))
+pay = pay |> dplyr::arrange(tier, hi) |> dplyr::mutate(label = factor(label, levels = unique(label)))
+top = pay |> dplyr::slice_max(hi, n = 1)
+stopifnot(top$employer == "OpenAI", top$hi == 300000)
+entry_top = max(pay$hi[pay$tier == levels(pay$tier)[1]])
+pay_finding = paste0("Entry-level ranges top out at ", kfmt(entry_top), ". The forward deployed roles go up to ", kfmt(top$hi), ".")
+lead_exp = jobs |> dplyr::filter(tier == "where_it_leads") |> dplyr::pull(experience)
+stopifnot(all(lead_exp %in% c("2-5", "5-10")))
+rambus = job("Rambus")
+no_range = jobs |> dplyr::filter(is.na(salary)) |> dplyr::pull(employer)
+stopifnot(length(no_range) == 2)
+```
+
+<style>
+/* shared cards */
+.card { border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1); background:#ffffff; }
+.card .ch { background:#c3142d; color:#fff; font-weight:700; font-size:14.5px; padding:7px 12px; }
+.card .ch.gray { background:#585E60; }
+.card .cb { padding:9px 12px; font-size:13.5px; line-height:1.45; }
+.card .cb a { color:#1b1b1b; text-decoration:underline; text-decoration-color:#c3142d; }
+.note { margin-top:12px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:9px 16px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14.5px; line-height:1.5; }
+.note b.r { color:#c3142d; }
+.src { font-size:11.5px; color:#585E60; line-height:1.4; }
+.src a { color:#c3142d !important; }
+.foot { position:absolute; left:73px; right:96px; bottom:12px; font-size:11.5px; color:#585E60; line-height:1.4; }
+.foot a { color:#c3142d !important; }
+.two { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:10px; }
+.ask { color:#585E60; font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; margin-top:2px; }
+.ask.r { color:#c3142d; }
+.bigq { font-size:38px; line-height:1.32; font-weight:600; color:#1b1b1b; margin:34px 24px 0 24px; border-left:8px solid #c3142d; padding:4px 0 4px 22px; }
+.bigq.sm { font-size:24px; margin:8px 0 0 0; }
+.who { font-size:21px; line-height:1.45; margin:26px 24px 0 24px; color:#1b1b1b; }
+.who .role { color:#c3142d; font-weight:800; }
+.punch { font-size:40px; font-weight:800; color:#c3142d; text-align:center; margin-top:28px; }
+.close { font-size:20px; font-weight:700; color:#1b1b1b; text-align:center; line-height:1.4; margin-top:2px; }
+.close b { color:#c3142d; }
+.case { display:grid; grid-template-columns:minmax(0,1.25fr) minmax(0,1fr); gap:16px; align-items:start; margin-top:4px; }
+.case .cb div.ask { margin-top:8px; }
+.case .cb div.ask:first-child { margin-top:0; }
+img.snap { display:block; width:100%; border:1px solid #d1d5db; border-radius:6px; box-shadow:0 1px 3px rgba(0,0,0,0.12); margin-bottom:10px; }
+.snapcap { font-size:11px; color:#585E60; margin:-6px 0 10px 2px; }
+.clips { position:relative; height:352px; }
+.clips img.snap { position:absolute; margin:0; }
+.clips img.a { width:82%; left:0; top:0; z-index:1; }
+.clips img.b { width:58%; right:0; top:118px; z-index:2; box-shadow:0 4px 14px rgba(0,0,0,0.25); }
+.snapcap a { color:#585E60; }
+.news { border:1px solid #d1d5db; border-radius:6px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.12); padding:12px 16px; margin-bottom:10px; }
+.news .outlet { font-size:12px; font-weight:700; color:#585E60; text-transform:uppercase; letter-spacing:0.05em; }
+.news .hl { font-family:Georgia, 'Times New Roman', serif; font-size:21px; line-height:1.25; font-weight:700; color:#1b1b1b; margin:4px 0 6px 0; }
+.news .dt { font-size:12px; color:#585E60; }
+.news .ex { font-family:Georgia, 'Times New Roman', serif; font-size:14.5px; line-height:1.5; color:#1b1b1b; margin-top:8px; }
+.news a { color:#c3142d !important; font-size:12px; }
+.bagcap { font-size:13.5px; line-height:1.45; margin-top:4px; }
+.bagcap b.r { color:#c3142d; }
+table.jobs { width:100%; border-collapse:collapse; margin-top:12px; font-size:13.5px; line-height:1.4; border:0; }
+table.jobs th { text-align:left; padding:6px 9px; font-size:13px; border:0; }
+table.jobs td { padding:6px 9px; border:0; border-bottom:1px solid #e5e7eb; vertical-align:top; background:#ffffff; }
+table.jobs tr:nth-child(even) td { background:#fafafa; }
+table.jobs td a { color:#1b1b1b; }
+table.jobs .role { color:#585E60; font-size:12px; }
+table.jobs .q b { color:#c3142d; }
+table.jobs .pay { white-space:nowrap; }
+</style>
+
+# The Paper Airplane Brief
+
+<div class="two" style="margin-top:14px;">
+<div class="card"><div class="ch gray">The brief</div><div class="cb" style="font-size:16px; line-height:1.55;">&ldquo;Design the best paper plane that can <b>consistently hit the target</b> on the whiteboard (from a distance of 6ft).&rdquo;</div></div>
+<div class="card"><div class="ch">The best design for that brief</div><div class="cb" style="font-size:16px; line-height:1.55;">A sheet of paper <b>crumpled into a ball</b>. It is the cheapest, the fastest to build, needs the least skill to throw, and is the most accurate.</div></div>
+</div>
+
+<div class="bigq sm" style="margin-top:22px;">The client said &ldquo;paper plane.&rdquo; The goal was &ldquo;hit the X.&rdquo;</div>
+
+<div class="note" style="margin-top:20px; font-size:16px;">In consulting and analytics, what a client asks for and what the client needs are often different. Part of the job is finding out what the client needs.</div>
+
+???
+
+Thirty seconds. The game's last screens already showed this. If a team found it, name the team. If Fadel won, that is the point. If he choked, the ball was still the right design for the goal. Then go to the baggage claim example.
+
+---
+
+# Example: Baggage Claim Complaints
+
+<div class="src" style="font-size:14px; color:#1b1b1b; margin-top:-4px;">Passengers at a Houston airport complained about how long they waited for their bags. <span style="color:#585E60;">(The article doesn't give the starting wait.)</span></div>
+
+<div class="two" style="margin-top:8px; gap:16px;">
+<div class="card"><div class="ch gray">Fix 1: more baggage handlers</div><div class="cb">
+`r scene_1`
+<div class="bagcap">The average wait fell to <b>8 minutes</b>: 1 minute walking to baggage claim and 7 minutes standing. <b class="r">`r stand_share`% of the wait was standing.</b> The complaints continued.</div>
+</div></div>
+<div class="card"><div class="ch">Fix 2: a longer walk</div><div class="cb">
+`r scene_2`
+<div class="bagcap">Arrivals moved away from the main terminal, and bags went to the outermost carousel. The walk became <b>six times longer</b> (about 6 minutes), with about 2 minutes standing. <b class="r">Complaints dropped to near zero.</b></div>
+</div></div>
+</div>
+
+<div class="note" style="margin-top:10px;">The airport was asked to cut the wait. The problem was the time passengers spent standing.</div>
+
+<div class="foot"><b>Source:</b> Alex Stone, &ldquo;Why Waiting Is Torture,&rdquo; <i>The New York Times</i> (Aug 19, 2012). The article does not name the airport. The 6 and 2 minute split is our estimate from &ldquo;six times longer,&rdquo; with the bags arriving at about the same time. In the animation, 1 second = 1 minute.</div>
+
+???
+
+Seventy-five seconds. Let one loop play before talking. Fix 1 did what the complaints asked for: the wait fell to 8 minutes, and people still complained, because 7 of the 8 minutes were spent standing. Fix 2 made the walk six times longer. The bags took about the same time, so people walked for most of it and stood for about 2 minutes, and the complaints stopped. The article does not say what the wait was before the first fix, so do not quote a number for it. The 6 and 2 split is an estimate.
+
+---
+
+# Measures and Targets
+
+<div class="bigq" style="margin-top:40px;">&ldquo;When a measure becomes a target, it ceases to be a good measure.&rdquo;</div>
+
+<div class="who" style="font-size:18px; color:#585E60;">Marilyn Strathern (1997), her phrasing of Goodhart's law. <i>European Review</i>.</div>
+
+<div class="note" style="margin-top:30px; font-size:16px;">The next three examples are targets that became the goal. In each one, people hit the number in a way that was unethical or harmful.</div>
+
+???
+
+Fifteen seconds. Read the quote once. Tie back to the game: the vote picked a measure of accuracy. A measure is useful while it still tracks the goal.
+
+---
+
+# Example: Wells Fargo's Cross-Selling Goal
+
+<div class="case">
+<div>
+<div class="clips">
+`r snap('cfpb_wells_fargo_2016-09-08.png', 'CFPB press release, Sept 8, 2016: CFPB fines Wells Fargo 100 million dollars for secretly opening unauthorized accounts', 'a')`
+`r snap('doj_wells_fargo_2020-02-21.png', 'U.S. Department of Justice press release, Feb 21, 2020: Wells Fargo agrees to pay 3 billion dollars', 'b')`
+</div>
+</div>
+<div class="card"><div class="ch">The target and what it cost</div><div class="cb" style="font-size:14.5px; line-height:1.5;">
+<div class="ask">The target</div>Eight products per customer. CEO John Stumpf wrote that the goal was eight because &ldquo;it rhymed with &lsquo;great&rsquo;.&rdquo;
+<div class="ask r">What happened</div>Employees opened accounts that customers did not ask for: about <b>3.5 million</b> potentially unauthorized accounts (Aug 2017).
+<div class="ask r">The cost</div><b>$185 million</b> in fines in Sept 2016 ($100M to the CFPB, $35M to the OCC, $50M to the City and County of Los Angeles). A <b>$3 billion</b> settlement with the DOJ and SEC (Feb 21, 2020).
+</div></div>
+</div>
+
+<div class="foot"><b>Sources:</b> Stumpf, Wells Fargo 2010 annual report, in the Senate Banking Committee hearing record (Sept 20, 2016); Wells Fargo (Aug 2017). Press releases shown: <a href="https://www.consumerfinance.gov/about-us/newsroom/consumer-financial-protection-bureau-fines-wells-fargo-100-million-widespread-illegal-practice-secretly-opening-unauthorized-accounts/" target="_blank">CFPB (Sept 8, 2016)</a> and <a href="https://www.justice.gov/opa/pr/wells-fargo-agrees-pay-3-billion-resolve-criminal-and-civil-investigations-sales-practices" target="_blank">U.S. Department of Justice (Feb 21, 2020)</a>.</div>
+
+???
+
+Forty-five seconds. The number came from a rhyme. Employees were pushed to hit eight products per customer, and many did it by opening accounts in customers' names without asking. The $185 million is the sum of the three 2016 penalties in the CFPB release: $100 million to the CFPB, $35 million to the OCC, and $50 million to the City and County of Los Angeles. The DOJ release says the practice ran from 2002 to 2016.
+
+---
+
+# Example: Volkswagen's Emissions Tests
+
+<div class="case">
+<div>
+`r snap('epa_vw_2015-09-18.png', 'EPA news release, Sept 18, 2015: EPA and California notify Volkswagen of Clean Air Act violations')`
+<div class="snapcap">News release: <a href="https://www.epa.gov/archive/epa/newsreleases/epa-california-notify-volkswagen-clean-air-act-violations-carmaker-allegedly-used.html" target="_blank">U.S. Environmental Protection Agency, Sept 18, 2015</a>.</div>
+</div>
+<div class="card"><div class="ch">The target and what it cost</div><div class="cb" style="font-size:14.5px; line-height:1.5;">
+<div class="ask">The target</div>Pass the U.S. emissions tests with its diesel cars.
+<div class="ask r">What happened</div>Software in the cars detected when they were being tested (EPA, Sept 18, 2015). On the road, the cars emitted up to <b>40 times</b> the NOx standard.
+<div class="ask r">The cost</div>About <b>11 million</b> cars worldwide, about 500,000 of them in the U.S. About <b>$34.7 billion</b> in costs by March 2020.
+</div></div>
+</div>
+
+<div class="foot"><b>Sources:</b> EPA notice of violation (Sept 18, 2015); Reuters (Mar 2020).</div>
+
+???
+
+Forty-five seconds. The test was the target. The goal of the test was clean air. The cars passed the test and missed the goal by up to 40 times.
+
+---
+
+# Example: Facebook's News Feed Goal
+
+<div class="case">
+<div>
+<div class="news"><div class="outlet">Mark Zuckerberg, Facebook post</div><div class="dt">January 11, 2018</div><div class="ex">&ldquo;I'm changing the goal I give our product teams from focusing on helping you find relevant content to helping you have more meaningful social interactions.&rdquo;</div><a href="https://www.facebook.com/zuck/posts/10104413015393571" target="_blank">facebook.com/zuck/posts/10104413015393571</a></div>
+<div class="news"><div class="outlet">The Wall Street Journal &middot; The Facebook Files</div><div class="hl">Facebook Tried to Make Its Platform a Healthier Place. It Got Angrier Instead.</div><div class="dt">By Keach Hagey and Jeff Horwitz, Sept. 15, 2021</div><div class="ex">Internal memos show how a big 2018 change rewarded outrage and that CEO Mark Zuckerberg resisted proposed fixes</div><a href="https://www.wsj.com/articles/facebook-algorithm-change-zuckerberg-11631654215" target="_blank">wsj.com</a></div>
+</div>
+<div class="card"><div class="ch">The target and what it cost</div><div class="cb" style="font-size:14.5px; line-height:1.5;">
+<div class="ask">The target</div>More &ldquo;meaningful social interactions&rdquo; in the News Feed, starting in January 2018.
+<div class="ask r">What the researchers found</div>&ldquo;Our approach has had unhealthy side effects on important slices of public content, such as politics and news.&rdquo; &ldquo;Misinformation, toxicity, and violent content are inordinately prevalent among reshares.&rdquo;
+<div class="ask r">What happened next</div>The Journal reported that the change rewarded outrage and that Zuckerberg resisted proposed fixes.
+</div></div>
+</div>
+
+<div class="foot"><b>Sources:</b> <a href="https://www.facebook.com/zuck/posts/10104413015393571" target="_blank">Zuckerberg (Jan 11, 2018)</a>; <a href="https://www.wsj.com/articles/facebook-algorithm-change-zuckerberg-11631654215" target="_blank">Hagey and Horwitz, WSJ (Sept 15, 2021)</a>. The researchers' words are from internal memos quoted by the Journal, as reported by <a href="https://www.cjr.org/the_media_today/journal-series-reveals-concerns-inaction-at-facebook.php" target="_blank">Columbia Journalism Review</a>; <a href="https://www.nbcnews.com/tech/social-media/facebooks-2018-algorithm-change-boosted-local-gop-groups-research-find-rcna27503" target="_blank">NBC News</a> (June 8, 2022) dates the first line to a 2019 memo by a team of data scientists.</div>
+
+???
+
+Forty-five seconds. Ask who uses Facebook or Instagram. The goal sounded good: more meaningful interactions between people. The number behind it counted interactions, and posts that made people angry got more of them. Facebook's own data scientists wrote that it was making politics and news worse. The memo quotes come from the Journal's reporting; we read them as quoted by Columbia Journalism Review and NBC News, since the Journal article is paywalled.
+
+---
+
+# A Job Posting Quote
+
+<div class="bigq">&ldquo;At home in ambiguity: you'd rather figure out the right thing to build than be handed a spec.&rdquo;</div>
+
+<div class="foot">Postings pulled Nov 10, 2026. <a href="`r nexus$url`" target="_blank">This posting</a>. <b>Data:</b> `r jobs_link`</div>
+
+???
+
+Pause. Ask the room what job this is from. Take two or three guesses before you click.
+
+--
+
+<div class="who">From a job posting for a <span class="role">Forward Deployed Engineer</span> at `r nexus$employer`, an AI company in San Francisco. The posting asks for <b>0-2 years</b> of experience. A forward deployed engineer works with a client to figure out what to build, and then builds it.</div>
+
+???
+
+This posting lists 0-2 years of experience. Roles like this one are open to students now.
+
+--
+
+<div class="who">In our game, the brief asked for a paper plane, but the goal was to hit the X. Much of this job is noticing that kind of difference before building anything.</div>
+
+???
+
+Forty-five seconds for the whole slide. Give it a second before moving on.
+
+---
+
+# Skills in Entry-Level Job Postings
+
+```{r skills_chart, fig.width=10, fig.height=4.35, out.width='100%', fig.alt='Horizontal bar chart of the share of 2,409 entry-level U.S. postings that mention each skill: problem solving 30.7 percent and client or business needs 19.4 percent lead; SQL 8.1, Python 7.8, critical thinking 6.6, Power BI 6.2, generative AI 3.7, Tableau 3.5, root cause 2.9 and ambiguity 1.3 percent. Problem-framing skills are in red and tools in gray.'}
+ggplot2::ggplot(skill_plot, ggplot2::aes(x = pct, y = skill, fill = kind)) +
+  ggplot2::geom_col(width = 0.72) +
+  ggplot2::geom_text(ggplot2::aes(label = scales::percent(pct, accuracy = 0.1)), hjust = -0.12, size = 4.6, color = "#1b1b1b") +
+  ggplot2::scale_fill_manual(values = c(framing = miamired, tool = "#9ca3af"), guide = "none") +
+  ggplot2::scale_x_continuous(expand = ggplot2::expansion(mult = c(0, 0.1)), breaks = NULL) +
+  ggplot2::labs(x = NULL, y = NULL, title = skill_finding,
+                subtitle = paste0("Share of the ", scales::comma(n_total), " entry-level U.S. postings from Nov 3-10, 2026 that mention each skill: <span style='color:#C3142D'>**problem framing**</span> vs. <span style='color:#6b7280'>**tools**</span>")) +
+  ggplot2::theme_minimal(base_size = 15) +
+  ggplot2::theme(plot.title = ggplot2::element_text(face = "bold", size = 17), plot.title.position = "plot",
+                 plot.subtitle = ggtext::element_markdown(size = 13.5, color = "#374151"),
+                 panel.grid = ggplot2::element_blank(),
+                 axis.text.y = ggplot2::element_text(size = 14, color = "#1b1b1b"))
+```
+
+<div class="foot"><b>Source:</b> fantastic.jobs API, U.S. postings indexed Nov 3-10, 2026; bachelor's degree, 0-2 years' experience, analyst/consultant/associate titles; full-text match on title and description. A posting can mention several skills. Excel is left out because the search counts &ldquo;excellent&rdquo; as &ldquo;excel.&rdquo; <b>Data:</b> `r skills_link`</div>
+
+???
+
+Thirty seconds. Problem solving shows up in `r scales::comma(cnt[["Problem solving"]])` of the `r scales::comma(n_total)` postings, SQL in `r cnt[["SQL"]]` and Python in `r cnt[["Python"]]`, so about `r ratio` times as often. Client or business needs is second. The tools still matter; this class taught them. A note on the chart itself: one color for the group we care about, gray for the comparison, labels on the bars instead of an axis, and a title that states the finding.
+
+---
+
+# Quotes from Entry-Level Job Postings
+
+<div class="bigq sm" style="margin-top:2px; font-size:23px;">&ldquo;Intellectually curious advisors (<b style="color:#c3142d;">not order takers</b>) who focus on outcomes to creatively solve business problems.&rdquo;<div style="font-size:14px; font-weight:400; color:#585E60; margin-top:4px;"><a href="`r moto$url`" target="_blank" style="color:#585E60;">`r moto$employer`, IT M&amp;A Integration Analyst, 2026 Summer Internship (`r city_st(moto$location)`)</a></div></div>
+
+`r jobs_table`
+
+<div class="foot">Postings pulled Nov 10, 2026 (click an employer to open its posting). Quotes are verbatim; &hellip; marks a cut. Ranges as printed in the postings. <b>Data:</b> `r jobs_link`</div>
+
+???
+
+Thirty seconds. Read the Motorola line, then two rows. Booz Allen asks for someone who can turn "ambiguous or evolving business questions" into "structured data solutions and visual narratives", which describes this course. PwC asks people to "embrace ambiguity, ask questions." These are jobs students can apply to now. The ranges are wide because each one covers several cities and levels.
+
+---
+
+# Salary Ranges in the Postings
+
+```{r pay_chart, fig.width=10, fig.height=3.45, out.width='100%', fig.alt='Range chart of posted annual salary ranges with employer, role and location: six entry-level roles in gray range from about 52 thousand to 163 thousand dollars; three forward deployed engineer roles in red at OpenAI (New York), Salesforce (New York) and Deloitte (Tempe) range from 134.5 thousand to 300 thousand dollars'}
+ggplot2::ggplot(pay, ggplot2::aes(y = label, color = tier)) +
+  ggplot2::geom_segment(ggplot2::aes(x = lo, xend = hi, yend = label), linewidth = 2.4, lineend = "round") +
+  ggplot2::geom_point(ggplot2::aes(x = lo), size = 3.2) +
+  ggplot2::geom_point(ggplot2::aes(x = hi), size = 3.2) +
+  ggplot2::geom_text(ggplot2::aes(x = lo, label = kfmt(lo)), hjust = 1.25, size = 3.7, color = "#374151") +
+  ggplot2::geom_text(ggplot2::aes(x = hi, label = kfmt(hi)), hjust = -0.25, size = 3.7, color = "#1b1b1b", fontface = "bold") +
+  ggplot2::facet_grid(tier ~ ., scales = "free_y", space = "free_y") +
+  ggplot2::scale_color_manual(values = setNames(c("#9ca3af", miamired), levels(pay$tier)), guide = "none") +
+  ggplot2::scale_x_continuous(labels = kfmt, breaks = seq(50000, 300000, 50000), limits = c(20000, 335000)) +
+  ggplot2::labs(x = NULL, y = NULL, title = pay_finding) +
+  ggplot2::theme_minimal(base_size = 13) +
+  ggplot2::theme(plot.title = ggplot2::element_text(face = "bold", size = 15), plot.title.position = "plot",
+                 panel.grid.major.y = ggplot2::element_blank(), panel.grid.minor = ggplot2::element_blank(),
+                 axis.text.y = ggplot2::element_text(size = 11.5, color = "#1b1b1b"),
+                 strip.text.y = ggplot2::element_text(angle = 0, face = "bold", size = 11.5, hjust = 0),
+                 panel.spacing = ggplot2::unit(0.6, "lines"))
+```
+
+<div class="src" style="font-size:12.5px; color:#1b1b1b; margin-top:2px;">Each bar is the annual base pay range printed in that job posting. Pay-transparency laws require posted ranges in CA, NY, CO, WA and other states. Postings pulled Nov 10, 2026 via the fantastic.jobs API.</div>
+
+<div class="close" style="margin-top:8px;">The roles at the top of this chart, up to <b>`r kfmt(top$hi)`</b>, are paid to work out what the client needs before anything is built, the same step the paper airplane game asked for.</div>
+
+<div class="foot">Not shown: the Rambus forward deployed engineer intern (`r stringr::str_replace(stringr::str_remove(rambus$salary, " USD/hour"), "-", "&ndash;")` USD per hour) and `r paste(no_range, collapse = " and ")` (no range in the posting). <b>Data:</b> `r jobs_link`</div>
+
+???
+
+Forty-five seconds. The gray bars are entry-level jobs (0-2 years). The red bars are forward deployed engineer roles that ask for 2 to 10 years: OpenAI (Financial Services, New York), Salesforce (New York) and Deloitte (its Palantir practice, Tempe). OpenAI's posting asks for "translating ambiguous business problems into hypothesis-driven problem framing" with "measurable outcomes"; Salesforce's asks for "customer KPI reporting to track deployment health and business outcomes", which is today's topic. Read the last line, then switch back to the main deck at the Business Reports divider. Total for this deck: about 7 minutes (30 s brief, 75 s baggage claim, 15 s quote, 45 s for each of the three examples, then 45 + 30 + 30 + 45 s for the jobs slides).

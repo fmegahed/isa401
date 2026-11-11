@@ -1,0 +1,12 @@
+{
+  "name": "isa401-flight-plan",
+  "private": true,
+  "description": "Flight Plan: the Class 23 paper plane KPI game for ISA 401 (team briefs, KPI vote, throws, photo scoring)",
+  "scripts": {
+    "test": "node --test \"tests/*.test.mjs\"",
+    "dev": "node dev/server.js"
+  },
+  "engines": {
+    "node": "24.x"
+  }
+}

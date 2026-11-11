@@ -43,7 +43,7 @@ ISA 401 teaches the complete business intelligence pipeline: acquiring data from
 | **11** | Mon 11/02 | Commonly Used Charts | [Slides](http://fmegahed.github.io/isa401/fall2026/class20/20_commonly_used_charts.html) |
 | | Wed 11/04 | Time Series, Spatial & Spatiotemporal Charts | [Slides](http://fmegahed.github.io/isa401/fall2026/class21/21_ts_spatial_and_spatiotemporal_charts.html) |
 | **12** | Mon 11/09 | Visualizing High-Dimensional Data | [Slides](http://fmegahed.github.io/isa401/fall2026/class22/22_high_dimensional_charts.html) |
-| | Wed 11/11 | Business Reporting | |
+| | Wed 11/11 | Business Reporting | [Slides](http://fmegahed.github.io/isa401/fall2026/class23/23_business_reporting.html) · [After the game](http://fmegahed.github.io/isa401/fall2026/class23/23b_after_the_game.html) |
 | **13** | Mon 11/16 | **Exam 02: Data Visualization & Communication** | |
 
 ### Phase III: Exploratory Data Mining & Project Synthesis
@@ -60,7 +60,7 @@ ISA 401 teaches the complete business intelligence pipeline: acquiring data from
 
 ## Practice Site and Class Games
 
-Nine small web apps go with the lectures. Each one runs in a browser with nothing to install, and none of them is graded.
+Ten small web apps go with the lectures. Each one runs in a browser with nothing to install, and none of them is graded.
 
 | Class | What | What students do | Source |
 |:---:|:---|:---|:---:|
@@ -73,6 +73,7 @@ Nine small web apps go with the lectures. Each one runs in a browser with nothin
 | Class 19 | [**Map Gallery**](https://isa401-map-gallery.vercel.app) | Plan a map of Butler County's COVID experience, build it with any AI chat tool, submit a screenshot, and vote in six blind matchups between classmates' maps. A personal code brings them back to their map and results. | [`games/map-gallery`](games/map-gallery) |
 | Class 20 | [**Pie on Trial**](https://isa401-pie-on-trial.vercel.app/?section=Z) | Tap the largest slice or bar on six charts, with 15 seconds each: three datasets as pies, then the same three as bars. The projector shows how the class answered, pie next to bars. | [`games/pie-on-trial`](games/pie-on-trial) |
 | Class 22 (on Class 21's charts) | [**Race Call**](https://isa401-race-call.vercel.app) | Play analysts on an election-night chart desk and make their projection on 13 races from their seat on a map of FSB 2050, Kahoot style: line charts, seasonality, a calendar plot, an animated bubble chart, choropleth vs. symbol maps, color schemes, and small multiples vs. animation. Each reveal names the room's projection, then the actual winner with why. | [`games/race-call`](games/race-call) |
+| Class 23 | [**Flight Plan**](https://isa401-flight-plan.vercel.app/?section=Z) | Work in seating-row teams to design a paper plane that hits an X on the whiteboard: write a shared brief with operational and product KPIs (typed or spoken), get AI feedback on whether each KPI can be measured, vote on how accuracy is scored, throw, and see every distance measured from a photo of the board. | [`games/flight-plan`](games/flight-plan) |
 
 How the review site works, and whose ideas and tools it rests on, is on its [landing page](https://isa401-review.vercel.app) and under [Acknowledgments](#acknowledgments).
 

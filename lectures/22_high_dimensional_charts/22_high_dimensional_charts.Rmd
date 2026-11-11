@@ -183,7 +183,7 @@ details.answer-gate summary { cursor:pointer; color:#c3142d; font-weight:700; fo
 </div>
 <div class="card">
   <div class="ch gray">2 &nbsp; Today's plan</div>
-  <div class="cb" style="font-size:15px; line-height:1.6;"><b>Part 1.</b> <b>Race Call</b>: time, space, and space-time charts, on your phone. Then two check-ins: does the data look right, and how far apart are the years?<br><b>Part 2.</b> What makes data high-dimensional?<br><b>Part 3.</b> Charts for it, built in Power BI: small multiples, parallel coordinates, and radar charts.<br><b>Part 4.</b> Other charts: heat maps, treemaps, and Chernoff faces.</div>
+  <div class="cb" style="font-size:15px; line-height:1.6;"><b>Part 1.</b> <b>Race Call</b>: time, space, and space-time charts, on your phone. Then two check-ins that evaluate an AI-like reading of a chart, and the Exam 02 review.<br><b>Part 2.</b> What makes data high-dimensional?<br><b>Part 3.</b> Charts for it: small multiples and radar charts built in Power BI, and how to read parallel coordinates.<br><b>Part 4.</b> Other charts: heat maps, treemaps, and Chernoff faces.</div>
 </div>
 </div>
 
@@ -217,7 +217,7 @@ About 20 minutes: 13 races at 20 to 30 seconds of polling each, plus reveals and
 
 ---
 
-# Check-In: Is the Data Right?
+# Check-In: An Evaluation of an AI-Like Output
 
 `r countdown(minutes = 2, seconds = 0, top = 0, font_size = "2em")`
 
@@ -292,7 +292,7 @@ About 6 minutes: 2 to answer, 2 for the answer, 2 for the two questions. The dat
 
 ---
 
-# Check-In: Read the Time Axis
+# Check-In: Another Evaluation
 
 `r countdown(minutes = 1, seconds = 0, top = 0, font_size = "2em")`
 
@@ -369,6 +369,26 @@ ohio_income |>
 ???
 
 About 4 minutes: 1 to answer, 3 for the answer. Real data: FRED series MEHOINUSOHA672N (real median household income in Ohio, U.S. Census Bureau, in 2025 dollars). The five years are 2012, 2016, 2020, 2022 and 2025, drawn as categories so each step has the same width. Most people answer "before 2020" because the two left steps add up to more (+$14,140) than the two right steps (+$10,940). Per year it is the reverse: about $1,770 a year from 2012 to 2020 and about $2,190 a year from 2020 to 2025. Point back to Class 21's line-or-bars slide: a line suits "many, evenly spaced time points", and these are neither. ChatGPT (Instant) answered this rate question correctly on Nov 5, 2026; asked only to "describe the trend", it said income "generally increased from $60,070 in 2012 to $85,150 in 2025, with a slight decline between 2020 and 2022 before rising sharply", which is true but never mentions the uneven gaps. Contrast with the previous check-in: there the AI reading missed the problem; here it caught one that people miss. Answer password: the same one as the other decks.
+
+---
+
+# Exam 02 Review
+
+<div style="display:grid; grid-template-columns:minmax(0,1.5fr) minmax(0,1fr); gap:18px; align-items:start; margin-top:8px;">
+<div><a href="https://isa401-review.vercel.app/#/exam02" target="_blank"><img src="`r knitr::image_uri('../../figures/exam02_review_landing.png')`" alt="The Exam 02 Review landing page: a short introduction, a Read this first note, and unit cards for Answering a Check the AI Question, Honest Charts, Data Types and Encodings, Color, Commonly Used Charts and Time" style="width:100%; border:1px solid #d1d5db; border-radius:8px; box-shadow:0 1px 3px rgba(0,0,0,0.12);"></a></div>
+<div class="card"><div class="ch">Practice for Exam 02</div><div class="cb" style="font-size:15.5px; line-height:1.55;">
+<div><b>Open:</b> <a href="https://isa401-review.vercel.app/#/exam02" target="_blank"><b>isa401-review.vercel.app/#/exam02</b></a></div>
+<div style="margin-top:10px;">Ungraded and no sign-in. Your progress is saved in your browser.</div>
+<div style="margin-top:10px;">Start with <b>Answering a Check the AI Question</b>.</div>
+<div style="margin-top:10px;">Each unit opens with a short narrated recap, then questions like today's check-ins: a chart, an AI's answer about it, and your judgment.</div>
+</div></div>
+</div>
+
+<div class="lesson" style="margin-top:14px;"><b class="r">Exam 02 structure and details:</b> see the <a href="https://miamioh.instructure.com/courses/258169/discussion_topics/2356587" target="_blank"><b>Canvas announcement</b></a>.</div>
+
+???
+
+Two minutes. Open the site and click into one unit to show the recap and one question. The Canvas announcement has the exam's structure, time and rules.
 
 ---
 
@@ -495,7 +515,7 @@ class: center, inverse, middle
 
 ???
 
-No time of its own. Part 3 runs about 30 minutes, three demos of about eight minutes each.
+No time of its own. Part 3 runs about 25 minutes: two Power BI demos (small multiples, radar charts) and parallel coordinates read from a picture.
 
 ---
 
@@ -528,7 +548,7 @@ plot_boxplot(data = mpg_2023_large, by = 'Manufacturer',
 <div>One small chart <b>per measure</b>, each split by manufacturer.</div>
 <div>Each panel keeps <b>its own scale</b>: CO2 is in the hundreds, cylinders are 4 to 8.</div>
 <div>Compare <b>across</b> panels: the brands with the most CO2 also have the lowest MPG.</div>
-<div style="color:#585E60;">This one is easier to make in Tableau. Outside of class, give it a shot there too.</div>
+<div style="color:#585E60;">Power BI has no built-in box plot, so we will show each manufacturer's average instead.</div>
 </div></div>
 </div>
 
@@ -540,51 +560,23 @@ Eight minutes. Suggested route in Power BI (check before class): Get Data, Text/
 
 # Parallel Coordinates
 
-> Parallel coordinates is a visualization technique used to plot individual data elements across many performance measures. Each of the measures corresponds to a vertical axis and each data element is displayed as a series of connected points along the measure/axes -- [Juice Analytics' Definition](https://www.juiceanalytics.com/writing/parallel-coordinates)
-
-```{r parcorr, out.height=300}
-knitr::include_graphics('https://images.squarespace-cdn.com/content/v1/52f42657e4b0b3416ff6b831/1614951876498-9TIQE0EHNCGUFQSNEP6J/Parallel_Coordinates_Plot_-_Learn_about_this_chart_and_tools.jpg?format=1000w')
-```
-
-???
-
-Two minutes. One vertical axis per measure, one line per item.
-
----
-
-# Parallel Coordinates in Power BI
-
-Let us visualize the [mpg_2023_sample.csv](https://raw.githubusercontent.com/fmegahed/isa401/main/data/mpg_2023_sample.csv) using a parallel coordinates plot in Power BI.
-
-<div class="pbi">
-<div>
-
-```{r ggparcoord, fig.width=8, fig.height=4.4, fig.alt='Parallel coordinates plot of nine 2023 vehicles across five measures; each vehicle is a line, and lines that are high on MPG are low on displacement, cylinders and CO2'}
+```{r ggparcoord, fig.width=10, fig.height=4.7, out.width='100%', fig.alt='Parallel coordinates plot of nine 2023 vehicles across five measures; each vehicle is a line, and lines that are high on MPG are low on displacement, cylinders and CO2'}
 ggparcoord(data = mpg_2023_sample, columns = 2:ncol(mpg_2023_sample),
            showPoints = T, groupColumn = 1) +
   scale_color_brewer(palette = 'Paired') +
   geom_line(linewidth = 1.5) +
   geom_point(size = 4) +
-  theme_bw(base_size = 10) +
-  theme(legend.position = 'top') +
-  guides(color = guide_legend(nrow = 3, title = NULL)) +
+  theme_bw(base_size = 12) +
+  theme(legend.position = 'right') +
+  guides(color = guide_legend(ncol = 1, title = NULL)) +
   labs(x = 'Factor', y = 'Scaled Value',
        title = 'Some Factors Impacting the Combined MPG for 2023 Vehicles',
        caption = 'Data source: https://www.fueleconomy.gov/feg/download.shtml')
 ```
 
-</div>
-<div class="card"><div class="ch">How to read it</div><div class="cb">
-<div>Each <b>vertical axis</b> is one measure; each <b>line</b> is one car.</div>
-<div>The axes are <b>rescaled</b> so MPG and CO2 can share one height.</div>
-<div>Lines that <b>cross</b> between two axes mean a negative relationship: high MPG, low displacement.</div>
-<div>Lines that run <b>parallel</b> mean a positive one.</div>
-</div></div>
-</div>
-
 ???
 
-Eight minutes. Power BI has no built-in parallel coordinates visual. Two routes: (1) Get more visuals and search "parallel coordinates" (third-party visuals such as xViz; some need a license); or (2) a native line chart: unpivot the five measures in Power Query, then Attribute on the X-axis, Value on the Y-axis and Model in Legend. Route 2 does not rescale the axes, so CO2 (hundreds) flattens everything else: a good moment to ask why the sample says "Scaled Value".
+Four minutes, explained from the picture; no build today. The data: mpg_2023_sample.csv (https://raw.githubusercontent.com/fmegahed/isa401/main/data/mpg_2023_sample.csv), nine 2023 vehicles. Each vertical axis is one measure and each line is one car. The axes are rescaled ("Scaled Value") so MPG and CO2 can share one height. Lines that cross between two axes mean a negative relationship (high MPG, low displacement); lines that run parallel mean a positive one. If asked how to make it: Power BI has no built-in parallel coordinates visual (Get more visuals has third-party ones), and an unpivoted line chart does not rescale the axes, so CO2 flattens everything else.
 
 ---
 

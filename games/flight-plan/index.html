@@ -1,0 +1,578 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flight Plan</title>
+<link rel="icon" href="data:,">
+<style>
+  :root { --red: #C3142D; --red-soft: #fff5f6; --ink: #1b1b1b; --muted: #585E60; --line: #e5e7eb; --bg: #fafafa; --ok: #166534; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink); background: var(--bg); }
+  main { max-width: 760px; margin: 0 auto; padding: 16px 16px 60px; }
+  header.top { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+  header.top h1 { font-size: 22px; margin: 0; letter-spacing: -.01em; } header.top h1 b { color: var(--red); }
+  .who { font-size: 13px; color: var(--muted); text-align: right; }
+  .card { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 14px; margin: 12px 0; }
+  .card h2 { font-size: 17px; margin: 0 0 4px; } .card h2 small { color: var(--muted); font-weight: 500; }
+  .hint { color: var(--muted); font-size: 13.5px; margin: 0 0 10px; line-height: 1.4; }
+  label.f { display: block; font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin: 12px 0 4px; }
+  input[type=text], textarea, select { width: 100%; font: inherit; font-size: 16px; padding: 9px 10px; border: 1px solid #d1d5db; border-radius: 8px; background: #fff; }
+  textarea { resize: vertical; min-height: 64px; }
+  button { font: inherit; cursor: pointer; }
+  .btn { border: 0; border-radius: 9px; padding: 10px 14px; font-weight: 700; background: var(--red); color: #fff; font-size: 15px; }
+  .btn.ghost { background: #fff; color: var(--red); border: 1.5px solid var(--red); }
+  .btn.gray { background: #f3f4f6; color: var(--ink); }
+  .btn:disabled { opacity: .45; cursor: default; }
+  .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .grow { flex: 1; }
+  .err { color: var(--red); font-weight: 600; font-size: 14px; min-height: 18px; }
+  .okmsg { color: var(--ok); font-weight: 700; }
+  .muted { color: var(--muted); } .small { font-size: 13px; }
+  /* seat map: front of the room at the top */
+  .room { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 6px; }
+  .side h3 { margin: 0 0 4px; font-size: 13px; color: var(--muted); text-align: center; }
+  .seatrow { display: grid; grid-template-columns: 34px repeat(7, 1fr); gap: 4px; margin-bottom: 4px; align-items: center; }
+  .seatrow .lab { font-size: 12px; color: var(--muted); font-weight: 700; }
+  .seat { padding: 7px 0; border: 1.5px solid #cbd5e1; border-radius: 6px; background: #fff; font-size: 12px; font-weight: 700; color: var(--muted); }
+  .seat.on { background: var(--red); border-color: var(--red); color: #fff; }
+  @media (max-width: 560px) { .room { grid-template-columns: 1fr; } .seat { padding: 10px 0; font-size: 14px; } }
+  .front { text-align: center; font-size: 12px; color: var(--muted); border-top: 3px solid #9ca3af; padding-top: 3px; margin-bottom: 8px; }
+  /* notes */
+  .note { border-left: 3px solid var(--line); padding: 6px 8px; margin: 6px 0; background: #fcfcfd; border-radius: 0 6px 6px 0; }
+  .note .meta { font-size: 12px; color: var(--muted); display: flex; justify-content: space-between; gap: 8px; }
+  .note.mine { border-left-color: var(--red); }
+  .note .t { white-space: pre-wrap; font-size: 15px; margin-top: 2px; }
+  .note .del { background: none; border: 0; color: var(--muted); font-size: 12px; text-decoration: underline; padding: 0; }
+  .mic { width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid var(--red); background: #fff; color: var(--red); font-size: 20px; line-height: 1; }
+  .mic.rec { background: var(--red); color: #fff; animation: pulse 1s infinite; }
+  @keyframes pulse { 50% { box-shadow: 0 0 0 8px rgba(195,20,45,.15); } }
+  /* marker */
+  .pick { display: flex; gap: 6px; flex-wrap: wrap; }
+  .pk { min-width: 46px; padding: 8px 10px; border: 1.5px solid var(--line); border-radius: 8px; background: #fff; font-weight: 700; font-size: 15px; }
+  .pk.on { border-color: var(--red); background: var(--red-soft); }
+  .pk:disabled { opacity: .3; text-decoration: line-through; }
+  .chipm { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 999px; border: 1.5px solid var(--line); background: #fff; font-weight: 700; font-size: 14px; }
+  .sym { font-size: 18px; line-height: 1; }
+  /* brief */
+  table.kpi { width: 100%; border-collapse: collapse; font-size: 14px; }
+  table.kpi th { text-align: left; font-size: 11.5px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); border-bottom: 1px solid var(--line); padding: 4px; }
+  table.kpi td { border-bottom: 1px solid #f1f5f9; padding: 6px 4px; vertical-align: top; }
+  .kpirow { border: 1px solid var(--line); border-radius: 8px; padding: 8px; margin: 8px 0; background: #fff; }
+  .kpirow .row > * { margin-bottom: 4px; }
+  .fb { font-size: 13px; margin-top: 4px; }
+  .fb .good { color: var(--ok); font-weight: 600; }
+  .fb .fix { color: #92400e; }
+  .pill { font-size: 11px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; padding: 2px 7px; border-radius: 999px; background: #f3f4f6; color: var(--muted); }
+  .pill.op { background: #eef2ff; color: #3730a3; } .pill.pr { background: var(--red-soft); color: var(--red); }
+  .clock { font-variant-numeric: tabular-nums; font-weight: 800; font-size: 20px; color: var(--red); }
+  /* vote */
+  .opt { display: block; width: 100%; text-align: left; padding: 11px 12px; margin: 6px 0; border: 1.5px solid var(--line); border-radius: 9px; background: #fff; font-size: 15px; }
+  .opt.on { border-color: var(--red); background: var(--red-soft); font-weight: 700; }
+  /* results */
+  .rank { display: grid; grid-template-columns: 34px 1fr auto; gap: 8px; align-items: center; padding: 8px 4px; border-bottom: 1px solid #f1f5f9; }
+  .rank .n { font-weight: 800; color: var(--muted); }
+  .rank.win { background: var(--red-soft); border-radius: 8px; }
+  .rank.win .n { color: var(--red); }
+  .big { font-size: 26px; font-weight: 800; margin: 4px 0; }
+  .tabs { display: flex; gap: 6px; margin: 8px 0 0; flex-wrap: wrap; }
+  .tabs a { font-size: 13px; color: var(--red); }
+  .hidden { display: none !important; }
+  .sticky { position: sticky; top: 0; z-index: 5; background: var(--bg); padding: 6px 0; }
+</style>
+</head>
+<body>
+<main>
+  <header class="top">
+    <h1>Flight <b>Plan</b></h1>
+    <div class="who" id="who"></div>
+  </header>
+
+  <!-- JOIN -->
+  <section id="v-join" class="hidden">
+    <div class="card">
+      <h2>Join your team</h2>
+      <p class="hint">Your team is your seating row. Your name shows only to your teammates and on the projector's team list.</p>
+      <div class="row">
+        <div class="grow"><label class="f" for="first">First name</label><input id="first" type="text" maxlength="20" autocomplete="given-name"></div>
+        <div style="width:110px"><label class="f" for="initial">Last initial</label><input id="initial" type="text" maxlength="1" autocomplete="off"></div>
+      </div>
+      <label class="f">Your seat</label>
+      <div class="muted small">Front of the room (screens) is at the top. Row 1 is the front; seats count 1 to 7 from left to right.</div>
+      <div class="front">Front of the room</div>
+      <div class="room" id="room"></div>
+      <p class="small" id="seatline" style="font-weight:700;margin:10px 0 0;">No seat picked yet.</p>
+      <div class="row" style="margin-top:12px;"><button class="btn" id="joinbtn" disabled>Join</button><span class="err" id="joinerr"></span></div>
+    </div>
+  </section>
+
+  <!-- LOBBY -->
+  <section id="v-lobby" class="hidden">
+    <div class="card"><div class="big" id="lobbyteam"></div><p class="muted">Waiting for the professor to start. Look at the projector.</p>
+    <p class="small"><a href="#" class="changeseat">Change my seat</a></p></div>
+  </section>
+
+  <!-- DESIGN -->
+  <section id="v-design" class="hidden">
+    <div class="sticky"><div class="row"><b id="dteam" class="grow"></b><span class="muted small">Time left</span> <span class="clock" id="clock">--:--</span></div></div>
+    <p class="hint" id="members"></p>
+    <div id="parts"></div>
+    <div class="card" id="markerCard">
+      <h2>Your marker <small>for the board</small></h2>
+      <p class="hint">The professor marks where each of your throws hits with this color and symbol. Each team needs its own.</p>
+      <div class="row" style="margin-bottom:8px;"><span class="muted small">Now:</span> <span id="mymarker" class="chipm">none yet</span></div>
+      <label class="f">Color</label><div class="pick" id="colors"></div>
+      <label class="f">Symbol</label><div class="pick" id="symbols"></div>
+      <div class="err" id="markerr"></div>
+    </div>
+    <div class="card" id="briefCard">
+      <h2>Team brief <small>one page</small></h2>
+      <p class="hint">Compile merges everyone's notes into one brief. Then edit it together and save. The latest save wins.</p>
+      <div class="row"><button class="btn" id="compile">Compile our notes</button><span class="muted small" id="compilemsg"></span></div>
+      <div class="err" id="briefnote"></div>
+      <label class="f" for="b-design">How we decided on the design</label><textarea id="b-design" rows="4"></textarea>
+      <label class="f" for="b-builder">Who built and who throws, and how we chose</label><textarea id="b-builder" rows="3"></textarea>
+      <label class="f">Our KPIs</label>
+      <div id="b-kpis"></div>
+      <div class="row"><button class="btn gray" id="addkpi">+ Add a KPI</button><span class="grow"></span><button class="btn" id="savebrief">Save brief</button></div>
+      <div class="small" id="savemsg" style="margin-top:6px;"></div>
+    </div>
+  </section>
+
+  <!-- VOTE -->
+  <section id="v-vote" class="hidden">
+    <div class="card">
+      <h2>Agree on accuracy</h2>
+      <p class="hint">One vote each. The class's choice decides the winner, and it is locked before anyone throws.</p>
+      <label class="f">How should we turn a team's three throws into one number?</label>
+      <div id="q-summary"></div>
+      <label class="f">How should a throw that misses the board count?</label>
+      <div id="q-miss"></div>
+      <div class="row" style="margin-top:10px;"><button class="btn" id="votebtn" disabled>Vote</button><span id="votemsg" class="small"></span></div>
+    </div>
+  </section>
+
+  <!-- THROWS -->
+  <section id="v-throws" class="hidden">
+    <div class="card">
+      <div class="big" id="upnow"></div>
+      <p class="hint" id="rule"></p>
+      <div id="order"></div>
+    </div>
+  </section>
+
+  <!-- RESULTS -->
+  <section id="v-results" class="hidden">
+    <div class="card" id="recapCard" hidden><div class="big" id="recapTitle"></div><div id="recapLines"></div></div>
+    <div class="card">
+      <h2>Results</h2>
+      <p class="hint" id="resrule"></p>
+      <div id="ranking"></div>
+      <p class="small muted" id="tapenote"></p>
+    </div>
+    <div class="card" id="winnerCard" hidden></div>
+    <div class="card" id="whatifCard" hidden><h2>Would the winner change?</h2><p class="hint">Each team's rank under every way of summarizing the throws (same miss rule).</p><div id="whatif" style="overflow-x:auto"></div></div>
+  </section>
+</main>
+
+<script>
+(function () {
+  "use strict";
+  var qs = new URLSearchParams(location.search);
+  var section = (qs.get("section") || "A").toUpperCase();
+  var LS = "fp_player_" + section;
+  var me = load();            // {playerId, first, initial, seat, team, runId}
+  var choosing = false, autoSaved = false, seat = null, st = null, tv = null, briefDirty = false, briefSeenAt = 0, myVote = { summary: null, miss: null }, voted = false;
+  var hasMic = !!(window.MediaRecorder && navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+  var aiOk = { compile: true, transcribe: true };
+  var SYM = { circle: "●", triangle: "▲", square: "■", star: "★", diamond: "◆", heart: "♥", cross: "✚", dot: "•" };
+  var COLORCSS = { black: "#111", blue: "#1d4ed8", red: "#C3142D", green: "#15803d", purple: "#7e22ce", orange: "#ea580c", brown: "#78350f" };
+  var SUMMARY_LABEL = {
+    average: "Average distance to the X (all three throws)",
+    median: "Median distance (the middle throw)",
+    closest: "Closest throw (best of three)",
+    farthest: "Farthest throw (worst of three)",
+    hit_rate: "Hit rate: share of throws within N inches of the X",
+    spread: "Spread: how tightly the three throws cluster together"
+  };
+  var MISS_LABEL = {
+    fixed_penalty: "As a fixed penalty distance (P inches)",
+    worst_landed: "As the team's worst landed throw",
+    dropped: "Dropped: score only the throws that landed",
+    automatic_last: "The team ranks last"
+  };
+  var PARTS = [
+    ["design", "How we decided on the design", "What did you try, test and drop? What experiments convinced you?"],
+    ["builder", "Who builds and who throws", "Who made the plane, who throws it, and how did you decide?"],
+    ["op", "Operational KPIs", "Indicators about how you make it. Name each KPI and exactly how you would measure it (for example: cycle time)."],
+    ["prod", "Product (client) KPIs", "Indicators about what the client gets. Define accuracy exactly: how will you turn three throws into one number? How does a throw that misses the board count? (For example: accuracy.)"]
+  ];
+  function $(id) { return document.getElementById(id); }
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  function load() { try { return JSON.parse(localStorage.getItem(LS) || "null"); } catch (e) { return null; } }
+  function save() { try { localStorage.setItem(LS, JSON.stringify(me)); } catch (e) {} }
+  function api(path, body) {
+    var opt = body ? { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(Object.assign({ section: section }, body)) } : {};
+    return fetch(path, opt).then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { j._status = r.status; j._ok = r.ok; return j; }); });
+  }
+  function show(id) { ["v-join", "v-lobby", "v-design", "v-vote", "v-throws", "v-results"].forEach(function (v) { $(v).classList.toggle("hidden", v !== id); }); }
+  function markerChip(pair) {
+    var c = el("span", "chipm");
+    if (!pair) { c.textContent = "no marker"; return c; }
+    var p = pair.split("|"), s = el("span", "sym", SYM[p[1]] || p[1]);
+    s.style.color = COLORCSS[p[0]] || p[0];
+    c.appendChild(s); c.appendChild(document.createTextNode(p[0] + " " + p[1]));
+    return c;
+  }
+  function fmtScore(score, summary) {
+    if (score == null) return "—";
+    return summary === "hit_rate" ? Math.round(score * 100) + "%" : score.toFixed(1) + " in";
+  }
+  function ruleText(r, set) {
+    if (!r) return "";
+    var s = SUMMARY_LABEL[r.summary].replace("N inches", (r.hitN || (set && set.hitN) || 6) + " inches");
+    var m = MISS_LABEL[r.miss].replace("P inches", (r.penaltyIn || (set && set.penaltyIn) || 48) + " inches");
+    return "Agreed rule: " + s + ". A miss: " + m.charAt(0).toLowerCase() + m.slice(1) + ".";
+  }
+
+  // ---------- join
+  function drawRoom() {
+    var room = $("room"); room.textContent = "";
+    ["L", "R"].forEach(function (side) {
+      var box = el("div", "side"); box.appendChild(el("h3", null, side === "L" ? "Left side" : "Right side"));
+      for (var r = 1; r <= 3; r++) {
+        var row = el("div", "seatrow"); row.appendChild(el("span", "lab", side + r));
+        for (var n = 1; n <= 7; n++) {
+          var id = side + r + "-" + n, b = el("button", "seat" + (seat === id ? " on" : ""), String(n));
+          b.type = "button"; b.dataset.seat = id; b.setAttribute("aria-label", "Seat " + id);
+          b.onclick = function () { seat = this.dataset.seat; drawRoom(); paintJoin(); };
+          row.appendChild(b);
+        }
+        box.appendChild(row);
+      }
+      room.appendChild(box);
+    });
+    $("seatline").textContent = seat ? "Seat " + seat + " · team " + seat.split("-")[0] : "No seat picked yet.";
+  }
+  function paintJoin() { $("joinbtn").disabled = !($("first").value.trim() && /^[A-Za-z]$/.test($("initial").value.trim()) && seat); }
+  $("first").oninput = paintJoin; $("initial").oninput = paintJoin;
+  $("joinbtn").onclick = function () {
+    $("joinbtn").disabled = true; $("joinerr").textContent = "";
+    api("/api/join", { first: $("first").value.trim(), initial: $("initial").value.trim(), seat: seat, playerId: me && me.playerId }).then(function (j) {
+      if (!j._ok) { $("joinerr").textContent = j.error || "Could not join."; paintJoin(); return; }
+      me = { playerId: j.playerId, first: j.first, initial: j.initial, seat: j.seat, team: j.team, runId: j.runId }; save(); choosing = false;
+      tick();
+    }).catch(function () { $("joinerr").textContent = "No connection. Try again."; paintJoin(); });
+  };
+  function toJoin() {
+    if (me) { $("first").value = me.first || ""; $("initial").value = me.initial || ""; seat = me.seat || null; }
+    choosing = true; drawRoom(); paintJoin(); show("v-join");
+  }
+  document.querySelectorAll(".changeseat").forEach(function (a) { a.onclick = function (e) { e.preventDefault(); toJoin(); }; });
+
+  // ---------- design: notes per part
+  function buildParts() {
+    var box = $("parts"); if (box.dataset.built) return; box.dataset.built = "1";
+    PARTS.forEach(function (p) {
+      var c = el("div", "card"); c.id = "part-" + p[0];
+      var h = el("h2", null, p[1]); c.appendChild(h);
+      c.appendChild(el("p", "hint", p[2]));
+      var list = el("div"); list.id = "notes-" + p[0]; c.appendChild(list);
+      var ta = el("textarea"); ta.id = "in-" + p[0]; ta.rows = 2; ta.maxLength = 600; ta.placeholder = p[0] === "op" ? "Cycle time: ..." : p[0] === "prod" ? "Accuracy: ..." : "Type, or tap the mic and talk";
+      c.appendChild(ta);
+      var row = el("div", "row"); row.style.marginTop = "6px";
+      var mic = el("button", "mic", "🎙"); mic.type = "button"; mic.title = "Talk instead of typing (up to 60 s)"; mic.setAttribute("aria-label", "Record a voice note");
+      if (!hasMic || !aiOk.transcribe) mic.classList.add("hidden");
+      mic.onclick = function () { record(p[0], mic); };
+      var add = el("button", "btn", "Add note"); add.type = "button";
+      add.onclick = function () {
+        var text = ta.value.trim(); if (!text) return;
+        add.disabled = true;
+        api("/api/team", { playerId: me.playerId, action: "addNote", part: p[0], text: text, via: ta.dataset.via || "typed" }).then(function (j) {
+          add.disabled = false;
+          if (!j._ok) { alertIn(c, j.error || "Could not add."); return; }
+          ta.value = ""; ta.dataset.via = ""; tv = j; paintTeam();
+        }).catch(function () { add.disabled = false; alertIn(c, "No connection. Try again."); });
+      };
+      row.appendChild(mic); row.appendChild(el("span", "grow")); row.appendChild(add);
+      c.appendChild(row); c.appendChild(el("div", "err"));
+      box.appendChild(c);
+    });
+  }
+  function alertIn(card, msg) { var e = card.querySelector(".err"); if (e) { e.textContent = msg; setTimeout(function () { e.textContent = ""; }, 4000); } }
+
+  // ---------- voice: record, send to /api/transcribe, put the text in the box to edit
+  var rec = null;
+  function record(part, btn) {
+    if (rec && rec.state === "recording") { rec.stop(); return; }
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
+      var chunks = [], mime = "";
+      ["audio/webm;codecs=opus", "audio/webm", "audio/mp4", "audio/ogg"].some(function (m) { if (window.MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(m)) { mime = m; return true; } return false; });
+      rec = mime ? new MediaRecorder(stream, { mimeType: mime }) : new MediaRecorder(stream);
+      rec.ondataavailable = function (e) { if (e.data && e.data.size) chunks.push(e.data); };
+      var stopTimer = setTimeout(function () { if (rec && rec.state === "recording") rec.stop(); }, 60000);
+      rec.onstop = function () {
+        clearTimeout(stopTimer); btn.classList.remove("rec"); stream.getTracks().forEach(function (t) { t.stop(); });
+        var blob = new Blob(chunks, { type: rec.mimeType || mime || "audio/webm" });
+        var fr = new FileReader();
+        btn.disabled = true; btn.textContent = "…";
+        fr.onload = function () {
+          api("/api/transcribe", { playerId: me.playerId, audio: String(fr.result).split(",")[1], mime: blob.type }).then(function (j) {
+            btn.disabled = false; btn.textContent = "🎙";
+            if (j._status === 404 || j._status === 501) { aiOk.transcribe = false; document.querySelectorAll(".mic").forEach(function (m) { m.classList.add("hidden"); }); }
+            if (!j._ok) { alertIn($("part-" + part), j.error || "Could not hear that. Type it instead."); return; }
+            var ta = $("in-" + part); ta.value = (ta.value ? ta.value + " " : "") + j.text; ta.dataset.via = "voice"; ta.focus();
+          }).catch(function () { btn.disabled = false; btn.textContent = "🎙"; alertIn($("part-" + part), "No connection. Type it instead."); });
+        };
+        fr.readAsDataURL(blob);
+      };
+      rec.start(); btn.classList.add("rec");
+    }).catch(function () { alertIn($("part-" + part), "Microphone blocked. Type it instead, or use your keyboard's mic."); });
+  }
+
+  // ---------- team view painting
+  function paintTeam() {
+    if (!tv) return;
+    $("dteam").textContent = "Team " + tv.team;
+    $("members").textContent = "On your team: " + tv.members.map(function (m) { return m.first + " " + m.initial + ". (" + m.seat + ")"; }).join(", ");
+    PARTS.forEach(function (p) {
+      var list = $("notes-" + p[0]); list.textContent = "";
+      tv.notes.filter(function (n) { return n.part === p[0]; }).forEach(function (n) {
+        var d = el("div", "note" + (n.mine ? " mine" : ""));
+        var meta = el("div", "meta"); meta.appendChild(el("span", null, n.first + " · " + n.seat + (n.via === "voice" ? " · voice" : "")));
+        if (n.mine && tv.phase === "design") {
+          var del = el("button", "del", "delete"); del.type = "button";
+          del.onclick = function () { api("/api/team", { playerId: me.playerId, action: "deleteNote", id: n.id }).then(function (j) { if (j._ok) { tv = j; paintTeam(); } }); };
+          meta.appendChild(del);
+        }
+        d.appendChild(meta); d.appendChild(el("div", "t", n.text)); list.appendChild(d);
+      });
+    });
+    // marker
+    var mm = $("mymarker"); mm.replaceWith(markerChip(tv.marker)); var nm = document.querySelector("#markerCard .chipm"); nm.id = "mymarker";
+    var cur = tv.marker ? tv.marker.split("|") : [null, null];
+    var pickC = $("colors").dataset.pick || cur[0], pickS = $("symbols").dataset.pick || cur[1];
+    drawPicker("colors", tv.settings.colors, pickC, function (v) { $("colors").dataset.pick = v; tryMarker(); paintTeam(); }, function (v) { return COLORCSS[v] || v; });
+    drawPicker("symbols", tv.settings.symbols, pickS, function (v) { $("symbols").dataset.pick = v; tryMarker(); paintTeam(); }, null, pickC);
+    // brief
+    if (tv.brief && tv.brief.updatedAt !== briefSeenAt) {
+      if (!briefDirty) { fillBrief(tv.brief); briefSeenAt = tv.brief.updatedAt; $("briefnote").textContent = ""; }
+      else $("briefnote").textContent = tv.brief.by + " saved a newer brief. Save yours to keep your edits, or reload the page to see theirs.";
+    }
+    paintFeedback();
+  }
+  function drawPicker(id, items, cur, onPick, colorOf, color) {
+    var box = $(id); box.textContent = "";
+    items.forEach(function (v) {
+      var b = el("button", "pk" + (v === cur ? " on" : "")); b.type = "button";
+      if (id === "symbols") { var s = el("span", "sym", SYM[v] || v); s.style.color = COLORCSS[color] || color || "#111"; b.appendChild(s); b.title = v;
+        if (color && tv.taken.indexOf(color + "|" + v) >= 0) b.disabled = true; }
+      else { b.textContent = v; b.style.color = colorOf(v); }
+      b.onclick = function () { onPick(v); };
+      box.appendChild(b);
+    });
+  }
+  function tryMarker() {
+    var c = $("colors").dataset.pick, s = $("symbols").dataset.pick;
+    if (!c || !s) return;
+    api("/api/team", { playerId: me.playerId, action: "pickMarker", color: c, symbol: s }).then(function (j) {
+      if (!j._ok) { $("markerr").textContent = j.error || "Could not pick that."; $("symbols").dataset.pick = ""; return; }
+      $("markerr").textContent = ""; tv = j; paintTeam();
+    });
+  }
+
+  // ---------- the brief editor
+  function kpiRow(k) {
+    var d = el("div", "kpirow");
+    var r1 = el("div", "row");
+    var type = el("select"); type.style.width = "150px";
+    [["product", "Product (client)"], ["operational", "Operational"]].forEach(function (o) { var op = el("option", null, o[1]); op.value = o[0]; type.appendChild(op); });
+    type.value = k.type || "product";
+    var name = el("input"); name.type = "text"; name.placeholder = "KPI name"; name.maxLength = 80; name.value = k.name || ""; name.className = "grow";
+    var x = el("button", "btn gray", "✕"); x.type = "button"; x.title = "Remove"; x.onclick = function () { d.remove(); briefDirty = true; };
+    r1.appendChild(type); r1.appendChild(name); r1.appendChild(x);
+    var def = el("textarea"); def.rows = 2; def.placeholder = "Exact definition: what you measure, how, with what, in what unit"; def.maxLength = 400; def.value = k.definition || "";
+    var our = el("input"); our.type = "text"; our.placeholder = "Our number (optional, e.g. 4 min)"; our.maxLength = 40; our.value = k.our_number || "";
+    d.appendChild(r1); d.appendChild(def); d.appendChild(our); d.appendChild(el("div", "fb"));
+    [type, name, def, our].forEach(function (i) { i.addEventListener("input", function () { briefDirty = true; }); });
+    d._get = function () { return { type: type.value, name: name.value, definition: def.value, our_number: our.value }; };
+    return d;
+  }
+  function fillBrief(b) {
+    $("b-design").value = b.design_process || ""; $("b-builder").value = b.builder_choice || "";
+    var box = $("b-kpis"); box.textContent = "";
+    (b.kpis || []).forEach(function (k) { box.appendChild(kpiRow(k)); });
+    if (!(b.kpis || []).length) box.appendChild(kpiRow({ type: "product" }));
+  }
+  function readBrief() {
+    var kpis = []; $("b-kpis").childNodes.forEach(function (d) { if (d._get) kpis.push(d._get()); });
+    return { design_process: $("b-design").value, builder_choice: $("b-builder").value, kpis: kpis };
+  }
+  function paintFeedback() {
+    var rows = (tv.feedback && tv.feedback.rows) || [];
+    var nodes = $("b-kpis").childNodes;
+    nodes.forEach(function (d, i) {
+      var fb = d.querySelector(".fb"); if (!fb) return; fb.textContent = "";
+      var f = rows[i];
+      if (briefDirty || !f || !tv.brief || !tv.brief.kpis[i] || tv.brief.kpis[i].name !== d._get().name) return;
+      if (f.pending) { fb.appendChild(el("span", "muted", "Checking…")); return; }
+      if (f.error) { fb.appendChild(el("span", "muted", "Feedback unavailable. Save again to retry.")); return; }
+      if (f.ok) { fb.appendChild(el("span", "good", "✓ Measurable as written.")); return; }
+      (f.notes || []).forEach(function (n) { fb.appendChild(el("div", "fix", "→ " + n)); });
+    });
+  }
+  ["b-design", "b-builder"].forEach(function (id) { $(id).addEventListener("input", function () { briefDirty = true; }); });
+  $("addkpi").onclick = function () { $("b-kpis").appendChild(kpiRow({ type: "product" })); briefDirty = true; };
+  $("savebrief").onclick = function () {
+    $("savebrief").disabled = true; $("savemsg").textContent = "Saving…";
+    api("/api/team", { playerId: me.playerId, action: "saveBrief", brief: readBrief() }).then(function (j) {
+      $("savebrief").disabled = false;
+      if (!j._ok) { $("savemsg").textContent = j.error || "Could not save."; return; }
+      briefDirty = false; tv = j; briefSeenAt = 0; $("briefnote").textContent = ""; paintTeam();
+      $("savemsg").innerHTML = ""; $("savemsg").appendChild(el("span", "okmsg", "Saved. Feedback on each KPI appears below it."));
+    }).catch(function () { $("savebrief").disabled = false; $("savemsg").textContent = "No connection. Try again."; });
+  };
+  $("compile").onclick = function () {
+    if ((briefDirty || (tv && tv.brief)) && !confirm("Compiling replaces your team's brief with a fresh merge of everyone's notes. Continue?")) return;
+    $("compile").disabled = true; $("compilemsg").textContent = "Merging your team's notes…";
+    api("/api/compile", { playerId: me.playerId }).then(function (j) {
+      $("compile").disabled = false;
+      if (j._status === 404 || j._status === 501) { $("compile").classList.add("hidden"); $("compilemsg").textContent = "Write the brief directly below."; return; }
+      if (!j._ok) { $("compilemsg").textContent = j.error || "Could not compile. Try again."; return; }
+      $("compilemsg").textContent = "Compiled and saved for your whole team. Edit it, then Save.";
+      briefDirty = false; briefSeenAt = 0; tv = j; paintTeam();
+    }).catch(function () { $("compile").disabled = false; $("compilemsg").textContent = "No connection. Try again."; });
+  };
+
+  // ---------- vote
+  function drawVote() {
+    var set = st.settings || {};
+    [["q-summary", SUMMARY_LABEL, "summary"], ["q-miss", MISS_LABEL, "miss"]].forEach(function (q) {
+      var box = $(q[0]); box.textContent = "";
+      Object.keys(q[1]).forEach(function (k) {
+        var label = q[1][k].replace("N inches", (set.hitN || 6) + " inches").replace("P inches", (set.penaltyIn || 48) + " inches");
+        var b = el("button", "opt" + (myVote[q[2]] === k ? " on" : ""), label); b.type = "button";
+        b.onclick = function () { myVote[q[2]] = k; voted = false; $("votemsg").textContent = ""; drawVote(); };
+        box.appendChild(b);
+      });
+    });
+    $("votebtn").disabled = !(myVote.summary && myVote.miss);
+  }
+  $("votebtn").onclick = function () {
+    $("votebtn").disabled = true;
+    api("/api/vote", { playerId: me.playerId, summary: myVote.summary, miss: myVote.miss }).then(function (j) {
+      $("votebtn").disabled = false;
+      $("votemsg").innerHTML = "";
+      $("votemsg").appendChild(j._ok ? el("span", "okmsg", "Vote in. You can change it until the vote closes.") : el("span", "err", j.error || "Could not vote."));
+    });
+  };
+
+  // ---------- throws and results
+  function drawThrows() {
+    var cur = st.current, mk = {};
+    st.teams.forEach(function (t) { mk[t.team] = t.marker; });
+    $("upnow").textContent = cur ? (cur === me.team ? "Your team is up!" : "Team " + cur + " is up") : "Throws";
+    $("rule").textContent = ruleText(st.lockedRule, st.settings);
+    var box = $("order"); box.textContent = "";
+    (st.order || []).forEach(function (t, i) {
+      var r = el("div", "rank" + (t === cur ? " win" : ""));
+      r.appendChild(el("span", "n", String(i + 1)));
+      r.appendChild(el("span", null, "Team " + t + (t === me.team ? " (you)" : "")));
+      r.appendChild(markerChip(mk[t]));
+      box.appendChild(r);
+    });
+  }
+  function drawResults() {
+    var res = st.results;
+    if (st.recap) {
+      $("recapCard").hidden = false; $("recapTitle").textContent = st.recap.text.title;
+      var rl = $("recapLines"); rl.textContent = "";
+      var ft = st.recap.firstTeam;
+      if (ft && ft.length) rl.appendChild(el("p", "okmsg", (ft.length === 1 ? "Team " : "Teams ") + ft.join(", ").replace(/, ([^,]*)$/, " and $1") + (ft.indexOf(me.team) >= 0 ? " (your team)" : "")));
+      st.recap.text.lines.forEach(function (l) { rl.appendChild(el("p", null, l)); });
+    } else $("recapCard").hidden = true;
+    if (!res) { $("ranking").textContent = "Results coming…"; return; }
+    $("resrule").textContent = ruleText(res.rule, st.settings);
+    var box = $("ranking"); box.textContent = "";
+    res.ranking.forEach(function (r) {
+      var d = el("div", "rank" + (res.winner && r.team === res.winner.team ? " win" : ""));
+      d.appendChild(el("span", "n", r.last ? "—" : String(r.rank)));
+      d.appendChild(el("span", null, "Team " + r.team + (r.team === me.team ? " (you)" : "")));
+      d.appendChild(el("b", null, r.last ? "ranked last" : fmtScore(r.score, res.rule.summary)));
+      box.appendChild(d);
+    });
+    $("tapenote").textContent = res.tapeNote || "";
+    var w = $("winnerCard"); w.textContent = "";
+    if (res.winner) {
+      w.hidden = false; w.appendChild(el("h2", null, "Winning team: " + res.winner.team));
+      var b = res.winner.brief;
+      if (b) {
+        w.appendChild(el("label", "f", "How they decided on the design")); w.appendChild(el("p", null, b.design_process || "—"));
+        w.appendChild(el("label", "f", "Who built and who throws")); w.appendChild(el("p", null, b.builder_choice || "—"));
+        if ((b.kpis || []).length) {
+          var t = el("table", "kpi"), hr = el("tr");
+          ["Type", "KPI", "Definition", "Their number"].forEach(function (h) { hr.appendChild(el("th", null, h)); }); t.appendChild(hr);
+          b.kpis.forEach(function (k) { var tr = el("tr"); var tdp = el("td"); tdp.appendChild(el("span", "pill " + (k.type === "operational" ? "op" : "pr"), k.type === "operational" ? "Op" : "Product")); tr.appendChild(tdp);
+            [k.name, k.definition, k.our_number].forEach(function (v) { tr.appendChild(el("td", null, v || "")); }); t.appendChild(tr); });
+          w.appendChild(t);
+        }
+      } else w.appendChild(el("p", "muted", "This team did not save a brief."));
+    } else w.hidden = true;
+    var wi = $("whatif"); wi.textContent = "";
+    if (res.whatIf) {
+      $("whatifCard").hidden = false;
+      var tbl = el("table", "kpi"), head = el("tr"); head.appendChild(el("th", null, "Team"));
+      var keys = Object.keys(SUMMARY_LABEL);
+      var short = { average: "Average", median: "Median", closest: "Closest", farthest: "Farthest", hit_rate: "Hit rate", spread: "Spread" };
+      keys.forEach(function (k) { head.appendChild(el("th", null, short[k])); }); tbl.appendChild(head);
+      res.ranking.forEach(function (r) {
+        var tr = el("tr"); tr.appendChild(el("td", null, r.team));
+        keys.forEach(function (k) { var x = (res.whatIf[k] || []).find(function (y) { return y.team === r.team; });
+          var td = el("td", null, x ? (x.last ? "last" : "#" + x.rank) : ""); if (x && x.rank === 1 && !x.last) td.style.fontWeight = "800"; tr.appendChild(td); });
+        tbl.appendChild(tr);
+      });
+      wi.appendChild(tbl);
+    }
+  }
+
+  // ---------- loop
+  var clockTimer = null;
+  function paintClock() {
+    if (!st || !st.endsAt) { $("clock").textContent = "--:--"; return; }
+    var left = Math.max(0, st.endsAt - (Date.now() + (st._skew || 0)));
+    var m = Math.floor(left / 60000), s = Math.floor(left / 1000) % 60;
+    $("clock").textContent = m + ":" + (s < 10 ? "0" : "") + s;
+    if (st.phase === "design" && briefDirty && !$("savebrief").disabled) {
+      if (left < 8000 && !autoSaved) { autoSaved = true; $("savebrief").click(); }
+      else if ($("savemsg").textContent.indexOf("Saving") < 0) $("savemsg").textContent = "Unsaved changes. Tap Save brief.";
+    }
+  }
+  function tick() {
+    api("/api/state?section=" + section).then(function (j) {
+      if (!j._ok) return;
+      j._skew = j.now - Date.now(); st = j;
+      if (me && me.runId && me.runId !== st.run) { me = { first: me.first, initial: me.initial, seat: me.seat }; save(); }
+      if (!me || !me.playerId) { if ($("v-join").classList.contains("hidden")) toJoin(); $("who").textContent = "Section " + section; return; }
+      if (choosing) return;
+      $("who").textContent = me.first + " · " + me.seat + " · team " + me.team;
+      var ph = st.phase;
+      if (ph === "lobby") { $("lobbyteam").textContent = "You're on team " + me.team; show("v-lobby"); }
+      else if (ph === "design") {
+        buildParts(); show("v-design");
+        api("/api/team?section=" + section + "&playerId=" + encodeURIComponent(me.playerId)).then(function (t) {
+          if (t._status === 403) { var was = me.seat; me.playerId = null; save(); toJoin(); seat = null; drawRoom(); paintJoin(); $("joinerr").textContent = "Someone else joined from seat " + was + ". Pick your seat again."; return; }
+          if (t._ok) { tv = t; paintTeam(); }
+        });
+      }
+      else if (ph === "vote") { show("v-vote"); drawVote(); }
+      else if (ph === "throws" || ph === "check") { show("v-throws"); drawThrows(); }
+      else { show("v-results"); drawResults(); }
+    }).catch(function () {});
+  }
+  tick();
+  setInterval(tick, 3000);
+  clockTimer = setInterval(paintClock, 500);
+})();
+</script>
+</body>
+</html>

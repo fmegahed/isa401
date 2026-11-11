@@ -1,0 +1,6 @@
+content
+dev
+tests
+.env*
+README*
+*.md

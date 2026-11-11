@@ -1,0 +1,83 @@
+{
+  "_note": "Server-only (underscore files are bundled but never served). Reaches the projector only through admin calls in the instructor and kpis phases, and phones only after Publish recap. GIF ids are GIPHY embeds (https://giphy.com/embed/<id>); alternates: choke fsnzYr1pgvAQM (Peanuts), YKQQtPLA0T2VQ7SuoK (LeBron warm-up airball); lesson 9r8xlhqHg7hTCWX9VW (swish), 3o6Zthv4W72jUHRCUg (illustrated mic drop).",
+  "text": {
+    "lesson": {
+      "title": "Solve the client's real goal.",
+      "lines": [
+        "The brief: hit the target on the whiteboard, consistently, from 6 ft.",
+        "A sheet of paper crumpled into a ball: 1 sheet, about 5 seconds to build, no skill, no prototypes.",
+        "The client said “paper plane.” The goal was the X."
+      ]
+    },
+    "choke": {
+      "title": "I choked.",
+      "lines": [
+        "Same design, worse thrower: the ball is still the right answer to the brief.",
+        "A sheet of paper crumpled into a ball: 1 sheet, about 5 seconds to build, no skill, no prototypes.",
+        "The client said “paper plane.” The goal was the X."
+      ]
+    },
+    "found": {
+      "title": "One team solved for the real goal.",
+      "lines": [
+        "They read the brief for what it asked: hit the X, consistently.",
+        "A sheet of paper crumpled into a ball: 1 sheet, about 5 seconds to build, no skill, no prototypes.",
+        "The client said “paper plane.” The goal was the X."
+      ]
+    },
+    "foundMany": {
+      "title": "{n} teams solved for the real goal.",
+      "lines": [
+        "They read the brief for what it asked: hit the X, consistently.",
+        "A sheet of paper crumpled into a ball: 1 sheet, about 5 seconds to build, no skill, no prototypes.",
+        "The client said “paper plane.” The goal was the X."
+      ]
+    }
+  },
+  "gifs": {
+    "lesson": "26uf5MGga36zEH7cQ",
+    "choke": "vMsaCfNHhzIu95h9eo"
+  },
+  "ballRow": {
+    "accuracy": "measured above",
+    "spread": "tight",
+    "hit_rate": "measured above",
+    "reaches_board": "every throw",
+    "durability": "unlimited throws",
+    "skill_to_throw": "none",
+    "unit_cost": "1 sheet",
+    "aesthetics": "loses",
+    "speed_flight": "loses",
+    "weight": "irrelevant",
+    "cycle_time": "about 5 seconds",
+    "takt_time": "met instantly",
+    "lead_time": "about 5 seconds",
+    "people": "1",
+    "cost_resources": "1 sheet",
+    "prototypes": "0",
+    "training_time": "none"
+  },
+  "ui": {
+    "extra": "Instructor",
+    "start": "Start my throws",
+    "first": "These teams did it",
+    "firstLabel": "Or: one or more teams already did it (tick each one)",
+    "markerLabel": "Your marker (unused by teams)",
+    "title2": "Your throws",
+    "score": "Score my throws",
+    "waiting2": "My throws",
+    "refPill": "ball",
+    "editMine": "Edit my marks",
+    "myScore": "My score",
+    "me": "me",
+    "meCount": "Me",
+    "kpiTitle": "Your KPIs vs. the client's goal",
+    "kpiSub": "Goal: hit the X, consistently. Which of your KPIs measured that?",
+    "b_tied": "Tied to the goal",
+    "b_supports": "Supports the goal",
+    "b_client": "Client might value",
+    "b_not_tied": "Not tied to the goal",
+    "b_process": "Process (operational)",
+    "b_other": "No match: discuss"
+  }
+}
