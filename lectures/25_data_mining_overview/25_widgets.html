@@ -1,0 +1,70 @@
+<!-- Class 25 deck: the two stick-figure scenes and the itemset lattice. Pandoc embeds these files into the deck.
+
+     stick/stick.js is the stick-scene runtime (github.com/nilbuild/stick-scene), used under its licence:
+
+MIT License
+
+Copyright (c) 2026 Kamran Ahmed
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-->
+<script>
+  // The stick-scene runtime never plays a scene when the computer asks for reduced motion (Windows:
+  // Settings > Accessibility > Visual effects > Animation effects off); a click does nothing either. In this
+  // deck, on such a computer, a scene does not play by itself but plays when clicked. The runtime reads the
+  // setting once, when it loads: it sees "motion allowed" here, and the real matchMedia comes back right
+  // after it loads (see below), so nothing else on the page is affected.
+  (function () {
+    var Q = '(prefers-reduced-motion: reduce)', realMM = window.matchMedia.bind(window);
+    var reduced = realMM(Q).matches;
+    window.__deckReducedMotion = reduced;
+    window.__deckRealMatchMedia = window.matchMedia;
+    if (!reduced) return;
+    window.matchMedia = function (s) {
+      var r = realMM(s);
+      if (String(s).replace(/\s+/g, '') !== Q.replace(/\s+/g, '')) return r;
+      return { matches: false, media: r.media, onchange: null, addEventListener: function () {}, removeEventListener: function () {},
+               addListener: function () {}, removeListener: function () {}, dispatchEvent: function () { return false; } };
+    };
+    function markClickToPlay() { document.querySelectorAll('stick-scene').forEach(function (e) { e.classList.add('tap-to-play'); }); }
+    markClickToPlay();
+    document.addEventListener('DOMContentLoaded', markClickToPlay);
+  })();
+</script>
+<script src="stick/stick.js"></script>
+<script>window.matchMedia = window.__deckRealMatchMedia;</script>
+<script src="stick/osco.js"></script>
+<script src="stick/counter-room.js"></script>
+<script>
+  // Each scene plays from the start whenever its slide is shown; a click replays it. The scenes are set to
+  // play="click" in the Rmd because the runtime's own play="view" fires once, at page load: until the first
+  // key press, xaringan shows every slide stacked under slide 1, so both scenes played there unseen.
+  // Only the slide in the slide area counts: the tile view's copies of the slides are also marked visible.
+  (function () {
+    function playShown() {
+      if (window.__deckReducedMotion) return;
+      document.querySelectorAll('.remark-slides-area .remark-visible stick-scene').forEach(function (el) {
+        if (el.v) { el.v.on = false; el.v.play(); }
+      });
+    }
+    if (window.slideshow && slideshow.on) slideshow.on('afterShowSlide', function () { setTimeout(playShown, 350); });
+    setTimeout(playShown, 600);   // the deck was opened (or reloaded with F5) on a slide with a scene
+  })();
+</script>
+<script src="js/lattice.js"></script>

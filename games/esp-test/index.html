@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f6f1e3">
+<title>The ESP Test</title>
+<link rel="icon" href="favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Source+Sans+3:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #f6f1e3; --paper: #fffdf6; --ink: #1f2328; --muted: #6b6252; --line: #d8cfb8; --line2: #b8ad92;
+    --red: #C3142D; --blue: #1f5fbf; --gold: #EFDB72; --ok: #2a7a3a;
+    --type: "Courier Prime", "Courier New", Courier, monospace; --body: "Source Sans 3", "Segoe UI", Helvetica, Arial, sans-serif;
+    --back: repeating-linear-gradient(45deg, #161616 0 6px, #2e2e2e 6px 12px);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--cream); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.45; -webkit-text-size-adjust: 100%; }
+  body { min-height: 100vh; min-height: 100dvh; }
+  button, input { font: inherit; color: inherit; }
+  .wrap { max-width: 480px; margin: 0 auto; padding: 0 16px 36px; }
+  header { position: sticky; top: 0; z-index: 3; background: rgba(246,241,227,.97); border-bottom: 2px solid var(--line); }
+  header .wrap { display: flex; align-items: center; gap: 10px; padding-top: 10px; padding-bottom: 10px; }
+  .brand { display: flex; align-items: center; gap: 8px; font-family: var(--type); font-weight: 700; letter-spacing: .1em; font-size: 18px; white-space: nowrap; }
+  .brand .mk { width: 18px; height: 25px; border-radius: 3px; border: 2px solid #2b2b2b; background: var(--back); transform: rotate(-6deg); }
+  .chip { font-family: var(--type); font-weight: 700; font-size: 13px; letter-spacing: .06em; border: 1px solid var(--line2); border-radius: 4px; padding: 0 6px; color: var(--muted); white-space: nowrap; }
+  .me { margin-left: auto; text-align: right; font-size: 14px; line-height: 1.2; min-width: 0; }
+  .me .who { font-weight: 700; overflow-wrap: anywhere; }
+  .me .seat { color: var(--muted); font-family: var(--type); }
+  .conn { display: none; background: var(--ink); color: var(--paper); text-align: center; font-size: 14px; padding: 4px; }
+  .conn.on { display: block; }
+  .screen { display: none; padding-top: 18px; }
+  .screen.on { display: block; animation: fadein .25s ease; }
+  @keyframes fadein { from { opacity: 0; } }
+  .lab { font-family: var(--type); font-weight: 700; letter-spacing: .1em; font-size: 14px; color: var(--muted); text-align: center; text-transform: uppercase; }
+  h1, h2 { font-family: var(--type); font-weight: 700; margin: 0 0 10px; line-height: 1.1; }
+  h1 { font-size: 30px; } h2 { font-size: 24px; }
+  .muted { color: var(--muted); } .small { font-size: 14px; }
+  .center { text-align: center; }
+  .note { border-left: 4px solid var(--red); background: var(--paper); padding: 10px 12px; border-radius: 4px; margin: 0 0 16px; }
+  .err { color: var(--red); min-height: 1.4em; margin-top: 8px; font-size: 15px; }
+  label.f { display: block; font-weight: 700; margin: 14px 0 6px; }
+  .in { width: 100%; background: var(--paper); border: 1.5px solid var(--line2); border-radius: 6px; padding: 12px; font-size: 18px; }
+  .in:focus { outline: none; border-color: var(--ink); box-shadow: 0 0 0 3px rgba(31,35,40,.15); }
+  .in.initial { width: 80px; text-align: center; text-transform: uppercase; font-weight: 700; }
+  .seg { display: flex; gap: 8px; flex-wrap: wrap; }
+  .seg button { flex: 1; min-height: 46px; background: var(--paper); border: 1.5px solid var(--line2); border-radius: 6px; font-weight: 700; cursor: pointer; padding: 6px 10px; }
+  .seg button.on { border-color: var(--ink); background: var(--ink); color: var(--paper); }
+  .planbox { margin-top: 10px; background: var(--paper); border: 1px solid var(--line); border-radius: 8px; padding: 6px; }
+  #plan svg { width: 100%; height: auto; display: block; }
+  #plan .plan .wall { stroke: #6b6252; }
+  #plan .plan .table, #plan .plan .fixture { fill: #e9e1cb; stroke: #b8ad92; }
+  #plan .plan .label, #plan .plan .rowlabel { fill: #6b6252; }
+  #plan .plan .seat { cursor: pointer; }
+  #plan .plan .seat .chair { fill: #fffdf6; stroke: #8a7f66; stroke-width: 2; }
+  #plan .plan .seat .screen { fill: #d8cfb8; stroke: none; }
+  #plan .plan .seat .id { fill: #1f2328; font: 700 13px var(--body); }
+  #plan .plan .seat:hover .chair { stroke: var(--ink); stroke-width: 3; }
+  #plan .plan .seat.mine .chair { fill: var(--gold); stroke: var(--red); stroke-width: 4; }
+  .seatline { margin-top: 10px; font-weight: 700; font-family: var(--type); }
+  .go { display: block; width: 100%; margin-top: 18px; min-height: 54px; border: 0; border-radius: 8px; background: var(--ink); color: var(--paper); font-family: var(--type); font-weight: 700; font-size: 20px; letter-spacing: .06em; cursor: pointer; }
+  .go:disabled { opacity: .35; cursor: default; }
+  .link { background: none; border: 0; color: var(--muted); text-decoration: underline; cursor: pointer; padding: 6px 0; font-size: 14px; }
+  .facedown { width: 92px; height: 128px; margin: 18px auto 10px; border-radius: 9px; border: 3px solid #2b2b2b; background: var(--back); display: flex; align-items: center; justify-content: center; color: var(--cream); font-family: var(--type); font-weight: 700; font-size: 17px; transform: rotate(-3deg); box-shadow: 0 4px 10px rgba(0,0,0,.25); }
+  .big { font-size: 48px; font-weight: 800; text-align: center; line-height: 1.05; margin: 14px 0 6px; }
+  .msg { text-align: center; margin: 8px 0; }
+  /* the card call */
+  .q { text-align: center; font-size: 19px; margin: 6px 0 12px; }
+  .call { display: block; width: 100%; min-height: 96px; margin: 12px 0; border-radius: 14px; border: 4px solid transparent; color: #fff; font-family: var(--type); font-weight: 700; font-size: 30px; letter-spacing: .1em; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; user-select: none; }
+  .call.red { background: var(--red); } .call.blue { background: var(--blue); }
+  .call.dim { opacity: .35; }
+  .call.picked { border-color: var(--ink); box-shadow: 0 0 0 4px var(--gold); opacity: 1; }
+  .call:active { transform: scale(.98); }
+  .timer { height: 8px; background: #e2d9c2; border-radius: 4px; overflow: hidden; margin: 6px 0 4px; }
+  .timer div { height: 100%; background: var(--ink); width: 100%; }
+  .dots { display: flex; justify-content: center; gap: 7px; margin: 14px 0 6px; }
+  .dot { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--line2); background: transparent; }
+  .dot.R { background: var(--red); border-color: var(--red); } .dot.B { background: var(--blue); border-color: var(--blue); }
+  .dot.now { border-color: var(--ink); border-width: 3px; }
+  .dot.miss { border-style: dashed; }
+  .marks { display: flex; justify-content: center; gap: 4px; margin: 12px 0; font-size: 22px; font-weight: 800; font-family: var(--type); }
+  .marks .right { color: var(--ok); } .marks .wrong { color: #8a7f66; } .marks .missed { color: #b8ad92; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 14px 0; }
+  .two div { background: var(--paper); border: 1px solid var(--line); border-radius: 8px; padding: 10px; text-align: center; }
+  .two b { display: block; font-size: 34px; font-weight: 800; }
+  .stamp { display: inline-block; border: 3px solid var(--red); color: var(--red); font-family: var(--type); font-weight: 700; letter-spacing: .08em; padding: 3px 10px; transform: rotate(-4deg); margin: 6px auto; }
+</style>
+</head>
+<body>
+<div class="conn" id="conn">Reconnecting to the lab...</div>
+<header><div class="wrap">
+  <div class="brand"><span class="mk"></span>ESP TEST</div>
+  <span class="chip" id="secchip">A</span>
+  <div class="me" id="me" hidden><div class="who" id="who"></div><div class="seat" id="myseat"></div></div>
+</div></header>
+
+<main class="wrap">
+  <section class="screen" id="s-loading"><h2>Connecting</h2><p class="muted">Finding the lab for your section.</p></section>
+
+  <section class="screen" id="s-join">
+    <div class="note" id="joinmsg" hidden></div>
+    <h1>Join the lab</h1>
+    <p class="muted small" style="margin:0;">You are a subject in a card test. A sender looks at hidden cards, one at a time, and you call each one red or blue on your phone: 10 cards, 5 seconds each. The projector shows only your seat number. Points count for nothing.</p>
+    <label class="f">Section</label>
+    <div class="seg" id="secseg">
+      <button type="button" data-sec="A">Section A</button>
+      <button type="button" data-sec="B">Section B</button>
+      <button type="button" data-sec="Z" id="secZ" hidden>Test Z</button>
+    </div>
+    <label class="f" for="first">Preferred first name</label>
+    <input class="in" id="first" maxlength="20" autocomplete="given-name" autocapitalize="words" spellcheck="false">
+    <label class="f" for="initial">Last initial</label>
+    <input class="in initial" id="initial" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false">
+    <label class="f">Your seat</label>
+    <div class="muted small">The front of the room (screens) is at the top. Row 1 is the front; seats count 1 to 7 from left to right.</div>
+    <div class="seg" id="sideseg" style="margin-top:8px;">
+      <button type="button" data-side="L">Left of the aisle</button>
+      <button type="button" data-side="R">Right of the aisle</button>
+    </div>
+    <div class="planbox"><div id="plan"></div></div>
+    <div class="seatline" id="seatline">No seat picked yet.</div>
+    <button type="button" class="go" id="joinbtn" disabled>Join the lab</button>
+    <div class="err" id="joinerr" role="alert"></div>
+  </section>
+
+  <section class="screen" id="s-lobby">
+    <div class="lab">Subject checked in</div>
+    <div class="facedown">ESP</div>
+    <h2 class="center">You're in.</h2>
+    <p class="msg">The test starts on the screen. Keep this page open; the cards come to your phone.</p>
+    <p class="center"><button type="button" class="link" id="changeseat">Wrong seat? Change it</button></p>
+  </section>
+
+  <section class="screen" id="s-ready">
+    <div class="lab" id="readylab">Round 1</div>
+    <p class="msg" id="readynote" style="font-weight:700;"></p>
+    <div class="facedown">ESP</div>
+    <h2 class="center">Get ready.</h2>
+    <p class="msg muted">The first card is coming up. You have 5 seconds for each card.</p>
+  </section>
+
+  <section class="screen" id="s-card">
+    <div class="lab" id="cardlab">Card 1 of 10</div>
+    <div class="timer"><div id="timerbar"></div></div>
+    <p class="q">What color is the card?</p>
+    <button type="button" class="call red" id="callR">RED</button>
+    <button type="button" class="call blue" id="callB">BLUE</button>
+    <div class="dots" id="dots"></div>
+    <p class="msg small muted">Your calls so far. You'll see how you did after card 10.</p>
+  </section>
+
+  <section class="screen" id="s-done">
+    <div class="lab" id="donelab">Round 1</div>
+    <div class="facedown">ESP</div>
+    <h2 class="center">That's all 10 cards.</h2>
+    <p class="msg">Look at the screen.</p>
+  </section>
+
+  <section class="screen" id="s-result">
+    <div class="lab" id="reslab">Round 1</div>
+    <div class="big" id="resscore">0 of 10</div>
+    <div class="marks" id="resmarks"></div>
+    <div id="restop" hidden>
+      <p class="center"><span class="stamp">You may have ESP.</span></p>
+      <p class="msg">The lab would like to test you again in a minute.</p>
+    </div>
+    <p class="msg small muted" id="resnone" hidden>You did not call any cards in this round.</p>
+  </section>
+
+  <section class="screen" id="s-finding">
+    <div class="lab">Round 1</div>
+    <div class="facedown">ESP</div>
+    <h2 class="center" id="findhead">The lab found a pattern.</h2>
+    <p class="msg">Look at the screen.</p>
+    <p class="msg small muted" id="findyou"></p>
+  </section>
+
+  <section class="screen" id="s-final">
+    <div class="lab">Your results</div>
+    <div class="two"><div>Round 1<b id="fin1">-</b>of 10</div><div>Round 2<b id="fin2">-</b>of 10</div></div>
+    <div class="marks" id="finmarks"></div>
+    <p class="msg" id="finline" style="font-weight:700;"></p>
+  </section>
+
+  <section class="screen" id="s-wrap">
+    <div class="lab">End of the test</div>
+    <div class="facedown">ESP</div>
+    <h2 class="center">Thanks for being a subject.</h2>
+    <p class="msg" id="wraprounds"></p>
+    <p class="msg muted small">Back to the slides.</p>
+  </section>
+</main>
+
+<script>
+"use strict";
+const $ = (id) => document.getElementById(id);
+const KEY = "isa401_esp_test";
+const POLL_MS = 1000;
+const MSG_KICKED = "Someone else took this seat. Pick your seat again.";
+const MSG_RESET = "The lab started over. Join again.";
+
+function load() { try { const v = JSON.parse(localStorage.getItem(KEY) || "null"); return v && typeof v === "object" ? v : null; } catch (e) { return null; } }
+function save() { try { localStorage.setItem(KEY, JSON.stringify({ section, playerId, runId })); } catch (e) {} }
+function wipe() { try { localStorage.removeItem(KEY); } catch (e) {} }
+
+const qsp = new URLSearchParams(location.search);
+const urlSec = (qsp.get("section") || "").toUpperCase();
+const stored = load();
+let section = /^[ABZ]$/.test(urlSec) ? urlSec : (stored && /^[AB]$/.test(stored.section) ? stored.section : "A");
+let playerId = null, runId = null;
+if (stored && stored.section === section && typeof stored.playerId === "string") { playerId = stored.playerId; runId = stored.runId ?? null; }
+
+let snap = null, meData = null, meKey = "", meGen = 0, retryTimer = null, offset = null, kicked = false, joining = false;
+let seat = null, side = "L", fails = 0, current = "", wake = null;
+// calls[round][k]: what this phone shows; accepted[round][k]: what the server took
+let calls = { 1: Array(10).fill(null), 2: Array(10).fill(null) }, accepted = { 1: Array(10).fill(null), 2: Array(10).fill(null) };
+let callsRun = null;
+
+const same = (a, b) => String(a) === String(b);
+const ROUND = { r1: 1, r2: 2 };
+function calibrate(serverNow) { if (typeof serverNow !== "number") return; const d = serverNow - Date.now(); if (offset === null || d > offset) offset = d; }
+const serverTime = () => Date.now() + (offset || 0);
+const cardMs = () => (snap && snap.cardMs) || 5000;
+// 0 = get ready; 1..10 = that card is open; 11 = all ten closed
+function cardNow() {
+  if (!snap || !ROUND[snap.phase] || typeof snap.startedAt !== "number") return 0;
+  const t = serverTime();
+  if (t < snap.startedAt) return 0;
+  return Math.min(11, Math.floor((t - snap.startedAt) / cardMs()) + 1);
+}
+function show(id) { if (current === id) return; current = id; document.querySelectorAll(".screen").forEach((el) => el.classList.toggle("on", el.id === "s-" + id)); window.scrollTo(0, 0); }
+function setText(id, t) { const el = $(id); if (el.textContent !== t) el.textContent = t; }
+function resetCalls() { calls = { 1: Array(10).fill(null), 2: Array(10).fill(null) }; accepted = { 1: Array(10).fill(null), 2: Array(10).fill(null) }; callsRun = runId; }
+
+function paintHeader() {
+  setText("secchip", section === "Z" ? "TEST Z" : "SEC " + section);
+  const you = meData && meData.you;
+  $("me").hidden = !(playerId && !kicked && you);
+  if (you) { setText("who", you.first); setText("myseat", you.seat); }
+}
+
+function render() {
+  paintHeader();
+  if (!playerId || kicked) { show("join"); return; }
+  if (!snap) { show("loading"); return; }
+  const ph = snap.phase;
+  if (ph === "lobby") { show("lobby"); return; }
+  if (ROUND[ph]) { renderRound(); return; }
+  if (!meData) { show("loading"); return; }
+  if (ph === "r1_reveal") { renderResult(1); return; }
+  if (ph === "finding") {
+    const f = meData.finding;
+    setText("findhead", f && f.found === false ? "The lab looked for a pattern." : "The lab found a pattern.");
+    setText("findyou", (f && f.you) || "");
+    show("finding"); return;
+  }
+  if (ph === "r2_reveal") { renderFinal(); return; }
+  if (ph === "wrap") {
+    const a = meData.r1, b = meData.r2;
+    setText("wraprounds", a && b ? `Your two rounds: ${a.right} and ${b.right}.` : "");
+    show("wrap"); return;
+  }
+  show("loading");
+}
+
+function renderRound() {
+  const round = ROUND[snap.phase], card = cardNow();
+  const top = Boolean(meData && meData.r1 && meData.r1.top);
+  if (card === 0) {
+    setText("readylab", round === 1 ? "Round 1" : "Round 2 (retest)");
+    setText("readynote", round === 1 ? "" : top ? "The lab is testing you again." : "The lab is retesting everyone.");
+    show("ready"); return;
+  }
+  if (card === 11) { setText("donelab", round === 1 ? "Round 1" : "Round 2"); show("done"); return; }
+  setText("cardlab", (round === 2 ? "Round 2 · " : "") + `Card ${card} of 10`);
+  const mine = calls[round][card - 1];
+  $("callR").classList.toggle("picked", mine === "R"); $("callB").classList.toggle("picked", mine === "B");
+  $("callR").classList.toggle("dim", mine === "B"); $("callB").classList.toggle("dim", mine === "R");
+  const left = snap.startedAt + card * cardMs() - serverTime();
+  $("timerbar").style.width = Math.max(0, Math.min(100, (100 * left) / cardMs())) + "%";
+  let dots = "";
+  for (let k = 1; k <= 10; k++) {
+    const c = calls[round][k - 1];
+    dots += `<span class="dot${c ? " " + c : ""}${k === card ? " now" : ""}${!c && k < card ? " miss" : ""}"></span>`;
+  }
+  if ($("dots").innerHTML !== dots) $("dots").innerHTML = dots;
+  show("card");
+}
+
+const MARK = { right: "✓", wrong: "✗", missed: "–" };
+function marksHtml(marks) { return (marks || []).map((m) => `<span class="${m}">${MARK[m] || ""}</span>`).join(""); }
+function renderResult(round) {
+  const r = meData.r1;
+  if (!r) { show("loading"); return; }
+  setText("reslab", "Round " + round);
+  setText("resscore", `${r.right} of 10`);
+  const html = marksHtml(r.marks);
+  if ($("resmarks").innerHTML !== html) $("resmarks").innerHTML = html;
+  const none = r.marks.every((m) => m === "missed");
+  $("restop").hidden = !r.top; $("resnone").hidden = !none;
+  show("result");
+}
+function renderFinal() {
+  const a = meData.r1, b = meData.r2;
+  if (!b) { show("loading"); return; }
+  setText("fin1", a ? String(a.right) : "-"); setText("fin2", String(b.right));
+  const html = marksHtml(b.marks);
+  if ($("finmarks").innerHTML !== html) $("finmarks").innerHTML = html;
+  setText("finline", b.line || "");
+  show("final");
+}
+
+async function tap(color) {
+  if (!snap || !ROUND[snap.phase]) return;
+  const round = ROUND[snap.phase], card = cardNow();
+  if (card < 1 || card > 10) return;
+  calls[round][card - 1] = color;
+  if (navigator.vibrate) { try { navigator.vibrate(15); } catch (e) {} }
+  renderRound();
+  const body = JSON.stringify({ section, playerId, round, card, color });
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const r = await fetch("/api/call", { method: "POST", headers: { "Content-Type": "application/json" }, body });
+      const j = await r.json().catch(() => ({}));
+      if (j.ok) { accepted[round][card - 1] = color; return; }
+      if (j.reason === "unknown") { fetchMe(); }
+      break;
+    } catch (e) { await new Promise((res) => setTimeout(res, 300)); }
+  }
+  // not taken (too late or no connection): show what the server has
+  if (calls[round][card - 1] === color) { calls[round][card - 1] = accepted[round][card - 1]; if (ROUND[snap.phase]) renderRound(); }
+}
+$("callR").addEventListener("click", () => tap("R"));
+$("callB").addEventListener("click", () => tap("B"));
+
+async function poll() {
+  const sec = section;
+  try {
+    const r = await fetch("/api/state?section=" + sec);
+    if (!r.ok) throw new Error("state " + r.status);
+    const s = await r.json();
+    if (sec !== section) return;
+    fails = 0; $("conn").classList.remove("on");
+    calibrate(s.serverNow); onSnapshot(s);
+  } catch (e) { if (++fails >= 3) $("conn").classList.add("on"); }
+}
+function onSnapshot(s) {
+  if (snap && Number(s.runId) < Number(snap.runId)) return;
+  if (runId != null && Number(s.runId) < Number(runId)) return;
+  if (snap && same(snap.runId, s.runId) && (s.seq < snap.seq || (s.seq === snap.seq && s.serverNow < snap.serverNow))) return;
+  if (playerId && runId != null && Number(s.runId) > Number(runId)) { toJoin(MSG_RESET, true); snap = s; return; }
+  snap = s;
+  if (playerId && !kicked) { const k = [s.runId, s.seq, s.phase].join("|"); if (k !== meKey) { meKey = k; fetchMe(); } }
+  render();
+}
+// me: after joining, after a reload and on every change of run, seq or phase (not on a timer)
+async function fetchMe() {
+  if (!playerId) return;
+  const gen = ++meGen, sec = section;
+  try {
+    const r = await fetch("/api/me?section=" + sec + "&playerId=" + encodeURIComponent(playerId), { cache: "no-store" });
+    if (!r.ok) throw new Error("me " + r.status);
+    const m = await r.json();
+    if (gen !== meGen || sec !== section || !playerId) return;
+    calibrate(m.serverNow);
+    if (runId != null && !same(m.runId, runId)) { toJoin(MSG_RESET, true); return; }
+    if (m.kicked) { toJoin(MSG_KICKED, false); return; }
+    if (!same(callsRun, m.runId)) resetCalls();
+    const round = ROUND[m.phase] || (["r2_reveal", "wrap"].includes(m.phase) ? 2 : 1);
+    (m.calls || []).forEach((c, i) => { if (c) { accepted[round][i] = c; if (!calls[round][i]) calls[round][i] = c; } });
+    meData = m; clearTimeout(retryTimer);
+    // a reveal phase whose result has not arrived yet: ask again shortly
+    const missing = (m.phase === "r1_reveal" && !m.r1) || (m.phase === "finding" && !m.finding) || (m.phase === "r2_reveal" && !m.r2);
+    if (missing) retryTimer = setTimeout(fetchMe, 2000);
+    render();
+  } catch (e) { if (gen === meGen) { clearTimeout(retryTimer); retryTimer = setTimeout(fetchMe, 3000); } }
+}
+
+function toJoin(msg, reset) {
+  const you = meData && meData.you;
+  if (you && !$("first").value) $("first").value = you.first;
+  if (reset) { playerId = null; runId = null; wipe(); resetCalls(); }
+  kicked = !reset; meData = null; meKey = ""; seat = null; clearTimeout(retryTimer);
+  $("joinmsg").textContent = msg; $("joinmsg").hidden = !msg;
+  paintSeat(); render();
+}
+function paintJoin() { $("joinbtn").disabled = joining || !($("first").value.trim() && /^[A-Z]$/.test($("initial").value) && seat); }
+function paintSeat() {
+  document.querySelectorAll("#plan .seat").forEach((g) => g.classList.toggle("mine", g.dataset.seat === seat));
+  setText("seatline", seat ? "Seat " + seat : "No seat picked yet.");
+  paintJoin();
+}
+function setSide(sd) {
+  side = sd;
+  document.querySelectorAll("#sideseg button").forEach((b) => b.classList.toggle("on", b.dataset.side === sd));
+  const svg = $("plan").querySelector("svg");
+  if (svg) svg.setAttribute("viewBox", sd === "L" ? "40 30 425 582" : "435 30 425 582");
+}
+function setSection(sc) {
+  if (sc !== section) {
+    section = sc; playerId = null; runId = null; snap = null; meData = null; meKey = ""; kicked = false; meGen++; fails = 0;
+    clearTimeout(retryTimer); $("joinmsg").hidden = true; resetCalls();
+    const st = load();
+    if (st && st.section === sc && typeof st.playerId === "string") { playerId = st.playerId; runId = st.runId ?? null; }
+    try { history.replaceState(null, "", location.pathname + "?section=" + sc); } catch (e) {}
+    poll();
+  }
+  $("secZ").hidden = section !== "Z";
+  document.querySelectorAll("#secseg button").forEach((b) => b.classList.toggle("on", b.dataset.sec === section));
+  paintHeader();
+}
+document.querySelectorAll("#secseg button").forEach((b) => b.addEventListener("click", () => { if (!playerId || kicked) setSection(b.dataset.sec); }));
+document.querySelectorAll("#sideseg button").forEach((b) => b.addEventListener("click", () => setSide(b.dataset.side)));
+$("first").addEventListener("input", paintJoin);
+$("initial").addEventListener("input", () => { const el = $("initial"); const v = el.value.replace(/[^A-Za-z]/g, "").toUpperCase().slice(0, 1); if (el.value !== v) el.value = v; paintJoin(); });
+$("changeseat").addEventListener("click", () => toJoin("", false));
+$("joinbtn").addEventListener("click", join);
+
+async function keepAwake() {
+  try { if ("wakeLock" in navigator && !wake && document.visibilityState === "visible") { wake = await navigator.wakeLock.request("screen"); wake.addEventListener("release", () => { wake = null; }); } } catch (e) {}
+}
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") { keepAwake(); poll(); if (playerId) fetchMe(); } });
+
+async function join() {
+  if (joining || $("joinbtn").disabled) return;
+  joining = true; paintJoin(); $("joinerr").textContent = "";
+  let dark = false;
+  try { dark = window.matchMedia("(prefers-color-scheme: dark)").matches; } catch (e) {}
+  const body = { section, first: $("first").value.trim(), initial: $("initial").value, seat, device: { iphone: /iPhone/.test(navigator.userAgent), dark } };
+  if (playerId) body.playerId = playerId;
+  try {
+    const r = await fetch("/api/join", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    const j = await r.json().catch(() => ({}));
+    if (r.status === 429) $("joinerr").textContent = "Too many joins right now. Wait a few seconds and tap Join again.";
+    else if (!r.ok || !j.playerId) $("joinerr").textContent = typeof j.error === "string" ? j.error : "Could not join. Try again.";
+    else {
+      playerId = j.playerId; runId = j.runId; kicked = false; save();
+      $("joinmsg").hidden = true; meData = null; meKey = "";
+      if (snap && !same(snap.runId, runId)) snap = null;
+      keepAwake(); render(); await fetchMe(); poll();
+    }
+  } catch (e) { $("joinerr").textContent = "No connection. Check your signal and tap Join again."; }
+  joining = false; paintJoin();
+}
+
+async function start() {
+  setSection(section); render();
+  try {
+    const r = await fetch("plan.svg");
+    if (r.ok) {
+      $("plan").innerHTML = await r.text();   // our own static file, not user text
+      $("plan").querySelectorAll(".seat").forEach((g) => g.addEventListener("click", () => { seat = g.dataset.seat; paintSeat(); }));
+    }
+  } catch (e) {}
+  setSide(side); paintSeat();
+  if (playerId) { fetchMe(); keepAwake(); }
+  await poll();
+  (function loop() { setTimeout(async () => { await poll(); loop(); }, POLL_MS); })();
+  // the card changes on the clock, not on a poll
+  setInterval(() => { if (snap && ROUND[snap.phase] && playerId && !kicked) renderRound(); }, 120);
+}
+start();
+</script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "name": "isa401-esp-test",
+  "private": true,
+  "description": "The ESP Test (ISA 401 Class 25)",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "dev": "node dev/server.js"
+  }
+}

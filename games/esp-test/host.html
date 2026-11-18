@@ -1,0 +1,495 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The ESP Test: projector</title>
+<link rel="icon" href="favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Source+Sans+3:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #f6f1e3; --paper: #fffdf6; --ink: #1f2328; --muted: #6b6252; --line: #d8cfb8; --line2: #b8ad92; --tan: #e9e1cb;
+    --red: #C3142D; --blue: #1f5fbf; --gold: #EFDB72; --gray: #8a7f66;
+    --type: "Courier Prime", "Courier New", Courier, monospace; --body: "Source Sans 3", "Segoe UI", Helvetica, Arial, sans-serif;
+    --back: repeating-linear-gradient(45deg, #161616 0 6px, #2e2e2e 6px 12px);
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; height: 100%; background: #1b1b1b; color: var(--ink); font-family: var(--body); overflow: hidden; }
+  #viewport { position: fixed; left: 0; top: 0; right: 0; bottom: 56px; }
+  body.nodock #viewport { bottom: 0; }
+  #stage { position: absolute; left: 0; top: 0; width: 1600px; height: 900px; transform-origin: 0 0; overflow: hidden; background: var(--cream); padding: 30px 48px; }
+  .bar { display: flex; justify-content: space-between; font-family: var(--type); font-weight: 700; font-size: 26px; letter-spacing: .1em; color: var(--muted); border-bottom: 3px solid var(--line); padding-bottom: 10px; }
+  h1 { font-family: var(--type); font-weight: 700; font-size: 60px; margin: 26px 0 10px; line-height: 1.05; }
+  h2 { font-family: var(--type); font-weight: 700; font-size: 44px; margin: 20px 0 10px; line-height: 1.12; }
+  .sub { font-size: 28px; color: var(--muted); line-height: 1.4; }
+  .ink { color: var(--ink); }
+  .scr { display: none; } .scr.on { display: block; }
+  /* lobby */
+  .lobby { display: grid; grid-template-columns: 560px 1fr; gap: 46px; margin-top: 26px; align-items: start; }
+  .qrbox { background: var(--paper); border: 2px solid var(--line); border-radius: 12px; padding: 22px; text-align: center; }
+  .qrbox img { width: 380px; height: 380px; image-rendering: pixelated; display: block; margin: 0 auto; }
+  .qrbox .noqr { font-size: 26px; color: var(--muted); padding: 60px 10px; }
+  .addr { font-family: var(--type); font-weight: 700; font-size: 21px; margin-top: 14px; white-space: nowrap; }
+  .how { margin-top: 18px; font-size: 26px; line-height: 1.45; }
+  .count { font-family: var(--type); font-weight: 700; font-size: 34px; margin: 6px 0 8px; }
+  /* rounds */
+  .round { display: grid; grid-template-columns: 420px 1fr; gap: 40px; align-items: center; margin-top: 60px; }
+  .facedown { width: 300px; height: 420px; margin: 0 auto; border-radius: 22px; border: 6px solid #2b2b2b; background: var(--back); display: flex; align-items: center; justify-content: center; color: var(--cream); font-family: var(--type); font-weight: 700; font-size: 54px; transform: rotate(-3deg); box-shadow: 0 10px 24px rgba(0,0,0,.3); }
+  .facedown.pulse { animation: pulse 5s linear infinite; }
+  @keyframes pulse { 0% { transform: rotate(-3deg) scale(1); } 6% { transform: rotate(-3deg) scale(1.04); } 14% { transform: rotate(-3deg) scale(1); } }
+  .meter { height: 22px; background: #e2d9c2; border-radius: 11px; overflow: hidden; margin-top: 12px; width: 760px; }
+  .meter div { height: 100%; background: var(--ink); width: 0; transition: width .4s ease; }
+  .clock { font-family: var(--type); font-size: 84px; font-weight: 700; margin-top: 26px; }
+  .slots { display: flex; gap: 14px; }
+  .slot { width: 64px; height: 90px; border-radius: 8px; border: 3px solid var(--line2); background: #efe8d4; }
+  .slot.done { background: var(--back); border-color: #2b2b2b; }
+  .slot.now { border-color: var(--red); border-width: 5px; background: #fff; }
+  .slots.bottom { position: absolute; left: 48px; bottom: 34px; }
+  .slot.R, .slot.B { border-color: #2b2b2b; }
+  .slot.flip { animation: flip .6s ease both; animation-delay: var(--d); }
+  .slot.R { --face: var(--red); } .slot.B { --face: var(--blue); }
+  @keyframes flip {
+    0% { transform: rotateY(0); background: var(--back); }
+    49% { transform: rotateY(90deg); background: var(--back); }
+    51% { transform: rotateY(90deg); background: var(--face); border-color: var(--face); }
+    100% { transform: rotateY(0); background: var(--face); border-color: var(--face); }
+  }
+  .later { opacity: 0; animation: fadein .6s ease forwards; animation-delay: var(--d, 4.2s); }
+  @keyframes fadein { to { opacity: 1; } }
+  /* results */
+  .res { display: grid; grid-template-columns: 900px 1fr; gap: 36px; margin-top: 18px; align-items: start; }
+  .legend { font-size: 22px; color: var(--muted); margin-top: 16px; line-height: 1.5; }
+  .hb { display: grid; grid-template-columns: 320px 1fr 90px; gap: 20px; align-items: center; margin: 22px 0; font-size: 30px; }
+  .hb .lab b { display: block; } .hb .lab span { font-size: 22px; color: var(--muted); }
+  .hb .track { height: 56px; background: var(--tan); border-radius: 6px; position: relative; }
+  .hb .fill { height: 100%; border-radius: 6px; width: 0; transition: width 1.2s ease; }
+  .hb .ghost { position: absolute; top: -6px; bottom: -6px; border-right: 5px dashed var(--gray); left: 0; }
+  .hb .val { font-weight: 800; font-size: 36px; }
+  .hb.tight { grid-template-columns: 220px 1fr 80px; gap: 16px; }
+  table.rt { border-collapse: collapse; font-size: 32px; margin-top: 14px; }
+  table.rt th { text-align: left; font-size: 22px; color: var(--muted); padding: 6px 34px 6px 0; border-bottom: 3px solid var(--line); }
+  table.rt td { padding: 10px 34px 10px 0; border-bottom: 2px solid #e5dcc5; font-weight: 800; }
+  .chips { margin-top: 10px; }
+  .chip { display: inline-block; border: 2px solid #c9bea3; background: var(--paper); border-radius: 22px; padding: 4px 16px; margin: 6px 6px 0 0; font-size: 22px; }
+  .chip.hit { background: var(--gold); border-color: var(--red); font-weight: 700; }
+  .foot { position: absolute; left: 48px; right: 48px; bottom: 26px; font-family: var(--type); font-weight: 700; font-size: 32px; border-top: 3px solid var(--line); padding-top: 12px; }
+  /* dock */
+  #dock { position: fixed; left: 0; right: 0; bottom: 0; height: 56px; background: #111; color: #ddd; display: flex; align-items: center; gap: 10px; padding: 0 14px; font-size: 15px; }
+  body.nodock #dock { display: none; }
+  #dock button { background: #2a2a2a; color: #eee; border: 1px solid #444; border-radius: 6px; padding: 7px 12px; font: inherit; cursor: pointer; }
+  #dock button:disabled { opacity: .45; cursor: default; }
+  #dock button.primary { background: var(--gold); color: #111; border-color: var(--gold); font-weight: 700; }
+  #dock button.arm { background: var(--red); border-color: var(--red); color: #fff; }
+  #dock kbd { font: 12px var(--type); background: rgba(0,0,0,.25); border-radius: 3px; padding: 1px 5px; margin-right: 7px; }
+  #dock .sp { flex: 1; }
+  #dock .dot { width: 10px; height: 10px; border-radius: 50%; background: #3a3; display: inline-block; margin-right: 6px; }
+  #dock .dot.off { background: var(--red); }
+  #toast { position: fixed; left: 50%; bottom: 72px; transform: translateX(-50%); background: #111; color: #fff; padding: 10px 18px; border-radius: 8px; font-size: 17px; display: none; }
+  #toast.on { display: block; }
+  #gate { position: fixed; inset: 0; background: rgba(20,20,20,.9); display: none; align-items: center; justify-content: center; z-index: 10; }
+  #gate.on { display: flex; }
+  #gate form { background: var(--paper); padding: 28px; border-radius: 12px; width: 420px; }
+  #gate h2 { margin: 0 0 10px; font-size: 30px; }
+  #gate p { font-size: 16px; color: var(--muted); }
+  #gate input { width: 100%; font-size: 20px; padding: 10px; border: 2px solid var(--line2); border-radius: 6px; }
+  #gate button { margin-top: 12px; font: 700 18px var(--type); background: var(--ink); color: var(--paper); border: 0; border-radius: 6px; padding: 10px 18px; cursor: pointer; }
+  #gate .err { color: var(--red); min-height: 1.4em; margin-top: 8px; }
+</style>
+</head>
+<body>
+<div id="viewport"><div id="stage">
+  <div class="bar"><div id="barL">ESP TEST</div><div id="barR"></div></div>
+
+  <div class="scr" id="v-lobby">
+    <div class="lobby">
+      <div class="qrbox"><img id="qr" alt="QR code to join"><div class="noqr" id="noqr" hidden></div><div class="addr" id="addr"></div></div>
+      <div>
+        <h1 style="margin-top:0;">Join the lab.</h1>
+        <div class="how">Scan the code, enter your first name, last initial and seat. A sender looks at 10 hidden cards, one at a time. Call each one <b style="color:var(--red)">red</b> or <b style="color:var(--blue)">blue</b> on your phone: 5 seconds a card. Points count for nothing.</div>
+        <div class="count" id="lobbycount" style="margin-top:22px;"></div>
+        <div id="lobbymap" style="width:620px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scr" id="v-round">
+    <div class="round">
+      <div><div class="facedown" id="rcard">ESP</div></div>
+      <div>
+        <h1 id="rhead">Concentrate.</h1>
+        <div class="sub ink" id="rq"></div>
+        <div class="sub" id="rcount" style="margin-top:34px; font-weight:700;"></div>
+        <div class="meter"><div id="rmeter"></div></div>
+        <div class="clock" id="rclock"></div>
+      </div>
+    </div>
+    <div class="slots bottom" id="rslots"></div>
+  </div>
+
+  <div class="scr" id="v-reveal"></div>
+  <div class="scr" id="v-finding"></div>
+  <div class="scr" id="v-r2"></div>
+  <div class="scr" id="v-wrap"></div>
+</div></div>
+
+<div id="dock">
+  <span><span class="dot" id="netdot"></span><span id="netlbl">Connecting</span></span>
+  <button id="b-next" class="primary" title="Space or right arrow"><kbd>Space</kbd><span id="b-next-t">Next</span></button>
+  <button id="b-reset"><kbd>X</kbd><span id="b-reset-t">Reset</span></button>
+  <span class="sp"></span>
+  <button id="b-fs"><kbd>F</kbd>Full screen</button>
+  <button id="b-hide"><kbd>H</kbd>Hide</button>
+</div>
+<div id="toast"></div>
+
+<div id="gate"><form id="gateform" autocomplete="off">
+  <h2>Host key</h2>
+  <p id="gatep">Enter the admin key for this section. It stays in this browser tab only and is never put in the address.</p>
+  <input id="gatekey" type="password" aria-label="Admin key" autocomplete="off" spellcheck="false">
+  <button type="submit">Connect</button>
+  <div class="err" id="gateerr"></div>
+</form></div>
+
+<script>
+"use strict";
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const qsp = new URLSearchParams(location.search);
+  const SECTION = /^[ABZ]$/.test((qsp.get("section") || "").toUpperCase()) ? qsp.get("section").toUpperCase() : "A";
+  const DEMO = qsp.get("demo") === "1";
+  const SITE = "isa401-esp-test.vercel.app";
+  const KEY_STORE = "esp-host-key-" + SECTION;
+  const CARD_MS = 5000, READY_MS = 3000;
+  const NEXT = { lobby: "start_r1", r1: "reveal_r1", r1_reveal: "finding", finding: "start_r2", r2: "reveal_r2", r2_reveal: "wrap" };
+  const LABEL = { start_r1: "Start round 1", reveal_r1: "Turn the cards over", finding: "Show the lab's finding", start_r2: "Start round 2", reveal_r2: "Turn the cards over", wrap: "What happened" };
+  const PHASES = ["lobby", "r1", "r1_reveal", "finding", "r2", "r2_reveal", "wrap"];
+  let KEY = "", B = null, offset = null, timer = null, busy = false, lastActEnd = 0, gen = 0, armed = false, armTimer = null, netOk = true;
+  let drawn = "";   // which screen (run, phase) has been drawn, so reveals animate once
+  // every request gives up after a few seconds, so one stalled request cannot freeze Space or polling
+  const tsig = (ms) => (window.AbortSignal && AbortSignal.timeout ? AbortSignal.timeout(ms) : undefined);
+  const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const fmt1 = (x) => (typeof x === "number" ? x.toFixed(1) : "-");
+
+  function fit() {
+    const vp = $("viewport"), w = vp.clientWidth, h = vp.clientHeight;
+    const s = Math.min(w / 1600, h / 900);
+    $("stage").style.transform = `translate(${Math.round((w - 1600 * s) / 2)}px, ${Math.round((h - 900 * s) / 2)}px) scale(${s})`;
+  }
+  window.addEventListener("resize", fit);
+  let toastTimer = null;
+  function toast(t) { $("toast").textContent = t; $("toast").classList.add("on"); clearTimeout(toastTimer); toastTimer = setTimeout(() => $("toast").classList.remove("on"), 3500); }
+  function show(id) { document.querySelectorAll(".scr").forEach((el) => el.classList.toggle("on", el.id === "v-" + id)); }
+  function bar(l, r) { $("barL").textContent = l; $("barR").textContent = r || ""; }
+
+  // ---------- seat map (FSB 2050: six tables of seven, front at the top). Seats only, never names.
+  const SEAT_Y = { 1: 235, 2: 380, 3: 525 }, TAB_Y = { 1: 185, 2: 330, 3: 475 };
+  const seatXY = (seat) => { const side = seat[0], row = Number(seat[1]), n = Number(seat[3]); return [(side === "L" ? 88 : 500) + 52 * (n - 1), SEAT_Y[row]]; };
+  function shade(s) { const lo = [241, 234, 214], hi = [70, 62, 48], t = Math.max(0, Math.min(1, (s - 2) / 6)); return "rgb(" + lo.map((v, i) => Math.round(v + (hi[i] - v) * t)).join(",") + ")"; }
+  // mode: "lobby" (joined seats filled) or "result" (shaded by score; top seats gold; missed a card: hatched)
+  function seatMap(seats, mode) {
+    let g = '<svg viewBox="40 24 820 584" width="100%" role="img" aria-label="Seat map of FSB 2050">';
+    // the hatch lives only in the results map (a pattern inside the hidden lobby map may not paint)
+    if (mode === "result") g += '<defs><pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="8" height="8" fill="#ece6d6"/><line x1="0" y1="0" x2="0" y2="8" stroke="#b8ad92" stroke-width="3"/></pattern></defs>';
+    g += '<rect x="40" y="40" width="820" height="560" rx="6" fill="#fffdf6" stroke="#6b6252" stroke-width="4"/>';
+    g += '<rect x="215" y="34" width="210" height="12" rx="3" fill="#d8d2c2"/><rect x="520" y="34" width="210" height="12" rx="3" fill="#d8d2c2"/>';
+    g += '<text x="450" y="100" text-anchor="middle" font-family="Courier Prime,Courier New,monospace" font-weight="700" font-size="24" fill="#6b6252">FRONT</text>';
+    for (const side of ["L", "R"]) for (const row of [1, 2, 3]) {
+      g += `<rect x="${side === "L" ? 64 : 476}" y="${TAB_Y[row]}" width="360" height="24" rx="4" fill="#e9e1cb" stroke="#b8ad92" stroke-width="1.5"/>`;
+      for (let n = 1; n <= 7; n++) {
+        const seat = `${side}${row}-${n}`, [x, y] = seatXY(seat), s = seats[seat];
+        const label = (fill) => `<text x="${x}" y="${y + 5}" text-anchor="middle" font-family="Source Sans 3,Segoe UI,Arial" font-weight="700" font-size="13" fill="${fill}">${seat}</text>`;
+        if (!s) { g += `<circle cx="${x}" cy="${y}" r="21" fill="#fffdf6" stroke="#c9bea3" stroke-width="1.5" stroke-dasharray="4 3"/>`; continue; }
+        if (mode === "lobby") { g += `<circle cx="${x}" cy="${y}" r="21" fill="#1f2328"/>` + label("#f6f1e3"); continue; }
+        if (s.right == null) { g += `<circle cx="${x}" cy="${y}" r="21" fill="#fffdf6" stroke="#b8ad92" stroke-width="1.5"/>`; continue; }
+        if (!s.full) { g += `<circle cx="${x}" cy="${y}" r="21" fill="url(#hatch)" stroke="#b8ad92" stroke-width="1.5"/>`; continue; }
+        if (s.top) {
+          g += `<circle cx="${x}" cy="${y}" r="24" fill="#EFDB72" stroke="#C3142D" stroke-width="5"/>`;
+          g += `<text x="${x}" y="${y + 9}" text-anchor="middle" font-family="Source Sans 3,Segoe UI,Arial" font-weight="800" font-size="25" fill="#1f2328">${s.right}</text>`;
+        } else g += `<circle cx="${x}" cy="${y}" r="21" fill="${shade(s.right)}" stroke="#8a7f66" stroke-width="1.2"/>`;
+      }
+    }
+    return g + "</svg>";
+  }
+  function slotsHtml(cards, flip) {
+    return cards.map((c, i) => `<div class="slot ${c}${flip ? " flip" : ""}" style="--d:${(0.35 * i).toFixed(2)}s"></div>`).join("");
+  }
+  function bars(labels, sizes, means, ghost) {
+    return [0, 1].map((i) => `<div class="hb${ghost ? " tight" : ""}"><div class="lab"><b>${esc(labels[i])}</b>${sizes ? `<span>${sizes[i]} seats</span>` : ""}</div>
+      <div class="track"><div class="fill" data-w="${(means[i] / 10) * 100}" style="background:${i === 0 ? "var(--red)" : "var(--gray)"}"></div>${ghost ? `<div class="ghost" style="width:${(ghost[i] / 10) * 100}%"></div>` : ""}</div>
+      <div class="val">${fmt1(means[i])}</div></div>`).join("");
+  }
+  function growBars(el) { requestAnimationFrame(() => requestAnimationFrame(() => el.querySelectorAll(".fill").forEach((f) => { f.style.width = f.dataset.w + "%"; }))); }
+  const findingText = (h) => "Finding: " + (/^iPhone/.test(h) ? h : h.charAt(0).toLowerCase() + h.slice(1));
+
+  // ---------- the clock: card k from startedAt, as the phones do
+  function calibrate(serverNow) { if (typeof serverNow !== "number") return; const d = serverNow - Date.now(); if (offset === null || d > offset) offset = d; }
+  const serverTime = () => Date.now() + (offset || 0);
+  function cardNow(b) {
+    if (!b || !/^r[12]$/.test(b.phase) || typeof b.startedAt !== "number") return 0;
+    const t = serverTime();
+    return t < b.startedAt ? 0 : Math.min(11, Math.floor((t - b.startedAt) / CARD_MS) + 1);
+  }
+  // demo frames: how many seats have called the current card by now
+  function demoCalled(b, card) {
+    if (!b.demo || card < 1 || card > 10) return 0;
+    const into = serverTime() - (b.startedAt + (card - 1) * CARD_MS);
+    return Object.values(b.demo.callTimes).filter((ms) => ms[card - 1] != null && ms[card - 1] <= into).length;
+  }
+
+  function renderRound(b) {
+    const round = b.phase === "r1" ? 1 : 2, card = cardNow(b);
+    bar(round === 1 ? "ESP TEST · ROUND 1" : "ESP TEST · ROUND 2 (RETEST)", card >= 1 && card <= 10 ? `CARD ${card} OF 10` : round === 2 ? "NEW CARDS" : "");
+    const called = b.demo ? demoCalled(b, card) : b.called, of = b.players;
+    if (card === 0) {
+      $("rhead").textContent = "Get ready.";
+      $("rq").textContent = round === 1 ? "The first card is coming up. Phones out." : "10 new cards. Everyone takes the test again.";
+      $("rcount").textContent = ""; $("rmeter").style.width = "0"; $("rclock").textContent = "";
+    } else if (card <= 10) {
+      $("rhead").textContent = "Concentrate.";
+      $("rq").innerHTML = `The sender is looking at card ${card}.<br>Is it <b style="color:var(--red)">red</b> or <b style="color:var(--blue)">blue</b>?`;
+      $("rcount").textContent = `${called} of ${of} seats have called`;
+      $("rmeter").style.width = of ? Math.min(100, (100 * called) / of) + "%" : "0";
+      const left = Math.max(0, b.startedAt + card * CARD_MS - serverTime());
+      $("rclock").textContent = "0:0" + Math.ceil(left / 1000);
+    } else {
+      $("rhead").textContent = "All 10 cards are in.";
+      $("rq").textContent = "The sender will now turn them over.";
+      $("rcount").textContent = ""; $("rmeter").style.width = "0"; $("rclock").textContent = "";
+    }
+    $("rcard").classList.toggle("pulse", card >= 1 && card <= 10);
+    let s = "";
+    for (let k = 1; k <= 10; k++) s += `<div class="slot${k < card ? " done" : k === card ? " now" : ""}"></div>`;
+    if ($("rslots").innerHTML !== s) $("rslots").innerHTML = s;
+    show("round");
+  }
+
+  function drawReveal(b) {
+    const r = b.r1;
+    bar("ESP TEST · ROUND 1 RESULTS", `${b.present} SUBJECTS`);
+    $("v-reveal").innerHTML = `<div class="slots" style="margin-top:18px;">${slotsHtml(r.cards, true)}</div>
+      <div class="res later">
+        <div>${seatMap(b.seats, "result")}</div>
+        <div>
+          <h2 style="margin-top:6px;">${esc(r.headline)}</h2>
+          <div class="sub ink">${esc(r.sub)}</div>
+          <div class="sub" style="margin-top:26px;">Rhine's bar: about 1 person in 1,000 calls all 10.</div>
+          <div class="legend">${b.presentFull} of ${b.present} seats called all 10 cards.<br>Darker seat = more cards called right. Gold = the top scorers, with their score. Hatched = missed a card.</div>
+        </div>
+      </div>`;
+    show("reveal");
+  }
+  function drawFinding(b) {
+    const f = b.finding;
+    bar("THE LAB LOOKED FOR A PATTERN", "ROUND 1");
+    if (f.none) { $("v-finding").innerHTML = `<h1 style="margin-top:120px;">${esc(f.line)}</h1>`; show("finding"); return; }
+    $("v-finding").innerHTML = `<h1>${esc(findingText(f.headline))}</h1>
+      <div class="sub" style="margin-bottom:10px;">Average cards called right (out of 10)</div>
+      <div style="width:1200px;">${bars(f.labels, f.sizes, f.means)}</div>
+      <div class="sub ink" style="margin-top:24px;">${esc(f.explain)}</div>`;
+    show("finding"); growBars($("v-finding"));
+  }
+  function drawR2(b) {
+    const r = b.r2, f = b.finding || {};
+    bar("ESP TEST · ROUND 2 (RETEST) RESULTS", "NEW CARDS");
+    const rows = r.topTable.map((t) => `<tr><td>${esc(t.seat)}</td><td>${t.r1}</td><td style="color:${t.r2 != null && t.r2 < t.r1 ? "var(--red)" : "inherit"}">${t.r2 == null ? "–" : t.r2 + (t.full2 ? "" : "*")}</td></tr>`).join("");
+    let right = "";
+    if (!f.none && f.labels && r.means2) right = `<div class="sub" style="font-size:24px;">${esc(f.labels[0])} vs. ${esc(f.labels[1])}, round 2 (dashed line = round 1)</div><div>${bars(f.labels, r.sizes2, r.means2, r.means1)}</div>`;
+    else if (!f.none && f.labels) right = `<div class="sub">Too few seats called all 20 cards to check the finding again.</div>`;
+    $("v-r2").innerHTML = `<div class="slots" style="margin-top:18px;">${slotsHtml(r.cards, true)}</div>
+      <div class="later">
+        <h2>${esc(r.topLine || "")}${r.repeatLine ? " " + esc(r.repeatLine) : ""}</h2>
+        ${r.findingLine ? `<h2 style="margin-top:0;">${esc(r.findingLine)}</h2>` : ""}
+        <div style="display:grid; grid-template-columns:520px 1fr; gap:40px; margin-top:10px;">
+          <div><table class="rt"><tr><th>Seat</th><th>Round 1</th><th>Round 2</th></tr>${rows}</table></div>
+          <div>${right}</div>
+        </div>
+      </div>`;
+    show("r2"); setTimeout(() => growBars($("v-r2")), 4300);
+  }
+  function hist(w) {
+    const obs = w.hist, exp = w.expected, W = 640, H = 330, pad = 34, bw = (W - 2 * pad) / 11;
+    const gold = typeof w.goldFrom === "number" ? w.goldFrom : 8;   // the crowned score and up
+    const ymax = Math.max(4, ...obs, ...exp) * 1.15, sy = (v) => H - pad - (v / ymax) * (H - 2 * pad);
+    let g = `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Histogram of round 1 scores">`;
+    g += `<line x1="${pad}" y1="${H - pad}" x2="${W - pad}" y2="${H - pad}" stroke="#8a7f66" stroke-width="2"/>`;
+    for (let k = 0; k <= 10; k++) {
+      const x = pad + k * bw;
+      if (obs[k] > 0) g += `<rect x="${x + 4}" y="${sy(obs[k])}" width="${bw - 8}" height="${H - pad - sy(obs[k])}" fill="${k >= gold ? "#EFDB72" : "#b8ad92"}" stroke="${k >= gold ? "#C3142D" : "none"}" stroke-width="3"/>`;
+      if (obs[k] > 0) g += `<text x="${x + bw / 2}" y="${sy(obs[k]) - 8}" text-anchor="middle" font-size="17" font-weight="700" font-family="Source Sans 3,Arial" fill="#1f2328">${obs[k]}</text>`;
+      g += `<circle cx="${x + bw / 2}" cy="${sy(exp[k])}" r="6" fill="#1f2328"/>`;
+      g += `<text x="${x + bw / 2}" y="${H - 8}" text-anchor="middle" font-size="18" font-family="Source Sans 3,Arial" fill="#6b6252">${k}</text>`;
+    }
+    return g + "</svg>";
+  }
+  function drawWrap(b) {
+    const w = b.wrap, t = w.text;
+    bar(t.wrapTitle, `${w.n} SUBJECTS`);
+    const chips = w.splits.map((s) => `<span class="chip${s.id === w.chosen ? " hit" : ""}">${esc(s.short)}</span>`).join("");
+    $("v-wrap").innerHTML = `<div style="display:grid; grid-template-columns:680px 1fr; gap:44px; margin-top:22px;">
+        <div><div style="font-weight:700; font-size:26px;">${esc(t.histTitle)}</div>${hist(w)}<div class="sub" style="font-size:21px;">${esc(t.histNote)}</div></div>
+        <div><div style="font-weight:700; font-size:27px; line-height:1.3;">${esc(t.splitsTitle)}</div><div class="chips">${chips}</div>
+          ${t.simLine ? `<div class="sub ink later" style="--d:1.2s; margin-top:26px; font-size:29px; font-weight:700;">${esc(t.simLine)}</div>` : ""}</div>
+      </div>
+      <div class="foot later" style="--d:2.4s;">${esc(t.footer)}</div>`;
+    show("wrap");
+  }
+  function drawLobby(b) {
+    bar("ESP TEST · " + (SECTION === "Z" ? "TEST SECTION Z" : "SECTION " + SECTION), DEMO ? "REHEARSAL" : "");
+    const n = Object.keys(b.seats).length;
+    $("lobbycount").textContent = n === 1 ? "1 subject checked in" : `${n} subjects checked in`;
+    $("lobbymap").innerHTML = seatMap(b.seats, "lobby");
+    show("lobby");
+  }
+
+  function render() {
+    if (!B) return;
+    const b = B, key = b.runId + ":" + b.phase;
+    if (b.phase === "r1" || b.phase === "r2") renderRound(b);
+    else if (b.phase === "lobby") drawLobby(b);
+    else if (key !== drawn) {
+      if (b.phase === "r1_reveal" && b.r1) drawReveal(b);
+      else if (b.phase === "finding" && b.finding) drawFinding(b);
+      else if (b.phase === "r2_reveal" && b.r2) drawR2(b);
+      else if (b.phase === "wrap" && b.wrap) drawWrap(b);
+      else return;
+    }
+    drawn = key;
+    paintDock();
+  }
+  function nextAction() { return B ? NEXT[B.phase] || null : null; }
+  function paintDock() {
+    const a = nextAction();
+    const waiting = B && (B.phase === "r1" || B.phase === "r2") && cardNow(B) < 11;
+    $("b-next").disabled = !a || waiting;
+    $("b-next-t").textContent = !a ? "End of the test" : waiting ? "Wait for card 10" : LABEL[a];
+    $("netdot").classList.toggle("off", !netOk);
+    $("netlbl").textContent = (DEMO ? "Rehearsal" : "Section " + SECTION) + (B ? " · run " + B.runId : "") + (DEMO ? "" : netOk ? " · live" : " · offline, retrying");
+  }
+  function ingest(j) {
+    if (!j || !j.phase) return;
+    calibrate(j.serverNow);
+    if (B && j.runId === B.runId && Number(j.seq) < Number(B.seq)) return;
+    if (B && j.runId !== B.runId) drawn = "";
+    B = j; render();
+  }
+
+  // ---------- demo: frames from the server (same code as the live game), stepped through here
+  let frames = null, fi = 0;
+  function showFrame(i) {
+    fi = i;
+    const f = JSON.parse(JSON.stringify(frames[i]));
+    if (f.phase === "r1" || f.phase === "r2") { f.startedAt = Date.now() + (offset || 0) + READY_MS; f.called = 0; }
+    f.runId = "rehearsal"; drawn = drawn.startsWith("rehearsal:") && i === 0 ? "" : drawn;
+    B = f; render();
+  }
+  async function loadDemo() {
+    const r = await fetch("/api/host", { method: "POST", cache: "no-store", signal: tsig(8000), headers: { "content-type": "application/json", "x-admin-key": KEY }, body: JSON.stringify({ section: SECTION, action: "demo" }) });
+    if (r.status === 403 || r.status === 429) { gate("The key was not accepted."); return; }
+    const j = await r.json();
+    frames = j.frames; drawn = ""; offset = null; calibrate(frames[0].serverNow); showFrame(0);
+    $("gate").classList.remove("on");
+  }
+
+  // ---------- host actions: one at a time, with an 800 ms lock; X twice within 3 s resets
+  async function act(action) {
+    if (!B || busy || Date.now() - lastActEnd < 800) return;
+    if (action === "reset") {
+      if (!armed) { armed = true; $("b-reset").classList.add("arm"); $("b-reset-t").textContent = "Press X again to reset"; clearTimeout(armTimer); armTimer = setTimeout(disarm, 3000); return; }
+      disarm();
+    } else disarm();
+    if (DEMO) {
+      if (action === "reset") { drawn = ""; showFrame(0); return; }
+      if (B.phase !== "lobby" && /^r[12]$/.test(B.phase) && cardNow(B) < 11) { toast("Wait for card 10 to close."); return; }
+      if (fi < frames.length - 1) { drawn = ""; showFrame(fi + 1); }
+      lastActEnd = Date.now(); return;
+    }
+    if (!KEY) { gate(""); return; }
+    busy = true; gen++;
+    try {
+      const r = await fetch("/api/host", { method: "POST", cache: "no-store", signal: tsig(8000), headers: { "content-type": "application/json", "x-admin-key": KEY }, body: JSON.stringify({ section: SECTION, action }) });
+      if (r.status === 403 || r.status === 429) { gate(r.status === 429 ? "Too many wrong keys from this address. Wait a minute." : "The key was not accepted."); return; }
+      const j = await r.json();
+      gen++;
+      if (j && j.error) toast(j.error);
+      if (action === "reset") drawn = "";
+      ingest(j);
+    } catch (e) { toast("Could not reach the server. Try again."); }
+    finally { busy = false; lastActEnd = Date.now(); }
+  }
+  function disarm() { armed = false; clearTimeout(armTimer); $("b-reset").classList.remove("arm"); $("b-reset-t").textContent = "Reset"; }
+  function next() { const a = nextAction(); if (!a) return; if (/^r[12]$/.test(B.phase) && cardNow(B) < 11) { toast("Wait for card 10 to close."); return; } act(a); }
+  function fullscreen() { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen().catch(() => {}); }
+  $("b-next").addEventListener("click", (e) => { e.currentTarget.blur(); next(); });
+  $("b-reset").addEventListener("click", (e) => { e.currentTarget.blur(); act("reset"); });
+  $("b-fs").addEventListener("click", (e) => { e.currentTarget.blur(); fullscreen(); });
+  $("b-hide").addEventListener("click", (e) => { e.currentTarget.blur(); document.body.classList.toggle("nodock"); fit(); });
+  document.addEventListener("keydown", (e) => {
+    if (e.target && /INPUT|TEXTAREA/.test(e.target.tagName)) return;
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    const k = e.key.toLowerCase();
+    if (e.repeat) { if (k === " ") e.preventDefault(); return; }
+    if (k === " " || k === "spacebar" || k === "arrowright") { e.preventDefault(); next(); }
+    else if (k === "x") { e.preventDefault(); act("reset"); }
+    else if (k === "f") fullscreen();
+    else if (k === "h") { document.body.classList.toggle("nodock"); fit(); }
+  });
+
+  // ---------- polling (live) and the clock tick (rounds animate between polls)
+  let inflight = false;
+  async function poll() {
+    if (inflight || busy || DEMO || !KEY) return;
+    inflight = true; const g = gen;
+    try {
+      const r = await fetch("/api/board?section=" + SECTION, { cache: "no-store", signal: tsig(4000), headers: { "x-admin-key": KEY } });
+      if (r.status === 403 || r.status === 429) { gate(r.status === 429 ? "Too many wrong keys from this address. Wait a minute." : "The key was not accepted."); return; }
+      if (!r.ok) throw new Error(String(r.status));
+      const j = await r.json(); netOk = true;
+      if (g !== gen || busy) return;
+      ingest(j);
+    } catch (e) { netOk = false; paintDock(); }
+    finally { inflight = false; }
+  }
+  setInterval(() => { if (B && /^r[12]$/.test(B.phase)) { renderRound(B); paintDock(); } }, 200);
+  function startPolling() { $("gate").classList.remove("on"); poll(); clearInterval(timer); timer = setInterval(poll, 1000); }
+  function gate(msg) {
+    clearInterval(timer); KEY = "";
+    try { sessionStorage.removeItem(KEY_STORE); } catch (e) {}
+    $("gatep").textContent = (DEMO ? "The rehearsal runs on the server, so it needs the admin key." : "Enter the admin key for section " + SECTION + ".") + " It stays in this browser tab only and is never put in the address.";
+    $("gateerr").textContent = msg || "";
+    $("gate").classList.add("on"); setTimeout(() => $("gatekey").focus(), 50);
+  }
+  $("gateform").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const k = $("gatekey").value.trim(); if (!k) return;
+    $("gateerr").textContent = "Checking";
+    try {
+      const r = await fetch("/api/board", { method: "POST", cache: "no-store", signal: tsig(8000), headers: { "content-type": "application/json" }, body: JSON.stringify({ section: SECTION, key: k }) });
+      if (r.status === 403) { $("gateerr").textContent = "That key did not work."; return; }
+      if (r.status === 429) { $("gateerr").textContent = "Too many tries from this address. Wait a minute."; return; }
+      if (!r.ok) { $("gateerr").textContent = "The server answered " + r.status + ". Try again."; return; }
+      KEY = k; try { sessionStorage.setItem(KEY_STORE, k); } catch (e2) {}
+      $("gatekey").value = ""; $("gateerr").textContent = "";
+      if (DEMO) { await loadDemo(); return; }
+      ingest(await r.json()); startPolling();
+    } catch (e3) { $("gateerr").textContent = "Could not reach the server."; }
+  });
+
+  // lobby QR and address
+  const addr = SITE + "/?section=" + SECTION;
+  $("addr").textContent = addr;
+  if (SECTION === "A" || SECTION === "B") { $("qr").src = "images/qr_" + SECTION + ".png"; $("qr").onerror = () => { $("qr").hidden = true; $("noqr").hidden = false; $("noqr").textContent = "QR image missing. Use the address."; }; }
+  else { $("qr").hidden = true; $("noqr").hidden = false; $("noqr").textContent = "Test section Z has no QR code. Use the address."; }
+
+  fit();
+  B = { runId: "-", phase: "lobby", seats: {}, players: 0 }; render();
+  try { KEY = sessionStorage.getItem(KEY_STORE) || ""; } catch (e) { KEY = ""; }
+  if (DEMO) { if (KEY) loadDemo().catch(() => gate("Could not reach the server.")); else gate(""); }
+  else if (KEY) startPolling(); else gate("");
+  window.__esp = { get B() { return B; } };
+})();
+</script>
+</body>
+</html>

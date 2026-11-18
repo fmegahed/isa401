@@ -118,3 +118,20 @@ lectures/22_high_dimensional_charts/22_race_call_run_sheet.*
 lectures/23_business_reporting/23_flight_plan_run_sheet.aux
 lectures/23_business_reporting/23_flight_plan_run_sheet.log
 lectures/23_business_reporting/23_flight_plan_run_sheet.out
+
+# Class 25 (Wed Nov 18, 2026): The ESP Test's lesson stays out of the public repo until after class.
+# The split list, the wrap-screen text, the statistics code, the tests and the README explain the game; remove the six games/esp-test lines after class.
+games/esp-test/api/_splits.js
+games/esp-test/api/_copy.json
+games/esp-test/api/_analysis.js
+games/esp-test/api/_game.js
+games/esp-test/tests/
+games/esp-test/README.md
+lectures/25_data_mining_overview/25_esp_test_run_sheet.*
+
+# SQLite side files (write-ahead log) that appear next to data/*.db while a database is open
+data/*.db-shm
+data/*.db-wal
+
+# ChatISA database copies: chatisa.db holds student records (users, exam answers, interviews). Never commit.
+data/chatisa-data/

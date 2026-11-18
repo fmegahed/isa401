@@ -52,7 +52,7 @@ ISA 401 teaches the complete business intelligence pipeline: acquiring data from
 
 | Week | Date | Topic | Slides |
 |:---:|:---:|:---|:---:|
-| **13** | Wed 11/18 | Intro to Data Mining | |
+| **13** | Wed 11/18 | Intro to Data Mining | [Slides](http://fmegahed.github.io/isa401/fall2026/class25/25_data_mining_overview.html) |
 | **14** | Mon 11/23 | Clustering | |
 | | Wed 11/25 | *No Class - Thanksgiving* | |
 | **15** | Mon 11/30 | Project Work Session | |
@@ -62,7 +62,7 @@ ISA 401 teaches the complete business intelligence pipeline: acquiring data from
 
 ## Practice Site and Class Games
 
-Ten small web apps go with the lectures. Each one runs in a browser with nothing to install, and none of them is graded.
+Eleven small web apps go with the lectures. Each one runs in a browser with nothing to install, and none of them is graded.
 
 | Class | What | What students do | Source |
 |:---:|:---|:---|:---:|
@@ -76,6 +76,7 @@ Ten small web apps go with the lectures. Each one runs in a browser with nothing
 | Class 20 | [**Pie on Trial**](https://isa401-pie-on-trial.vercel.app/?section=Z) | Tap the largest slice or bar on six charts, with 15 seconds each: three datasets as pies, then the same three as bars. The projector shows how the class answered, pie next to bars. | [`games/pie-on-trial`](games/pie-on-trial) |
 | Class 22 (on Class 21's charts) | [**Race Call**](https://isa401-race-call.vercel.app) | Play analysts on an election-night chart desk and make their projection on 13 races from their seat on a map of FSB 2050, Kahoot style: line charts, seasonality, a calendar plot, an animated bubble chart, choropleth vs. symbol maps, color schemes, and small multiples vs. animation. Each reveal names the room's projection, then the actual winner with why. | [`games/race-call`](games/race-call) |
 | Class 23 | [**Flight Plan**](https://isa401-flight-plan.vercel.app/?section=Z) | Work in seating-row teams to design a paper plane that hits an X on the whiteboard: write a shared brief with operational and product KPIs (typed or spoken), get AI feedback on whether each KPI can be measured, vote on how accuracy is scored, throw, and see every distance measured from a photo of the board. | [`games/flight-plan`](games/flight-plan) |
+| Class 25 | [**The ESP Test**](https://isa401-esp-test.vercel.app/?section=Z) | Take part in a 1950s-style ESP experiment on their phones: call 10 hidden cards red or blue, 5 seconds a card, see the top scorers crowned and the lab announce a "finding" about the room, then retake the test with new cards. The last screen compares the room with pure chance, the lead-in to Bonferroni's principle. | [`games/esp-test`](games/esp-test) |
 
 How the review site works, and whose ideas and tools it rests on, is on its [landing page](https://isa401-review.vercel.app) and under [Acknowledgments](#acknowledgments).
 
@@ -105,6 +106,7 @@ How the review site works, and whose ideas and tools it rests on, is on its [lan
     + [An Introduction to Data Cleaning with R](https://cran.r-project.org/doc/contrib/de_Jonge+van_der_Loo-Introduction_to_data_cleaning_with_R.pdf)
     + Hadley Wickham's [R For Data Science (2e)](https://r4ds.hadley.nz/) and [Advanced R](https://adv-r.hadley.nz/)
 * Phase III draws from [Mining of Massive Datasets](http://www.mmds.org/)
+    + The Class 25 stick-figure scenes use [stick-scene](https://github.com/nilbuild/stick-scene) by Kamran Ahmed (MIT License)
 * The review site rests on:
     + [Jeffrey Biles](https://x.com/JeffreyBiles/status/2107211222320021722) of PhysicsGraph, for the idea of checking an explanation while it is being typed
     + [Jev](https://docs.typesafe.ai) from TypeSafe AI, which checks the written answers
