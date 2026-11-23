@@ -12,10 +12,12 @@
 import fs from "node:fs";
 import units01 from "./content/units.mjs";
 import units02 from "./content/exam02.mjs";
+import units03 from "./content/exam03.mjs";
 
 const EXAMS = [
   { id: "exam01", units: units01, out: "units.json", recap: true },
   { id: "exam02", units: units02, out: "units_exam02.json", recap: true, prefix: "x2-" },
+  { id: "exam03", units: units03, out: "units_exam03.json", recap: false, prefix: "x3-" },   // Quiz 03: no recap clips (option B)
 ];
 const rubrics = {}, cases = [], buildCases = [], ids = new Set();
 // RECAP_PREVIEW=1 node build.mjs: a local look at recap clips before they are switched on (never deploy that build)

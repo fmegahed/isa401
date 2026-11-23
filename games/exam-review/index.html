@@ -287,7 +287,7 @@ fieldset.choices:disabled label.opt { cursor:default; }
 </div></header>
 <main id="app" tabindex="-1"><p class="lede">Loading the review...</p><noscript><p class="lede">This site needs JavaScript to check your answers and, in the Exam 01 review, to run R in your browser.</p></noscript></main>
 <footer>
-  Practice only. Nothing here is graded and no name is collected. Written answers are checked by an AI model (Jev, by TypeSafe AI) and the check can be wrong; what you type in an answer box is sent to that service. In the Exam 01 review, R runs in your own browser with webR.
+  Practice only. Nothing here is graded and no name is collected. Written answers are checked by an AI model (Jev, by TypeSafe AI) and the check can be wrong; what you type in an answer box is sent to that service. In the Exam 01 and Quiz 03 reviews, R runs in your own browser with webR.
   Job counts come from the ChatISA Job Scout database.
 </footer>
 
@@ -1042,34 +1042,37 @@ const EXAMS = [
     file: "units_exam02.json", key: "isa401_exam02_review_v1", title: "Exam 02 Review", sub: "Exam 02: Classes 15 to 22",
     lede: "Classes 15 to 22: reading charts, and checking what an AI says about them. Each unit starts with what to remember. Then it shows a chart with ChatGPT's real answer about it, asks whether the AI read the chart right, and asks you to explain an idea in your own words. Two more units practice building in Tableau or Power BI and replay the class games. Work in any order.",
     note: "<b>Read this first.</b> This is practice, not a grade. Every ChatGPT answer here is a real run, shown word for word with its date and a screen recording, and sometimes ChatGPT is right. Your written answers are checked by an AI model that looks for the key ideas; it is usually right and sometimes wrong. If a check looks wrong, use <i>Show the ideas</i> to move on and <i>Report a problem</i> so it can be fixed. No name is collected, and your progress is saved only in this browser, separately from your Exam 01 progress." },
-  { id: "exam03", name: "Exam 03", topic: "Exploratory Data Mining", when: "Date to be announced", classes: "Opens before the exam", live: false },
+  { id: "exam03", name: "Quiz 03", topic: "Intro to Data Mining", when: "Due Tuesday, Nov 24", classes: "Classes 25 and 26", live: true,
+    file: "units_exam03.json", key: "isa401_exam03_review_v1", title: "Quiz 03 Review", sub: "Quiz 03: Classes 25 and 26",
+    lede: "Classes 25 and 26: data mining, association rules and clustering. Each unit starts with what to remember and a picture from class. Then it asks you to explain an idea in your own words and answer a few questions, and one unit runs R in your browser on the Groceries data. Work in any order.",
+    note: "<b>Read this first.</b> This is practice, not a grade. Your written answers are checked by an AI model that looks for the key ideas; it is usually right and sometimes wrong. If a check looks wrong, use <i>Show the ideas</i> to move on and <i>Report a problem</i> so it can be fixed. The R unit installs the arules package in your browser the first time you press Run, which takes a few seconds. No name is collected, and your progress is saved only in this browser, separately from your other reviews." },
 ];
 const ready = (x) => x.live && Array.isArray(x.data);
 
 function landing() {
   const app = $("#app"); app.innerHTML = "";
-  const [x1, x2] = EXAMS, live = EXAMS.filter(ready);
+  const [x1] = EXAMS, live = EXAMS.filter(ready);
   const all = live.flatMap((x) => x.data.flatMap(scored));
   const nWritten = all.filter((s) => s.type === "explain" || s.type === "interpret").length, nCode = all.filter((s) => s.type === "code").length;
   const nAI = all.filter((s) => s.ai).length, nReplay = all.filter((s) => s.type === "choice").length;
   const progressOf = (x) => { const st = x.data.filter((u) => !u.optional).flatMap(scored); return { done: st.filter((s) => x.saved.done[s.id]).length, n: st.length }; };
-  const main = ready(x2) ? x2 : x1;   // the hero opens the newest review
+  const main = [...EXAMS].reverse().find(ready) || x1;   // the hero opens the newest live review
   const ext = (url, text) => `<a href="${url}" target="_blank" rel="noopener noreferrer">${text}</a>`;
   const stats = [
-    ready(x2) && [x2.data.filter((u) => !u.optional).length, "units for Exam 02"],
+    ready(main) && [main.data.filter((u) => !u.optional).length, `units for ${main.name}`],
     [nWritten, "questions checked as you type"],
     nAI && [nAI, "recorded ChatGPT answers"],
     nReplay && [nReplay, "game questions to replay"],
-    ready(x1) && [nCode, "R tasks for Exam 01"],
+    nCode && [nCode, "R tasks to fix"],
   ].filter(Boolean);
 
   app.appendChild(el("div", { class: "hero" }, `
     <div class="eyebrow">ISA 401 &middot; Business Intelligence &amp; Data Visualization &middot; Fall 2026</div>
     <h1>Review what we did in class by doing it again.</h1>
-    <p>A practice site for each exam. Explain an idea in your own words and see which parts you covered. For Exam 02, check what ChatGPT said about a chart against the chart itself, and replay the class games. For Exam 01, fix R code that runs in your own browser and read real output. It is not graded, and there is no sign-in.</p>
+    <p>A practice site for each exam. Explain an idea in your own words and see which parts you covered. For Exam 02, check what ChatGPT said about a chart against the chart itself, and replay the class games. For Exam 01 and Quiz 03, fix R code that runs in your own browser and read real output. It is not graded, and there is no sign-in.</p>
     <div class="cta">
       <a class="solid" href="#/${main.id}">${progressOf(main).done ? "Continue" : "Start"} the ${esc(main.name)} review &rarr;</a>
-      ${main !== x1 && ready(x1) ? `<a class="line" href="#/${x1.id}">The ${esc(x1.name)} review</a>` : ""}
+      ${EXAMS.filter((x) => x !== main && ready(x)).reverse().map((x) => `<a class="line" href="#/${x.id}">The ${esc(x.name)} review</a>`).join("")}
       <button class="line" type="button" data-go="how">How it works</button>
       <button class="line" type="button" data-go="credit">Where the idea came from</button>
     </div>
@@ -1087,11 +1090,11 @@ function landing() {
   app.appendChild(el("div", { class: "sect", id: "how" }, `<div class="eyebrow2">How it works</div><h2>What a unit asks of you</h2><p>Each review mixes the steps below. Work through the units in any order, and start with the one you are least sure about.</p>`));
   app.appendChild(el("div", { class: "how4" }, [
     ["Exam 02", "Check the AI", "A chart, the question we typed into ChatGPT, and its answer word for word, with the date and the screen recording of that run. You say what it read right and what it missed."],
-    ["Both exams", "Explain it", "You write the idea in your own words. As you type, the page ticks off the key ideas your answer has covered and offers a hint for the rest."],
+    ["Every review", "Explain it", "You write the idea in your own words. As you type, the page ticks off the key ideas your answer has covered and offers a hint for the rest."],
     ["Exam 02", "Replay the games", "Game Day, Pie on Trial and Race Call at your own pace: pick an answer, then see the answer, why, and how the class answered. Redo cards for Press Time and the Map Gallery."],
     ["Exam 01", "A one-minute recap", "A narrated whiteboard brings the main ideas back. It is a reminder of what we did in class, not a replacement for it."],
-    ["Exam 01", "Fix the code", "You get R code with one or two problems, written the way we write it in class. You run it, read the error, fix it, and the result is checked."],
-    ["Exam 01", "Read the output", "You are shown real output, a warning or an error, and you explain what it tells you."],
+    ["Exam 01, Quiz 03", "Fix the code", "You get R code with one or two problems, written the way we write it in class. You run it, read the error, fix it, and the result is checked."],
+    ["Exam 01, Quiz 03", "Read the output", "You are shown real output, a warning or an error, and you explain what it tells you."],
   ].map(([x, t, d]) => `<div class="card"><div class="eyebrow2">${x}</div><h3>${t}</h3><p class="small">${d}</p></div>`).join("")));
 
   // ---- what happens to what you type ----
@@ -1110,7 +1113,7 @@ function landing() {
     </ul>`));
   app.appendChild(el("div", { class: "grid3", style: "margin-top:12px;" }, `
     <div class="card"><h3>Your written answers go to Jev</h3><p class="small">What you type in an answer box is sent to the Jev model to be checked. No name goes with it, because the site never asks for one.</p></div>
-    <div class="card"><h3>Your R code and replay picks stay on your computer</h3><p class="small">In the Exam 01 review, R runs inside your browser: the code you write is not sent to us, and a task is judged by its result, so any correct approach passes. Replay answers are checked in your browser too.</p></div>
+    <div class="card"><h3>Your R code and replay picks stay on your computer</h3><p class="small">In the Exam 01 and Quiz 03 reviews, R runs inside your browser: the code you write is not sent to us, and a task is judged by its result, so any correct approach passes. Replay answers are checked in your browser too.</p></div>
     <div class="card"><h3>Your progress stays in this browser</h3><p class="small">Each exam keeps its own progress. We keep anonymous counts of how often each question is checked, and the reports you choose to send. Nothing here counts toward your grade.</p></div>
     <div class="card"><h3>The ChatGPT answers are real</h3><p class="small">Each one in the Exam 02 review is a new chat with the chart attached, copied word for word and recorded on screen on the date shown. Some are right: the point is to check, not to assume it is wrong.</p></div>`));
 

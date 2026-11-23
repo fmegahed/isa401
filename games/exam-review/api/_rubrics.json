@@ -1553,5 +1553,137 @@
     "msg": "Check the legend: fill shows home or away. Bowling Green was a home loss."
    }
   ]
+ },
+ "x3-bonferroni": {
+  "prompt": "A marketing team tests 40 different email subject lines, each against the usual one, and reports the one that raised clicks \"significantly\" (at the 5% level). Use Bonferroni's principle to explain why this result may not be a real finding, and what the team should do before acting on it.",
+  "ideas": [
+   {
+    "label": "Many tests make a chance winner likely",
+    "ask": "Does the student's answer say that testing many subject lines makes it likely that at least one looks significant by chance alone (for example, about 2 of 40 at the 5% level)?",
+    "yes": "The answer states or clearly paraphrases that testing many subject lines makes it likely that at least one looks significant by chance alone (for example, about 2 of 40 at the 5% level).",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "Check it again on new data",
+    "ask": "Does the student's answer say that the team should test the winning subject line again on new data (a new sample, a holdout or a follow-up test) before acting on it?",
+    "yes": "The answer states or clearly paraphrases that the team should test the winning subject line again on new data (a new sample, a holdout or a follow-up test) before acting on it.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": [
+   {
+    "ask": "Does the student's answer claim that a result that is significant at the 5% level is proven to be real?",
+    "yes": "The answer asserts that a result that is significant at the 5% level is proven to be real.",
+    "no": "The answer does not assert this. It may not mention it, or may reject it.",
+    "msg": "At 5% per test, chance alone produces a 'significant' result about once in every 20 tries."
+   }
+  ]
+ },
+ "x3-crisp-skip": {
+  "prompt": "Your manager says: \"Let's skip ahead and start modeling the job postings today. The model is where the value is.\" Using CRISP-DM, explain where most of the time in a data mining project goes, and why skipping ahead is risky.",
+  "ideas": [
+   {
+    "label": "Most time goes to steps 1 to 3",
+    "ask": "Does the student's answer say that most of a data mining project's time goes to business understanding, data understanding and data preparation (the steps before modeling)?",
+    "yes": "The answer states or clearly paraphrases that most of a data mining project's time goes to business understanding, data understanding and data preparation (the steps before modeling).",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "Skipping risks the wrong question or bad data",
+    "ask": "Does the student's answer say that skipping those steps risks answering the wrong question or building the model on data that is messy, misunderstood or wrong?",
+    "yes": "The answer states or clearly paraphrases that skipping those steps risks answering the wrong question or building the model on data that is messy, misunderstood or wrong.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": [
+   {
+    "ask": "Does the student's answer claim that most of the time in a data mining project goes to modeling?",
+    "yes": "The answer asserts that most of the time in a data mining project goes to modeling.",
+    "no": "The answer does not assert this. It may not mention it, or may reject it.",
+    "msg": "On the slides, fitting the model was the easy part."
+   }
+  ]
+ },
+ "x3-monotonicity": {
+  "prompt": "Explain in your own words why A-Priori never counts a pair that contains an item that failed the support threshold in pass 1.",
+  "ideas": [
+   {
+    "label": "A pair is in no more baskets than each of its items",
+    "ask": "Does the student's answer say that a pair (or any larger set) appears in no more baskets than each of the items in it?",
+    "yes": "The answer states or clearly paraphrases that a pair (or any larger set) appears in no more baskets than each of the items in it.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "So the pair cannot reach the threshold",
+    "ask": "Does the student's answer say that since the item is below the threshold, any pair holding it is also below the threshold, so counting it would be wasted work?",
+    "yes": "The answer states or clearly paraphrases that since the item is below the threshold, any pair holding it is also below the threshold, so counting it would be wasted work.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": [
+   {
+    "ask": "Does the student's answer claim that A-Priori skips the pair because its confidence or lift is too low?",
+    "yes": "The answer asserts that A-Priori skips the pair because its confidence or lift is too low.",
+    "no": "The answer does not assert this. It may not mention it, or may reject it.",
+    "msg": "A-Priori counts itemsets by support; confidence and lift come later, for rules."
+   }
+  ]
+ },
+ "x3-read-rule": {
+  "prompt": "Here is one Groceries rule. In plain words, say what its confidence and its lift tell a store manager.",
+  "context": "    lhs                          rhs          support    confidence coverage   lift     count\n[1] {root vegetables, yogurt} => {whole milk} 0.01453991 0.5629921  0.02582613 2.203354 143",
+  "ideas": [
+   {
+    "label": "Confidence: 56% of baskets with both also have milk",
+    "ask": "Does the student's answer say that of the baskets that have both root vegetables and yogurt, about 56% also have whole milk (confidence 0.563)?",
+    "yes": "The answer states or clearly paraphrases that of the baskets that have both root vegetables and yogurt, about 56% also have whole milk (confidence 0.563).",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "Lift: about 2.2 times as likely as an average basket",
+    "ask": "Does the student's answer say that baskets with root vegetables and yogurt are about 2.2 times as likely (more than twice as likely) to have whole milk as an average basket (lift 2.2)?",
+    "yes": "The answer states or clearly paraphrases that baskets with root vegetables and yogurt are about 2.2 times as likely (more than twice as likely) to have whole milk as an average basket (lift 2.2).",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": [
+   {
+    "ask": "Does the student's answer claim that 56% of all baskets contain root vegetables, yogurt and whole milk?",
+    "yes": "The answer asserts that 56% of all baskets contain root vegetables, yogurt and whole milk.",
+    "no": "The answer does not assert this. It may not mention it, or may reject it.",
+    "msg": "56% is a share of the baskets that already hold root vegetables and yogurt, not of all baskets (that share is the support, 1.5%)."
+   }
+  ]
+ },
+ "x3-kmeans": {
+  "prompt": "Explain how the k-means algorithm groups records, step by step, and when it stops.",
+  "ideas": [
+   {
+    "label": "Start with k centers",
+    "ask": "Does the student's answer say that k-means starts by choosing k starting centers (for example, k random records)?",
+    "yes": "The answer states or clearly paraphrases that k-means starts by choosing k starting centers (for example, k random records).",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "Each record joins its nearest center",
+    "ask": "Does the student's answer say that each record is assigned to its nearest (closest) center?",
+    "yes": "The answer states or clearly paraphrases that each record is assigned to its nearest (closest) center.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   },
+   {
+    "label": "Centers move to the mean; repeat until stable",
+    "ask": "Does the student's answer say that each center moves to the mean (average) of its group, and the assign-and-move steps repeat until the centers stop moving or the groups stop changing?",
+    "yes": "The answer states or clearly paraphrases that each center moves to the mean (average) of its group, and the assign-and-move steps repeat until the centers stop moving or the groups stop changing.",
+    "no": "The answer does not say this, says something too vague to tell, or says the opposite."
+   }
+  ],
+  "wrong": [
+   {
+    "ask": "Does the student's answer claim that k-means needs an outcome column (labels) to learn the groups?",
+    "yes": "The answer asserts that k-means needs an outcome column (labels) to learn the groups.",
+    "no": "The answer does not assert this. It may not mention it, or may reject it.",
+    "msg": "Clustering has no outcome column; the groups come from distances alone."
+   }
+  ]
  }
 }

@@ -1,0 +1,59 @@
+<!-- Class 26 deck: the k-means step-by-step widget (js/kmeans.js = the math, js/km_widget.js = the buttons and plot).
+     Pandoc embeds both files into the deck. The widget mounts into <div class="km-widget"></div>. -->
+<style>
+.km-widget { display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,1fr); gap:16px; align-items:start; margin-top:2px; font-family:"Source Sans Pro", Arial, sans-serif; }
+.kmw-left { border:1px solid #e5e7eb; border-radius:10px; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,0.08); padding:4px; }
+.kmw-svg { display:block; width:100%; height:auto; }
+.kmw-grid { stroke:#eef0f2; stroke-width:1; }
+.kmw-tick { font-size:12px; fill:#585E60; }
+.kmw-axl { font-size:13px; fill:#1b1b1b; font-weight:600; }
+.kmw-pt { stroke:#fff; stroke-width:1.5; }
+.kmw-plab { font-size:13px; font-weight:700; fill:#1b1b1b; }
+.kmw-spoke { stroke-width:1.2; opacity:.35; }
+.kmw-trail { stroke-width:2; stroke-dasharray:4 3; opacity:.8; }
+.kmw-ghost { fill:none; stroke-width:2; stroke-dasharray:3 2; opacity:.7; }
+.kmw-ctr { stroke:#fff; stroke-width:2.5; filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.35)); }
+.kmw-clab { font-size:10.5px; font-weight:800; fill:#fff; pointer-events:none; }
+.kmw-hit { fill:transparent; }
+.km-widget.placing .kmw-hit { cursor:crosshair; }
+.kmw-hint { font-size:12.5px; color:#585E60; min-height:17px; padding:2px 6px 0 6px; }
+.kmw-row { display:flex; align-items:center; gap:6px; margin-bottom:7px; flex-wrap:wrap; }
+.kmw-lab { font-size:13px; font-weight:700; color:#585E60; width:34px; }
+.kmw-chip { font:600 13.5px "Source Sans Pro", Arial, sans-serif; border:1px solid #d1d5db; background:#fff; color:#1b1b1b; border-radius:14px; padding:3px 11px; cursor:pointer; }
+.kmw-chip.on { background:#1b1b1b; color:#fff; border-color:#1b1b1b; }
+.kmw-chip:disabled { opacity:.35; cursor:default; }
+.kmw-steps { display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; margin:4px 0 8px 0; }
+.kmw-btn { font:700 14px "Source Sans Pro", Arial, sans-serif; border:2px solid #d1d5db; background:#fff; color:#585E60; border-radius:8px; padding:7px 6px; cursor:pointer; line-height:1.2; }
+.kmw-btn b { display:inline-block; width:19px; height:19px; line-height:19px; border-radius:50%; background:#d1d5db; color:#fff; font-size:12px; margin-right:3px; }
+.kmw-btn.next { border-color:#c3142d; color:#c3142d; background:#fff6f7; }
+.kmw-btn.next b { background:#c3142d; }
+.kmw-btn:disabled { opacity:.45; cursor:default; }
+.kmw-status { font-size:14.5px; line-height:1.4; border-left:5px solid #c3142d; background:#fff; border-radius:6px; padding:6px 10px; box-shadow:0 1px 3px rgba(0,0,0,0.08); min-height:22px; }
+.kmw-detail { margin-top:8px; }
+.remark-slide-content table.kmw-t { border-collapse:collapse; width:100%; font-size:12.5px; line-height:1.25; border:0; }
+.remark-slide-content table.kmw-t th { background:#585E60 !important; color:#fff; padding:2px 6px !important; font-weight:700; text-align:center; border:0; line-height:1.3; }
+.remark-slide-content table.kmw-t td { padding:1.5px 6px !important; text-align:center; border:0; border-bottom:1px solid #e5e7eb; background:#fff !important; color:#1b1b1b; line-height:1.3; }
+.remark-slide-content table.kmw-t td.kmw-near { font-weight:800; background:#fff4d6 !important; }
+.kmw-sizes span { display:inline-block; color:#fff; font-weight:700; font-size:13px; border-radius:10px; padding:2px 9px; margin:0 4px 4px 0; }
+.kmw-lab2 { width:auto; margin-left:10px; }
+.kmw-dline { stroke-width:1.6; stroke-dasharray:5 4; opacity:.75; }
+.kmw-dline.win { stroke-width:3; stroke-dasharray:none; opacity:1; }
+.kmw-dlab { font-size:12px; font-weight:600; }
+.kmw-dlab.b { font-weight:800; font-size:12.5px; }
+.kmw-dbox { fill:#fff; stroke-width:1.2; }
+.kmw-ring { fill:none; stroke:#1b1b1b; stroke-width:2; }
+.kmw-cxy { font-size:12.5px; font-weight:800; paint-order:stroke; stroke:#fff; stroke-width:4px; }
+.kmw-work { background:#fff; border:1px solid #e5e7eb; border-radius:8px; padding:6px 10px; margin-bottom:8px; box-shadow:0 1px 3px rgba(0,0,0,0.06); }
+.kmw-mv { border-top:1px dashed #d1d5db; margin-top:3px; padding-top:2px; }
+.kmw-wh { font-size:12.5px; font-weight:700; color:#585E60; margin-bottom:2px; }
+.kmw-eq { font-size:14px; line-height:1.6; color:#1b1b1b; font-family:"Source Sans Pro", Arial, sans-serif; }
+.kmw-eq.win { background:#fff4d6; border-radius:4px; padding:0 4px; margin:0 -4px; }
+.remark-slide-content table.kmw-t tr.todo td { color:#c4c8cc; }
+.remark-slide-content table.kmw-t tr.now td { box-shadow:inset 0 -2px 0 #1b1b1b; }
+.kmw-in { font-size:13px; color:#585E60; margin-top:8px; line-height:1.5; }
+.kmw-in b { color:#1b1b1b; }
+.kmw-in span { font-weight:700; color:#1b1b1b; }
+.kmw-in span.last { color:#c3142d; }
+</style>
+<script src="js/kmeans.js"></script>
+<script src="js/km_widget.js"></script>

@@ -1,7 +1,8 @@
 # ISA 401 Review (Fall 2026)
 
 Live at https://isa401-review.vercel.app: one practice review per exam, each with its own units,
-address (`#/exam01`, `#/exam02`) and saved progress (`isa401_exam01_review_v1`, `isa401_exam02_review_v1`).
+address (`#/exam01`, `#/exam02`, `#/exam03`) and saved progress (`isa401_exam01_review_v1`,
+`isa401_exam02_review_v1`, `isa401_exam03_review_v1`). The landing page opens the newest review.
 
 ## Exam 01
 
@@ -94,6 +95,16 @@ names). Fadel runs it, with the key in the environment, then rebuilds:
 Game URLs default to the live sites (`GAME_DAY_URL` and the like override them); `RUN_GAME_DAY_A=3`
 reads an older run than the current one. Pie on Trial has no export, so its replays show no class counts.
 
+## Quiz 03
+
+Design: `docs/superpowers/specs/2026-11-18-quiz03-review-design.md`; plan:
+`docs/superpowers/plans/2026-11-18-quiz03-review.md`. Intro to Data Mining (Class 25) plus clustering
+from the Spring 2026 deck, in five units. Content is in `content/exam03.mjs`, built into
+`units_exam03.json`; its written questions share `api/_rubrics.json` and `tests/cases.json` (ids start
+with `x3-`). The two R tasks run arules in webR on the Groceries data. Pictures are in `exam03/img/`:
+`make_exam03_pictures.R` draws `luck.png`, `kmeans.png` and `lift.png`; the other three come from the
+class decks.
+
 ## Checks
 
 - `node tests/check_build.mjs` runs the build, then checks that `units.json` is byte-identical to the
@@ -108,6 +119,11 @@ reads an older run than the current one. Pie on Trial has no export, so its repl
   375 px. `--shots <folder>` also saves screenshots of every Exam 02 page.
 - `node tests/check_style.mjs`: the R style notes, and for Exam 02 no R tasks, no em dash, and
   "nominal" rather than "categorical".
+- `node tests/check_exam03.mjs` (add `--no-webr` to skip the R runs, `--shots <folder>` for
+  screenshots): the Quiz 03 landing and units, every picture, every choice marked right and wrong, both
+  R tasks in real webR (starter fails, solution passes), 375 px, no script errors.
+  `Rscript tests/check_code_exam03.R` runs the same two tasks in desktop R.
+- `node tests/run.mjs x3- --repeat 3` sends the Quiz 03 test answers to Jev (needs `JEV_API_KEY`).
 
 ## Run it locally
 

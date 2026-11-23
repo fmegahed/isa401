@@ -1,0 +1,961 @@
+---
+title: "ISA 401: Business Intelligence & Data Visualization"
+subtitle: "26: A Short Introduction to Clustering"
+author: '<br>Fadel M. Megahed, PhD <br><br> Raymond E. Glos Professor in Business <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("linkedin"), fill = "white")` @Fadel Megahed](https://www.linkedin.com/in/fadel-megahed-289046b4) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
+date: "Fall 2026"
+output:
+  xaringan::moon_reader:
+    self_contained: true
+    css: [default, "../../style_files/fonts.css", "../../style_files/my-theme.css", "../../style_files/code-tomorrow-night-bright.css"]
+    lib_dir: libs
+    mathjax: null
+    nature:
+      highlightStyle: magula
+      highlightLines: true
+      highlightLanguage: ["r"]
+      countIncrementalSlides: false
+      ratio: "16:9"
+    includes:
+      in_header: "../../style_files/header.html"
+      after_body: "26_widgets.html"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache = FALSE,
+                      echo = FALSE,
+                      warning = FALSE,
+                      message = FALSE,
+                      progress = FALSE,
+                      verbose = FALSE,
+                      dev = 'png',
+                      fig.height = 3,
+                      dpi = 300,
+                      fig.align = 'center')
+
+options(htmltools.dir.version = FALSE, width = 60,
+        pillar.print_min = 4, pillar.print_max = 4) # short tibble printouts on the slides
+
+miamired = '#C3142D'
+
+if(require(pacman)==FALSE) install.packages("pacman")
+if(require(devtools)==FALSE) install.packages("devtools")
+if(require(countdown)==FALSE) devtools::install_github("gadenbuie/countdown")
+if(require(xaringanExtra)==FALSE) devtools::install_github("gadenbuie/xaringanExtra")
+
+pacman::p_load(tidyverse, magrittr, janitor, # data analysis pkgs
+               palmerpenguins, NbClust, factoextra, DT, # clustering
+               fontawesome, xaringanExtra, countdown) # for slides
+
+ggplot2::theme_set(ggplot2::theme_bw(base_size = 12))
+
+# Code styling shared by all ISA 401 decks: hl_r() + knitr source hook (see style_files/hl_r.R)
+source("../../style_files/hl_r.R")
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+if(require(xaringanthemer) == FALSE) install.packages("xaringanthemer")
+library(xaringanthemer)
+
+style_mono_accent(base_color = "#84d6d3",
+                  base_font_size = "20px")
+
+xaringanExtra::use_xaringan_extra(c("tile_view", "animate_css", "tachyons", "panelset", "broadcast", "share_again", "search", "fit_screen", "editable"))
+```
+
+```{r data_deck, include=FALSE}
+raw_url = function(f) paste0('https://raw.githubusercontent.com/fmegahed/isa401/main/data/', f)
+
+# the 60 sampled penguins (20 per species) used in the spring deck, the widget and the Tableau demo
+penguins_subset = readr::read_csv('../../data/penguins_subset.csv', show_col_types = FALSE)
+stopifnot(nrow(penguins_subset) == 60)
+
+# Job Scout skills (for the opening question): one row per posting and skill
+skills_q = readr::read_csv('../../data/class25_job_skills_2026-11-15.csv', show_col_types = FALSE)
+
+# the widget's 7 points: check the run it shows (start at observations 1 and 4)
+p7 = matrix(c(1, 1, 1.5, 2, 3, 4, 5, 7, 3.5, 5, 4.5, 5, 3.5, 4.5), ncol = 2, byrow = TRUE)
+```
+
+<style>
+/* shared cards (as in Class 25) */
+.card { border:1px solid #d1d5db; border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1); background:#ffffff; }
+.card .ch { background:#c3142d; color:#fff; font-weight:700; font-size:15.5px; padding:7px 12px; }
+.card .ch.gray { background:#585E60; }
+.card .cb { padding:10px 13px; font-size:16.5px; line-height:1.45; }
+.card .cb a { color:#1b1b1b; text-decoration:underline; text-decoration-color:#c3142d; }
+.note { margin-top:12px; border:1px solid #d1d5db; border-left:6px solid #c3142d; border-radius:8px; padding:9px 16px; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.1); font-size:14.5px; line-height:1.5; }
+.note b.r { color:#c3142d; }
+.two { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:10px; }
+.three { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:12px; margin-top:10px; }
+.lst div { margin-bottom:7px; }
+.lst div:last-child { margin-bottom:0; }
+.lede { font-size:19px; line-height:1.4; margin:2px 0 12px 0; color:#1b1b1b; }
+.lede b.r, .card b.r { color:#c3142d; }
+.obj-wip { background:#ffdf65; border-radius:6px; padding:3px 8px; margin-left:-8px; }
+/* plain-language tiles (big picture, few words) */
+.tiles { display:grid; gap:12px; margin-top:8px; }
+.tile { border:1px solid #e5e7eb; border-radius:10px; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,0.08); padding:12px 14px; text-align:center; }
+.tile .ic { font-size:30px; line-height:1; margin-bottom:6px; color:#c3142d; }
+.tile .ic svg { width:34px !important; height:34px !important; fill:#c3142d; }
+.tile b { display:block; font-size:19px; margin-bottom:4px; color:#1b1b1b; }
+.tile span { font-size:15px; color:#585E60; line-height:1.35; display:block; }
+.tile .n { display:inline-block; width:24px; height:24px; line-height:24px; border-radius:50%; background:#c3142d; color:#fff; font-weight:800; font-size:14px; margin-bottom:6px; }
+.tile.gray .n { background:#585E60; }
+.formula { text-align:center; font-size:22px; margin:10px 0 14px 0; }
+.plot-img img { display:block; width:100%; }
+.r-grid { display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,1fr); gap:14px; margin-top:2px; align-items:start; }
+.steps-t div { margin-bottom:8px; }
+.steps-t b.n { display:inline-block; width:22px; height:22px; line-height:22px; text-align:center; border-radius:50%; background:#c3142d; color:#fff; font-size:13px; margin-right:6px; }
+.remark-slide-content .panelset .panel-tabs .panel-tab { padding:0.5em 0.6em; font-size:0.92em; }
+</style>
+
+# Before We Start
+
+<div class="three" style="margin-top:12px;">
+<div class="card">
+  <div class="ch">1 &nbsp; Join today's Zoom</div>
+  <div class="cb">Use the Zoom link in the <a href="https://miamioh.instructure.com/courses/258169/modules/981092" target="_blank"><b>Week 0 Module</b></a> on Canvas. <b>Mute</b> your mic and <b>turn off</b> your video.</div>
+</div>
+<div class="card">
+  <div class="ch">2 &nbsp; RStudio and Tableau open</div>
+  <div class="cb">For the R demo (on Job Scout postings), install the two packages now:
+  <div style="margin-top:8px;">`r hl_r("install.packages(c('NbClust', 'factoextra'))", "60%")`</div>
+  <div style="margin-top:8px;">Then open Tableau for the last part.</div></div>
+</div>
+<div class="card">
+  <div class="ch gray">3 &nbsp; Today's plan</div>
+  <div class="cb lst">
+  <div><b>Part 1.</b> Today's question: what kinds of jobs are in Job Scout?</div>
+  <div><b>Part 2.</b> What clustering is, and k-means step by step.</div>
+    <div><b>Part 3.</b> Clustering Job Scout postings in R, then naming the clusters.</div>
+  <div><b>Part 4.</b> k-means in Tableau.</div>
+  </div>
+</div>
+</div>
+
+???
+
+One minute, while people walk in. The installs take a minute on a slow connection, so ask now.
+
+---
+
+# Learning Objectives
+
+By the end of today, you should be able to:
+
+1. **Describe** the steps of the k-means algorithm.
+
+2. **Follow** k-means step by step on a small example.
+
+3. **Cluster** Job Scout postings with k-means in R, letting NbClust suggest k.
+
+4. **Explain** the clusters: what is in each one, and what to call it.
+
+5. **Explain** the practical issues (scaling, choosing k) and use k-means in Tableau.
+
+???
+
+Thirty seconds.
+
+---
+
+# Where We Are
+
+<div class="note" style="margin-top:6px; font-size:16px;"><b class="r">Phase III: Exploratory Data Mining &amp; Project Synthesis.</b> Today is the second of the two data mining classes. After Thanksgiving: two project work sessions.</div>
+
+<div class="card" style="margin-top:14px;"><div class="ch gray">Course objectives</div><div class="cb lst">
+<div>`r fontawesome::fa('check', fill = '#b9ca4a')` Extract, transform and load (ETL) data using multiple platforms (e.g., R and Tableau).</div>
+<div>`r fontawesome::fa('check', fill = '#b9ca4a')` Write basic R scripts to preprocess and clean the data.</div>
+<div>`r fontawesome::fa('check', fill = '#b9ca4a')` Explore the data using visualization approaches that are based on sound human factors.</div>
+<div style="color:#c3142d;"><b>`r fontawesome::fa('arrow-right', fill = '#c3142d')` Understand how data mining and other analytical tools can capitalize on the insights generated from the data viz process.</b></div>
+<div>`r fontawesome::fa('check', fill = '#b9ca4a')` Create interactive dashboards that can be used for business decision making, reporting and/or performance management.</div>
+<div class="obj-wip">`r fontawesome::fa('hourglass-half', fill = '#1b1b1b')` Be able to apply the skills from this class in your future career (the project).</div>
+</div></div>
+
+???
+
+One minute.
+
+---
+
+# A Recap of Last Class
+
+<div class="tiles" style="grid-template-columns:repeat(3, minmax(0,1fr));">
+<div class="tile"><div class="ic">`r fontawesome::fa('gem')`</div><b>Data mining</b><span>Finding patterns that are valid, useful, unexpected and understandable.</span></div>
+<div class="tile"><div class="ic">`r fontawesome::fa('triangle-exclamation')`</div><b>Its limits</b><span>Look in enough places and you will find something. A pattern counts only if it holds on new data.</span></div>
+<div class="tile"><div class="ic">`r fontawesome::fa('cart-shopping')`</div><b>Association rules</b><span>Which items show up together: support, confidence and lift, in R with arules.</span></div>
+</div>
+
+<div class="card" style="margin-top:16px;"><div class="ch gray">Data mining models</div><div class="cb" style="font-size:16px;">
+<b>Descriptive</b> (no outcome column): association rules (last class) and <b class="r">clustering (today)</b>. &nbsp; <b>Predictive</b> (an outcome column): regression and classification.
+</div></div>
+
+???
+
+Two minutes. The key line for today: clustering has no outcome column. Nobody tells k-means which group a record belongs to.
+
+---
+
+# What Kinds of Jobs Are in Job Scout?
+
+<div class="tiles" style="grid-template-columns:repeat(3, minmax(0,1fr));">
+<div class="tile"><div class="ic">`r fontawesome::fa('briefcase')`</div><b>`r scales::comma(dplyr::n_distinct(skills_q$posting_id))` postings</b><span>Full-time jobs and internships that ChatISA's Job Scout collected, August 16 to November 15, 2026.</span></div>
+<div class="tile"><div class="ic">`r fontawesome::fa('list-check')`</div><b>`r dplyr::n_distinct(skills_q$skill)` skills</b><span>Each posting lists the skills it asks for: about `r round(nrow(skills_q) / dplyr::n_distinct(skills_q$posting_id))` per posting.</span></div>
+<div class="tile gray"><div class="ic">`r fontawesome::fa('tag')`</div><b>No job-type labels</b><span>Nobody has sorted these postings into kinds of jobs. There is no outcome column.</span></div>
+</div>
+
+<div class="note" style="margin-top:18px; font-size:17px;"><b class="r">Your guess:</b> how many kinds of jobs are in there, and what are they? By the end of class, k-means will sort the postings into groups, and you will name them.</div>
+
+???
+
+Two minutes. Take three or four guesses from the room and write them on the board (for example: data analyst, data scientist, business analyst, cybersecurity). Come back to them on the Name the Clusters tab. (The clusters use 2,960 postings: one posting asks for none of the 30 most common skills.) This is the question the whole class answers; the penguins and the 7 points are how we learn the method first.
+
+---
+
+class: inverse, center, middle
+
+# An Overview of Clustering
+
+???
+
+No time of its own.
+
+---
+
+# The Problem of Clustering
+
+- Given a **set of (high-dimensional) observations**, with a notion of **distance** between observations, **group the observations** into **some number of clusters**, so that:
+  +  Members of a cluster are close/similar to each other
+  +  Members of different clusters are dissimilar
+
+- **Usually:**
+  + The observations are in a high-dimensional space
+  + Similarity is defined using a distance measure, e.g.,
+      * Euclidean, Cosine, Jaccard, edit distance, etc.
+
+<div class="note" style="font-size:15.5px;"><b class="r">A business example:</b> ChatISA's Job Scout could sort its postings into groups of similar jobs, with no labels to learn from. That is today's question.</div>
+
+.footnote[
+<html>
+<hr>
+</html>
+**Source:** J. Leskovec, A. Rajaraman, J. Ullman: Mining of Massive Datasets, <http://www.mmds.org>
+]
+
+???
+
+Two minutes.
+
+---
+
+# Clustering in 2D Space
+
+.pull-left[
+.center[
+
+**Meet the Palmer penguins**
+
+[![](https://allisonhorst.github.io/palmerpenguins/reference/figures/lter_penguins.png)](https://allisonhorst.github.io/palmerpenguins/)
+]
+]
+
+.pull-right[
+.center[
+
+**Anatomical description of the dataset:**
+
+[![](https://allisonhorst.github.io/palmerpenguins/reference/figures/culmen_depth.png)](https://allisonhorst.github.io/palmerpenguins/)
+]
+]
+
+.footnote[
+<html>
+<hr>
+</html>
+
+**Source:** The data are available by [CC-0 license](https://creativecommons.org/share-your-work/public-domain/cc0/) in accordance with the [Palmer Station LTER Data Policy and the LTER Data Access Policy for Type I data](http://pal.lternet.edu/data/policies). The artwork is by Allison Horst and available at <https://allisonhorst.github.io/palmerpenguins/>, and the data is downloaded using the [palmerpenguins](https://allisonhorst.github.io/palmerpenguins/) `r fontawesome::fa('r-project', miamired)` package.
+]
+
+???
+
+One minute.
+
+---
+
+# Clustering in 2D Space: Formulation
+
+- Given a **set of observations (each containing bill length and depth)**, with a notion of **Euclidean distance** between observations, **group the observations** into **3 clusters**, so that:
+
+  +  Members of a cluster are close/similar to each other
+  +  Members of different clusters are dissimilar
+
+- Note we are assuming that we did not have a "label/type" for each penguin.
+
+.footnote[
+<html>
+<hr>
+</html>
+
+**Source:** The data are available by [CC-0 license](https://creativecommons.org/share-your-work/public-domain/cc0/) in accordance with the [Palmer Station LTER Data Policy and the LTER Data Access Policy for Type I data](http://pal.lternet.edu/data/policies). The artwork is by Allison Horst and available at <https://allisonhorst.github.io/palmerpenguins/>, and the data is downloaded using the [palmerpenguins](https://allisonhorst.github.io/palmerpenguins/) `r fontawesome::fa('r-project', miamired)` package.
+]
+
+???
+
+One minute.
+
+---
+
+# Clustering in 2D Space: Three Views
+
+.panelset[
+.panel[.panel-name[Raw Data]
+
+```{r bill_length_depth1, fig.width=10, fig.height=3.7, out.width="80%"}
+ggplot(data = penguins,
+       aes(x = bill_length_mm,
+           y = bill_depth_mm)) +
+  geom_point(size = 2.5,
+             alpha = 0.8) +
+  theme_minimal() +
+  labs(title = "Penguin bill dimensions",
+       subtitle = "Bill length and depth for Adelie, Chinstrap and Gentoo Penguins at Palmer Station LTER",
+       x = "Bill length (mm)",
+       y = "Bill depth (mm)") +
+  theme(plot.title.position = "plot")
+```
+
+]
+
+.panel[.panel-name[Labeled Raw Data]
+
+```{r bill_length_depth2, fig.width=10, fig.height=3.7, out.width="80%"}
+ggplot(data = penguins,
+       aes(x = bill_length_mm,
+           y = bill_depth_mm,
+           group = species)) +
+  geom_point(aes(color = species,
+                 shape = species),
+             size = 2.5,
+             alpha = 0.8) +
+  theme_minimal() +
+  scale_color_manual(values = c("darkorange","purple","cyan4")) +
+  labs(title = "Penguin bill dimensions",
+       subtitle = "Bill length and depth for Adelie, Chinstrap and Gentoo Penguins at Palmer Station LTER",
+       x = "Bill length (mm)",
+       y = "Bill depth (mm)",
+       color = "Penguin species",
+       shape = "Penguin species") +
+  theme(legend.position = c(0.88, 0.17),
+        legend.background = element_rect(fill = "white", color = NA),
+        plot.title.position = "plot")
+```
+
+]
+
+.panel[.panel-name[Clustering Results]
+
+```{r bill_length_depth3, fig.width=10, fig.height=3.7, out.width="80%"}
+penguins_sample = data.frame(penguins_subset)
+row.names(penguins_sample) = paste0(rep(c('A', 'C', 'G'), each = 20), 1:60)
+
+set.seed(2022)
+km_results = kmeans(penguins_sample, centers = 3)
+
+fviz_cluster(km_results, data = penguins_sample, stand = FALSE,
+             ellipse.type = "convex",
+             palette = "jco",
+             labelsize = 9,
+             ggtheme = theme_minimal()) +
+  labs(title = "Clustering of a sample of 60 penguins into three groups",
+       subtitle = "Using only bill length and depth (A = Adelie, C = Chinstrap, G = Gentoo)",
+       x = "Bill length (mm)",
+       y = "Bill depth (mm)") +
+  theme(legend.position = 'none',
+        plot.title.position = "plot")
+```
+
+]
+]
+
+.footnote[
+<html>
+<hr>
+</html>
+**Source:** The data are available by [CC-0 license](https://creativecommons.org/share-your-work/public-domain/cc0/); the artwork and the [palmerpenguins](https://allisonhorst.github.io/palmerpenguins/) `r fontawesome::fa('r-project', miamired)` package are by Allison Horst.
+]
+
+???
+
+Three minutes. Raw: ask how many groups they see. Labeled: the answer we would not have in a real clustering problem. Clustering Results: k-means on 60 of them (20 per species), with the species letter on each point; where does it get them wrong?
+
+---
+
+# Comments on the 2D Clustering Problem
+
+Even though the 2D Space clustering problem is the easiest problem to "solve" since we can benefit by plotting the data, **clustering is hard**.
+
+**Some important questions:**
+
+  1. With all the variables being numerical, we often assume **Euclidean distance**. This can be problematic when:
+    - variables have significantly different scales
+    - we are including information that is not pertinent to grouping
+
+  2. How do you determine the number of clusters (*k*)?
+
+  3. How to represent a cluster of many points?
+
+  4. How do we determine the "nearness" of clusters?
+
+???
+
+Two minutes. Question 1 comes back in the R demo (scaling) and question 2 in the Choose k tab.
+
+---
+
+# An Overview of Clustering Methods
+
+.center[
+[![](https://csdl-images.ieeecomputer.org/trans/ec/2014/03/figures/fahad.t1-2330519.gif)](https://www.computer.org/csdl/journal/ec/2014/03/06832486/13rRUEgs2xB)
+]
+
+.footnote[
+<html>
+<hr>
+</html>
+
+**Source:** A. Fahad, et al.,"A Survey of Clustering Algorithms for Big Data: Taxonomy and Empirical Analysis" in IEEE Transactions on Emerging Topics in Computing, vol. 2, no. 03, pp. 267-279, 2014. <https://doi.org/10.1109/TETC.2014.2330519>
+]
+
+???
+
+One minute. Many families of methods; today is the most used one, k-means (a partitioning method).
+
+---
+
+class: inverse, center, middle
+
+# The k-means Algorithm
+
+???
+
+No time of its own.
+
+---
+
+# General Idea
+
+The k-means algorithm clusters data by trying to separate samples in *k* groups of equal variance, minimizing a criterion known as the **inertia** or **within-cluster sum of squares**. This algorithm requires the **number of clusters to be specified**.
+
+<div class="formula">inertia = &Sigma;<sub>records</sub> (distance from the record to its own center)<sup>2</sup></div>
+
+**Inertia is a measure of how internally coherent clusters are; however, it suffers from various drawbacks:**
+
+- Inertia makes the assumption that clusters are convex and isotropic, which is not always the case. It responds poorly to elongated clusters, or manifolds with irregular shapes.
+
+- Inertia is not a normalized metric: we just know that lower values are better and zero is optimal. But in very high-dimensional spaces, Euclidean distances tend to become inflated.
+
+.footnote[
+<html>
+<hr>
+</html>
+
+**Source:** Clustering, scikit-learn documentation <https://scikit-learn.org/stable/modules/clustering.html#k-means>
+]
+
+???
+
+Two minutes. Lower inertia means tighter groups. Watch it fall in the widget in a minute.
+
+---
+
+# The Steps of the k-means Algorithm
+
+<div class="tiles" style="grid-template-columns:repeat(4, minmax(0,1fr));">
+<div class="tile gray"><div class="n">0</div><b>Pick k centers</b><span>The simplest way: choose k records from the data.</span></div>
+<div class="tile"><div class="n">1</div><b>Assign</b><span>Each record joins its nearest center.</span></div>
+<div class="tile"><div class="n">2</div><b>Move</b><span>Each center moves to the mean of the records that joined it.</span></div>
+<div class="tile"><div class="ic">`r fontawesome::fa('rotate')`</div><b>Repeat 1 and 2</b><span>Until the centers stop moving.</span></div>
+</div>
+
+<div class="note" style="margin-top:18px; font-size:16px;"><b class="r">No outcome column anywhere.</b> k-means only uses distances: nobody tells it which group a record belongs to.</div>
+
+.footnote[
+<html>
+<hr>
+</html>
+
+**Source:** Clustering, scikit-learn documentation <https://scikit-learn.org/stable/modules/clustering.html#k-means>
+]
+
+???
+
+Two minutes. Step 0 matters more than it looks: we will try a bad start in the widget.
+
+---
+
+# k-means Step by Step
+
+<div class="km-widget"></div>
+
+???
+
+Eight minutes. Call it, then click: ask for a prediction before every click.
+
+This follows the by-hand handout step for step, with every number the same (centers are kept to 2 decimals, as by hand). Click 0: points 1 and 4 (the two farthest apart) are the starting centers, C1 = (1, 1) and C2 = (5, 7). Round 1 (the first pass): click Assign Next Point once per point, 2, 3, 5, 6, 7 (point 4 is skipped). Each click draws the point's distance to both centers on the plot, writes out the square-root formula, puts the point with the nearer center, and moves that center to the mean of its points right away (the dashed arrow). Ask the room which center wins before each click. Point 2: 1.12 vs. 6.10, C1 moves to (1.25, 1.50). Point 3: 3.05 vs. 3.61, C1 moves to (1.83, 2.33). Point 5: 3.15 vs. 2.50, C2 moves to (4.25, 6.00). Point 6: 3.78 vs. 1.03, C2 to (4.33, 5.67). Point 7: 2.74 vs. 1.43, C2 to (4.13, 5.38). Round 2 (the handout's check table): every point is measured against the same two centers. Point 3 switches from C1 to C2 (2.04 vs. 1.78). Use Assign the Rest if the room is ahead of you. Move: C1 = (1.25, 1.50), C2 = (3.90, 5.10), the handout's final answer. Round 3: nothing switches, and Move does not move the centers, so k-means stops. Point at the inertia line: it never goes up. If asked: moving a center after every point is MacQueen's version of k-means; the Steps slide (and scikit-learn) describes the batch version, which assigns every point first. Here both end in the same place.
+
+---
+
+class: inverse, center, middle
+
+# Back to Today's Question: Clustering Job Scout Postings
+
+???
+
+No time of its own.
+
+---
+
+# Clustering Job Scout Postings in R
+
+```{r jobs_data, include=FALSE}
+# Job Scout skills (the Class 25 file): one row per posting and skill.
+jobs_file = 'class25_job_skills_2026-11-15.csv'
+clusters_file = 'class26_job_clusters_2026-11-15.csv'   # NbClust's clusters, with each posting's title, link and skills
+skills = readr::read_csv(file.path('../../data', jobs_file), show_col_types = FALSE)
+top30 = skills |> dplyr::count(skill, sort = TRUE) |> dplyr::slice_head(n = 30)
+postings = skills |>
+  dplyr::filter(skill %in% top30$skill) |>
+  dplyr::distinct(posting_id, skill) |>
+  dplyr::mutate(has = 1) |>
+  tidyr::pivot_wider(names_from = skill, values_from = has, values_fill = 0)
+x = postings |> dplyr::select(-posting_id)
+
+# NbClust takes about a minute, so it runs only when the clusters file is missing (delete it to rebuild).
+# It needs Job Scout's database (data/chatisa-data/scout.db, kept out of the repo) for the titles and links.
+votes_file = '26_nbclust_votes.csv'
+if (!file.exists(file.path('../../data', clusters_file)) || !file.exists(votes_file)) {
+  set.seed(2026)
+  pdf(NULL)
+  nb_out = capture.output(
+    km_res_nbclust <- NbClust::NbClust(data = x, distance = "euclidean", min.nc = 2, max.nc = 8,
+                                       method = "kmeans", index = "all"))
+  invisible(dev.off())
+  votes = nb_out[grepl("proposed .* as the best number of clusters", nb_out)]
+  readr::write_csv(tibble::tibble(line = trimws(sub("^\\*\\s*", "", votes))), votes_file)
+  con = DBI::dbConnect(RSQLite::SQLite(), '../../data/chatisa-data/scout.db', flags = RSQLite::SQLITE_RO)
+  info = DBI::dbGetQuery(con, "SELECT id AS posting_id, title, company, location_city AS city, location_state AS state,
+                               category, apply_url FROM scout_postings")
+  DBI::dbDisconnect(con)
+  skill_list = skills |> dplyr::group_by(posting_id) |> dplyr::summarise(skills = paste(sort(skill), collapse = '; '))
+  clusters_out = tibble::tibble(posting_id = postings$posting_id, cluster = km_res_nbclust$Best.partition) |>
+    dplyr::left_join(info, by = 'posting_id') |>
+    dplyr::left_join(skill_list, by = 'posting_id') |>
+    dplyr::arrange(cluster, title)
+  readr::write_csv(clusters_out, file.path('../../data', clusters_file))
+}
+clusters = readr::read_csv(file.path('../../data', clusters_file), show_col_types = FALSE)
+votes = readr::read_csv(votes_file, show_col_types = FALSE)$line
+stopifnot(nrow(clusters) == nrow(postings), all(!is.na(clusters$apply_url)))
+cl_of = clusters$cluster[match(postings$posting_id, clusters$posting_id)]   # cluster of each row of x
+k_nb = length(unique(cl_of))
+sizes = table(cl_of)
+```
+
+.panelset[
+.panel[.panel-name[Data]
+
+```{r jobs1, echo=TRUE, hl.size='60%'}
+skills = readr::read_csv(paste0(
+  'https://raw.githubusercontent.com/fmegahed/isa401/main/data/',
+  'class25_job_skills_2026-11-15.csv'))
+
+skills # one row per posting and skill
+
+dplyr::n_distinct(skills$posting_id) # number of postings
+```
+
+]
+
+.panel[.panel-name[Prep]
+
+<div class="out-sm">
+
+```{r jobs2, echo=TRUE, hl.size='56%'}
+top30 = skills |> dplyr::count(skill, sort = TRUE) |> dplyr::slice_head(n = 30)
+
+# one row per posting, a 0/1 column for each of the top 30 skills
+postings = skills |>
+  dplyr::filter(skill %in% top30$skill) |>
+  dplyr::distinct(posting_id, skill) |>
+  dplyr::mutate(has = 1) |>
+  tidyr::pivot_wider(names_from = skill, values_from = has, values_fill = 0)
+
+x = postings |> dplyr::select(-posting_id) # the input to k-means: no label, no id
+
+x[1:4, 1:6]
+```
+
+</div>
+
+]
+
+.panel[.panel-name[NbClust Picks k]
+
+.r-grid[
+.r-code[
+```{r jobs3, echo=TRUE, eval=FALSE, hl.size='54%'}
+set.seed(2026)
+km_res_nbclust = NbClust::NbClust(
+  data = x,
+  distance = "euclidean",
+  min.nc = 2, max.nc = 8,
+  method = "kmeans", index ="all") # about a minute
+
+table(km_res_nbclust$Best.partition) # postings per cluster
+```
+<div class="note" style="font-size:14px; margin-top:6px;"><b class="r">More than one measure, in one call.</b> NbClust runs k-means for every k from 2 to 8 and lets each of its indices vote for the best k. The majority wins.</div>
+]
+.r-side[
+<div class="card"><div class="ch gray">How the indices vote</div><div class="cb" style="font-size:13.5px; line-height:1.5;">
+`r paste0('<div>', votes, '</div>', collapse = '')`
+<div style="margin-top:6px;"><b class="r">Majority rule: k = `r k_nb`.</b></div>
+</div></div>
+<div class="card" style="margin-top:10px;"><div class="ch">Postings per cluster</div><div class="cb" style="font-size:15px;">
+`r paste0('<b>Cluster ', names(sizes), ':</b> ', scales::comma(as.integer(sizes)), collapse = ' &nbsp; ')`
+</div></div>
+]
+]
+
+]
+
+.panel[.panel-name[Viz Clusters]
+
+.r-grid[
+.r-code[
+```{r jobs5, echo=TRUE, eval=FALSE, hl.size='56%'}
+factoextra::fviz_cluster(
+  object =
+    list(
+      cluster = km_res_nbclust$Best.partition,
+      data = x
+    ),
+  geom = "point",
+  ellipse.type = "convex",
+  palette = "jco",
+  ggtheme = ggplot2::theme_minimal()
+)
+```
+<div class="note" style="font-size:14px; margin-top:6px;">With 30 columns, fviz_cluster() draws the postings on their first two principal components: the two directions that keep the most of the spread.</div>
+]
+.r-side[
+```{r jobs5_out, fig.width=5, fig.height=3.6, out.width='100%'}
+factoextra::fviz_cluster(
+  object = list(cluster = cl_of, data = x),
+  geom = "point",
+  pointsize = 0.8,
+  ellipse.type = "convex",
+  palette = "jco",
+  ggtheme = ggplot2::theme_minimal()
+)
+```
+]
+]
+
+]
+]
+
+???
+
+Fifteen minutes. This is the Job Scout example promised on Wednesday's Data Mining Models slide, and the answer to today's question. Students copy each tab's code into RStudio and run it; it needs tidyverse, NbClust and factoextra, and every call names its package.
+
+Data: the same file as Wednesday's association rules, one row per posting and skill.
+
+Prep: each posting becomes a row of 0s and 1s over the 30 most common skills. Ask whether we need to rescale: no, every column is already 0 or 1. Contrast with salary in dollars next to years of experience, where salary would decide almost all of the distance.
+
+NbClust Picks k: it takes about a minute on a laptop (69 seconds on mine) and draws two plots while it runs; start it, then talk through the votes on the slide. The majority rule picks k = `r k_nb`, but only `r sum(grepl(paste0('proposed ', k_nb, ' as'), votes))` indices say so. Ask whether that is a landslide. Real data rarely has crisp clusters; the next slide is how we check whether `r k_nb` groups make sense. (If asked: with k = 4, k-means splits the biggest cluster into business and systems analysts on one side and cybersecurity and compliance on the other.)
+
+Viz Clusters: the clusters overlap on the plot because two dimensions cannot show 30. That is why the next slide reads the clusters by their postings and their skills.
+
+---
+
+# Groups of Similar Job Scout Postings
+
+```{r jobs_groups, include=FALSE}
+overall = colMeans(x)
+centers = sapply(sort(unique(cl_of)), function(j) colMeans(x[cl_of == j, ]))   # skills x clusters: shares
+pretty_skill = function(s) gsub('_', ' ', s)
+esc = function(s) htmltools::htmlEscape(s)
+# the most typical postings in each cluster: the ones closest to its center
+d_center = sqrt(rowSums((as.matrix(x) - t(centers)[cl_of, ])^2))
+typical = tibble::tibble(posting_id = postings$posting_id, cluster = cl_of, d = d_center) |>
+  dplyr::left_join(clusters |> dplyr::select(posting_id, title, company, apply_url), by = 'posting_id') |>
+  dplyr::arrange(cluster, d) |>
+  dplyr::distinct(cluster, title, .keep_all = TRUE) |>
+  dplyr::group_by(cluster) |> dplyr::slice_head(n = 3) |> dplyr::ungroup()
+job_cards = vapply(sort(unique(cl_of)), function(j) {
+  gap = centers[, j] - overall[rownames(centers)]
+  top = names(sort(gap, decreasing = TRUE))[1:5]
+  sk = paste0('<span class="jk-sk">', pretty_skill(top), ' <i>', round(100 * centers[top, j]), '% vs. ',
+              round(100 * overall[top]), '%</i></span>', collapse = '')
+  tj = typical |> dplyr::filter(cluster == j)
+  jobs = paste0('<div class="jk-job"><a href="', esc(tj$apply_url), '" target="_blank"><b>', esc(tj$title), '</b></a> <span>',
+                esc(tj$company), '</span></div>', collapse = '')
+  paste0('<div class="jk"><div class="jk-h">Cluster ', j, ' <span>', scales::comma(sum(cl_of == j)), ' postings</span></div>',
+         '<div class="jk-l">Its most distinctive skills</div><div>', sk, '</div>',
+         '<div class="jk-l">Its most typical postings</div>', jobs, '</div>')
+}, character(1))
+# the skill profile: the 15 skills whose shares differ most across clusters
+spread = apply(centers, 1, function(v) max(v) - min(v))
+prof = as.data.frame(as.table(centers[names(sort(spread, decreasing = TRUE))[1:15], , drop = FALSE])) |>
+  stats::setNames(c('skill', 'cluster', 'share')) |>
+  dplyr::mutate(skill = factor(pretty_skill(as.character(skill)), levels = rev(pretty_skill(names(sort(spread, decreasing = TRUE))[1:15]))),
+                cluster = paste('Cluster', as.integer(cluster)))
+# the table to explore: every posting, with a link to the original job
+explore = clusters |>
+  dplyr::left_join(tibble::tibble(posting_id = postings$posting_id, d = d_center), by = 'posting_id') |>
+  dplyr::arrange(cluster, d) |>   # the most typical postings of each cluster first
+  dplyr::mutate(Location = ifelse(is.na(city), state, paste0(city, ', ', state)),
+                Job = paste0('<a href="', apply_url, '" target="_blank">', esc(title), '</a>')) |>
+  dplyr::select(Cluster = cluster, Job, Company = company, Location, Skills = skills)
+```
+
+<style>
+.jk-grid { display:grid; grid-template-columns:repeat(`r min(k_nb, 3)`, minmax(0,1fr)); gap:10px; }
+.jk { border:1px solid #e5e7eb; border-radius:10px; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,0.08); padding:6px 11px 7px 11px; }
+.jk-h { font-weight:800; color:#c3142d; font-size:15.5px; }
+.jk-h span { font-weight:600; color:#585E60; font-size:13.5px; margin-left:6px; }
+.jk-l { font-size:11.5px; font-weight:700; color:#585E60; text-transform:uppercase; letter-spacing:.03em; margin:5px 0 2px 0; }
+.jk-sk { display:inline-block; background:#f3f4f6; border-radius:10px; padding:1px 8px; margin:1px 3px 2px 0; font-size:12.5px; font-weight:700; color:#1b1b1b; }
+.jk-sk i { font-style:normal; font-weight:400; color:#585E60; }
+.jk-job { font-size:12.5px; line-height:1.35; }
+.jk-job span { color:#585E60; }
+.jk-job a { color:#c3142d !important; text-decoration:underline; text-decoration-color:#e8a3ad; }
+.out-sm .rout { font-size:12.5px !important; line-height:1.3 !important; }
+.dt-jobs { font-size:11.5px; }
+.dt-jobs table.dataTable td, .dt-jobs table.dataTable th { padding:3px 6px !important; }
+.dt-jobs table.dataTable td:last-child { font-size:10.5px; color:#585E60; }
+.dt-jobs a { color:#c3142d !important; text-decoration:underline; }
+</style>
+
+.panelset[
+.panel[.panel-name[Explore the Postings]
+
+<div class="dt-jobs">
+
+```{r jobs_dt}
+DT::datatable(explore, escape = FALSE, rownames = FALSE, filter = 'top', class = 'compact stripe',
+              options = list(pageLength = 6, dom = 'tip', autoWidth = FALSE, ordering = FALSE,
+                             columnDefs = list(list(width = '45px', targets = 0), list(width = '38%', targets = 4))))
+```
+
+</div>
+
+]
+
+.panel[.panel-name[Skill Profiles]
+
+```{r jobs_prof, fig.width=9, fig.height=3.6, out.width='86%'}
+ggplot2::ggplot(prof, ggplot2::aes(x = cluster, y = skill, fill = share)) +
+  ggplot2::geom_tile(color = 'white') +
+  ggplot2::geom_text(ggplot2::aes(label = scales::percent(share, accuracy = 1),
+                                  color = share > 0.55), size = 3) +
+  ggplot2::scale_fill_gradient(low = '#f7f7f7', high = '#c3142d', labels = scales::percent) +
+  ggplot2::scale_color_manual(values = c('FALSE' = '#1b1b1b', 'TRUE' = 'white'), guide = 'none') +
+  ggplot2::labs(x = NULL, y = NULL, fill = 'Share of\npostings',
+                title = 'Share of each cluster\'s postings that ask for each skill',
+                subtitle = 'The 15 skills whose shares differ most across the clusters') +
+  ggplot2::theme_minimal(base_size = 11) +
+  ggplot2::theme(panel.grid = ggplot2::element_blank(), plot.title.position = 'plot')
+```
+
+]
+
+.panel[.panel-name[Name the Clusters]
+
+<div class="jk-grid">`r paste(job_cards, collapse = '')`</div>
+
+<div class="note" style="font-size:14.5px; margin-top:8px;"><b class="r">Your turn:</b> give each cluster a job title. Were your guesses from the start of class right? Skill shares are for the cluster vs. all `r scales::comma(nrow(postings))` postings.</div>
+
+]
+
+.panel[.panel-name[Explore in R]
+
+```{r jobs6, echo=TRUE, eval=FALSE, hl.size='56%'}
+# NbClust's clusters, saved with each posting's title, company, location, link and skills
+clusters = readr::read_csv(paste0(
+  'https://raw.githubusercontent.com/fmegahed/isa401/main/data/',
+  'class26_job_clusters_2026-11-15.csv'))
+
+clusters |> dplyr::count(cluster) # postings per cluster
+
+clusters |> # the jobs in one cluster; change 1 to see the others
+  dplyr::filter(cluster == 1) |>
+  dplyr::select(title, company, apply_url)
+```
+
+<div class="note" style="font-size:14px; margin-top:4px;"><b class="r">No need to wait for NbClust:</b> this file has its answer for every posting. Open a few links and decide whether you agree with where k-means put them.</div>
+
+]
+]
+
+???
+
+Ten minutes. Explore the Postings: every posting, its cluster and a link to the original job. Filter by cluster in the box above the Cluster column, search for a company, and open a link or two. Skill Profiles: read across a row to see where a skill lives; read down a column to see what a cluster is about. Name the Clusters: ask the room to name each cluster before you say anything, and compare with the guesses on the board. Expected names: data science and machine learning (python, machine learning), data or BI analyst (dashboards, Power BI, data visualization), and business, systems and security analysts (systems analysis, stakeholder management, cybersecurity, compliance). Ask whether the third one is really one kind of job; that is the case for trying k = 4. Explore in R: the same file, for their own digging after class.
+
+---
+
+
+# Summary of Practical Issues
+
+- Rescale numeric data prior to k-means implementation. The scaling can be:
+  + a z-transformation (subtract the column's mean, divide by its standard deviation)
+  + a 0-1 scaling
+  + converting count data into percentage or counts per a certain number of the population
+  + etc.
+  + (Job Scout's 0/1 skill columns are already on one scale.)
+
+- Use more than one metric to determine k when using k-means clustering
+
+- Your cluster solution is not the end result, you will need to:
+  + visualize it in appropriate way (as in the Viz Clusters tab and the Skill Profiles heatmap, [spatially](https://fmegahed.github.io/covid_analysis_final.html#33_Visualizing_the_Clustering_Results), over time, etc.)
+  + Attempt to explain the cluster membership using an appropriate binomial/multinomial model (e.g., see [this analysis](https://fmegahed.github.io/covid_analysis_final.html#4_Explanatory_Modeling_of_Cluster_Assignments))
+
+???
+
+Two minutes. Ask: what would happen if we added salary in dollars to the Job Scout columns without rescaling? Salary would decide almost all of the distance.
+
+---
+
+
+# k-means in Tableau
+
+.two[
+<div class="card"><div class="ch">Build the scatter plot</div><div class="cb steps-t" style="font-size:15.5px;">
+<div><b class="n">1</b>Download <a href="`r raw_url('penguins_subset.csv')`" target="_blank"><b>penguins_subset.csv</b></a> (right-click &gt; <b>Save link as</b>; it is the 60 penguins from earlier) and connect to it as a text file.</div>
+<div><b class="n">2</b>Drag <b>Bill Length Mm</b> to Columns and <b>Bill Depth Mm</b> to Rows.</div>
+<div><b class="n">3</b>Turn off <b>Analysis &gt; Aggregate Measures</b>, so each penguin is its own mark.</div>
+</div></div>
+<div class="card"><div class="ch">Cluster it</div><div class="cb steps-t" style="font-size:15.5px;">
+<div><b class="n">4</b>Open the <b>Analytics</b> pane and drag <b>Cluster</b> onto the view.</div>
+<div><b class="n">5</b>In the dialog, the <b>Number of Clusters</b> is either <b>Automatic</b> (Tableau picks k) or a number you type in. Try both.</div>
+<div><b class="n">6</b>Tableau colors each mark by its cluster. Right-click the <b>Clusters</b> pill and choose <b>Describe Clusters</b> to see each cluster's size and centers.</div>
+</div></div>
+]
+
+
+???
+
+Ten minutes. Everyone builds it. Walk the room while they do. If Aggregate Measures stays on, the view has one mark and Cluster has nothing to group. A left-click on the link opens the CSV as text in the browser; they need Save link as.
+
+---
+
+class: inverse, center, middle
+
+# Recap
+
+???
+
+No time of its own.
+
+---
+
+# Summary of Main Points
+
+- Describe the steps of the k-means algorithm: pick k centers, assign each record to its nearest center, move each center to the mean of its group, and repeat until the centers stop moving
+
+- Follow k-means step by step: inertia (the within-cluster sum of squares) never goes up from one step to the next; a bad start can end in a worse answer
+
+- Explain the practical issues: rescale first, use more than one measure to choose k, then visualize and explain the clusters
+
+- Cluster Job Scout postings in R (`NbClust::NbClust()` to suggest k, `stats::kmeans()`, `factoextra::fviz_cluster()`), then explain the clusters by their skills and their jobs
+
+- Use k-means in Tableau (Analytics pane &gt; Cluster)
+
+???
+
+One minute.
+
+---
+
+# Practice for Quiz 03 on the ISA 401 Review Site
+
+<div class="lede">The Quiz 03 review is on <a href="https://isa401-review.vercel.app" target="_blank"><b>isa401-review.vercel.app</b></a>: five units, one per topic, all in your browser, nothing to install.</div>
+
+<div class="two" style="grid-template-columns:1.05fr 1fr;">
+<div class="card"><div class="ch">The five units</div><div class="cb lst" style="font-size:15.5px;">
+<div><b>1.</b> Data Mining and Its Limits <span style="color:#585E60;">(Class 25)</span></div>
+<div><b>2.</b> The Data Mining Process: CRISP-DM <span style="color:#585E60;">(Class 25)</span></div>
+<div><b>3.</b> Frequent Itemsets and A-Priori <span style="color:#585E60;">(Class 25)</span></div>
+<div><b>4.</b> Association Rules in R <span style="color:#585E60;">(Class 25)</span></div>
+<div><b>5.</b> Clustering and k-means <span style="color:#585E60;">(today)</span></div>
+</div></div>
+<div class="card"><div class="ch gray">In each unit</div><div class="cb lst" style="font-size:15.5px;">
+<div>`r fontawesome::fa('book-open', fill = '#c3142d')` A short recap with a picture.</div>
+<div>`r fontawesome::fa('pen', fill = '#c3142d')` Explain an idea in your own words; the key ideas light up as you cover them.</div>
+<div>`r fontawesome::fa('list-check', fill = '#c3142d')` Multiple-choice questions; Check shows the answer and why.</div>
+<div>`r fontawesome::fa('r-project', fill = '#c3142d')` Unit 4: run arules code in the browser (webR) on R's Groceries data.</div>
+</div></div>
+</div>
+
+<div class="note" style="font-size:15.5px;"><b class="r">Nothing is graded or saved for us.</b> Do the units in any order, as many times as you like.</div>
+
+???
+
+Two minutes. Open the site on the projector and click into unit 5 so they see what a unit looks like. Some questions follow the same moves as quiz questions but on Groceries instead of Job Scout, so the practice carries over.
+
+---
+
+# Quiz 03: What to Expect
+
+<div class="tiles" style="grid-template-columns:repeat(4, minmax(0,1fr));">
+<div class="tile"><div class="ic">`r fontawesome::fa('calendar-day')`</div><b>Due Tue, Nov 24</b><span>11:59 PM, on Canvas. Done remotely.</span></div>
+<div class="tile"><div class="ic">`r fontawesome::fa('list-ol')`</div><b>10 questions</b><span>1 point each; 10% of your grade.</span></div>
+<div class="tile"><div class="ic">`r fontawesome::fa('arrow-right-arrow-left')`</div><b>One at a time</b><span>You can go back to earlier questions.</span></div>
+<div class="tile"><div class="ic">`r fontawesome::fa('r-project')`</div><b>Have R ready</b><span>One answer comes from running the Class 25 arules code on the Job Scout file.</span></div>
+</div>
+
+<div class="two" style="margin-top:14px;">
+<div class="card"><div class="ch">Question types</div><div class="cb lst" style="font-size:15.5px;">
+<div><b>7</b> multiple choice</div>
+<div><b>2</b> true or false</div>
+<div><b>1</b> numerical answer, from R</div>
+<div style="color:#585E60;">Little hand calculation; mostly reading and reasoning.</div>
+</div></div>
+<div class="card"><div class="ch gray">What it covers</div><div class="cb lst" style="font-size:15.5px;">
+<div><b>Class 25 (8 questions):</b> data mining and its limits (including the ESP Test), CRISP-DM, frequent itemsets and A-Priori, confidence and lift, and the R code.</div>
+<div><b>Class 26 (2 questions):</b> clustering, including k-means in Tableau.</div>
+</div></div>
+</div>
+
+???
+
+Two minutes. Remind them to have RStudio open with arules installed and the Class 25 code ready before they start. Check the Canvas settings (time limit, proctoring) before class and say them here.
+
+---
+
+# Before Next Class
+
+<div class="note" style="margin-top:6px;"><b class="r">Quiz 03</b> is due <b>Tuesday, Nov 24, at 11:59 PM</b>; practice on the <a href="https://isa401-review.vercel.app" target="_blank"><b>review site</b></a> first. No class on Wednesday, Nov 25 (Thanksgiving).</div>
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px;">
+<div class="card">
+  <div class="ch">Project</div>
+  <div class="cb" style="font-size:14.5px; line-height:1.6;">
+    <div><b>Work sessions:</b> Monday, Nov 30 and Wednesday, Dec 2 (peer feedback on Dec 2).</div>
+    <div><b>Final submission:</b> Friday, Dec 4, at 11:59 PM.</div>
+    <div><b>Presentations:</b> Section B on Wednesday, Dec 9 (10:15 AM); Section A on Friday, Dec 11 (8:00 AM).</div>
+  </div>
+</div>
+<div class="card">
+  <div class="ch gray">Suggested</div>
+  <div class="cb" style="font-size:14.5px; line-height:1.6;">
+    <div>Chapter 7 of <a href="http://www.mmds.org" target="_blank"><b>Mining of Massive Datasets</b></a> covers clustering in more depth.</div>
+    <div style="margin-top:8px;">Rerun the <b>k-means Step by Step</b> slide on your own: try k = 2 to 5 on the penguins, and a few bad starts.</div>
+  </div>
+</div>
+</div>
+
+???
+
+One minute. Happy Thanksgiving.
