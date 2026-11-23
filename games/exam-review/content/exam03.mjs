@@ -10,7 +10,7 @@
 
 const deck = (n, file, label) => ({ label: label || `Class ${n} slides`, url: `https://fmegahed.github.io/isa401/fall2026/class${n}/${file}.html` });
 const D25 = deck("25", "25_data_mining_overview");
-const D26 = { label: "Clustering slides (Spring 2026)", url: "https://fmegahed.github.io/isa401/spring2026/class22/22_clustering_intro.html" };
+const D26 = deck("26", "26_clustering_intro");
 const idea = (label, hint, claim) => ({
   label, hint,
   ask: `Does the student's answer say that ${claim}?`,

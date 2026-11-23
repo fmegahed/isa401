@@ -130,6 +130,7 @@ games/esp-test/README.md
 lectures/25_data_mining_overview/25_esp_test_run_sheet.*
 # Class 25 speaker notes: they hold the activity answers. Instructor only.
 lectures/25_data_mining_overview/25_speaker_notes.*
+lectures/26_clustering_intro/26_speaker_notes.*
 
 # SQLite side files (write-ahead log) that appear next to data/*.db while a database is open
 data/*.db-shm
