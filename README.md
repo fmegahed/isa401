@@ -53,7 +53,7 @@ ISA 401 teaches the complete business intelligence pipeline: acquiring data from
 | Week | Date | Topic | Slides |
 |:---:|:---:|:---|:---:|
 | **13** | Wed 11/18 | Intro to Data Mining | [Slides](http://fmegahed.github.io/isa401/fall2026/class25/25_data_mining_overview.html) |
-| **14** | Mon 11/23 | Clustering | |
+| **14** | Mon 11/23 | Clustering | [Slides](http://fmegahed.github.io/isa401/fall2026/class26/26_clustering_intro.html) |
 | | Wed 11/25 | *No Class - Thanksgiving* | |
 | **15** | Mon 11/30 | Project Work Session | |
 | | Wed 12/02 | Project Work Session | |
@@ -87,7 +87,7 @@ How the review site works, and whose ideas and tools it rests on, is on its [lan
 ```
 ├── apps/                  # Shiny apps used in class
 ├── dashboards/            # Job Market Explorer (template, standalone build, data + build docs)
-├── data/                  # Course datasets (Cincinnati crashes, ChatISA Job Scout, Airbnb extracts, Ohio COVID, BLS wages, Gapminder)
+├── data/                  # Course datasets (Cincinnati crashes, ChatISA Job Scout skills and clusters, Airbnb extracts, Ohio COVID, BLS wages, Gapminder, Palmer penguins)
 ├── docs/                  # Canvas pages, assignments (one folder per HW), planning documents
 ├── figures/               # Figures used across the slide decks (TikZ sources + images)
 ├── games/                 # The review site and the class games (each deploys to Vercel)
@@ -107,6 +107,7 @@ How the review site works, and whose ideas and tools it rests on, is on its [lan
     + Hadley Wickham's [R For Data Science (2e)](https://r4ds.hadley.nz/) and [Advanced R](https://adv-r.hadley.nz/)
 * Phase III draws from [Mining of Massive Datasets](http://www.mmds.org/)
     + The Class 25 stick-figure scenes use [stick-scene](https://github.com/nilbuild/stick-scene) by Kamran Ahmed (MIT License)
+    + The Class 26 penguin examples use the [palmerpenguins](https://allisonhorst.github.io/palmerpenguins/) data and Allison Horst's artwork, and its k-means step-by-step slide follows the by-hand example from ISA 491, as worked out by Waldyn Martinez
 * The review site rests on:
     + [Jeffrey Biles](https://x.com/JeffreyBiles/status/2107211222320021722) of PhysicsGraph, for the idea of checking an explanation while it is being typed
     + [Jev](https://docs.typesafe.ai) from TypeSafe AI, which checks the written answers
